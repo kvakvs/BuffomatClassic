@@ -1,7 +1,7 @@
-## Interface: 11304
+## Interface: 11306
 ## Title: Buffomat Classic
 ## Notes: Semi-automatic buff and resurrection bot, compatible with Classic (and Retail possibly too)
-## Version: 1.9
+## Version: 1.8.3
 ## Author: GPI / Erytheia-Razorfen
 ## DefaultState: enabled
 ## SavedVariables: BomSharedState
@@ -10,9 +10,8 @@
 BomOptions.lua
 BomMinimapButton.lua
 BomToolbox.lua
-
 BomL10n.lua
-BomToolBox.lua
+BomToolbox.lua
 BomScan.lua
 Bom.lua
 Bom.xml

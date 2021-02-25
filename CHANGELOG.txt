@@ -1,3 +1,6 @@
+Buffomat Classic 1.83
+- Forked and renamed abandoned addon to become "Buffomat Classic". Reuploading to Curse.
+
 1.83
 - fix a bug with elixier count
 
