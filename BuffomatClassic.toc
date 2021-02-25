@@ -1,7 +1,7 @@
 ## Interface: 11304
 ## Title: Buffomat Classic
-## Notes: Semi-automatic buff and resurrection bot, compatible with Retail but only Classic compatibility is managed
-## Version: 1.82
+## Notes: Semi-automatic buff and resurrection bot, compatible with Classic (and Retail possibly too)
+## Version: 1.9
 ## Author: GPI / Erytheia-Razorfen
 ## DefaultState: enabled
 ## SavedVariables: BomSharedState
