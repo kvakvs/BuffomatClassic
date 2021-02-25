@@ -1,6 +1,6 @@
-local TOCNAME, Addon = ...
-Addon.Tool = Addon.Tool or {}
-local Tool = Addon.Tool
+local TOCNAME, BOM = ...
+BOM.Tool = BOM.Tool or {}
+local Tool = BOM.Tool
 
 Tool.IconClassTexture = "Interface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES"
 Tool.IconClassTextureWithoutBorder = "Interface\\WorldStateFrame\\ICONS-CLASSES"
@@ -72,7 +72,13 @@ local _tableAccents = {
 local function EnterHyperlink(self, link, text)
   --print(link,text)
   local part = Tool.Split(link, ":")
-  if part[1] == "spell" or part[1] == "unit" or part[1] == "item" or part[1] == "enchant" or part[1] == "player" or part[1] == "quest" or part[1] == "trade" then
+  if part[1] == "spell"
+          or part[1] == "unit"
+          or part[1] == "item"
+          or part[1] == "enchant"
+          or part[1] == "player"
+          or part[1] == "quest"
+          or part[1] == "trade" then
     GameTooltip_SetDefaultAnchor(GameTooltip, UIParent)
     GameTooltip:SetOwner(UIParent, "ANCHOR_PRESERVE")
     GameTooltip:ClearLines()
@@ -80,6 +86,7 @@ local function EnterHyperlink(self, link, text)
     GameTooltip:Show()
   end
 end
+
 local function LeaveHyperlink(self)
   GameTooltip:Hide()
 end
@@ -94,16 +101,13 @@ end
 local eventFrame
 
 local function EventHandler(self, event, ...)
-  --if event~="COMBAT_LOG_EVENT_UNFILTERED" and event ~= "BAG_UPDATE" and event ~="UNIT_INVENTORY_CHANGED" then
-  --	print("current event:",event)
-  --end
-
   for i, Entry in pairs(self._GPIPRIVAT_events) do
     if Entry[1] == event then
       Entry[2](...)
     end
   end
 end
+
 local function UpdateHandler(self, ...)
   for i, Entry in pairs(self._GPIPRIVAT_updates) do
     Entry(...)
@@ -114,10 +118,12 @@ function Tool.RegisterEvent(event, func)
   if eventFrame == nil then
     eventFrame = CreateFrame("Frame")
   end
+
   if eventFrame._GPIPRIVAT_events == nil then
     eventFrame._GPIPRIVAT_events = {}
     eventFrame:SetScript("OnEvent", EventHandler)
   end
+
   tinsert(eventFrame._GPIPRIVAT_events, { event, func })
   eventFrame:RegisterEvent(event)
 end

@@ -7,8 +7,12 @@ local L = setmetatable({}, { __index = function(t, k)
   end
 end })
 
+---Classes which have a resurrection ability
 local ResurrectionClass = { "SHAMAN", "PRIEST", "PALADIN" }
+
+---Classes which have mana bar
 local ManaClass = { "HUNTER", "WARLOCK", "MAGE", "DRUID", "SHAMAN", "PRIEST", "PALADIN" }
+
 local MAXMANA = 999999
 
 BOM.ProfileNames = { "solo", "group", "raid", "battleground" }
@@ -39,7 +43,7 @@ BOM.ItemCache = {
     "|cffffffff|Hitem:13810::::::::1:::::::|h[Blessed Sunfruit]|h|r", -- [2]
     133997, -- [3]
   },
-  [8928] = {
+  [8928]  = {
     "Instant Poison VI", -- [1]
     "|cffffffff|Hitem:8928::::::::1:::::::|h[Instant Poison VI]|h|r", -- [2]
     132273, -- [3]
@@ -59,17 +63,17 @@ BOM.ItemCache = {
     "|cffffffff|Hitem:12460::::::::1:::::::|h[Juju Might]|h|r", -- [2]
     134309, -- [3]
   },
-  [3825] = {
+  [3825]  = {
     "Elixir of Fortitude", -- [1]
     "|cffffffff|Hitem:3825::::::::1:::::::|h[Elixir of Fortitude]|h|r", -- [2]
     134823, -- [3]
   },
-  [9186] = {
+  [9186]  = {
     "Mind-numbing Poison III", -- [1]
     "|cffffffff|Hitem:9186::::::::1:::::::|h[Mind-numbing Poison III]|h|r", -- [2]
     136066, -- [3]
   },
-  [9155] = {
+  [9155]  = {
     "Arcane Elixir", -- [1]
     "|cffffffff|Hitem:9155::::::::1:::::::|h[Arcane Elixir]|h|r", -- [2]
     134810, -- [3]
@@ -134,7 +138,7 @@ BOM.ItemCache = {
     "|cffffffff|Hitem:20749::::::::1:::::::|h[Brilliant Wizard Oil]|h|r", -- [2]
     134727, -- [3]
   },
-  [5654] = {
+  [5654]  = {
     "Instant Toxin", -- [1]
     "|cffffffff|Hitem:5654::::::::1:::::::|h[Instant Toxin]|h|r", -- [2]
     134799, -- [3]
@@ -164,7 +168,7 @@ BOM.ItemCache = {
     "|cffffffff|Hitem:20007::::::::1:::::::|h[Mageblood Potion]|h|r", -- [2]
     134825, -- [3]
   },
-  [9264] = {
+  [9264]  = {
     "Elixir of Shadow Power", -- [1]
     "|cffffffff|Hitem:9264::::::::1:::::::|h[Elixir of Shadow Power]|h|r", -- [2]
     134826, -- [3]
@@ -199,7 +203,7 @@ BOM.ItemCache = {
     "|cffffffff|Hitem:13454::::::::1:::::::|h[Greater Arcane Elixir]|h|r", -- [2]
     134805, -- [3]
   },
-  [9088] = {
+  [9088]  = {
     "Gift of Arthas", -- [1]
     "|cffffffff|Hitem:9088::::::::1:::::::|h[Gift of Arthas]|h|r", -- [2]
     134808, -- [3]
@@ -239,7 +243,7 @@ BOM.ItemCache = {
     "|cffffffff|Hitem:13458::::::::1:::::::|h[Greater Nature Protection Potion]|h|r", -- [2]
     134802, -- [3]
   },
-  [9206] = {
+  [9206]  = {
     "Elixir of Giants", -- [1]
     "|cffffffff|Hitem:9206::::::::1:::::::|h[Elixir of Giants]|h|r", -- [2]
     134841, -- [3]
@@ -249,7 +253,7 @@ BOM.ItemCache = {
     "|cffffffff|Hitem:13459::::::::1:::::::|h[Greater Shadow Protection Potion]|h|r", -- [2]
     134803, -- [3]
   },
-  [3776] = {
+  [3776]  = {
     "Crippling Poison II", -- [1]
     "|cffffffff|Hitem:3776::::::::1:::::::|h[Crippling Poison II]|h|r", -- [2]
     134799, -- [3]
@@ -257,11 +261,11 @@ BOM.ItemCache = {
 }
 
 BOM.ArgentumDawn = {
-  spell = 17670,
+  spell   = 17670,
   dungeon = { 329, 289 }, --Stratholme/scholomance
 }
 BOM.Carrot = {
-  spell = 13587,
+  spell   = 13587,
   dungeon = { 0, 1 }, --Eastern Kingdoms, Kalimdor
 }
 
@@ -280,7 +284,7 @@ BOM.EnchantList = {--weapon-echantment to spellid
   [25351] = { 2630, 627, 626, 8, 7 }, --Deadly Poison
   [11399] = { 643, 23, 35 }, --Mind-numbing Poison
   [11340] = { 625, 624, 623, 325, 324, 323 }, --Instant Poison
-  [6650] = { 42 }, --Instant Toxin
+  [6650]  = { 42 }, --Instant Toxin
   [13227] = { 706, 705, 704, 703 }, --Wound Poison
   [11202] = { 603, 22 }, --Crippling Poison
   --[]={},--
@@ -321,7 +325,7 @@ BOM.ItemListTarget = {}
 -- Note: you can add your own spell in the "WTF\Account\<accountname>\SavedVariables\buffOmat.lua"
 -- table CustomCancelBuff
 BOM.CancelBuffs = {
-  { singleId = 10901, default = false, --Powerword:Shild
+  { singleId     = 10901, default = false, --Powerword:Shild
     singleFamily = { 17, 592, 600, 3747, 6065, 6066, 10898, 10899, 10900, 10901 } },
 
   --{singleId=10952, OnlyCombat=true, default=true, --demo
@@ -333,13 +337,13 @@ do
   UnitClass("unit")
   if class == "HUNTER" then
     tinsert(BOM.CancelBuffs,
-            { singleId = 5118, OnlyCombat = true, default = true, --Aspect of the Cheetah--Aspect of the pack
+            { singleId     = 5118, OnlyCombat = true, default = true, --Aspect of the Cheetah--Aspect of the pack
               singleFamily = { 5118, 13159 } }
     )
   end
   if (UnitFactionGroup("player")) ~= "Horde" then
     tinsert(BOM.CancelBuffs,
-            { singleId = 1038, default = false, --Blessing of Salvation
+            { singleId     = 1038, default = false, --Blessing of Salvation
               singleFamily = { 1038, 25895 } }
     )
   end
@@ -358,131 +362,131 @@ BOM.SpellList = {
   --{singleId=10938, isOwn=true, default=true, ItemLock={8008}}, -- manastone/debug
 
   ---[[
-  { singleId = 10938, groupId = 21562, default = true, -- seelenstärke
-    singleFamily = { 1243, 1244, 1245, 2791, 10937, 10938 }, groupFamily = { 21562, 21564 },
+  { singleId       = 10938, groupId = 21562, default = true, -- seelenstärke
+    singleFamily   = { 1243, 1244, 1245, 2791, 10937, 10938 }, groupFamily = { 21562, 21564 },
     singleDuration = 1800, groupDuration = 3600, NeededGroupItem = { 17028, 17029 },
-    classes = { "WARRIOR", "MAGE", "ROGUE", "DRUID", "HUNTER", "SHAMAN", "PRIEST", "WARLOCK", "PALADIN" } },
+    classes        = { "WARRIOR", "MAGE", "ROGUE", "DRUID", "HUNTER", "SHAMAN", "PRIEST", "WARLOCK", "PALADIN" } },
   --]]
-  { singleId = 14819, groupId = 27681, default = true, -- willenstärke
-    singleFamily = { 14752, 14818, 14819, 27841 },
+  { singleId       = 14819, groupId = 27681, default = true, -- willenstärke
+    singleFamily   = { 14752, 14818, 14819, 27841 },
     singleDuration = 1800, groupDuration = 3600, NeededGroupItem = { 17028, 17029 },
-    classes = { "MAGE", "DRUID", "HUNTER", "SHAMAN", "PRIEST", "WARLOCK", "PALADIN" } },
-  { singleId = 10958, groupId = 27683, default = false, --schattenschutz
-    singleFamily = { 976, 10957, 10958 }, NeededGroupItem = { 17028, 17029 },
+    classes        = { "MAGE", "DRUID", "HUNTER", "SHAMAN", "PRIEST", "WARLOCK", "PALADIN" } },
+  { singleId       = 10958, groupId = 27683, default = false, --schattenschutz
+    singleFamily   = { 976, 10957, 10958 }, NeededGroupItem = { 17028, 17029 },
     singleDuration = 600, groupDuration = 1200,
-    classes = { "WARRIOR", "MAGE", "ROGUE", "DRUID", "HUNTER", "SHAMAN", "PRIEST", "WARLOCK", "PALADIN" } },
-  { singleId = 6346, default = false, -- fearward
+    classes        = { "WARRIOR", "MAGE", "ROGUE", "DRUID", "HUNTER", "SHAMAN", "PRIEST", "WARLOCK", "PALADIN" } },
+  { singleId       = 6346, default = false, -- fearward
     singleDuration = 600, hasCD = true,
-    classes = { "WARRIOR", "MAGE", "ROGUE", "DRUID", "HUNTER", "SHAMAN", "PRIEST", "WARLOCK", "PALADIN" } },
-  { singleId = 10901, default = false, -- Powerword:Shild
-    singleFamily = { 17, 592, 600, 3747, 6065, 6066, 10898, 10899, 10900, 10901 },
+    classes        = { "WARRIOR", "MAGE", "ROGUE", "DRUID", "HUNTER", "SHAMAN", "PRIEST", "WARLOCK", "PALADIN" } },
+  { singleId       = 10901, default = false, -- Powerword:Shild
+    singleFamily   = { 17, 592, 600, 3747, 6065, 6066, 10898, 10899, 10900, 10901 },
     singleDuration = 30, hasCD = true,
-    classes = { } },
-  { singleId = 19266, default = true, isOwn = true,
+    classes        = { } },
+  { singleId     = 19266, default = true, isOwn = true,
     singleFamily = { 2652, 19261, 19262, 19264, 19265, 19266 } }, --Berührung der Schwäche
-  { singleId = 10952, default = true, isOwn = true, --inneres Feuer
+  { singleId     = 10952, default = true, isOwn = true, --inneres Feuer
     singleFamily = { 588, 7128, 602, 1006, 10951, 10952 } },
-  { singleId = 19312, default = true, isOwn = true, --shadowguard
+  { singleId     = 19312, default = true, isOwn = true, --shadowguard
     singleFamily = { 18137, 19308, 19309, 19310, 19311, 19312 } },
-  { singleId = 19293, default = true, isOwn = true, --Elune's Grace
+  { singleId     = 19293, default = true, isOwn = true, --Elune's Grace
     singleFamily = { 2651, 19289, 19291, 19292, 19293 } },
   { singleId = 15473, default = false, isOwn = true },
 
-  { singleId = 20770, cancelForm = true, isResurrection = true, default = true, --Auferstehung
+  { singleId     = 20770, cancelForm = true, isResurrection = true, default = true, --Auferstehung
     singleFamily = { 2006, 2010, 10880, 10881, 20770 } },
 
   "DRUID",
-  { singleId = 9885, groupId = 21849, cancelForm = true, default = true, --Gabe/Mal der Wildniss
-    singleFamily = { 1126, 5232, 6756, 5234, 8907, 9884, 9885 }, groupFamily = { 21849, 21850 },
+  { singleId       = 9885, groupId = 21849, cancelForm = true, default = true, --Gabe/Mal der Wildniss
+    singleFamily   = { 1126, 5232, 6756, 5234, 8907, 9884, 9885 }, groupFamily = { 21849, 21850 },
     singleDuration = 1800, groupDuration = 3600, NeededGroupItem = { 17021, 17026 },
-    classes = { "WARRIOR", "MAGE", "ROGUE", "DRUID", "HUNTER", "SHAMAN", "PRIEST", "WARLOCK", "PALADIN" } },
-  { singleId = 9910, cancelForm = true, default = false, --Dornen
-    singleFamily = { 467, 782, 1075, 8914, 9756, 9910 },
+    classes        = { "WARRIOR", "MAGE", "ROGUE", "DRUID", "HUNTER", "SHAMAN", "PRIEST", "WARLOCK", "PALADIN" } },
+  { singleId       = 9910, cancelForm = true, default = false, --Dornen
+    singleFamily   = { 467, 782, 1075, 8914, 9756, 9910 },
     singleDuration = 600,
-    classes = { "WARRIOR", "ROGUE", "DRUID", "SHAMAN", "PALADIN" } },
+    classes        = { "WARRIOR", "ROGUE", "DRUID", "SHAMAN", "PALADIN" } },
   { singleId = 16864, isOwn = true, cancelForm = true, default = true }, --omen of clarity
-  { singleId = 17329, isOwn = true, cancelForm = true, default = false, -- Griff der Natur
-    hasCD = true, NeedOutdoors = true,
+  { singleId     = 17329, isOwn = true, cancelForm = true, default = false, -- Griff der Natur
+    hasCD        = true, NeedOutdoors = true,
     singleFamily = { 16689, 16810, 16811, 16812, 16813, 17329 },
   },
   { singleId = 5225, isTracking = true, needForm = CAT_FORM, default = true }, -- search human
 
   "MAGE",
-  { singleId = 10157, groupId = 23028, default = true, -- arkane intelligenz
-    singleFamily = { 1459, 1460, 1461, 10156, 10157 },
+  { singleId       = 10157, groupId = 23028, default = true, -- arkane intelligenz
+    singleFamily   = { 1459, 1460, 1461, 10156, 10157 },
     singleDuration = 1800, groupDuration = 3600, NeededGroupItem = { 17020 },
-    classes = { "MAGE", "DRUID", "HUNTER", "SHAMAN", "PRIEST", "WARLOCK", "PALADIN" } },
-  { singleId = 10174, default = false, --Dampen Magic
+    classes        = { "MAGE", "DRUID", "HUNTER", "SHAMAN", "PRIEST", "WARLOCK", "PALADIN" } },
+  { singleId       = 10174, default = false, --Dampen Magic
     singleDuration = 600, classes = { },
-    singleFamily = { 604, 8450, 8451, 10173, 10174 } },
-  { singleId = 10170, default = false, --Amplify Magic
+    singleFamily   = { 604, 8450, 8451, 10173, 10174 } },
+  { singleId       = 10170, default = false, --Amplify Magic
     singleDuration = 600, classes = { },
-    singleFamily = { 1008, 8455, 10169, 10170 } },
-  { singleId = 10220, isSeal = true, default = false, -- Ice Armor / eisrüstung
+    singleFamily   = { 1008, 8455, 10169, 10170 } },
+  { singleId     = 10220, isSeal = true, default = false, -- Ice Armor / eisrüstung
     singleFamily = { 7302, 7320, 10219, 10220 } },
-  { singleId = 7301, isSeal = true, default = false, -- Frost Armor / frostrüstung
+  { singleId     = 7301, isSeal = true, default = false, -- Frost Armor / frostrüstung
     singleFamily = { 168, 7300, 7301 } },
-  { singleId = 22783, isSeal = true, default = false, -- Mage Armor / magische rüstung
+  { singleId     = 22783, isSeal = true, default = false, -- Mage Armor / magische rüstung
     singleFamily = { 6117, 22782, 22783 } },
-  { singleId = 10193, isOwn = true, default = false, --Manaschild - unabhängig von allen.
+  { singleId       = 10193, isOwn = true, default = false, --Manaschild - unabhängig von allen.
     singleDuration = 60,
-    singleFamily = { 1463, 8494, 8495, 10191, 10192, 10193 } },
-  { singleId = 13033, isOwn = true, default = false, --ice barrier
+    singleFamily   = { 1463, 8494, 8495, 10191, 10192, 10193 } },
+  { singleId       = 13033, isOwn = true, default = false, --ice barrier
     singleDuration = 60,
-    singleFamily = { 11426, 13031, 13032, 13033 } },
+    singleFamily   = { 11426, 13031, 13032, 13033 } },
 
-  { singleId = 10053, isOwn = true, default = true, ItemLock = { 5514, 5513, 8007 }, -- manastone
+  { singleId     = 10053, isOwn = true, default = true, ItemLock = { 5514, 5513, 8007 }, -- manastone
     singleFamily = { 759, 3552, 10053 } },
   { singleId = 10054, isOwn = true, default = true, ItemLock = { 8008 } }, -- manastone
 
 
   "SHAMAN",
-  { singleId = 16342, isSeal = true, default = true, singleDuration = 500, --Flametongue
+  { singleId     = 16342, isSeal = true, default = true, singleDuration = 500, --Flametongue
     singleFamily = { 8024, 8027, 8030, 16339, 16341, 16342 } },
-  { singleId = 16356, isSeal = true, default = true, singleDuration = 500, --Frostbrand
+  { singleId     = 16356, isSeal = true, default = true, singleDuration = 500, --Frostbrand
     singleFamily = { 8033, 8038, 10456, 16355, 16356 } },
-  { singleId = 16316, isSeal = true, default = true, singleDuration = 500, --Rockbiter
+  { singleId     = 16316, isSeal = true, default = true, singleDuration = 500, --Rockbiter
     singleFamily = { 8017, 8018, 8019, 10399, 16314, 16315, 16316 } },
-  { singleId = 16362, isSeal = true, default = true, singleDuration = 500, --Windfury
+  { singleId     = 16362, isSeal = true, default = true, singleDuration = 500, --Windfury
     singleFamily = { 8232, 8235, 10486, 16362 } },
-  { singleId = 10432, isOwn = true, default = true, -- Lightning Shield / Blitzschlagschild
+  { singleId     = 10432, isOwn = true, default = true, -- Lightning Shield / Blitzschlagschild
     singleFamily = { 324, 325, 905, 945, 8134, 10431, 10432 } },
-  { singleId = 20777, isResurrection = true, default = true, -- Resurrection / Auferstehung
+  { singleId     = 20777, isResurrection = true, default = true, -- Resurrection / Auferstehung
     singleFamily = { 2008, 20609, 20610, 20776, 20777 } },
 
   "WARLOCK",
-  { singleId = 5697, default = false, -- Unending Breath
+  { singleId       = 5697, default = false, -- Unending Breath
     singleDuration = 600,
-    classes = { "WARRIOR", "MAGE", "ROGUE", "DRUID", "HUNTER", "SHAMAN", "PRIEST", "WARLOCK", "PALADIN" } },
-  { singleId = 11743, default = false, -- Große Unsichtbarkeit entdecken
-    singleFamily = { 132, 2970, 11743 },
+    classes        = { "WARRIOR", "MAGE", "ROGUE", "DRUID", "HUNTER", "SHAMAN", "PRIEST", "WARLOCK", "PALADIN" } },
+  { singleId       = 11743, default = false, -- Große Unsichtbarkeit entdecken
+    singleFamily   = { 132, 2970, 11743 },
     singleDuration = 600,
-    classes = { "WARRIOR", "MAGE", "ROGUE", "DRUID", "HUNTER", "SHAMAN", "PRIEST", "WARLOCK", "PALADIN" } },
-  { singleId = 28610, isOwn = true, default = false, --Schattenzauberschutz
+    classes        = { "WARRIOR", "MAGE", "ROGUE", "DRUID", "HUNTER", "SHAMAN", "PRIEST", "WARLOCK", "PALADIN" } },
+  { singleId     = 28610, isOwn = true, default = false, --Schattenzauberschutz
     singleFamily = { 6229, 11739, 11740, 28610 } },
-  { singleId = 11735, isOwn = true, default = false, -- Demon Armor
+  { singleId     = 11735, isOwn = true, default = false, -- Demon Armor
     singleFamily = { 706, 1086, 11733, 11734, 11735 } },
-  { singleId = 696, isOwn = true, default = false, -- Demon skin
+  { singleId     = 696, isOwn = true, default = false, -- Demon skin
     singleFamily = { 687, 696 } },
   { singleId = 18788, isOwn = true, default = true }, -- Demonic Sacrifice
-  { singleId = 17953, isOwn = true, default = false, ItemLock = { 1254, 13699, 13700, 13701 }, -- Firestone
+  { singleId     = 17953, isOwn = true, default = false, ItemLock = { 1254, 13699, 13700, 13701 }, -- Firestone
     singleFamily = { 6366, 17951, 17952, 17953 } },
-  { singleId = 11730, isOwn = true, default = true, ItemLock = { 5512, 19005, 19004, 5511, 19007, 19006, 5509, 19009, 19008, 5510, 19011, 19010, 9421, 19013, 19012 }, -- Healtstone
+  { singleId     = 11730, isOwn = true, default = true, ItemLock = { 5512, 19005, 19004, 5511, 19007, 19006, 5509, 19009, 19008, 5510, 19011, 19010, 9421, 19013, 19012 }, -- Healtstone
     singleFamily = { 6201, 6202, 5699, 11729, 11730 } },
-  { singleId = 20757, isOwn = true, default = true, ItemLock = { 5232, 16892, 16893, 16895, 16896 }, --Soulstone
+  { singleId     = 20757, isOwn = true, default = true, ItemLock = { 5232, 16892, 16893, 16895, 16896 }, --Soulstone
     singleFamily = { 693, 20752, 20755, 20756, 20757 } },
 
   { singleId = 5500, isTracking = true, default = true }, --Sense Demons
 
   "HUNTER",
-  { singleId = 20906, isOwn = true, default = true, -- Trueshot Aura
+  { singleId     = 20906, isOwn = true, default = true, -- Trueshot Aura
     singleFamily = { 19506, 20905, 20906 } },
 
   { singleId = 13161, isAura = true, default = true }, -- Aspect of the beast
-  { singleId = 25296, isAura = true, default = true, --Aspect of the Hawk
+  { singleId     = 25296, isAura = true, default = true, --Aspect of the Hawk
     singleFamily = { 13165, 14318, 14319, 14320, 14321, 14322, 25296 } },
   { singleId = 13163, isAura = true, default = true }, --Aspect of the monkey
-  { singleId = 20190, isAura = true, default = true, --Aspect of the wild
+  { singleId     = 20190, isAura = true, default = true, --Aspect of the wild
     singleFamily = { 20043, 20190 } },
   { singleId = 5118, isAura = true, default = false }, --Aspect of the Cheetah
   { singleId = 13159, isAura = true, default = false }, --Aspect of the pack
@@ -499,42 +503,42 @@ BOM.SpellList = {
   "PALADIN",
   { singleId = 25780, isOwn = true, default = true }, --Righteous Fury
 
-  { singleId = 20217, groupId = 25898, isBlessing = true, default = true, --Blessing of Kings
+  { singleId       = 20217, groupId = 25898, isBlessing = true, default = true, --Blessing of Kings
     singleDuration = 300, groupDuration = 900, NeededGroupItem = { 21177 },
-    classes = { "MAGE", "HUNTER", "WARLOCK" } },
-  { singleId = 19979, groupId = 25890, isBlessing = true, default = true, --Blessing of Light
-    singleFamily = { 19977, 19978, 19979 }, NeededGroupItem = { 21177 },
+    classes        = { "MAGE", "HUNTER", "WARLOCK" } },
+  { singleId       = 19979, groupId = 25890, isBlessing = true, default = true, --Blessing of Light
+    singleFamily   = { 19977, 19978, 19979 }, NeededGroupItem = { 21177 },
     singleDuration = 300, groupDuration = 900,
-    classes = {} },
-  { singleId = 25291, groupId = 25916, isBlessing = true, default = true, --Blessing of Might
-    singleFamily = { 19740, 19834, 19835, 19836, 19837, 19838, 25291 }, groupFamily = { 25782, 25916 },
+    classes        = {} },
+  { singleId       = 25291, groupId = 25916, isBlessing = true, default = true, --Blessing of Might
+    singleFamily   = { 19740, 19834, 19835, 19836, 19837, 19838, 25291 }, groupFamily = { 25782, 25916 },
     singleDuration = 300, groupDuration = 900, NeededGroupItem = { 21177 },
-    classes = { "WARRIOR", "ROGUE" } },
-  { singleId = 1038, groupId = 25895, isBlessing = true, default = true, --Blessing of Salvation
+    classes        = { "WARRIOR", "ROGUE" } },
+  { singleId       = 1038, groupId = 25895, isBlessing = true, default = true, --Blessing of Salvation
     singleDuration = 300, groupDuration = 900, NeededGroupItem = { 21177 },
-    classes = { } },
-  { singleId = 20914, groupId = 25899, isBlessing = true, default = true, --Blessing of Sanctuary
-    singleFamily = { 20911, 20912, 20913, 20914 }, NeededGroupItem = { 21177 },
+    classes        = { } },
+  { singleId       = 20914, groupId = 25899, isBlessing = true, default = true, --Blessing of Sanctuary
+    singleFamily   = { 20911, 20912, 20913, 20914 }, NeededGroupItem = { 21177 },
     singleDuration = 300, groupDuration = 900,
-    classes = { } },
-  { singleId = 25290, groupId = 25918, isBlessing = true, default = true, --Blessing of Wisdom -
-    singleFamily = { 19742, 19850, 19852, 19853, 19854, 25290 }, groupFamily = { 25894, 25918 },
+    classes        = { } },
+  { singleId       = 25290, groupId = 25918, isBlessing = true, default = true, --Blessing of Wisdom -
+    singleFamily   = { 19742, 19850, 19852, 19853, 19854, 25290 }, groupFamily = { 25894, 25918 },
     singleDuration = 300, groupDuration = 900, NeededGroupItem = { 21177 },
-    classes = { "DRUID", "SHAMAN", "PRIEST", "PALADIN" } },
+    classes        = { "DRUID", "SHAMAN", "PRIEST", "PALADIN" } },
 
-  { singleId = 10293, isAura = true, default = true, -- Devotion Aura
+  { singleId     = 10293, isAura = true, default = true, -- Devotion Aura
     singleFamily = { 465, 10290, 643, 10291, 1032, 10292, 10293 } },
-  { singleId = 10301, isAura = true, default = true, -- Retribution Aura
+  { singleId     = 10301, isAura = true, default = true, -- Retribution Aura
     singleFamily = { 7294, 10298, 10299, 10300, 10301 } },
   { singleId = 19746, isAura = true, default = true }, --Concentration Aura
-  { singleId = 19896, isAura = true, default = true, -- Shadow Resistance Aura
+  { singleId     = 19896, isAura = true, default = true, -- Shadow Resistance Aura
     singleFamily = { 19876, 19895, 19896 } },
-  { singleId = 19898, isAura = true, default = true, -- Frost Resistance Aura
+  { singleId     = 19898, isAura = true, default = true, -- Frost Resistance Aura
     singleFamily = { 19888, 19897, 19898 } },
-  { singleId = 19900, isAura = true, default = true, -- Fire Resistance Aura
+  { singleId     = 19900, isAura = true, default = true, -- Fire Resistance Aura
     singleFamily = { 19891, 19899, 19900 } },
   { singleId = 20218, isAura = true, default = true }, --Sanctity Aura
-  { singleId = 20773, isResurrection = true, default = true, -- Resurrection / Auferstehung
+  { singleId     = 20773, isResurrection = true, default = true, -- Resurrection / Auferstehung
     singleFamily = { 7328, 10322, 10324, 20772, 20773 } },
 
   { singleId = 20164, isSeal = true, default = false }, -- Sanctity seal
@@ -551,11 +555,11 @@ BOM.SpellList = {
   { singleId = 2481, isTracking = true, default = true }, -- Find Treasure / Schatzsuche / Zwerge
 
   "INFO",
-  { singleId = 432, isInfo = true, default = false, --drink
+  { singleId     = 432, isInfo = true, default = false, --drink
     singleFamily = { 430, 431, 432, 1133, 1135, 1137, 22734, 25696, 26475, 26261, 29007, 26473, 10250, 26402 } },
-  { singleId = 434, isInfo = true, default = false, --essen
+  { singleId     = 434, isInfo = true, default = false, --essen
     singleFamily = { 10256, 1127, 1129, 22731, 5006, 433, 1131, 18230, 18233, 5007, 24800, 5005, 18232, 5004, 435, 434, 18234, 24869, 18229, 25888, 6410, 2639, 24005, 7737, 29073, 26260, 26474, 18231, 10257, 26472, 28616, 25700 } },
-  { singleId = 20762, isInfo = true, allowWispher = true, default = false, --Seelenstein
+  { singleId     = 20762, isInfo = true, allowWispher = true, default = false, --Seelenstein
     singleFamily = { 20707, 20762, 20763, 20765, 20764 } },
   --{singleId=10938, isInfo=true, allowWispher=true,default=false,	--ausdauer-antworten!
   --	singleFamily={1243,1244,1245,2791,10937,10938}},
@@ -1237,10 +1241,10 @@ function BOM.GetPartyMembers()
 
             if tContains(BOM.AllSpellIds, spellId) then
               member.buffs[BOM.SpellIdtoConfig[spellId]] = {
-                ["duration"] = duration,
+                ["duration"]       = duration,
                 ["expirationTime"] = expirationTime,
-                ["source"] = source,
-                ["isSingle"] = BOM.SpellIdIsSingle[spellId],
+                ["source"]         = source,
+                ["isSingle"]       = BOM.SpellIdIsSingle[spellId],
               }
             end
           end
@@ -1266,10 +1270,10 @@ function BOM.GetPartyMembers()
     end
 
     playerMember.buffs[configId] = {
-      ["duration"] = duration,
+      ["duration"]       = duration,
       ["expirationTime"] = GetTime() + mainHandExpiration / 1000,
-      ["source"] = "player",
-      ["isSingle"] = true,
+      ["source"]         = "player",
+      ["isSingle"]       = true,
     }
     playerMember.MainHandBuff = configId
   else
@@ -1286,10 +1290,10 @@ function BOM.GetPartyMembers()
     end
 
     playerMember.buffs[-configId] = {
-      ["duration"] = duration,
+      ["duration"]       = duration,
       ["expirationTime"] = GetTime() + offHandExpiration / 1000,
-      ["source"] = "player",
-      ["isSingle"] = true,
+      ["source"]         = "player",
+      ["isSingle"]       = true,
     }
     playerMember.OffHandBuff = configId
   else
@@ -1663,6 +1667,7 @@ end
 
 local cast = {}
 local PlayerMana
+
 local function CatchSpell(cost, id, link, member, spell)
   if cost > PlayerMana then
     return
@@ -1675,26 +1680,21 @@ local function CatchSpell(cost, id, link, member, spell)
       return
     elseif spell.isResurrection then
       if cast.Spell.isResurrection then
-        if (tContains(ResurrectionClass, cast.Member.class) and not tContains(ResurrectionClass, member.class)) or
-                (tContains(ManaClass, cast.Member.class) and not tContains(ManaClass, member.class)) or
-                (not cast.Member.isGhost and member.isGhost) or
-                (cast.Member.distance < member.distance) then
+        if (tContains(ResurrectionClass, cast.Member.class) and not tContains(ResurrectionClass, member.class))
+                or (tContains(ManaClass, cast.Member.class) and not tContains(ManaClass, member.class))
+                or (not cast.Member.isGhost and member.isGhost)
+                or (cast.Member.distance < member.distance) then
           return
         end
       end
     else
-      if (BOM.DB.SelfFirst and cast.Member.isPlayer and not member.isPlayer) or (cast.Member.group ~= 9 and member.group == 9) then
-        --print(cast.Link,"-",link,"1")
+      if (BOM.DB.SelfFirst and cast.Member.isPlayer and not member.isPlayer)
+              or (cast.Member.group ~= 9 and member.group == 9) then
         return
-      elseif (not BOM.DB.SelfFirst or (cast.Member.isPlayer == member.isPlayer)) and ((cast.Member.group == 9) == (member.group == 9)) and cast.manaCost > cost then
-        --print(cast.Link,"-",link,"2")
+      elseif (not BOM.DB.SelfFirst or (cast.Member.isPlayer == member.isPlayer))
+              and ((cast.Member.group == 9) == (member.group == 9))
+              and cast.manaCost > cost then
         return
-      else
-        --print(cast.Link,"-",link,"3")
-        --print(not BOM.DB.SelfFirst or (cast.Member.isPlayer==member.isPlayer))
-        --print(((cast.Member.group==9) == (member.group==9)))
-        --print(cast.manaCost>cost)
-
       end
     end
   end
@@ -1736,6 +1736,7 @@ function BOM.UpdateScan()
     --BomC_ListTab_Button:Disable() combatlock -imposible!
     return
   end
+
   if UnitIsDeadOrGhost("player") then
     BOM.ForceUpdate = false
     BOM.CheckForError = false
@@ -1792,7 +1793,9 @@ function BOM.UpdateScan()
   if BOM.CurrentProfile ~= BOM.DBChar[chooseProfile] then
     BOM.CurrentProfile = BOM.DBChar[chooseProfile]
     BOM.UpdateSpellsTab()
-    BomC_MainWindow_Title:SetText(string.format(BOM.TxtEscapeIcon, BOM.FullIcon) .. " " .. BOM.Title .. " - " .. L["profile_" .. chooseProfile])
+    BomC_MainWindow_Title:SetText(
+            string.format(BOM.TxtEscapeIcon, BOM.FullIcon)
+                    .. " " .. BOM.Title .. " - " .. L["profile_" .. chooseProfile])
     BOM.ForceUpdate = true
   end
 
@@ -2029,6 +2032,7 @@ function BOM.UpdateScan()
             break
           end
         end
+
         if clearskip then
           wipe(spell.SkipList)
         end
@@ -2057,38 +2061,49 @@ function BOM.UpdateScan()
         if spell.NeededGroupItem then
           ok, bag, slot, count = BOM.HasItem(spell.NeededGroupItem, true)
         end
+
         if type(count) == "number" then
           count = " x" .. count .. " "
         else
           count = ""
         end
+
         if spell.groupMana ~= nil and not BOM.DB.NoGroupBuff then
           for i, groupIndex in ipairs(BOM.Tool.Classes) do
             if spell.NeedGroup[groupIndex] and spell.NeedGroup[groupIndex] >= BOM.DB.MinBlessing then
               BOM.RepeatUpdate = true
               local Group = GetClassInRange(spell.group, spell.NeedMember, groupIndex, spell)
+
               if Group == nil then
                 Group = GetClassInRange(spell.group, party, groupIndex, spell)
               end
 
               if Group ~= nil and (not spell.DeathGroup[member.group] or not BOM.DB.DeathBlock) then
-                AddDisplay(string.format(L["MsgBuffGroup"], "|c" .. RAID_CLASS_COLORS[groupIndex].colorStr .. BOM.Tool.ClassName[groupIndex] .. "|r", (spell.groupLink or spell.group)) .. count, "!" .. groupIndex)
+                AddDisplay(
+                        string.format(L["MsgBuffGroup"],
+                                "|c" .. RAID_CLASS_COLORS[groupIndex].colorStr .. BOM.Tool.ClassName[groupIndex] .. "|r",
+                                (spell.groupLink or spell.group))
+                                .. count,
+                        "!" .. groupIndex)
                 inRange = true
 
                 CatchSpell(spell.groupMana, spell.groupId, spell.groupLink, Group, spell)
-
               else
                 AddDisplay(string.format(L["MsgBuffGroup"], BOM.Tool.ClassName[groupIndex], spell.group .. count), "!" .. groupIndex)
               end
-
-            end
-          end
+            end -- if needgroup >= minblessing
+          end -- for all classes
         end
 
         -- SINGLE BUFF
         for memberIndex, member in ipairs(spell.NeedMember) do
-
-          if not member.isDead and spell.singleMana ~= nil and (BOM.DB.NoGroupBuff or spell.groupMana == nil or member.class == "pet" or spell.NeedGroup[member.class] == nil or spell.NeedGroup[member.class] < BOM.DB.MinBlessing) then
+          if not member.isDead
+                  and spell.singleMana ~= nil
+                  and (BOM.DB.NoGroupBuff
+                  or spell.groupMana == nil
+                  or member.class == "pet"
+                  or spell.NeedGroup[member.class] == nil
+                  or spell.NeedGroup[member.class] < BOM.DB.MinBlessing) then
 
             if not member.isPlayer then
               BOM.RepeatUpdate = true
@@ -2105,14 +2120,11 @@ function BOM.UpdateScan()
               inRange = true
 
               CatchSpell(spell.singleMana, spell.singleId, spell.singleLink, member, spell)
-
             else
               AddDisplay(string.format(L["MsgBuffSingle"], add .. member.name, spell.single), member.name)
-            end
-
-
-          end
-        end
+            end -- if in range
+          end -- if not dead
+        end -- for all NeedMember
 
       else
         local ok, bag, slot, count
@@ -2252,7 +2264,6 @@ function BOM.UpdateScan()
   if #display > 0 or #displayInfo > 0 then
     BOM.AutoOpen()
     --BomC_ListTab_MessageFrame:AddMessage(string.format(L["MsgNextCast"],castMember.link or castMember.name,castLink or castSpell))
-
   else
     BOM.AutoClose()
   end
@@ -2326,7 +2337,7 @@ function BOM.UpdateScan()
     BOM.UpdateMacro(nil, nil, BagCommand)
   end
 
-end
+end -- end function UpdateScan()
 
 function BOM.ADDSKIP()
   if BOM.ERRSpell and BOM.ERRSpell.SkipList and BOM.ERRMember then
@@ -2335,12 +2346,14 @@ function BOM.ADDSKIP()
     BOM.ForceUpdate = true
   end
 end
+
 function BOM.DownGrade()
   if BOM.ERRSpell and BOM.ERRSpell.SkipList and BOM.ERRMember then
     --print("downgrade",BOM.ERRSpellId)
     local level = UnitLevel(BOM.ERRMember.unitId)
     if level ~= nil and level > -1 then
-      if BOM.DB.SpellGreatherEqualThan[BOM.ERRSpellId] == nil or BOM.DB.SpellGreatherEqualThan[BOM.ERRSpellId] < level then
+      if BOM.DB.SpellGreatherEqualThan[BOM.ERRSpellId] == nil
+              or BOM.DB.SpellGreatherEqualThan[BOM.ERRSpellId] < level then
         BOM.DB.SpellGreatherEqualThan[BOM.ERRSpellId] = level
         BOM.FastUpdateTimer()
         BOM.ForceUpdate = true
@@ -2367,8 +2380,11 @@ function BOM.BattleCancelBuffs()
     return
   end
   for i, spell in ipairs(BOM.CancelBuffs) do
-    if BOM.CurrentProfile.CancelBuff[spell.ConfigID].Enable and BOM.CancelBuff(spell.singleFamily) then
-      print(BOM.MSGPREFIX, string.format(L.MsgCancelBuff, spell.singleLink or spell.single, UnitName(BOM.CancelBuffSource) or ""))
+    if BOM.CurrentProfile.CancelBuff[spell.ConfigID].Enable
+            and BOM.CancelBuff(spell.singleFamily) then
+      print(BOM.MSGPREFIX,
+              string.format(L.MsgCancelBuff, spell.singleLink or spell.single,
+                      UnitName(BOM.CancelBuffSource) or ""))
     end
   end
 end
@@ -2376,4 +2392,3 @@ end
 function BOM.SpellHasClasses(spell)
   return not (spell.isBuff or spell.isOwn or spell.isResurrection or spell.isSeal or spell.isTracking or spell.isAura or spell.isInfo)
 end
--- 0 0 1

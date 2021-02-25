@@ -33,7 +33,7 @@ BOM.locales = {
     CboxDeathBlock = "Don't cast group buffs, when somebody is dead",
     CboxNoGroupBuff = "Don't use group buff",
     CboxSameZone = "Watch only when in same zone",
-    CboxResGhost = "Resurrect ghosts",
+    CboxResGhost = "Attempt to resurrect ghosts",
     CboxReplaceSingle = "Replace single buff with group buffs",
     CboxArgentumDawn = "Remember to (un)equip Argent Dawn Commission",
     CboxCarrot = "Remember to unequip Carrot on a Stick",
@@ -300,7 +300,7 @@ BOM.locales = {
     ["CboxLockMinimapButtonDistance"] = "Минимизировать расстояние до миникарты",
     ["CboxNoGroupBuff"] = "Не применять групповой эффект",
     ["CboxReplaceSingle"] = "Заменить одиночный эффект групповыми эффектом",
-    ["CboxResGhost"] = "Воскресить игроков",
+    ["CboxResGhost"] = "Пытаться воскрешать призраки",
     ["CboxSameZone"] = "Только в той же зоне",
     ["Cboxshowminimapbutton"] = "Показать кнопку у миникарты",
     --[[Translation missing --]]
