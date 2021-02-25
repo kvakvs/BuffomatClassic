@@ -440,7 +440,6 @@ function BOM.LocalizationInit()
   if BomSharedState and BomSharedState.CustomLocales then
     for key, value in pairs(BomSharedState.CustomLocales) do
       if value ~= nil and value ~= "" then
-        --print(key,value,BOM.L[key])
         BOM.L[key .. "_org"] = BOM.L[key]
         BOM.L[key] = value
       end
