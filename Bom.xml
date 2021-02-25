@@ -1,0 +1,373 @@
+﻿<Ui xmlns="http://www.blizzard.com/wow/ui/"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.blizzard.com/wow/ui/">
+  <GameTooltip name="BuffOmat_Tooltip" inherits="GameTooltipTemplate">
+  </GameTooltip>
+
+  <Button name="BuffOmat_MiniButton" inherits="UIPanelButtonTemplate"
+          virtual="true">
+    <NormalFont style="GameFontNormalSmall"/>
+    <HighlightFont style="GameFontHighlightSmall"/>
+    <DisabledFont style="GameFontDisableSmall"/>
+    <Size>
+      <AbsDimension x="20" y="18"/>
+    </Size>
+  </Button>
+  <Frame name="BuffOmat_MyButton" virtual="true" enableMouse="true"
+         hidden="true">
+    <Size>
+      <AbsDimension x="15" y="15"/>
+    </Size>
+    <Layers>
+      <Layer level="HIGHLIGHT">
+        <Texture parentKey="_iconHighlight">
+          <Size>
+            <AbsDimension x="15" y="15"/>
+          </Size>
+          <Anchors>
+            <Anchor point="TOPLEFT"/>
+            <Anchor point="BOTTOMLEFT"/>
+          </Anchors>
+          <Color a="0" r="0" g="0" b="0"/>
+        </Texture>
+      </Layer>
+      <Layer level="BACKGROUND">
+        <Texture parentKey="_icon">
+          <Size>
+            <AbsDimension x="15" y="15"/>
+          </Size>
+          <Anchors>
+            <Anchor point="TOPLEFT"/>
+            <Anchor point="BOTTOMLEFT"/>
+          </Anchors>
+        </Texture>
+      </Layer>
+      <Layer level="OVERLAY">
+        <FontString parentKey="_text" inherits="GameFontNormal"
+                    justifyH="CENTER" justifyV="MIDDLE">
+          <Size>
+            <AbsDimension x="15" y="15"/>
+          </Size>
+          <Anchors>
+            <Anchor point="TOPLEFT"/>
+            <Anchor point="BOTTOMLEFT"/>
+          </Anchors>
+        </FontString>
+      </Layer>
+    </Layers>
+  </Frame>
+  <Button name="BuffOmat_MyButtonSecure" virtual="true" enableMouse="true"
+          hidden="true" inherits="SecureActionButtonTemplate">
+    <Size>
+      <AbsDimension x="15" y="15"/>
+    </Size>
+    <Layers>
+      <Layer level="HIGHLIGHT">
+        <Texture parentKey="_iconHighlight">
+          <Size>
+            <AbsDimension x="15" y="15"/>
+          </Size>
+          <Anchors>
+            <Anchor point="TOPLEFT"/>
+            <Anchor point="BOTTOMLEFT"/>
+          </Anchors>
+          <Color a="0" r="0" g="0" b="0"/>
+        </Texture>
+      </Layer>
+      <Layer level="BACKGROUND">
+        <Texture parentKey="_icon">
+          <Size>
+            <AbsDimension x="15" y="15"/>
+          </Size>
+          <Anchors>
+            <Anchor point="TOPLEFT"/>
+            <Anchor point="BOTTOMLEFT"/>
+          </Anchors>
+        </Texture>
+      </Layer>
+      <Layer level="OVERLAY">
+        <FontString parentKey="_text" inherits="GameFontNormal"
+                    justifyH="CENTER" justifyV="MIDDLE">
+          <Size>
+            <AbsDimension x="15" y="15"/>
+          </Size>
+          <Anchors>
+            <Anchor point="TOPLEFT"/>
+            <Anchor point="BOTTOMLEFT"/>
+          </Anchors>
+        </FontString>
+      </Layer>
+    </Layers>
+  </Button>
+  <Button name="BuffOmat_SecureButton" inherits="SecureActionButtonTemplate"
+          virtual="true">
+    <Size>
+      <AbsDimension y="22"/>
+    </Size>
+
+    <Layers>
+      <Layer level="BACKGROUND">
+        <Texture parentKey="Left" file="Interface\Buttons\UI-Panel-Button-Up">
+          <Size x="12" y="22"/>
+          <Anchors>
+            <Anchor point="TOPLEFT"/>
+            <Anchor point="BOTTOMLEFT"/>
+          </Anchors>
+          <TexCoords left="0" right="0.09375" top="0" bottom="0.6875"/>
+        </Texture>
+        <Texture parentKey="Right" file="Interface\Buttons\UI-Panel-Button-Up">
+          <Size x="12" y="22"/>
+          <Anchors>
+            <Anchor point="TOPRIGHT"/>
+            <Anchor point="BOTTOMRIGHT"/>
+          </Anchors>
+          <TexCoords left="0.53125" right="0.625" top="0" bottom="0.6875"/>
+        </Texture>
+        <Texture parentKey="Middle" file="Interface\Buttons\UI-Panel-Button-Up">
+          <Size x="12" y="22"/>
+          <Anchors>
+            <Anchor point="TOPLEFT" relativeKey="$parent.Left"
+                    relativePoint="TOPRIGHT"/>
+            <Anchor point="BOTTOMRIGHT" relativeKey="$parent.Right"
+                    relativePoint="BOTTOMLEFT"/>
+          </Anchors>
+          <TexCoords left="0.09375" right="0.53125" top="0" bottom="0.6875"/>
+        </Texture>
+      </Layer>
+    </Layers>
+    <Scripts>
+      <OnLoad function="UIPanelButton_OnLoad"/>
+      <OnMouseDown function="UIPanelButton_OnMouseDown"/>
+      <OnMouseUp function="UIPanelButton_OnMouseUp"/>
+      <OnShow function="UIPanelButton_OnShow"/>
+      <OnDisable function="UIPanelButton_OnDisable"/>
+      <OnEnable function="UIPanelButton_OnEnable"/>
+    </Scripts>
+
+
+    <ButtonText name="$parentText" parentKey="Text"/>
+    <NormalFont style="GameFontNormalSmall"/>
+    <HighlightFont style="GameFontHighlightSmall"/>
+    <DisabledFont style="GameFontDisableSmall"/>
+    <HighlightTexture inherits="UIPanelButtonHighlightTexture"/>
+  </Button>
+
+
+  <Frame name="BuffOmat_MainWindow" parent="UIParent" hidden="true"
+         enableMouse="true" frameStrata="low" clampedToScreen="true">
+    <Size>
+      <AbsDimension x="256" y="170"/>
+    </Size>
+    <Anchors>
+      <Anchor point="CENTER"/>
+      <Offset>
+        <AbsDimension x="300" y="0"/>
+      </Offset>
+    </Anchors>
+    <Backdrop name="$parentBackdrop"
+              bgFile="Interface\TutorialFrame\TutorialFrameBackground"
+              edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
+      <EdgeSize>
+        <AbsValue val="16"/>
+      </EdgeSize>
+      <TileSize>
+        <AbsValue val="64"/>
+      </TileSize>
+      <BackgroundInsets>
+        <AbsInset left="5" right="5" top="5" bottom="5"/>
+      </BackgroundInsets>
+    </Backdrop>
+
+    <Layers>
+      <Layer level="BACKGROUND">
+        <FontString name="$parent_Title" inherits="GameFontNormal" text="title"
+                    justifyH="LEFT" justifyV="TOP">
+          <Anchors>
+            <Anchor point="TOPLEFT">
+              <Offset>
+                <AbsDimension x="10" y="-10"/>
+              </Offset>
+            </Anchor>
+            <Anchor point="BOTTOMRIGHT" relativePoint="TOPRIGHT">
+              <Offset>
+                <AbsDimension x="-10" y="-30"/>
+              </Offset>
+            </Anchor>
+          </Anchors>
+        </FontString>
+      </Layer>
+    </Layers>
+
+    <Frames>
+
+
+      <!-- headline -->
+
+
+      <Button name="$parent_CloseButton" inherits="BuffOmat_MiniButton"
+              Text="|TInterface\Buttons\UI-StopButton:0|t">
+        <Anchors>
+          <Anchor point="TOPRIGHT" relativeTo="$parent"
+                  relativePoint="TOPRIGHT">
+            <Offset>
+              <AbsDimension x="-6" y="-6"/>
+            </Offset>
+          </Anchor>
+        </Anchors>
+        <Scripts>
+          <OnClick>
+            BUFFOMAT_ADDON.BtnClose()
+          </OnClick>
+        </Scripts>
+      </Button>
+
+      <Button name="$parent_SettingsButton" inherits="BuffOmat_MiniButton"
+              Text="|TInterface\Buttons\UI-OptionsButton:0|t">
+        <Anchors>
+          <Anchor point="RIGHT" relativeTo="$parent_CloseButton"
+                  relativePoint="LEFT"/>
+        </Anchors>
+        <Scripts>
+          <OnMouseDown>
+            BUFFOMAT_ADDON.BtnSettings(self)
+          </OnMouseDown>
+        </Scripts>
+      </Button>
+
+      <Button name="$parent_MacroButton" inherits="BuffOmat_MiniButton"
+              Text="M">
+        <Anchors>
+          <Anchor point="RIGHT" relativeTo="$parent_SettingsButton"
+                  relativePoint="LEFT"/>
+        </Anchors>
+        <Scripts>
+          <OnMouseDown>
+            BUFFOMAT_ADDON.BtnMacro()
+          </OnMouseDown>
+        </Scripts>
+      </Button>
+
+      <!-- ListTab -->
+
+      <Frame name="BuffOmat_ListTab" hidden="false">
+        <Anchors>
+          <Anchor point="TOPLEFT">
+            <Offset>
+              <AbsDimension x="8" y="-30"/>
+            </Offset>
+          </Anchor>
+          <Anchor point="BOTTOMRIGHT">
+            <Offset>
+              <AbsDimension x="-8" y="8"/>
+            </Offset>
+          </Anchor>
+        </Anchors>
+        <Frames>
+          <Button name="$parent_Button" inherits="BuffOmat_SecureButton">
+            <Anchors>
+              <Anchor point="BOTTOMLEFT">
+                <Offset>
+                  <AbsDimension x="2" y="2"/>
+                </Offset>
+              </Anchor>
+              <Anchor point="BOTTOMRIGHT">
+                <Offset>
+                  <AbsDimension x="-2" y="12"/>
+                </Offset>
+              </Anchor>
+            </Anchors>
+
+          </Button>
+
+          <ScrollingMessageFrame enableMouseWheel="true"
+                                 name="$parent_MessageFrame"
+                                 parentKey="MessageFrame"
+                                 enableMouseClicks="true">
+            <Anchors>
+              <Anchor point="TOP"/>
+              <Anchor point="LEFT" relativePoint="LEFT"
+                      relativeTo="$parent_Button"/>
+              <Anchor point="BOTTOMRIGHT" relativePoint="TOPRIGHT"
+                      relativeTo="$parent_Button">
+                <Offset>
+                  <AbsDimension y="5"/>
+                </Offset>
+              </Anchor>
+            </Anchors>
+            <Size>
+              <AbsDimension x="270" y="0"/>
+            </Size>
+            <Scripts>
+              <OnMouseWheel>
+                BUFFOMAT_ADDON.ScrollMessage(self,delta)
+              </OnMouseWheel>
+              <OnHyperlinkEnter>
+                BUFFOMAT_ADDON.EnterHyperlink(self,link)
+              </OnHyperlinkEnter>
+              <OnHyperlinkLeave>
+                BUFFOMAT_ADDON.LeaveHyperlink(self)
+              </OnHyperlinkLeave>
+              <OnHyperlinkClick>
+                BUFFOMAT_ADDON.ClickHyperlink(self,link)
+              </OnHyperlinkClick>
+            </Scripts>
+
+          </ScrollingMessageFrame>
+
+
+        </Frames>
+      </Frame>
+
+      <!-- SpellTab -->
+      <Frame name="BuffOmat_SpellTab" hidden="false">
+        <Anchors>
+          <Anchor point="TOPLEFT">
+            <Offset>
+              <AbsDimension x="8" y="-30"/>
+            </Offset>
+          </Anchor>
+          <Anchor point="BOTTOMRIGHT">
+            <Offset>
+              <AbsDimension x="-8" y="8"/>
+            </Offset>
+          </Anchor>
+        </Anchors>
+        <Frames>
+
+          <ScrollFrame name="$parent_Scroll"
+                       inherits="UIPanelScrollFrameTemplate">
+            <Anchors>
+              <Anchor point="TOPLEFT">
+                <Offset>
+                  <AbsDimension y="-2" x="2"/>
+                </Offset>
+              </Anchor>
+              <Anchor point="BOTTOMRIGHT">
+                <Offset>
+                  <AbsDimension y="2" x="-22"/>
+                </Offset>
+              </Anchor>
+            </Anchors>
+            <Size>
+              <AbsDimension x="270" y="100"/>
+            </Size>
+            <ScrollChild>
+              <Frame name="$parent_Child">
+                <Size>
+                  <AbsDimension x="30" y="30"/>
+                </Size>
+              </Frame>
+            </ScrollChild>
+          </ScrollFrame>
+        </Frames>
+      </Frame>
+    </Frames>
+
+    <Scripts>
+      <OnLoad>
+        --print("buffomat load")
+        BUFFOMAT_ADDON.OnLoad()
+      </OnLoad>
+    </Scripts>
+  </Frame>
+</Ui>
