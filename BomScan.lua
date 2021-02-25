@@ -1639,7 +1639,7 @@ local function AddDisplay(text, distance, isInfo)
   end
 end
 local function ClearDisplay()
-  BuffOmat_ListTab_MessageFrame:Clear()
+  BomC_ListTab_MessageFrame:Clear()
   displayI = 0
   wipe(display)
   wipe(displayInfo)
@@ -1654,10 +1654,10 @@ local function OutputDisplay()
   end)
 
   for i, txt in ipairs(displayInfo) do
-    BuffOmat_ListTab_MessageFrame:AddMessage(txt[1])
+    BomC_ListTab_MessageFrame:AddMessage(txt[1])
   end
   for i, txt in ipairs(display) do
-    BuffOmat_ListTab_MessageFrame:AddMessage(txt[1])
+    BomC_ListTab_MessageFrame:AddMessage(txt[1])
   end
 end
 
@@ -1704,8 +1704,8 @@ local function CatchSpell(cost, id, link, member, spell)
   cast.Link = link
   cast.Member = member
   cast.Spell = spell
-
 end
+
 local function ClearSpell()
   cast.manaCost = -1
   cast.SpellId = nil
@@ -1713,6 +1713,7 @@ local function ClearSpell()
   cast.Spell = nil
   cast.Link = nil
 end
+
 function BOM.UpdateScan()
   if BOM.Spells == nil then
     return
@@ -1731,16 +1732,16 @@ function BOM.UpdateScan()
   if InCombatLockdown() then
     BOM.ForceUpdate = false
     BOM.CheckForError = false
-    BuffOmat_ListTab_Button:SetText(L.MsgCombat)
-    --BuffOmat_ListTab_Button:Disable() combatlock -imposible!
+    BomC_ListTab_Button:SetText(L.MsgCombat)
+    --BomC_ListTab_Button:Disable() combatlock -imposible!
     return
   end
   if UnitIsDeadOrGhost("player") then
     BOM.ForceUpdate = false
     BOM.CheckForError = false
     BOM.UpdateMacro()
-    BuffOmat_ListTab_Button:SetText(L.MsgDead)
-    BuffOmat_ListTab_Button:Disable()
+    BomC_ListTab_Button:SetText(L.MsgDead)
+    BomC_ListTab_Button:Disable()
     BOM.AutoClose()
     return
   end
@@ -1791,7 +1792,7 @@ function BOM.UpdateScan()
   if BOM.CurrentProfile ~= BOM.DBChar[chooseProfile] then
     BOM.CurrentProfile = BOM.DBChar[chooseProfile]
     BOM.UpdateSpellsTab()
-    BuffOmat_MainWindow_Title:SetText(string.format(BOM.TxtEscapeIcon, BOM.FullIcon) .. " " .. BOM.Title .. " - " .. L["profile_" .. chooseProfile])
+    BomC_MainWindow_Title:SetText(string.format(BOM.TxtEscapeIcon, BOM.FullIcon) .. " " .. BOM.Title .. " - " .. L["profile_" .. chooseProfile])
     BOM.ForceUpdate = true
   end
 
@@ -1799,8 +1800,8 @@ function BOM.UpdateScan()
     BOM.CheckForError = false
     BOM.ForceUpdate = false
     BOM.UpdateMacro()
-    BuffOmat_ListTab_Button:SetText(L.MsgDisabled)
-    BuffOmat_ListTab_Button:Disable()
+    BomC_ListTab_Button:SetText(L.MsgDisabled)
+    BomC_ListTab_Button:Disable()
     BOM.AutoClose()
     return
   end
@@ -2178,7 +2179,7 @@ function BOM.UpdateScan()
     end
   end
 
-  --BuffOmat_ListTab_MessageFrame:AddMessage(" ")
+  --BomC_ListTab_MessageFrame:AddMessage(" ")
 
   -- check argent dawn
   do
@@ -2250,7 +2251,7 @@ function BOM.UpdateScan()
 
   if #display > 0 or #displayInfo > 0 then
     BOM.AutoOpen()
-    --BuffOmat_ListTab_MessageFrame:AddMessage(string.format(L["MsgNextCast"],castMember.link or castMember.name,castLink or castSpell))
+    --BomC_ListTab_MessageFrame:AddMessage(string.format(L["MsgNextCast"],castMember.link or castMember.name,castLink or castSpell))
 
   else
     BOM.AutoClose()
@@ -2261,21 +2262,21 @@ function BOM.UpdateScan()
   BOM.ForceUpdate = false
 
   if BOM.PlayerCasting then
-    BuffOmat_ListTab_Button:SetText(L.MsgBusy)
+    BomC_ListTab_Button:SetText(L.MsgBusy)
     BOM.UpdateMacro()
-    BuffOmat_ListTab_Button:Disable()
+    BomC_ListTab_Button:Disable()
     --BOM.RepeatUpdate=true
 
   elseif cast.Member and cast.SpellId then
-    BuffOmat_ListTab_Button:SetText(string.format(L["MsgNextCast"], cast.Link, cast.Member.link))
+    BomC_ListTab_Button:SetText(string.format(L["MsgNextCast"], cast.Link, cast.Member.link))
 
     BOM.UpdateMacro(cast.Member, cast.SpellId)
     local cdtest = GetSpellCooldown(cast.SpellId) or 0
     if cdtest ~= 0 then
       BOM.CheckCoolDown = cast.SpellId
-      BuffOmat_ListTab_Button:Disable()
+      BomC_ListTab_Button:Disable()
     else
-      BuffOmat_ListTab_Button:Enable()
+      BomC_ListTab_Button:Enable()
     end
 
     BOM.ERRSpell = cast.Spell
@@ -2284,7 +2285,7 @@ function BOM.UpdateScan()
     --BOM.RepeatUpdate=true
   else
     if #display == 0 then
-      BuffOmat_ListTab_Button:SetText(L.MsgEmpty)
+      BomC_ListTab_Button:SetText(L.MsgEmpty)
       --BOM.RepeatUpdate=false
       for spellIndex, spell in ipairs(BOM.Spells) do
         if #spell.SkipList > 0 then
@@ -2294,13 +2295,13 @@ function BOM.UpdateScan()
 
     else
       if SomeBodyDeath and BOM.DB.DeathBlock then
-        BuffOmat_ListTab_Button:SetText(L.MsgSomebodyDead)
+        BomC_ListTab_Button:SetText(L.MsgSomebodyDead)
       else
-        --BuffOmat_ListTab_Button:SetText(L.MsgNoSpell)
+        --BomC_ListTab_Button:SetText(L.MsgNoSpell)
         if inRange then
-          BuffOmat_ListTab_Button:SetText(ERR_OUT_OF_MANA)
+          BomC_ListTab_Button:SetText(ERR_OUT_OF_MANA)
         else
-          BuffOmat_ListTab_Button:SetText(ERR_SPELL_OUT_OF_RANGE)
+          BomC_ListTab_Button:SetText(ERR_SPELL_OUT_OF_RANGE)
           local skipreset = false
           for spellIndex, spell in ipairs(BOM.Spells) do
             if #spell.SkipList > 0 then
@@ -2319,9 +2320,9 @@ function BOM.UpdateScan()
       --BOM.RepeatUpdate=true
     end
     if BagTitel then
-      BuffOmat_ListTab_Button:SetText(BagTitel)
+      BomC_ListTab_Button:SetText(BagTitel)
     end
-    BuffOmat_ListTab_Button:Enable()
+    BomC_ListTab_Button:Enable()
     BOM.UpdateMacro(nil, nil, BagCommand)
   end
 

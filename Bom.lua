@@ -1,14 +1,18 @@
 local TOCNAME, BOM = ...
-local L = setmetatable({}, { __index = function(t, k)
-  if BOM.L and BOM.L[k] then
-    return BOM.L[k]
-  else
-    return "[" .. k .. "]"
-  end
-end })
+local L = setmetatable(
+        {},
+        {
+          __index = function(_t, k)
+            if BOM.L and BOM.L[k] then
+              return BOM.L[k]
+            else
+              return "[" .. k .. "]"
+            end
+          end
+        })
 BUFFOMAT_ADDON = BOM
 
-local settings = {
+BOM.BehaviourSettings = {
   { "AutoOpen", true },
   { "InWorld", true },
   { "InPVP", true },
@@ -59,9 +63,21 @@ local BagOnEvent = { "BAG_UPDATE_DELAYED", "TRADE_CLOSED" }
 local PartyChangeEvent = { "GROUP_JOINED", "GROUP_ROSTER_UPDATE", "RAID_ROSTER_UPDATE", "GROUP_LEFT" }
 local SpellChangedEvent = { "SPELLS_CHANGED", "LEARNED_SPELL_IN_TAB" }
 
-local ErrStand = { ERR_CANTATTACK_NOTSTANDING, SPELL_FAILED_NOT_STANDING, ERR_LOOT_NOTSTANDING, ERR_TAXINOTSTANDING }
-local ErrMounted = { ERR_NOT_WHILE_MOUNTED, ERR_ATTACK_MOUNTED, ERR_TAXIPLAYERALREADYMOUNTED, SPELL_FAILED_NOT_MOUNTED }
-local ErrShapeShift = { ERR_EMBLEMERROR_NOTABARDGEOSET, ERR_CANT_INTERACT_SHAPESHIFTED, ERR_MOUNT_SHAPESHIFTED, ERR_NO_ITEMS_WHILE_SHAPESHIFTED, ERR_NOT_WHILE_SHAPESHIFTED, ERR_TAXIPLAYERSHAPESHIFTED, SPELL_FAILED_NO_ITEMS_WHILE_SHAPESHIFTED, SPELL_FAILED_NOT_SHAPESHIFT, SPELL_NOT_SHAPESHIFTED, SPELL_NOT_SHAPESHIFTED_NOSPACE }
+--- Error messages which will make player stand if sitting.
+local ErrStand = { ERR_CANTATTACK_NOTSTANDING, SPELL_FAILED_NOT_STANDING,
+                   ERR_LOOT_NOTSTANDING, ERR_TAXINOTSTANDING }
+
+--- Error messages which will make player dismount if mounted.
+local ErrMounted = { ERR_NOT_WHILE_MOUNTED, ERR_ATTACK_MOUNTED,
+                     ERR_TAXIPLAYERALREADYMOUNTED, SPELL_FAILED_NOT_MOUNTED }
+
+--- Error messages which will make player cancel shapeshift.
+local ErrShapeShift = { ERR_EMBLEMERROR_NOTABARDGEOSET, ERR_CANT_INTERACT_SHAPESHIFTED,
+                        ERR_MOUNT_SHAPESHIFTED, ERR_NO_ITEMS_WHILE_SHAPESHIFTED,
+                        ERR_NOT_WHILE_SHAPESHIFTED, ERR_TAXIPLAYERSHAPESHIFTED,
+                        SPELL_FAILED_NO_ITEMS_WHILE_SHAPESHIFTED,
+                        SPELL_FAILED_NOT_SHAPESHIFT, SPELL_NOT_SHAPESHIFTED,
+                        SPELL_NOT_SHAPESHIFTED_NOSPACE }
 
 local function PopupDB(db, var)
   return L["Cbox" .. var], false, db, var
@@ -79,14 +95,14 @@ function BOM.Popup(self, minimap)
     BOM.PopupDynamic:AddItem(L["CboxLockMinimapButton"], false, BOM.DB.Minimap, "lock")
     BOM.PopupDynamic:AddItem(L["CboxLockMinimapButtonDistance"], false, BOM.DB.Minimap, "lockDistance")
     BOM.PopupDynamic:AddItem()
-
   end
 
   BOM.PopupDynamic:AddItem(L["CboxUseProfiles"], false, BOM.DBChar, "UseProfiles")
+
   if BOM.DBChar.UseProfiles then
     BOM.PopupDynamic:SubMenu(L["HeaderProfiles"], "subProfiles")
     BOM.PopupDynamic:AddItem(L["profile_auto"], false, BOM.ChooseProfile, "auto")
-    for i, profile in pairs(BOM.ProfileNames) do
+    for _i, profile in pairs(BOM.ProfileNames) do
       BOM.PopupDynamic:AddItem(L["profile_" .. profile], false, BOM.ChooseProfile, profile)
     end
     BOM.PopupDynamic:SubMenu()
@@ -105,7 +121,7 @@ function BOM.Popup(self, minimap)
 
   BOM.PopupDynamic:AddItem()
   BOM.PopupDynamic:SubMenu(L.BtnSettings, "subSettings")
-  for i, set in ipairs(settings) do
+  for i, set in ipairs(BOM.BehaviourSettings) do
     BOM.PopupDynamic:AddItem(PopupDB(BOM.DB, set[1]))
   end
   BOM.PopupDynamic:SubMenu()
@@ -120,8 +136,8 @@ function BOM.Popup(self, minimap)
 
   BOM.PopupDynamic:AddItem()
   BOM.PopupDynamic:AddItem(L.BtnSettings, false, BOM.Options.Open, 1)
-  BOM.PopupDynamic:AddItem(L.BtnSettingsSpells, false, BOM.ShowWindow, 2)
-  BOM.PopupDynamic:AddItem()
+  --BOM.PopupDynamic:AddItem(L.BtnSettingsSpells, false, BOM.ShowWindow, 2)
+  --BOM.PopupDynamic:AddItem()
   BOM.PopupDynamic:AddItem(L["BtnCancel"], false)
 
   BOM.PopupDynamic:Show(self or "cursor", 0, 0)
@@ -156,6 +172,7 @@ end
 local function BOM_CheckBox(Var, Init)
   BOM.Options.AddCheckBox(BOM.DB, Var, Init, L["Cbox" .. Var])
 end
+
 local function BOM_EditBox(Var, Init, width)
   --Options:AddEditBox(DB,Var,Init,TXTLeft,width,widthLeft,onlynumbers,tooltip,suggestion)
   BOM.Options.AddEditBox(BOM.DB, Var, Init, L["Ebox" .. Var], 50, width or 150, true)
@@ -183,7 +200,6 @@ function BOM.OptionsInit()
   )
 
   -- Main
-
   BOM.Options.AddPanel(BOM.Title, false, true)
   --BOM.Options.AddVersion('|cff00c0ff' .. BOM.Version .. "|r")
 
@@ -193,7 +209,7 @@ function BOM.OptionsInit()
   BOM.Options.AddSpace()
   BOM.Options.AddCheckBox(BOM.DBChar, "UseProfiles", false, L["CboxUseProfiles"])
   BOM.Options.AddSpace()
-  for i, set in ipairs(settings) do
+  for i, set in ipairs(BOM.BehaviourSettings) do
     BOM_CheckBox(set[1], set[2])
   end
 
@@ -299,7 +315,6 @@ function BOM.OptionsInit()
 end
 
 function BOM.OptionsInsertSpells()
-
   for i, spell in ipairs(BOM.SpellList) do
     if type(spell) == "table" and spell.optionText then
       if spell.groupId then
@@ -315,28 +330,34 @@ function BOM.OptionsInsertSpells()
     end
   end
 
-  --BOM.DB.DEBUGTXT=txt
   BOM.UpdateSpellsTab()
   BOM.ForceUpdate = true
   BOM.UpdateScan()
 end
 
+---ChooseProfile
+---BOM profile selection, using 'auto' by default
+---@param profile table
 function BOM.ChooseProfile (profile)
   if profile == nil or profil == "" or profile == "auto" then
     BOM.ForceProfile = nil
     DEFAULT_CHAT_FRAME:AddMessage(BOM.MSGPREFIX .. "Set profile to auto")
+
   elseif BOM.DBChar[profile] then
     BOM.ForceProfile = profile
     DEFAULT_CHAT_FRAME:AddMessage(BOM.MSGPREFIX .. "Set profile to " .. profile)
+
   else
     DEFAULT_CHAT_FRAME:AddMessage(BOM.MSGPREFIX .. "Unknown profile")
   end
+
   BOM.ClearSkip()
   BOM.PopupDynamic:Wipe()
   BOM.ForceUpdate = true
   BOM.UpdateScan()
 end
 
+---Start from here
 function BOM.Init()
   function SetDefault(db, var, init)
     if db[var] == nil then
@@ -377,9 +398,9 @@ function BOM.Init()
   if not BomCharacterState[BOM.ProfileNames[1]] then
     BomCharacterState[BOM.ProfileNames[1]] = {
       ["CancelBuff"] = BomCharacterState.CancelBuff,
-      ["Spell"] = BomCharacterState.Spell,
-      ["LastAura"] = BomCharacterState.LastAura,
-      ["LastSeal"] = BomCharacterState.LastSeal,
+      ["Spell"]      = BomCharacterState.Spell,
+      ["LastAura"]   = BomCharacterState.LastAura,
+      ["LastSeal"]   = BomCharacterState.LastSeal,
     }
     BomCharacterState.CancelBuff = nil
     BomCharacterState.Spell = nil
@@ -403,13 +424,13 @@ function BOM.Init()
   if not x or not y or not w or not h then
     BOM.SaveWindowPosition()
   else
-    BuffOmat_MainWindow:ClearAllPoints()
-    BuffOmat_MainWindow:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", x, y)
-    BuffOmat_MainWindow:SetWidth(w)
-    BuffOmat_MainWindow:SetHeight(h)
+    BomC_MainWindow:ClearAllPoints()
+    BomC_MainWindow:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", x, y)
+    BomC_MainWindow:SetWidth(w)
+    BomC_MainWindow:SetHeight(h)
   end
 
-  BOM.Tool.EnableSize(BuffOmat_MainWindow, 8, nil, function()
+  BOM.Tool.EnableSize(BomC_MainWindow, 8, nil, function()
     BOM.SaveWindowPosition()
   end)
 
@@ -422,7 +443,9 @@ function BOM.Init()
     elseif tContains({ "false", "0", "disable" }, value) then
       DB[var] = false
     end
+
     DEFAULT_CHAT_FRAME:AddMessage(BOM.MSGPREFIX .. "Set " .. var .. " to " .. tostring(DB[var]))
+
     BOM.OptionsUpdate()
   end
 
@@ -452,15 +475,15 @@ function BOM.Init()
     { "", L["SlashOpen"], BOM.ShowWindow },
   })
 
-  BuffOmat_ListTab_MessageFrame:SetFading(false);
-  BuffOmat_ListTab_MessageFrame:SetFontObject(GameFontNormalSmall);
-  BuffOmat_ListTab_MessageFrame:SetJustifyH("LEFT");
-  BuffOmat_ListTab_MessageFrame:SetHyperlinksEnabled(true);
-  BuffOmat_ListTab_MessageFrame:Clear()
-  BuffOmat_ListTab_MessageFrame:SetMaxLines(100)
+  BomC_ListTab_MessageFrame:SetFading(false);
+  BomC_ListTab_MessageFrame:SetFontObject(GameFontNormalSmall);
+  BomC_ListTab_MessageFrame:SetJustifyH("LEFT");
+  BomC_ListTab_MessageFrame:SetHyperlinksEnabled(true);
+  BomC_ListTab_MessageFrame:Clear()
+  BomC_ListTab_MessageFrame:SetMaxLines(100)
 
-  BuffOmat_ListTab_Button:SetAttribute("type", "macro")
-  BuffOmat_ListTab_Button:SetAttribute("macro", BOM.MACRONAME)
+  BomC_ListTab_Button:SetAttribute("type", "macro")
+  BomC_ListTab_Button:SetAttribute("macro", BOM.MACRONAME)
 
   BOM.Tool.OnUpdate(BOM.UpdateTimer)
 
@@ -476,20 +499,22 @@ function BOM.Init()
           end
   , BOM.Title)
 
-  BuffOmat_MainWindow_Title:SetText(string.format(BOM.TxtEscapeIcon, BOM.FullIcon) .. " " .. BOM.Title .. " - " .. L.profile_solo)
-  --BuffOmat_ListTab_Button:SetText(L["BtnGetMacro"])
+  BomC_MainWindow_Title:SetText(string.format(BOM.TxtEscapeIcon, BOM.FullIcon) .. " " .. BOM.Title .. " - " .. L.profile_solo)
+  --BomC_ListTab_Button:SetText(L["BtnGetMacro"])
 
   BOM.OptionsInit()
   BOM.PartyUpdateNeeded = true
   BOM.RepeatUpdate = false
 
-  BOM.Tool.EnableMoving(BuffOmat_MainWindow, BOM.SaveWindowPosition)
+  BOM.Tool.EnableMoving(BomC_MainWindow, BOM.SaveWindowPosition)
 
-  BuffOmat_MainWindow:SetMinResize(290, 75)
+  BomC_MainWindow:SetMinResize(290, 75)
 
-  BOM.Tool.AddTab(BuffOmat_MainWindow, L.TabBuff, BuffOmat_ListTab, true)
-  BOM.Tool.AddTab(BuffOmat_MainWindow, L.TabSpells, BuffOmat_SpellTab, true)
-  BOM.Tool.SelectTab(BuffOmat_MainWindow, 1)
+  BOM.Tool.AddTab(BomC_MainWindow, L.TabBuff, BomC_ListTab, true)
+  BOM.Tool.AddTab(BomC_MainWindow, L.TabSpells, BomC_SpellTab, true)
+  --BOM.Tool.AddTab(BomC_MainWindow, L.TabItems, BomC_ItemTab, true)
+  --BOM.Tool.AddTab(BomC_MainWindow, L.TabBehaviour, BomC_BehaviourTab, true)
+  BOM.Tool.SelectTab(BomC_MainWindow, 1)
 
   BOM.WatchGroup = {}
   for i = 1, 8 do
@@ -499,7 +524,9 @@ function BOM.Init()
   _G["BINDING_NAME_MACRO Buff'o'mat"] = L["BtnPerformeBuff"]
   _G["BINDING_HEADER_BUFFOMATHEADER"] = "Buffomat Classic"
 
-  print("|cFFFF1C1C Loaded: " .. GetAddOnMetadata(TOCNAME, "Title") .. " " .. GetAddOnMetadata(TOCNAME, "Version") .. " by " .. GetAddOnMetadata(TOCNAME, "Author"))
+  print("|cFFFF1C1C Loaded: " .. GetAddOnMetadata(TOCNAME, "Title") .. " "
+          .. GetAddOnMetadata(TOCNAME, "Version")
+          .. " by " .. GetAddOnMetadata(TOCNAME, "Author"))
 
 end
 
@@ -507,7 +534,9 @@ local function Event_ADDON_LOADED(arg1)
   if arg1 == TOCNAME then
     BOM.Init()
   end
-  BOM.Tool.AddDataBrocker(BOM.FullIcon,
+
+  BOM.Tool.AddDataBrocker(
+          BOM.FullIcon,
           function(self, button)
             if button == "LeftButton" then
               BOM.ToggleWindow()
@@ -533,6 +562,7 @@ end
 local function Event_Bag()
   BOM.ForceUpdate = true
   BOM.WipeCachedItems = true
+
   if BOM.CachedHasItems then
     wipe(BOM.CachedHasItems)
   end
@@ -559,7 +589,6 @@ end
 
 local function Event_UNIT_SPELLCAST_START(unit)
   if UnitIsUnit(unit, "player") then
-    --print("casting")
     BOM.PlayerCasting = true
     BOM.ForceUpdate = true
   end
@@ -567,7 +596,6 @@ end
 
 local function Event_UNIT_SPELLCAST_STOP(unit)
   if UnitIsUnit(unit, "player") then
-    --print("endcasting")
     BOM.PlayerCasting = false
     BOM.ForceUpdate = true
     BOM.CheckForError = false
@@ -575,12 +603,10 @@ local function Event_UNIT_SPELLCAST_STOP(unit)
 end
 
 local function Event_PLAYER_STARTED_MOVING()
-  --BOM.ForceUpdate=BOM.RepeatUpdate
   BOM.IsMoving = true
 end
 
 local function Event_PLAYER_STOPPED_MOVING()
-  --BOM.ForceUpdate=BOM.RepeatUpdate
   BOM.IsMoving = false
 end
 
@@ -588,31 +614,37 @@ local function Event_CombatStart()
   BOM.ForceUpdate = true
   BOM.DeclineHasResurrection = true
   BOM.AutoClose()
-  BuffOmat_ListTab_Button:Disable()
+  BomC_ListTab_Button:Disable()
   BOM.BattleCancelBuffs()
 end
+
 local function Event_CombatStop()
   BOM.ClearSkip()
   BOM.ForceUpdate = true
   BOM.DeclineHasResurrection = true
   BOM.AllowAutOpen()
 end
+
 local function Event_LoadingStart()
   BOM.InLoading = true
   BOM.LoadingScreenTimeOut = nil
   Event_CombatStart()
   --print("loading start")
 end
+
 local function Event_LoadingStop()
   BOM.LoadingScreenTimeOut = GetTime() + BOM.LOADINGSCREENTIMEOUT
   BOM.ForceUpdate = true
 end
 
+---Event_PLAYER_TARGET_CHANGED
+---Handle player target change, spells possibly might have changed too.
 local function Event_PLAYER_TARGET_CHANGED()
   if not InCombatLockdown() then
     if UnitInParty("target") or UnitInRaid("target") or UnitIsUnit("target", "player") then
       BOM.lastTarget = (UnitFullName("target"))
       BOM.UpdateSpellsTab()
+
     elseif BOM.lastTarget then
       BOM.lastTarget = nil
       BOM.UpdateSpellsTab()
@@ -626,7 +658,12 @@ local function Event_PLAYER_TARGET_CHANGED()
   end
 
   local newName
-  if UnitExists("target") and UnitCanCooperate("player", "target") and UnitIsPlayer("target") and not UnitPlayerOrPetInParty("target") and not UnitPlayerOrPetInRaid("target") then
+  if UnitExists("target")
+          and UnitCanCooperate("player", "target")
+          and UnitIsPlayer("target")
+          and not UnitPlayerOrPetInParty("target")
+          and not UnitPlayerOrPetInRaid("target")
+  then
     newName = UnitName("target")
   end
 
@@ -638,19 +675,27 @@ local function Event_PLAYER_TARGET_CHANGED()
 
 end
 
+---Event_UI_ERROR_MESSAGE
+---Will stand if sitting, will dismount if mounted, will cancel shapeshift, if
+---shapeshifted while trying to cast a spell and that produces an error message.
+---@param errorType table
+---@param message table
 local function Event_UI_ERROR_MESSAGE(errorType, message)
   if tContains(ErrStand, message) then
     if BOM.DB.AutoStand then
       UIErrorsFrame:Clear()
       DoEmote("STAND")
     end
+
   elseif tContains(ErrMounted, message) then
     if BOM.DB.AutoDismount then
       UIErrorsFrame:Clear()
       Dismount()
     end
+
   elseif BOM.DB.AutoDisTravel and tContains(ErrShapeShift, message) and BOM.CancelShapeShift() then
     UIErrorsFrame:Clear()
+
   elseif not InCombatLockdown() then
     if BOM.CheckForError then
       if message == SPELL_FAILED_LOWLEVEL then
@@ -660,9 +705,13 @@ local function Event_UI_ERROR_MESSAGE(errorType, message)
       end
     end
   end
+
   BOM.CheckForError = false
 end
 
+---Event_TAXIMAP_OPENED
+---Will dismount player if mounted when opening taxi tab. Will stand and cancel
+---shapeshift to be able to talk to the taxi NPC.
 local function Event_TAXIMAP_OPENED()
   if IsMounted() then
     Dismount()
@@ -677,6 +726,7 @@ local lastModifier
 local fpsCheck = 0
 local UpdateTimerLimit = 0.100
 local SlowCount = 0
+
 function BOM.UpdateTimer()
   if BOM.InLoading and BOM.LoadingScreenTimeOut then
     if BOM.LoadingScreenTimeOut > GetTime() then
@@ -715,7 +765,7 @@ function BOM.UpdateTimer()
     LastUpdateTimer = GetTime()
     fpsCheck = debugprofilestop()
     BOM.UpdateScan()
-    --BuffOmat_MainWindow_Title:SetText((debugprofilestop()-fpsCheck).."-".. (BOM.ForceUpdate and "true" or "false"))
+    --BomC_MainWindow_Title:SetText((debugprofilestop()-fpsCheck).."-".. (BOM.ForceUpdate and "true" or "false"))
     if (debugprofilestop() - fpsCheck) > 6 and BOM.RepeatUpdate then
       SlowCount = SlowCount + 1
       if SlowCount >= 6 and UpdateTimerLimit < 1 then
@@ -734,6 +784,7 @@ function BOM.FastUpdateTimer()
 end
 
 BOM.PlayerBuffs = {}
+
 function BOM.UnitAura(unitId, buffIndex, filter)
   local name, icon, count, debuffType, duration, expirationTime, source, isStealable,
   nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, castByPlayer, nameplateShowAll, timeMod = UnitAura(unitId, buffIndex, filter)
@@ -773,6 +824,7 @@ end
 
 local partyCheckMask = COMBATLOG_OBJECT_AFFILIATION_RAID + COMBATLOG_OBJECT_AFFILIATION_PARTY + COMBATLOG_OBJECT_AFFILIATION_MINE
 --  BOM.PlayerBuffs cleanup in scan BOM.GetPartyMembers()
+
 local function Event_COMBAT_LOG_EVENT_UNFILTERED()
   local timestamp, event, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags,
   spellId, spellName, spellSchool,
@@ -866,7 +918,7 @@ local autoHelper = "open"
 function BOM.HideWindow()
   if not InCombatLockdown() then
     if BOM.WindowVisible() then
-      BuffOmat_MainWindow:Hide()
+      BomC_MainWindow:Hide()
       autoHelper = "KeepClose"
       BOM.ForceUpdate = true
       BOM.UpdateScan()
@@ -877,20 +929,20 @@ end
 function BOM.ShowWindow(tab)
   if not InCombatLockdown() then
     if not BOM.WindowVisible() then
-      BuffOmat_MainWindow:Show()
+      BomC_MainWindow:Show()
       autoHelper = "KeepOpen"
     end
-    BOM.Tool.SelectTab(BuffOmat_MainWindow, tab or 1)
+    BOM.Tool.SelectTab(BomC_MainWindow, tab or 1)
   end
 
 end
 
 function BOM.WindowVisible()
-  return BuffOmat_MainWindow:IsVisible()
+  return BomC_MainWindow:IsVisible()
 end
 
 function BOM.ToggleWindow()
-  if BuffOmat_MainWindow:IsVisible() then
+  if BomC_MainWindow:IsVisible() then
     BOM.HideWindow()
   else
     BOM.ForceUpdate = true
@@ -903,16 +955,17 @@ function BOM.AutoOpen()
   if not InCombatLockdown() and BOM.DB.AutoOpen then
     if not BOM.WindowVisible() and autoHelper == "open" then
       autoHelper = "close"
-      BuffOmat_MainWindow:Show()
-      BOM.Tool.SelectTab(BuffOmat_MainWindow, 1)
+      BomC_MainWindow:Show()
+      BOM.Tool.SelectTab(BomC_MainWindow, 1)
     end
   end
 end
+
 function BOM.AutoClose(x)
   if not InCombatLockdown() and BOM.DB.AutoOpen then
     if BOM.WindowVisible() then
       if autoHelper == "close" then
-        BuffOmat_MainWindow:Hide()
+        BomC_MainWindow:Hide()
         autoHelper = "open"
       end
     elseif autoHelper == "KeepClose" then
@@ -920,6 +973,7 @@ function BOM.AutoClose(x)
     end
   end
 end
+
 function BOM.AllowAutOpen()
   if not InCombatLockdown() and BOM.DB.AutoOpen then
     if autoHelper == "KeepClose" then
@@ -929,17 +983,17 @@ function BOM.AllowAutOpen()
 end
 
 function BOM.SaveWindowPosition()
-  BOM.DB.X = BuffOmat_MainWindow:GetLeft()
-  BOM.DB.Y = BuffOmat_MainWindow:GetTop()
-  BOM.DB.Width = BuffOmat_MainWindow:GetWidth()
-  BOM.DB.Height = BuffOmat_MainWindow:GetHeight()
+  BOM.DB.X = BomC_MainWindow:GetLeft()
+  BOM.DB.Y = BomC_MainWindow:GetTop()
+  BOM.DB.Width = BomC_MainWindow:GetWidth()
+  BOM.DB.Height = BomC_MainWindow:GetHeight()
 end
 
 function BOM.ResetWindow()
-  BuffOmat_MainWindow:ClearAllPoints()
-  BuffOmat_MainWindow:SetPoint("Center", UIParent, "Center", 0, 0)
-  BuffOmat_MainWindow:SetWidth(200)
-  BuffOmat_MainWindow:SetHeight(200)
+  BomC_MainWindow:ClearAllPoints()
+  BomC_MainWindow:SetPoint("Center", UIParent, "Center", 0, 0)
+  BomC_MainWindow:SetWidth(200)
+  BomC_MainWindow:SetHeight(200)
   BOM.SaveWindowPosition()
   BOM.ShowWindow(1)
 end
@@ -957,16 +1011,18 @@ function BOM.EnterHyperlink(self, link, text)
   --print(link,text)
   local part = BOM.Tool.Split(link, ":")
   if part[1] == "spell" or part[1] == "unit" or part[1] == "item" then
-    GameTooltip_SetDefaultAnchor(BuffOmat_Tooltip, UIParent)
-    BuffOmat_Tooltip:SetOwner(UIParent, "ANCHOR_PRESERVE")
-    BuffOmat_Tooltip:ClearLines()
-    BuffOmat_Tooltip:SetHyperlink(link)
-    BuffOmat_Tooltip:Show()
+    GameTooltip_SetDefaultAnchor(BomC_Tooltip, UIParent)
+    BomC_Tooltip:SetOwner(UIParent, "ANCHOR_PRESERVE")
+    BomC_Tooltip:ClearLines()
+    BomC_Tooltip:SetHyperlink(link)
+    BomC_Tooltip:Show()
   end
 end
+
 function BOM.LeaveHyperlink(self)
-  BuffOmat_Tooltip:Hide()
+  BomC_Tooltip:Hide()
 end
+
 function BOM.ClickHyperlink(self, link)
   local part = BOM.Tool.Split(link, ":")
   if part[1] == "unit" then
@@ -1122,467 +1178,9 @@ local function BlessingOnClick(self)
   BOM.MyButtonUpdateAll()
   BOM.OptionsUpdate()
 end
+
 local function MyButtonOnClick(self)
   BOM.OptionsUpdate()
-end
-
-local SpellSettingsFrames = {}
-local function CreateSpellTab()
-  local last
-  local isHorde = (UnitFactionGroup("player")) == "Horde"
-  if InCombatLockdown() then
-    return
-  end
-
-  BOM.MyButtonHideAll()
-
-  local dy = 0
-  local section
-
-  for i, spell in ipairs(BOM.Spells) do
-    spell.frames = spell.frames or {}
-    if spell.frames.info == nil then
-      spell.frames.info = BOM.CreateMyButton(BuffOmat_SpellTab_Scroll_Child, spell.Icon, nil, nil, { 0.1, 0.9, 0.1, 0.9 })
-    end
-    if spell.isBuff then
-      spell.frames.info:SetTooltipLink("item:" .. spell.item)
-    else
-      spell.frames.info:SetTooltipLink("spell:" .. spell.singleId)
-    end
-
-    dy = 12
-    if spell.isOwn and section ~= "isOwn" then
-      section = "isOwn"
-    elseif spell.isTracking and section ~= "isTracking" then
-      section = "isTracking"
-    elseif spell.isResurrection and section ~= "isResurrection" then
-      section = "isResurrection"
-    elseif spell.isSeal and section ~= "isSeal" then
-      section = "isSeal"
-    elseif spell.isAura and section ~= "isAura" then
-      section = "isAura"
-    elseif spell.isBlessing and section ~= "isBlessing" then
-      section = "isBlessing"
-    elseif spell.isInfo and section ~= "isInfo" then
-      section = "isInfo"
-    elseif spell.isBuff and section ~= "isBuff" then
-      section = "isBuff"
-    else
-      dy = 2
-    end
-
-    if last then
-      spell.frames.info:SetPoint("TOPLEFT", last, "BOTTOMLEFT", 0, -dy)
-    else
-      spell.frames.info:SetPoint("TOPLEFT")
-    end
-
-    local l = spell.frames.info
-    local dx = 7
-
-    if spell.frames.Enable == nil then
-      spell.frames.Enable = BOM.CreateMyButton(BuffOmat_SpellTab_Scroll_Child, BOM.IconGreen, BOM.IconRed)
-    end
-
-    spell.frames.Enable:SetPoint("TOPLEFT", l, "TOPRIGHT", dx, 0)
-    spell.frames.Enable:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID], "Enable")
-    spell.frames.Enable:SetOnClick(MyButtonOnClick)
-    spell.frames.Enable:SetTooltip(L.TTEnable)
-    l = spell.frames.Enable
-    dx = 7
-
-    if BOM.SpellHasClasses(spell) then
-      if spell.frames.SelfCast == nil then
-        spell.frames.SelfCast = BOM.CreateMyButton(BuffOmat_SpellTab_Scroll_Child, BOM.IconSelfCastOn, BOM.IconSelfCastOff)
-      end
-
-      spell.frames.SelfCast:SetPoint("TOPLEFT", l, "TOPRIGHT", dx, 0)
-      spell.frames.SelfCast:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID], "SelfCast")
-      spell.frames.SelfCast:SetOnClick(MyButtonOnClick)
-      spell.frames.SelfCast:SetTooltip(L.TTSelfCast)
-
-      l = spell.frames.SelfCast
-      dx = 2
-
-      for ci, class in ipairs(BOM.Tool.Classes) do
-        if spell.frames[class] == nil then
-          spell.frames[class] = BOM.CreateMyButton(BuffOmat_SpellTab_Scroll_Child, BOM.IconClasses, BOM.IconEmpty, BOM.IconDisabled, BOM.IconClassesCoord[class])
-        end
-        spell.frames[class]:SetPoint("TOPLEFT", l, "TOPRIGHT", dx, 0)
-        spell.frames[class]:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID].Class, class)
-        spell.frames[class]:SetOnClick(BlessingOnClick)
-        spell.frames[class]:SetTooltip(BOM.Tool.IconClass[class] .. " " .. BOM.Tool.ClassName[class])
-
-        if (isHorde and class == "PALADIN") or (not isHorde and class == "SHAMAN") then
-          spell.frames[class]:Hide()
-        else
-          l = spell.frames[class]
-        end
-      end
-
-      if spell.frames["tank"] == nil then
-        spell.frames["tank"] = BOM.CreateMyButton(BuffOmat_SpellTab_Scroll_Child, BOM.IconTank, BOM.IconEmpty, BOM.IconDisabled, BOM.IconTankCoord)
-      end
-      spell.frames["tank"]:SetPoint("TOPLEFT", l, "TOPRIGHT", dx, 0)
-      spell.frames["tank"]:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID].Class, "tank")
-      spell.frames["tank"]:SetOnClick(BlessingOnClick)
-      spell.frames["tank"]:SetTooltip(L.Tank)
-      l = spell.frames["tank"]
-
-      if spell.frames["pet"] == nil then
-        spell.frames["pet"] = BOM.CreateMyButton(BuffOmat_SpellTab_Scroll_Child, BOM.IconPet, BOM.IconEmpty, BOM.IconDisabled, BOM.IconPetCoord)
-      end
-      spell.frames["pet"]:SetPoint("TOPLEFT", l, "TOPRIGHT", dx, 0)
-      spell.frames["pet"]:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID].Class, "pet")
-      spell.frames["pet"]:SetOnClick(BlessingOnClick)
-      spell.frames["pet"]:SetTooltip(L.Pet)
-      l = spell.frames["pet"]
-
-      dx = 7
-
-      if spell.frames.target == nil then
-        spell.frames.target = BOM.CreateMyButton(BuffOmat_SpellTab_Scroll_Child, BOM.IconTargetOn, BOM.IconTargetOff, BOM.IconDisabled)
-      end
-      spell.frames.target:SetPoint("TOPLEFT", l, "TOPRIGHT", dx, 0)
-      spell.frames.target:SetOnClick(MyButtonOnClick)
-      spell.frames.target:SetTooltip(L.TTTarget)
-
-      l = spell.frames.target
-      dx = 7
-
-    end
-
-    if (spell.isTracking or spell.isAura or spell.isSeal) and spell.needForm == nil then
-      if spell.frames.Set == nil then
-        spell.frames.Set = BOM.CreateMyButtonSecure(BuffOmat_SpellTab_Scroll_Child, BOM.IconChecked, BOM.IconUnChecked)
-      end
-      spell.frames.Set:SetPoint("TOPLEFT", l, "TOPRIGHT", dx, 0)
-      spell.frames.Set:SetSpell(spell.singleId)
-
-      l = spell.frames.Set
-      dx = 7
-
-    end
-
-    if spell.isInfo and spell.allowWispher then
-      if spell.frames.Wispher == nil then
-        spell.frames.Wispher = BOM.CreateMyButton(BuffOmat_SpellTab_Scroll_Child, BOM.IconWispherOn, BOM.IconWispherOff)
-      end
-      spell.frames.Wispher:SetPoint("TOPLEFT", l, "TOPRIGHT", dx, 0)
-      spell.frames.Wispher:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID], "Wispher")
-      spell.frames.Wispher:SetOnClick(MyButtonOnClick)
-      spell.frames.Wispher:SetTooltip(L.TTWispher)
-      l = spell.frames.Wispher
-      dx = 2
-    end
-
-    if spell.isWeapon then
-      if spell.frames.MainHand == nil then
-        spell.frames.MainHand = BOM.CreateMyButton(BuffOmat_SpellTab_Scroll_Child, BOM.IconMainHandOn, BOM.IconMainHandOff, BOM.IconDisabled, BOM.IconMainHandOnCoord)
-      end
-      spell.frames.MainHand:SetPoint("TOPLEFT", l, "TOPRIGHT", dx, 0)
-      spell.frames.MainHand:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID], "MainHandEnable")
-      spell.frames.MainHand:SetOnClick(MyButtonOnClick)
-      spell.frames.MainHand:SetTooltip(L.TTMainHand)
-      l = spell.frames.MainHand
-      dx = 2
-
-      if spell.frames.OffHand == nil then
-        spell.frames.OffHand = BOM.CreateMyButton(BuffOmat_SpellTab_Scroll_Child, BOM.IconSecondaryHandOn, BOM.IconSecondaryHandOff, BOM.IconDisabled, BOM.IconSecondaryHandOnCoord)
-      end
-      spell.frames.OffHand:SetPoint("TOPLEFT", l, "TOPRIGHT", dx, 0)
-      spell.frames.OffHand:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID], "OffHandEnable")
-      spell.frames.OffHand:SetOnClick(MyButtonOnClick)
-      spell.frames.OffHand:SetTooltip(L.TTOffHand)
-      l = spell.frames.OffHand
-      dx = 2
-
-    end
-
-    if spell.frames.buff == nil then
-      spell.frames.buff = BuffOmat_SpellTab_Scroll_Child:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-    end
-    if spell.isWeapon then
-      spell.frames.buff:SetText((spell.single or "-") .. " (" .. L.TTAnyRank .. ")")
-    else
-      spell.frames.buff:SetText(spell.single or "-")
-    end
-
-    spell.frames.buff:SetPoint("TOPLEFT", l, "TOPRIGHT", 7, -1)
-    l = spell.frames.buff
-    dx = 7
-
-    spell.frames.info:Show()
-    spell.frames.Enable:Show()
-    if BOM.SpellHasClasses(spell) then
-      spell.frames.SelfCast:Show()
-      spell.frames.target:Show()
-
-      for ci, class in ipairs(BOM.Tool.Classes) do
-        if (isHorde and class == "PALADIN") or (not isHorde and class == "SHAMAN") then
-          spell.frames[class]:Hide()
-        else
-          spell.frames[class]:Show()
-        end
-      end
-      spell.frames["tank"]:Show()
-      spell.frames["pet"]:Show()
-    end
-
-    if spell.frames.Set then
-      spell.frames.Set:Show()
-    end
-
-    if spell.frames.buff then
-      spell.frames.buff:Show()
-    end
-
-    if spell.frames.Wispher then
-      spell.frames.Wispher:Show()
-    end
-
-    if spell.frames.MainHand then
-      spell.frames.MainHand:Show()
-    end
-
-    if spell.frames.OffHand then
-      spell.frames.OffHand:Show()
-    end
-
-    last = spell.frames.info
-  end
-
-  dy = 12
-  for i, spell in ipairs(BOM.CancelBuffs) do
-    spell.frames = spell.frames or {}
-    if spell.frames.info == nil then
-      spell.frames.info = BOM.CreateMyButton(BuffOmat_SpellTab_Scroll_Child, spell.Icon, nil, nil, { 0.1, 0.9, 0.1, 0.9 })
-      spell.frames.info:SetTooltipLink("spell:" .. spell.singleId)
-    end
-    if last then
-      spell.frames.info:SetPoint("TOPLEFT", last, "BOTTOMLEFT", 0, -dy)
-    else
-      spell.frames.info:SetPoint("TOPLEFT")
-    end
-    last = spell.frames.info
-
-    if spell.frames.Enable == nil then
-      spell.frames.Enable = BOM.CreateMyButton(BuffOmat_SpellTab_Scroll_Child, BOM.IconBuffOn, BOM.IconBuffOff)
-    end
-    spell.frames.Enable:SetPoint("LEFT", spell.frames.info, "RIGHT", 7, 0)
-    spell.frames.Enable:SetVariable(BOM.CurrentProfile.CancelBuff[spell.ConfigID], "Enable")
-    spell.frames.Enable:SetOnClick(MyButtonOnClick)
-    spell.frames.Enable:SetTooltip(L.TTEnableBuff)
-
-    if spell.OnlyCombat then
-      if spell.frames.OnlyCombat == nil then
-        spell.frames.OnlyCombat = BuffOmat_SpellTab_Scroll_Child:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-      end
-      spell.frames.OnlyCombat:SetText("(" .. L.TTOnlyCombat .. ")")
-      spell.frames.OnlyCombat:SetPoint("TOPLEFT", spell.frames.Enable, "TOPRIGHT", 7, -1)
-    end
-
-    spell.frames.info:Show()
-    spell.frames.Enable:Show()
-    if spell.frames.OnlyCombat then
-      spell.frames.OnlyCombat:Show()
-    end
-    dy = 2
-  end
-
-  if last then
-
-    if SpellSettingsFrames.Settings == nil then
-      SpellSettingsFrames.Settings = BOM.CreateMyButton(BuffOmat_SpellTab_Scroll_Child, BOM.IconGear, nil, nil, { 0.1, 0.9, 0.1, 0.9 })
-    end
-
-    SpellSettingsFrames.Settings:SetTooltip(L.BtnSettings)
-    SpellSettingsFrames.Settings:SetPoint("TOPLEFT", last, "BOTTOMLEFT", 0, -12)
-
-    last = SpellSettingsFrames.Settings
-    local dx = 7
-    local l = last
-
-    if SpellSettingsFrames[0] == nil then
-      SpellSettingsFrames[0] = BOM.CreateMyButton(BuffOmat_SpellTab_Scroll_Child, BOM.IconGroup, nil, nil, { 0.1, 0.9, 0.1, 0.9 })
-    end
-    SpellSettingsFrames[0]:SetTooltip(L.HeaderWatchGroup)
-    SpellSettingsFrames[0]:SetPoint("TOPLEFT", l, "TOPRIGHT", dx, 0)
-
-    l = SpellSettingsFrames[0]
-    dx = 7
-    for i = 1, 8 do
-      if SpellSettingsFrames[i] == nil then
-        SpellSettingsFrames[i] = BOM.CreateMyButton(BuffOmat_SpellTab_Scroll_Child, BOM.IconGroupItem, BOM.IconGroupNone)
-      end
-      SpellSettingsFrames[i]:SetPoint("TOPLEFT", l, "TOPRIGHT", dx, 0)
-      SpellSettingsFrames[i]:SetVariable(BOM.WatchGroup, i)
-      SpellSettingsFrames[i]:SetText(i)
-      SpellSettingsFrames[i]:SetTooltip(string.format(L.TTGroup, i))
-      SpellSettingsFrames[i]:SetOnClick(MyButtonOnClick)
-      l = SpellSettingsFrames[i]
-      dx = 2
-    end
-
-    last = SpellSettingsFrames[0]
-
-    for i, set in ipairs(settings) do
-      local key = set[1]
-
-      if BOM["Icon" .. key .. "On"] then
-        if SpellSettingsFrames[key] == nil then
-          SpellSettingsFrames[key] = BOM.CreateMyButton(BuffOmat_SpellTab_Scroll_Child, BOM["Icon" .. key .. "On"], BOM["Icon" .. key .. "Off"], nil, BOM["Icon" .. key .. "OnCoord"], BOM["Icon" .. key .. "OffCoord"])
-        end
-        SpellSettingsFrames[key]:SetPoint("TOPLEFT", last, "BOTTOMLEFT", 0, -2)
-        SpellSettingsFrames[key]:SetVariable(BOM.DB, key)
-        SpellSettingsFrames[key]:SetTooltip(L["Cbox" .. key])
-        SpellSettingsFrames[key]:SetOnClick(MyButtonOnClick)
-        l = SpellSettingsFrames[key]
-        dx = 2
-
-        if SpellSettingsFrames[key .. "txt"] == nil then
-          SpellSettingsFrames[key .. "txt"] = BuffOmat_SpellTab_Scroll_Child:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-        end
-        SpellSettingsFrames[key .. "txt"]:SetText(L["Cbox" .. key])
-        SpellSettingsFrames[key .. "txt"]:SetPoint("TOPLEFT", l, "TOPRIGHT", 7, -1)
-        l = SpellSettingsFrames[key .. "txt"]
-        dx = 7
-
-        last = SpellSettingsFrames[key]
-        dx = 0
-      end
-    end
-
-
-    --last=SpellSettingsFrames.Settings
-    --dx=SpellSettingsFrames.Settings:GetWidth()+7
-    for i, set in ipairs(settings) do
-      local key = set[1]
-
-      if not BOM["Icon" .. key .. "On"] then
-        if SpellSettingsFrames[key] == nil then
-          SpellSettingsFrames[key] = BOM.CreateMyButton(BuffOmat_SpellTab_Scroll_Child, BOM.IconSettingOn, BOM.IconSettingOff, nil, nil, nil)
-        end
-        SpellSettingsFrames[key]:SetPoint("TOPLEFT", last, "BOTTOMLEFT", dx, -2)
-        SpellSettingsFrames[key]:SetVariable(BOM.DB, key)
-        SpellSettingsFrames[key]:SetTooltip(L["Cbox" .. key])
-        SpellSettingsFrames[key]:SetOnClick(MyButtonOnClick)
-        l = SpellSettingsFrames[key]
-        dx = 2
-
-        if SpellSettingsFrames[key .. "txt"] == nil then
-          SpellSettingsFrames[key .. "txt"] = BuffOmat_SpellTab_Scroll_Child:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-        end
-        SpellSettingsFrames[key .. "txt"]:SetText(L["Cbox" .. key])
-        SpellSettingsFrames[key .. "txt"]:SetPoint("TOPLEFT", l, "TOPRIGHT", 7, -1)
-        l = SpellSettingsFrames[key .. "txt"]
-        dx = 7
-
-        last = SpellSettingsFrames[key]
-        dx = 0
-      end
-    end
-
-    SpellSettingsFrames.Settings:Show()
-
-    for i = 0, 8 do
-      SpellSettingsFrames[i]:Show()
-    end
-
-    for i, set in ipairs(settings) do
-      if SpellSettingsFrames[set[1]] then
-        SpellSettingsFrames[set[1]]:Show()
-      end
-      if SpellSettingsFrames[set[1] .. "txt"] then
-        SpellSettingsFrames[set[1] .. "txt"]:Show()
-      end
-    end
-
-    last = SpellSettingsFrames.Settings
-
-  end
-
-end
-
-function BOM.UpdateSpellsTab()
-  if BOM.Spells == nil then
-    return
-  end
-  if InCombatLockdown() then
-    return
-  end
-
-  if not BOM.CreateSpellTab then
-    CreateSpellTab()
-    BOM.CreateSpellTab = true
-  end
-
-  for i, spell in ipairs(BOM.Spells) do
-    spell.frames.Enable:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID], "Enable")
-
-    if BOM.SpellHasClasses(spell) then
-      spell.frames.SelfCast:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID], "SelfCast")
-
-      for ci, class in ipairs(BOM.Tool.Classes) do
-        spell.frames[class]:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID].Class, class)
-
-        if BOM.CurrentProfile.Spell[spell.ConfigID].SelfCast then
-          spell.frames[class]:Disable()
-        else
-          spell.frames[class]:Enable()
-        end
-      end
-
-      spell.frames["tank"]:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID].Class, "tank")
-      spell.frames["pet"]:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID].Class, "pet")
-
-      if BOM.CurrentProfile.Spell[spell.ConfigID].SelfCast then
-        spell.frames["tank"]:Disable()
-        spell.frames["pet"]:Disable()
-      else
-        spell.frames["tank"]:Enable()
-        spell.frames["pet"]:Enable()
-      end
-
-      if BOM.lastTarget ~= nil then
-        spell.frames.target:Enable()
-        spell.frames.target:SetTooltip(L.TTTarget .. "|n" .. BOM.lastTarget)
-        if spell.isBlessing then
-          spell.frames.target:SetVariable(BOM.CurrentProfile.Spell[BOM.BLESSINGID], BOM.lastTarget, spell.ConfigID)
-        else
-          spell.frames.target:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID].ForcedTarget, BOM.lastTarget, true)
-        end
-
-      else
-        spell.frames.target:Disable()
-        spell.frames.target:SetTooltip(L.TTTarget .. "|n" .. L.TTSelectTarget)
-        spell.frames.target:SetVariable()
-      end
-    end
-
-    if spell.isInfo and spell.allowWispher then
-      spell.frames.Wispher:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID], "Wispher")
-    end
-
-    if spell.isWeapon then
-      spell.frames.MainHand:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID], "MainHandEnable")
-      spell.frames.OffHand:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID], "OffHandEnable")
-    end
-
-    if (spell.isTracking or spell.isAura or spell.isSeal) and spell.needForm == nil then
-      if (spell.isTracking and BOM.DBChar.LastTracking == spell.TrackingIcon) or
-              (spell.isAura and spell.ConfigID == BOM.CurrentProfile.LastAura) or
-              (spell.isSeal and spell.ConfigID == BOM.CurrentProfile.LastSeal) then
-        spell.frames.Set:SetState(true)
-      else
-        spell.frames.Set:SetState(false)
-      end
-    end
-  end
-
-  for i, spell in ipairs(BOM.CancelBuffs) do
-    spell.frames.Enable:SetVariable(BOM.CurrentProfile.CancelBuff[spell.ConfigID], "Enable")
-  end
 end
 
 function BOM.MyButton_Update(self)
@@ -1608,30 +1206,33 @@ end
 function BOM.MyButton_SetOnClick(self, func)
   self._privat_OnClick = func
 end
+
 function BOM.MyButton_OnDisable(self)
   self._privat_disabled = true
   BOM.MyButton_Update(self)
 end
+
 function BOM.MyButton_OnEnable(self)
   self._privat_disabled = false
   BOM.MyButton_Update(self)
 end
+
 function BOM.MyButton_OnEnter(self)
   if self._privat_ToolTipLink or self._privat_ToolTipText then
-    GameTooltip_SetDefaultAnchor(BuffOmat_Tooltip, UIParent)
-    BuffOmat_Tooltip:SetOwner(BuffOmat_MainWindow, "ANCHOR_PRESERVE")
-    BuffOmat_Tooltip:ClearLines()
+    GameTooltip_SetDefaultAnchor(BomC_Tooltip, UIParent)
+    BomC_Tooltip:SetOwner(BomC_MainWindow, "ANCHOR_PRESERVE")
+    BomC_Tooltip:ClearLines()
     if self._privat_ToolTipLink then
-      BuffOmat_Tooltip:SetHyperlink(self._privat_ToolTipLink)
+      BomC_Tooltip:SetHyperlink(self._privat_ToolTipLink)
     else
       local add = ""
       if (self._privat_DB and self._privat_Var) then
         add = " " .. (self._privat_state and ONIcon or OFFIcon)
       end
-      BuffOmat_Tooltip:AddLine(self._privat_ToolTipText .. add)
+      BomC_Tooltip:AddLine(self._privat_ToolTipText .. add)
 
     end
-    BuffOmat_Tooltip:Show()
+    BomC_Tooltip:Show()
   end
   if ((self._privat_DB and self._privat_Var) or self._privat_isSecure) and not self._privat_disabled then
     self._iconHighlight:SetTexture(self._icon:GetTexture())
@@ -1644,11 +1245,13 @@ function BOM.MyButton_OnEnter(self)
     end
   end
 end
+
 function BOM.MyButton_OnLeave(self)
-  BuffOmat_Tooltip:Hide()
+  BomC_Tooltip:Hide()
   self._iconHighlight:SetColorTexture(1, 1, 1, 0)
   self._iconHighlight:SetVertexColor(1, 1, 1, 0);
 end
+
 function BOM.MyButton_OnMouseUp(self, button)
   if not self._privat_disabled then
     if self._privat_DB and self._privat_Var then
@@ -1669,10 +1272,12 @@ function BOM.MyButton_OnMouseUp(self, button)
     end
   end
 end
+
 function BOM.MyButton_SetText(self, text)
   self._privat_Text = text
   BOM.MyButton_Update(self)
 end
+
 function BOM.MyButton_OnLoad(self, isSecure)
   self._privat_state = true
   self._privat_disabled = false
@@ -1711,7 +1316,9 @@ function BOM.MyButton_SetState(self, state)
   end
   BOM.MyButton_Update(self)
 end
+
 local defaultcoord = { 0, 1, 0, 1 }
+
 function BOM.MyButton_SetTextures(self, sel, unsel, dis, selCoord, unselCoord, disCoord)
   self._IconSelected = sel
   self._IconUnSelected = unsel
@@ -1745,20 +1352,23 @@ function BOM.MyButton_SetSpell(self, spell)
 end
 
 local MyButtonsFrames = {}
+
 function BOM.CreateMyButton(parent, sel, unsel, dis, selCoord, unselCoord, disCoord)
-  Frame = CreateFrame("frame", nil, parent, "BuffOmat_MyButton")
+  Frame = CreateFrame("frame", nil, parent, "BomC_MyButton")
   BOM.MyButton_OnLoad(Frame)
   Frame:SetTextures(sel, unsel, dis, selCoord, unselCoord, disCoord)
   tinsert(MyButtonsFrames, Frame)
   return Frame
 end
+
 function BOM.CreateMyButtonSecure(parent, sel, unsel, dis, selCoord, unselCoord, disCoord)
-  Frame = CreateFrame("Button", nil, parent, "BuffOmat_MyButtonSecure")
+  Frame = CreateFrame("Button", nil, parent, "BomC_MyButtonSecure")
   BOM.MyButton_OnLoad(Frame, true)
   Frame:SetTextures(sel, unsel, dis, selCoord, unselCoord, disCoord)
   tinsert(MyButtonsFrames, Frame)
   return Frame
 end
+
 function BOM.MyButtonUpdateAll()
   for i, Frame in ipairs(MyButtonsFrames) do
     if Frame.SetState then
@@ -1766,6 +1376,7 @@ function BOM.MyButtonUpdateAll()
     end
   end
 end
+
 function BOM.MyButtonHideAll()
   for i, Frame in ipairs(MyButtonsFrames) do
     Frame:Hide()

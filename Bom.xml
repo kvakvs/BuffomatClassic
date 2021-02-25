@@ -1,10 +1,10 @@
 ﻿<Ui xmlns="http://www.blizzard.com/wow/ui/"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.blizzard.com/wow/ui/">
-  <GameTooltip name="BuffOmat_Tooltip" inherits="GameTooltipTemplate">
+  <GameTooltip name="BomC_Tooltip" inherits="GameTooltipTemplate">
   </GameTooltip>
 
-  <Button name="BuffOmat_MiniButton" inherits="UIPanelButtonTemplate"
+  <Button name="BomC_MiniButton" inherits="UIPanelButtonTemplate"
           virtual="true">
     <NormalFont style="GameFontNormalSmall"/>
     <HighlightFont style="GameFontHighlightSmall"/>
@@ -13,7 +13,7 @@
       <AbsDimension x="20" y="18"/>
     </Size>
   </Button>
-  <Frame name="BuffOmat_MyButton" virtual="true" enableMouse="true"
+  <Frame name="BomC_MyButton" virtual="true" enableMouse="true"
          hidden="true">
     <Size>
       <AbsDimension x="15" y="15"/>
@@ -56,7 +56,7 @@
       </Layer>
     </Layers>
   </Frame>
-  <Button name="BuffOmat_MyButtonSecure" virtual="true" enableMouse="true"
+  <Button name="BomC_MyButtonSecure" virtual="true" enableMouse="true"
           hidden="true" inherits="SecureActionButtonTemplate">
     <Size>
       <AbsDimension x="15" y="15"/>
@@ -99,7 +99,7 @@
       </Layer>
     </Layers>
   </Button>
-  <Button name="BuffOmat_SecureButton" inherits="SecureActionButtonTemplate"
+  <Button name="BomC_SecureButton" inherits="SecureActionButtonTemplate"
           virtual="true">
     <Size>
       <AbsDimension y="22"/>
@@ -153,7 +153,7 @@
   </Button>
 
 
-  <Frame name="BuffOmat_MainWindow" parent="UIParent" hidden="true"
+  <Frame name="BomC_MainWindow" parent="UIParent" hidden="true"
          enableMouse="true" frameStrata="low" clampedToScreen="true">
     <Size>
       <AbsDimension x="256" y="170"/>
@@ -204,7 +204,7 @@
       <!-- headline -->
 
 
-      <Button name="$parent_CloseButton" inherits="BuffOmat_MiniButton"
+      <Button name="$parent_CloseButton" inherits="BomC_MiniButton"
               Text="|TInterface\Buttons\UI-StopButton:0|t">
         <Anchors>
           <Anchor point="TOPRIGHT" relativeTo="$parent"
@@ -221,7 +221,7 @@
         </Scripts>
       </Button>
 
-      <Button name="$parent_SettingsButton" inherits="BuffOmat_MiniButton"
+      <Button name="$parent_SettingsButton" inherits="BomC_MiniButton"
               Text="|TInterface\Buttons\UI-OptionsButton:0|t">
         <Anchors>
           <Anchor point="RIGHT" relativeTo="$parent_CloseButton"
@@ -234,7 +234,7 @@
         </Scripts>
       </Button>
 
-      <Button name="$parent_MacroButton" inherits="BuffOmat_MiniButton"
+      <Button name="$parent_MacroButton" inherits="BomC_MiniButton"
               Text="M">
         <Anchors>
           <Anchor point="RIGHT" relativeTo="$parent_SettingsButton"
@@ -249,7 +249,7 @@
 
       <!-- ListTab -->
 
-      <Frame name="BuffOmat_ListTab" hidden="false">
+      <Frame name="BomC_ListTab" hidden="false">
         <Anchors>
           <Anchor point="TOPLEFT">
             <Offset>
@@ -263,7 +263,7 @@
           </Anchor>
         </Anchors>
         <Frames>
-          <Button name="$parent_Button" inherits="BuffOmat_SecureButton">
+          <Button name="$parent_Button" inherits="BomC_SecureButton">
             <Anchors>
               <Anchor point="BOTTOMLEFT">
                 <Offset>
@@ -319,7 +319,7 @@
       </Frame>
 
       <!-- SpellTab -->
-      <Frame name="BuffOmat_SpellTab" hidden="false">
+      <Frame name="BomC_SpellTab" hidden="false">
         <Anchors>
           <Anchor point="TOPLEFT">
             <Offset>
