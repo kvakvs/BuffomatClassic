@@ -418,11 +418,11 @@ BOM.SpellList = {
   { singleId = 10170, default = false, --Amplify Magic
     singleDuration = 600, classes = { },
     singleFamily = { 1008, 8455, 10169, 10170 } },
-  { singleId = 10220, isSeal = true, default = false, --eisrüstung
+  { singleId = 10220, isSeal = true, default = false, -- Ice Armor / eisrüstung
     singleFamily = { 7302, 7320, 10219, 10220 } },
-  { singleId = 7301, isSeal = true, default = false, --frostrüstung
+  { singleId = 7301, isSeal = true, default = false, -- Frost Armor / frostrüstung
     singleFamily = { 168, 7300, 7301 } },
-  { singleId = 22783, isSeal = true, default = false, --magische rüstung
+  { singleId = 22783, isSeal = true, default = false, -- Mage Armor / magische rüstung
     singleFamily = { 6117, 22782, 22783 } },
   { singleId = 10193, isOwn = true, default = false, --Manaschild - unabhängig von allen.
     singleDuration = 60,
@@ -445,9 +445,9 @@ BOM.SpellList = {
     singleFamily = { 8017, 8018, 8019, 10399, 16314, 16315, 16316 } },
   { singleId = 16362, isSeal = true, default = true, singleDuration = 500, --Windfury
     singleFamily = { 8232, 8235, 10486, 16362 } },
-  { singleId = 10432, isOwn = true, default = true, --Blitzschlagschild
+  { singleId = 10432, isOwn = true, default = true, -- Lightning Shield / Blitzschlagschild
     singleFamily = { 324, 325, 905, 945, 8134, 10431, 10432 } },
-  { singleId = 20777, isResurrection = true, default = true, --Auferstehung
+  { singleId = 20777, isResurrection = true, default = true, -- Resurrection / Auferstehung
     singleFamily = { 2008, 20609, 20610, 20776, 20777 } },
 
   "WARLOCK",
@@ -487,14 +487,14 @@ BOM.SpellList = {
   { singleId = 5118, isAura = true, default = false }, --Aspect of the Cheetah
   { singleId = 13159, isAura = true, default = false }, --Aspect of the pack
 
-  { singleId = 1494, isTracking = true, default = true }, --beast
-  { singleId = 19878, isTracking = true, default = true }, --dämonen
-  { singleId = 19879, isTracking = true, default = true }, --drachkin
-  { singleId = 19880, isTracking = true, default = true }, --elementare
-  { singleId = 19883, isTracking = true, default = true }, --humanoide
-  { singleId = 19882, isTracking = true, default = true }, --riesen
-  { singleId = 19884, isTracking = true, default = true }, --untote
-  { singleId = 19885, isTracking = true, default = true }, --verborgenes
+  { singleId = 1494, isTracking = true, default = true }, -- Track Beast
+  { singleId = 19878, isTracking = true, default = true }, -- Track Demon
+  { singleId = 19879, isTracking = true, default = true }, -- Track Dragonkin
+  { singleId = 19880, isTracking = true, default = true }, -- Track Elemental
+  { singleId = 19883, isTracking = true, default = true }, -- Track Humanoids
+  { singleId = 19882, isTracking = true, default = true }, -- Track Giants / riesen
+  { singleId = 19884, isTracking = true, default = true }, -- Track Undead
+  { singleId = 19885, isTracking = true, default = true }, -- Track Hidden / verborgenes
 
   "PALADIN",
   { singleId = 25780, isOwn = true, default = true }, --Righteous Fury
@@ -534,21 +534,21 @@ BOM.SpellList = {
   { singleId = 19900, isAura = true, default = true, -- Fire Resistance Aura
     singleFamily = { 19891, 19899, 19900 } },
   { singleId = 20218, isAura = true, default = true }, --Sanctity Aura
-  { singleId = 20773, isResurrection = true, default = true, --Auferstehung
+  { singleId = 20773, isResurrection = true, default = true, -- Resurrection / Auferstehung
     singleFamily = { 7328, 10322, 10324, 20772, 20773 } },
 
   { singleId = 20164, isSeal = true, default = false }, -- Sanctity seal
   { singleId = 20165, isSeal = true, default = false }, -- Seal of Light
-  { singleId = 20154, isSeal = true, default = false }, --Seal of Righteousness
-  { singleId = 21084, isSeal = true, default = false }, --Seal of Righteousness
-  { singleId = 20166, isSeal = true, default = false }, --Seal of Wisdom
+  { singleId = 20154, isSeal = true, default = false }, -- Seal of Righteousness
+  { singleId = 21084, isSeal = true, default = false }, -- Seal of Righteousness
+  { singleId = 20166, isSeal = true, default = false }, -- Seal of Wisdom
 
-  { singleId = 5502, isTracking = true, default = true }, --sense undead
+  { singleId = 5502, isTracking = true, default = true }, -- Sense undead
 
   "TRACKING",
-  { singleId = 2383, isTracking = true, default = true }, --kräuter
-  { singleId = 2580, isTracking = true, default = true }, -- erz
-  { singleId = 2481, isTracking = true, default = true }, -- Schatzsuche / Zwerge
+  { singleId = 2383, isTracking = true, default = true }, -- Find Herbs / kräuter
+  { singleId = 2580, isTracking = true, default = true }, -- Find Minerals / erz
+  { singleId = 2481, isTracking = true, default = true }, -- Find Treasure / Schatzsuche / Zwerge
 
   "INFO",
   { singleId = 432, isInfo = true, default = false, --drink
@@ -613,13 +613,6 @@ BOM.SpellList = {
   { singleId = 6650, item = 5654, items = { 5654 }, isBuff = true, isWeapon = true, duration = 1800, default = false }, --Instant Toxin
   { singleId = 13227, item = 10922, items = { 10922, 10921, 10920, 10918 }, isBuff = true, isWeapon = true, duration = 1800, default = false }, --Wound Poison
   { singleId = 11202, item = 3776, items = { 3776, 3775 }, isBuff = true, isWeapon = true, duration = 1800, default = false }, --Crippling Poison
-  --{singleId=,item=,items={},isBuff=true,isWeapon=true,duration=1800,default=false},--
-  --{singleId=,item=,items={},isBuff=true,isWeapon=true,duration=1800,default=false},--
-  --{singleId=,item=,items={},isBuff=true,isWeapon=true,duration=1800,default=false},--
-
-
-  --{singleId=10901, item=8766,isBuff=true, default=false},--
-
 }
 
 
