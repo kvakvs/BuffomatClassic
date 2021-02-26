@@ -311,14 +311,14 @@ for dest, list in pairs(BOM.EnchantList) do
 end
 
 BOM.ItemList = {
-  --{6948},--Ruhestein
-  --{4604},--Waldpilz
+  --{6948}, -- Hearthstone/Ruhestein
+  --{4604}, -- Waldpilz
   --{8079},-- wasser
-  { 5232, 16892, 16893, 16895, 16896 }, -- Seelenstein
+  { 5232, 16892, 16893, 16895, 16896 }, -- Soulstone/Seelenstein
 }
 BOM.ItemListSpell = {
   [8079] = 432, -- wasser
-  [5232] = 20762, [16892] = 20762, [16893] = 20762, [16895] = 20762, [16896] = 20762, -- Seelenstein
+  [5232] = 20762, [16892] = 20762, [16893] = 20762, [16895] = 20762, [16896] = 20762, -- Soulstone/Seelenstein
 }
 BOM.ItemListTarget = {}
 
@@ -351,7 +351,7 @@ end
 
 BOM.BuffIgnoreAll = { 4511 }
 
-local ShapeShiftTravel = { 2645, 783 }--Ghost wolf and travel druid
+local ShapeShiftTravel = { 2645, 783 } --Ghost wolf and travel druid
 
 -- Note: you can add your own spell in the "WTF\Account\<accountname>\SavedVariables\buffOmat.lua"
 -- table CustomSpells
@@ -362,16 +362,16 @@ BOM.SpellList = {
   --{singleId=10938, isOwn=true, default=true, ItemLock={8008}}, -- manastone/debug
 
   ---[[
-  { singleId       = 10938, groupId = 21562, default = true, -- seelenstärke
+  { singleId       = 10938, groupId = 21562, default = true, -- Fortitude / seelenstärke
     singleFamily   = { 1243, 1244, 1245, 2791, 10937, 10938 }, groupFamily = { 21562, 21564 },
     singleDuration = 1800, groupDuration = 3600, NeededGroupItem = { 17028, 17029 },
     classes        = { "WARRIOR", "MAGE", "ROGUE", "DRUID", "HUNTER", "SHAMAN", "PRIEST", "WARLOCK", "PALADIN" } },
   --]]
-  { singleId       = 14819, groupId = 27681, default = true, -- willenstärke
+  { singleId       = 14819, groupId = 27681, default = true, -- Prayer of Spirit / willenstärke
     singleFamily   = { 14752, 14818, 14819, 27841 },
     singleDuration = 1800, groupDuration = 3600, NeededGroupItem = { 17028, 17029 },
     classes        = { "MAGE", "DRUID", "HUNTER", "SHAMAN", "PRIEST", "WARLOCK", "PALADIN" } },
-  { singleId       = 10958, groupId = 27683, default = false, --schattenschutz
+  { singleId       = 10958, groupId = 27683, default = false, --Prayer of Shadow / schattenschutz
     singleFamily   = { 976, 10957, 10958 }, NeededGroupItem = { 17028, 17029 },
     singleDuration = 600, groupDuration = 1200,
     classes        = { "WARRIOR", "MAGE", "ROGUE", "DRUID", "HUNTER", "SHAMAN", "PRIEST", "WARLOCK", "PALADIN" } },
@@ -383,16 +383,16 @@ BOM.SpellList = {
     singleDuration = 30, hasCD = true,
     classes        = { } },
   { singleId     = 19266, default = true, isOwn = true,
-    singleFamily = { 2652, 19261, 19262, 19264, 19265, 19266 } }, --Berührung der Schwäche
-  { singleId     = 10952, default = true, isOwn = true, --inneres Feuer
+    singleFamily = { 2652, 19261, 19262, 19264, 19265, 19266 } }, -- Touch of Weakness / Berührung der Schwäche
+  { singleId     = 10952, default = true, isOwn = true, -- Inner Fire / inneres Feuer
     singleFamily = { 588, 7128, 602, 1006, 10951, 10952 } },
-  { singleId     = 19312, default = true, isOwn = true, --shadowguard
+  { singleId     = 19312, default = true, isOwn = true, -- shadowguard
     singleFamily = { 18137, 19308, 19309, 19310, 19311, 19312 } },
-  { singleId     = 19293, default = true, isOwn = true, --Elune's Grace
+  { singleId     = 19293, default = true, isOwn = true, -- Elune's Grace
     singleFamily = { 2651, 19289, 19291, 19292, 19293 } },
   { singleId = 15473, default = false, isOwn = true },
 
-  { singleId     = 20770, cancelForm = true, isResurrection = true, default = true, --Auferstehung
+  { singleId     = 20770, cancelForm = true, isResurrection = true, default = true, -- Resurrection / Auferstehung
     singleFamily = { 2006, 2010, 10880, 10881, 20770 } },
 
   "DRUID",
@@ -462,7 +462,7 @@ BOM.SpellList = {
     singleFamily   = { 132, 2970, 11743 },
     singleDuration = 600,
     classes        = { "WARRIOR", "MAGE", "ROGUE", "DRUID", "HUNTER", "SHAMAN", "PRIEST", "WARLOCK", "PALADIN" } },
-  { singleId     = 28610, isOwn = true, default = false, --Schattenzauberschutz
+  { singleId     = 28610, isOwn = true, default = false, -- Shadow Ward / Schattenzauberschutz
     singleFamily = { 6229, 11739, 11740, 28610 } },
   { singleId     = 11735, isOwn = true, default = false, -- Demon Armor
     singleFamily = { 706, 1086, 11733, 11734, 11735 } },
@@ -471,9 +471,12 @@ BOM.SpellList = {
   { singleId = 18788, isOwn = true, default = true }, -- Demonic Sacrifice
   { singleId     = 17953, isOwn = true, default = false, ItemLock = { 1254, 13699, 13700, 13701 }, -- Firestone
     singleFamily = { 6366, 17951, 17952, 17953 } },
-  { singleId     = 11730, isOwn = true, default = true, ItemLock = { 5512, 19005, 19004, 5511, 19007, 19006, 5509, 19009, 19008, 5510, 19011, 19010, 9421, 19013, 19012 }, -- Healtstone
+  { singleId     = 11730, isOwn = true, default = true,
+    ItemLock     = { 5512, 19005, 19004, 5511, 19007, 19006, 5509, 19009, 19008, 5510, 19011, 19010,
+                     9421, 19013, 19012 }, -- Healtstone
     singleFamily = { 6201, 6202, 5699, 11729, 11730 } },
-  { singleId     = 20757, isOwn = true, default = true, ItemLock = { 5232, 16892, 16893, 16895, 16896 }, --Soulstone
+  { singleId     = 20757, isOwn = true, default = true,
+    ItemLock     = { 5232, 16892, 16893, 16895, 16896 }, --Soulstone
     singleFamily = { 693, 20752, 20755, 20756, 20757 } },
 
   { singleId = 5500, isTracking = true, default = true }, --Sense Demons
@@ -556,9 +559,12 @@ BOM.SpellList = {
 
   "INFO",
   { singleId     = 432, isInfo = true, default = false, --drink
-    singleFamily = { 430, 431, 432, 1133, 1135, 1137, 22734, 25696, 26475, 26261, 29007, 26473, 10250, 26402 } },
+    singleFamily = { 430, 431, 432, 1133, 1135, 1137, 22734, 25696, 26475, 26261, 29007,
+                     26473, 10250, 26402 } },
   { singleId     = 434, isInfo = true, default = false, --essen
-    singleFamily = { 10256, 1127, 1129, 22731, 5006, 433, 1131, 18230, 18233, 5007, 24800, 5005, 18232, 5004, 435, 434, 18234, 24869, 18229, 25888, 6410, 2639, 24005, 7737, 29073, 26260, 26474, 18231, 10257, 26472, 28616, 25700 } },
+    singleFamily = { 10256, 1127, 1129, 22731, 5006, 433, 1131, 18230, 18233, 5007, 24800, 5005,
+                     18232, 5004, 435, 434, 18234, 24869, 18229, 25888, 6410, 2639, 24005, 7737,
+                     29073, 26260, 26474, 18231, 10257, 26472, 28616, 25700 } },
   { singleId     = 20762, isInfo = true, allowWispher = true, default = false, --Seelenstein
     singleFamily = { 20707, 20762, 20763, 20765, 20764 } },
   --{singleId=10938, isInfo=true, allowWispher=true,default=false,	--ausdauer-antworten!
@@ -601,22 +607,32 @@ BOM.SpellList = {
   { singleId = 17544, item = 13456, isBuff = true, default = false }, --Greater Frost Protection Potion
   { singleId = 17546, item = 13458, isBuff = true, default = false }, --Greater Nature Protection Potion
   { singleId = 17548, item = 13459, isBuff = true, default = false }, --Greater Shadow Protection Potion
-  { singleId = 25123, item = 20748, items = { 20748, 20747, 20745 }, isBuff = true, isWeapon = true, duration = 1800, default = false }, --Brilliant Mana Oil
-  { singleId = 25122, item = 20749, items = { 20749, 20746, 20744, 20750 }, isBuff = true, isWeapon = true, duration = 1800, default = false }, --Brilliant Wizard Oil
+  { singleId = 25123, item = 20748, items = { 20748, 20747, 20745 }, isBuff = true,
+    isWeapon = true, duration = 1800, default = false }, --Brilliant Mana Oil
+  { singleId = 25122, item = 20749, items = { 20749, 20746, 20744, 20750 }, isBuff = true,
+    isWeapon = true, duration = 1800, default = false }, --Brilliant Wizard Oil
   { singleId = 28898, item = 23123, isBuff = true, isWeapon = true, duration = 3600, default = false }, --Blessed Wizard Oil
-  { singleId = 16622, item = 12643, items = { 12643, 7965, 3241, 3240, 3239 }, isBuff = true, isWeapon = true, duration = 1800, default = false }, --Weightstone
+  { singleId = 16622, item = 12643, items = { 12643, 7965, 3241, 3240, 3239 }, isBuff = true,
+    isWeapon = true, duration = 1800, default = false }, --Weightstone
 
-  { singleId = 16138, item = 12404, items = { 12404, 7964, 2871, 2863, 2862 }, isBuff = true, isWeapon = true, duration = 1800, default = false }, --Sharpening Stone
+  { singleId = 16138, item = 12404, items = { 12404, 7964, 2871, 2863, 2862 }, isBuff = true,
+    isWeapon = true, duration = 1800, default = false }, --Sharpening Stone
 
   { singleId = 28891, item = 23122, isBuff = true, isWeapon = true, duration = 3600, default = false }, --Consecrated Sharpening Stone
   { singleId = 22756, item = 18262, isBuff = true, isWeapon = true, duration = 1800, default = false }, --Elemental Sharpening Stone
 
-  { singleId = 25351, item = 20844, items = { 20844, 8985, 8984, 2893, 2892 }, isBuff = true, isWeapon = true, duration = 1800, default = false }, --Deadly Poison
-  { singleId = 11399, item = 9186, items = { 9186, 6951, 5237 }, isBuff = true, isWeapon = true, duration = 1800, default = false }, --Mind-numbing Poison
-  { singleId = 11340, item = 8928, items = { 8928, 8927, 8926, 6950, 6949, 6947 }, isBuff = true, isWeapon = true, duration = 1800, default = false }, --Instant Poison
-  { singleId = 6650, item = 5654, items = { 5654 }, isBuff = true, isWeapon = true, duration = 1800, default = false }, --Instant Toxin
-  { singleId = 13227, item = 10922, items = { 10922, 10921, 10920, 10918 }, isBuff = true, isWeapon = true, duration = 1800, default = false }, --Wound Poison
-  { singleId = 11202, item = 3776, items = { 3776, 3775 }, isBuff = true, isWeapon = true, duration = 1800, default = false }, --Crippling Poison
+  { singleId = 25351, item = 20844, items = { 20844, 8985, 8984, 2893, 2892 }, isBuff = true,
+    isWeapon = true, duration = 1800, default = false }, --Deadly Poison
+  { singleId = 11399, item = 9186, items = { 9186, 6951, 5237 }, isBuff = true, isWeapon = true,
+    duration = 1800, default = false }, --Mind-numbing Poison
+  { singleId = 11340, item = 8928, items = { 8928, 8927, 8926, 6950, 6949, 6947 }, isBuff = true,
+    isWeapon = true, duration = 1800, default = false }, --Instant Poison
+  { singleId = 6650, item = 5654, items = { 5654 }, isBuff = true, isWeapon = true,
+    duration = 1800, default = false }, --Instant Toxin
+  { singleId = 13227, item = 10922, items = { 10922, 10921, 10920, 10918 }, isBuff = true,
+    isWeapon = true, duration = 1800, default = false }, --Wound Poison
+  { singleId = 11202, item = 3776, items = { 3776, 3775 }, isBuff = true, isWeapon = true,
+    duration = 1800, default = false }, --Crippling Poison
 }
 
 
@@ -761,7 +777,8 @@ local function SpellLink(spell)
   return SpellLinkFormat(spellId, icon, name)
 end
 
-local SpellsIncluded
+local SpellsIncluded = false
+
 function BOM.GetSpells()
   for i, profil in ipairs(BOM.ProfileNames) do
     BOM.DBChar[profil].Spell = BOM.DBChar[profil].Spell or {}
@@ -771,9 +788,11 @@ function BOM.GetSpells()
 
   if not SpellsIncluded then
     SpellsIncluded = true
+
     for x, entry in ipairs(BomSharedState.CustomSpells) do
       tinsert(BOM.SpellList, BOM.Tool.CopyTable(entry))
     end
+
     for x, entry in ipairs(BomSharedState.CustomCancelBuff) do
       tinsert(BOM.CancelBuff, BOM.Tool.CopyTable(entry))
     end
@@ -789,7 +808,8 @@ function BOM.GetSpells()
   BOM.DB.Cache = BOM.DB.Cache or {}
   BOM.DB.Cache.Item = BOM.DB.Cache.Item or {}
 
-  if BOM.ArgentumDawn.Link == nil or BOM.Carrot.Link == nil then
+  if BOM.ArgentumDawn.Link == nil
+          or BOM.Carrot.Link == nil then
     do
       local name, rank, icon, castTime, minRange, maxRange, spellId = GetSpellInfo(BOM.ArgentumDawn.spell)
       BOM.ArgentumDawn.Link = SpellLinkFormat(spellId, icon, name, rank)
@@ -799,9 +819,9 @@ function BOM.GetSpells()
   end
 
   for i, spell in ipairs(BOM.CancelBuffs) do
-
     -- save "ConfigID"
     spell.ConfigID = spell.ConfigID or spell.singleId
+
     if spell.singleFamily then
       for sindex, sID in ipairs(spell.singleFamily) do
         BOM.SpellIdtoConfig[sID] = spell.ConfigID
@@ -826,9 +846,7 @@ function BOM.GetSpells()
   end
 
   for i, spell in ipairs(BOM.SpellList) do
-
     if type(spell) == "table" then
-
       -- save "ConfigID"
       spell.ConfigID = spell.ConfigID or spell.singleId
       spell.SkipList = {}
@@ -845,11 +863,13 @@ function BOM.GetSpells()
           end
         end
       end
+
       if spell.singleId then
         BOM.SpellIdtoConfig[spell.singleId] = spell.ConfigID
         BOM.SpellIdIsSingle[spell.singleId] = true
         BOM.ConfigToSpell[spell.singleId] = spell
       end
+
       if spell.groupFamily then
         for sindex, sID in ipairs(spell.groupFamily) do
           BOM.SpellIdtoConfig[sID] = spell.ConfigID
@@ -859,41 +879,57 @@ function BOM.GetSpells()
           end
         end
       end
+
       if spell.groupId then
         BOM.SpellIdtoConfig[spell.groupId] = spell.ConfigID
         BOM.ConfigToSpell[spell.groupId] = spell
       end
 
       -- GetSpellNames and set default duration
-      if spell.singleId and not spell.isBuff then
+      if spell.singleId
+              and not spell.isBuff
+      then
         local name, rank, icon, castTime, minRange, maxRange, spellId = GetSpellInfo(spell.singleId)
         spell.single = name
         rank = GetSpellSubtext(spell.singleId) or ""
         spell.singleLink = SpellLinkFormat(spellId, icon, name, rank)
         spell.Icon = icon
+
         if spell.isTracking then
           spell.TrackingIcon = icon
         end
-        if not spell.isInfo and not spell.isBuff and spell.singleDuration and BOM.DB.Duration[name] == nil and IsSpellKnown(spell.singleId) then
+
+        if not spell.isInfo
+                and not spell.isBuff
+                and spell.singleDuration
+                and BOM.DB.Duration[name] == nil
+                and IsSpellKnown(spell.singleId) then
           BOM.DB.Duration[name] = spell.singleDuration
         end
       end
+
       if spell.groupId then
         local name, rank, icon, castTime, minRange, maxRange, spellId = GetSpellInfo(spell.groupId)
         spell.group = name
         rank = GetSpellSubtext(spell.groupId) or ""
         spell.groupLink = SpellLinkFormat(spellId, icon, name, rank)
-        if spell.groupDuration and BOM.DB.Duration[name] == nil and IsSpellKnown(spell.groupId) then
+
+        if spell.groupDuration
+                and BOM.DB.Duration[name] == nil
+                and IsSpellKnown(spell.groupId)
+        then
           BOM.DB.Duration[name] = spell.groupDuration
         end
       end
 
       -- has Spell? Manacost?
-      local add
+      local add = false
+
       if IsSpellKnown(spell.singleId) then
         add = true
         spell.singleMana = 0
         local cost = GetSpellPowerCost(spell.single)
+
         if type(cost) == "table" then
           for i = 1, #cost do
             if cost[i] and cost[i].name == "MANA" then
@@ -902,10 +938,14 @@ function BOM.GetSpells()
           end
         end
       end
-      if spell.group and IsSpellKnown(spell.groupId) then
+
+      if spell.group
+              and IsSpellKnown(spell.groupId)
+      then
         add = true
         spell.groupMana = 0
         local cost = GetSpellPowerCost(spell.group)
+
         if type(cost) == "table" then
           for i = 1, #cost do
             if cost[i] and cost[i].name == "MANA" then
@@ -918,11 +958,13 @@ function BOM.GetSpells()
       if spell.isBuff then
         if not spell.isScanned then
           local itemName, itemLink, _, _, _, _, _, _, _, itemIcon, _, _, _, _, _, _, _ = GetItemInfo(spell.item)
+
           if (not itemName or not itemLink or not itemIcon) and BOM.DB.Cache.Item[spell.item] then
             itemName, itemLink, itemIcon = unpack(BOM.DB.Cache.Item[spell.item])
           elseif (not itemName or not itemLink or not itemIcon) and BOM.ItemCache[spell.item] then
             itemName, itemLink, itemIcon = unpack(BOM.ItemCache[spell.item])
           end
+
           if itemName and itemLink and itemIcon then
             add = true
             spell.single = itemName
@@ -943,14 +985,15 @@ function BOM.GetSpells()
         if spell.items == nil then
           spell.items = { spell.item }
         end
-
-      end
+      end -- if buff
 
       if spell.isInfo then
         add = true
       end
 
-      -- Add
+      --|--------------------------
+      --| Add
+      --|--------------------------
       if add then
         tinsert(BOM.Spells, spell)
         BOM.Tool.iMerge(BOM.AllSpellIds, spell.singleFamily, spell.groupFamily, spell.singleId, spell.groupId)
@@ -982,21 +1025,19 @@ function BOM.GetSpells()
           else
             BOM.DBChar[profil].Spell[spell.ConfigID].Class = BOM.DBChar[profil].Spell[spell.ConfigID].Class or {}
             BOM.DBChar[profil].Spell[spell.ConfigID].ForcedTarget = BOM.DBChar[profil].Spell[spell.ConfigID].ForcedTarget or {}
-
           end
 
-        end
-      end
-    end
-  end
-  --BOM.DBChar.DEBUGOUT=txt
+        end -- for all profile names
+      end -- if spell is OK to be added
+    end -- if spell is a 'table' type (dictionary)
+  end -- for all BOM-supported spells
 end
 
 local MemberCache = {}
 
 local function GetMember(unitid, NameGroup, NameRole)
-
   local name = (UnitFullName(unitid))
+
   if name == nil then
     return nil
   end
@@ -1006,6 +1047,7 @@ local function GetMember(unitid, NameGroup, NameRole)
 
   local guid = UnitGUID(unitid)
   local _, class, link
+
   if guid then
     _, class = GetPlayerInfoByGUID(guid)
     if class then
@@ -1039,6 +1081,7 @@ local function NumMember()
   local countTo
   local prefix
   local count
+
   if IsInRaid() then
     countTo = 40
     prefix = "raid"

@@ -29,7 +29,8 @@ local function CreateSpellTab()
     spell.frames = spell.frames or {}
 
     if spell.frames.info == nil then
-      spell.frames.info = BOM.CreateMyButton(BomC_SpellTab_Scroll_Child, spell.Icon, nil, nil, { 0.1, 0.9, 0.1, 0.9 })
+      spell.frames.info = BOM.CreateMyButton(
+              BomC_SpellTab_Scroll_Child, spell.Icon, nil, nil, { 0.1, 0.9, 0.1, 0.9 })
     end
 
     if spell.isBuff then
@@ -95,7 +96,9 @@ local function CreateSpellTab()
 
       for ci, class in ipairs(BOM.Tool.Classes) do
         if spell.frames[class] == nil then
-          spell.frames[class] = BOM.CreateMyButton(BomC_SpellTab_Scroll_Child, BOM.IconClasses, BOM.IconEmpty, BOM.IconDisabled, BOM.IconClassesCoord[class])
+          spell.frames[class] = BOM.CreateMyButton(
+                  BomC_SpellTab_Scroll_Child, BOM.IconClasses, BOM.IconEmpty,
+                  BOM.IconDisabled, BOM.IconClassesCoord[class])
         end
 
         spell.frames[class]:SetPoint("TOPLEFT", l, "TOPRIGHT", dx, 0)
@@ -111,7 +114,9 @@ local function CreateSpellTab()
       end
 
       if spell.frames["tank"] == nil then
-        spell.frames["tank"] = BOM.CreateMyButton(BomC_SpellTab_Scroll_Child, BOM.IconTank, BOM.IconEmpty, BOM.IconDisabled, BOM.IconTankCoord)
+        spell.frames["tank"] = BOM.CreateMyButton(
+                BomC_SpellTab_Scroll_Child, BOM.IconTank, BOM.IconEmpty, BOM.IconDisabled,
+                BOM.IconTankCoord)
       end
 
       spell.frames["tank"]:SetPoint("TOPLEFT", l, "TOPRIGHT", dx, 0)
@@ -121,7 +126,9 @@ local function CreateSpellTab()
       l = spell.frames["tank"]
 
       if spell.frames["pet"] == nil then
-        spell.frames["pet"] = BOM.CreateMyButton(BomC_SpellTab_Scroll_Child, BOM.IconPet, BOM.IconEmpty, BOM.IconDisabled, BOM.IconPetCoord)
+        spell.frames["pet"] = BOM.CreateMyButton(
+                BomC_SpellTab_Scroll_Child, BOM.IconPet, BOM.IconEmpty, BOM.IconDisabled,
+                BOM.IconPetCoord)
       end
 
       spell.frames["pet"]:SetPoint("TOPLEFT", l, "TOPRIGHT", dx, 0)
@@ -133,7 +140,8 @@ local function CreateSpellTab()
       dx = 7
 
       if spell.frames.target == nil then
-        spell.frames.target = BOM.CreateMyButton(BomC_SpellTab_Scroll_Child, BOM.IconTargetOn, BOM.IconTargetOff, BOM.IconDisabled)
+        spell.frames.target = BOM.CreateMyButton(
+                BomC_SpellTab_Scroll_Child, BOM.IconTargetOn, BOM.IconTargetOff, BOM.IconDisabled)
       end
 
       spell.frames.target:SetPoint("TOPLEFT", l, "TOPRIGHT", dx, 0)
@@ -147,7 +155,8 @@ local function CreateSpellTab()
 
     if (spell.isTracking or spell.isAura or spell.isSeal) and spell.needForm == nil then
       if spell.frames.Set == nil then
-        spell.frames.Set = BOM.CreateMyButtonSecure(BomC_SpellTab_Scroll_Child, BOM.IconChecked, BOM.IconUnChecked)
+        spell.frames.Set = BOM.CreateMyButtonSecure(
+                BomC_SpellTab_Scroll_Child, BOM.IconChecked, BOM.IconUnChecked)
       end
 
       spell.frames.Set:SetPoint("TOPLEFT", l, "TOPRIGHT", dx, 0)
@@ -172,7 +181,9 @@ local function CreateSpellTab()
 
     if spell.isWeapon then
       if spell.frames.MainHand == nil then
-        spell.frames.MainHand = BOM.CreateMyButton(BomC_SpellTab_Scroll_Child, BOM.IconMainHandOn, BOM.IconMainHandOff, BOM.IconDisabled, BOM.IconMainHandOnCoord)
+        spell.frames.MainHand = BOM.CreateMyButton(
+                BomC_SpellTab_Scroll_Child, BOM.IconMainHandOn, BOM.IconMainHandOff,
+                BOM.IconDisabled, BOM.IconMainHandOnCoord)
       end
 
       spell.frames.MainHand:SetPoint("TOPLEFT", l, "TOPRIGHT", dx, 0)
@@ -183,7 +194,9 @@ local function CreateSpellTab()
       dx = 2
 
       if spell.frames.OffHand == nil then
-        spell.frames.OffHand = BOM.CreateMyButton(BomC_SpellTab_Scroll_Child, BOM.IconSecondaryHandOn, BOM.IconSecondaryHandOff, BOM.IconDisabled, BOM.IconSecondaryHandOnCoord)
+        spell.frames.OffHand = BOM.CreateMyButton(
+                BomC_SpellTab_Scroll_Child, BOM.IconSecondaryHandOn, BOM.IconSecondaryHandOff,
+                BOM.IconDisabled, BOM.IconSecondaryHandOnCoord)
       end
 
       spell.frames.OffHand:SetPoint("TOPLEFT", l, "TOPRIGHT", dx, 0)
@@ -297,7 +310,8 @@ local function CreateSpellTab()
   if last then
 
     if SpellSettingsFrames.Settings == nil then
-      SpellSettingsFrames.Settings = BOM.CreateMyButton(BomC_SpellTab_Scroll_Child, BOM.IconGear, nil, nil, { 0.1, 0.9, 0.1, 0.9 })
+      SpellSettingsFrames.Settings = BOM.CreateMyButton(
+              BomC_SpellTab_Scroll_Child, BOM.IconGear, nil, nil, { 0.1, 0.9, 0.1, 0.9 })
     end
 
     SpellSettingsFrames.Settings:SetTooltip(L.BtnSettings)
@@ -308,7 +322,8 @@ local function CreateSpellTab()
     local l = last
 
     if SpellSettingsFrames[0] == nil then
-      SpellSettingsFrames[0] = BOM.CreateMyButton(BomC_SpellTab_Scroll_Child, BOM.IconGroup, nil, nil, { 0.1, 0.9, 0.1, 0.9 })
+      SpellSettingsFrames[0] = BOM.CreateMyButton(
+              BomC_SpellTab_Scroll_Child, BOM.IconGroup, nil, nil, { 0.1, 0.9, 0.1, 0.9 })
     end
     SpellSettingsFrames[0]:SetTooltip(L.HeaderWatchGroup)
     SpellSettingsFrames[0]:SetPoint("TOPLEFT", l, "TOPRIGHT", dx, 0)
@@ -337,7 +352,9 @@ local function CreateSpellTab()
 
       if BOM["Icon" .. key .. "On"] then
         if SpellSettingsFrames[key] == nil then
-          SpellSettingsFrames[key] = BOM.CreateMyButton(BomC_SpellTab_Scroll_Child, BOM["Icon" .. key .. "On"], BOM["Icon" .. key .. "Off"], nil, BOM["Icon" .. key .. "OnCoord"], BOM["Icon" .. key .. "OffCoord"])
+          SpellSettingsFrames[key] = BOM.CreateMyButton(
+                  BomC_SpellTab_Scroll_Child, BOM["Icon" .. key .. "On"], BOM["Icon" .. key .. "Off"],
+                  nil, BOM["Icon" .. key .. "OnCoord"], BOM["Icon" .. key .. "OffCoord"])
         end
 
         SpellSettingsFrames[key]:SetPoint("TOPLEFT", last, "BOTTOMLEFT", 0, -2)
@@ -369,8 +386,10 @@ local function CreateSpellTab()
 
       if not BOM["Icon" .. key .. "On"] then
         if SpellSettingsFrames[key] == nil then
-          SpellSettingsFrames[key] = BOM.CreateMyButton(BomC_SpellTab_Scroll_Child, BOM.IconSettingOn, BOM.IconSettingOff, nil, nil, nil)
+          SpellSettingsFrames[key] = BOM.CreateMyButton(
+                  BomC_SpellTab_Scroll_Child, BOM.IconSettingOn, BOM.IconSettingOff, nil, nil, nil)
         end
+
         SpellSettingsFrames[key]:SetPoint("TOPLEFT", last, "BOTTOMLEFT", dx, -2)
         SpellSettingsFrames[key]:SetVariable(BOM.DB, key)
         SpellSettingsFrames[key]:SetTooltip(L["Cbox" .. key])
