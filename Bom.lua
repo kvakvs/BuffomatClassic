@@ -58,9 +58,12 @@ local CombatEventStop = { "PLAYER_REGEN_ENABLED" }
 local CombatEventStart = { "PLAYER_REGEN_DISABLED" }
 local LoadingScreenStartEvent = { "LOADING_SCREEN_ENABLED", "PLAYER_LEAVING_WORLD" }
 local LoadingScreenStopEvent = { "PLAYER_ENTERING_WORLD", "LOADING_SCREEN_DISABLED" }
-local UpdateOnEvent = { "UPDATE_SHAPESHIFT_FORM", "UNIT_AURA", "READY_CHECK", "PLAYER_ALIVE", "PLAYER_UNGHOST", "INCOMING_RESURRECT_CHANGED", "UNIT_INVENTORY_CHANGED" }
+local UpdateOnEvent = { "UPDATE_SHAPESHIFT_FORM", "UNIT_AURA", "READY_CHECK",
+                        "PLAYER_ALIVE", "PLAYER_UNGHOST", "INCOMING_RESURRECT_CHANGED",
+                        "UNIT_INVENTORY_CHANGED" }
 local BagOnEvent = { "BAG_UPDATE_DELAYED", "TRADE_CLOSED" }
-local PartyChangeEvent = { "GROUP_JOINED", "GROUP_ROSTER_UPDATE", "RAID_ROSTER_UPDATE", "GROUP_LEFT" }
+local PartyChangeEvent = { "GROUP_JOINED", "GROUP_ROSTER_UPDATE",
+                           "RAID_ROSTER_UPDATE", "GROUP_LEFT" }
 local SpellChangedEvent = { "SPELLS_CHANGED", "LEARNED_SPELL_IN_TAB" }
 
 --- Error messages which will make player stand if sitting.
@@ -102,9 +105,11 @@ function BOM.Popup(self, minimap)
   if BOM.DBChar.UseProfiles then
     BOM.PopupDynamic:SubMenu(L["HeaderProfiles"], "subProfiles")
     BOM.PopupDynamic:AddItem(L["profile_auto"], false, BOM.ChooseProfile, "auto")
+
     for _i, profile in pairs(BOM.ProfileNames) do
       BOM.PopupDynamic:AddItem(L["profile_" .. profile], false, BOM.ChooseProfile, profile)
     end
+
     BOM.PopupDynamic:SubMenu()
   end
 
@@ -112,18 +117,24 @@ function BOM.Popup(self, minimap)
 
   for i, spell in ipairs(BOM.Spells) do
     if not spell.isBuff then
-      BOM.PopupDynamic:AddItem(spell.singleLink or spell.single, "keep", BOM.CurrentProfile.Spell[spell.ConfigID], "Enable")
+      BOM.PopupDynamic:AddItem(spell.singleLink or spell.single,
+              "keep",
+              BOM.CurrentProfile.Spell[spell.ConfigID],
+              "Enable")
     end
   end
+
   if inBuffGroup then
     BOM.PopupDynamic:SubMenu()
   end
 
   BOM.PopupDynamic:AddItem()
   BOM.PopupDynamic:SubMenu(L.BtnSettings, "subSettings")
+
   for i, set in ipairs(BOM.BehaviourSettings) do
     BOM.PopupDynamic:AddItem(PopupDB(BOM.DB, set[1]))
   end
+
   BOM.PopupDynamic:SubMenu()
 
   BOM.PopupDynamic:AddItem()
@@ -209,6 +220,7 @@ function BOM.OptionsInit()
   BOM.Options.AddSpace()
   BOM.Options.AddCheckBox(BOM.DBChar, "UseProfiles", false, L["CboxUseProfiles"])
   BOM.Options.AddSpace()
+
   for i, set in ipairs(BOM.BehaviourSettings) do
     BOM_CheckBox(set[1], set[2])
   end
@@ -237,22 +249,23 @@ function BOM.OptionsInit()
 
   local locales = BOM.locales.enEN
   local t = {}
+
   for key, value in pairs(locales) do
     table.insert(t, key)
   end
+
   table.sort(t)
+
   for i, key in ipairs(t) do
     local col = L[key] ~= locales[key] and "|cffffffff" or "|cffff4040"
     local txt = L[key .. "_org"] ~= "[" .. key .. "_org]" and L[key .. "_org"] or L[key]
 
     BOM.Options.AddEditBox(BOM.DB.CustomLocales, key, "", col .. "[" .. key .. "]", 450, 200, false, locales[key], txt)
-
-
   end
+
   BOM.Options.SetScale(1)
 
   -- About
-
   local panel = BOM.Options.AddPanel(L.PanelAbout, false, true)
   panel:SetHyperlinksEnabled(true);
   panel:SetScript("OnHyperlinkEnter", BOM.EnterHyperlink)
@@ -289,6 +302,7 @@ function BOM.OptionsInit()
 
   BOM.Options.AddCategory(L.HeaderSupportedSpells)
   BOM.Options.Indent(20)
+
   for i, spell in ipairs(BOM.SpellList) do
     if type(spell) == "table" then
       spell.optionText = BOM.Options.AddText("<placeholder>")
@@ -306,6 +320,7 @@ function BOM.OptionsInit()
   BOM.Options.Indent(-10)
   BOM.Options.AddCategory(L["Header_CANCELBUFF"])
   BOM.Options.Indent(10)
+
   for i, spell in ipairs(BOM.CancelBuffs) do
     spell.optionText = BOM.Options.AddText("<placeholder>")
   end
@@ -318,15 +333,19 @@ function BOM.OptionsInsertSpells()
   for i, spell in ipairs(BOM.SpellList) do
     if type(spell) == "table" and spell.optionText then
       if spell.groupId then
-        BOM.Options.EditText(spell.optionText, (spell.singleLink or spell.single) .. " / " .. (spell.groupLink or spell.group))
+        BOM.Options.EditText(spell.optionText,
+                (spell.singleLink or spell.single) .. " / " .. (spell.groupLink or spell.group))
       else
-        BOM.Options.EditText(spell.optionText, (spell.singleLink or spell.single or spell.ConfigID))
+        BOM.Options.EditText(spell.optionText,
+                (spell.singleLink or spell.single or spell.ConfigID))
       end
     end
   end
+
   for i, spell in ipairs(BOM.CancelBuffs) do
     if spell.optionText then
-      BOM.Options.EditText(spell.optionText, (spell.singleLink or spell.single or spell.ConfigID))
+      BOM.Options.EditText(spell.optionText,
+              (spell.singleLink or spell.single or spell.ConfigID))
     end
   end
 
@@ -421,6 +440,7 @@ function BOM.Init()
   BOM.LocalizationInit()
 
   local x, y, w, h = BOM.DB.X, BOM.DB.Y, BOM.DB.Width, BOM.DB.Height
+
   if not x or not y or not w or not h then
     BOM.SaveWindowPosition()
   else
@@ -489,15 +509,17 @@ function BOM.Init()
 
   BOM.PopupDynamic = BOM.Tool.CreatePopup(BOM.OptionsUpdate)
 
-  BOM.MinimapButton.Init(BOM.DB.Minimap, BOM.FullIcon,
+  BOM.MinimapButton.Init(
+          BOM.DB.Minimap,
+          BOM.FullIcon,
           function(self, button)
             if button == "LeftButton" then
               BOM.ToggleWindow()
             else
               BOM.Popup(self.button, true)
             end
-          end
-  , BOM.Title)
+          end,
+          BOM.Title)
 
   BomC_MainWindow_Title:SetText(string.format(BOM.TxtEscapeIcon, BOM.FullIcon) .. " " .. BOM.Title .. " - " .. L.profile_solo)
   --BomC_ListTab_Button:SetText(L["BtnGetMacro"])
@@ -522,7 +544,7 @@ function BOM.Init()
   end
 
   _G["BINDING_NAME_MACRO Buff'o'mat"] = L["BtnPerformeBuff"]
-  _G["BINDING_HEADER_BUFFOMATHEADER"] = "Buffomat Classic"
+  _G["BINDING_HEADER_BUFFOMATHEADER"] = "Buffomat"
 
   print("|cFFFF1C1C Loaded: " .. GetAddOnMetadata(TOCNAME, "Title") .. " "
           .. GetAddOnMetadata(TOCNAME, "Version")

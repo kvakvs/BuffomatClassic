@@ -4,10 +4,12 @@ local MinimapButton = Addon.MinimapButton
 
 local function BottomZoom(button)
   local deltaX, deltaY = 0, 0
+
   if not button.Lib_GPI_MinimapButton.isMouseDown then
     deltaX = 0.05
     deltaY = 0.05
   end
+
   button.Lib_GPI_MinimapButton.icon:SetTexCoord(deltaX, 1 - deltaX, deltaY, 1 - deltaY)
 end
 
@@ -19,6 +21,7 @@ local function onUpdate(button)
   px, py = px / scale, py / scale
   local dx, dy = px - mx, py - my
   local dist = math.sqrt(dx * dx + dy * dy) / w
+
   if button.Lib_GPI_MinimapButton.db.lockDistance then
     dist = 1
   else
@@ -54,9 +57,11 @@ local function onDragStop(button)
 end
 
 local function onEnter(button)
-  if button.Lib_GPI_MinimapButton.isDraggingButton or not button.Lib_GPI_MinimapButton.Tooltip then
+  if button.Lib_GPI_MinimapButton.isDraggingButton
+          or not button.Lib_GPI_MinimapButton.Tooltip then
     return
   end
+
   GameTooltip:SetOwner(button, "ANCHOR_BOTTOMLEFT", 0, 0)
   GameTooltip:AddLine(button.Lib_GPI_MinimapButton.Tooltip)
   GameTooltip:Show()
@@ -68,6 +73,7 @@ end
 
 local function onClick(button, b)
   GameTooltip:Hide()
+
   if button.Lib_GPI_MinimapButton.onClick then
     button.Lib_GPI_MinimapButton.onClick(button.Lib_GPI_MinimapButton, b)
   end
@@ -178,14 +184,18 @@ function MinimapButton.UpdatePosition()
   local y = math.sin(angle)
   local x = math.cos(angle)
   local q = 1;
+
   if x < 0 then
     q = q + 1;        -- lower
   end
+
   if y > 0 then
     q = q + 2;        -- right
   end
+
   local minimapShape = GetMinimapShape and GetMinimapShape() or "ROUND"
   local quadTable = MinimapShapes[minimapShape];
+
   if quadTable[q] then
     x = x * w;
     y = y * h;
@@ -195,6 +205,7 @@ function MinimapButton.UpdatePosition()
     local diagRadius = math.sqrt(2 * (h) ^ 2) - rounding
     y = math.max(-h, math.min(y * diagRadius, h))
   end
+
   MinimapButton.button:SetPoint("CENTER", Minimap, "CENTER", x, y)
 
   if MinimapButton.db.visible then

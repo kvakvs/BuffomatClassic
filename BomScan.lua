@@ -1745,7 +1745,7 @@ local PlayerMana
 
 local function CatchSpell(cost, id, link, member, spell)
   if cost > PlayerMana then
-    return
+    return -- ouch
   end
 
   if not spell.isResurrection and member.isDead then
@@ -1835,7 +1835,10 @@ function BOM.UpdateScan()
     InDisabled = not BOM.DB.InPVP
     chooseProfile = "battleground"
 
-  elseif instanceType == "party" or instanceType == "raid" or instanceType == "scenario" then
+  elseif instanceType == "party"
+          or instanceType == "raid"
+          or instanceType == "scenario"
+  then
     InDisabled = not BOM.DB.InInstance
   else
     InDisabled = not BOM.DB.InWorld
@@ -1873,6 +1876,7 @@ function BOM.UpdateScan()
   if BOM.ForceUpdate then
     --reset tracking
     BOM.ForceTracking = nil
+
     for i, spell in ipairs(BOM.Spells) do
       if spell.isTracking then
         if BOM.CurrentProfile.Spell[spell.ConfigID].Enable then
@@ -1893,9 +1897,10 @@ function BOM.UpdateScan()
             BOM.DBChar.LastTracking = nil
             BOM.UpdateSpellsTab()
           end
-        end
-      end
-    end
+        end -- if spell.enable
+      end -- if tracking
+    end -- for all spells
+
     if BOM.ForceTracking == nil then
       BOM.ForceTracking = BOM.DBChar.LastTracking
     end
@@ -1919,9 +1924,9 @@ function BOM.UpdateScan()
               BOM.ActivSeal = spell.ConfigID
             end
           end
-        end
-      end
-    end
+        end -- if is aura
+      end -- if player.buffs[config.id]
+    end -- for all spells
 
     --reset aura/seal
     for i, spell in ipairs(BOM.Spells) do
@@ -1938,7 +1943,8 @@ function BOM.UpdateScan()
             BOM.CurrentProfile.LastAura = nil
             BOM.UpdateSpellsTab()
           end
-        end
+        end -- if currentprofile.spell.enable
+
       elseif spell.isSeal then
         if BOM.CurrentProfile.Spell[spell.ConfigID].Enable then
           if BOM.ActivSeal == spell.ConfigID
@@ -1952,8 +1958,8 @@ function BOM.UpdateScan()
             BOM.CurrentProfile.LastSeal = nil
             BOM.UpdateSpellsTab()
           end
-        end
-      end
+        end -- if currentprofile.spell.enable
+      end -- if is aura
     end
 
     -- who needs a buff!
@@ -1961,21 +1967,20 @@ function BOM.UpdateScan()
     for i, spell in ipairs(BOM.Spells) do
       SomeBodyDeath = BOM.GetNeedBuff(party, spell, playerMember) or SomeBodyDeath
     end
+
     BOM.OldSomeBodyDeath = SomeBodyDeath
   else
     SomeBodyDeath = BOM.OldSomeBodyDeath
   end
 
-
   -- cancel buffs
   for i, spell in ipairs(BOM.CancelBuffs) do
     if BOM.CurrentProfile.CancelBuff[spell.ConfigID].Enable
-            and not spell.OnlyCombat then
+            and not spell.OnlyCombat
+    then
       if playerMember.buffs[spell.ConfigID] then
         print(BOM.MSGPREFIX,
-                string.format(L.MsgCancelBuff,
-                        spell.singleLink or spell.single,
-                        UnitName(playerMember.buffs[spell.ConfigID].source or "") or ""))
+                string.format(L.MsgCancelBuff, spell.singleLink or spell.single, UnitName(playerMember.buffs[spell.ConfigID].source or "") or ""))
         BOM.CancelBuff(spell.singleFamily)
       end
     end
@@ -1995,13 +2000,17 @@ function BOM.UpdateScan()
   local inRange = false
 
   for spellIndex, spell in ipairs(BOM.Spells) do
-
-    if spell.isInfo and BOM.CurrentProfile.Spell[spell.ConfigID].Wispher then
-      if spell.wasPlayerActiv and not spell.playerActiv then
+    if spell.isInfo
+            and BOM.CurrentProfile.Spell[spell.ConfigID].Wispher
+    then
+      if spell.wasPlayerActiv
+              and not spell.playerActiv then
         spell.wasPlayerActiv = false
         local name = UnitName(spell.buffSource or "")
+
         if name then
-          SendChatMessage(BOM.MSGPREFIX .. string.format(L.MsgSpellExpired, spell.single), "WHISPER", nil, name)
+          SendChatMessage(BOM.MSGPREFIX .. string.format(L.MsgSpellExpired, spell.single),
+                  "WHISPER", nil, name)
         end
       end
     end
@@ -2009,11 +2018,15 @@ function BOM.UpdateScan()
     if BOM.CurrentProfile.Spell[spell.ConfigID].Enable
             and (spell.needForm == nil or GetShapeshiftFormID() == spell.needForm) then
 
-      if #spell.NeedMember > 0 and not spell.isInfo and not spell.isBuff then
+      if #spell.NeedMember > 0
+              and not spell.isInfo
+              and not spell.isBuff
+      then
         if spell.singleMana < BOM.ManaLimit
                 and spell.singleMana > PlayerMana then
           BOM.ManaLimit = spell.singleMana
         end
+
         if spell.groupMana
                 and spell.groupMana < BOM.ManaLimit
                 and spell.groupMana > PlayerMana then
@@ -2062,9 +2075,10 @@ function BOM.UpdateScan()
         if #spell.NeedMember > 0 then
           local ok, bag, slot, count = BOM.HasItem(spell.items, true)
           count = count or 0
-          --print(ok, bag,slot)
+
           if ok then
             local texture, _, _, _, _, _, itemLink, _, _, _ = GetContainerItemInfo(bag, slot)
+
             if BOM.DB.DontUseConsumables
                     and not IsModifierKeyDown() then
               AddDisplay(string.format(BOM.TxtEscapeIcon, texture) .. itemLink .. "x" .. count, playerMember.distance, true)
@@ -2073,6 +2087,7 @@ function BOM.UpdateScan()
               BagCommand = "/use " .. bag .. " " .. slot
               AddDisplay(BagTitel, playerMember.distance, true)
             end
+
             BOM.ScanModifier = BOM.DB.DontUseConsumables
           else
             AddDisplay(spell.single .. "x" .. count, playerMember.distance, true)
@@ -2098,11 +2113,16 @@ function BOM.UpdateScan()
           end
         end
 
-      elseif (spell.isOwn or spell.isTracking or spell.isAura or spell.isSeal) then
+      elseif (spell.isOwn
+              or spell.isTracking
+              or spell.isAura
+              or spell.isSeal)
+      then
         if #spell.NeedMember > 0 then
           if (not spell.NeedOutdoors or IsOutdoors())
                   and not tContains(spell.SkipList, member.name) then
-            AddDisplay(string.format(L["MsgBuffSingle"], playerMember.link, spell.singleLink), playerMember.name)
+            AddDisplay(string.format(L["MsgBuffSingle"], playerMember.link, spell.singleLink),
+                    playerMember.name)
             inRange = true
 
             CatchSpell(spell.singleMana, spell.singleId, spell.singleLink, playerMember, spell)
@@ -2114,6 +2134,7 @@ function BOM.UpdateScan()
 
       elseif spell.isResurrection then
         local clearskip = true
+
         for memberIndex, member in ipairs(spell.NeedMember) do
           if not tContains(spell.SkipList, member.name) then
             clearskip = false
@@ -2129,7 +2150,9 @@ function BOM.UpdateScan()
           if not tContains(spell.SkipList, member.name) then
             BOM.RepeatUpdate = true
 
-            local isInRange = (IsSpellInRange(spell.single, member.unitId) == 1) and not tContains(spell.SkipList, member.name)
+            -- Is the body in range?
+            local isInRange = (IsSpellInRange(spell.single, member.unitId) == 1)
+                    and not tContains(spell.SkipList, member.name)
 
             if isInRange then
               inRange = true
@@ -2140,7 +2163,10 @@ function BOM.UpdateScan()
                       member.name)
             end
 
-            if isInRange or (BOM.DB.ResGhost and member.isGhost) then
+            -- If in range, we can res?
+            -- Should we try and resurrect ghosts when their corpse is not targetable?
+            if isInRange
+                    or (BOM.DB.ResGhost and member.isGhost) then
               CatchSpell(spell.singleMana, spell.singleId, spell.singleLink, member, spell)
             end
           end
@@ -2159,9 +2185,13 @@ function BOM.UpdateScan()
           count = ""
         end
 
-        if spell.groupMana ~= nil and not BOM.DB.NoGroupBuff then
+        if spell.groupMana ~= nil
+                and not BOM.DB.NoGroupBuff
+        then
           for i, groupIndex in ipairs(BOM.Tool.Classes) do
-            if spell.NeedGroup[groupIndex] and spell.NeedGroup[groupIndex] >= BOM.DB.MinBlessing then
+            if spell.NeedGroup[groupIndex]
+                    and spell.NeedGroup[groupIndex] >= BOM.DB.MinBlessing
+            then
               BOM.RepeatUpdate = true
               local Group = GetClassInRange(spell.group, spell.NeedMember, groupIndex, spell)
 
