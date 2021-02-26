@@ -15,7 +15,8 @@ local L = setmetatable(
 local SpellSettingsFrames = {}
 
 ---Filter all known spells through current player spellbook.
-local function CreateSpellTab()
+---Called below from BOM.UpdateSpellsTab()
+local function create_spells_tab()
   local last
   local isHorde = (UnitFactionGroup("player")) == "Horde"
 
@@ -79,7 +80,7 @@ local function CreateSpellTab()
 
     spell.frames.Enable:SetPoint("TOPLEFT", l, "TOPRIGHT", dx, 0)
     spell.frames.Enable:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID], "Enable")
-    spell.frames.Enable:SetOnClick(MyButtonOnClick)
+    spell.frames.Enable:SetOnClick(BOM.MyButtonOnClick)
     spell.frames.Enable:SetTooltip(L.TTEnable)
     l = spell.frames.Enable
     dx = 7
@@ -91,7 +92,7 @@ local function CreateSpellTab()
 
       spell.frames.SelfCast:SetPoint("TOPLEFT", l, "TOPRIGHT", dx, 0)
       spell.frames.SelfCast:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID], "SelfCast")
-      spell.frames.SelfCast:SetOnClick(MyButtonOnClick)
+      spell.frames.SelfCast:SetOnClick(BOM.MyButtonOnClick)
       spell.frames.SelfCast:SetTooltip(L.TTSelfCast)
 
       l = spell.frames.SelfCast
@@ -106,7 +107,7 @@ local function CreateSpellTab()
 
         spell.frames[class]:SetPoint("TOPLEFT", l, "TOPRIGHT", dx, 0)
         spell.frames[class]:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID].Class, class)
-        spell.frames[class]:SetOnClick(BlessingOnClick)
+        spell.frames[class]:SetOnClick(BOM.DoBlessingOnClick)
         spell.frames[class]:SetTooltip(BOM.Tool.IconClass[class] .. " " .. BOM.Tool.ClassName[class])
 
         if (isHorde and class == "PALADIN") or (not isHorde and class == "SHAMAN") then
@@ -124,7 +125,7 @@ local function CreateSpellTab()
 
       spell.frames["tank"]:SetPoint("TOPLEFT", l, "TOPRIGHT", dx, 0)
       spell.frames["tank"]:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID].Class, "tank")
-      spell.frames["tank"]:SetOnClick(BlessingOnClick)
+      spell.frames["tank"]:SetOnClick(BOM.DoBlessingOnClick)
       spell.frames["tank"]:SetTooltip(L.Tank)
       l = spell.frames["tank"]
 
@@ -136,7 +137,7 @@ local function CreateSpellTab()
 
       spell.frames["pet"]:SetPoint("TOPLEFT", l, "TOPRIGHT", dx, 0)
       spell.frames["pet"]:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID].Class, "pet")
-      spell.frames["pet"]:SetOnClick(BlessingOnClick)
+      spell.frames["pet"]:SetOnClick(BOM.DoBlessingOnClick)
       spell.frames["pet"]:SetTooltip(L.Pet)
       l = spell.frames["pet"]
 
@@ -148,7 +149,7 @@ local function CreateSpellTab()
       end
 
       spell.frames.target:SetPoint("TOPLEFT", l, "TOPRIGHT", dx, 0)
-      spell.frames.target:SetOnClick(MyButtonOnClick)
+      spell.frames.target:SetOnClick(BOM.MyButtonOnClick)
       spell.frames.target:SetTooltip(L.TTTarget)
 
       l = spell.frames.target
@@ -176,7 +177,7 @@ local function CreateSpellTab()
 
       spell.frames.Whisper:SetPoint("TOPLEFT", l, "TOPRIGHT", dx, 0)
       spell.frames.Whisper:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID], "Whisper")
-      spell.frames.Whisper:SetOnClick(MyButtonOnClick)
+      spell.frames.Whisper:SetOnClick(BOM.MyButtonOnClick)
       spell.frames.Whisper:SetTooltip(L.TTWhisper)
       l = spell.frames.Whisper
       dx = 2
@@ -191,7 +192,7 @@ local function CreateSpellTab()
 
       spell.frames.MainHand:SetPoint("TOPLEFT", l, "TOPRIGHT", dx, 0)
       spell.frames.MainHand:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID], "MainHandEnable")
-      spell.frames.MainHand:SetOnClick(MyButtonOnClick)
+      spell.frames.MainHand:SetOnClick(BOM.MyButtonOnClick)
       spell.frames.MainHand:SetTooltip(L.TTMainHand)
       l = spell.frames.MainHand
       dx = 2
@@ -204,7 +205,7 @@ local function CreateSpellTab()
 
       spell.frames.OffHand:SetPoint("TOPLEFT", l, "TOPRIGHT", dx, 0)
       spell.frames.OffHand:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID], "OffHandEnable")
-      spell.frames.OffHand:SetOnClick(MyButtonOnClick)
+      spell.frames.OffHand:SetOnClick(BOM.MyButtonOnClick)
       spell.frames.OffHand:SetTooltip(L.TTOffHand)
       l = spell.frames.OffHand
       dx = 2
@@ -291,7 +292,7 @@ local function CreateSpellTab()
 
     spell.frames.Enable:SetPoint("LEFT", spell.frames.info, "RIGHT", 7, 0)
     spell.frames.Enable:SetVariable(BOM.CurrentProfile.CancelBuff[spell.ConfigID], "Enable")
-    spell.frames.Enable:SetOnClick(MyButtonOnClick)
+    spell.frames.Enable:SetOnClick(BOM.MyButtonOnClick)
     spell.frames.Enable:SetTooltip(L.TTEnableBuff)
 
     if spell.OnlyCombat then
@@ -343,7 +344,7 @@ local function CreateSpellTab()
       SpellSettingsFrames[i]:SetVariable(BOM.WatchGroup, i)
       SpellSettingsFrames[i]:SetText(i)
       SpellSettingsFrames[i]:SetTooltip(string.format(L.TTGroup, i))
-      SpellSettingsFrames[i]:SetOnClick(MyButtonOnClick)
+      SpellSettingsFrames[i]:SetOnClick(BOM.MyButtonOnClick)
       l = SpellSettingsFrames[i]
       dx = 2
     end
@@ -363,7 +364,7 @@ local function CreateSpellTab()
         SpellSettingsFrames[key]:SetPoint("TOPLEFT", last, "BOTTOMLEFT", 0, -2)
         SpellSettingsFrames[key]:SetVariable(BOM.DB, key)
         SpellSettingsFrames[key]:SetTooltip(L["Cbox" .. key])
-        SpellSettingsFrames[key]:SetOnClick(MyButtonOnClick)
+        SpellSettingsFrames[key]:SetOnClick(BOM.MyButtonOnClick)
         l = SpellSettingsFrames[key]
         dx = 2
 
@@ -396,7 +397,7 @@ local function CreateSpellTab()
         SpellSettingsFrames[key]:SetPoint("TOPLEFT", last, "BOTTOMLEFT", dx, -2)
         SpellSettingsFrames[key]:SetVariable(BOM.DB, key)
         SpellSettingsFrames[key]:SetTooltip(L["Cbox" .. key])
-        SpellSettingsFrames[key]:SetOnClick(MyButtonOnClick)
+        SpellSettingsFrames[key]:SetOnClick(BOM.MyButtonOnClick)
         l = SpellSettingsFrames[key]
         dx = 2
 
@@ -446,7 +447,7 @@ function BOM.UpdateSpellsTab()
   end
 
   if not BOM.CreateSpellTab then
-    CreateSpellTab()
+    create_spells_tab()
     BOM.CreateSpellTab = true
   end
 

@@ -82,7 +82,7 @@ local ErrShapeShift = { ERR_EMBLEMERROR_NOTABARDGEOSET, ERR_CANT_INTERACT_SHAPES
                         SPELL_FAILED_NOT_SHAPESHIFT, SPELL_NOT_SHAPESHIFTED,
                         SPELL_NOT_SHAPESHIFTED_NOSPACE }
 
-local function PopupDB(db, var)
+local function get_popup_db(db, var)
   return L["Cbox" .. var], false, db, var
 end
 
@@ -132,7 +132,7 @@ function BOM.Popup(self, minimap)
   BOM.PopupDynamic:SubMenu(L.BtnSettings, "subSettings")
 
   for i, set in ipairs(BOM.BehaviourSettings) do
-    BOM.PopupDynamic:AddItem(PopupDB(BOM.DB, set[1]))
+    BOM.PopupDynamic:AddItem(get_popup_db(BOM.DB, set[1]))
   end
 
   BOM.PopupDynamic:SubMenu()
@@ -171,6 +171,7 @@ function BOM.ScrollMessage(self, delta)
   self:ResetAllFadeTimes()
 end
 
+-- Something changed (buff gained possibly?) update all spells and spell tabs
 function BOM.OptionsUpdate()
   BOM.ForceUpdate = true
   BOM.UpdateScan()
@@ -180,11 +181,11 @@ function BOM.OptionsUpdate()
   BOM.Options.DoCancel()
 end
 
-local function BOM_CheckBox(Var, Init)
+local function bom_add_checkbox(Var, Init)
   BOM.Options.AddCheckBox(BOM.DB, Var, Init, L["Cbox" .. Var])
 end
 
-local function BOM_EditBox(Var, Init, width)
+local function bom_add_editbox(Var, Init, width)
   --Options:AddEditBox(DB,Var,Init,TXTLeft,width,widthLeft,onlynumbers,tooltip,suggestion)
   BOM.Options.AddEditBox(BOM.DB, Var, Init, L["Ebox" .. Var], 50, width or 150, true)
 end
@@ -222,20 +223,20 @@ function BOM.OptionsInit()
   BOM.Options.AddSpace()
 
   for i, set in ipairs(BOM.BehaviourSettings) do
-    BOM_CheckBox(set[1], set[2])
+    bom_add_checkbox(set[1], set[2])
   end
 
   BOM.Options.AddSpace()
-  BOM_EditBox("MinBuff", 3, 350)
-  BOM_EditBox("MinBlessing", 3, 350)
+  bom_add_editbox("MinBuff", 3, 350)
+  bom_add_editbox("MinBlessing", 3, 350)
   BOM.Options.AddSpace()
   BOM.Options.AddCategory(L.HeaderRenew)
   BOM.Options.Indent(20)
-  BOM_EditBox("Time60", 10)--60s
-  BOM_EditBox("Time300", 60)--5m
-  BOM_EditBox("Time600", 120)--10m
-  BOM_EditBox("Time1800", 300)--30m
-  BOM_EditBox("Time3600", 300)--60m
+  bom_add_editbox("Time60", 10)--60s
+  bom_add_editbox("Time300", 60)--5m
+  bom_add_editbox("Time600", 120)--10m
+  bom_add_editbox("Time1800", 300)--30m
+  bom_add_editbox("Time3600", 300)--60m
   BOM.Options.Indent(-20)
   BOM.Options.AddSpace()
   BOM.Options.AddButton(L.BtnSettingsSpells, BOM.ShowSpellSettings)
@@ -270,7 +271,8 @@ function BOM.OptionsInit()
   panel:SetHyperlinksEnabled(true);
   panel:SetScript("OnHyperlinkEnter", BOM.EnterHyperlink)
   panel:SetScript("OnHyperlinkLeave", BOM.LeaveHyperlink)
-  local function SlashText(txt)
+
+  local function bom_add_text(txt)
     BOM.Options.AddText(txt)
   end
 
@@ -292,7 +294,7 @@ function BOM.OptionsInit()
   BOM.Options.AddCategory(L["HeaderSlashCommand"])
   BOM.Options.Indent(10)
   BOM.Options.AddText(L["AboutSlashCommand"], -20)
-  BOM.Tool.PrintSlashCommand(nil, nil, SlashText)
+  BOM.Tool.PrintSlashCommand(nil, nil, bom_add_text)
   BOM.Options.Indent(-10)
 
   BOM.Options.AddCategory(L["HeaderCredits"])
@@ -455,7 +457,8 @@ function BOM.Init()
   end)
 
   -- slash command
-  local function doDBSet(DB, var, value)
+  -- Unused?
+  local function slash_command_db_set(DB, var, value)
     if value == nil then
       DB[var] = not DB[var]
     elseif tContains({ "true", "1", "enable" }, value) then
@@ -480,18 +483,20 @@ function BOM.Init()
     },
     },
     { "spellbook", L["SlashSpellBook"], BOM.GetSpells },
-    { "update", L["SlashUpdate"], function()
-      BOM.ForceUpdate = true
-      BOM.UpdateScan()
-    end },
+    { "update", L["SlashUpdate"],
+      function()
+        BOM.ForceUpdate = true
+        BOM.UpdateScan()
+      end },
     { "updatespellstab", "", BOM.UpdateSpellsTab },
     { "close", L["SlashClose"], BOM.HideWindow },
     { "reset", L["SlashReset"], BOM.ResetWindow },
-    { "_checkforerror", "", function()
-      if not InCombatLockdown() then
-        BOM.CheckForError = true
-      end
-    end },
+    { "_checkforerror", "",
+      function()
+        if not InCombatLockdown() then
+          BOM.CheckForError = true
+        end
+      end },
     { "", L["SlashOpen"], BOM.ShowWindow },
   })
 
@@ -633,6 +638,7 @@ local function Event_PLAYER_STOPPED_MOVING()
   BOM.IsMoving = false
 end
 
+---On combat start will close the UI window and disable the UI. Will cancel the cancelable buffs.
 local function Event_CombatStart()
   BOM.ForceUpdate = true
   BOM.DeclineHasResurrection = true
@@ -1021,12 +1027,12 @@ function BOM.ResetWindow()
   BOM.ShowWindow(1)
 end
 
-local function WhoRequest(name)
+local function perform_who_request(name)
   DEFAULT_CHAT_FRAME.editBox:SetText("/who " .. name)
   ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox)
 end
 
-local function WhisperRequest(name)
+local function perform_whisper_request(name)
   ChatFrame_OpenChat("/w " .. name .. " ")
 end
 
@@ -1050,10 +1056,10 @@ function BOM.ClickHyperlink(self, link)
   local part = BOM.Tool.Split(link, ":")
   if part[1] == "unit" then
     if IsShiftKeyDown() then
-      WhoRequest(part[3])
+      perform_who_request(part[3])
       --SendWho( req.name )
     else
-      WhisperRequest(part[3])
+      perform_whisper_request(part[3])
     end
   end
 end
@@ -1069,21 +1075,27 @@ function BOM.DebugBuffs(dest)
   print("LastSeal:", BOM.CurrentProfile.LastSeal, " ")
   print("Shapeshift:", GetShapeshiftFormID(), " ")
   print("Weaponenchantment:", GetWeaponEnchantInfo())
-  local name, icon, count, debuffType, duration, expirationTime, source, isStealable, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, castByPlayer,
-  nameplateShowAll, timeMod
+
+  --local name, icon, count, debuffType, duration, expirationTime, source,
+  --isStealable, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff,
+  --castByPlayer, nameplateShowAll, timeMod
   for buffIndex = 1, 40 do
-    local name, icon, count, debuffType, duration, expirationTime, source, isStealable, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, castByPlayer,
-    nameplateShowAll, timeMod = BOM.UnitAura(dest, buffIndex, "HELPFUL")
+    local name, icon, count, debuffType, duration, expirationTime, source,
+    isStealable, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff,
+    castByPlayer, nameplateShowAll, timeMod = BOM.UnitAura(dest, buffIndex, "HELPFUL")
+
     if name or icon or count or debuffType then
       print("Help:", name, spellId, duration, expirationTime, source, (expirationTime or 0) - GetTime())
     end
-
-  end
+  end -- for 40 buffs
 end
+
 function BOM.DebugBuffList()
   print("PlayerBuffs stored ", #BOM.PlayerBuffs)
+
   for name, spellist in pairs(BOM.PlayerBuffs) do
     print(name)
+
     for spellname, ti in pairs(spellist) do
       print(name, spellname, ti, GetTime() - ti)
     end
@@ -1185,7 +1197,7 @@ BOM.IconInInstanceOnCoord = { 0.1, 0.9, 0.1, 0.9 }
 BOM.IconUseRankOff = BOM.IconEmpty
 BOM.IconUseRankOn = "Interface\\Buttons\\JumpUpArrow"
 
-local function BlessingOnClick(self)
+function BOM.DoBlessingOnClick(self)
   local saved = self._privat_DB[self._privat_Var]
 
   for i, spell in ipairs(BOM.SelectedSpells) do
@@ -1199,7 +1211,6 @@ local function BlessingOnClick(self)
   BOM.OptionsUpdate()
 end
 
-local function MyButtonOnClick(self)
+function BOM.MyButtonOnClick(self)
   BOM.OptionsUpdate()
 end
-

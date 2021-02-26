@@ -1,8 +1,8 @@
-local TOCNAME, Addon = ...
-Addon.Options = Addon.Options or {}
-local Options = Addon.Options
+local TOCNAME, BOM = ...
+BOM.Options = BOM.Options or {}
+local Options = BOM.Options
 
-local function Options_CheckButtonRightClick(self, button)
+local function options_check_button_right_click(self, button)
   if button == "RightButton" then
     self:Lib_GPI_rclick()
   end
@@ -264,9 +264,10 @@ function Options.AddButton(Text, func)
   return Options.Btn[ButtonName]
 end
 
+---is this used?
 local function CheckBox_OnRightClick(self, func)
   self.Lib_GPI_rclick = func
-  self:SetScript("OnMouseDown", Options_CheckButtonRightClick)
+  self:SetScript("OnMouseDown", options_check_button_right_click)
 end
 
 function Options.AddCheckBox(DB, Var, Init, Text, width)
@@ -322,7 +323,7 @@ function Options.AddCheckBox(DB, Var, Init, Text, width)
     Options.CBox[ButtonName]:Hide()
   end
 
-  Options.CBox[ButtonName].OnRightClick = CheckBox_OnRightClick
+  Options.CBox[ButtonName].OnRightClick = BOM.DoCheckBox_OnRightClick
 
   return Options.CBox[ButtonName]
 end
@@ -389,7 +390,7 @@ function Options.AddColorButton(DB, Var, Init, Text, width)
   but:GetNormalTexture():SetVertexColor(DB[Var].r, DB[Var].g, DB[Var].b, DB[Var].a)
   but.ColR, but.ColG, but.ColB, but.ColA = DB[Var].r, DB[Var].g, DB[Var].b, DB[Var].a
 
-  local function callback(previousValues)
+  local function colorpicker_callback(previousValues)
     local newR, newG, newB, newA
 
     if previousValues then
@@ -401,19 +402,20 @@ function Options.AddColorButton(DB, Var, Init, Text, width)
     but.ColR, but.ColG, but.ColB, but.ColA = newR, newG, newB, newA
   end
 
-  but:SetScript(
-          "OnClick",
-          function(self)
-            local r, g, b, a = but.ColR, but.ColG, but.ColB, but.ColA
-            ColorPickerFrame.hasOpacity, ColorPickerFrame.opacity = true, 1.0 - a
-            ColorPickerFrame.previousValues = { r, g, b, a }
-            ColorPickerFrame.func, ColorPickerFrame.opacityFunc, ColorPickerFrame.cancelFunc = callback, callback, callback
-            ColorPickerFrame:SetColorRGB(r, g, b)
-            ColorPickerFrame:Hide()
-            ColorPickerFrame:Show()
-          end
-  )
+  local function colorpicker_onclick(self)
+    local r, g, b, a = but.ColR, but.ColG, but.ColB, but.ColA
+    ColorPickerFrame.hasOpacity, ColorPickerFrame.opacity = true, 1.0 - a
+    ColorPickerFrame.previousValues = { r, g, b, a }
 
+    ColorPickerFrame.func, ColorPickerFrame.opacityFunc, ColorPickerFrame.cancelFunc
+    = colorpicker_callback, colorpicker_callback, colorpicker_callback
+
+    ColorPickerFrame:SetColorRGB(r, g, b)
+    ColorPickerFrame:Hide()
+    ColorPickerFrame:Show()
+  end
+
+  but:SetScript("OnClick", colorpicker_onclick)
   return but
 end
 

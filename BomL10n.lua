@@ -50,7 +50,7 @@ BOM.locales = {
     CboxOpenLootable = "Open lootable items",
     CboxUseProfiles = "Use profiles",
     CboxSelfFirst = "Always buff self first",
-    CboxDontUseConsumables = "Use consumables only with shift, strg or alt",
+    CboxDontUseConsumables = "Use consumables only with Shift, Ctrl or Alt",
 
     HeaderRenew = "Renew before it expires (in Seconds)",
     EboxTime60 = "Duration <=60 sec:",

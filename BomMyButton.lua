@@ -198,6 +198,7 @@ function BOM.MyButtonUpdateAll()
   end
 end
 
+-- Hides all icons and clickable buttons in the spells tab
 function BOM.MyButtonHideAll()
   for i, Frame in ipairs(MyButtonsFrames) do
     Frame:Hide()

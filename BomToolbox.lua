@@ -69,7 +69,7 @@ local _tableAccents = {
 
 -- Hyperlink
 
-local function EnterHyperlink(self, link, text)
+local function bom_on_enter_hyperlink(self, link, text)
   --print(link,text)
   local part = Tool.Split(link, ":")
   if part[1] == "spell"
@@ -87,20 +87,20 @@ local function EnterHyperlink(self, link, text)
   end
 end
 
-local function LeaveHyperlink(self)
+local function bom_on_leave_hyperlink(self)
   GameTooltip:Hide()
 end
 
 function Tool.EnableHyperlink(frame)
   frame:SetHyperlinksEnabled(true);
-  frame:SetScript("OnHyperlinkEnter", EnterHyperlink)
-  frame:SetScript("OnHyperlinkLeave", LeaveHyperlink)
+  frame:SetScript("OnHyperlinkEnter", bom_on_enter_hyperlink)
+  frame:SetScript("OnHyperlinkLeave", bom_on_leave_hyperlink)
 end
 
 -- EventHandler
 local eventFrame
 
-local function EventHandler(self, event, ...)
+local function bom_gpiprivat_event_handler(self, event, ...)
   for i, Entry in pairs(self._GPIPRIVAT_events) do
     if Entry[1] == event then
       Entry[2](...)
@@ -108,7 +108,7 @@ local function EventHandler(self, event, ...)
   end
 end
 
-local function UpdateHandler(self, ...)
+local function bom_gpiprivat_update_handler(self, ...)
   for i, Entry in pairs(self._GPIPRIVAT_updates) do
     Entry(...)
   end
@@ -121,7 +121,7 @@ function Tool.RegisterEvent(event, func)
 
   if eventFrame._GPIPRIVAT_events == nil then
     eventFrame._GPIPRIVAT_events = {}
-    eventFrame:SetScript("OnEvent", EventHandler)
+    eventFrame:SetScript("OnEvent", bom_gpiprivat_event_handler)
   end
 
   tinsert(eventFrame._GPIPRIVAT_events, { event, func })
@@ -134,18 +134,17 @@ function Tool.OnUpdate(func)
   end
   if eventFrame._GPIPRIVAT_updates == nil then
     eventFrame._GPIPRIVAT_updates = {}
-    eventFrame:SetScript("OnUpdate", UpdateHandler)
+    eventFrame:SetScript("OnUpdate", bom_gpiprivat_update_handler)
   end
   tinsert(eventFrame._GPIPRIVAT_updates, func)
 end
 
 -- move frame
-
-local function MovingStart(self)
+local function bom_frame_drag_start(self)
   self:StartMoving()
 end
 
-local function MovingStop(self)
+local function bom_frame_drag_stop(self)
   self:StopMovingOrSizing()
   if self._GPIPRIVAT_MovingStopCallback then
     self._GPIPRIVAT_MovingStopCallback(self)
@@ -156,8 +155,8 @@ function Tool.EnableMoving(frame, callback)
   frame:SetMovable(true)
   frame:EnableMouse(true)
   frame:RegisterForDrag("LeftButton")
-  frame:SetScript("OnDragStart", MovingStart)
-  frame:SetScript("OnDragStop", MovingStop)
+  frame:SetScript("OnDragStart", bom_frame_drag_start)
+  frame:SetScript("OnDragStop", bom_frame_drag_stop)
   frame._GPIPRIVAT_MovingStopCallback = callback
 end
 
@@ -454,6 +453,7 @@ end
 
 -- popup
 local PopupDepth
+
 local function PopupClick(self, arg1, arg2, checked)
   if type(self.value) == "table" then
     self.value[arg1] = not self.value[arg1]
@@ -579,7 +579,7 @@ end
 
 -- TAB
 
-local function SelectTab(self)
+local function bom_select_tab(self)
   if not self._gpi_combatlock or not InCombatLockdown() then
     local parent = self:GetParent()
     PanelTemplates_SetTab(parent, self:GetID())
@@ -616,7 +616,7 @@ end
 
 function Tool.SelectTab(frame, id)
   if id and frame.Tabs and frame.Tabs[id] then
-    SelectTab(frame.Tabs[id])
+    bom_select_tab(frame.Tabs[id])
   end
 end
 
@@ -658,7 +658,7 @@ function Tool.AddTab(frame, name, tabFrame, combatlockdown)
   frame.Tabs[frame.numTabs] = CreateFrame("Button", frameName .. "Tab" .. frame.numTabs, frame, "CharacterFrameTabButtonTemplate")
   frame.Tabs[frame.numTabs]:SetID(frame.numTabs)
   frame.Tabs[frame.numTabs]:SetText(name)
-  frame.Tabs[frame.numTabs]:SetScript("OnClick", SelectTab)
+  frame.Tabs[frame.numTabs]:SetScript("OnClick", bom_select_tab)
   frame.Tabs[frame.numTabs]._gpi_combatlock = combatlockdown
   frame.Tabs[frame.numTabs].content = tabFrame
   tabFrame:Hide()
@@ -669,8 +669,8 @@ function Tool.AddTab(frame, name, tabFrame, combatlockdown)
     frame.Tabs[frame.numTabs]:SetPoint("TOPLEFT", frame.Tabs[frame.numTabs - 1], "TOPRIGHT", -14, 0)
   end
 
-  SelectTab(frame.Tabs[frame.numTabs])
-  SelectTab(frame.Tabs[1])
+  bom_select_tab(frame.Tabs[frame.numTabs])
+  bom_select_tab(frame.Tabs[1])
   return frame.numTabs
 end
 
@@ -697,7 +697,7 @@ end
 -- Slashcommands
 
 local slash, slashCmd
-local function slashUnpack(t, sep)
+local function bom_slash_unpack(t, sep)
   local ret = ""
   if sep == nil then
     sep = ", "
@@ -719,7 +719,7 @@ function Tool.PrintSlashCommand(prefix, subSlash, p)
   local colCmd = "|cFFFF9C00"
 
   for i, subcmd in ipairs(subSlash) do
-    local words = (type(subcmd[1]) == "table") and "|r(" .. colCmd .. slashUnpack(subcmd[1], "|r/" .. colCmd) .. "|r)" .. colCmd or subcmd[1]
+    local words = (type(subcmd[1]) == "table") and "|r(" .. colCmd .. bom_slash_unpack(subcmd[1], "|r/" .. colCmd) .. "|r)" .. colCmd or subcmd[1]
     if words == "%" then
       words = "<value>"
     end
@@ -734,40 +734,43 @@ function Tool.PrintSlashCommand(prefix, subSlash, p)
 
   end
 end
-local function DoSlash(deep, msg, subSlash)
+
+local function bom_do_slash(deep, msg, subSlash)
   for i, subcmd in ipairs(subSlash) do
     local ok = (type(subcmd[1]) == "table") and tContains(subcmd[1], msg[deep]) or
             (subcmd[1] == msg[deep] or (subcmd[1] == "" and msg[deep] == nil))
+
     if subcmd[1] == "%" then
       local para = Tool.iMerge({ unpack(subcmd, 4) }, { unpack(msg, deep) })
       return subcmd[3](unpack(para))
     end
+
     if ok then
       if type(subcmd[3]) == "function" then
         return subcmd[3](unpack(subcmd, 4))
       elseif type(subcmd[3]) == "table" then
-        return DoSlash(deep + 1, msg, subcmd[3])
+        return bom_do_slash(deep + 1, msg, subcmd[3])
       end
     end
   end
+
   Tool.PrintSlashCommand(Tool.Combine(msg, " ", 1, deep - 1) .. " ", subSlash)
+
   return nil
 end
 
-local function mySlashs(msg)
+local function bom_handle_slash_command(msg)
   if msg == "help" then
     local colCmd = "|cFFFF9C00"
     print("|cFFFF1C1C" .. GetAddOnMetadata(TOCNAME, "Title") .. " " .. GetAddOnMetadata(TOCNAME, "Version") .. " by " .. GetAddOnMetadata(TOCNAME, "Author"))
     print(GetAddOnMetadata(TOCNAME, "Notes"))
     if type(slashCmd) == "table" then
-      print("SlashCommand:", colCmd, slashUnpack(slashCmd, "|r, " .. colCmd), "|r")
+      print("SlashCommand:", colCmd, bom_slash_unpack(slashCmd, "|r, " .. colCmd), "|r")
     end
 
     Tool.PrintSlashCommand()
-
-
   else
-    DoSlash(1, Tool.Split(msg, " "), slash)
+    bom_do_slash(1, Tool.Split(msg, " "), slash)
   end
 end
 
@@ -782,7 +785,7 @@ function Tool.SlashCommand(cmds, subcommand)
     _G["SLASH_" .. TOCNAME .. "1"] = cmds
   end
 
-  SlashCmdList[TOCNAME] = mySlashs
+  SlashCmdList[TOCNAME] = bom_handle_slash_command
 end
 
 ---- quick copy&past
@@ -790,7 +793,8 @@ end
 local CopyPastFrame
 local CopyPastSavedText
 local CopyPastText
-local function CreateCopyPast()
+
+local function bom_create_copypaste()
   local frame = CreateFrame("Frame", nil, UIParent)
   frame:SetFrameStrata("DIALOG")
   frame:SetBackdrop({
@@ -877,7 +881,7 @@ end
 
 function Tool.CopyPast(Text)
   if CopyPastFrame == nil then
-    CreateCopyPast()
+    bom_create_copypaste()
   end
   CopyPastText:SetText(Text)
   CopyPastText:HighlightText()
