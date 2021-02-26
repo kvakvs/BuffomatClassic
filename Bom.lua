@@ -115,7 +115,7 @@ function BOM.Popup(self, minimap)
 
   BOM.PopupDynamic:AddItem()
 
-  for i, spell in ipairs(BOM.Spells) do
+  for i, spell in ipairs(BOM.SelectedSpells) do
     if not spell.isBuff then
       BOM.PopupDynamic:AddItem(spell.singleLink or spell.single,
               "keep",
@@ -1107,8 +1107,8 @@ BOM.IconEmpty = "Interface\\Buttons\\UI-MultiCheck-Disabled"
 BOM.IconSettingOn = "Interface\\RAIDFRAME\\ReadyCheck-Ready"
 BOM.IconSettingOff = BOM.IconEmpty
 
-BOM.IconWispherOn = "Interface\\Buttons\\UI-GuildButton-MOTD-Up"
-BOM.IconWispherOff = "Interface\\Buttons\\UI-GuildButton-MOTD-Disabled"
+BOM.IconWhisperOn = "Interface\\Buttons\\UI-GuildButton-MOTD-Up"
+BOM.IconWhisperOff = "Interface\\Buttons\\UI-GuildButton-MOTD-Disabled"
 
 BOM.IconBuffOff = BOM.IconEmpty
 BOM.IconBuffOn = "Interface\\Buttons\\UI-GroupLoot-Pass-Up"
@@ -1191,7 +1191,7 @@ BOM.IconUseRankOn = "Interface\\Buttons\\JumpUpArrow"
 local function BlessingOnClick(self)
   local saved = self._privat_DB[self._privat_Var]
 
-  for i, spell in ipairs(BOM.Spells) do
+  for i, spell in ipairs(BOM.SelectedSpells) do
     if spell.isBlessing then
       BOM.CurrentProfile.Spell[spell.ConfigID].Class[self._privat_Var] = false
     end

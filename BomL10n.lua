@@ -68,7 +68,7 @@ BOM.locales = {
     TTSelectTarget = "Select a raid/party member to enable this option",
     TTGroup = "Group %d",
     TTOnlyCombat = "Only before combat",
-    TTWispher = "Wispher source when expired on player",
+    TTWhisper = "Whisper source when expired on player",
     TTMainHand = "Main hand",
     TTOffHand = "Off hand",
     TTAnyRank = "any",
@@ -217,7 +217,7 @@ BOM.locales = {
     ["TTSelectTarget"] = "Wähle ein Gruppenmitglied um diese Option zu aktivieren.",
     ["TTSelfCast"] = "Wirke auf Gruppe/Raid oder nur auf sich selbst",
     ["TTTarget"] = "Buff dauerhaft auf Ziel halten",
-    ["TTWispher"] = "Quelle anflüstern, wenn abgelaufen."
+    ["TTWhisper"] = "Quelle anflüstern, wenn abgelaufen."
   },
 
   frFR = {

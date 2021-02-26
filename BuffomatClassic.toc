@@ -17,4 +17,4 @@ Bom.lua
 Bom.xml
 
 BomSpells.lua
-BomTabSpells.lua
+BomTab.lua

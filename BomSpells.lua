@@ -218,9 +218,9 @@ BOM.AllBuffomatSpells = {
     singleFamily = { 10256, 1127, 1129, 22731, 5006, 433, 1131, 18230, 18233, 5007, 24800, 5005,
                      18232, 5004, 435, 434, 18234, 24869, 18229, 25888, 6410, 2639, 24005, 7737,
                      29073, 26260, 26474, 18231, 10257, 26472, 28616, 25700 } },
-  { singleId     = 20762, isInfo = true, allowWispher = true, default = false, --Seelenstein
+  { singleId     = 20762, isInfo = true, allowWhisper = true, default = false, --Seelenstein
     singleFamily = { 20707, 20762, 20763, 20765, 20764 } },
-  --{singleId=10938, isInfo=true, allowWispher=true,default=false,	--ausdauer-antworten!
+  --{singleId=10938, isInfo=true, allowWhisper=true,default=false,	--ausdauer-antworten!
   --	singleFamily={1243,1244,1245,2791,10937,10938}},
 
   "item",

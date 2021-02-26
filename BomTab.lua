@@ -1,3 +1,4 @@
+---| Module contains code to update the already selected spells in tabs
 local TOCNAME, BOM = ...
 local L = setmetatable(
         {},
@@ -26,7 +27,7 @@ local function CreateSpellTab()
   local dy = 0
   local section
 
-  for i, spell in ipairs(BOM.Spells) do
+  for i, spell in ipairs(BOM.SelectedSpells) do
     spell.frames = spell.frames or {}
 
     if spell.frames.info == nil then
@@ -167,16 +168,16 @@ local function CreateSpellTab()
       dx = 7
     end
 
-    if spell.isInfo and spell.allowWispher then
-      if spell.frames.Wispher == nil then
-        spell.frames.Wispher = BOM.CreateMyButton(BomC_SpellTab_Scroll_Child, BOM.IconWispherOn, BOM.IconWispherOff)
+    if spell.isInfo and spell.allowWhisper then
+      if spell.frames.Whisper == nil then
+        spell.frames.Whisper = BOM.CreateMyButton(BomC_SpellTab_Scroll_Child, BOM.IconWhisperOn, BOM.IconWhisperOff)
       end
 
-      spell.frames.Wispher:SetPoint("TOPLEFT", l, "TOPRIGHT", dx, 0)
-      spell.frames.Wispher:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID], "Wispher")
-      spell.frames.Wispher:SetOnClick(MyButtonOnClick)
-      spell.frames.Wispher:SetTooltip(L.TTWispher)
-      l = spell.frames.Wispher
+      spell.frames.Whisper:SetPoint("TOPLEFT", l, "TOPRIGHT", dx, 0)
+      spell.frames.Whisper:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID], "Whisper")
+      spell.frames.Whisper:SetOnClick(MyButtonOnClick)
+      spell.frames.Whisper:SetTooltip(L.TTWhisper)
+      l = spell.frames.Whisper
       dx = 2
     end
 
@@ -250,8 +251,8 @@ local function CreateSpellTab()
       spell.frames.buff:Show()
     end
 
-    if spell.frames.Wispher then
-      spell.frames.Wispher:Show()
+    if spell.frames.Whisper then
+      spell.frames.Whisper:Show()
     end
 
     if spell.frames.MainHand then
@@ -430,10 +431,15 @@ local function CreateSpellTab()
   end
 end
 
+---UpdateTab - update spells in one of the spell tabs
+---BOM.SelectedSpells: table - Spells which were selected for display in Scan function, their
+---state will be displayed in a spell tab
 function BOM.UpdateSpellsTab()
-  if BOM.Spells == nil then
+  -- InCombat Protection is checked by the caller (Update***Tab)
+  if BOM.SelectedSpells == nil then
     return
   end
+
   if InCombatLockdown() then
     return
   end
@@ -443,7 +449,7 @@ function BOM.UpdateSpellsTab()
     BOM.CreateSpellTab = true
   end
 
-  for i, spell in ipairs(BOM.Spells) do
+  for i, spell in ipairs(BOM.SelectedSpells) do
     spell.frames.Enable:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID], "Enable")
 
     if BOM.SpellHasClasses(spell) then
@@ -486,8 +492,8 @@ function BOM.UpdateSpellsTab()
       end
     end
 
-    if spell.isInfo and spell.allowWispher then
-      spell.frames.Wispher:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID], "Wispher")
+    if spell.isInfo and spell.allowWhisper then
+      spell.frames.Whisper:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID], "Whisper")
     end
 
     if spell.isWeapon then

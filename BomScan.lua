@@ -165,7 +165,8 @@ function BOM.GetSpells()
     end
   end
 
-  BOM.Spells = {}
+  --Spells selected for the current class/settings/profile etc
+  BOM.SelectedSpells = {}
   BOM.cancelForm = {}
   BOM.AllSpellIds = {}
   BOM.SpellIdtoConfig = {}
@@ -362,7 +363,7 @@ function BOM.GetSpells()
       --| Add
       --|--------------------------
       if add then
-        tinsert(BOM.Spells, spell)
+        tinsert(BOM.SelectedSpells, spell)
         BOM.Tool.iMerge(BOM.AllSpellIds, spell.singleFamily, spell.groupFamily, spell.singleId, spell.groupId)
 
         if spell.cancelForm then
@@ -1200,7 +1201,7 @@ local function ClearSpell()
 end
 
 function BOM.UpdateScan()
-  if BOM.Spells == nil then
+  if BOM.SelectedSpells == nil then
     return
   end
 
@@ -1287,7 +1288,7 @@ function BOM.UpdateScan()
     --reset tracking
     BOM.ForceTracking = nil
 
-    for i, spell in ipairs(BOM.Spells) do
+    for i, spell in ipairs(BOM.SelectedSpells) do
       if spell.isTracking then
         if BOM.CurrentProfile.Spell[spell.ConfigID].Enable then
           if spell.needForm ~= nil then
@@ -1319,7 +1320,7 @@ function BOM.UpdateScan()
     BOM.ActivAura = nil
     BOM.ActivSeal = nil
 
-    for i, spell in ipairs(BOM.Spells) do
+    for i, spell in ipairs(BOM.SelectedSpells) do
       if playerMember.buffs[spell.ConfigID] then
         if spell.isAura then
           if (BOM.ActivAura == nil and BOM.LastAura == spell.ConfigID)
@@ -1339,7 +1340,7 @@ function BOM.UpdateScan()
     end -- for all spells
 
     --reset aura/seal
-    for i, spell in ipairs(BOM.Spells) do
+    for i, spell in ipairs(BOM.SelectedSpells) do
       if spell.isAura then
         if BOM.CurrentProfile.Spell[spell.ConfigID].Enable then
           if BOM.ActivAura == spell.ConfigID
@@ -1374,7 +1375,7 @@ function BOM.UpdateScan()
 
     -- who needs a buff!
     local SomeBodyDeath = false
-    for i, spell in ipairs(BOM.Spells) do
+    for i, spell in ipairs(BOM.SelectedSpells) do
       SomeBodyDeath = BOM.GetNeedBuff(party, spell, playerMember) or SomeBodyDeath
     end
 
@@ -1409,9 +1410,9 @@ function BOM.UpdateScan()
 
   local inRange = false
 
-  for spellIndex, spell in ipairs(BOM.Spells) do
+  for spellIndex, spell in ipairs(BOM.SelectedSpells) do
     if spell.isInfo
-            and BOM.CurrentProfile.Spell[spell.ConfigID].Wispher
+            and BOM.CurrentProfile.Spell[spell.ConfigID].Whisper
     then
       if spell.wasPlayerActiv
               and not spell.playerActiv then
@@ -1849,7 +1850,7 @@ function BOM.UpdateScan()
     if #display == 0 then
       BomC_ListTab_Button:SetText(L.MsgEmpty)
 
-      for spellIndex, spell in ipairs(BOM.Spells) do
+      for spellIndex, spell in ipairs(BOM.SelectedSpells) do
         if #spell.SkipList > 0 then
           wipe(spell.SkipList)
         end
@@ -1865,7 +1866,7 @@ function BOM.UpdateScan()
           BomC_ListTab_Button:SetText(ERR_SPELL_OUT_OF_RANGE)
           local skipreset = false
 
-          for spellIndex, spell in ipairs(BOM.Spells) do
+          for spellIndex, spell in ipairs(BOM.SelectedSpells) do
             if #spell.SkipList > 0 then
               skipreset = true
               wipe(spell.SkipList)
@@ -1923,7 +1924,7 @@ function BOM.DownGrade()
 end
 
 function BOM.ClearSkip()
-  for spellIndex, spell in ipairs(BOM.Spells) do
+  for spellIndex, spell in ipairs(BOM.SelectedSpells) do
     if spell.SkipList then
       wipe(spell.SkipList)
     end
@@ -1931,7 +1932,7 @@ function BOM.ClearSkip()
 end
 
 function BOM.BattleCancelBuffs()
-  if BOM.Spells == nil or BOM.CurrentProfile == nil then
+  if BOM.SelectedSpells == nil or BOM.CurrentProfile == nil then
     return
   end
   for i, spell in ipairs(BOM.CancelBuffs) do
