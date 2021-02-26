@@ -521,7 +521,8 @@ function BOM.Init()
           end,
           BOM.Title)
 
-  BomC_MainWindow_Title:SetText(string.format(BOM.TxtEscapeIcon, BOM.FullIcon) .. " " .. BOM.Title .. " - " .. L.profile_solo)
+  BomC_MainWindow_Title:SetText(
+          string.format(BOM.TxtEscapeIcon, BOM.FullIcon) .. " Buffomat - " .. L.profile_solo)
   --BomC_ListTab_Button:SetText(L["BtnGetMacro"])
 
   BOM.OptionsInit()

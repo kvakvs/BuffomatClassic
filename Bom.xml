@@ -1,8 +1,10 @@
 ﻿<Ui xmlns="http://www.blizzard.com/wow/ui/"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.blizzard.com/wow/ui/">
+
   <GameTooltip name="BomC_Tooltip" inherits="GameTooltipTemplate">
   </GameTooltip>
+
 
   <Button name="BomC_MiniButton" inherits="UIPanelButtonTemplate"
           virtual="true">
@@ -13,6 +15,8 @@
       <AbsDimension x="20" y="18"/>
     </Size>
   </Button>
+
+
   <Frame name="BomC_MyButton" virtual="true" enableMouse="true"
          hidden="true">
     <Size>
@@ -56,6 +60,8 @@
       </Layer>
     </Layers>
   </Frame>
+
+
   <Button name="BomC_MyButtonSecure" virtual="true" enableMouse="true"
           hidden="true" inherits="SecureActionButtonTemplate">
     <Size>
@@ -99,6 +105,8 @@
       </Layer>
     </Layers>
   </Button>
+
+
   <Button name="BomC_SecureButton" inherits="SecureActionButtonTemplate"
           virtual="true">
     <Size>
