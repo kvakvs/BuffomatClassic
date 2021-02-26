@@ -18,6 +18,7 @@ local SpellSettingsFrames = {}
 local function CreateSpellTab()
   local last
   local isHorde = (UnitFactionGroup("player")) == "Horde"
+
   if InCombatLockdown() then
     return
   end

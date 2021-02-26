@@ -18,3 +18,4 @@ Bom.xml
 
 BomSpells.lua
 BomTab.lua
+BomMyButton.lua
