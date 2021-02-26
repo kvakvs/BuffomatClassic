@@ -303,7 +303,7 @@ function BOM.OptionsInit()
   BOM.Options.AddCategory(L.HeaderSupportedSpells)
   BOM.Options.Indent(20)
 
-  for i, spell in ipairs(BOM.SpellList) do
+  for i, spell in ipairs(BOM.AllBuffomatSpells) do
     if type(spell) == "table" then
       spell.optionText = BOM.Options.AddText("<placeholder>")
     else
@@ -330,7 +330,7 @@ function BOM.OptionsInit()
 end
 
 function BOM.OptionsInsertSpells()
-  for i, spell in ipairs(BOM.SpellList) do
+  for i, spell in ipairs(BOM.AllBuffomatSpells) do
     if type(spell) == "table" and spell.optionText then
       if spell.groupId then
         BOM.Options.EditText(spell.optionText,

@@ -13,6 +13,7 @@ local L = setmetatable(
 
 local SpellSettingsFrames = {}
 
+---Filter all known spells through current player spellbook.
 local function CreateSpellTab()
   local last
   local isHorde = (UnitFactionGroup("player")) == "Horde"
