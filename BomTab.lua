@@ -90,7 +90,10 @@ local function add_row_of_class_buttons(isHorde, spell, dx, prev_control)
 
   if spell.frames.target == nil then
     spell.frames.target = BOM.CreateMyButton(
-            BomC_SpellTab_Scroll_Child, BOM.IconTargetOn, BOM.IconTargetOff, BOM.IconDisabled)
+            BomC_SpellTab_Scroll_Child,
+            BOM.IconTargetOn,
+            BOM.IconTargetOff,
+            BOM.IconDisabled)
   end
 
   spell.frames.target:SetPoint("TOPLEFT", prev_control, "TOPRIGHT", dx, 0)
@@ -142,7 +145,6 @@ local function add_spell_cancel_buttons(spell, dx, dy, prev_control, last)
   spell.frames.Enable:SetOnClick(BOM.MyButtonOnClick)
   spell.frames.Enable:SetTooltip(L.TTEnableBuff)
 
-  -->>---------------------------------
   --Add "Only before combat" text label
   spell.frames.OnlyCombat = bom_create_smalltext_label(
           spell.frames.OnlyCombat,
@@ -153,18 +155,8 @@ local function add_spell_cancel_buttons(spell, dx, dy, prev_control, last)
             else
               ctrl:SetText(L.TTCancelThisSpell .. ": " .. L.TTAlwaysCancel)
             end
-            ctrl:SetPoint("TOPLEFT", spell.frames.Enable, "TOPRIGHT", 7, -1)
+            ctrl:SetPoint("TOPLEFT", spell.frames.Enable, "TOPRIGHT", 7, -3)
           end)
-  --if spell.frames.OnlyCombat == nil then
-  --  spell.frames.OnlyCombat = BomC_SpellTab_Scroll_Child:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-  --end
-  --
-  --if spell.OnlyCombat then
-  --  spell.frames.OnlyCombat:SetText("(" .. L.TTOnlyCombat .. ")")
-  --else
-  --  spell.frames.OnlyCombat:SetText("(" .. L.TTOnlyCombat .. ")")
-  --end
-  --<<----------------------------------
 
   spell.frames.info:Show()
   spell.frames.Enable:Show()
