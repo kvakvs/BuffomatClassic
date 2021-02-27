@@ -606,13 +606,18 @@ BOM.ItemListTarget = {}
 -- table CustomCancelBuff
 BOM.CancelBuffs = {
   { singleId     = 10901, --Power Word: Shield
-    default      = false,
+    default      = false, -- default no cancel
     singleFamily = { 17, 592, 600, 3747, 6065, 6066, 10898, 10899, 10900, 10901 } },
-
-  --{singleId=10952, OnlyCombat=true, default=true, --demo
-  --	singleFamily={588,7128,602,1006,10951,10952}},
-
+  { singleId     = 14819, -- Prayer of Spirit / willenstärke
+    groupId      = 27681,
+    default      = false, -- default no cancel
+    singleFamily = { 14752, 14818, 14819, 27841 } },
+  { singleId     = 10157, -- Arcane Intelligence
+    groupId      = 23028, -- Arcane Brilliance
+    default      = false, -- default no cancel
+    singleFamily = { 1459, 1460, 1461, 10156, 10157 } },
 }
+
 do
   local _, class, _
   UnitClass("unit")

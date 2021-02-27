@@ -136,8 +136,8 @@ local function add_spell_cancel_buttons(spell, dx, dy, prev_control, last)
   if spell.frames.Enable == nil then
     spell.frames.Enable = BOM.CreateMyButton(
             BomC_SpellTab_Scroll_Child,
-            BOM.IconBuffOn,
-            BOM.IconBuffOff)
+            BOM.IconOptionEnabled,
+            BOM.IconOptionDisabled)
   end
 
   spell.frames.Enable:SetPoint("LEFT", spell.frames.info, "RIGHT", 7, 0)
@@ -164,12 +164,149 @@ local function add_spell_cancel_buttons(spell, dx, dy, prev_control, last)
     spell.frames.OnlyCombat:Show()
   end
 
-  --spell.frames.buff = BomC_SpellTab_Scroll_Child:CreateFontString(
-  --        nil, "OVERLAY", "GameFontNormalSmall")
-  --spell.frames.buff:SetText("Auto-cancel")
-  --spell.frames.buff:SetPoint("TOPLEFT", prev_control, "TOPRIGHT", dx, -dy)
-
   return dy, prev_control, last
+end
+
+local function fill_last_section(last)
+  if SpellSettingsFrames.Settings == nil then
+    SpellSettingsFrames.Settings = BOM.CreateMyButton(
+            BomC_SpellTab_Scroll_Child,
+            BOM.IconGear,
+            nil,
+            nil,
+            { 0.1, 0.9, 0.1, 0.9 })
+  end
+
+  SpellSettingsFrames.Settings:SetTooltip(L.BtnSettings)
+  SpellSettingsFrames.Settings:SetPoint("TOPLEFT", last, "BOTTOMLEFT", 0, -12)
+
+  last = SpellSettingsFrames.Settings
+  local dx = 7
+  local l = last
+
+  if SpellSettingsFrames[0] == nil then
+    SpellSettingsFrames[0] = BOM.CreateMyButton(
+            BomC_SpellTab_Scroll_Child,
+            BOM.IconGroup,
+            nil,
+            nil,
+            { 0.1, 0.9, 0.1, 0.9 })
+  end
+  SpellSettingsFrames[0]:SetTooltip(L.HeaderWatchGroup)
+  SpellSettingsFrames[0]:SetPoint("TOPLEFT", l, "TOPRIGHT", dx, 0)
+
+  l = SpellSettingsFrames[0]
+  dx = 7
+
+  ------------------------------
+  -- Add "Watch Group #" buttons
+  ------------------------------
+  for i = 1, 8 do
+    if SpellSettingsFrames[i] == nil then
+      SpellSettingsFrames[i] = BOM.CreateMyButton(
+              BomC_SpellTab_Scroll_Child,
+              BOM.IconGroupItem,
+              BOM.IconGroupNone)
+    end
+
+    SpellSettingsFrames[i]:SetPoint("TOPLEFT", l, "TOPRIGHT", dx, 0)
+    SpellSettingsFrames[i]:SetVariable(BOM.WatchGroup, i)
+    SpellSettingsFrames[i]:SetText(i)
+    SpellSettingsFrames[i]:SetTooltip(string.format(L.TTGroup, i))
+    SpellSettingsFrames[i]:SetOnClick(BOM.MyButtonOnClick)
+    l = SpellSettingsFrames[i]
+    dx = 2
+  end
+
+  last = SpellSettingsFrames[0]
+
+  --for i, set in ipairs(BOM.BehaviourSettings) do
+  --  local key = set[1]
+  --
+  --  if BOM["Icon" .. key .. "On"] then
+  --    if SpellSettingsFrames[key] == nil then
+  --      SpellSettingsFrames[key] = BOM.CreateMyButton(
+  --              BomC_SpellTab_Scroll_Child,
+  --              BOM["Icon" .. key .. "On"],
+  --              BOM["Icon" .. key .. "Off"],
+  --              nil,
+  --              BOM["Icon" .. key .. "OnCoord"],
+  --              BOM["Icon" .. key .. "OffCoord"])
+  --    end
+  --
+  --    SpellSettingsFrames[key]:SetPoint("TOPLEFT", last, "BOTTOMLEFT", 0, -2)
+  --    SpellSettingsFrames[key]:SetVariable(BOM.DB, key)
+  --    SpellSettingsFrames[key]:SetTooltip(L["Cbox" .. key])
+  --    SpellSettingsFrames[key]:SetOnClick(BOM.MyButtonOnClick)
+  --    l = SpellSettingsFrames[key]
+  --    dx = 2
+  --
+  --    if SpellSettingsFrames[key .. "txt"] == nil then
+  --      SpellSettingsFrames[key .. "txt"] = BomC_SpellTab_Scroll_Child:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+  --    end
+  --
+  --    SpellSettingsFrames[key .. "txt"]:SetText(L["Cbox" .. key])
+  --    SpellSettingsFrames[key .. "txt"]:SetPoint("TOPLEFT", l, "TOPRIGHT", 7, -1)
+  --    l = SpellSettingsFrames[key .. "txt"]
+  --    dx = 7
+  --
+  --    last = SpellSettingsFrames[key]
+  --    dx = 0
+  --  end
+  --end
+
+
+  --for i, set in ipairs(BOM.BehaviourSettings) do
+  --  local key = set[1]
+  --
+  --  if not BOM["Icon" .. key .. "On"] then
+  --    if SpellSettingsFrames[key] == nil then
+  --      SpellSettingsFrames[key] = BOM.CreateMyButton(
+  --              BomC_SpellTab_Scroll_Child,
+  --              BOM.IconSettingOn,
+  --              BOM.IconSettingOff,
+  --              nil,
+  --              nil,
+  --              nil)
+  --    end
+  --
+  --    SpellSettingsFrames[key]:SetPoint("TOPLEFT", last, "BOTTOMLEFT", dx, -2)
+  --    SpellSettingsFrames[key]:SetVariable(BOM.DB, key)
+  --    SpellSettingsFrames[key]:SetTooltip(L["Cbox" .. key])
+  --    SpellSettingsFrames[key]:SetOnClick(BOM.MyButtonOnClick)
+  --    l = SpellSettingsFrames[key]
+  --    dx = 2
+  --
+  --    if SpellSettingsFrames[key .. "txt"] == nil then
+  --      SpellSettingsFrames[key .. "txt"] = BomC_SpellTab_Scroll_Child:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+  --    end
+  --    SpellSettingsFrames[key .. "txt"]:SetText(L["Cbox" .. key])
+  --    SpellSettingsFrames[key .. "txt"]:SetPoint("TOPLEFT", l, "TOPRIGHT", 7, -1)
+  --    l = SpellSettingsFrames[key .. "txt"]
+  --    dx = 7
+  --
+  --    last = SpellSettingsFrames[key]
+  --    dx = 0
+  --  end
+  --end
+
+  SpellSettingsFrames.Settings:Show()
+
+  for i = 0, 8 do
+    SpellSettingsFrames[i]:Show()
+  end
+
+  for i, set in ipairs(BOM.BehaviourSettings) do
+    if SpellSettingsFrames[set[1]] then
+      SpellSettingsFrames[set[1]]:Show()
+    end
+    if SpellSettingsFrames[set[1] .. "txt"] then
+      SpellSettingsFrames[set[1] .. "txt"]:Show()
+    end
+  end
+
+  last = SpellSettingsFrames.Settings
+  return last
 end
 
 ---Filter all known spells through current player spellbook.
@@ -376,129 +513,17 @@ local function create_tab(isHorde)
 
   dy = 12
 
+  --
+  -- Add spell cancel buttons for all spells in CancelBuffs
+  -- (and CustomCancelBuffs which user can add manually in the config file)
+  --
   for i, spell in ipairs(BOM.CancelBuffs) do
     dy, prev_control, last = add_spell_cancel_buttons(spell, 2, dy, prev_control, last)
     dy = 2
   end
 
   if last then
-    if SpellSettingsFrames.Settings == nil then
-      SpellSettingsFrames.Settings = BOM.CreateMyButton(
-              BomC_SpellTab_Scroll_Child, BOM.IconGear, nil, nil, { 0.1, 0.9, 0.1, 0.9 })
-    end
-
-    SpellSettingsFrames.Settings:SetTooltip(L.BtnSettings)
-    SpellSettingsFrames.Settings:SetPoint("TOPLEFT", last, "BOTTOMLEFT", 0, -12)
-
-    last = SpellSettingsFrames.Settings
-    local dx = 7
-    local l = last
-
-    if SpellSettingsFrames[0] == nil then
-      SpellSettingsFrames[0] = BOM.CreateMyButton(
-              BomC_SpellTab_Scroll_Child, BOM.IconGroup, nil, nil, { 0.1, 0.9, 0.1, 0.9 })
-    end
-    SpellSettingsFrames[0]:SetTooltip(L.HeaderWatchGroup)
-    SpellSettingsFrames[0]:SetPoint("TOPLEFT", l, "TOPRIGHT", dx, 0)
-
-    l = SpellSettingsFrames[0]
-    dx = 7
-
-    for i = 1, 8 do
-      if SpellSettingsFrames[i] == nil then
-        SpellSettingsFrames[i] = BOM.CreateMyButton(BomC_SpellTab_Scroll_Child, BOM.IconGroupItem, BOM.IconGroupNone)
-      end
-
-      SpellSettingsFrames[i]:SetPoint("TOPLEFT", l, "TOPRIGHT", dx, 0)
-      SpellSettingsFrames[i]:SetVariable(BOM.WatchGroup, i)
-      SpellSettingsFrames[i]:SetText(i)
-      SpellSettingsFrames[i]:SetTooltip(string.format(L.TTGroup, i))
-      SpellSettingsFrames[i]:SetOnClick(BOM.MyButtonOnClick)
-      l = SpellSettingsFrames[i]
-      dx = 2
-    end
-
-    last = SpellSettingsFrames[0]
-
-    for i, set in ipairs(BOM.BehaviourSettings) do
-      local key = set[1]
-
-      if BOM["Icon" .. key .. "On"] then
-        if SpellSettingsFrames[key] == nil then
-          SpellSettingsFrames[key] = BOM.CreateMyButton(
-                  BomC_SpellTab_Scroll_Child, BOM["Icon" .. key .. "On"], BOM["Icon" .. key .. "Off"],
-                  nil, BOM["Icon" .. key .. "OnCoord"], BOM["Icon" .. key .. "OffCoord"])
-        end
-
-        SpellSettingsFrames[key]:SetPoint("TOPLEFT", last, "BOTTOMLEFT", 0, -2)
-        SpellSettingsFrames[key]:SetVariable(BOM.DB, key)
-        SpellSettingsFrames[key]:SetTooltip(L["Cbox" .. key])
-        SpellSettingsFrames[key]:SetOnClick(BOM.MyButtonOnClick)
-        l = SpellSettingsFrames[key]
-        dx = 2
-
-        if SpellSettingsFrames[key .. "txt"] == nil then
-          SpellSettingsFrames[key .. "txt"] = BomC_SpellTab_Scroll_Child:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-        end
-
-        SpellSettingsFrames[key .. "txt"]:SetText(L["Cbox" .. key])
-        SpellSettingsFrames[key .. "txt"]:SetPoint("TOPLEFT", l, "TOPRIGHT", 7, -1)
-        l = SpellSettingsFrames[key .. "txt"]
-        dx = 7
-
-        last = SpellSettingsFrames[key]
-        dx = 0
-      end
-    end
-
-
-    --last=SpellSettingsFrames.Settings
-    --dx=SpellSettingsFrames.Settings:GetWidth()+7
-    for i, set in ipairs(BOM.BehaviourSettings) do
-      local key = set[1]
-
-      if not BOM["Icon" .. key .. "On"] then
-        if SpellSettingsFrames[key] == nil then
-          SpellSettingsFrames[key] = BOM.CreateMyButton(
-                  BomC_SpellTab_Scroll_Child, BOM.IconSettingOn, BOM.IconSettingOff, nil, nil, nil)
-        end
-
-        SpellSettingsFrames[key]:SetPoint("TOPLEFT", last, "BOTTOMLEFT", dx, -2)
-        SpellSettingsFrames[key]:SetVariable(BOM.DB, key)
-        SpellSettingsFrames[key]:SetTooltip(L["Cbox" .. key])
-        SpellSettingsFrames[key]:SetOnClick(BOM.MyButtonOnClick)
-        l = SpellSettingsFrames[key]
-        dx = 2
-
-        if SpellSettingsFrames[key .. "txt"] == nil then
-          SpellSettingsFrames[key .. "txt"] = BomC_SpellTab_Scroll_Child:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-        end
-        SpellSettingsFrames[key .. "txt"]:SetText(L["Cbox" .. key])
-        SpellSettingsFrames[key .. "txt"]:SetPoint("TOPLEFT", l, "TOPRIGHT", 7, -1)
-        l = SpellSettingsFrames[key .. "txt"]
-        dx = 7
-
-        last = SpellSettingsFrames[key]
-        dx = 0
-      end
-    end
-
-    SpellSettingsFrames.Settings:Show()
-
-    for i = 0, 8 do
-      SpellSettingsFrames[i]:Show()
-    end
-
-    for i, set in ipairs(BOM.BehaviourSettings) do
-      if SpellSettingsFrames[set[1]] then
-        SpellSettingsFrames[set[1]]:Show()
-      end
-      if SpellSettingsFrames[set[1] .. "txt"] then
-        SpellSettingsFrames[set[1] .. "txt"]:Show()
-      end
-    end
-
-    last = SpellSettingsFrames.Settings
+    last = fill_last_section(last)
   end
 end
 

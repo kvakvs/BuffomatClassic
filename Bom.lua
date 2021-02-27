@@ -129,14 +129,15 @@ function BOM.Popup(self, minimap)
   end
 
   BOM.PopupDynamic:AddItem()
-  BOM.PopupDynamic:SubMenu(L.BtnSettings, "subSettings")
+  BOM.PopupDynamic:SubMenu(L.BtnQuickSettings, "subSettings")
 
   for i, set in ipairs(BOM.BehaviourSettings) do
     BOM.PopupDynamic:AddItem(get_popup_db(BOM.DB, set[1]))
   end
 
-  BOM.PopupDynamic:SubMenu()
-
+  -----------------------
+  -- Watch in Raid group -> 1 2 3 4 5 6 7 8
+  -----------------------
   BOM.PopupDynamic:AddItem()
   BOM.PopupDynamic:SubMenu(L["HeaderWatchGroup"], "subGroup")
 
@@ -145,10 +146,7 @@ function BOM.Popup(self, minimap)
   end
   BOM.PopupDynamic:SubMenu()
 
-  BOM.PopupDynamic:AddItem()
   BOM.PopupDynamic:AddItem(L.BtnSettings, false, BOM.Options.Open, 1)
-  --BOM.PopupDynamic:AddItem(L.BtnSettingsSpells, false, BOM.ShowWindow, 2)
-  --BOM.PopupDynamic:AddItem()
   BOM.PopupDynamic:AddItem(L["BtnCancel"], false)
 
   BOM.PopupDynamic:Show(self or "cursor", 0, 0)

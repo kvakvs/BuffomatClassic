@@ -84,7 +84,8 @@ BOM.locales = {
 
     BtnOpen = "Open",
     BtnCancel = "Cancel",
-    BtnSettings = "Settings",
+    BtnQuickSettings = "Quick Settings",
+    BtnSettings = "Settings Window",
     --BtnSettingsSpells = "Settings Spells",
     BtnBuffs = "Consumables",
     BtnPerformeBuff = "Cast buff",
