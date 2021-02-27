@@ -174,6 +174,14 @@ end
 
 local MyButtonsFrames = {}
 
+---Creates small clickable button in the spell tab
+---@param parent table - UI parent frame
+---@param sel string - texture for checked / selected
+---@param unsel string - texture for unchecked / unselected
+---@param dis string - texture for disabled
+---@param selCoord table - texcoord for selected
+---@param unselCoord table - texcoord for unselected
+---@param disCoord table - texcoord for disabled
 function BOM.CreateMyButton(parent, sel, unsel, dis, selCoord, unselCoord, disCoord)
   Frame = CreateFrame("frame", nil, parent, "BomC_MyButton")
   BOM.MyButton_OnLoad(Frame)

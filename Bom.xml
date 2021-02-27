@@ -20,13 +20,13 @@
   <Frame name="BomC_MyButton" virtual="true" enableMouse="true"
          hidden="true">
     <Size>
-      <AbsDimension x="15" y="15"/>
+      <AbsDimension x="18" y="18"/>
     </Size>
     <Layers>
       <Layer level="HIGHLIGHT">
         <Texture parentKey="_iconHighlight">
           <Size>
-            <AbsDimension x="15" y="15"/>
+            <AbsDimension x="18" y="18"/>
           </Size>
           <Anchors>
             <Anchor point="TOPLEFT"/>
@@ -38,7 +38,7 @@
       <Layer level="BACKGROUND">
         <Texture parentKey="_icon">
           <Size>
-            <AbsDimension x="15" y="15"/>
+            <AbsDimension x="18" y="18"/>
           </Size>
           <Anchors>
             <Anchor point="TOPLEFT"/>
@@ -50,7 +50,7 @@
         <FontString parentKey="_text" inherits="GameFontNormal"
                     justifyH="CENTER" justifyV="MIDDLE">
           <Size>
-            <AbsDimension x="15" y="15"/>
+            <AbsDimension x="18" y="18"/>
           </Size>
           <Anchors>
             <Anchor point="TOPLEFT"/>

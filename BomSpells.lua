@@ -605,7 +605,8 @@ BOM.ItemListTarget = {}
 -- Note: you can add your own spell in the "WTF\Account\<accountname>\SavedVariables\buffOmat.lua"
 -- table CustomCancelBuff
 BOM.CancelBuffs = {
-  { singleId     = 10901, default = false, --Powerword:Shild
+  { singleId     = 10901, --Power Word: Shield
+    default      = false,
     singleFamily = { 17, 592, 600, 3747, 6065, 6066, 10898, 10899, 10900, 10901 } },
 
   --{singleId=10952, OnlyCombat=true, default=true, --demo
@@ -617,13 +618,16 @@ do
   UnitClass("unit")
   if class == "HUNTER" then
     tinsert(BOM.CancelBuffs,
-            { singleId     = 5118, OnlyCombat = true, default = true, --Aspect of the Cheetah--Aspect of the pack
-              singleFamily = { 5118, 13159 } }
+            { singleId     = 5118,
+              OnlyCombat   = true,
+              default      = true,
+              singleFamily = { 5118, 13159 } } --Aspect of the Cheetah/of the pack
     )
   end
   if (UnitFactionGroup("player")) ~= "Horde" then
     tinsert(BOM.CancelBuffs,
-            { singleId     = 1038, default = false, --Blessing of Salvation
+            { singleId     = 1038, --Blessing of Salvation
+              default      = false,
               singleFamily = { 1038, 25895 } }
     )
   end

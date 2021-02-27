@@ -61,13 +61,17 @@ BOM.locales = {
     EboxMinBuff = "Number of missing buffs required to use a group buff",
     EboxMinBlessing = "Number of missing blessing required to use a greater blessing",
 
-    TTSelfCast = "Cast on party/raid or only self",
+    TTSelfCast = "Self-cast only (checked) or include party and raid (unchecked)",
     TTEnable = "Enable/Disable spell",
     TTEnableBuff = "Enable/Disable cancelling buff",
     TTTarget = "Force spell on current Target",
     TTSelectTarget = "Select a raid/party member to enable this option",
     TTGroup = "Group %d",
-    TTOnlyCombat = "Only before combat",
+
+    TTCancelThisSpell = "Cancel this buff",
+    TTOnlyCombat = "Before combat",
+    TTAlwaysCancel = "Always",
+
     TTWhisper = "Whisper source when expired on player",
     TTMainHand = "Main hand",
     TTOffHand = "Off hand",
@@ -303,8 +307,7 @@ BOM.locales = {
     ["CboxResGhost"] = "Пытаться воскрешать призраки",
     ["CboxSameZone"] = "Только в той же зоне",
     ["Cboxshowminimapbutton"] = "Показать кнопку у миникарты",
-    --[[Translation missing --]]
-    --[[ ["CboxUseRank"] = "Use spell with rank",--]]
+    ["CboxUseRank"] = "Использовать заклинание с рангом",
     ["EboxMinBlessing"] = "Количество пропущенных благословений, необходимых для использования большего благословения",
     ["EboxMinBuff"] = "Количество отсутствующих эффектов, необходимое для использования группового эффекта",
     ["EboxTime1800"] = "Продолжительность <=30 мин:",
@@ -344,6 +347,11 @@ BOM.locales = {
     ["TabSpells"] = "Заклинания",
     ["TTEnable"] = "Вкл./откл. заклинание",
     ["TTGroup"] = "Группа %d",
+
+    ["TTCancelThisSpell"] = "Отменять баф",
+    ["TTOnlyCombat"] = "Перед боем",
+    ["TTAlwaysCancel"] = "Сразу",
+
     ["TTSelectTarget"] = "Выберите участника рейда/группы, чтобы включить эту опцию",
     ["TTSelfCast"] = "Применить на группу/рейд или только на себя",
     ["TTTarget"] = "Наложить заклинание на текущую цель"

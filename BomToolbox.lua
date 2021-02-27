@@ -889,3 +889,16 @@ function Tool.CopyPast(Text)
   CopyPastText:SetFocus()
   CopyPastSavedText = Text
 end
+
+---If maybe_label is nil, creates a text label under the parent. Calls position_fn
+---on the label to set its position.
+---@param maybe_label void - the existing label or nil
+---@param parent void - parent where the label is created
+---@param position_fn function - applies function after creating the label
+function bom_create_smalltext_label(maybe_label, parent, position_fn)
+  if maybe_label == nil then
+    maybe_label = parent:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+  end
+  position_fn(maybe_label)
+  return maybe_label
+end

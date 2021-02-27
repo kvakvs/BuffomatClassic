@@ -599,7 +599,7 @@ end
 local function Event_SpellsChanged()
   BOM.GetSpells()
   BOM.ForceUpdate = true
-  BOM.CreateSpellTab = false
+  BOM.SpellTabsCreatedFlag = false
   BOM.OptionsInsertSpells()
 end
 
@@ -643,7 +643,9 @@ local function Event_CombatStart()
   BOM.ForceUpdate = true
   BOM.DeclineHasResurrection = true
   BOM.AutoClose()
-  BomC_ListTab_Button:Disable()
+  if not InCombatLockdown() then
+    BomC_ListTab_Button:Disable()
+  end
   BOM.BattleCancelBuffs()
 end
 
@@ -1108,10 +1110,12 @@ function BOM.ShowSpellSettings()
   BOM.ShowWindow(2)
 end
 
-BOM.IconGreen = "Interface\\COMMON\\Indicator-Green"
-BOM.IconRed = "Interface\\COMMON\\Indicator-Red"
+BOM.IconOptionEnabled = "Interface\\Buttons\\UI-CheckBox-Check"
+BOM.IconOptionDisabled = "Interface\\Buttons\\UI-CheckBox-Up"
+
 BOM.IconSelfCastOn = "Interface\\FriendsFrame\\UI-Toast-FriendOnlineIcon"
 BOM.IconSelfCastOff = "Interface\\FriendsFrame\\UI-Toast-ChatInviteIcon"
+
 BOM.IconClasses = BOM.Tool.IconClassTextureWithoutBorder
 BOM.IconClassesCoord = BOM.Tool.IconClassTextureCoord
 BOM.IconEmpty = "Interface\\Buttons\\UI-MultiCheck-Disabled"
