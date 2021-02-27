@@ -1177,7 +1177,7 @@ local function bom_catch_a_spell(cost, id, link, member, spell)
     elseif spell.isResurrection then
       if cast.Spell.isResurrection then
         if (tContains(ResurrectionClass, cast.Member.class) and not tContains(ResurrectionClass, member.class))
-                or (tContains(ManaClass, cast.Member.class) and not tContains(ManaClass, member.class))
+                or (tContains(BOM_MANA_CLASSES, cast.Member.class) and not tContains(BOM_MANA_CLASSES, member.class))
                 or (not cast.Member.isGhost and member.isGhost)
                 or (cast.Member.distance < member.distance) then
           return

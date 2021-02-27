@@ -309,206 +309,230 @@ local function fill_last_section(last)
   return last
 end
 
+---create_tab_row
+---@param isHorde boolean - whether we're horde
+---@param spell void - spell we're adding now
+---@param dy number - Y offset
+---@param last void - some previous control or something
+---@param section string - section name for spell type
+---@param selfClassName string - Character class
+local function create_tab_row(isHorde, spell, dy, last, section, selfClassName)
+  spell.frames = spell.frames or {}
+
+  --------------------------------
+  -- Create buff icon with tooltip
+  --------------------------------
+  if spell.frames.info == nil then
+    spell.frames.info = BOM.CreateMyButton(
+            BomC_SpellTab_Scroll_Child,
+            spell.Icon,
+            nil,
+            nil,
+            { 0.1, 0.9, 0.1, 0.9 })
+  end
+
+  if spell.isBuff then
+    spell.frames.info:SetTooltipLink("item:" .. spell.item)
+  else
+    spell.frames.info:SetTooltipLink("spell:" .. spell.singleId)
+  end
+  --<<----------------------------
+
+  dy = 12
+
+  if spell.isOwn and section ~= "isOwn" then
+    section = "isOwn"
+  elseif spell.isTracking and section ~= "isTracking" then
+    section = "isTracking"
+  elseif spell.isResurrection and section ~= "isResurrection" then
+    section = "isResurrection"
+  elseif spell.isSeal and section ~= "isSeal" then
+    section = "isSeal"
+  elseif spell.isAura and section ~= "isAura" then
+    section = "isAura"
+  elseif spell.isBlessing and section ~= "isBlessing" then
+    section = "isBlessing"
+  elseif spell.isInfo and section ~= "isInfo" then
+    section = "isInfo"
+  elseif spell.isBuff and section ~= "isBuff" then
+    section = "isBuff"
+  else
+    dy = 2
+  end
+
+  if last then
+    spell.frames.info:SetPoint("TOPLEFT", last, "BOTTOMLEFT", 0, -dy)
+  else
+    spell.frames.info:SetPoint("TOPLEFT")
+  end
+
+  local prev_control = spell.frames.info
+  local dx = 7
+
+  if spell.frames.Enable == nil then
+    spell.frames.Enable = BOM.CreateMyButton(
+            BomC_SpellTab_Scroll_Child,
+            BOM.IconOptionEnabled,
+            BOM.IconOptionDisabled)
+  end
+
+  spell.frames.Enable:SetPoint("TOPLEFT", prev_control, "TOPRIGHT", dx, 0)
+  spell.frames.Enable:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID], "Enable")
+  spell.frames.Enable:SetOnClick(BOM.MyButtonOnClick)
+  spell.frames.Enable:SetTooltip(L.TTEnable)
+
+  prev_control = spell.frames.Enable
+  dx = 7
+
+  if BOM.SpellHasClasses(spell) then
+    -- Create checkboxes one per class
+    dx, prev_control = add_row_of_class_buttons(isHorde, spell, dx, prev_control)
+  end
+
+  if (spell.isTracking
+          or spell.isAura
+          or spell.isSeal)
+          and spell.needForm == nil then
+    if spell.frames.Set == nil then
+      spell.frames.Set = BOM.CreateMyButtonSecure(
+              BomC_SpellTab_Scroll_Child,
+              BOM.IconChecked,
+              BOM.IconUnChecked)
+    end
+
+    spell.frames.Set:SetPoint("TOPLEFT", prev_control, "TOPRIGHT", dx, 0)
+    spell.frames.Set:SetSpell(spell.singleId)
+
+    prev_control = spell.frames.Set
+    dx = 7
+  end
+
+  if spell.isInfo and spell.allowWhisper then
+    if spell.frames.Whisper == nil then
+      spell.frames.Whisper = BOM.CreateMyButton(
+              BomC_SpellTab_Scroll_Child,
+              BOM.IconWhisperOn,
+              BOM.IconWhisperOff)
+    end
+
+    spell.frames.Whisper:SetPoint("TOPLEFT", prev_control, "TOPRIGHT", dx, 0)
+    spell.frames.Whisper:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID], "Whisper")
+    spell.frames.Whisper:SetOnClick(BOM.MyButtonOnClick)
+    spell.frames.Whisper:SetTooltip(L.TTWhisper)
+    prev_control = spell.frames.Whisper
+    dx = 2
+  end
+
+  if spell.isWeapon then
+    if spell.frames.MainHand == nil then
+      spell.frames.MainHand = BOM.CreateMyButton(
+              BomC_SpellTab_Scroll_Child,
+              BOM.IconMainHandOn,
+              BOM.IconMainHandOff,
+              BOM.IconDisabled,
+              BOM.IconMainHandOnCoord)
+    end
+
+    spell.frames.MainHand:SetPoint("TOPLEFT", prev_control, "TOPRIGHT", dx, 0)
+    spell.frames.MainHand:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID], "MainHandEnable")
+    spell.frames.MainHand:SetOnClick(BOM.MyButtonOnClick)
+    spell.frames.MainHand:SetTooltip(L.TTMainHand)
+    prev_control = spell.frames.MainHand
+    dx = 2
+
+    if spell.frames.OffHand == nil then
+      spell.frames.OffHand = BOM.CreateMyButton(
+              BomC_SpellTab_Scroll_Child,
+              BOM.IconSecondaryHandOn,
+              BOM.IconSecondaryHandOff,
+              BOM.IconDisabled,
+              BOM.IconSecondaryHandOnCoord)
+    end
+
+    spell.frames.OffHand:SetPoint("TOPLEFT", prev_control, "TOPRIGHT", dx, 0)
+    spell.frames.OffHand:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID], "OffHandEnable")
+    spell.frames.OffHand:SetOnClick(BOM.MyButtonOnClick)
+    spell.frames.OffHand:SetTooltip(L.TTOffHand)
+    prev_control = spell.frames.OffHand
+    dx = 2
+  end
+
+  if spell.frames.buff == nil then
+    spell.frames.buff = BomC_SpellTab_Scroll_Child:CreateFontString(
+            nil, "OVERLAY", "GameFontNormalSmall")
+  end
+
+  if spell.isWeapon then
+    spell.frames.buff:SetText((spell.single or "-") .. " (" .. L.TTAnyRank .. ")")
+  else
+    spell.frames.buff:SetText(spell.single or "-")
+  end
+
+  spell.frames.buff:SetPoint("TOPLEFT", prev_control, "TOPRIGHT", 7, -1)
+  prev_control = spell.frames.buff
+  dx = 7
+
+  spell.frames.info:Show()
+  spell.frames.Enable:Show()
+
+  if BOM.SpellHasClasses(spell) then
+    spell.frames.SelfCast:Show()
+    spell.frames.target:Show()
+
+    for ci, class in ipairs(BOM.Tool.Classes) do
+      if (isHorde and class == "PALADIN")
+              or (not isHorde and class == "SHAMAN") then
+        spell.frames[class]:Hide()
+      else
+        spell.frames[class]:Show()
+      end
+    end
+
+    spell.frames["tank"]:Show()
+    spell.frames["pet"]:Show()
+  end
+
+  if spell.frames.Set then
+    spell.frames.Set:Show()
+  end
+
+  if spell.frames.buff then
+    spell.frames.buff:Show()
+  end
+
+  if spell.frames.Whisper then
+    spell.frames.Whisper:Show()
+  end
+
+  if spell.frames.MainHand then
+    spell.frames.MainHand:Show()
+  end
+
+  if spell.frames.OffHand then
+    spell.frames.OffHand:Show()
+  end
+
+  last = spell.frames.info
+  return dy, last, section
+end
+
 ---Filter all known spells through current player spellbook.
 ---Called below from BOM.UpdateSpellsTab()
 local function create_tab(isHorde)
   local last
   local dy = 0
   local section
+  -- className, classFilename, classId
+  local _, selfClassName, _ = UnitClass("player")
 
   for i, spell in ipairs(BOM.SelectedSpells) do
-    spell.frames = spell.frames or {}
-
-    if spell.frames.info == nil then
-      spell.frames.info = BOM.CreateMyButton(
-              BomC_SpellTab_Scroll_Child,
-              spell.Icon,
-              nil,
-              nil,
-              { 0.1, 0.9, 0.1, 0.9 })
-    end
-
-    if spell.isBuff then
-      spell.frames.info:SetTooltipLink("item:" .. spell.item)
+    if type(spell.onlyUsableFor) == "table"
+            and not tContains(spell.onlyUsableFor, selfClassName) then
+      -- skip
     else
-      spell.frames.info:SetTooltipLink("spell:" .. spell.singleId)
+      dy, last, section = create_tab_row(isHorde, spell, dy, last, section, selfClassName)
     end
 
-    dy = 12
-
-    if spell.isOwn and section ~= "isOwn" then
-      section = "isOwn"
-    elseif spell.isTracking and section ~= "isTracking" then
-      section = "isTracking"
-    elseif spell.isResurrection and section ~= "isResurrection" then
-      section = "isResurrection"
-    elseif spell.isSeal and section ~= "isSeal" then
-      section = "isSeal"
-    elseif spell.isAura and section ~= "isAura" then
-      section = "isAura"
-    elseif spell.isBlessing and section ~= "isBlessing" then
-      section = "isBlessing"
-    elseif spell.isInfo and section ~= "isInfo" then
-      section = "isInfo"
-    elseif spell.isBuff and section ~= "isBuff" then
-      section = "isBuff"
-    else
-      dy = 2
-    end
-
-    if last then
-      spell.frames.info:SetPoint("TOPLEFT", last, "BOTTOMLEFT", 0, -dy)
-    else
-      spell.frames.info:SetPoint("TOPLEFT")
-    end
-
-    local prev_control = spell.frames.info
-    local dx = 7
-
-    if spell.frames.Enable == nil then
-      spell.frames.Enable = BOM.CreateMyButton(
-              BomC_SpellTab_Scroll_Child,
-              BOM.IconOptionEnabled,
-              BOM.IconOptionDisabled)
-    end
-
-    spell.frames.Enable:SetPoint("TOPLEFT", prev_control, "TOPRIGHT", dx, 0)
-    spell.frames.Enable:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID], "Enable")
-    spell.frames.Enable:SetOnClick(BOM.MyButtonOnClick)
-    spell.frames.Enable:SetTooltip(L.TTEnable)
-
-    prev_control = spell.frames.Enable
-    dx = 7
-
-    if BOM.SpellHasClasses(spell) then
-      -- Create checkboxes one per class
-      dx, prev_control = add_row_of_class_buttons(isHorde, spell, dx, prev_control)
-    end
-
-    if (spell.isTracking
-            or spell.isAura
-            or spell.isSeal)
-            and spell.needForm == nil then
-      if spell.frames.Set == nil then
-        spell.frames.Set = BOM.CreateMyButtonSecure(
-                BomC_SpellTab_Scroll_Child,
-                BOM.IconChecked,
-                BOM.IconUnChecked)
-      end
-
-      spell.frames.Set:SetPoint("TOPLEFT", prev_control, "TOPRIGHT", dx, 0)
-      spell.frames.Set:SetSpell(spell.singleId)
-
-      prev_control = spell.frames.Set
-      dx = 7
-    end
-
-    if spell.isInfo and spell.allowWhisper then
-      if spell.frames.Whisper == nil then
-        spell.frames.Whisper = BOM.CreateMyButton(
-                BomC_SpellTab_Scroll_Child,
-                BOM.IconWhisperOn,
-                BOM.IconWhisperOff)
-      end
-
-      spell.frames.Whisper:SetPoint("TOPLEFT", prev_control, "TOPRIGHT", dx, 0)
-      spell.frames.Whisper:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID], "Whisper")
-      spell.frames.Whisper:SetOnClick(BOM.MyButtonOnClick)
-      spell.frames.Whisper:SetTooltip(L.TTWhisper)
-      prev_control = spell.frames.Whisper
-      dx = 2
-    end
-
-    if spell.isWeapon then
-      if spell.frames.MainHand == nil then
-        spell.frames.MainHand = BOM.CreateMyButton(
-                BomC_SpellTab_Scroll_Child,
-                BOM.IconMainHandOn,
-                BOM.IconMainHandOff,
-                BOM.IconDisabled,
-                BOM.IconMainHandOnCoord)
-      end
-
-      spell.frames.MainHand:SetPoint("TOPLEFT", prev_control, "TOPRIGHT", dx, 0)
-      spell.frames.MainHand:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID], "MainHandEnable")
-      spell.frames.MainHand:SetOnClick(BOM.MyButtonOnClick)
-      spell.frames.MainHand:SetTooltip(L.TTMainHand)
-      prev_control = spell.frames.MainHand
-      dx = 2
-
-      if spell.frames.OffHand == nil then
-        spell.frames.OffHand = BOM.CreateMyButton(
-                BomC_SpellTab_Scroll_Child,
-                BOM.IconSecondaryHandOn,
-                BOM.IconSecondaryHandOff,
-                BOM.IconDisabled,
-                BOM.IconSecondaryHandOnCoord)
-      end
-
-      spell.frames.OffHand:SetPoint("TOPLEFT", prev_control, "TOPRIGHT", dx, 0)
-      spell.frames.OffHand:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID], "OffHandEnable")
-      spell.frames.OffHand:SetOnClick(BOM.MyButtonOnClick)
-      spell.frames.OffHand:SetTooltip(L.TTOffHand)
-      prev_control = spell.frames.OffHand
-      dx = 2
-    end
-
-    if spell.frames.buff == nil then
-      spell.frames.buff = BomC_SpellTab_Scroll_Child:CreateFontString(
-              nil, "OVERLAY", "GameFontNormalSmall")
-    end
-
-    if spell.isWeapon then
-      spell.frames.buff:SetText((spell.single or "-") .. " (" .. L.TTAnyRank .. ")")
-    else
-      spell.frames.buff:SetText(spell.single or "-")
-    end
-
-    spell.frames.buff:SetPoint("TOPLEFT", prev_control, "TOPRIGHT", 7, -1)
-    prev_control = spell.frames.buff
-    dx = 7
-
-    spell.frames.info:Show()
-    spell.frames.Enable:Show()
-
-    if BOM.SpellHasClasses(spell) then
-      spell.frames.SelfCast:Show()
-      spell.frames.target:Show()
-
-      for ci, class in ipairs(BOM.Tool.Classes) do
-        if (isHorde and class == "PALADIN")
-                or (not isHorde and class == "SHAMAN") then
-          spell.frames[class]:Hide()
-        else
-          spell.frames[class]:Show()
-        end
-      end
-
-      spell.frames["tank"]:Show()
-      spell.frames["pet"]:Show()
-    end
-
-    if spell.frames.Set then
-      spell.frames.Set:Show()
-    end
-
-    if spell.frames.buff then
-      spell.frames.buff:Show()
-    end
-
-    if spell.frames.Whisper then
-      spell.frames.Whisper:Show()
-    end
-
-    if spell.frames.MainHand then
-      spell.frames.MainHand:Show()
-    end
-
-    if spell.frames.OffHand then
-      spell.frames.OffHand:Show()
-    end
-
-    last = spell.frames.info
   end
 
   dy = 12
@@ -524,6 +548,69 @@ local function create_tab(isHorde)
 
   if last then
     last = fill_last_section(last)
+  end
+end
+
+local function update_selected_spell(spell)
+  spell.frames.Enable:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID], "Enable")
+
+  if BOM.SpellHasClasses(spell) then
+    spell.frames.SelfCast:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID], "SelfCast")
+
+    for ci, class in ipairs(BOM.Tool.Classes) do
+      spell.frames[class]:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID].Class, class)
+
+      if BOM.CurrentProfile.Spell[spell.ConfigID].SelfCast then
+        spell.frames[class]:Disable()
+      else
+        spell.frames[class]:Enable()
+      end
+    end
+
+    spell.frames["tank"]:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID].Class, "tank")
+    spell.frames["pet"]:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID].Class, "pet")
+
+    if BOM.CurrentProfile.Spell[spell.ConfigID].SelfCast then
+      spell.frames["tank"]:Disable()
+      spell.frames["pet"]:Disable()
+    else
+      spell.frames["tank"]:Enable()
+      spell.frames["pet"]:Enable()
+    end
+
+    if BOM.lastTarget ~= nil then
+      spell.frames.target:Enable()
+      spell.frames.target:SetTooltip(L.TTTarget .. "|n" .. BOM.lastTarget)
+      if spell.isBlessing then
+        spell.frames.target:SetVariable(BOM.CurrentProfile.Spell[BOM.BLESSINGID], BOM.lastTarget, spell.ConfigID)
+      else
+        spell.frames.target:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID].ForcedTarget, BOM.lastTarget, true)
+      end
+
+    else
+      spell.frames.target:Disable()
+      spell.frames.target:SetTooltip(L.TTTarget .. "|n" .. L.TTSelectTarget)
+      spell.frames.target:SetVariable()
+    end
+  end
+
+  if spell.isInfo and spell.allowWhisper then
+    spell.frames.Whisper:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID], "Whisper")
+  end
+
+  if spell.isWeapon then
+    spell.frames.MainHand:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID], "MainHandEnable")
+    spell.frames.OffHand:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID], "OffHandEnable")
+  end
+
+  if (spell.isTracking or spell.isAura or spell.isSeal) and spell.needForm == nil then
+    if (spell.isTracking and BOM.DBChar.LastTracking == spell.TrackingIcon) or
+            (spell.isAura and spell.ConfigID == BOM.CurrentProfile.LastAura) or
+            (spell.isSeal and spell.ConfigID == BOM.CurrentProfile.LastSeal) then
+      spell.frames.Set:SetState(true)
+    else
+      spell.frames.Set:SetState(false)
+    end
   end
 end
 
@@ -549,66 +636,15 @@ function BOM.UpdateSpellsTab()
     BOM.SpellTabsCreatedFlag = true
   end
 
+  -- className, classFilename, classId
+  local _, selfClassName, _ = UnitClass("player")
+
   for i, spell in ipairs(BOM.SelectedSpells) do
-    spell.frames.Enable:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID], "Enable")
-
-    if BOM.SpellHasClasses(spell) then
-      spell.frames.SelfCast:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID], "SelfCast")
-
-      for ci, class in ipairs(BOM.Tool.Classes) do
-        spell.frames[class]:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID].Class, class)
-
-        if BOM.CurrentProfile.Spell[spell.ConfigID].SelfCast then
-          spell.frames[class]:Disable()
-        else
-          spell.frames[class]:Enable()
-        end
-      end
-
-      spell.frames["tank"]:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID].Class, "tank")
-      spell.frames["pet"]:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID].Class, "pet")
-
-      if BOM.CurrentProfile.Spell[spell.ConfigID].SelfCast then
-        spell.frames["tank"]:Disable()
-        spell.frames["pet"]:Disable()
-      else
-        spell.frames["tank"]:Enable()
-        spell.frames["pet"]:Enable()
-      end
-
-      if BOM.lastTarget ~= nil then
-        spell.frames.target:Enable()
-        spell.frames.target:SetTooltip(L.TTTarget .. "|n" .. BOM.lastTarget)
-        if spell.isBlessing then
-          spell.frames.target:SetVariable(BOM.CurrentProfile.Spell[BOM.BLESSINGID], BOM.lastTarget, spell.ConfigID)
-        else
-          spell.frames.target:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID].ForcedTarget, BOM.lastTarget, true)
-        end
-
-      else
-        spell.frames.target:Disable()
-        spell.frames.target:SetTooltip(L.TTTarget .. "|n" .. L.TTSelectTarget)
-        spell.frames.target:SetVariable()
-      end
-    end
-
-    if spell.isInfo and spell.allowWhisper then
-      spell.frames.Whisper:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID], "Whisper")
-    end
-
-    if spell.isWeapon then
-      spell.frames.MainHand:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID], "MainHandEnable")
-      spell.frames.OffHand:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID], "OffHandEnable")
-    end
-
-    if (spell.isTracking or spell.isAura or spell.isSeal) and spell.needForm == nil then
-      if (spell.isTracking and BOM.DBChar.LastTracking == spell.TrackingIcon) or
-              (spell.isAura and spell.ConfigID == BOM.CurrentProfile.LastAura) or
-              (spell.isSeal and spell.ConfigID == BOM.CurrentProfile.LastSeal) then
-        spell.frames.Set:SetState(true)
-      else
-        spell.frames.Set:SetState(false)
-      end
+    if type(spell.onlyUsableFor) == "table"
+            and not tContains(spell.onlyUsableFor, selfClassName) then
+      -- skip
+    else
+      update_selected_spell(spell)
     end
   end
 
