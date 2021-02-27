@@ -257,7 +257,8 @@ BOM.AllBuffomatSpells = {
   { singleId = 15279, item = 11567, isBuff = true, default = false }, --Crystal Spire
   { singleId = 18192, item = 13928, isBuff = true, default = false,
     onlyUsableFor  = BOM_PHYSICAL_CLASSES }, --Grilled Squid x
-  { singleId = 24799, item = 20452, isBuff = true, default = false }, --Smoked Desert Dumplings x
+  { singleId = 24799, item = 20452, isBuff = true, default = false,
+    onlyUsableFor  = BOM_PHYSICAL_CLASSES }, --Smoked Desert Dumplings x
   { singleId = 18194, item = 13931, isBuff = true, default = false,
     onlyUsableFor  = BOM_MANA_CLASSES }, --Nightfin Soup x
   { singleId = 22730, item = 18254, isBuff = true, default = false }, --Runn Tum Tuber Surprise x
@@ -267,7 +268,8 @@ BOM.AllBuffomatSpells = {
   { singleId = 18141, item = 13813, isBuff = true, default = false,
     onlyUsableFor  = BOM_MANA_CLASSES }, --Blessed Sunfruit Juice x
   { singleId = 18125, item = 13810, isBuff = true, default = false }, --Blessed Sunfruit x
-  { singleId = 22790, item = 18284, isBuff = true, default = false }, --Kreeg's Stout Beatdown
+  { singleId = 22790, item = 18284, isBuff = true, default = false,
+    onlyUsableFor  = BOM_MANA_CLASSES }, --Kreeg's Stout Beatdown
   { singleId = 22789, item = 18269, isBuff = true, default = false }, --Gordok Green Grog
   { singleId = 25804, item = 21151, isBuff = true, default = false }, --Rumsey Rum Black Label
 
@@ -309,9 +311,9 @@ BOM.AllBuffomatSpells = {
   { singleId = 11340, item = 8928, items = { 8928, 8927, 8926, 6950, 6949, 6947 }, isBuff = true,
     isWeapon = true, duration = 1800, default = false,
     onlyUsableFor  = { "ROGUE" } }, --Instant Poison
-  { singleId = 6650, item = 5654, items = { 5654 }, isBuff = true, isWeapon = true,
-    duration = 1800, default = false,
-    onlyUsableFor  = { "ROGUE" } }, --Instant Toxin
+  --{ singleId = 6650, item = 5654, items = { 5654 }, isBuff = true, isWeapon = true,
+  --  duration = 1800, default = false,
+  --  onlyUsableFor  = { "ROGUE" } }, --Instant Toxin - Not available to players maybe
   { singleId = 13227, item = 10922, items = { 10922, 10921, 10920, 10918 }, isBuff = true,
     isWeapon = true, duration = 1800, default = false,
     onlyUsableFor  = { "ROGUE" } }, --Wound Poison
