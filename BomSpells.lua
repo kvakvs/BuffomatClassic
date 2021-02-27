@@ -1,7 +1,7 @@
 local TOCNAME, BOM = ...
 
 ---Classes which have a resurrection ability
-local ResurrectionClass = { "SHAMAN", "PRIEST", "PALADIN" }
+local BOM_RESURRECT_CLASS = { "SHAMAN", "PRIEST", "PALADIN" }
 
 ---Classes which have mana bar
 local BOM_MANA_CLASSES = { "HUNTER", "WARLOCK", "MAGE", "DRUID", "SHAMAN", "PRIEST", "PALADIN" }
@@ -10,6 +10,20 @@ local BOM_PHYSICAL_CLASSES = { "HUNTER", "ROGUE", "SHAMAN", "WARRIOR", "DRUID" }
 
 -- Note: you can add your own spell in the "WTF\Account\<accountname>\SavedVariables\buffOmat.lua"
 -- table CustomSpells
+---All spells known to Buffomat
+---@field item number - buff is granted by an item in user's bag
+---@field singleId number - spell id for single buff
+---@field groupId number - spell id for group buff
+---@field default boolean - whether the spell auto-cast is enabled by default
+---@field singleFamily table - family of single buffs which are mutually exclusive
+---@field groupFamily table - family of group buffs which are mutually exclusive
+---@field singleDuration number - buff duration for single buff in seconds
+---@field groupDuration number - buff duration for group buff in seconds
+---@field classes table - list of classes which are shown as toggle boxes to enable per class
+---@field onlyUsableFor table - list of classes which only can see this buff (hidden for others)
+---@field isAura boolean - true if the buff affects others in radius, and not a target buff
+---@field isTracking boolean - true if the buff is tracking of some resource or enemy
+---@field isWeapon boolean - the buff is a temporary weapon enchant on user's weapons
 BOM.AllBuffomatSpells = {
   "PRIEST",
 
@@ -67,7 +81,7 @@ BOM.AllBuffomatSpells = {
   { singleId = 5225, isTracking = true, needForm = CAT_FORM, default = true }, -- search human
 
   "MAGE",
-  { singleId       = 10157, groupId = 23028, default = true, -- arkane intelligenz
+  { singleId       = 10157, groupId = 23028, default = true, --Arcane Intellect | Brilliance
     singleFamily   = { 1459, 1460, 1461, 10156, 10157 },
     singleDuration = 1800, groupDuration = 3600, NeededGroupItem = { 17020 },
     classes        = { "MAGE", "DRUID", "HUNTER", "SHAMAN", "PRIEST", "WARLOCK", "PALADIN" } },
@@ -227,49 +241,52 @@ BOM.AllBuffomatSpells = {
 
   "item",
   --{singleId=10901, item=8766,isBuff=true, default=false}, -- debug schild/tau
-  { singleId = 17538, item = 13452, isBuff = true, default = false,
-    onlyUsableFor  = BOM_PHYSICAL_CLASSES }, --Elixir of the Mongoose
-  { singleId = 24363, item = 20007, isBuff = true, default = false,
-    onlyUsableFor  = BOM_MANA_CLASSES }, --Mageblood Potion
+  { singleId      = 17538, item = 13452, isBuff = true, default = false,
+    onlyUsableFor = BOM_PHYSICAL_CLASSES }, --Elixir of the Mongoose
+  { singleId      = 11334, item = 9187, isBuff = true, default = false,
+    onlyUsableFor = BOM_PHYSICAL_CLASSES }, --Elixir of Greater Agility
+  { singleId      = 24363, item = 20007, isBuff = true, default = false,
+    onlyUsableFor = BOM_MANA_CLASSES }, --Mageblood Potion
   { singleId = 3593, item = 3825, isBuff = true, default = false }, --Elixir of Fortitude
   { singleId = 11348, item = 13445, isBuff = true, default = false }, --Elixir of Superior Defense
   { singleId = 24361, item = 20004, isBuff = true, default = false }, --Major Troll's Blood Potion
   { singleId = 11371, item = 9088, isBuff = true, default = false }, --Gift of Arthas
-  { singleId = 11405, item = 9206, isBuff = true, default = false,
-    onlyUsableFor  = BOM_PHYSICAL_CLASSES }, --Elixir of Giants
-  { singleId = 17539, item = 13454, isBuff = true, default = false,
-    onlyUsableFor  = BOM_MANA_CLASSES }, --Greater Arcane Elixir
-  { singleId = 11390, item = 9155, isBuff = true, default = false,
-    onlyUsableFor  = BOM_MANA_CLASSES }, --Greater Arcane Elixir
-  { singleId = 11474, item = 9264, isBuff = true, default = false,
-    onlyUsableFor  = BOM_SHADOW_CLASSES }, -- Elixir of Shadow Power
-  { singleId = 26276, item = 21546, isBuff = true, default = false,
-    onlyUsableFor  = BOM_MANA_CLASSES }, --Elixir of Greater Firepower
-  { singleId = 21920, item = 17708, isBuff = true, default = false,
-    onlyUsableFor  = { "SHAMAN" } }, --Elixir of Frost Power
-  { singleId = 17038, item = 12820, isBuff = true, default = false,
-    onlyUsableFor  = BOM_PHYSICAL_CLASSES }, --Winterfall Firewater
+  { singleId      = 11405, item = 9206, isBuff = true, default = false,
+    onlyUsableFor = BOM_PHYSICAL_CLASSES }, --Elixir of Giants
+  { singleId      = 17539, item = 13454, isBuff = true, default = false,
+    onlyUsableFor = BOM_MANA_CLASSES }, --Greater Arcane Elixir
+  { singleId      = 11390, item = 9155, isBuff = true, default = false,
+    onlyUsableFor = BOM_MANA_CLASSES }, --Greater Arcane Elixir
+  { singleId      = 11474, item = 9264, isBuff = true, default = false,
+    onlyUsableFor = BOM_SHADOW_CLASSES }, -- Elixir of Shadow Power
+  { singleId      = 26276, item = 21546, isBuff = true, default = false,
+    onlyUsableFor = BOM_MANA_CLASSES }, --Elixir of Greater Firepower
+  { singleId      = 21920, item = 17708, isBuff = true, default = false,
+    onlyUsableFor = { "SHAMAN", "MAGE" } }, --Elixir of Frost Power
+  { singleId      = 17038, item = 12820, isBuff = true, default = false,
+    onlyUsableFor = BOM_PHYSICAL_CLASSES }, --Winterfall Firewater
   { singleId = 16326, item = 12455, isBuff = true, default = false }, --Juju Ember
   { singleId = 16325, item = 12457, isBuff = true, default = false }, --Juju Chill
   { singleId = 16329, item = 12460, isBuff = true, default = false }, --Juju Might
   { singleId = 16323, item = 12451, isBuff = true, default = false }, --Juju Power
   { singleId = 15233, item = 11564, isBuff = true, default = false }, --Crystal Ward
   { singleId = 15279, item = 11567, isBuff = true, default = false }, --Crystal Spire
-  { singleId = 18192, item = 13928, isBuff = true, default = false,
-    onlyUsableFor  = BOM_PHYSICAL_CLASSES }, --Grilled Squid x
-  { singleId = 24799, item = 20452, isBuff = true, default = false,
-    onlyUsableFor  = BOM_PHYSICAL_CLASSES }, --Smoked Desert Dumplings x
-  { singleId = 18194, item = 13931, isBuff = true, default = false,
-    onlyUsableFor  = BOM_MANA_CLASSES }, --Nightfin Soup x
+  { singleId      = 18192, item = 13928, isBuff = true, default = false,
+    onlyUsableFor = BOM_PHYSICAL_CLASSES }, --Grilled Squid +Agility
+  { singleId      = 24799, item = 20452, isBuff = true, default = false,
+    onlyUsableFor = BOM_PHYSICAL_CLASSES }, --Smoked Desert Dumplings +Strength
+  { singleId      = 18194, item = 13931, isBuff = true, default = false,
+    onlyUsableFor = BOM_MANA_CLASSES }, --Nightfin Soup +Mana/5
   { singleId = 22730, item = 18254, isBuff = true, default = false }, --Runn Tum Tuber Surprise x
-  { singleId = 19710, item = 12218, isBuff = true, default = false,
-    onlyUsableFor  = BOM_MANA_CLASSES }, --Monster Omelet x
+  { singleId      = 19710, item = 12218, isBuff = true, default = false,
+    onlyUsableFor = BOM_MANA_CLASSES }, --Monster Omelet x
   { singleId = 25661, item = 21023, isBuff = true, default = false }, --Dirge's Kickin' Chimaerok Chops x
-  { singleId = 18141, item = 13813, isBuff = true, default = false,
-    onlyUsableFor  = BOM_MANA_CLASSES }, --Blessed Sunfruit Juice x
-  { singleId = 18125, item = 13810, isBuff = true, default = false }, --Blessed Sunfruit x
-  { singleId = 22790, item = 18284, isBuff = true, default = false,
-    onlyUsableFor  = BOM_MANA_CLASSES }, --Kreeg's Stout Beatdown
+  { singleId      = 18141, item = 13813, isBuff = true, default = false,
+    onlyUsableFor = BOM_MANA_CLASSES }, --Blessed Sunfruit Juice +Strength
+  { singleId      = 18125, item = 13810, isBuff = true, default = false,
+    onlyUsableFor = BOM_MANA_CLASSES }, --Blessed Sunfruit +Spirit
+  { singleId      = 22790, item = 18284, isBuff = true, default = false,
+    onlyUsableFor = BOM_MANA_CLASSES }, --Kreeg's Stout Beatdown
   { singleId = 22789, item = 18269, isBuff = true, default = false }, --Gordok Green Grog
   { singleId = 25804, item = 21151, isBuff = true, default = false }, --Rumsey Rum Black Label
 
@@ -279,47 +296,47 @@ BOM.AllBuffomatSpells = {
   { singleId = 17546, item = 13458, isBuff = true, default = false }, --Greater Nature Protection Potion
   { singleId = 17548, item = 13459, isBuff = true, default = false }, --Greater Shadow Protection Potion
 
-  { singleId = 25123, item = 20748, items = { 20748, 20747, 20745 }, isBuff = true,
-    isWeapon = true, duration = 1800, default = false,
-    onlyUsableFor  = BOM_MANA_CLASSES }, --Brilliant Mana Oil
-  { singleId = 25122, item = 20749, items = { 20749, 20746, 20744, 20750 }, isBuff = true,
-    isWeapon = true, duration = 1800, default = false,
-    onlyUsableFor  = BOM_MANA_CLASSES }, --Brilliant Wizard Oil
-  { singleId = 28898, item = 23123, isBuff = true, isWeapon = true,
-    duration = 3600, default = false,
-    onlyUsableFor  = BOM_MANA_CLASSES }, --Blessed Wizard Oil
+  { singleId      = 25123, item = 20748, items = { 20748, 20747, 20745 }, isBuff = true,
+    isWeapon      = true, duration = 1800, default = false,
+    onlyUsableFor = BOM_MANA_CLASSES }, --Brilliant Mana Oil
+  { singleId      = 25122, item = 20749, items = { 20749, 20746, 20744, 20750 }, isBuff = true,
+    isWeapon      = true, duration = 1800, default = false,
+    onlyUsableFor = BOM_MANA_CLASSES }, --Brilliant Wizard Oil
+  { singleId      = 28898, item = 23123, isBuff = true, isWeapon = true,
+    duration      = 3600, default = false,
+    onlyUsableFor = BOM_MANA_CLASSES }, --Blessed Wizard Oil
 
-  { singleId = 16622, item = 12643, items = { 12643, 7965, 3241, 3240, 3239 }, isBuff = true,
-    isWeapon = true, duration = 1800, default = false,
-    onlyUsableFor  = BOM_PHYSICAL_CLASSES }, --Weightstone
-  { singleId = 16138, item = 12404, items = { 12404, 7964, 2871, 2863, 2862 }, isBuff = true,
-    isWeapon = true, duration = 1800, default = false,
-    onlyUsableFor  = BOM_PHYSICAL_CLASSES }, --Sharpening Stone
-  { singleId = 28891, item = 23122, isBuff = true, isWeapon = true,
-    duration = 3600, default = false,
-    onlyUsableFor  = BOM_PHYSICAL_CLASSES }, --Consecrated Sharpening Stone
-  { singleId = 22756, item = 18262, isBuff = true, isWeapon = true,
-    duration = 1800, default = false,
-    onlyUsableFor  = BOM_PHYSICAL_CLASSES }, --Elemental Sharpening Stone
+  { singleId      = 16622, item = 12643, items = { 12643, 7965, 3241, 3240, 3239 }, isBuff = true,
+    isWeapon      = true, duration = 1800, default = false,
+    onlyUsableFor = BOM_PHYSICAL_CLASSES }, --Weightstone
+  { singleId      = 16138, item = 12404, items = { 12404, 7964, 2871, 2863, 2862 }, isBuff = true,
+    isWeapon      = true, duration = 1800, default = false,
+    onlyUsableFor = BOM_PHYSICAL_CLASSES }, --Sharpening Stone
+  { singleId      = 28891, item = 23122, isBuff = true, isWeapon = true,
+    duration      = 3600, default = false,
+    onlyUsableFor = BOM_PHYSICAL_CLASSES }, --Consecrated Sharpening Stone
+  { singleId      = 22756, item = 18262, isBuff = true, isWeapon = true,
+    duration      = 1800, default = false,
+    onlyUsableFor = BOM_PHYSICAL_CLASSES }, --Elemental Sharpening Stone
 
-  { singleId = 25351, item = 20844, items = { 20844, 8985, 8984, 2893, 2892 }, isBuff = true,
-    isWeapon = true, duration = 1800, default = false,
-    onlyUsableFor  = { "ROGUE" } }, --Deadly Poison
-  { singleId = 11399, item = 9186, items = { 9186, 6951, 5237 }, isBuff = true, isWeapon = true,
-    duration = 1800, default = false,
-    onlyUsableFor  = { "ROGUE" } }, --Mind-numbing Poison
-  { singleId = 11340, item = 8928, items = { 8928, 8927, 8926, 6950, 6949, 6947 }, isBuff = true,
-    isWeapon = true, duration = 1800, default = false,
-    onlyUsableFor  = { "ROGUE" } }, --Instant Poison
+  { singleId      = 25351, item = 20844, items = { 20844, 8985, 8984, 2893, 2892 }, isBuff = true,
+    isWeapon      = true, duration = 1800, default = false,
+    onlyUsableFor = { "ROGUE" } }, --Deadly Poison
+  { singleId      = 11399, item = 9186, items = { 9186, 6951, 5237 }, isBuff = true, isWeapon = true,
+    duration      = 1800, default = false,
+    onlyUsableFor = { "ROGUE" } }, --Mind-numbing Poison
+  { singleId      = 11340, item = 8928, items = { 8928, 8927, 8926, 6950, 6949, 6947 }, isBuff = true,
+    isWeapon      = true, duration = 1800, default = false,
+    onlyUsableFor = { "ROGUE" } }, --Instant Poison
   --{ singleId = 6650, item = 5654, items = { 5654 }, isBuff = true, isWeapon = true,
   --  duration = 1800, default = false,
   --  onlyUsableFor  = { "ROGUE" } }, --Instant Toxin - Not available to players maybe
-  { singleId = 13227, item = 10922, items = { 10922, 10921, 10920, 10918 }, isBuff = true,
-    isWeapon = true, duration = 1800, default = false,
-    onlyUsableFor  = { "ROGUE" } }, --Wound Poison
-  { singleId = 11202, item = 3776, items = { 3776, 3775 }, isBuff = true, isWeapon = true,
-    duration = 1800, default = false,
-    onlyUsableFor  = { "ROGUE" } }, --Crippling Poison
+  { singleId      = 13227, item = 10922, items = { 10922, 10921, 10920, 10918 }, isBuff = true,
+    isWeapon      = true, duration = 1800, default = false,
+    onlyUsableFor = { "ROGUE" } }, --Wound Poison
+  { singleId      = 11202, item = 3776, items = { 3776, 3775 }, isBuff = true, isWeapon = true,
+    duration      = 1800, default = false,
+    onlyUsableFor = { "ROGUE" } }, --Crippling Poison
 }
 
 --Preload items!

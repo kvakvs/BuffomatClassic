@@ -575,7 +575,7 @@ end
 local function Event_UNIT_POWER_UPDATE(arg1, arg2)
   --UNIT_POWER_UPDATE: "unitTarget", "powerType"
   if arg2 == "MANA" and UnitIsUnit(arg1, "player") then
-    if (BOM.ManaLimit or 0) <= (UnitPower("player", 0) or 0) then
+    if (BOM.PlayerManaMax or 0) <= (UnitPower("player", 0) or 0) then
       BOM.ForceUpdate = true
     end
   end

@@ -1160,55 +1160,64 @@ local function bom_display_text_in_messageframe()
   end
 end
 
-local cast = {}
-local PlayerMana
+local next_cast_spell = {}
+local player_mana
 
 ---Stores a spell with cost/id/spell link to be casted in the `cast` global
+---@param cost number - Resource cost (mana cost)
+---@param id number - Spell id to capture
+---@param link string
+---@param member table
+---@param spell table - Spell to capture
 local function bom_catch_a_spell(cost, id, link, member, spell)
-  if cost > PlayerMana then
+  if cost > player_mana then
     return -- ouch
   end
 
   if not spell.isResurrection and member.isDead then
+    -- Cannot cast resurrections on deads
     return
-  elseif cast.Spell and not spell.isTracking then
-    if cast.Spell.isTracking then
+  elseif next_cast_spell.Spell and not spell.isTracking then
+    if next_cast_spell.Spell.isTracking then
       return
     elseif spell.isResurrection then
-      if cast.Spell.isResurrection then
-        if (tContains(ResurrectionClass, cast.Member.class) and not tContains(ResurrectionClass, member.class))
-                or (tContains(BOM_MANA_CLASSES, cast.Member.class) and not tContains(BOM_MANA_CLASSES, member.class))
-                or (not cast.Member.isGhost and member.isGhost)
-                or (cast.Member.distance < member.distance) then
+      --------------------
+      -- If resurrection
+      --------------------
+      if next_cast_spell.Spell.isResurrection then
+        if (tContains(BOM_RESURRECT_CLASS, next_cast_spell.Member.class) and not tContains(BOM_RESURRECT_CLASS, member.class))
+                or (tContains(BOM_MANA_CLASSES, next_cast_spell.Member.class) and not tContains(BOM_MANA_CLASSES, member.class))
+                or (not next_cast_spell.Member.isGhost and member.isGhost)
+                or (next_cast_spell.Member.distance < member.distance) then
           return
         end
       end
     else
-      if (BOM.DB.SelfFirst and cast.Member.isPlayer and not member.isPlayer)
-              or (cast.Member.group ~= 9 and member.group == 9) then
+      if (BOM.DB.SelfFirst and next_cast_spell.Member.isPlayer and not member.isPlayer)
+              or (next_cast_spell.Member.group ~= 9 and member.group == 9) then
         return
-      elseif (not BOM.DB.SelfFirst or (cast.Member.isPlayer == member.isPlayer))
-              and ((cast.Member.group == 9) == (member.group == 9))
-              and cast.manaCost > cost then
+      elseif (not BOM.DB.SelfFirst or (next_cast_spell.Member.isPlayer == member.isPlayer))
+              and ((next_cast_spell.Member.group == 9) == (member.group == 9))
+              and next_cast_spell.manaCost > cost then
         return
       end
     end
   end
 
-  cast.manaCost = cost
-  cast.SpellId = id
-  cast.Link = link
-  cast.Member = member
-  cast.Spell = spell
+  next_cast_spell.manaCost = cost
+  next_cast_spell.SpellId = id
+  next_cast_spell.Link = link
+  next_cast_spell.Member = member
+  next_cast_spell.Spell = spell
 end
 
 ---Cleares the spell from `cast` global
 local function bom_clear_spell()
-  cast.manaCost = -1
-  cast.SpellId = nil
-  cast.Member = nil
-  cast.Spell = nil
-  cast.Link = nil
+  next_cast_spell.manaCost = -1
+  next_cast_spell.SpellId = nil
+  next_cast_spell.Member = nil
+  next_cast_spell.Spell = nil
+  next_cast_spell.Link = nil
 end
 
 ---Scan the available spells and group members to find who needs the rebuff/res
@@ -1223,7 +1232,6 @@ function BOM.UpdateScan()
   end
 
   BOM.MinTimer = GetTime() + 36000 -- 10 hours
-
   bom_clear_display_cache()
   BOM.RepeatUpdate = false
 
@@ -1411,7 +1419,7 @@ function BOM.UpdateScan()
   end
 
   -- fill list and find cast
-  PlayerMana = UnitPower("player", 0) or 0 --mana
+  player_mana = UnitPower("player", 0) or 0 --mana
   BOM.ManaLimit = UnitPowerMax("player", 0) or 0
 
   bom_clear_spell()
@@ -1447,13 +1455,13 @@ function BOM.UpdateScan()
               and not spell.isBuff
       then
         if spell.singleMana < BOM.ManaLimit
-                and spell.singleMana > PlayerMana then
+                and spell.singleMana > player_mana then
           BOM.ManaLimit = spell.singleMana
         end
 
         if spell.groupMana
                 and spell.groupMana < BOM.ManaLimit
-                and spell.groupMana > PlayerMana then
+                and spell.groupMana > player_mana then
           BOM.ManaLimit = spell.groupMana
         end
       end
@@ -1844,21 +1852,21 @@ function BOM.UpdateScan()
     BOM.UpdateMacro()
     BomC_ListTab_Button:Disable()
 
-  elseif cast.Member and cast.SpellId then
-    BomC_ListTab_Button:SetText(string.format(L["MsgNextCast"], cast.Link, cast.Member.link))
+  elseif next_cast_spell.Member and next_cast_spell.SpellId then
+    BomC_ListTab_Button:SetText(string.format(L["MsgNextCast"], next_cast_spell.Link, next_cast_spell.Member.link))
 
-    BOM.UpdateMacro(cast.Member, cast.SpellId)
-    local cdtest = GetSpellCooldown(cast.SpellId) or 0
+    BOM.UpdateMacro(next_cast_spell.Member, next_cast_spell.SpellId)
+    local cdtest = GetSpellCooldown(next_cast_spell.SpellId) or 0
 
     if cdtest ~= 0 then
-      BOM.CheckCoolDown = cast.SpellId
+      BOM.CheckCoolDown = next_cast_spell.SpellId
       BomC_ListTab_Button:Disable()
     else
       BomC_ListTab_Button:Enable()
     end
 
-    BOM.ERRSpell = cast.Spell
-    BOM.ERRMember = cast.Member
+    BOM.ERRSpell = next_cast_spell.Spell
+    BOM.ERRMember = next_cast_spell.Member
   else
     if #display == 0 then
       BomC_ListTab_Button:SetText(L.MsgEmpty)
