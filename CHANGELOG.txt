@@ -1,3 +1,13 @@
+Buffomat Classic 1.9
+- Internal code improvements, even though I constantly play with it and it shows no signs of problems, things will possibly be unstable for a moment.
+- Fonts made slightly bigger
+- Green and red circles changed to more familiar checkboxes improving the UI overall feel.
+- Menu popup is simpler now, options removed from the main Spells tab. Options submenu renamed to "Quick Options" and Options menu item renamed to "Options Window".
+- Cancel auras now has text label and not just an empty row without any explanation.
+- Added 2 more cancel buffs (int and spirit, useful for tanks in raids). Added agi elixir for cheapskates like me.
+- Class-restrictions, limiting mana int and spirit buffs to mana classes, limiting agi, str and AP buffs to physical dmg classes - makes the list of consumables shorter.
+- Resurrection targets are sorted to prefer resser classes first
+
 Buffomat Classic 1.83
 - Forked and renamed abandoned addon to become "Buffomat Classic". Reuploading to Curse.
 

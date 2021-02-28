@@ -1598,10 +1598,10 @@ function BOM.UpdateScan()
             BOM.RepeatUpdate = true
 
             -- Is the body in range?
-            local isInRange = (IsSpellInRange(spell.single, member.unitId) == 1)
+            local is_in_range = (IsSpellInRange(spell.single, member.unitId) == 1)
                     and not tContains(spell.SkipList, member.name)
 
-            if isInRange then
+            if is_in_range then
               inRange = true
               bom_display_text(string.format(L["MsgBuffSingle"], member.link, spell.singleLink),
                       member.name)
@@ -1612,7 +1612,7 @@ function BOM.UpdateScan()
 
             -- If in range, we can res?
             -- Should we try and resurrect ghosts when their corpse is not targetable?
-            if isInRange
+            if is_in_range
                     or (BOM.DB.ResGhost and member.isGhost) then
               bom_catch_a_spell(spell.singleMana, spell.singleId, spell.singleLink, member, spell)
             end

@@ -157,23 +157,23 @@ BOM.AllBuffomatSpells = {
   { singleId     = 20906, isOwn = true, default = true, -- Trueshot Aura
     singleFamily = { 19506, 20905, 20906 } },
 
-  { singleId = 13161, isAura = true, default = true }, -- Aspect of the beast
+  { singleId = 13161, isAura = true, default = false }, -- Aspect of the beast
   { singleId     = 25296, isAura = true, default = true, --Aspect of the Hawk
     singleFamily = { 13165, 14318, 14319, 14320, 14321, 14322, 25296 } },
-  { singleId = 13163, isAura = true, default = true }, --Aspect of the monkey
-  { singleId     = 20190, isAura = true, default = true, --Aspect of the wild
+  { singleId = 13163, isAura = true, default = false }, --Aspect of the monkey
+  { singleId     = 20190, isAura = true, default = false, --Aspect of the wild
     singleFamily = { 20043, 20190 } },
   { singleId = 5118, isAura = true, default = false }, --Aspect of the Cheetah
   { singleId = 13159, isAura = true, default = false }, --Aspect of the pack
 
-  { singleId = 1494, isTracking = true, default = true }, -- Track Beast
-  { singleId = 19878, isTracking = true, default = true }, -- Track Demon
-  { singleId = 19879, isTracking = true, default = true }, -- Track Dragonkin
-  { singleId = 19880, isTracking = true, default = true }, -- Track Elemental
-  { singleId = 19883, isTracking = true, default = true }, -- Track Humanoids
-  { singleId = 19882, isTracking = true, default = true }, -- Track Giants / riesen
-  { singleId = 19884, isTracking = true, default = true }, -- Track Undead
-  { singleId = 19885, isTracking = true, default = true }, -- Track Hidden / verborgenes
+  { singleId = 1494, isTracking = true, default = false }, -- Track Beast
+  { singleId = 19878, isTracking = true, default = false }, -- Track Demon
+  { singleId = 19879, isTracking = true, default = false }, -- Track Dragonkin
+  { singleId = 19880, isTracking = true, default = false }, -- Track Elemental
+  { singleId = 19883, isTracking = true, default = false }, -- Track Humanoids
+  { singleId = 19882, isTracking = true, default = false }, -- Track Giants / riesen
+  { singleId = 19884, isTracking = true, default = false }, -- Track Undead
+  { singleId = 19885, isTracking = true, default = false }, -- Track Hidden / verborgenes
 
   "PALADIN",
   { singleId = 25780, isOwn = true, default = true }, --Righteous Fury
@@ -263,15 +263,15 @@ BOM.AllBuffomatSpells = {
   { singleId      = 11474, item = 9264, isBuff = true, default = false,
     onlyUsableFor = BOM_SHADOW_CLASSES }, -- Elixir of Shadow Power
   { singleId      = 26276, item = 21546, isBuff = true, default = false,
-    onlyUsableFor = BOM_MANA_CLASSES }, --Elixir of Greater Firepower
+    onlyUsableFor = {"MAGE", "WARLOCK", "SHAMAN"} }, --Elixir of Greater Firepower
   { singleId      = 21920, item = 17708, isBuff = true, default = false,
     onlyUsableFor = { "SHAMAN", "MAGE" } }, --Elixir of Frost Power
   { singleId      = 17038, item = 12820, isBuff = true, default = false,
     onlyUsableFor = BOM_PHYSICAL_CLASSES }, --Winterfall Firewater
-  { singleId = 16326, item = 12455, isBuff = true, default = false }, --Juju Ember
-  { singleId = 16325, item = 12457, isBuff = true, default = false }, --Juju Chill
-  { singleId = 16329, item = 12460, isBuff = true, default = false }, --Juju Might
-  { singleId = 16323, item = 12451, isBuff = true, default = false }, --Juju Power
+  { singleId = 16326, item = 12455, isBuff = true, default = false }, --Juju Ember +15FR
+  { singleId = 16325, item = 12457, isBuff = true, default = false }, --Juju Chill +15FrostR
+  { singleId = 16329, item = 12460, isBuff = true, default = false }, --Juju Might +40AP
+  { singleId = 16323, item = 12451, isBuff = true, default = false }, --Juju Power +30Str
   { singleId = 15233, item = 11564, isBuff = true, default = false }, --Crystal Ward
   { singleId = 15279, item = 11567, isBuff = true, default = false }, --Crystal Spire
   { singleId      = 18192, item = 13928, isBuff = true, default = false,
