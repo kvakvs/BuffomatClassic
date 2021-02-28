@@ -98,7 +98,7 @@ local function add_row_of_class_buttons(isHorde, spell, dx, prev_control)
 
   spell.frames.target:SetPoint("TOPLEFT", prev_control, "TOPRIGHT", dx, 0)
   spell.frames.target:SetOnClick(BOM.MyButtonOnClick)
-  spell.frames.target:SetTooltip(L.TTTarget)
+  BOM.Tool.Tooltip(spell.frames.target, "TooltipForceCastOnTarget")
 
   prev_control = spell.frames.target
   dx = 7
@@ -122,7 +122,7 @@ local function add_spell_cancel_buttons(spell, dx, dy, prev_control, last)
             nil,
             nil,
             { 0.1, 0.9, 0.1, 0.9 })
-    spell.frames.info:SetTooltipLink("spell:" .. spell.singleId)
+    BOM.Tool.TooltipLink(spell.frames.info, "spell:" .. spell.singleId)
   end
 
   if last then
@@ -143,7 +143,7 @@ local function add_spell_cancel_buttons(spell, dx, dy, prev_control, last)
   spell.frames.Enable:SetPoint("LEFT", spell.frames.info, "RIGHT", 7, 0)
   spell.frames.Enable:SetVariable(BOM.CurrentProfile.CancelBuff[spell.ConfigID], "Enable")
   spell.frames.Enable:SetOnClick(BOM.MyButtonOnClick)
-  spell.frames.Enable:SetTooltip(L.TTEnableBuff)
+  BOM.Tool.Tooltip(spell.frames.Enable, "TooltipEnableBuffCancel")
 
   --Add "Only before combat" text label
   spell.frames.OnlyCombat = bom_create_smalltext_label(
@@ -332,9 +332,11 @@ local function create_tab_row(isHorde, spell, dy, last, section, selfClassName)
   end
 
   if spell.isBuff then
-    spell.frames.info:SetTooltipLink("item:" .. spell.item)
+    --spell.frames.info:SetTooltipLink("item:" .. spell.item)
+    BOM.Tool.TooltipLink(spell.frames.info, "item:" .. spell.item)
   else
-    spell.frames.info:SetTooltipLink("spell:" .. spell.singleId)
+    --spell.frames.info:SetTooltipLink("spell:" .. spell.singleId)
+    BOM.Tool.TooltipLink(spell.frames.info, "spell:" .. spell.singleId)
   end
   --<<----------------------------
 
@@ -379,7 +381,7 @@ local function create_tab_row(isHorde, spell, dy, last, section, selfClassName)
   spell.frames.Enable:SetPoint("TOPLEFT", prev_control, "TOPRIGHT", dx, 0)
   spell.frames.Enable:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID], "Enable")
   spell.frames.Enable:SetOnClick(BOM.MyButtonOnClick)
-  spell.frames.Enable:SetTooltip(L.TTEnable)
+  BOM.Tool.Tooltip(spell.frames.Enable, "TooltipEnableSpell")
 
   prev_control = spell.frames.Enable
   dx = 7
@@ -418,7 +420,7 @@ local function create_tab_row(isHorde, spell, dy, last, section, selfClassName)
     spell.frames.Whisper:SetPoint("TOPLEFT", prev_control, "TOPRIGHT", dx, 0)
     spell.frames.Whisper:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID], "Whisper")
     spell.frames.Whisper:SetOnClick(BOM.MyButtonOnClick)
-    spell.frames.Whisper:SetTooltip(L.TTWhisper)
+    BOM.Tool.Tooltip(spell.frames.Whisper, "TooltipWhisperWhenExpired")
     prev_control = spell.frames.Whisper
     dx = 2
   end
@@ -436,7 +438,7 @@ local function create_tab_row(isHorde, spell, dy, last, section, selfClassName)
     spell.frames.MainHand:SetPoint("TOPLEFT", prev_control, "TOPRIGHT", dx, 0)
     spell.frames.MainHand:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID], "MainHandEnable")
     spell.frames.MainHand:SetOnClick(BOM.MyButtonOnClick)
-    spell.frames.MainHand:SetTooltip(L.TTMainHand)
+    BOM.Tool.Tooltip(spell.frames.MainHand, "TooltipMainHand")
     prev_control = spell.frames.MainHand
     dx = 2
 
@@ -452,7 +454,7 @@ local function create_tab_row(isHorde, spell, dy, last, section, selfClassName)
     spell.frames.OffHand:SetPoint("TOPLEFT", prev_control, "TOPRIGHT", dx, 0)
     spell.frames.OffHand:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID], "OffHandEnable")
     spell.frames.OffHand:SetOnClick(BOM.MyButtonOnClick)
-    spell.frames.OffHand:SetTooltip(L.TTOffHand)
+    BOM.Tool.Tooltip(spell.frames.OffHand, "TooltipOffHand")
     prev_control = spell.frames.OffHand
     dx = 2
   end
@@ -580,7 +582,7 @@ local function update_selected_spell(spell)
 
     if BOM.lastTarget ~= nil then
       spell.frames.target:Enable()
-      spell.frames.target:SetTooltip(L.TTTarget .. "|n" .. BOM.lastTarget)
+      BOM.Tool.TooltipText(spell.frames.target, L.TooltipForceCastOnTarget .. "|n" .. BOM.lastTarget)
       if spell.isBlessing then
         spell.frames.target:SetVariable(BOM.CurrentProfile.Spell[BOM.BLESSINGID], BOM.lastTarget, spell.ConfigID)
       else
@@ -589,7 +591,7 @@ local function update_selected_spell(spell)
 
     else
       spell.frames.target:Disable()
-      spell.frames.target:SetTooltip(L.TTTarget .. "|n" .. L.TTSelectTarget)
+      BOM.Tool.TooltipText(spell.frames.target, L.TooltipForceCastOnTarget .. "|n" .. L.TTSelectTarget)
       spell.frames.target:SetVariable()
     end
   end

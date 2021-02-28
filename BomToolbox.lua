@@ -915,10 +915,58 @@ function bom_create_smalltext_label(maybe_label, parent, position_fn)
   return maybe_label
 end
 
+---Add onenter/onleave scripts to show the tooltip with translation by key
+---@param control table
+---@param translation_key string - the key from BomL10n.lua
 function Tool.Tooltip(control, translation_key)
   control:SetScript("OnEnter", function()
     GameTooltip:SetOwner(control, "ANCHOR_RIGHT")
     GameTooltip:AddLine(L[translation_key])
+    GameTooltip:Show()
+  end)
+  control:SetScript("OnLeave", function()
+    GameTooltip:Hide()
+  end)
+end
+
+---Add onenter/onleave scripts to show the tooltip with TEXT
+---@param control table
+---@param text string - the localized text to display
+function Tool.TooltipText(control, text)
+  control:SetScript("OnEnter", function()
+    GameTooltip:SetOwner(control, "ANCHOR_RIGHT")
+    GameTooltip:AddLine(text)
+    GameTooltip:Show()
+  end)
+  control:SetScript("OnLeave", function()
+    GameTooltip:Hide()
+  end)
+end
+
+local function bom_find_spellid(spellName)
+  local i = 1;
+  while true do
+    local spellAndRank = My_GetSpellName(i, BOOKTYPE_SPELL);
+    if (not spellAndRank) then
+      break;
+    end
+    if (spellName == spellAndRank) then
+      --print at this point like "Fireball(Rank 13)"
+      return i;
+    end
+    i = i + 1;
+  end
+  return nil;
+end
+
+---Add onenter/onleave scripts to show the tooltip with spell
+---@param control table
+---@param link string - the string in format "spell:<id>" or "item:<id>"
+function Tool.TooltipLink(control, link)
+  control:SetScript("OnEnter", function()
+    local spellId =
+    GameTooltip:SetOwner(control, "ANCHOR_RIGHT")
+    GameTooltip:SetHyperlink(link)
     GameTooltip:Show()
   end)
   control:SetScript("OnLeave", function()

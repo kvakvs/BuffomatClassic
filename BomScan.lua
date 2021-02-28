@@ -1480,9 +1480,9 @@ function BOM.UpdateScan()
                     and playerMember.OffHandBuff == nil then
               if BOM.DB.DontUseConsumables
                       and not IsModifierKeyDown() then
-                bom_display_text(string.format(BOM.TxtEscapeIcon, texture) .. itemLink .. "x" .. count .. " (" .. L.TTOffHand .. ")", playerMember.distance, true)
+                bom_display_text(string.format(BOM.TxtEscapeIcon, texture) .. itemLink .. "x" .. count .. " (" .. L.TooltipOffHand .. ")", playerMember.distance, true)
               else
-                BagTitel = string.format(BOM.TxtEscapeIcon, texture) .. itemLink .. "x" .. count .. " (" .. L.TTOffHand .. ")"
+                BagTitel = string.format(BOM.TxtEscapeIcon, texture) .. itemLink .. "x" .. count .. " (" .. L.TooltipOffHand .. ")"
                 BagCommand = "/use " .. bag .. " " .. slot .. "\n/use 17" -- offhand
                 bom_display_text(BagTitel, playerMember.distance, true)
               end
@@ -1492,9 +1492,9 @@ function BOM.UpdateScan()
                     and playerMember.MainHandBuff == nil then
               if BOM.DB.DontUseConsumables
                       and not IsModifierKeyDown() then
-                bom_display_text(string.format(BOM.TxtEscapeIcon, texture) .. itemLink .. "x" .. count .. " (" .. L.TTMainHand .. ")", playerMember.distance, true)
+                bom_display_text(string.format(BOM.TxtEscapeIcon, texture) .. itemLink .. "x" .. count .. " (" .. L.TooltipMainHand .. ")", playerMember.distance, true)
               else
-                BagTitel = string.format(BOM.TxtEscapeIcon, texture) .. itemLink .. "x" .. count .. " (" .. L.TTMainHand .. ")"
+                BagTitel = string.format(BOM.TxtEscapeIcon, texture) .. itemLink .. "x" .. count .. " (" .. L.TooltipMainHand .. ")"
                 BagCommand = "/use " .. bag .. " " .. slot .. "\n/use 16" -- mainhand
                 bom_display_text(BagTitel, playerMember.distance, true)
               end

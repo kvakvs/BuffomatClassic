@@ -62,9 +62,9 @@ BOM.locales = {
     EboxMinBlessing = "Number of missing blessing required to use a greater blessing",
 
     TTSelfCast = "Self-cast only (checked) or include party and raid (unchecked)",
-    TTEnable = "Enable/Disable spell",
-    TTEnableBuff = "Enable/Disable cancelling buff",
-    TTTarget = "Force spell on current Target",
+    TooltipEnableSpell = "Add this buff to the task list",
+    TooltipEnableBuffCancel = "Cancel this buff as soon as it is found",
+    TooltipForceCastOnTarget = "Force spell on current Target",
     TTSelectTarget = "Select a raid/party member to enable this option",
     TTGroup = "Group %d",
 
@@ -72,9 +72,9 @@ BOM.locales = {
     TTOnlyCombat = "Before combat",
     TTAlwaysCancel = "Always",
 
-    TTWhisper = "Whisper source when expired on player",
-    TTMainHand = "Main hand",
-    TTOffHand = "Off hand",
+    TooltipWhisperWhenExpired = "Whisper the player who casted the buff, when the buff has expired",
+    TooltipMainHand = "Main hand",
+    TooltipOffHand = "Off hand",
     TTAnyRank = "any",
 
     TabBuff = "Buff",
@@ -128,7 +128,7 @@ BOM.locales = {
     TooltipMacroButton = "Drag this macro to your action bar to cast the buffs",
     TooltipSettingsButton = "Open Quick Settings and Profiles popup menu",
     TooltipCloseButton = "Hide Buffomat window, type /bom to reopen or click the minimap button",
-    TooltipCastButton = "Cast the spell from the list.\nNot available in combat.\nCan also be activated via the macro (in the top row)\nor bind a shortcut key in Key Bindings => Other",
+    TooltipCastButton = "Cast the spell from the list.|nNot available in combat.|nCan also be activated via the macro (in the top row)|nor bind a shortcut key in Key Bindings => Other",
   },
 
   deDE = {
@@ -217,16 +217,16 @@ BOM.locales = {
     ["TabSpells"] = "Zauber",
     ["Tank"] = "Tank",
     ["TTAnyRank"] = "Alle Varianten",
-    ["TTEnable"] = "Buffüberwachung ein-/ausschalten",
-    ["TTEnableBuff"] = "Automatisches beenden des Buff ein-/ausschalten",
+    ["TooltipEnableSpell"] = "Buffüberwachung ein-/ausschalten",
+    ["TooltipEnableBuffCancel"] = "Automatisches beenden des Buff ein-/ausschalten",
     ["TTGroup"] = "Gruppe %d",
-    ["TTMainHand"] = "Waffenhand",
-    ["TTOffHand"] = "Schildhand",
+    ["TooltipMainHand"] = "Waffenhand",
+    ["TooltipOffHand"] = "Schildhand",
     ["TTOnlyCombat"] = "Nur direkt vor einem Kampf",
     ["TTSelectTarget"] = "Wähle ein Gruppenmitglied um diese Option zu aktivieren.",
     ["TTSelfCast"] = "Wirke auf Gruppe/Raid oder nur auf sich selbst",
-    ["TTTarget"] = "Buff dauerhaft auf Ziel halten",
-    ["TTWhisper"] = "Quelle anflüstern, wenn abgelaufen."
+    ["TooltipForceCastOnTarget"] = "Buff dauerhaft auf Ziel halten",
+    ["TooltipWhisperWhenExpired"] = "Quelle anflüstern, wenn abgelaufen."
   },
 
   frFR = {
@@ -257,8 +257,8 @@ BOM.locales = {
     EboxTime3600 = "Durée <=60 min:",
 
     TTSelfCast = "Buff groupe/raid ou uniquement sois-même",
-    TTEnable = "Activer/Désactiver sort",
-    TTTarget = "Forcer sort sur Cible actuelle",
+    TooltipEnableSpell = "Activer/Désactiver sort",
+    TooltipForceCastOnTarget = "Forcer sort sur Cible actuelle",
     TTSelectTarget = "Choisir un membre groupe/raid pour activer cette option",
     TTGroup = "Groupe %d",
 
@@ -350,7 +350,7 @@ BOM.locales = {
     ["SlashUpdate"] = "Обновить список макросов",
     ["TabBuff"] = "Эффекты",
     ["TabSpells"] = "Заклинания",
-    ["TTEnable"] = "Вкл./откл. заклинание",
+    ["TooltipEnableSpell"] = "Вкл./откл. заклинание",
     ["TTGroup"] = "Группа %d",
 
     ["TTCancelThisSpell"] = "Отменять баф",
@@ -359,7 +359,7 @@ BOM.locales = {
 
     ["TTSelectTarget"] = "Выберите участника рейда/группы, чтобы включить эту опцию",
     ["TTSelfCast"] = "Применить на группу/рейд или только на себя",
-    ["TTTarget"] = "Наложить заклинание на текущую цель"
+    ["TooltipForceCastOnTarget"] = "Наложить заклинание на текущую цель"
   },
 
   zhCN = {
@@ -431,11 +431,11 @@ BOM.locales = {
     ["SlashUpdate"] = "更新宏/列表",
     ["TabBuff"] = "Buff",
     ["TabSpells"] = "法术",
-    ["TTEnable"] = "启用/禁用 法术",
+    ["TooltipEnableSpell"] = "启用/禁用 法术",
     ["TTGroup"] = "队伍 %d",
     ["TTSelectTarget"] = "选择一个团队/小队成员,启用这个选项",
     ["TTSelfCast"] = "施放给小队/团队,或仅自己",
-    ["TTTarget"] = "对当前目标强制施法"
+    ["TooltipForceCastOnTarget"] = "对当前目标强制施法"
   },
 
 
