@@ -376,7 +376,8 @@ function BOM.ChooseProfile (profile)
   BOM.UpdateScan()
 end
 
----Start from here
+---Called from event handler on Addon Loaded event
+---Execution start here
 function BOM.Init()
   function SetDefault(db, var, init)
     if db[var] == nil then
@@ -384,29 +385,23 @@ function BOM.Init()
     end
   end
 
-  if not BomSharedState then
-    BomSharedState = {}
-  end
-  if not BomSharedState.Minimap then
-    BomSharedState.Minimap = {}
-  end
-  if not BomSharedState.SpellGreatherEqualThan then
-    BomSharedState.SpellGreatherEqualThan = {}
-  end
-  if not BomSharedState.CustomLocales then
-    BomSharedState.CustomLocales = {}
-  end
-  if not BomSharedState.CustomSpells then
-    BomSharedState.CustomSpells = {}
-  end
-  if not BomSharedState.CustomCancelBuff then
-    BomSharedState.CustomCancelBuff = {}
+  ---@type table - returns value if not nil, otherwise returns empty table
+  local init_val = function(v)
+    if not v then
+      return {}
+    else
+      return v
+    end
   end
 
-  if not BomCharacterState then
-    BomCharacterState = {}
-  end
-  --if not BomCharacterState.Duration then BomCharacterState.Duration={} end
+  BomSharedState = init_val(BomSharedState)
+  BomSharedState.Minimap = init_val(BomSharedState.Minimap)
+  BomSharedState.SpellGreatherEqualThan = init_val(BomSharedState.SpellGreatherEqualThan)
+  BomSharedState.CustomLocales = init_val(BomSharedState.CustomLocales)
+  BomSharedState.CustomSpells = init_val(BomSharedState.CustomSpells)
+  BomSharedState.CustomCancelBuff = init_val(BomSharedState.CustomCancelBuff)
+  BomCharacterState = init_val(BomCharacterState)
+
   if BomCharacterState.Duration then
     BomSharedState.Duration = BomCharacterState.Duration
     BomCharacterState.Duration = nil
@@ -532,16 +527,15 @@ function BOM.Init()
   BOM.PartyUpdateNeeded = true
   BOM.RepeatUpdate = false
 
+  -- Make main frame draggable
   BOM.Tool.EnableMoving(BomC_MainWindow, BOM.SaveWindowPosition)
-
-  BomC_MainWindow:SetMinResize(290, 75)
+  BomC_MainWindow:SetMinResize(180, 90)
 
   BOM.Tool.AddTab(BomC_MainWindow, L.TabBuff, BomC_ListTab, true)
   BOM.Tool.AddTab(BomC_MainWindow, L.TabSpells, BomC_SpellTab, true)
-  --BOM.Tool.AddTab(BomC_MainWindow, L.TabItems, BomC_ItemTab, true)
-  --BOM.Tool.AddTab(BomC_MainWindow, L.TabBehaviour, BomC_BehaviourTab, true)
   BOM.Tool.SelectTab(BomC_MainWindow, 1)
 
+  -- Which groups are watched by the buff scanner
   BOM.WatchGroup = {}
   for i = 1, 8 do
     BOM.WatchGroup[i] = true
@@ -553,7 +547,6 @@ function BOM.Init()
   print("|cFFFF1C1C Loaded: " .. GetAddOnMetadata(TOCNAME, "Title") .. " "
           .. GetAddOnMetadata(TOCNAME, "Version")
           .. " by " .. GetAddOnMetadata(TOCNAME, "Author"))
-
 end
 
 local function Event_ADDON_LOADED(arg1)
@@ -897,9 +890,9 @@ local function Event_COMBAT_LOG_EVENT_UNFILTERED()
   end
 end
 
+---OnLoad is called when XML frame for the main window is loaded into existence
+---BOM.Init() will also be called when the addon is loaded (earlier than this)
 function BOM.OnLoad()
-  --print("internal load")
-
   BOM.Tool.RegisterEvent("TAXIMAP_OPENED", Event_TAXIMAP_OPENED)
   BOM.Tool.RegisterEvent("ADDON_LOADED", Event_ADDON_LOADED)
   BOM.Tool.RegisterEvent("UNIT_POWER_UPDATE", Event_UNIT_POWER_UPDATE)
@@ -940,7 +933,6 @@ function BOM.OnLoad()
   for i, event in ipairs(BagOnEvent) do
     BOM.Tool.RegisterEvent(event, Event_Bag)
   end
-
 end
 
 local autoHelper = "open"
