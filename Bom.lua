@@ -549,6 +549,64 @@ function BOM.Init()
           .. " by " .. GetAddOnMetadata(TOCNAME, "Author"))
 end
 
+---When BOM.WatchGroup has changed, update the buff tab text to show what's
+---being buffed. Example: "Buff All", "Buff G3,5-7"...
+function BOM.UpdateBuffTabText()
+  local selected_groups = 0
+  local t = BomC_MainWindow.Tabs[1]
+
+  for i = 1, 8 do
+    if BOM.WatchGroup[i] then
+      selected_groups = selected_groups + 1
+    end
+  end
+
+  if selected_groups == 8 then
+    t:SetText(L.TabBuff)
+    PanelTemplates_TabResize(t, 0)
+    return
+  end
+
+  if selected_groups == 0 then
+    t:SetText(L.TabBuffOnlySelf)
+    PanelTemplates_TabResize(t, 0)
+    return
+  end
+
+  local function ends_with(str, ending)
+    return ending == "" or str:sub(-#ending) == ending
+  end
+
+  -- Build comma-separated group list to buff: "G1,2,3,5"...
+  local groups = ""
+  for i = 1, 8 do
+    if BOM.WatchGroup[i] then
+      --If we are adding number i, and previous (i-1) is in the string
+      local prev = tostring(i - 1)
+      local prev_range = "-" .. tostring(i - 1)
+
+      if ends_with(groups, prev_range) then
+        --"1-2" + "3" should become "1-3"
+        groups = groups:gsub(prev_range, "") .. "-" .. tostring(i)
+      else
+        if ends_with(groups, prev) then
+          --"1" + "2" should become "1-2"
+          groups = groups .. "-" .. tostring(i)
+        else
+          --Otherwise: append comma (if not empty) and the number
+          if #groups > 0 then
+            groups = groups .. ","
+          end
+          groups = groups .. tostring(i)
+        end
+      end
+    end
+  end
+
+  t:SetText(L.TabBuff .. " G" .. groups)
+  PanelTemplates_TabResize(t, 0)
+end
+
 local function Event_ADDON_LOADED(arg1)
   if arg1 == TOCNAME then
     BOM.Init()

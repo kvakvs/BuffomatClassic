@@ -80,6 +80,7 @@ BOM.locales = {
     TTAnyRank = "any",
 
     TabBuff = "Buff",
+    TabBuffOnlySelf = "Buff Self Only", -- Shown when all raid groups are deselected
     TabSpells = "Spells",
     --TabItems = "Items",
     --TabBehaviour = "Behaviour",
@@ -355,7 +356,8 @@ BOM.locales = {
     ["SlashReset"] = "Сбросить окно Бафомёта",
     ["SlashSpellBook"] = "Повторное сканирование книги заклинаний",
     ["SlashUpdate"] = "Обновить список макросов",
-    ["TabBuff"] = "Эффекты",
+    ["TabBuff"] = "Баф",
+    ["TabBuffOnlySelf"] = "Баф только себя", -- Shown if all raid groups deselected
     ["TabSpells"] = "Заклинания",
     ["TooltipEnableSpell"] = "Вкл./откл. заклинание",
     ["TTGroup"] = "Следить за группой %d в рейде",

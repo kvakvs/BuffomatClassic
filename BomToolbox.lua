@@ -649,6 +649,11 @@ function Tool.GetSelectedTab(frame)
   return 0
 end
 
+---Adds a Tab to a frame (main window for example)
+---@param frame table | string - where to add a tab
+---@param name string - tab text
+---@param tabFrame table | string - tab text
+---@param combatlockdown boolean - accessible in combat or not
 function Tool.AddTab(frame, name, tabFrame, combatlockdown)
   local frameName
 

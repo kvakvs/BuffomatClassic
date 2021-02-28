@@ -220,7 +220,13 @@ local function fill_last_section(last)
     SpellSettingsFrames[i]:SetVariable(BOM.WatchGroup, i)
     SpellSettingsFrames[i]:SetText(i)
     BOM.Tool.TooltipText(SpellSettingsFrames[i], string.format(L.TTGroup, i))
-    SpellSettingsFrames[i]:SetOnClick(BOM.MyButtonOnClick)
+
+    -- Let the MyButton library function handle the data update, and update the tab text too
+    SpellSettingsFrames[i]:SetOnClick(function()
+      BOM.MyButtonOnClick(self)
+      BOM.UpdateBuffTabText()
+    end)
+
     l = SpellSettingsFrames[i]
     dx = 2
   end
