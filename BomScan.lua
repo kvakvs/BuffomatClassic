@@ -478,12 +478,23 @@ local function bom_count_members()
   return count
 end
 
+---If player just left the raid or party, reset watched frames to "watch all 8"
+function BOM.MaybeResetWatchGroups()
+  if UnitPlayerOrPetInParty("player") == false then
+    -- We have left the party - can clear monitored groups
+    for i = 1, 8 do
+      BomCharacterState.WatchGroup[i] = true
+      BOM.SpellSettingsFrames[i]:SetState(true)
+    end
+    BOM.UpdateBuffTabText()
+  end
+end
+
 function BOM.GetPartyMembers()
   -- and buffs
 
   local party
   local playerMember
-
 
   -- check if stored party is correct!
   if not BOM.PartyUpdateNeeded
@@ -842,7 +853,7 @@ function BOM.GetNeedBuff(party, spell, playerMember)
 
       elseif BOM.CurrentProfile.Spell[BOM.BLESSINGID][member.name] == nil then
         if BOM.CurrentProfile.Spell[spell.ConfigID].Class[member.class]
-                and (not IsInRaid() or BOM.WatchGroup[member.group])
+                and (not IsInRaid() or BomCharacterState.WatchGroup[member.group])
                 and not BOM.CurrentProfile.Spell[spell.ConfigID].SelfCast then
           ok = true
         end
@@ -888,7 +899,7 @@ function BOM.GetNeedBuff(party, spell, playerMember)
       local ok = false
 
       if BOM.CurrentProfile.Spell[spell.ConfigID].Class[member.class]
-              and (not IsInRaid() or BOM.WatchGroup[member.group])
+              and (not IsInRaid() or BomCharacterState.WatchGroup[member.group])
               and not BOM.CurrentProfile.Spell[spell.ConfigID].SelfCast then
         ok = true
       end

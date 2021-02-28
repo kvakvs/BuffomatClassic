@@ -142,8 +142,9 @@ function BOM.Popup(self, minimap)
   BOM.PopupDynamic:SubMenu(L["HeaderWatchGroup"], "subGroup")
 
   for i = 1, 8 do
-    BOM.PopupDynamic:AddItem(i, "keep", BOM.WatchGroup, i)
+    BOM.PopupDynamic:AddItem(i, "keep", BomCharacterState.WatchGroup, i)
   end
+
   BOM.PopupDynamic:SubMenu()
 
   BOM.PopupDynamic:AddItem(L.BtnSettings, false, BOM.Options.Open, 1)
@@ -376,6 +377,66 @@ function BOM.ChooseProfile (profile)
   BOM.UpdateScan()
 end
 
+---When BomCharacterState.WatchGroup has changed, update the buff tab text to show what's
+---being buffed. Example: "Buff All", "Buff G3,5-7"...
+function bom_update_buff_tab_text()
+  local selected_groups = 0
+  local t = BomC_MainWindow.Tabs[1]
+
+  for i = 1, 8 do
+    if BomCharacterState.WatchGroup[i] then
+      selected_groups = selected_groups + 1
+    end
+  end
+
+  if selected_groups == 8 then
+    t:SetText(L.TabBuff)
+    PanelTemplates_TabResize(t, 0)
+    return
+  end
+
+  if selected_groups == 0 then
+    t:SetText(L.TabBuffOnlySelf)
+    PanelTemplates_TabResize(t, 0)
+    return
+  end
+
+  local function ends_with(str, ending)
+    return ending == "" or str:sub(-#ending) == ending
+  end
+
+  -- Build comma-separated group list to buff: "G1,2,3,5"...
+  local groups = ""
+  for i = 1, 8 do
+    if BomCharacterState.WatchGroup[i] then
+      --If we are adding number i, and previous (i-1) is in the string
+      local prev = tostring(i - 1)
+      local prev_range = "-" .. tostring(i - 1)
+
+      if ends_with(groups, prev_range) then
+        --"1-2" + "3" should become "1-3"
+        groups = groups:gsub(prev_range, "") .. "-" .. tostring(i)
+      else
+        if ends_with(groups, prev) then
+          --"1" + "2" should become "1-2"
+          groups = groups .. "-" .. tostring(i)
+        else
+          --Otherwise: append comma (if not empty) and the number
+          if #groups > 0 then
+            groups = groups .. ","
+          end
+          groups = groups .. tostring(i)
+        end
+      end
+    end
+  end
+
+  t:SetText(L.TabBuff .. " G" .. groups)
+  PanelTemplates_TabResize(t, 0)
+end
+
+BOM.UpdateBuffTabText = bom_update_buff_tab_text
+
 ---Called from event handler on Addon Loaded event
 ---Execution start here
 function BOM.Init()
@@ -535,11 +596,14 @@ function BOM.Init()
   BOM.Tool.AddTab(BomC_MainWindow, L.TabSpells, BomC_SpellTab, true)
   BOM.Tool.SelectTab(BomC_MainWindow, 1)
 
-  -- Which groups are watched by the buff scanner
-  BOM.WatchGroup = {}
-  for i = 1, 8 do
-    BOM.WatchGroup[i] = true
+  -- Which groups are watched by the buff scanner - save in character state
+  if not BomCharacterState.WatchGroup then
+    BomCharacterState.WatchGroup = {}
+    for i = 1, 8 do
+      BomCharacterState.WatchGroup[i] = true
+    end
   end
+  bom_update_buff_tab_text()
 
   _G["BINDING_NAME_MACRO Buff'o'mat"] = L["BtnPerformeBuff"]
   _G["BINDING_HEADER_BUFFOMATHEADER"] = "Buffomat Classic"
@@ -547,64 +611,6 @@ function BOM.Init()
   print("|cFFFF1C1C Loaded: " .. GetAddOnMetadata(TOCNAME, "Title") .. " "
           .. GetAddOnMetadata(TOCNAME, "Version")
           .. " by " .. GetAddOnMetadata(TOCNAME, "Author"))
-end
-
----When BOM.WatchGroup has changed, update the buff tab text to show what's
----being buffed. Example: "Buff All", "Buff G3,5-7"...
-function BOM.UpdateBuffTabText()
-  local selected_groups = 0
-  local t = BomC_MainWindow.Tabs[1]
-
-  for i = 1, 8 do
-    if BOM.WatchGroup[i] then
-      selected_groups = selected_groups + 1
-    end
-  end
-
-  if selected_groups == 8 then
-    t:SetText(L.TabBuff)
-    PanelTemplates_TabResize(t, 0)
-    return
-  end
-
-  if selected_groups == 0 then
-    t:SetText(L.TabBuffOnlySelf)
-    PanelTemplates_TabResize(t, 0)
-    return
-  end
-
-  local function ends_with(str, ending)
-    return ending == "" or str:sub(-#ending) == ending
-  end
-
-  -- Build comma-separated group list to buff: "G1,2,3,5"...
-  local groups = ""
-  for i = 1, 8 do
-    if BOM.WatchGroup[i] then
-      --If we are adding number i, and previous (i-1) is in the string
-      local prev = tostring(i - 1)
-      local prev_range = "-" .. tostring(i - 1)
-
-      if ends_with(groups, prev_range) then
-        --"1-2" + "3" should become "1-3"
-        groups = groups:gsub(prev_range, "") .. "-" .. tostring(i)
-      else
-        if ends_with(groups, prev) then
-          --"1" + "2" should become "1-2"
-          groups = groups .. "-" .. tostring(i)
-        else
-          --Otherwise: append comma (if not empty) and the number
-          if #groups > 0 then
-            groups = groups .. ","
-          end
-          groups = groups .. tostring(i)
-        end
-      end
-    end
-  end
-
-  t:SetText(L.TabBuff .. " G" .. groups)
-  PanelTemplates_TabResize(t, 0)
 end
 
 local function Event_ADDON_LOADED(arg1)
@@ -652,9 +658,20 @@ local function Event_SpellsChanged()
   BOM.OptionsInsertSpells()
 end
 
+local bom_in_party = IsInRaid() or IsInGroup()
+
 local function Event_PartyChanged()
   BOM.PartyUpdateNeeded = true
   BOM.ForceUpdate = true
+
+  -- if in_party changed from true to false, clear the watch groups
+  local in_party = IsInRaid() or IsInGroup()
+  if bom_in_party ~= in_party then
+    if not in_party then
+      BOM.MaybeResetWatchGroups()
+    end
+    bom_in_party = in_party
+  end
 end
 
 local function Event_UNIT_SPELLCAST_errors(unit)

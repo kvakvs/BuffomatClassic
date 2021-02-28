@@ -13,6 +13,7 @@ local L = setmetatable(
         })
 
 local SpellSettingsFrames = {}
+BOM.SpellSettingsFrames = SpellSettingsFrames -- group settings buttons after the spell list
 
 ---Add some clickable elements to Spell Tab row with all classes
 ---@param isHorde boolean - whether we are horde
@@ -217,7 +218,7 @@ local function fill_last_section(last)
     end
 
     SpellSettingsFrames[i]:SetPoint("TOPLEFT", l, "TOPRIGHT", dx, 0)
-    SpellSettingsFrames[i]:SetVariable(BOM.WatchGroup, i)
+    SpellSettingsFrames[i]:SetVariable(BomCharacterState.WatchGroup, i)
     SpellSettingsFrames[i]:SetText(i)
     BOM.Tool.TooltipText(SpellSettingsFrames[i], string.format(L.TTGroup, i))
 
