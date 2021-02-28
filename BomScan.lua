@@ -1110,7 +1110,9 @@ function BOM.TimeCheck(ti, duration)
   return false
 end
 
+---@type table - pairs of [1]=text, [2]=distance
 local displayCache = {}
+
 local display = {}
 local displayInfo = {}
 local displayI
@@ -1578,8 +1580,21 @@ function BOM.UpdateScan()
           wipe(spell.SkipList)
         end
 
+        --Prefer resurrection classes first
+        --TODO: This also modifies all subsequent operations on this table preferring those classes first
+        table.sort(spell.NeedMember, function(a, b)
+          local a_resser = tContains(BOM.RESURRECT_CLASS, a.class)
+          local b_resser = tContains(BOM.RESURRECT_CLASS, b.class)
+          if a_resser then
+            return not b_resser
+          end
+          return false
+        end)
+
         for memberIndex, member in ipairs(spell.NeedMember) do
           if not tContains(spell.SkipList, member.name) then
+            --table.foreach(member, print)
+
             BOM.RepeatUpdate = true
 
             -- Is the body in range?
