@@ -1185,8 +1185,8 @@ local function bom_catch_a_spell(cost, id, link, member, spell)
       -- If resurrection
       --------------------
       if next_cast_spell.Spell.isResurrection then
-        if (tContains(BOM_RESURRECT_CLASS, next_cast_spell.Member.class) and not tContains(BOM_RESURRECT_CLASS, member.class))
-                or (tContains(BOM_MANA_CLASSES, next_cast_spell.Member.class) and not tContains(BOM_MANA_CLASSES, member.class))
+        if (tContains(BOM.RESURRECT_CLASS, next_cast_spell.Member.class) and not tContains(BOM.RESURRECT_CLASS, member.class))
+                or (tContains(BOM.MANA_CLASSES, next_cast_spell.Member.class) and not tContains(BOM.MANA_CLASSES, member.class))
                 or (not next_cast_spell.Member.isGhost and member.isGhost)
                 or (next_cast_spell.Member.distance < member.distance) then
           return

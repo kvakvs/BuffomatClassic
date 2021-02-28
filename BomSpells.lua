@@ -2,9 +2,12 @@ local TOCNAME, BOM = ...
 
 ---Classes which have a resurrection ability
 local BOM_RESURRECT_CLASS = { "SHAMAN", "PRIEST", "PALADIN" }
+BOM.RESURRECT_CLASS = BOM_RESURRECT_CLASS --used in BomScan.lua
 
 ---Classes which have mana bar
 local BOM_MANA_CLASSES = { "HUNTER", "WARLOCK", "MAGE", "DRUID", "SHAMAN", "PRIEST", "PALADIN" }
+BOM.MANA_CLASSES = BOM_MANA_CLASSES --used in BomScan.lua
+
 local BOM_SHADOW_CLASSES = { "PRIEST", "WARLOCK" }
 local BOM_PHYSICAL_CLASSES = { "HUNTER", "ROGUE", "SHAMAN", "WARRIOR", "DRUID" }
 
