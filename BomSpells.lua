@@ -14,19 +14,19 @@ local BOM_PHYSICAL_CLASSES = { "HUNTER", "ROGUE", "SHAMAN", "WARRIOR", "DRUID" }
 -- Note: you can add your own spell in the "WTF\Account\<accountname>\SavedVariables\buffOmat.lua"
 -- table CustomSpells
 ---All spells known to Buffomat
----@field item number - buff is granted by an item in user's bag
----@field singleId number - spell id for single buff
----@field groupId number - spell id for group buff
+---@field classes table - list of target classes which are shown as toggle boxes to enable cast per class
 ---@field default boolean - whether the spell auto-cast is enabled by default
----@field singleFamily table - family of single buffs which are mutually exclusive
----@field groupFamily table - family of group buffs which are mutually exclusive
----@field singleDuration number - buff duration for single buff in seconds
 ---@field groupDuration number - buff duration for group buff in seconds
----@field classes table - list of classes which are shown as toggle boxes to enable per class
----@field onlyUsableFor table - list of classes which only can see this buff (hidden for others)
+---@field groupFamily table - family of group buffs which are mutually exclusive
+---@field groupId number - spell id for group buff
 ---@field isAura boolean - true if the buff affects others in radius, and not a target buff
 ---@field isTracking boolean - true if the buff is tracking of some resource or enemy
 ---@field isWeapon boolean - the buff is a temporary weapon enchant on user's weapons
+---@field item number - buff is granted by an item in user's bag
+---@field onlyUsableFor table - list of classes which only can see this buff (hidden for others)
+---@field singleDuration number - buff duration for single buff in seconds
+---@field singleFamily table - family of single buffs which are mutually exclusive
+---@field singleId number - spell id for single buff
 BOM.AllBuffomatSpells = {
   "PRIEST",
 
@@ -224,6 +224,10 @@ BOM.AllBuffomatSpells = {
 
   { singleId = 5502, isTracking = true, default = true }, -- Sense undead
 
+  "WARRIOR",
+  { singleId     = 25289, isOwn = true, default = true, --Battle Shout
+    singleFamily = { 6673, 5242, 6192, 11549, 11550, 11551, 25289 } },
+
   "TRACKING",
   { singleId = 2383, isTracking = true, default = true }, -- Find Herbs / kräuter
   { singleId = 2580, isTracking = true, default = true }, -- Find Minerals / erz
@@ -263,7 +267,7 @@ BOM.AllBuffomatSpells = {
   { singleId      = 11474, item = 9264, isBuff = true, default = false,
     onlyUsableFor = BOM_SHADOW_CLASSES }, -- Elixir of Shadow Power
   { singleId      = 26276, item = 21546, isBuff = true, default = false,
-    onlyUsableFor = {"MAGE", "WARLOCK", "SHAMAN"} }, --Elixir of Greater Firepower
+    onlyUsableFor = { "MAGE", "WARLOCK", "SHAMAN" } }, --Elixir of Greater Firepower
   { singleId      = 21920, item = 17708, isBuff = true, default = false,
     onlyUsableFor = { "SHAMAN", "MAGE" } }, --Elixir of Frost Power
   { singleId      = 17038, item = 12820, isBuff = true, default = false,

@@ -125,6 +125,10 @@ BOM.locales = {
 
     AboutSlashCommand = "", --<value> can be true, 1, enable, false, 0, disable. If <value> is omitted, the current status switches.",
 
+    TooltipMacroButton = "Drag this macro to your action bar to cast the buffs",
+    TooltipSettingsButton = "Open Quick Settings and Profiles popup menu",
+    TooltipCloseButton = "Hide Buffomat window, type /bom to reopen or click the minimap button",
+    TooltipCastButton = "Cast the spell from the list.\nNot available in combat.\nCan also be activated via the macro (in the top row)\nor bind a shortcut key in Key Bindings => Other",
   },
 
   deDE = {

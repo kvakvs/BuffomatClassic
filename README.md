@@ -1,9 +1,12 @@
 # Buffomat Classic
 
+Based on Buff'o'mat by GPI.
+
 Maintained by @kvakvs at Github. https://github.com/kvakvs/BuffomatClassic
 
-Compatible with both Classic and Retail, but as I only play Classic, won't be
-paying much attention to it being Retail-worthy.
+Compatible with WoW Classic and will be rolled into Classic Burning Crusade. As
+I only play Classic and have no idea about retail spells and playstyles, I won't
+be paying much attention to it being Retail-compatible.
 
 ## About
 

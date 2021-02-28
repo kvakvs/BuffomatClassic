@@ -144,7 +144,10 @@
       </Layer>
     </Layers>
     <Scripts>
-      <OnLoad function="UIPanelButton_OnLoad"/>
+      <OnLoad>
+        UIPanelButton_OnLoad(self)
+        BUFFOMAT_ADDON.Tool.Tooltip(self, "TooltipCastButton")
+      </OnLoad>
       <OnMouseDown function="UIPanelButton_OnMouseDown"/>
       <OnMouseUp function="UIPanelButton_OnMouseUp"/>
       <OnShow function="UIPanelButton_OnShow"/>
@@ -208,12 +211,10 @@
 
     <Frames>
 
-
       <!-- headline -->
-
-
       <Button name="$parent_CloseButton" inherits="BomC_MiniButton"
               Text="|TInterface\Buttons\UI-StopButton:0|t">
+        <Size><AbsDimension x="18" y="18"/></Size>
         <Anchors>
           <Anchor point="TOPRIGHT" relativeTo="$parent"
                   relativePoint="TOPRIGHT">
@@ -223,40 +224,42 @@
           </Anchor>
         </Anchors>
         <Scripts>
-          <OnClick>
-            BUFFOMAT_ADDON.BtnClose()
-          </OnClick>
+          <OnClick>BUFFOMAT_ADDON.BtnClose()</OnClick>
+          <OnLoad>BUFFOMAT_ADDON.Tool.Tooltip(self, "TooltipCloseButton")</OnLoad>
         </Scripts>
       </Button>
 
       <Button name="$parent_SettingsButton" inherits="BomC_MiniButton"
               Text="|TInterface\Buttons\UI-OptionsButton:0|t">
+        <Size><AbsDimension x="18" y="18"/></Size>
         <Anchors>
           <Anchor point="RIGHT" relativeTo="$parent_CloseButton"
                   relativePoint="LEFT"/>
         </Anchors>
         <Scripts>
-          <OnMouseDown>
-            BUFFOMAT_ADDON.BtnSettings(self)
-          </OnMouseDown>
+          <OnMouseDown>BUFFOMAT_ADDON.BtnSettings(self)</OnMouseDown>
+          <OnLoad>BUFFOMAT_ADDON.Tool.Tooltip(self, "TooltipSettingsButton")</OnLoad>
         </Scripts>
       </Button>
 
       <Button name="$parent_MacroButton" inherits="BomC_MiniButton"
-              Text="M">
+              Text="Macro">
+        <Size><AbsDimension x="36" y="18"/></Size>
         <Anchors>
           <Anchor point="RIGHT" relativeTo="$parent_SettingsButton"
                   relativePoint="LEFT"/>
         </Anchors>
         <Scripts>
-          <OnMouseDown>
-            BUFFOMAT_ADDON.BtnMacro()
-          </OnMouseDown>
+          <OnMouseDown>BUFFOMAT_ADDON.BtnMacro()</OnMouseDown>
+          <OnLoad>BUFFOMAT_ADDON.Tool.Tooltip(self, "TooltipMacroButton")</OnLoad>
         </Scripts>
       </Button>
 
-      <!-- ListTab -->
-
+      <!--
+        ListTab
+        Contains list of spells selected to be casted, sorted by distance and cast-ability
+        Contains the cast button
+        -->
       <Frame name="BomC_ListTab" hidden="false">
         <Anchors>
           <Anchor point="TOPLEFT">
@@ -270,7 +273,12 @@
             </Offset>
           </Anchor>
         </Anchors>
+
         <Frames>
+          <!--
+          Cast Button
+          Runs the task from the task list and casts the spell
+          -->
           <Button name="$parent_Button" inherits="BomC_SecureButton">
             <Anchors>
               <Anchor point="BOTTOMLEFT">
@@ -321,12 +329,13 @@
             </Scripts>
 
           </ScrollingMessageFrame>
-
-
         </Frames>
       </Frame>
 
-      <!-- SpellTab -->
+      <!--
+       SpellTab
+       Contains filtered abilities for the current class with settings checkboxes
+       -->
       <Frame name="BomC_SpellTab" hidden="false">
         <Anchors>
           <Anchor point="TOPLEFT">
@@ -372,10 +381,7 @@
     </Frames>
 
     <Scripts>
-      <OnLoad>
-        --print("buffomat load")
-        BUFFOMAT_ADDON.OnLoad()
-      </OnLoad>
+      <OnLoad>BUFFOMAT_ADDON.OnLoad()</OnLoad>
     </Scripts>
   </Frame>
 </Ui>

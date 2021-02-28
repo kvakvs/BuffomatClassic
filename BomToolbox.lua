@@ -1,4 +1,15 @@
 local TOCNAME, BOM = ...
+local L = setmetatable(
+        {},
+        {
+          __index = function(_t, k)
+            if BOM.L and BOM.L[k] then
+              return BOM.L[k]
+            else
+              return "[" .. k .. "]"
+            end
+          end
+        })
 BOM.Tool = BOM.Tool or {}
 local Tool = BOM.Tool
 
@@ -163,6 +174,7 @@ end
 -- misc tools
 
 local MyScanningTooltip
+
 function Tool.ScanToolTip(what, ...)
   local TextList = {}
   if MyScanningTooltip == nil then
@@ -901,4 +913,15 @@ function bom_create_smalltext_label(maybe_label, parent, position_fn)
   end
   position_fn(maybe_label)
   return maybe_label
+end
+
+function Tool.Tooltip(control, translation_key)
+  control:SetScript("OnEnter", function()
+    GameTooltip:SetOwner(control, "ANCHOR_RIGHT")
+    GameTooltip:AddLine(L[translation_key])
+    GameTooltip:Show()
+  end)
+  control:SetScript("OnLeave", function()
+    GameTooltip:Hide()
+  end)
 end
