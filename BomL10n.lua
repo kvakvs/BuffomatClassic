@@ -9,6 +9,7 @@ end })
 
 BOM.locales = {
   enEN = { --EN is Master/Fallback
+    Buffomat = "Buffomat", -- addon title in the main window
     MsgBuffSingle = "%s %s",
     MsgBuffGroup = "Group %s %s",
     MsgNextCast = "%s @ %s",
@@ -61,16 +62,17 @@ BOM.locales = {
     EboxMinBuff = "Number of missing buffs required to use a group buff",
     EboxMinBlessing = "Number of missing blessing required to use a greater blessing",
 
-    TTSelfCast = "Self-cast only (checked) or include party and raid (unchecked)",
+    TooltipSelfCastCheckbox = "Self-cast only (one silhouette) or include party/raid (silhouettes of friends)",
     TooltipEnableSpell = "Add this buff to the task list",
     TooltipEnableBuffCancel = "Cancel this buff as soon as it is found",
     TooltipForceCastOnTarget = "Force spell on current Target",
     TTSelectTarget = "Select a raid/party member to enable this option",
-    TTGroup = "Group %d",
+    TTGroup = "Watch buffs in raid group %d",
+    TooltipRaidGroupsSettings = "Raid groups watch settings",
 
-    TTCancelThisSpell = "Cancel this buff",
-    TTOnlyCombat = "Before combat",
-    TTAlwaysCancel = "Always",
+    HintCancelThisBuff = "Cancel this buff",
+    HintCancelThisBuff_Combat = "Before combat",
+    HintCancelThisBuff_Always = "Always",
 
     TooltipWhisperWhenExpired = "Whisper the player who casted the buff, when the buff has expired",
     TooltipMainHand = "Main hand",
@@ -111,8 +113,12 @@ BOM.locales = {
     SlashOpen = "Open BOM window",
     SlashProfile = "Change current profile to solo/group/raid/battleground/auto",
 
-    Tank = "Tank",
-    Pet = "Pet",
+    Tank = "Tank", -- unused?
+    Pet = "Pet", -- unused?
+    TooltipCastOnClass = "Cast on class: ",
+    TooltipCastOnTank = "Cast on tanks",
+    TooltipCastOnPet = "Cast on pets",
+
     profile_solo = "Solo",
     profile_group = "Group",
     profile_raid = "Raid",
@@ -125,7 +131,7 @@ BOM.locales = {
 
     AboutSlashCommand = "", --<value> can be true, 1, enable, false, 0, disable. If <value> is omitted, the current status switches.",
 
-    TooltipMacroButton = "Drag this macro to your action bar to cast the buffs",
+    TooltipMacroButton = "Drag this macro to your action bar to cast the buffs|nYou can add a shortcut key to the macro in Key Bindings => Other",
     TooltipSettingsButton = "Open Quick Settings and Profiles popup menu",
     TooltipCloseButton = "Hide Buffomat window, type /bom to reopen or click the minimap button",
     TooltipCastButton = "Cast the spell from the list.|nNot available in combat.|nCan also be activated via the macro (in the top row)|nor bind a shortcut key in Key Bindings => Other",
@@ -222,9 +228,9 @@ BOM.locales = {
     ["TTGroup"] = "Gruppe %d",
     ["TooltipMainHand"] = "Waffenhand",
     ["TooltipOffHand"] = "Schildhand",
-    ["TTOnlyCombat"] = "Nur direkt vor einem Kampf",
+    ["HintCancelThisBuff_Combat"] = "Nur direkt vor einem Kampf",
     ["TTSelectTarget"] = "Wähle ein Gruppenmitglied um diese Option zu aktivieren.",
-    ["TTSelfCast"] = "Wirke auf Gruppe/Raid oder nur auf sich selbst",
+    ["TooltipSelfCastCheckbox"] = "Wirke auf Gruppe/Raid oder nur auf sich selbst",
     ["TooltipForceCastOnTarget"] = "Buff dauerhaft auf Ziel halten",
     ["TooltipWhisperWhenExpired"] = "Quelle anflüstern, wenn abgelaufen."
   },
@@ -256,7 +262,7 @@ BOM.locales = {
     EboxTime1800 = "Durée <=30 min:",
     EboxTime3600 = "Durée <=60 min:",
 
-    TTSelfCast = "Buff groupe/raid ou uniquement sois-même",
+    TooltipSelfCastCheckbox = "Buff groupe/raid ou uniquement sois-même",
     TooltipEnableSpell = "Activer/Désactiver sort",
     TooltipForceCastOnTarget = "Forcer sort sur Cible actuelle",
     TTSelectTarget = "Choisir un membre groupe/raid pour activer cette option",
@@ -292,7 +298,8 @@ BOM.locales = {
   },
 
   ruRU = {
-    ["AboutInfo"] = "Выносливость! Интеллект! Дух! - Это звучит знакомо? Buff'o'mat просканирует участников рейда/группы на отсутствие положительных эффектов и в одно мгновение примените их. Когда у троих или более участников отсутствует эффект, то будет использовано одно заклинание для всей группы. Он также запоминает активацию отслеживания для 'Поиска травы'.|nОн также поможет вам воскресить игроков, выбрав сначала паладинов, священников и шаманов. ",
+    ["Buffomat"] = "Бафомёт",
+    ["AboutInfo"] = "Выносливость! Интеллект! Дух! - Это звучит знакомо? Бафомёт просканирует участников рейда/группы на отсутствие положительных эффектов и в одно мгновение примените их. Когда у троих или более участников отсутствует эффект, то будет использовано одно заклинание для всей группы. Он также запоминает активацию отслеживания для 'Поиска травы'.|nОн также поможет вам воскресить игроков, выбрав сначала паладинов, священников и шаманов. ",
     ["AboutSlashCommand"] = "На данный момент это должна быть пустая строка!",
     ["AboutUsage"] = "Вам нужен свободный слот макроса, чтобы использовать это дополнение. Главное окно имеет две вкладки 'Эффекты' и 'Заклинания'. В разделе 'Эффектов' вы найдете все недостающие эффекты и кнопку применить.В разделе 'Заклинания' вы можете настроить, какие заклинания следует контролировать или если он должен использовать групповую версию. Выберите, если он должен использовать только на вас или для всех участников группы. Выберите, какой эффект должен быть активен, для какого класса. Вы также можете игнорировать целые группы (например, в рейде, когда вы должны использовать только инт в группе 7 и 8). Вы также можете выбрать здесь, что один эффект должен быть активен на текущей цели. Например, как друид, нажмите на основного танка и выберете 'Шипы' - или другой '-' (последний символ) - оно изменится на перекрестие, и теперь buff'o'mat помнит, что вы держите эффект на основном танке.У вас есть два варианта, чтобы применить эффект из списка пропущенных эффектов. Кнопка с заклинанием в окне или макрос Buff'o'mat. Вы найдете его с помощью кнопки 'M' в «строке заголовка» главного окна.|nВАЖНо: Buff'o'mat работает только вне боя, потому что Blizzard не позволяет менять макросы во время боя. Кроме того, вы не можете открыть или закрыть главное окно во время боя!",
     ["BtnCancel"] = "Закрыть",
@@ -307,10 +314,10 @@ BOM.locales = {
     ["CboxInWorld"] = "Проверить в мире",
     ["CboxLockMinimapButton"] = "Блокировка положения кнопки у миникарты",
     ["CboxLockMinimapButtonDistance"] = "Минимизировать расстояние до миникарты",
-    ["CboxNoGroupBuff"] = "Не применять групповой эффект",
-    ["CboxReplaceSingle"] = "Заменить одиночный эффект групповыми эффектом",
-    ["CboxResGhost"] = "Пытаться воскрешать призраки",
-    ["CboxSameZone"] = "Только в той же зоне",
+    ["CboxNoGroupBuff"] = "Не использовать групповые бафы",
+    ["CboxReplaceSingle"] = "Заменить одиночный баф групповым",
+    ["CboxResGhost"] = "Пытаться воскрешать призраки, если тело лежит близко",
+    ["CboxSameZone"] = "Только если находится в одной зоне со мной",
     ["Cboxshowminimapbutton"] = "Показать кнопку у миникарты",
     ["CboxUseRank"] = "Использовать заклинание с рангом",
     ["EboxMinBlessing"] = "Количество пропущенных благословений, необходимых для использования большего благословения",
@@ -326,39 +333,40 @@ BOM.locales = {
     ["HeaderCredits"] = "Авторы",
     ["HeaderCustomLocales"] = "Перевод",
     ["HeaderInfo"] = "Информация",
-    ["HeaderRenew"] = "Продлить до истечения срока действия (в секундах)",
+    ["HeaderRenew"] = "Продлить баф до истечения срока действия (в секундах)",
     ["HeaderSlashCommand"] = "/ Команды",
     ["HeaderSupportedSpells"] = "Поддерживаемые заклинания",
     ["HeaderUsage"] = "Использование",
     ["HeaderWatchGroup"] = "Смотреть в рейдовой группе",
     ["MsgBuffGroup"] = "Группа %s %s",
     ["MsgBuffSingle"] = "%s %s",
-    ["MsgBusy"] = "Занятый",
+    ["MsgBusy"] = "Занят",
     ["MsgCombat"] = "В бою",
     ["MsgDead"] = "Мертв",
-    ["MsgDisabled"] = "Отключить",
+    ["MsgDisabled"] = "Отключено",
     ["MsgEmpty"] = "Нечего делать",
-    ["MsgLocalRestart"] = "Настройки не переноситься до перезагрузки (/reload)",
-    ["MsgNeedOneMacroSlot"] = "Нужен один макрослот!",
+    ["MsgLocalRestart"] = "Настройки не подействуют до перезагрузки модов (команда /reload)",
+    ["MsgNeedOneMacroSlot"] = "Нужен хотя бы один свободный слот для макро!",
     ["MsgNextCast"] = "%s @ %s",
     ["MsgSomebodyDead"] = "Кто-то мертв",
     ["PanelAbout"] = "Информация",
-    ["SlashClose"] = "Закрыть окно BOM",
-    ["SlashOpen"] = "Открыть окно BOM",
-    ["SlashReset"] = "Сбросить окно BOM",
+    ["SlashClose"] = "Закрыть окно Бафомёта",
+    ["SlashOpen"] = "Открыть Бафомёт",
+    ["SlashReset"] = "Сбросить окно Бафомёта",
     ["SlashSpellBook"] = "Повторное сканирование книги заклинаний",
     ["SlashUpdate"] = "Обновить список макросов",
     ["TabBuff"] = "Эффекты",
     ["TabSpells"] = "Заклинания",
     ["TooltipEnableSpell"] = "Вкл./откл. заклинание",
-    ["TTGroup"] = "Группа %d",
+    ["TTGroup"] = "Следить за группой %d в рейде",
+    ["TooltipRaidGroupsSettings"] = "Настройки рейдовых групп",
 
-    ["TTCancelThisSpell"] = "Отменять баф",
-    ["TTOnlyCombat"] = "Перед боем",
-    ["TTAlwaysCancel"] = "Сразу",
+    ["HintCancelThisBuff"] = "Отменять баф",
+    ["HintCancelThisBuff_Combat"] = "Перед боем",
+    ["HintCancelThisBuff_Always"] = "Сразу",
 
     ["TTSelectTarget"] = "Выберите участника рейда/группы, чтобы включить эту опцию",
-    ["TTSelfCast"] = "Применить на группу/рейд или только на себя",
+    ["TooltipSelfCastCheckbox"] = "Применить только на себя (один силуэт) или на группу и рейд (силуэты друзей)",
     ["TooltipForceCastOnTarget"] = "Наложить заклинание на текущую цель"
   },
 
@@ -434,7 +442,7 @@ BOM.locales = {
     ["TooltipEnableSpell"] = "启用/禁用 法术",
     ["TTGroup"] = "队伍 %d",
     ["TTSelectTarget"] = "选择一个团队/小队成员,启用这个选项",
-    ["TTSelfCast"] = "施放给小队/团队,或仅自己",
+    ["TooltipSelfCastCheckbox"] = "施放给小队/团队,或仅自己",
     ["TooltipForceCastOnTarget"] = "对当前目标强制施法"
   },
 
@@ -447,7 +455,7 @@ setmetatable(BOM.L, {
 })
 BOM.L.AboutCredits = "wellcat for the Chinese translation|n" ..
         "OlivBEL for the french translation|n" ..
-        "Arrogant_Dreamer for the russian translation|n"
+        "Arrogant_Dreamer & kvakvs for the russian translation|n"
 
 function BOM.LocalizationInit()
   if BomSharedState and BomSharedState.CustomLocales then

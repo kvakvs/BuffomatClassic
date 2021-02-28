@@ -27,11 +27,14 @@ local function add_row_of_class_buttons(isHorde, spell, dx, prev_control)
   spell.frames.SelfCast:SetPoint("TOPLEFT", prev_control, "TOPRIGHT", dx, 0)
   spell.frames.SelfCast:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID], "SelfCast")
   spell.frames.SelfCast:SetOnClick(BOM.MyButtonOnClick)
-  spell.frames.SelfCast:SetTooltip(L.TTSelfCast)
+  BOM.Tool.Tooltip(spell.frames.SelfCast, "TooltipSelfCastCheckbox")
 
   prev_control = spell.frames.SelfCast
   dx = 2
 
+  --------------------------------------
+  -- Class-Cast checkboxes one per class
+  --------------------------------------
   for ci, class in ipairs(BOM.Tool.Classes) do
     if spell.frames[class] == nil then
       spell.frames[class] = BOM.CreateMyButton(
@@ -45,7 +48,8 @@ local function add_row_of_class_buttons(isHorde, spell, dx, prev_control)
     spell.frames[class]:SetPoint("TOPLEFT", prev_control, "TOPRIGHT", dx, 0)
     spell.frames[class]:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID].Class, class)
     spell.frames[class]:SetOnClick(BOM.DoBlessingOnClick)
-    spell.frames[class]:SetTooltip(BOM.Tool.IconClass[class] .. " " .. BOM.Tool.ClassName[class])
+    BOM.Tool.TooltipText(spell.frames[class],
+            L.TooltipCastOnClass .. BOM.Tool.IconClass[class] .. " " .. BOM.Tool.ClassName[class])
 
     if (isHorde and class == "PALADIN")
             or (not isHorde and class == "SHAMAN") then
@@ -67,7 +71,7 @@ local function add_row_of_class_buttons(isHorde, spell, dx, prev_control)
   spell.frames["tank"]:SetPoint("TOPLEFT", prev_control, "TOPRIGHT", dx, 0)
   spell.frames["tank"]:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID].Class, "tank")
   spell.frames["tank"]:SetOnClick(BOM.DoBlessingOnClick)
-  spell.frames["tank"]:SetTooltip(L.Tank)
+  BOM.Tool.Tooltip(spell.frames["tank"], "TooltipCastOnTank")
 
   prev_control = spell.frames["tank"]
 
@@ -83,7 +87,7 @@ local function add_row_of_class_buttons(isHorde, spell, dx, prev_control)
   spell.frames["pet"]:SetPoint("TOPLEFT", prev_control, "TOPRIGHT", dx, 0)
   spell.frames["pet"]:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID].Class, "pet")
   spell.frames["pet"]:SetOnClick(BOM.DoBlessingOnClick)
-  spell.frames["pet"]:SetTooltip(L.Pet)
+  BOM.Tool.Tooltip(spell.frames["pet"], "TooltipCastOnPet")
   prev_control = spell.frames["pet"]
 
   dx = 7
@@ -151,9 +155,9 @@ local function add_spell_cancel_buttons(spell, dx, dy, prev_control, last)
           BomC_SpellTab_Scroll_Child,
           function(ctrl)
             if spell.OnlyCombat then
-              ctrl:SetText(L.TTCancelThisSpell .. ": " .. L.TTOnlyCombat)
+              ctrl:SetText(L.HintCancelThisBuff .. ": " .. L.HintCancelThisBuff_Combat)
             else
-              ctrl:SetText(L.TTCancelThisSpell .. ": " .. L.TTAlwaysCancel)
+              ctrl:SetText(L.HintCancelThisBuff .. ": " .. L.HintCancelThisBuff_Always)
             end
             ctrl:SetPoint("TOPLEFT", spell.frames.Enable, "TOPRIGHT", 7, -3)
           end)
@@ -168,6 +172,9 @@ local function add_spell_cancel_buttons(spell, dx, dy, prev_control, last)
 end
 
 local function fill_last_section(last)
+  -------------------------
+  -- Add settings frame with icon, icon is not clickable
+  -------------------------
   if SpellSettingsFrames.Settings == nil then
     SpellSettingsFrames.Settings = BOM.CreateMyButton(
             BomC_SpellTab_Scroll_Child,
@@ -177,7 +184,7 @@ local function fill_last_section(last)
             { 0.1, 0.9, 0.1, 0.9 })
   end
 
-  SpellSettingsFrames.Settings:SetTooltip(L.BtnSettings)
+  BOM.Tool.Tooltip(SpellSettingsFrames.Settings, "TooltipRaidGroupsSettings")
   SpellSettingsFrames.Settings:SetPoint("TOPLEFT", last, "BOTTOMLEFT", 0, -12)
 
   last = SpellSettingsFrames.Settings
@@ -192,7 +199,7 @@ local function fill_last_section(last)
             nil,
             { 0.1, 0.9, 0.1, 0.9 })
   end
-  SpellSettingsFrames[0]:SetTooltip(L.HeaderWatchGroup)
+  BOM.Tool.Tooltip(SpellSettingsFrames[0], "HeaderWatchGroup")
   SpellSettingsFrames[0]:SetPoint("TOPLEFT", l, "TOPRIGHT", dx, 0)
 
   l = SpellSettingsFrames[0]
@@ -212,7 +219,7 @@ local function fill_last_section(last)
     SpellSettingsFrames[i]:SetPoint("TOPLEFT", l, "TOPRIGHT", dx, 0)
     SpellSettingsFrames[i]:SetVariable(BOM.WatchGroup, i)
     SpellSettingsFrames[i]:SetText(i)
-    SpellSettingsFrames[i]:SetTooltip(string.format(L.TTGroup, i))
+    BOM.Tool.TooltipText(SpellSettingsFrames[i], string.format(L.TTGroup, i))
     SpellSettingsFrames[i]:SetOnClick(BOM.MyButtonOnClick)
     l = SpellSettingsFrames[i]
     dx = 2

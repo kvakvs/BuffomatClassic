@@ -229,6 +229,9 @@
         </Scripts>
       </Button>
 
+      <!--
+        Settings button, opens BOM settings
+        -->
       <Button name="$parent_SettingsButton" inherits="BomC_MiniButton"
               Text="|TInterface\Buttons\UI-OptionsButton:0|t">
         <Size><AbsDimension x="18" y="18"/></Size>
@@ -242,6 +245,9 @@
         </Scripts>
       </Button>
 
+      <!--
+        Macro button, draggable becomes a macro link
+        -->
       <Button name="$parent_MacroButton" inherits="BomC_MiniButton"
               Text="Macro">
         <Size><AbsDimension x="36" y="18"/></Size>

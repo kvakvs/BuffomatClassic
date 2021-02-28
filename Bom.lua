@@ -525,7 +525,7 @@ function BOM.Init()
           BOM.Title)
 
   BomC_MainWindow_Title:SetText(
-          string.format(BOM.TxtEscapeIcon, BOM.FullIcon) .. " Buffomat - " .. L.profile_solo)
+          string.format(BOM.TxtEscapeIcon, BOM.FullIcon) .. L.Buffomat .. " - " .. L.profile_solo)
   --BomC_ListTab_Button:SetText(L["BtnGetMacro"])
 
   BOM.OptionsInit()
@@ -548,7 +548,7 @@ function BOM.Init()
   end
 
   _G["BINDING_NAME_MACRO Buff'o'mat"] = L["BtnPerformeBuff"]
-  _G["BINDING_HEADER_BUFFOMATHEADER"] = "Buffomat"
+  _G["BINDING_HEADER_BUFFOMATHEADER"] = "Buffomat Classic"
 
   print("|cFFFF1C1C Loaded: " .. GetAddOnMetadata(TOCNAME, "Title") .. " "
           .. GetAddOnMetadata(TOCNAME, "Version")
