@@ -135,7 +135,7 @@ local function format_spell_link(spellId, icon, name, rank)
       rank = "(" .. rank .. ")"
     end
     rank = ""
-    return "|Hspell:" .. spellId .. "|h|r |cff71d5ff" .. string.format(BOM.TxtEscapeIcon, icon) .. name .. rank .. "|r|h"
+    return "|Hspell:" .. spellId .. "|h|r |cff71d5ff" .. string.format(BOM.ICON_FORMAT, icon) .. name .. rank .. "|r|h"
   end
 end
 
@@ -151,7 +151,7 @@ function BOM.GetSpells()
   for i, profil in ipairs(BOM.ProfileNames) do
     BOM.CharacterState[profil].Spell = BOM.CharacterState[profil].Spell or {}
     BOM.CharacterState[profil].CancelBuff = BOM.CharacterState[profil].CancelBuff or {}
-    BOM.CharacterState[profil].Spell[BOM.BLESSINGID] = BOM.CharacterState[profil].Spell[BOM.BLESSINGID] or {}
+    BOM.CharacterState[profil].Spell[BOM.BLESSING_ID] = BOM.CharacterState[profil].Spell[BOM.BLESSING_ID] or {}
   end
 
   if not SpellsIncluded then
@@ -337,7 +337,7 @@ function BOM.GetSpells()
           if itemName and itemLink and itemIcon then
             add = true
             spell.single = itemName
-            spell.singleLink = string.format(BOM.TxtEscapeIcon, itemIcon) .. itemLink
+            spell.singleLink = string.format(BOM.ICON_FORMAT, itemIcon) .. itemLink
             spell.Icon = itemIcon
             spell.isScanned = true
 
@@ -345,7 +345,7 @@ function BOM.GetSpells()
               itemName, itemLink, itemIcon
             }
           else
-            print(BOM.MSGPREFIX, "Item not found!", spell.single, spell.singleId, spell.item, "x", BOM.ItemCache[spell.item])
+            print(BOM.CHAT_MSG_PREFIX, "Item not found!", spell.single, spell.singleId, spell.item, "x", BOM.ItemCache[spell.item])
           end
         else
           add = true
@@ -423,11 +423,11 @@ local function bom_get_member(unitid, NameGroup, NameRole)
       link = BOM.Tool.IconClass[class] .. "|Hunit:" .. guid .. ":" .. name .. "|h|c" .. RAID_CLASS_COLORS[class].colorStr .. name .. "|r|h"
     else
       class = ""
-      link = string.format(BOM.TxtEscapeIcon, BOM.IconPet) .. name
+      link = string.format(BOM.ICON_FORMAT, BOM.IconPet) .. name
     end
   else
     class = ""
-    link = string.format(BOM.TxtEscapeIcon, BOM.IconPet) .. name
+    link = string.format(BOM.ICON_FORMAT, BOM.IconPet) .. name
   end
 
   MemberCache[unitid] = MemberCache[unitid] or {}
@@ -853,7 +853,7 @@ function BOM.GetNeedBuff(party, spell, playerMember)
       local ok = false
       local notGroup = false
 
-      if BOM.CurrentProfile.Spell[BOM.BLESSINGID][member.name] == spell.ConfigID
+      if BOM.CurrentProfile.Spell[BOM.BLESSING_ID][member.name] == spell.ConfigID
               or (member.isTank
               and BOM.CurrentProfile.Spell[spell.ConfigID].Class["tank"]
               and not BOM.CurrentProfile.Spell[spell.ConfigID].SelfCast)
@@ -861,7 +861,7 @@ function BOM.GetNeedBuff(party, spell, playerMember)
         ok = true
         notGroup = true
 
-      elseif BOM.CurrentProfile.Spell[BOM.BLESSINGID][member.name] == nil then
+      elseif BOM.CurrentProfile.Spell[BOM.BLESSING_ID][member.name] == nil then
         if BOM.CurrentProfile.Spell[spell.ConfigID].Class[member.class]
                 and (not IsInRaid() or BomCharacterState.WatchGroup[member.group])
                 and not BOM.CurrentProfile.Spell[spell.ConfigID].SelfCast then
@@ -973,18 +973,18 @@ function BOM.GetNeedBuff(party, spell, playerMember)
 end
 
 function BOM.UpdateMacro(member, spellId, command)
-  if (GetMacroInfo(BOM.MACRONAME)) == nil then
+  if (GetMacroInfo(BOM.MACRO_NAME)) == nil then
     local perAccount, perChar = GetNumMacros()
     local isChar = nil
 
     if perChar < MAX_CHARACTER_MACROS then
       isChar = 1
     elseif perAccount >= MAX_ACCOUNT_MACROS then
-      print(BOM.MSGPREFIX .. L.MsgNeedOneMacroSlot)
+      print(BOM.CHAT_MSG_PREFIX .. L.MsgNeedOneMacroSlot)
       return
     end
 
-    CreateMacro(BOM.MACRONAME, BOM.Icon, "", isChar)
+    CreateMacro(BOM.MACRO_NAME, BOM.MACRO_ICON, "", isChar)
   end
 
   local macroText, icon
@@ -1043,16 +1043,16 @@ function BOM.UpdateMacro(member, spellId, command)
             (tContains(BOM.cancelForm, spellId) and "/cancelform [nocombat]\n" or "") ..
             "/bom _checkforerror\n" ..
             "/cast [@" .. member.unitId .. ",nocombat]" .. name .. rank .. "\n"
-    icon = BOM.Icon
+    icon = BOM.MACRO_ICON
   else
     macroText = "#showtooltip\n/bom update\n"
     if command then
       macroText = macroText .. command
     end
-    icon = BOM.IconOff
+    icon = BOM.MACRO_ICON_DISABLED
   end
 
-  EditMacro(BOM.MACRONAME, nil, icon, macroText)
+  EditMacro(BOM.MACRO_NAME, nil, icon, macroText)
   BOM.MinimapButton.SetTexture("Interface\\ICONS\\" .. icon)
 end
 
@@ -1311,7 +1311,7 @@ function BOM.UpdateScan()
     BOM.CurrentProfile = BOM.CharacterState[chooseProfile]
     BOM.UpdateSpellsTab()
     BomC_MainWindow_Title:SetText(
-            string.format(BOM.TxtEscapeIcon, BOM.FullIcon)
+            string.format(BOM.ICON_FORMAT, BOM.MACRO_ICON_FULLPATH)
                     .. " " .. BOM.TOC_TITLE .. " - " .. L["profile_" .. chooseProfile])
     BOM.ForceUpdate = true
   end
@@ -1434,7 +1434,7 @@ function BOM.UpdateScan()
             and not spell.OnlyCombat
     then
       if playerMember.buffs[spell.ConfigID] then
-        print(BOM.MSGPREFIX,
+        print(BOM.CHAT_MSG_PREFIX,
                 string.format(L.MsgCancelBuff, spell.singleLink or spell.single, UnitName(playerMember.buffs[spell.ConfigID].source or "") or ""))
         BOM.CancelBuff(spell.singleFamily)
       end
@@ -1464,7 +1464,7 @@ function BOM.UpdateScan()
         local name = UnitName(spell.buffSource or "")
 
         if name then
-          SendChatMessage(BOM.MSGPREFIX .. string.format(L.MsgSpellExpired, spell.single),
+          SendChatMessage(BOM.CHAT_MSG_PREFIX .. string.format(L.MsgSpellExpired, spell.single),
                   "WHISPER", nil, name)
         end
       end
@@ -1501,9 +1501,9 @@ function BOM.UpdateScan()
                     and playerMember.OffHandBuff == nil then
               if BOM.SharedState.DontUseConsumables
                       and not IsModifierKeyDown() then
-                bom_display_text(string.format(BOM.TxtEscapeIcon, texture) .. itemLink .. "x" .. count .. " (" .. L.TooltipOffHand .. ")", playerMember.distance, true)
+                bom_display_text(string.format(BOM.ICON_FORMAT, texture) .. itemLink .. "x" .. count .. " (" .. L.TooltipOffHand .. ")", playerMember.distance, true)
               else
-                BagTitel = string.format(BOM.TxtEscapeIcon, texture) .. itemLink .. "x" .. count .. " (" .. L.TooltipOffHand .. ")"
+                BagTitel = string.format(BOM.ICON_FORMAT, texture) .. itemLink .. "x" .. count .. " (" .. L.TooltipOffHand .. ")"
                 BagCommand = "/use " .. bag .. " " .. slot .. "\n/use 17" -- offhand
                 bom_display_text(BagTitel, playerMember.distance, true)
               end
@@ -1513,9 +1513,9 @@ function BOM.UpdateScan()
                     and playerMember.MainHandBuff == nil then
               if BOM.SharedState.DontUseConsumables
                       and not IsModifierKeyDown() then
-                bom_display_text(string.format(BOM.TxtEscapeIcon, texture) .. itemLink .. "x" .. count .. " (" .. L.TooltipMainHand .. ")", playerMember.distance, true)
+                bom_display_text(string.format(BOM.ICON_FORMAT, texture) .. itemLink .. "x" .. count .. " (" .. L.TooltipMainHand .. ")", playerMember.distance, true)
               else
-                BagTitel = string.format(BOM.TxtEscapeIcon, texture) .. itemLink .. "x" .. count .. " (" .. L.TooltipMainHand .. ")"
+                BagTitel = string.format(BOM.ICON_FORMAT, texture) .. itemLink .. "x" .. count .. " (" .. L.TooltipMainHand .. ")"
                 BagCommand = "/use " .. bag .. " " .. slot .. "\n/use 16" -- mainhand
                 bom_display_text(BagTitel, playerMember.distance, true)
               end
@@ -1536,9 +1536,9 @@ function BOM.UpdateScan()
 
             if BOM.SharedState.DontUseConsumables
                     and not IsModifierKeyDown() then
-              bom_display_text(string.format(BOM.TxtEscapeIcon, texture) .. itemLink .. "x" .. count, playerMember.distance, true)
+              bom_display_text(string.format(BOM.ICON_FORMAT, texture) .. itemLink .. "x" .. count, playerMember.distance, true)
             else
-              BagTitel = string.format(BOM.TxtEscapeIcon, texture) .. itemLink .. "x" .. count
+              BagTitel = string.format(BOM.ICON_FORMAT, texture) .. itemLink .. "x" .. count
               BagCommand = "/use " .. bag .. " " .. slot
               bom_display_text(BagTitel, playerMember.distance, true)
             end
@@ -1701,8 +1701,8 @@ function BOM.UpdateScan()
             end
 
             local add = ""
-            if BOM.CurrentProfile.Spell[BOM.BLESSINGID][member.name] ~= nil then
-              add = string.format(BOM.TxtEscapePicture, BOM.IconTargetOn)
+            if BOM.CurrentProfile.Spell[BOM.BLESSING_ID][member.name] ~= nil then
+              add = string.format(BOM.PICTURE_FORMAT, BOM.IconTargetOn)
             end
 
             local isInRange = (IsSpellInRange(spell.single, member.unitId) == 1)
@@ -1778,7 +1778,7 @@ function BOM.UpdateScan()
 
             local add = ""
             if BOM.CurrentProfile.Spell[spell.ConfigID].ForcedTarget[member.name] then
-              add = string.format(BOM.TxtEscapePicture, BOM.IconTargetOn)
+              add = string.format(BOM.PICTURE_FORMAT, BOM.IconTargetOn)
             end
 
             local isInRange = (IsSpellInRange(spell.single, member.unitId) == 1)
@@ -1860,7 +1860,7 @@ function BOM.UpdateScan()
     end
 
     if ok then
-      BagTitel = string.format(BOM.TxtEscapeIcon, item.Texture) .. item.Link .. (target and (" @" .. target) or "")
+      BagTitel = string.format(BOM.ICON_FORMAT, item.Texture) .. item.Link .. (target and (" @" .. target) or "")
       BagCommand = (target and ("/target " .. target .. "/n") or "") .. "/use " .. item.Bag .. " " .. item.Slot
       bom_display_text(BagTitel, playerMember.distance, true)
 
@@ -1970,7 +1970,7 @@ function BOM.DownGrade()
         BOM.SharedState.SpellGreatherEqualThan[BOM.ERRSpellId] = level
         BOM.FastUpdateTimer()
         BOM.ForceUpdate = true
-        print(BOM.MSGPREFIX, string.format(L.MsgDownGrade, BOM.ERRSpell.single, BOM.ERRMember.name))
+        print(BOM.CHAT_MSG_PREFIX, string.format(L.MsgDownGrade, BOM.ERRSpell.single, BOM.ERRMember.name))
       elseif BOM.SharedState.SpellGreatherEqualThan[BOM.ERRSpellId] >= level then
         BOM.ADDSKIP()
       end
@@ -1995,7 +1995,7 @@ function BOM.BattleCancelBuffs()
   for i, spell in ipairs(BOM.CancelBuffs) do
     if BOM.CurrentProfile.CancelBuff[spell.ConfigID].Enable
             and BOM.CancelBuff(spell.singleFamily) then
-      print(BOM.MSGPREFIX,
+      print(BOM.CHAT_MSG_PREFIX,
               string.format(L.MsgCancelBuff, spell.singleLink or spell.single,
                       UnitName(BOM.CancelBuffSource) or ""))
     end

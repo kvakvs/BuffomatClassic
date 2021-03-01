@@ -598,7 +598,7 @@ local function update_selected_spell(spell)
       spell.frames.target:Enable()
       BOM.Tool.TooltipText(spell.frames.target, L.TooltipForceCastOnTarget .. "|n" .. BOM.lastTarget)
       if spell.isBlessing then
-        spell.frames.target:SetVariable(BOM.CurrentProfile.Spell[BOM.BLESSINGID], BOM.lastTarget, spell.ConfigID)
+        spell.frames.target:SetVariable(BOM.CurrentProfile.Spell[BOM.BLESSING_ID], BOM.lastTarget, spell.ConfigID)
       else
         spell.frames.target:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID].ForcedTarget, BOM.lastTarget, true)
       end

@@ -39,16 +39,16 @@ BOM.BehaviourSettings = {
 --BOM.TOC_VERSION = GetAddOnMetadata(TOCNAME, "Version") --unused?
 BOM.TOC_TITLE = GetAddOnMetadata(TOCNAME, "Title")
 
-BOM.Icon = "Ability_Druid_ChallangingRoar"
-BOM.IconOff = "Ability_Druid_DemoralizingRoar"
-BOM.FullIcon = "Interface\\ICONS\\Ability_Druid_ChallangingRoar"
-BOM.TxtEscapeIcon = "|T%s:0:0:0:0:64:64:4:60:4:60|t"
-BOM.TxtEscapePicture = "|T%s:0|t"
-BOM.MSGPREFIX = "Buffomat: "
-BOM.MACRONAME = "Buff'o'mat"
-BOM.MAXAURAS = 40
-BOM.BLESSINGID = "blessing"
-BOM.LOADINGSCREENTIMEOUT = 2
+BOM.MACRO_ICON = "Ability_Druid_ChallangingRoar"
+BOM.MACRO_ICON_DISABLED = "Ability_Druid_DemoralizingRoar"
+BOM.MACRO_ICON_FULLPATH = "Interface\\ICONS\\Ability_Druid_ChallangingRoar"
+BOM.ICON_FORMAT = "|T%s:0:0:0:0:64:64:4:60:4:60|t"
+BOM.PICTURE_FORMAT = "|T%s:0|t"
+BOM.CHAT_MSG_PREFIX = "Buffomat: "
+BOM.MACRO_NAME = "Buff'o'mat"
+BOM.MAX_AURAS = 40
+BOM.BLESSING_ID = "blessing"
+BOM.LOADING_SCREEN_TIMEOUT = 2
 
 
 --"UNIT_POWER_UPDATE","UNIT_SPELLCAST_START","UNIT_SPELLCAST_STOP","PLAYER_STARTED_MOVING","PLAYER_STOPPED_MOVING"
@@ -170,7 +170,7 @@ function BOM.BtnSettings(self)
 end
 
 function BOM.BtnMacro()
-  PickupMacro(BOM.MACRONAME)
+  PickupMacro(BOM.MACRO_NAME)
 end
 
 function BOM.ScrollMessage(self, delta)
@@ -369,14 +369,14 @@ end
 function BOM.ChooseProfile (profile)
   if profile == nil or profil == "" or profile == "auto" then
     BOM.ForceProfile = nil
-    DEFAULT_CHAT_FRAME:AddMessage(BOM.MSGPREFIX .. "Set profile to auto")
+    DEFAULT_CHAT_FRAME:AddMessage(BOM.CHAT_MSG_PREFIX .. "Set profile to auto")
 
   elseif BOM.CharacterState[profile] then
     BOM.ForceProfile = profile
-    DEFAULT_CHAT_FRAME:AddMessage(BOM.MSGPREFIX .. "Set profile to " .. profile)
+    DEFAULT_CHAT_FRAME:AddMessage(BOM.CHAT_MSG_PREFIX .. "Set profile to " .. profile)
 
   else
-    DEFAULT_CHAT_FRAME:AddMessage(BOM.MSGPREFIX .. "Unknown profile")
+    DEFAULT_CHAT_FRAME:AddMessage(BOM.CHAT_MSG_PREFIX .. "Unknown profile")
   end
 
   BOM.ClearSkip()
@@ -529,7 +529,7 @@ function BOM.Init()
       DB[var] = false
     end
 
-    DEFAULT_CHAT_FRAME:AddMessage(BOM.MSGPREFIX .. "Set " .. var .. " to " .. tostring(DB[var]))
+    DEFAULT_CHAT_FRAME:AddMessage(BOM.CHAT_MSG_PREFIX .. "Set " .. var .. " to " .. tostring(DB[var]))
 
     BOM.OptionsUpdate()
   end
@@ -570,7 +570,7 @@ function BOM.Init()
   BomC_ListTab_MessageFrame:SetMaxLines(100)
 
   BomC_ListTab_Button:SetAttribute("type", "macro")
-  BomC_ListTab_Button:SetAttribute("macro", BOM.MACRONAME)
+  BomC_ListTab_Button:SetAttribute("macro", BOM.MACRO_NAME)
 
   BOM.Tool.OnUpdate(BOM.UpdateTimer)
 
@@ -578,7 +578,7 @@ function BOM.Init()
 
   BOM.MinimapButton.Init(
           BOM.SharedState.Minimap,
-          BOM.FullIcon,
+          BOM.MACRO_ICON_FULLPATH,
           function(self, button)
             if button == "LeftButton" then
               BOM.ToggleWindow()
@@ -589,7 +589,7 @@ function BOM.Init()
           BOM.TOC_TITLE)
 
   BomC_MainWindow_Title:SetText(
-          string.format(BOM.TxtEscapeIcon, BOM.FullIcon) .. L.Buffomat .. " - " .. L.profile_solo)
+          string.format(BOM.ICON_FORMAT, BOM.MACRO_ICON_FULLPATH) .. L.Buffomat .. " - " .. L.profile_solo)
   --BomC_ListTab_Button:SetText(L["BtnGetMacro"])
 
   BOM.OptionsInit()
@@ -627,7 +627,7 @@ local function Event_ADDON_LOADED(arg1)
   end
 
   BOM.Tool.AddDataBrocker(
-          BOM.FullIcon,
+          BOM.MACRO_ICON_FULLPATH,
           function(self, button)
             if button == "LeftButton" then
               BOM.ToggleWindow()
@@ -738,7 +738,7 @@ local function Event_LoadingStart()
 end
 
 local function Event_LoadingStop()
-  BOM.LoadingScreenTimeOut = GetTime() + BOM.LOADINGSCREENTIMEOUT
+  BOM.LoadingScreenTimeOut = GetTime() + BOM.LOADING_SCREEN_TIMEOUT
   BOM.ForceUpdate = true
 end
 
@@ -876,7 +876,7 @@ function BOM.UpdateTimer()
       bom_slow_count = bom_slow_count + 1
       if bom_slow_count >= 6 and bom_update_timer_limit < 1 then
         bom_update_timer_limit = 1
-        print(BOM.MSGPREFIX .. "Overwhelmed: Enter slow mode!")
+        print(BOM.CHAT_MSG_PREFIX .. "Overwhelmed: Enter slow mode!")
       end
 
     else
