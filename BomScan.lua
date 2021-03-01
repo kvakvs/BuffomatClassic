@@ -980,7 +980,7 @@ function BOM.UpdateMacro(member, spellId, command)
     if perChar < MAX_CHARACTER_MACROS then
       isChar = 1
     elseif perAccount >= MAX_ACCOUNT_MACROS then
-      print(BOM.CHAT_MSG_PREFIX .. L.MsgNeedOneMacroSlot)
+      BOM.Print(L.MsgNeedOneMacroSlot)
       return
     end
 
@@ -1434,8 +1434,9 @@ function BOM.UpdateScan()
             and not spell.OnlyCombat
     then
       if playerMember.buffs[spell.ConfigID] then
-        print(BOM.CHAT_MSG_PREFIX,
-                string.format(L.MsgCancelBuff, spell.singleLink or spell.single, UnitName(playerMember.buffs[spell.ConfigID].source or "") or ""))
+        BOM.Print(string.format(
+                L.MsgCancelBuff, spell.singleLink or spell.single,
+                UnitName(playerMember.buffs[spell.ConfigID].source or "") or ""))
         BOM.CancelBuff(spell.singleFamily)
       end
     end
@@ -1464,8 +1465,7 @@ function BOM.UpdateScan()
         local name = UnitName(spell.buffSource or "")
 
         if name then
-          SendChatMessage(BOM.CHAT_MSG_PREFIX .. string.format(L.MsgSpellExpired, spell.single),
-                  "WHISPER", nil, name)
+          BOM.Print(string.format(L.MsgSpellExpired, spell.single), "WHISPER", nil, name)
         end
       end
     end
@@ -1966,11 +1966,13 @@ function BOM.DownGrade()
 
     if level ~= nil and level > -1 then
       if BOM.SharedState.SpellGreatherEqualThan[BOM.ERRSpellId] == nil
-              or BOM.SharedState.SpellGreatherEqualThan[BOM.ERRSpellId] < level then
+              or BOM.SharedState.SpellGreatherEqualThan[BOM.ERRSpellId] < level
+      then
         BOM.SharedState.SpellGreatherEqualThan[BOM.ERRSpellId] = level
         BOM.FastUpdateTimer()
         BOM.ForceUpdate = true
-        print(BOM.CHAT_MSG_PREFIX, string.format(L.MsgDownGrade, BOM.ERRSpell.single, BOM.ERRMember.name))
+        BOM.Print(string.format(L.MsgDownGrade, BOM.ERRSpell.single, BOM.ERRMember.name))
+
       elseif BOM.SharedState.SpellGreatherEqualThan[BOM.ERRSpellId] >= level then
         BOM.ADDSKIP()
       end
@@ -1995,9 +1997,8 @@ function BOM.BattleCancelBuffs()
   for i, spell in ipairs(BOM.CancelBuffs) do
     if BOM.CurrentProfile.CancelBuff[spell.ConfigID].Enable
             and BOM.CancelBuff(spell.singleFamily) then
-      print(BOM.CHAT_MSG_PREFIX,
-              string.format(L.MsgCancelBuff, spell.singleLink or spell.single,
-                      UnitName(BOM.CancelBuffSource) or ""))
+      BOM.Print(string.format(L.MsgCancelBuff, spell.singleLink or spell.single,
+              UnitName(BOM.CancelBuffSource) or ""))
     end
   end
 end

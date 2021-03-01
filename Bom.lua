@@ -42,14 +42,20 @@ BOM.TOC_TITLE = GetAddOnMetadata(TOCNAME, "Title")
 BOM.MACRO_ICON = "Ability_Druid_ChallangingRoar"
 BOM.MACRO_ICON_DISABLED = "Ability_Druid_DemoralizingRoar"
 BOM.MACRO_ICON_FULLPATH = "Interface\\ICONS\\Ability_Druid_ChallangingRoar"
+
 BOM.ICON_FORMAT = "|T%s:0:0:0:0:64:64:4:60:4:60|t"
 BOM.PICTURE_FORMAT = "|T%s:0|t"
-BOM.CHAT_MSG_PREFIX = "Buffomat: "
+
 BOM.MACRO_NAME = "Buff'o'mat"
 BOM.MAX_AURAS = 40
 BOM.BLESSING_ID = "blessing"
 BOM.LOADING_SCREEN_TIMEOUT = 2
 
+BOM.CHAT_MSG_PREFIX = "Buffomat: "
+
+BOM.Print = function(t)
+  DEFAULT_CHAT_FRAME:AddMessage(BOM.CHAT_MSG_PREFIX .. t)
+end
 
 --"UNIT_POWER_UPDATE","UNIT_SPELLCAST_START","UNIT_SPELLCAST_STOP","PLAYER_STARTED_MOVING","PLAYER_STOPPED_MOVING"
 local EVT_COMBAT_STOP = { "PLAYER_REGEN_ENABLED" }
@@ -369,14 +375,14 @@ end
 function BOM.ChooseProfile (profile)
   if profile == nil or profil == "" or profile == "auto" then
     BOM.ForceProfile = nil
-    DEFAULT_CHAT_FRAME:AddMessage(BOM.CHAT_MSG_PREFIX .. "Set profile to auto")
+    BOM.Print("Set profile to auto")
 
   elseif BOM.CharacterState[profile] then
     BOM.ForceProfile = profile
-    DEFAULT_CHAT_FRAME:AddMessage(BOM.CHAT_MSG_PREFIX .. "Set profile to " .. profile)
+    BOM.Print("Set profile to " .. profile)
 
   else
-    DEFAULT_CHAT_FRAME:AddMessage(BOM.CHAT_MSG_PREFIX .. "Unknown profile")
+    BOM.Print("Unknown profile")
   end
 
   BOM.ClearSkip()
@@ -523,14 +529,15 @@ function BOM.Init()
   local function slash_command_db_set(DB, var, value)
     if value == nil then
       DB[var] = not DB[var]
+
     elseif tContains({ "true", "1", "enable" }, value) then
       DB[var] = true
+
     elseif tContains({ "false", "0", "disable" }, value) then
       DB[var] = false
     end
 
-    DEFAULT_CHAT_FRAME:AddMessage(BOM.CHAT_MSG_PREFIX .. "Set " .. var .. " to " .. tostring(DB[var]))
-
+    BOM.Print("Set " .. var .. " to " .. tostring(DB[var]))
     BOM.OptionsUpdate()
   end
 
@@ -876,7 +883,7 @@ function BOM.UpdateTimer()
       bom_slow_count = bom_slow_count + 1
       if bom_slow_count >= 6 and bom_update_timer_limit < 1 then
         bom_update_timer_limit = 1
-        print(BOM.CHAT_MSG_PREFIX .. "Overwhelmed: Enter slow mode!")
+        BOM.Print("Overwhelmed - entering slow mode!")
       end
 
     else
