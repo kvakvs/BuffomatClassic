@@ -482,11 +482,21 @@ end
 function BOM.MaybeResetWatchGroups()
   if UnitPlayerOrPetInParty("player") == false then
     -- We have left the party - can clear monitored groups
+    local need_to_report = false
+
     for i = 1, 8 do
-      BomCharacterState.WatchGroup[i] = true
-      BOM.SpellSettingsFrames[i]:SetState(true)
+      if not BomCharacterState.WatchGroup[i] then
+        BomCharacterState.WatchGroup[i] = true
+        BOM.SpellSettingsFrames[i]:SetState(true)
+        need_to_report = true
+      end
     end
+
     BOM.UpdateBuffTabText()
+
+    if need_to_report then
+      print("Buffomat: resetting buff groups to 1-8")
+    end
   end
 end
 

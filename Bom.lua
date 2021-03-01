@@ -36,8 +36,6 @@ BOM.BehaviourSettings = {
   { "DontUseConsumables", false },
 }
 
---BOM.IsDebug=true
-
 BOM.Version = GetAddOnMetadata(TOCNAME, "Version")
 BOM.Title = GetAddOnMetadata(TOCNAME, "Title")
 
@@ -46,7 +44,7 @@ BOM.IconOff = "Ability_Druid_DemoralizingRoar"
 BOM.FullIcon = "Interface\\ICONS\\Ability_Druid_ChallangingRoar"
 BOM.TxtEscapeIcon = "|T%s:0:0:0:0:64:64:4:60:4:60|t"
 BOM.TxtEscapePicture = "|T%s:0|t"
-BOM.MSGPREFIX = "BOM: "
+BOM.MSGPREFIX = "Buffomat: "
 BOM.MACRONAME = "Buff'o'mat"
 BOM.MAXAURAS = 40
 BOM.BLESSINGID = "blessing"
@@ -54,40 +52,50 @@ BOM.LOADINGSCREENTIMEOUT = 2
 
 
 --"UNIT_POWER_UPDATE","UNIT_SPELLCAST_START","UNIT_SPELLCAST_STOP","PLAYER_STARTED_MOVING","PLAYER_STOPPED_MOVING"
-local CombatEventStop = { "PLAYER_REGEN_ENABLED" }
-local CombatEventStart = { "PLAYER_REGEN_DISABLED" }
-local LoadingScreenStartEvent = { "LOADING_SCREEN_ENABLED", "PLAYER_LEAVING_WORLD" }
-local LoadingScreenStopEvent = { "PLAYER_ENTERING_WORLD", "LOADING_SCREEN_DISABLED" }
-local UpdateOnEvent = { "UPDATE_SHAPESHIFT_FORM", "UNIT_AURA", "READY_CHECK",
-                        "PLAYER_ALIVE", "PLAYER_UNGHOST", "INCOMING_RESURRECT_CHANGED",
-                        "UNIT_INVENTORY_CHANGED" }
-local BagOnEvent = { "BAG_UPDATE_DELAYED", "TRADE_CLOSED" }
-local PartyChangeEvent = { "GROUP_JOINED", "GROUP_ROSTER_UPDATE",
-                           "RAID_ROSTER_UPDATE", "GROUP_LEFT" }
-local SpellChangedEvent = { "SPELLS_CHANGED", "LEARNED_SPELL_IN_TAB" }
+local EVT_COMBAT_STOP = { "PLAYER_REGEN_ENABLED" }
+local EVT_COMBAT_START = { "PLAYER_REGEN_DISABLED" }
+local EVT_LOADING_SCREEN_START = { "LOADING_SCREEN_ENABLED", "PLAYER_LEAVING_WORLD" }
+local EVT_LOADING_SCREEN_END = { "PLAYER_ENTERING_WORLD", "LOADING_SCREEN_DISABLED" }
+
+local EVT_UPDATE = {
+  "UPDATE_SHAPESHIFT_FORM", "UNIT_AURA", "READY_CHECK",
+  "PLAYER_ALIVE", "PLAYER_UNGHOST", "INCOMING_RESURRECT_CHANGED",
+  "UNIT_INVENTORY_CHANGED" }
+
+local EVT_BAG_CHANGED = { "BAG_UPDATE_DELAYED", "TRADE_CLOSED" }
+
+local EVT_PARTY_CHANGED = { "GROUP_JOINED", "GROUP_ROSTER_UPDATE",
+                            "RAID_ROSTER_UPDATE", "GROUP_LEFT" }
+
+local EVT_SPELLBOOK_CHANGED = { "SPELLS_CHANGED", "LEARNED_SPELL_IN_TAB" }
 
 --- Error messages which will make player stand if sitting.
-local ErrStand = { ERR_CANTATTACK_NOTSTANDING, SPELL_FAILED_NOT_STANDING,
-                   ERR_LOOT_NOTSTANDING, ERR_TAXINOTSTANDING }
+local ERR_NOT_STANDING = {
+  ERR_CANTATTACK_NOTSTANDING, SPELL_FAILED_NOT_STANDING,
+  ERR_LOOT_NOTSTANDING, ERR_TAXINOTSTANDING }
 
 --- Error messages which will make player dismount if mounted.
-local ErrMounted = { ERR_NOT_WHILE_MOUNTED, ERR_ATTACK_MOUNTED,
-                     ERR_TAXIPLAYERALREADYMOUNTED, SPELL_FAILED_NOT_MOUNTED }
+local ERR_IS_MOUNTED = {
+  ERR_NOT_WHILE_MOUNTED, ERR_ATTACK_MOUNTED,
+  ERR_TAXIPLAYERALREADYMOUNTED, SPELL_FAILED_NOT_MOUNTED }
 
 --- Error messages which will make player cancel shapeshift.
-local ErrShapeShift = { ERR_EMBLEMERROR_NOTABARDGEOSET, ERR_CANT_INTERACT_SHAPESHIFTED,
-                        ERR_MOUNT_SHAPESHIFTED, ERR_NO_ITEMS_WHILE_SHAPESHIFTED,
-                        ERR_NOT_WHILE_SHAPESHIFTED, ERR_TAXIPLAYERSHAPESHIFTED,
-                        SPELL_FAILED_NO_ITEMS_WHILE_SHAPESHIFTED,
-                        SPELL_FAILED_NOT_SHAPESHIFT, SPELL_NOT_SHAPESHIFTED,
-                        SPELL_NOT_SHAPESHIFTED_NOSPACE }
+local ERR_IS_SHAPESHIFT = {
+  ERR_EMBLEMERROR_NOTABARDGEOSET, ERR_CANT_INTERACT_SHAPESHIFTED,
+  ERR_MOUNT_SHAPESHIFTED, ERR_NO_ITEMS_WHILE_SHAPESHIFTED,
+  ERR_NOT_WHILE_SHAPESHIFTED, ERR_TAXIPLAYERSHAPESHIFTED,
+  SPELL_FAILED_NO_ITEMS_WHILE_SHAPESHIFTED,
+  SPELL_FAILED_NOT_SHAPESHIFT, SPELL_NOT_SHAPESHIFTED,
+  SPELL_NOT_SHAPESHIFTED_NOSPACE }
 
 local function get_popup_db(db, var)
   return L["Cbox" .. var], false, db, var
 end
 
 function BOM.Popup(self, minimap)
-  if not BOM.PopupDynamic:Wipe((self:GetName() or "nil") .. (minimap and "Minimap" or "Normal")) then
+  local name = (self:GetName() or "nil") .. (minimap and "Minimap" or "Normal")
+
+  if not BOM.PopupDynamic:Wipe(name) then
     return
   end
 
@@ -778,19 +786,19 @@ end
 ---@param errorType table
 ---@param message table
 local function Event_UI_ERROR_MESSAGE(errorType, message)
-  if tContains(ErrStand, message) then
+  if tContains(ERR_NOT_STANDING, message) then
     if BOM.DB.AutoStand then
       UIErrorsFrame:Clear()
       DoEmote("STAND")
     end
 
-  elseif tContains(ErrMounted, message) then
+  elseif tContains(ERR_IS_MOUNTED, message) then
     if BOM.DB.AutoDismount then
       UIErrorsFrame:Clear()
       Dismount()
     end
 
-  elseif BOM.DB.AutoDisTravel and tContains(ErrShapeShift, message) and BOM.CancelShapeShift() then
+  elseif BOM.DB.AutoDisTravel and tContains(ERR_IS_SHAPESHIFT, message) and BOM.CancelShapeShift() then
     UIErrorsFrame:Clear()
 
   elseif not InCombatLockdown() then
@@ -818,11 +826,11 @@ local function Event_TAXIMAP_OPENED()
   end
 end
 
-local LastUpdateTimer = 0
-local lastModifier
-local fpsCheck = 0
-local UpdateTimerLimit = 0.100
-local SlowCount = 0
+local bom_last_update_timestamp = 0
+local bom_last_modifier
+local bom_fps_check = 0
+local bom_update_timer_limit = 0.100
+local bom_slow_count = 0
 
 function BOM.UpdateTimer()
   if BOM.InLoading and BOM.LoadingScreenTimeOut then
@@ -849,35 +857,36 @@ function BOM.UpdateTimer()
     end
   end
 
-  if BOM.ScanModifier and LastModifier ~= IsModifierKeyDown() then
-    LastModifier = IsModifierKeyDown()
+  if BOM.ScanModifier and bom_last_modifier ~= IsModifierKeyDown() then
+    bom_last_modifier = IsModifierKeyDown()
     BOM.ForceUpdate = true
   end
 
-  fpsCheck = fpsCheck + 1
+  bom_fps_check = bom_fps_check + 1
 
-  if (BOM.ForceUpdate or BOM.RepeatUpdate) and GetTime() - (LastUpdateTimer or 0) > UpdateTimerLimit then
+  if (BOM.ForceUpdate or BOM.RepeatUpdate)
+          and GetTime() - (bom_last_update_timestamp or 0) > bom_update_timer_limit
+  then
+    bom_last_update_timestamp = GetTime()
+    bom_fps_check = debugprofilestop()
 
-    --print( GetTime()-LastUpdateTimer)
-    LastUpdateTimer = GetTime()
-    fpsCheck = debugprofilestop()
     BOM.UpdateScan()
-    --BomC_MainWindow_Title:SetText((debugprofilestop()-fpsCheck).."-".. (BOM.ForceUpdate and "true" or "false"))
-    if (debugprofilestop() - fpsCheck) > 6 and BOM.RepeatUpdate then
-      SlowCount = SlowCount + 1
-      if SlowCount >= 6 and UpdateTimerLimit < 1 then
-        UpdateTimerLimit = 1
-        print(BOM.MSGPREFIX .. "Enter slow mode!")
+
+    if (debugprofilestop() - bom_fps_check) > 6 and BOM.RepeatUpdate then
+      bom_slow_count = bom_slow_count + 1
+      if bom_slow_count >= 6 and bom_update_timer_limit < 1 then
+        bom_update_timer_limit = 1
+        print(BOM.MSGPREFIX .. "Overwhelmed: Enter slow mode!")
       end
 
     else
-      SlowCount = 0
-      --print(debugprofilestop()-fpsCheck)
+      bom_slow_count = 0
     end
   end
 end
+
 function BOM.FastUpdateTimer()
-  LastUpdateTimer = 0
+  bom_last_update_timestamp = 0
 end
 
 BOM.PlayerBuffs = {}
@@ -983,29 +992,29 @@ function BOM.OnLoad()
   BOM.Tool.RegisterEvent("UNIT_SPELLCAST_INTERRUPTED", Event_UNIT_SPELLCAST_errors)
   BOM.Tool.RegisterEvent("UNIT_SPELLCAST_FAILED", Event_UNIT_SPELLCAST_errors)
 
-  for i, event in ipairs(CombatEventStart) do
+  for i, event in ipairs(EVT_COMBAT_START) do
     BOM.Tool.RegisterEvent(event, Event_CombatStart)
   end
-  for i, event in ipairs(CombatEventStop) do
+  for i, event in ipairs(EVT_COMBAT_STOP) do
     BOM.Tool.RegisterEvent(event, Event_CombatStop)
   end
-  for i, event in ipairs(LoadingScreenStartEvent) do
+  for i, event in ipairs(EVT_LOADING_SCREEN_START) do
     BOM.Tool.RegisterEvent(event, Event_LoadingStart)
   end
-  for i, event in ipairs(LoadingScreenStopEvent) do
+  for i, event in ipairs(EVT_LOADING_SCREEN_END) do
     BOM.Tool.RegisterEvent(event, Event_LoadingStop)
   end
 
-  for i, event in ipairs(SpellChangedEvent) do
+  for i, event in ipairs(EVT_SPELLBOOK_CHANGED) do
     BOM.Tool.RegisterEvent(event, Event_SpellsChanged)
   end
-  for i, event in ipairs(PartyChangeEvent) do
+  for i, event in ipairs(EVT_PARTY_CHANGED) do
     BOM.Tool.RegisterEvent(event, Event_PartyChanged)
   end
-  for i, event in ipairs(UpdateOnEvent) do
+  for i, event in ipairs(EVT_UPDATE) do
     BOM.Tool.RegisterEvent(event, Event_GenericUpdate)
   end
-  for i, event in ipairs(BagOnEvent) do
+  for i, event in ipairs(EVT_BAG_CHANGED) do
     BOM.Tool.RegisterEvent(event, Event_Bag)
   end
 end
