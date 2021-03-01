@@ -36,8 +36,8 @@ BOM.BehaviourSettings = {
   { "DontUseConsumables", false },
 }
 
-BOM.Version = GetAddOnMetadata(TOCNAME, "Version")
-BOM.Title = GetAddOnMetadata(TOCNAME, "Title")
+--BOM.TOC_VERSION = GetAddOnMetadata(TOCNAME, "Version") --unused?
+BOM.TOC_TITLE = GetAddOnMetadata(TOCNAME, "Title")
 
 BOM.Icon = "Ability_Druid_ChallangingRoar"
 BOM.IconOff = "Ability_Druid_DemoralizingRoar"
@@ -102,15 +102,15 @@ function BOM.Popup(self, minimap)
   if minimap then
     BOM.PopupDynamic:AddItem(L.BtnOpen, false, BOM.ShowWindow)
     BOM.PopupDynamic:AddItem()
-    BOM.PopupDynamic:AddItem(L["Cboxshowminimapbutton"], false, BOM.DB.Minimap, "visible")
-    BOM.PopupDynamic:AddItem(L["CboxLockMinimapButton"], false, BOM.DB.Minimap, "lock")
-    BOM.PopupDynamic:AddItem(L["CboxLockMinimapButtonDistance"], false, BOM.DB.Minimap, "lockDistance")
+    BOM.PopupDynamic:AddItem(L["Cboxshowminimapbutton"], false, BOM.SharedState.Minimap, "visible")
+    BOM.PopupDynamic:AddItem(L["CboxLockMinimapButton"], false, BOM.SharedState.Minimap, "lock")
+    BOM.PopupDynamic:AddItem(L["CboxLockMinimapButtonDistance"], false, BOM.SharedState.Minimap, "lockDistance")
     BOM.PopupDynamic:AddItem()
   end
 
-  BOM.PopupDynamic:AddItem(L["CboxUseProfiles"], false, BOM.DBChar, "UseProfiles")
+  BOM.PopupDynamic:AddItem(L["CboxUseProfiles"], false, BOM.CharacterState, "UseProfiles")
 
-  if BOM.DBChar.UseProfiles then
+  if BOM.CharacterState.UseProfiles then
     BOM.PopupDynamic:SubMenu(L["HeaderProfiles"], "subProfiles")
     BOM.PopupDynamic:AddItem(L["profile_auto"], false, BOM.ChooseProfile, "auto")
 
@@ -140,7 +140,7 @@ function BOM.Popup(self, minimap)
   BOM.PopupDynamic:SubMenu(L.BtnQuickSettings, "subSettings")
 
   for i, set in ipairs(BOM.BehaviourSettings) do
-    BOM.PopupDynamic:AddItem(get_popup_db(BOM.DB, set[1]))
+    BOM.PopupDynamic:AddItem(get_popup_db(BOM.SharedState, set[1]))
   end
 
   -----------------------
@@ -189,12 +189,12 @@ function BOM.OptionsUpdate()
 end
 
 local function bom_add_checkbox(Var, Init)
-  BOM.Options.AddCheckBox(BOM.DB, Var, Init, L["Cbox" .. Var])
+  BOM.Options.AddCheckBox(BOM.SharedState, Var, Init, L["Cbox" .. Var])
 end
 
 local function bom_add_editbox(Var, Init, width)
   --Options:AddEditBox(DB,Var,Init,TXTLeft,width,widthLeft,onlynumbers,tooltip,suggestion)
-  BOM.Options.AddEditBox(BOM.DB, Var, Init, L["Ebox" .. Var], 50, width or 150, true)
+  BOM.Options.AddEditBox(BOM.SharedState, Var, Init, L["Ebox" .. Var], 50, width or 150, true)
 end
 
 function BOM.OptionsInit()
@@ -212,21 +212,21 @@ function BOM.OptionsInit()
           function()
             --doDefault
             BOM.Options.DoDefault()
-            BOM.DB.Minimap.position = 50
+            BOM.SharedState.Minimap.position = 50
             BOM.ResetWindow()
             BOM.OptionsUpdate()
           end
   )
 
   -- Main
-  BOM.Options.AddPanel(BOM.Title, false, true)
-  --BOM.Options.AddVersion('|cff00c0ff' .. BOM.Version .. "|r")
+  BOM.Options.AddPanel(BOM.TOC_TITLE, false, true)
+  --BOM.Options.AddVersion('|cff00c0ff' .. BOM.TOC_VERSION .. "|r")
 
-  BOM.Options.AddCheckBox(BOM.DB.Minimap, "visible", true, L["Cboxshowminimapbutton"])
-  BOM.Options.AddCheckBox(BOM.DB.Minimap, "lock", false, L["CboxLockMinimapButton"])
-  BOM.Options.AddCheckBox(BOM.DB.Minimap, "lockDistance", false, L["CboxLockMinimapButtonDistance"])
+  BOM.Options.AddCheckBox(BOM.SharedState.Minimap, "visible", true, L["Cboxshowminimapbutton"])
+  BOM.Options.AddCheckBox(BOM.SharedState.Minimap, "lock", false, L["CboxLockMinimapButton"])
+  BOM.Options.AddCheckBox(BOM.SharedState.Minimap, "lockDistance", false, L["CboxLockMinimapButtonDistance"])
   BOM.Options.AddSpace()
-  BOM.Options.AddCheckBox(BOM.DBChar, "UseProfiles", false, L["CboxUseProfiles"])
+  BOM.Options.AddCheckBox(BOM.CharacterState, "UseProfiles", false, L["CboxUseProfiles"])
   BOM.Options.AddSpace()
 
   for i, set in ipairs(BOM.BehaviourSettings) do
@@ -268,7 +268,7 @@ function BOM.OptionsInit()
     local col = L[key] ~= locales[key] and "|cffffffff" or "|cffff4040"
     local txt = L[key .. "_org"] ~= "[" .. key .. "_org]" and L[key .. "_org"] or L[key]
 
-    BOM.Options.AddEditBox(BOM.DB.CustomLocales, key, "", col .. "[" .. key .. "]", 450, 200, false, locales[key], txt)
+    BOM.Options.AddEditBox(BOM.SharedState.CustomLocales, key, "", col .. "[" .. key .. "]", 450, 200, false, locales[key], txt)
   end
 
   BOM.Options.SetScale(1)
@@ -371,7 +371,7 @@ function BOM.ChooseProfile (profile)
     BOM.ForceProfile = nil
     DEFAULT_CHAT_FRAME:AddMessage(BOM.MSGPREFIX .. "Set profile to auto")
 
-  elseif BOM.DBChar[profile] then
+  elseif BOM.CharacterState[profile] then
     BOM.ForceProfile = profile
     DEFAULT_CHAT_FRAME:AddMessage(BOM.MSGPREFIX .. "Set profile to " .. profile)
 
@@ -497,13 +497,13 @@ function BOM.Init()
     end
   end
 
-  BOM.DB = BomSharedState
-  BOM.DBChar = BomCharacterState
+  BOM.SharedState = BomSharedState
+  BOM.CharacterState = BomCharacterState
   BOM.CurrentProfile = BomCharacterState[BOM.ProfileNames[1]]
 
   BOM.LocalizationInit()
 
-  local x, y, w, h = BOM.DB.X, BOM.DB.Y, BOM.DB.Width, BOM.DB.Height
+  local x, y, w, h = BOM.SharedState.X, BOM.SharedState.Y, BOM.SharedState.Width, BOM.SharedState.Height
 
   if not x or not y or not w or not h then
     BOM.SaveWindowPosition()
@@ -577,7 +577,7 @@ function BOM.Init()
   BOM.PopupDynamic = BOM.Tool.CreatePopup(BOM.OptionsUpdate)
 
   BOM.MinimapButton.Init(
-          BOM.DB.Minimap,
+          BOM.SharedState.Minimap,
           BOM.FullIcon,
           function(self, button)
             if button == "LeftButton" then
@@ -586,7 +586,7 @@ function BOM.Init()
               BOM.Popup(self.button, true)
             end
           end,
-          BOM.Title)
+          BOM.TOC_TITLE)
 
   BomC_MainWindow_Title:SetText(
           string.format(BOM.TxtEscapeIcon, BOM.FullIcon) .. L.Buffomat .. " - " .. L.profile_solo)
@@ -758,7 +758,7 @@ local function Event_PLAYER_TARGET_CHANGED()
     BOM.lastTarget = nil
   end
 
-  if not BOM.DB.BuffTarget then
+  if not BOM.SharedState.BuffTarget then
     return
   end
 
@@ -787,18 +787,18 @@ end
 ---@param message table
 local function Event_UI_ERROR_MESSAGE(errorType, message)
   if tContains(ERR_NOT_STANDING, message) then
-    if BOM.DB.AutoStand then
+    if BOM.SharedState.AutoStand then
       UIErrorsFrame:Clear()
       DoEmote("STAND")
     end
 
   elseif tContains(ERR_IS_MOUNTED, message) then
-    if BOM.DB.AutoDismount then
+    if BOM.SharedState.AutoDismount then
       UIErrorsFrame:Clear()
       Dismount()
     end
 
-  elseif BOM.DB.AutoDisTravel and tContains(ERR_IS_SHAPESHIFT, message) and BOM.CancelShapeShift() then
+  elseif BOM.SharedState.AutoDisTravel and tContains(ERR_IS_SHAPESHIFT, message) and BOM.CancelShapeShift() then
     UIErrorsFrame:Clear()
 
   elseif not InCombatLockdown() then
@@ -899,11 +899,11 @@ function BOM.UnitAura(unitId, buffIndex, filter)
 
     if source ~= nil and source ~= "" and UnitIsUnit(source, "player") then
       if UnitIsUnit(unitId, "player") and duration ~= nil and duration > 0 then
-        BOM.DB.Duration[name] = duration
+        BOM.SharedState.Duration[name] = duration
       end
 
       if duration == nil or duration == 0 then
-        duration = BOM.DB.Duration[name] or 0
+        duration = BOM.SharedState.Duration[name] or 0
       end
 
       if duration > 0 and (expirationTime == nil or expirationTime == 0) then
@@ -944,7 +944,7 @@ local function Event_COMBAT_LOG_EVENT_UNFILTERED()
       --print("dead",destName)
       BOM.ForceUpdate = true
 
-    elseif BOM.DB.Duration[spellName] then
+    elseif BOM.SharedState.Duration[spellName] then
       if bit.band(sourceFlags, COMBATLOG_OBJECT_AFFILIATION_MINE) > 0 then
         if event == "SPELL_CAST_SUCCESS" then
 
@@ -1057,7 +1057,7 @@ function BOM.ToggleWindow()
 end
 
 function BOM.AutoOpen()
-  if not InCombatLockdown() and BOM.DB.AutoOpen then
+  if not InCombatLockdown() and BOM.SharedState.AutoOpen then
     if not BOM.WindowVisible() and autoHelper == "open" then
       autoHelper = "close"
       BomC_MainWindow:Show()
@@ -1067,7 +1067,7 @@ function BOM.AutoOpen()
 end
 
 function BOM.AutoClose(x)
-  if not InCombatLockdown() and BOM.DB.AutoOpen then
+  if not InCombatLockdown() and BOM.SharedState.AutoOpen then
     if BOM.WindowVisible() then
       if autoHelper == "close" then
         BomC_MainWindow:Hide()
@@ -1080,7 +1080,7 @@ function BOM.AutoClose(x)
 end
 
 function BOM.AllowAutOpen()
-  if not InCombatLockdown() and BOM.DB.AutoOpen then
+  if not InCombatLockdown() and BOM.SharedState.AutoOpen then
     if autoHelper == "KeepClose" then
       autoHelper = "open"
     end
@@ -1088,10 +1088,10 @@ function BOM.AllowAutOpen()
 end
 
 function BOM.SaveWindowPosition()
-  BOM.DB.X = BomC_MainWindow:GetLeft()
-  BOM.DB.Y = BomC_MainWindow:GetTop()
-  BOM.DB.Width = BomC_MainWindow:GetWidth()
-  BOM.DB.Height = BomC_MainWindow:GetHeight()
+  BOM.SharedState.X = BomC_MainWindow:GetLeft()
+  BOM.SharedState.Y = BomC_MainWindow:GetTop()
+  BOM.SharedState.Width = BomC_MainWindow:GetWidth()
+  BOM.SharedState.Height = BomC_MainWindow:GetHeight()
 end
 
 function BOM.ResetWindow()
@@ -1143,7 +1143,7 @@ end
 function BOM.DebugBuffs(dest)
   dest = dest or "player"
 
-  print("LastTracking:", BOM.DBChar.LastTracking, " ")
+  print("LastTracking:", BOM.CharacterState.LastTracking, " ")
   print("ForceTracking:", BOM.ForceTracking, " ")
   print("ActivAura:", BOM.ActivAura, " ")
   print("LastAura:", BOM.CurrentProfile.LastAura, " ")

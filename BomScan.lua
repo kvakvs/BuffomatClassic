@@ -95,7 +95,7 @@ function BOM.GetItemList()
           end
         end
 
-        if lootable and BOM.DB.OpenLootable then
+        if lootable and BOM.SharedState.OpenLootable then
           local locked = false
           for i, text in ipairs(BOM.Tool.ScanToolTip("SetBagItem", bag, slot)) do
             if text == LOCKED then
@@ -149,9 +149,9 @@ local SpellsIncluded = false
 
 function BOM.GetSpells()
   for i, profil in ipairs(BOM.ProfileNames) do
-    BOM.DBChar[profil].Spell = BOM.DBChar[profil].Spell or {}
-    BOM.DBChar[profil].CancelBuff = BOM.DBChar[profil].CancelBuff or {}
-    BOM.DBChar[profil].Spell[BOM.BLESSINGID] = BOM.DBChar[profil].Spell[BOM.BLESSINGID] or {}
+    BOM.CharacterState[profil].Spell = BOM.CharacterState[profil].Spell or {}
+    BOM.CharacterState[profil].CancelBuff = BOM.CharacterState[profil].CancelBuff or {}
+    BOM.CharacterState[profil].Spell[BOM.BLESSINGID] = BOM.CharacterState[profil].Spell[BOM.BLESSINGID] or {}
   end
 
   if not SpellsIncluded then
@@ -174,8 +174,8 @@ function BOM.GetSpells()
   BOM.SpellIdIsSingle = {}
   BOM.ConfigToSpell = {}
 
-  BOM.DB.Cache = BOM.DB.Cache or {}
-  BOM.DB.Cache.Item = BOM.DB.Cache.Item or {}
+  BOM.SharedState.Cache = BOM.SharedState.Cache or {}
+  BOM.SharedState.Cache.Item = BOM.SharedState.Cache.Item or {}
 
   if BOM.ArgentumDawn.Link == nil
           or BOM.Carrot.Link == nil then
@@ -207,9 +207,9 @@ function BOM.GetSpells()
     BOM.Tool.iMerge(BOM.AllSpellIds, spell.singleFamily)
 
     for i, profil in ipairs(BOM.ProfileNames) do
-      if BOM.DBChar[profil].CancelBuff[spell.ConfigID] == nil then
-        BOM.DBChar[profil].CancelBuff[spell.ConfigID] = {}
-        BOM.DBChar[profil].CancelBuff[spell.ConfigID].Enable = spell.default or false
+      if BOM.CharacterState[profil].CancelBuff[spell.ConfigID] == nil then
+        BOM.CharacterState[profil].CancelBuff[spell.ConfigID] = {}
+        BOM.CharacterState[profil].CancelBuff[spell.ConfigID].Enable = spell.default or false
       end
     end
   end
@@ -271,9 +271,9 @@ function BOM.GetSpells()
         if not spell.isInfo
                 and not spell.isBuff
                 and spell.singleDuration
-                and BOM.DB.Duration[name] == nil
+                and BOM.SharedState.Duration[name] == nil
                 and IsSpellKnown(spell.singleId) then
-          BOM.DB.Duration[name] = spell.singleDuration
+          BOM.SharedState.Duration[name] = spell.singleDuration
         end
       end
 
@@ -284,10 +284,10 @@ function BOM.GetSpells()
         spell.groupLink = format_spell_link(spellId, icon, name, rank)
 
         if spell.groupDuration
-                and BOM.DB.Duration[name] == nil
+                and BOM.SharedState.Duration[name] == nil
                 and IsSpellKnown(spell.groupId)
         then
-          BOM.DB.Duration[name] = spell.groupDuration
+          BOM.SharedState.Duration[name] = spell.groupDuration
         end
       end
 
@@ -328,8 +328,8 @@ function BOM.GetSpells()
         if not spell.isScanned then
           local itemName, itemLink, _, _, _, _, _, _, _, itemIcon, _, _, _, _, _, _, _ = GetItemInfo(spell.item)
 
-          if (not itemName or not itemLink or not itemIcon) and BOM.DB.Cache.Item[spell.item] then
-            itemName, itemLink, itemIcon = unpack(BOM.DB.Cache.Item[spell.item])
+          if (not itemName or not itemLink or not itemIcon) and BOM.SharedState.Cache.Item[spell.item] then
+            itemName, itemLink, itemIcon = unpack(BOM.SharedState.Cache.Item[spell.item])
           elseif (not itemName or not itemLink or not itemIcon) and BOM.ItemCache[spell.item] then
             itemName, itemLink, itemIcon = unpack(BOM.ItemCache[spell.item])
           end
@@ -341,7 +341,7 @@ function BOM.GetSpells()
             spell.Icon = itemIcon
             spell.isScanned = true
 
-            BOM.DB.Cache.Item[spell.item] = {
+            BOM.SharedState.Cache.Item[spell.item] = {
               itemName, itemLink, itemIcon
             }
           else
@@ -374,26 +374,26 @@ function BOM.GetSpells()
         --setDefaultValues!
         for i, profil in ipairs(BOM.ProfileNames) do
 
-          if BOM.DBChar[profil].Spell[spell.ConfigID] == nil then
-            BOM.DBChar[profil].Spell[spell.ConfigID] = {}
-            BOM.DBChar[profil].Spell[spell.ConfigID].Class = BOM.DBChar[profil].Spell[spell.ConfigID].Class or {}
-            BOM.DBChar[profil].Spell[spell.ConfigID].ForcedTarget = BOM.DBChar[profil].Spell[spell.ConfigID].ForcedTarget or {}
+          if BOM.CharacterState[profil].Spell[spell.ConfigID] == nil then
+            BOM.CharacterState[profil].Spell[spell.ConfigID] = {}
+            BOM.CharacterState[profil].Spell[spell.ConfigID].Class = BOM.CharacterState[profil].Spell[spell.ConfigID].Class or {}
+            BOM.CharacterState[profil].Spell[spell.ConfigID].ForcedTarget = BOM.CharacterState[profil].Spell[spell.ConfigID].ForcedTarget or {}
 
-            BOM.DBChar[profil].Spell[spell.ConfigID].Enable = spell.default or false
+            BOM.CharacterState[profil].Spell[spell.ConfigID].Enable = spell.default or false
 
             if BOM.SpellHasClasses(spell) then
               local SelfCast = true
-              BOM.DBChar[profil].Spell[spell.ConfigID].SelfCast = false
+              BOM.CharacterState[profil].Spell[spell.ConfigID].SelfCast = false
               for ci, class in ipairs(BOM.Tool.Classes) do
-                BOM.DBChar[profil].Spell[spell.ConfigID].Class[class] = tContains(spell.classes, class)
-                SelfCast = BOM.DBChar[profil].Spell[spell.ConfigID].Class[class] and false or SelfCast
+                BOM.CharacterState[profil].Spell[spell.ConfigID].Class[class] = tContains(spell.classes, class)
+                SelfCast = BOM.CharacterState[profil].Spell[spell.ConfigID].Class[class] and false or SelfCast
               end
-              BOM.DBChar[profil].Spell[spell.ConfigID].ForcedTarget = {}
-              BOM.DBChar[profil].Spell[spell.ConfigID].SelfCast = SelfCast
+              BOM.CharacterState[profil].Spell[spell.ConfigID].ForcedTarget = {}
+              BOM.CharacterState[profil].Spell[spell.ConfigID].SelfCast = SelfCast
             end
           else
-            BOM.DBChar[profil].Spell[spell.ConfigID].Class = BOM.DBChar[profil].Spell[spell.ConfigID].Class or {}
-            BOM.DBChar[profil].Spell[spell.ConfigID].ForcedTarget = BOM.DBChar[profil].Spell[spell.ConfigID].ForcedTarget or {}
+            BOM.CharacterState[profil].Spell[spell.ConfigID].Class = BOM.CharacterState[profil].Spell[spell.ConfigID].Class or {}
+            BOM.CharacterState[profil].Spell[spell.ConfigID].ForcedTarget = BOM.CharacterState[profil].Spell[spell.ConfigID].ForcedTarget or {}
           end
 
         end -- for all profile names
@@ -588,7 +588,7 @@ function BOM.GetPartyMembers()
       end
     end
 
-    if BOM.DB.BuffTarget
+    if BOM.SharedState.BuffTarget
             and UnitExists("target")
             and UnitCanCooperate("player", "target")
             and UnitIsPlayer("target")
@@ -822,7 +822,7 @@ function BOM.GetNeedBuff(party, spell, playerMember)
               and not member.hasResurrection
               and member.isConnected
               and member.group ~= 9
-              and (not BOM.DB.SameZone or member.isSameZone) then
+              and (not BOM.SharedState.SameZone or member.isSameZone) then
         tinsert(spell.NeedMember, member)
       end
     end
@@ -875,7 +875,7 @@ function BOM.GetNeedBuff(party, spell, playerMember)
       if member.NeedBuff
               and ok
               and member.isConnected
-              and (not BOM.DB.SameZone or member.isSameZone) then
+              and (not BOM.SharedState.SameZone or member.isSameZone) then
         local found = false
 
         if member.isDead then
@@ -894,7 +894,7 @@ function BOM.GetNeedBuff(party, spell, playerMember)
             spell.NeedGroup[member.class] = (spell.NeedGroup[member.class] or 0) + 1
           end
         elseif not notGroup
-                and BOM.DB.ReplaceSingle
+                and BOM.SharedState.ReplaceSingle
                 and member.buffs[spell.ConfigID]
                 and member.buffs[spell.ConfigID].isSingle then
           spell.NeedGroup[member.class] = (spell.NeedGroup[member.class] or 0) + 1
@@ -928,7 +928,7 @@ function BOM.GetNeedBuff(party, spell, playerMember)
       if member.NeedBuff
               and ok
               and member.isConnected
-              and (not BOM.DB.SameZone or member.isSameZone) then
+              and (not BOM.SharedState.SameZone or member.isSameZone) then
         local found = false
 
         if member.isDead then
@@ -942,7 +942,7 @@ function BOM.GetNeedBuff(party, spell, playerMember)
         if not found then
           tinsert(spell.NeedMember, member)
           spell.NeedGroup[member.group] = (spell.NeedGroup[member.group] or 0) + 1
-        elseif BOM.DB.ReplaceSingle
+        elseif BOM.SharedState.ReplaceSingle
                 and member.buffs[spell.ConfigID]
                 and member.buffs[spell.ConfigID].isSingle
         then
@@ -998,7 +998,7 @@ function BOM.UpdateMacro(member, spellId, command)
       print("NIL SPELL:", spellId)
     end
 
-    if BOM.DB.UseRank or member.unitId == "target" then
+    if BOM.SharedState.UseRank or member.unitId == "target" then
       local level = UnitLevel(member.unitId)
 
       if spell and level ~= nil and level > 0 then
@@ -1015,7 +1015,7 @@ function BOM.UpdateMacro(member, spellId, command)
           --print("Dodowngrade",spell.DownGrade[member.name])
           for i, id in ipairs(x) do
             --print(id)
-            if BOM.DB.SpellGreatherEqualThan[id] == nil or BOM.DB.SpellGreatherEqualThan[id] < level then
+            if BOM.SharedState.SpellGreatherEqualThan[id] == nil or BOM.SharedState.SpellGreatherEqualThan[id] < level then
               newSpellId = id
             else
               break
@@ -1109,15 +1109,15 @@ function BOM.TimeCheck(ti, duration)
   local dif
 
   if duration <= 60 then
-    dif = BOM.DB.Time60
+    dif = BOM.SharedState.Time60
   elseif duration <= 300 then
-    dif = BOM.DB.Time300
+    dif = BOM.SharedState.Time300
   elseif duration <= 600 then
-    dif = BOM.DB.Time600
+    dif = BOM.SharedState.Time600
   elseif duration <= 1800 then
-    dif = BOM.DB.Time1800
+    dif = BOM.SharedState.Time1800
   else
-    dif = BOM.DB.Time3600
+    dif = BOM.SharedState.Time3600
   end
 
   if dif + GetTime() < ti then
@@ -1216,10 +1216,10 @@ local function bom_catch_a_spell(cost, id, link, member, spell)
         end
       end
     else
-      if (BOM.DB.SelfFirst and next_cast_spell.Member.isPlayer and not member.isPlayer)
+      if (BOM.SharedState.SelfFirst and next_cast_spell.Member.isPlayer and not member.isPlayer)
               or (next_cast_spell.Member.group ~= 9 and member.group == 9) then
         return
-      elseif (not BOM.DB.SelfFirst or (next_cast_spell.Member.isPlayer == member.isPlayer))
+      elseif (not BOM.SharedState.SelfFirst or (next_cast_spell.Member.isPlayer == member.isPlayer))
               and ((next_cast_spell.Member.group == 9) == (member.group == 9))
               and next_cast_spell.manaCost > cost then
         return
@@ -1287,32 +1287,32 @@ function BOM.UpdateScan()
   end
 
   if instanceType == "pvp" or instanceType == "arena" then
-    InDisabled = not BOM.DB.InPVP
+    InDisabled = not BOM.SharedState.InPVP
     chooseProfile = "battleground"
 
   elseif instanceType == "party"
           or instanceType == "raid"
           or instanceType == "scenario"
   then
-    InDisabled = not BOM.DB.InInstance
+    InDisabled = not BOM.SharedState.InInstance
   else
-    InDisabled = not BOM.DB.InWorld
+    InDisabled = not BOM.SharedState.InWorld
   end
 
   if BOM.ForceProfile then
     chooseProfile = BOM.ForceProfile
   end
 
-  if not BOM.DBChar.UseProfiles then
+  if not BOM.CharacterState.UseProfiles then
     chooseProfile = "solo"
   end
 
-  if BOM.CurrentProfile ~= BOM.DBChar[chooseProfile] then
-    BOM.CurrentProfile = BOM.DBChar[chooseProfile]
+  if BOM.CurrentProfile ~= BOM.CharacterState[chooseProfile] then
+    BOM.CurrentProfile = BOM.CharacterState[chooseProfile]
     BOM.UpdateSpellsTab()
     BomC_MainWindow_Title:SetText(
             string.format(BOM.TxtEscapeIcon, BOM.FullIcon)
-                    .. " " .. BOM.Title .. " - " .. L["profile_" .. chooseProfile])
+                    .. " " .. BOM.TOC_TITLE .. " - " .. L["profile_" .. chooseProfile])
     BOM.ForceUpdate = true
   end
 
@@ -1342,14 +1342,14 @@ function BOM.UpdateScan()
               BOM.UpdateSpellsTab()
             end
           elseif GetTrackingTexture() == spell.TrackingIcon
-                  and BOM.DBChar.LastTracking ~= spell.TrackingIcon then
-            BOM.DBChar.LastTracking = spell.TrackingIcon
+                  and BOM.CharacterState.LastTracking ~= spell.TrackingIcon then
+            BOM.CharacterState.LastTracking = spell.TrackingIcon
             BOM.UpdateSpellsTab()
           end
         else
-          if BOM.DBChar.LastTracking == spell.TrackingIcon
-                  and BOM.DBChar.LastTracking ~= nil then
-            BOM.DBChar.LastTracking = nil
+          if BOM.CharacterState.LastTracking == spell.TrackingIcon
+                  and BOM.CharacterState.LastTracking ~= nil then
+            BOM.CharacterState.LastTracking = nil
             BOM.UpdateSpellsTab()
           end
         end -- if spell.enable
@@ -1357,7 +1357,7 @@ function BOM.UpdateScan()
     end -- for all spells
 
     if BOM.ForceTracking == nil then
-      BOM.ForceTracking = BOM.DBChar.LastTracking
+      BOM.ForceTracking = BOM.CharacterState.LastTracking
     end
 
     --find activ aura / seal
@@ -1499,7 +1499,7 @@ function BOM.UpdateScan()
 
             if BOM.CurrentProfile.Spell[spell.ConfigID].OffHandEnable
                     and playerMember.OffHandBuff == nil then
-              if BOM.DB.DontUseConsumables
+              if BOM.SharedState.DontUseConsumables
                       and not IsModifierKeyDown() then
                 bom_display_text(string.format(BOM.TxtEscapeIcon, texture) .. itemLink .. "x" .. count .. " (" .. L.TooltipOffHand .. ")", playerMember.distance, true)
               else
@@ -1511,7 +1511,7 @@ function BOM.UpdateScan()
 
             if BOM.CurrentProfile.Spell[spell.ConfigID].MainHandEnable
                     and playerMember.MainHandBuff == nil then
-              if BOM.DB.DontUseConsumables
+              if BOM.SharedState.DontUseConsumables
                       and not IsModifierKeyDown() then
                 bom_display_text(string.format(BOM.TxtEscapeIcon, texture) .. itemLink .. "x" .. count .. " (" .. L.TooltipMainHand .. ")", playerMember.distance, true)
               else
@@ -1520,7 +1520,7 @@ function BOM.UpdateScan()
                 bom_display_text(BagTitel, playerMember.distance, true)
               end
             end
-            BOM.ScanModifier = BOM.DB.DontUseConsumables
+            BOM.ScanModifier = BOM.SharedState.DontUseConsumables
           else
             bom_display_text(spell.single .. "x" .. count, playerMember.distance, true)
           end
@@ -1534,7 +1534,7 @@ function BOM.UpdateScan()
           if ok then
             local texture, _, _, _, _, _, itemLink, _, _, _ = GetContainerItemInfo(bag, slot)
 
-            if BOM.DB.DontUseConsumables
+            if BOM.SharedState.DontUseConsumables
                     and not IsModifierKeyDown() then
               bom_display_text(string.format(BOM.TxtEscapeIcon, texture) .. itemLink .. "x" .. count, playerMember.distance, true)
             else
@@ -1543,7 +1543,7 @@ function BOM.UpdateScan()
               bom_display_text(BagTitel, playerMember.distance, true)
             end
 
-            BOM.ScanModifier = BOM.DB.DontUseConsumables
+            BOM.ScanModifier = BOM.SharedState.DontUseConsumables
           else
             bom_display_text(spell.single .. "x" .. count, playerMember.distance, true)
           end
@@ -1634,7 +1634,7 @@ function BOM.UpdateScan()
             -- If in range, we can res?
             -- Should we try and resurrect ghosts when their corpse is not targetable?
             if is_in_range
-                    or (BOM.DB.ResGhost and member.isGhost) then
+                    or (BOM.SharedState.ResGhost and member.isGhost) then
               bom_catch_a_spell(spell.singleMana, spell.singleId, spell.singleLink, member, spell)
             end
           end
@@ -1654,11 +1654,11 @@ function BOM.UpdateScan()
         end
 
         if spell.groupMana ~= nil
-                and not BOM.DB.NoGroupBuff
+                and not BOM.SharedState.NoGroupBuff
         then
           for i, groupIndex in ipairs(BOM.Tool.Classes) do
             if spell.NeedGroup[groupIndex]
-                    and spell.NeedGroup[groupIndex] >= BOM.DB.MinBlessing
+                    and spell.NeedGroup[groupIndex] >= BOM.SharedState.MinBlessing
             then
               BOM.RepeatUpdate = true
               local Group = bom_get_class_in_range(spell.group, spell.NeedMember, groupIndex, spell)
@@ -1668,7 +1668,7 @@ function BOM.UpdateScan()
               end
 
               if Group ~= nil
-                      and (not spell.DeathGroup[member.group] or not BOM.DB.DeathBlock)
+                      and (not spell.DeathGroup[member.group] or not BOM.SharedState.DeathBlock)
               then
                 bom_display_text(
                         string.format(L["MsgBuffGroup"],
@@ -1690,11 +1690,11 @@ function BOM.UpdateScan()
         for memberIndex, member in ipairs(spell.NeedMember) do
           if not member.isDead
                   and spell.singleMana ~= nil
-                  and (BOM.DB.NoGroupBuff
+                  and (BOM.SharedState.NoGroupBuff
                   or spell.groupMana == nil
                   or member.class == "pet"
                   or spell.NeedGroup[member.class] == nil
-                  or spell.NeedGroup[member.class] < BOM.DB.MinBlessing) then
+                  or spell.NeedGroup[member.class] < BOM.SharedState.MinBlessing) then
 
             if not member.isPlayer then
               BOM.RepeatUpdate = true
@@ -1736,9 +1736,9 @@ function BOM.UpdateScan()
         end
 
         --Group buff
-        if spell.groupMana ~= nil and not BOM.DB.NoGroupBuff then
+        if spell.groupMana ~= nil and not BOM.SharedState.NoGroupBuff then
           for groupIndex = 1, 8 do
-            if spell.NeedGroup[groupIndex] and spell.NeedGroup[groupIndex] >= BOM.DB.MinBuff then
+            if spell.NeedGroup[groupIndex] and spell.NeedGroup[groupIndex] >= BOM.SharedState.MinBuff then
               BOM.RepeatUpdate = true
               local Group = bom_get_group_in_range(spell.group, spell.NeedMember, groupIndex, spell)
               if Group == nil then
@@ -1746,7 +1746,7 @@ function BOM.UpdateScan()
               end
 
               if Group ~= nil
-                      and (not spell.DeathGroup[groupIndex] or not BOM.DB.DeathBlock) then
+                      and (not spell.DeathGroup[groupIndex] or not BOM.SharedState.DeathBlock) then
                 bom_display_text(string.format(L["MsgBuffGroup"], groupIndex, (spell.groupLink or spell.group) .. count),
                         "!" .. groupIndex)
                 inRange = true
@@ -1766,11 +1766,11 @@ function BOM.UpdateScan()
         for memberIndex, member in ipairs(spell.NeedMember) do
           if not member.isDead
                   and spell.singleMana ~= nil
-                  and (BOM.DB.NoGroupBuff
+                  and (BOM.SharedState.NoGroupBuff
                   or spell.groupMana == nil
                   or member.group == 9
                   or spell.NeedGroup[member.group] == nil
-                  or spell.NeedGroup[member.group] < BOM.DB.MinBuff)
+                  or spell.NeedGroup[member.group] < BOM.SharedState.MinBuff)
           then
             if not member.isPlayer then
               BOM.RepeatUpdate = true
@@ -1804,13 +1804,13 @@ function BOM.UpdateScan()
   do
     local name, instanceType, difficultyID, difficultyName, maxPlayers, dynamicDifficulty, isDynamic, instanceID, instanceGroupSize, LfgDungeonID = GetInstanceInfo()
 
-    if BOM.DB.ArgentumDawn then
+    if BOM.SharedState.ArgentumDawn then
       if playerMember.hasArgentumDawn ~= tContains(BOM.ArgentumDawn.dungeon, instanceID) then
         bom_display_text(BOM.ArgentumDawn.Link, playerMember.distance, true)
       end
     end
 
-    if BOM.DB.Carrot then
+    if BOM.SharedState.Carrot then
       if playerMember.hasCarrot and not tContains(BOM.Carrot.dungeon, instanceID) then
         bom_display_text(BOM.Carrot.Link, playerMember.distance, true)
       end
@@ -1819,13 +1819,13 @@ function BOM.UpdateScan()
 
   -- enchantment on weapons
   local hasMainHandEnchant, mainHandExpiration, mainHandCharges, mainHandEnchantID, hasOffHandEnchant, offHandExpiration, offHandCharges, offHandEnchantId = GetWeaponEnchantInfo()
-  if BOM.DB.MainHand and not hasMainHandEnchant then
+  if BOM.SharedState.MainHand and not hasMainHandEnchant then
     local link = GetInventoryItemLink("player", GetInventorySlotInfo("MainHandSlot"))
     if link then
       bom_display_text(link, playerMember.distance, true)
     end
   end
-  if BOM.DB.SecondaryHand and not hasOffHandEnchant then
+  if BOM.SharedState.SecondaryHand and not hasOffHandEnchant then
     local link = GetInventoryItemLink("player", GetInventorySlotInfo("SECONDARYHANDSLOT"))
     if link then
       bom_display_text(link, playerMember.distance, true)
@@ -1864,11 +1864,11 @@ function BOM.UpdateScan()
       BagCommand = (target and ("/target " .. target .. "/n") or "") .. "/use " .. item.Bag .. " " .. item.Slot
       bom_display_text(BagTitel, playerMember.distance, true)
 
-      if BOM.DB.DontUseConsumables and not IsModifierKeyDown() then
+      if BOM.SharedState.DontUseConsumables and not IsModifierKeyDown() then
         BagCommand = nil
         BagTitel = nil
       end
-      BOM.ScanModifier = BOM.DB.DontUseConsumables
+      BOM.ScanModifier = BOM.SharedState.DontUseConsumables
     end
   end
 
@@ -1914,7 +1914,7 @@ function BOM.UpdateScan()
       end
 
     else
-      if SomeBodyDeath and BOM.DB.DeathBlock then
+      if SomeBodyDeath and BOM.SharedState.DeathBlock then
         BomC_ListTab_Button:SetText(L.MsgSomebodyDead)
       else
         if inRange then
@@ -1965,13 +1965,13 @@ function BOM.DownGrade()
     local level = UnitLevel(BOM.ERRMember.unitId)
 
     if level ~= nil and level > -1 then
-      if BOM.DB.SpellGreatherEqualThan[BOM.ERRSpellId] == nil
-              or BOM.DB.SpellGreatherEqualThan[BOM.ERRSpellId] < level then
-        BOM.DB.SpellGreatherEqualThan[BOM.ERRSpellId] = level
+      if BOM.SharedState.SpellGreatherEqualThan[BOM.ERRSpellId] == nil
+              or BOM.SharedState.SpellGreatherEqualThan[BOM.ERRSpellId] < level then
+        BOM.SharedState.SpellGreatherEqualThan[BOM.ERRSpellId] = level
         BOM.FastUpdateTimer()
         BOM.ForceUpdate = true
         print(BOM.MSGPREFIX, string.format(L.MsgDownGrade, BOM.ERRSpell.single, BOM.ERRMember.name))
-      elseif BOM.DB.SpellGreatherEqualThan[BOM.ERRSpellId] >= level then
+      elseif BOM.SharedState.SpellGreatherEqualThan[BOM.ERRSpellId] >= level then
         BOM.ADDSKIP()
       end
     else

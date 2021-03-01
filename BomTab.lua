@@ -249,7 +249,7 @@ local function fill_last_section(last)
   --    end
   --
   --    SpellSettingsFrames[key]:SetPoint("TOPLEFT", last, "BOTTOMLEFT", 0, -2)
-  --    SpellSettingsFrames[key]:SetVariable(BOM.DB, key)
+  --    SpellSettingsFrames[key]:SetVariable(BOM.SharedState, key)
   --    SpellSettingsFrames[key]:SetTooltip(L["Cbox" .. key])
   --    SpellSettingsFrames[key]:SetOnClick(BOM.MyButtonOnClick)
   --    l = SpellSettingsFrames[key]
@@ -285,7 +285,7 @@ local function fill_last_section(last)
   --    end
   --
   --    SpellSettingsFrames[key]:SetPoint("TOPLEFT", last, "BOTTOMLEFT", dx, -2)
-  --    SpellSettingsFrames[key]:SetVariable(BOM.DB, key)
+  --    SpellSettingsFrames[key]:SetVariable(BOM.SharedState, key)
   --    SpellSettingsFrames[key]:SetTooltip(L["Cbox" .. key])
   --    SpellSettingsFrames[key]:SetOnClick(BOM.MyButtonOnClick)
   --    l = SpellSettingsFrames[key]
@@ -620,7 +620,7 @@ local function update_selected_spell(spell)
   end
 
   if (spell.isTracking or spell.isAura or spell.isSeal) and spell.needForm == nil then
-    if (spell.isTracking and BOM.DBChar.LastTracking == spell.TrackingIcon) or
+    if (spell.isTracking and BOM.CharacterState.LastTracking == spell.TrackingIcon) or
             (spell.isAura and spell.ConfigID == BOM.CurrentProfile.LastAura) or
             (spell.isSeal and spell.ConfigID == BOM.CurrentProfile.LastSeal) then
       spell.frames.Set:SetState(true)

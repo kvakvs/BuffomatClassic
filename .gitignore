@@ -1,2 +1,5 @@
 /.idea
 *.bat
+
+# Source files for WoW Classic UI
+/BlizzardInterfaceCode
