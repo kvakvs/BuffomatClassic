@@ -230,14 +230,14 @@ BOM.AllBuffomatSpells = {
   { singleId = 2481, isTracking = true, default = true }, -- Find Treasure / Schatzsuche / Zwerge
 
   ----INFO----
-  { singleId     = 432, isInfo = true, default = false, --drink
+  { singleId     = 432, isInfo = true, default = false, -- Water | drink
     singleFamily = { 430, 431, 432, 1133, 1135, 1137, 22734, 25696, 26475, 26261, 29007,
                      26473, 10250, 26402 } },
-  { singleId     = 434, isInfo = true, default = false, --essen
+  { singleId     = 434, isInfo = true, default = false, -- Food | essen
     singleFamily = { 10256, 1127, 1129, 22731, 5006, 433, 1131, 18230, 18233, 5007, 24800, 5005,
                      18232, 5004, 435, 434, 18234, 24869, 18229, 25888, 6410, 2639, 24005, 7737,
                      29073, 26260, 26474, 18231, 10257, 26472, 28616, 25700 } },
-  { singleId     = 20762, isInfo = true, allowWhisper = true, default = false, --Seelenstein
+  { singleId     = 20762, isInfo = true, allowWhisper = true, default = false, --Soulstone | Seelenstein
     singleFamily = { 20707, 20762, 20763, 20765, 20764 } },
   --{singleId=10938, isInfo=true, allowWhisper=true,default=false,	--ausdauer-antworten!
   --	singleFamily={1243,1244,1245,2791,10937,10938}},
@@ -601,7 +601,7 @@ BOM.ArgentumDawn = {
 }
 BOM.Carrot = {
   spell   = 13587,
-  dungeon = { 0, 1 }, --Eastern Kingdoms, Kalimdor
+  dungeon = { 0, 1 }, --Allow Carrot in Eastern Kingdoms, Kalimdor
 }
 
 BOM.EnchantList = {--weapon-echantment to spellid

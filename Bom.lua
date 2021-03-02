@@ -53,8 +53,17 @@ BOM.LOADING_SCREEN_TIMEOUT = 2
 
 BOM.CHAT_MSG_PREFIX = "Buffomat: "
 
-BOM.Print = function(t)
+---Print a text with "Buffomat: " prefix in the game chat window
+---@param t string
+function BOM.Print(t)
   DEFAULT_CHAT_FRAME:AddMessage(BOM.CHAT_MSG_PREFIX .. t)
+end
+
+---Creates a string which will display a picture in a FontString
+---@param texture string - path to UI texture file (for example can come from
+---  GetContainerItemInfo(bag, slot) or spell info etc
+function BOM.FormatTexture(texture)
+  return string.format(BOM.ICON_FORMAT, texture)
 end
 
 --"UNIT_POWER_UPDATE","UNIT_SPELLCAST_START","UNIT_SPELLCAST_STOP","PLAYER_STARTED_MOVING","PLAYER_STOPPED_MOVING"
@@ -94,7 +103,10 @@ local ERR_IS_SHAPESHIFT = {
   SPELL_FAILED_NOT_SHAPESHIFT, SPELL_NOT_SHAPESHIFTED,
   SPELL_NOT_SHAPESHIFTED_NOSPACE }
 
-local function get_popup_db(db, var)
+---Makes a tuple to pass to the menubuilder to display a settings checkbox in popup menu
+---@param db table - BomSharedState reference to read settings from it
+---@param var string - variable name
+local function bom_make_popup_menu_settings_row(db, var)
   return L["Cbox" .. var], false, db, var
 end
 
@@ -146,7 +158,7 @@ function BOM.Popup(self, minimap)
   BOM.PopupDynamic:SubMenu(L.BtnQuickSettings, "subSettings")
 
   for i, set in ipairs(BOM.BehaviourSettings) do
-    BOM.PopupDynamic:AddItem(get_popup_db(BOM.SharedState, set[1]))
+    BOM.PopupDynamic:AddItem(bom_make_popup_menu_settings_row(BOM.SharedState, set[1]))
   end
 
   -----------------------
@@ -596,7 +608,11 @@ function BOM.Init()
           BOM.TOC_TITLE)
 
   BomC_MainWindow_Title:SetText(
-          string.format(BOM.ICON_FORMAT, BOM.MACRO_ICON_FULLPATH) .. L.Buffomat .. " - " .. L.profile_solo)
+          BOM.FormatTexture(BOM.MACRO_ICON_FULLPATH)
+                  .. " "
+                  .. L.Buffomat
+                  .. " - "
+                  .. L.profile_solo)
   --BomC_ListTab_Button:SetText(L["BtnGetMacro"])
 
   BOM.OptionsInit()
