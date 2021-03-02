@@ -384,10 +384,12 @@ function BOM.GetSpells()
             if BOM.SpellHasClasses(spell) then
               local SelfCast = true
               BOM.CharacterState[profil].Spell[spell.ConfigID].SelfCast = false
+
               for ci, class in ipairs(BOM.Tool.Classes) do
                 BOM.CharacterState[profil].Spell[spell.ConfigID].Class[class] = tContains(spell.classes, class)
                 SelfCast = BOM.CharacterState[profil].Spell[spell.ConfigID].Class[class] and false or SelfCast
               end
+
               BOM.CharacterState[profil].Spell[spell.ConfigID].ForcedTarget = {}
               BOM.CharacterState[profil].Spell[spell.ConfigID].SelfCast = SelfCast
             end

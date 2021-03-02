@@ -1,13 +1,17 @@
 local TOCNAME, BOM = ...
 
+local BOM_ALL_CLASSES = { "WARRIOR", "MAGE", "ROGUE", "DRUID", "HUNTER", "PRIEST", "WARLOCK",
+                          "SHAMAN", "PALADIN" }
+
 ---Classes which have a resurrection ability
-local BOM_RESURRECT_CLASS = { "SHAMAN", "PRIEST", "PALADIN" }
-BOM.RESURRECT_CLASS = BOM_RESURRECT_CLASS --used in BomScan.lua
+local BOM_RESURRECT_CLASSES = { "SHAMAN", "PRIEST", "PALADIN" }
+BOM.RESURRECT_CLASS = BOM_RESURRECT_CLASSES --used in BomScan.lua
 
 ---Classes which have mana bar
 local BOM_MANA_CLASSES = { "HUNTER", "WARLOCK", "MAGE", "DRUID", "SHAMAN", "PRIEST", "PALADIN" }
 BOM.MANA_CLASSES = BOM_MANA_CLASSES --used in BomScan.lua
 
+local BOM_MELEE_CLASSES = { "WARRIOR", "ROGUE", "DRUID", "SHAMAN", "PALADIN" }
 local BOM_SHADOW_CLASSES = { "PRIEST", "WARLOCK" }
 local BOM_PHYSICAL_CLASSES = { "HUNTER", "ROGUE", "SHAMAN", "WARRIOR", "DRUID" }
 
@@ -28,28 +32,22 @@ local BOM_PHYSICAL_CLASSES = { "HUNTER", "ROGUE", "SHAMAN", "WARRIOR", "DRUID" }
 ---@field singleFamily table - family of single buffs which are mutually exclusive
 ---@field singleId number - spell id for single buff
 BOM.AllBuffomatSpells = {
-  "PRIEST",
-
-  --debug
-  --{singleId=10938, isOwn=true, default=true, ItemLock={8008}}, -- manastone/debug
-
-  ---[[
+  ----PRIEST----
   { singleId       = 10938, groupId = 21562, default = true, -- Fortitude / seelenstärke
     singleFamily   = { 1243, 1244, 1245, 2791, 10937, 10938 }, groupFamily = { 21562, 21564 },
     singleDuration = 1800, groupDuration = 3600, NeededGroupItem = { 17028, 17029 },
-    classes        = { "WARRIOR", "MAGE", "ROGUE", "DRUID", "HUNTER", "SHAMAN", "PRIEST", "WARLOCK", "PALADIN" } },
-  --]]
+    classes        = BOM_ALL_CLASSES },
   { singleId       = 14819, groupId = 27681, default = true, -- Prayer of Spirit / willenstärke
     singleFamily   = { 14752, 14818, 14819, 27841 },
     singleDuration = 1800, groupDuration = 3600, NeededGroupItem = { 17028, 17029 },
-    classes        = { "MAGE", "DRUID", "HUNTER", "SHAMAN", "PRIEST", "WARLOCK", "PALADIN" } },
+    classes        = BOM_MANA_CLASSES },
   { singleId       = 10958, groupId = 27683, default = false, --Prayer of Shadow / schattenschutz
     singleFamily   = { 976, 10957, 10958 }, NeededGroupItem = { 17028, 17029 },
     singleDuration = 600, groupDuration = 1200,
-    classes        = { "WARRIOR", "MAGE", "ROGUE", "DRUID", "HUNTER", "SHAMAN", "PRIEST", "WARLOCK", "PALADIN" } },
+    classes        = BOM_ALL_CLASSES },
   { singleId       = 6346, default = false, -- fearward
     singleDuration = 600, hasCD = true,
-    classes        = { "WARRIOR", "MAGE", "ROGUE", "DRUID", "HUNTER", "SHAMAN", "PRIEST", "WARLOCK", "PALADIN" } },
+    classes        = BOM_ALL_CLASSES },
   { singleId       = 10901, default = false, -- Powerword:Shild
     singleFamily   = { 17, 592, 600, 3747, 6065, 6066, 10898, 10899, 10900, 10901 },
     singleDuration = 30, hasCD = true,
@@ -67,27 +65,26 @@ BOM.AllBuffomatSpells = {
   { singleId     = 20770, cancelForm = true, isResurrection = true, default = true, -- Resurrection / Auferstehung
     singleFamily = { 2006, 2010, 10880, 10881, 20770 } },
 
-  "DRUID",
-  { singleId       = 9885, groupId = 21849, cancelForm = true, default = true, --Gabe/Mal der Wildniss
-    singleFamily   = { 1126, 5232, 6756, 5234, 8907, 9884, 9885 }, groupFamily = { 21849, 21850 },
-    singleDuration = 1800, groupDuration = 3600, NeededGroupItem = { 17021, 17026 },
-    classes        = { "WARRIOR", "MAGE", "ROGUE", "DRUID", "HUNTER", "SHAMAN", "PRIEST", "WARLOCK", "PALADIN" } },
-  { singleId       = 9910, cancelForm = true, default = false, --Dornen
+  ----DRUID----
+  { singleId        = 9885, groupId = 21849, cancelForm = true, default = true, --Gift/Mark of the Wild | Gabe/Mal der Wildniss
+    singleFamily    = { 1126, 5232, 6756, 5234, 8907, 9884, 9885 },
+    groupFamily     = { 21849, 21850 }, singleDuration = 1800, groupDuration = 3600,
+    NeededGroupItem = { 17021, 17026 }, classes = BOM_ALL_CLASSES },
+  { singleId       = 9910, cancelForm = true, default = false, --Thorns | Dornen
     singleFamily   = { 467, 782, 1075, 8914, 9756, 9910 },
-    singleDuration = 600,
-    classes        = { "WARRIOR", "ROGUE", "DRUID", "SHAMAN", "PALADIN" } },
+    singleDuration = 600, classes = BOM_MELEE_CLASSES },
   { singleId = 16864, isOwn = true, cancelForm = true, default = true }, --omen of clarity
-  { singleId     = 17329, isOwn = true, cancelForm = true, default = false, -- Griff der Natur
+  { singleId     = 17329, isOwn = true, cancelForm = true, default = false, -- Nature's Grasp | Griff der Natur
     hasCD        = true, NeedOutdoors = true,
-    singleFamily = { 16689, 16810, 16811, 16812, 16813, 17329 },
-  },
-  { singleId = 5225, isTracking = true, needForm = CAT_FORM, default = true }, -- search human
+    singleFamily = { 16689, 16810, 16811, 16812, 16813, 17329 } },
+  { singleId = 5225, isTracking = true, needForm = CAT_FORM, default = true }, -- Track Humanoids
 
-  "MAGE",
+  ----MAGE----
+  --{singleId=10938, isOwn=true, default=true, ItemLock={8008}}, -- manastone/debug
   { singleId       = 10157, groupId = 23028, default = true, --Arcane Intellect | Brilliance
     singleFamily   = { 1459, 1460, 1461, 10156, 10157 },
     singleDuration = 1800, groupDuration = 3600, NeededGroupItem = { 17020 },
-    classes        = { "MAGE", "DRUID", "HUNTER", "SHAMAN", "PRIEST", "WARLOCK", "PALADIN" } },
+    classes        = BOM_MANA_CLASSES },
   { singleId       = 10174, default = false, --Dampen Magic
     singleDuration = 600, classes = { },
     singleFamily   = { 604, 8450, 8451, 10173, 10174 } },
@@ -111,8 +108,7 @@ BOM.AllBuffomatSpells = {
     singleFamily = { 759, 3552, 10053 } },
   { singleId = 10054, isOwn = true, default = true, ItemLock = { 8008 } }, -- manastone
 
-
-  "SHAMAN",
+  ----SHAMAN----
   { singleId     = 16342, isSeal = true, default = true, singleDuration = 500, --Flametongue
     singleFamily = { 8024, 8027, 8030, 16339, 16341, 16342 } },
   { singleId     = 16356, isSeal = true, default = true, singleDuration = 500, --Frostbrand
@@ -126,7 +122,7 @@ BOM.AllBuffomatSpells = {
   { singleId     = 20777, isResurrection = true, default = true, -- Resurrection / Auferstehung
     singleFamily = { 2008, 20609, 20610, 20776, 20777 } },
 
-  "WARLOCK",
+  ----WARLOCK----
   { singleId       = 5697, default = false, -- Unending Breath
     singleDuration = 600,
     classes        = { "WARRIOR", "MAGE", "ROGUE", "DRUID", "HUNTER", "SHAMAN", "PRIEST", "WARLOCK", "PALADIN" } },
@@ -153,7 +149,7 @@ BOM.AllBuffomatSpells = {
 
   { singleId = 5500, isTracking = true, default = true }, --Sense Demons
 
-  "HUNTER",
+  ----HUNTER----
   { singleId     = 20906, isOwn = true, default = true, -- Trueshot Aura
     singleFamily = { 19506, 20905, 20906 } },
 
@@ -175,7 +171,7 @@ BOM.AllBuffomatSpells = {
   { singleId = 19884, isTracking = true, default = false }, -- Track Undead
   { singleId = 19885, isTracking = true, default = false }, -- Track Hidden / verborgenes
 
-  "PALADIN",
+  ----PALADIN----
   { singleId = 25780, isOwn = true, default = true }, --Righteous Fury
 
   { singleId       = 20217, groupId = 25898, isBlessing = true, default = true, --Blessing of Kings
@@ -224,16 +220,16 @@ BOM.AllBuffomatSpells = {
 
   { singleId = 5502, isTracking = true, default = true }, -- Sense undead
 
-  "WARRIOR",
+  ----WARRIOR----
   { singleId     = 25289, isOwn = true, default = true, --Battle Shout
     singleFamily = { 6673, 5242, 6192, 11549, 11550, 11551, 25289 } },
 
-  "TRACKING",
+  ----UNIT AND RESOURCE TRACKING----
   { singleId = 2383, isTracking = true, default = true }, -- Find Herbs / kräuter
   { singleId = 2580, isTracking = true, default = true }, -- Find Minerals / erz
   { singleId = 2481, isTracking = true, default = true }, -- Find Treasure / Schatzsuche / Zwerge
 
-  "INFO",
+  ----INFO----
   { singleId     = 432, isInfo = true, default = false, --drink
     singleFamily = { 430, 431, 432, 1133, 1135, 1137, 22734, 25696, 26475, 26261, 29007,
                      26473, 10250, 26402 } },
@@ -246,7 +242,7 @@ BOM.AllBuffomatSpells = {
   --{singleId=10938, isInfo=true, allowWhisper=true,default=false,	--ausdauer-antworten!
   --	singleFamily={1243,1244,1245,2791,10937,10938}},
 
-  "item",
+  ----ITEMS----
   --{singleId=10901, item=8766,isBuff=true, default=false}, -- debug schild/tau
   { singleId      = 17538, item = 13452, isBuff = true, default = false,
     onlyUsableFor = BOM_PHYSICAL_CLASSES }, --Elixir of the Mongoose
@@ -355,6 +351,7 @@ for x, spell in ipairs(BOM.AllBuffomatSpells) do
   end
 end
 
+--TODO: This can be calculated from AllSpells spell ids
 BOM.ItemCache = {
   [18284] = {
     "Kreeg's Stout Beatdown", -- [1]
@@ -600,7 +597,7 @@ BOM.ItemCache = {
 
 BOM.ArgentumDawn = {
   spell   = 17670,
-  dungeon = { 329, 289 }, --Stratholme/scholomance
+  dungeon = { 329, 289, 533, 535 }, --Stratholme/scholomance; Naxxramas LK 10/25
 }
 BOM.Carrot = {
   spell   = 13587,
@@ -622,7 +619,7 @@ BOM.EnchantList = {--weapon-echantment to spellid
   [25351] = { 2630, 627, 626, 8, 7 }, --Deadly Poison
   [11399] = { 643, 23, 35 }, --Mind-numbing Poison
   [11340] = { 625, 624, 623, 325, 324, 323 }, --Instant Poison
-  [6650]  = { 42 }, --Instant Toxin
+  --[6650]  = { 42 }, --Instant Toxin - not available to players
   [13227] = { 706, 705, 704, 703 }, --Wound Poison
   [11202] = { 603, 22 }, --Crippling Poison
   --[]={},--
@@ -649,14 +646,14 @@ for dest, list in pairs(BOM.EnchantList) do
 end
 
 BOM.ItemList = {
-  --{6948}, -- Hearthstone/Ruhestein
-  --{4604}, -- Waldpilz
-  --{8079},-- wasser
+  --{6948}, -- Hearthstone | Ruhestein
+  --{4604}, -- Forest Mushroom | Waldpilz
+  --{8079},-- Water | wasser
   { 5232, 16892, 16893, 16895, 16896 }, -- Soulstone/Seelenstein
 }
 BOM.ItemListSpell = {
-  [8079] = 432, -- wasser
-  [5232] = 20762, [16892] = 20762, [16893] = 20762, [16895] = 20762, [16896] = 20762, -- Soulstone/Seelenstein
+  [8079] = 432, -- Water | Wasser
+  [5232] = 20762, [16892] = 20762, [16893] = 20762, [16895] = 20762, [16896] = 20762, -- Soulstone | Seelenstein
 }
 BOM.ItemListTarget = {}
 
@@ -677,8 +674,7 @@ BOM.CancelBuffs = {
 }
 
 do
-  local _, class, _
-  UnitClass("unit")
+  local _, class, _ = UnitClass("unit")
   if class == "HUNTER" then
     tinsert(BOM.CancelBuffs,
             { singleId     = 5118,
@@ -687,6 +683,7 @@ do
               singleFamily = { 5118, 13159 } } --Aspect of the Cheetah/of the pack
     )
   end
+
   if (UnitFactionGroup("player")) ~= "Horde" then
     tinsert(BOM.CancelBuffs,
             { singleId     = 1038, --Blessing of Salvation
