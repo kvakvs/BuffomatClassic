@@ -852,7 +852,7 @@ end
 local bom_last_update_timestamp = 0
 local bom_last_modifier
 local bom_fps_check = 0
-local bom_update_timer_limit = 0.100
+local bom_update_timer_limit = 1.500 --bumped from 0.1 which potentially causes Naxxramas lag?
 local bom_slow_count = 0
 
 function BOM.UpdateTimer()
@@ -889,6 +889,7 @@ function BOM.UpdateTimer()
 
   if (BOM.ForceUpdate or BOM.RepeatUpdate)
           and GetTime() - (bom_last_update_timestamp or 0) > bom_update_timer_limit
+          and InCombatLockdown() == false
   then
     bom_last_update_timestamp = GetTime()
     bom_fps_check = debugprofilestop()
@@ -952,7 +953,7 @@ function BOM.UnitAura(unitId, buffIndex, filter)
 end
 
 local partyCheckMask = COMBATLOG_OBJECT_AFFILIATION_RAID + COMBATLOG_OBJECT_AFFILIATION_PARTY + COMBATLOG_OBJECT_AFFILIATION_MINE
---  BOM.PlayerBuffs cleanup in scan BOM.GetPartyMembers()
+--  BOM.PlayerBuffs cleanup in scan bom_get_party_members
 
 local function Event_COMBAT_LOG_EVENT_UNFILTERED()
   local timestamp, event, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags,
@@ -963,7 +964,7 @@ local function Event_COMBAT_LOG_EVENT_UNFILTERED()
     --print(event,spellName,bit.band(destFlags,partyCheckMask)>0,bit.band(sourceFlags,COMBATLOG_OBJECT_AFFILIATION_MINE)>0)
     if event == "UNIT_DIED" then
       --BOM.PlayerBuffs[destName]=nil -- problem with hunters and fake-deaths!
-      --additional check in BOM.GetPartyMembers()
+      --additional check in bom_get_party_members
       --print("dead",destName)
       BOM.ForceUpdate = true
 

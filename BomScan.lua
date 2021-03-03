@@ -7,7 +7,7 @@ local L = setmetatable({}, { __index = function(t, k)
   end
 end })
 
-local MAXMANA = 999999
+local bom_save_someone_is_dead = false
 
 BOM.ProfileNames = { "solo", "group", "raid", "battleground" }
 
@@ -537,7 +537,8 @@ function BOM.MaybeResetWatchGroups()
   end
 end
 
-function BOM.GetPartyMembers()
+---Retrieve a table with party members
+local function bom_get_party_members()
   -- and buffs
   local party
   local player_member --table(duration, expirationTime, source, isSingle)
@@ -805,10 +806,13 @@ function BOM.GetPartyMembers()
 end
 
 ---Check for party, spell and player, which targets that spell goes onto
----@param party table
----@param spell table
----@param playerMember table
-function BOM.GetNeedBuff(party, spell, playerMember)
+---Update spell.NeedMember, spell.NeedGroup and spell.DeathGroup
+---@param party table - the party
+---@param spell table - the spell to update
+---@param player_member table - the player
+---@param someone_is_dead boolean - the flag that buffing cannot continue while someone is dead
+---@return boolean - updated someone_is_dead
+function bom_update_spell_targets(party, spell, player_member, someone_is_dead)
   spell.NeedMember = spell.NeedMember or {}
   spell.NeedGroup = spell.NeedGroup or {}
   spell.DeathGroup = spell.DeathGroup or {}
@@ -822,15 +826,15 @@ function BOM.GetNeedBuff(party, spell, playerMember)
   if not BOM.CurrentProfile.Spell[spell.ConfigID].Enable then
     --nothing!
   elseif spell.isWeapon then
-    if (BOM.CurrentProfile.Spell[spell.ConfigID].MainHandEnable and playerMember.MainHandBuff == nil)
-            or (BOM.CurrentProfile.Spell[spell.ConfigID].OffHandEnable and playerMember.OffHandBuff == nil)
+    if (BOM.CurrentProfile.Spell[spell.ConfigID].MainHandEnable and player_member.MainHandBuff == nil)
+            or (BOM.CurrentProfile.Spell[spell.ConfigID].OffHandEnable and player_member.OffHandBuff == nil)
     then
-      tinsert(spell.NeedMember, playerMember)
+      tinsert(spell.NeedMember, player_member)
     end
 
   elseif spell.isBuff then
-    if not playerMember.buffs[spell.ConfigID] then
-      tinsert(spell.NeedMember, playerMember)
+    if not player_member.buffs[spell.ConfigID] then
+      tinsert(spell.NeedMember, player_member)
     end
 
   elseif spell.isInfo then
@@ -852,15 +856,15 @@ function BOM.GetNeedBuff(party, spell, playerMember)
       end
     end
   elseif spell.isOwn then
-    if not playerMember.isDead then
+    if not player_member.isDead then
       if spell.ItemLock then
         if IsSpellKnown(spell.singleId) and not (BOM.HasItem(spell.ItemLock)) then
-          tinsert(spell.NeedMember, playerMember)
+          tinsert(spell.NeedMember, player_member)
         end
-      elseif not (playerMember.buffs[spell.ConfigID]
-              and BOM.TimeCheck(playerMember.buffs[spell.ConfigID].expirationTime, playerMember.buffs[spell.ConfigID].duration))
+      elseif not (player_member.buffs[spell.ConfigID]
+              and BOM.TimeCheck(player_member.buffs[spell.ConfigID].expirationTime, player_member.buffs[spell.ConfigID].duration))
       then
-        tinsert(spell.NeedMember, playerMember)
+        tinsert(spell.NeedMember, player_member)
       end
     end
 
@@ -879,21 +883,21 @@ function BOM.GetNeedBuff(party, spell, playerMember)
     if GetTrackingTexture() ~= spell.TrackingIcon
             and (BOM.ForceTracking == nil or BOM.ForceTracking == spell.TrackingIcon)
     then
-      tinsert(spell.NeedMember, playerMember)
+      tinsert(spell.NeedMember, player_member)
     end
 
   elseif spell.isAura then
     if BOM.ActivAura ~= spell.ConfigID
             and (BOM.CurrentProfile.LastAura == nil or BOM.CurrentProfile.LastAura == spell.ConfigID)
     then
-      tinsert(spell.NeedMember, playerMember)
+      tinsert(spell.NeedMember, player_member)
     end
 
   elseif spell.isSeal then
     if BOM.ActivSeal ~= spell.ConfigID
             and (BOM.CurrentProfile.LastSeal == nil or BOM.CurrentProfile.LastSeal == spell.ConfigID)
     then
-      tinsert(spell.NeedMember, playerMember)
+      tinsert(spell.NeedMember, player_member)
     end
 
   elseif spell.isBlessing then
@@ -1432,12 +1436,13 @@ local function bom_force_update(party, player_member)
   end
 
   -- who needs a buff!
-  local someone_is_dead = false
+  -- for each spell update spell potential targets
+  local someone_is_dead = false -- the flag that buffing cannot continue while someone is dead
   for i, spell in ipairs(BOM.SelectedSpells) do
-    someone_is_dead = BOM.GetNeedBuff(party, spell, player_member) or someone_is_dead
+    someone_is_dead = bom_update_spell_targets(party, spell, player_member, someone_is_dead)
   end
 
-  BOM.OldSomeBodyDeath = someone_is_dead
+  bom_save_someone_is_dead = someone_is_dead
   return someone_is_dead
 end
 
@@ -1876,13 +1881,13 @@ function BOM.UpdateScan()
     return
   end
 
-  local party, player_member = BOM.GetPartyMembers()
+  local party, player_member = bom_get_party_members()
 
   local someone_is_dead
   if BOM.ForceUpdate then
     someone_is_dead = bom_force_update(party, player_member)
   else
-    someone_is_dead = BOM.OldSomeBodyDeath
+    someone_is_dead = bom_save_someone_is_dead
   end
 
   -- cancel buffs
