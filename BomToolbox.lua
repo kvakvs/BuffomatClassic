@@ -13,9 +13,9 @@ local L = setmetatable(
 BOM.Tool = BOM.Tool or {}
 local Tool = BOM.Tool
 
-Tool.IconClassTexture = "Interface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES"
-Tool.IconClassTextureWithoutBorder = "Interface\\WorldStateFrame\\ICONS-CLASSES"
-Tool.IconClassTextureCoord = CLASS_ICON_TCOORDS
+--Tool.IconClassTexture = "Interface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES"
+--Tool.IconClassTextureWithoutBorder = "Interface\\WorldStateFrame\\ICONS-CLASSES"
+--Tool.IconClassTextureCoord = CLASS_ICON_TCOORDS
 Tool.IconClass = {
   ["WARRIOR"] = "|TInterface\\WorldStateFrame\\ICONS-CLASSES:0:0:0:0:256:256:0:64:0:64|t",
   ["MAGE"] = "|TInterface\\WorldStateFrame\\ICONS-CLASSES:0:0:0:0:256:256:64:128:0:64|t",

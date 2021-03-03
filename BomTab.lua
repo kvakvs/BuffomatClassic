@@ -22,13 +22,19 @@ BOM.SpellSettingsFrames = SpellSettingsFrames -- group settings buttons after th
 ---@param prev_control table - previous reference control for positioning
 local function add_row_of_class_buttons(isHorde, spell, dx, prev_control)
   if spell.frames.SelfCast == nil then
-    spell.frames.SelfCast = BOM.CreateMyButton(BomC_SpellTab_Scroll_Child, BOM.IconSelfCastOn, BOM.IconSelfCastOff)
+    spell.frames.SelfCast = BOM.CreateMyButton(
+            BomC_SpellTab_Scroll_Child,
+            BOM.ICON_SELF_CAST_ON,
+            BOM.ICON_SELF_CAST_OFF)
   end
 
   spell.frames.SelfCast:SetPoint("TOPLEFT", prev_control, "TOPRIGHT", dx, 0)
   spell.frames.SelfCast:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID], "SelfCast")
   spell.frames.SelfCast:SetOnClick(BOM.MyButtonOnClick)
-  BOM.Tool.Tooltip(spell.frames.SelfCast, "TooltipSelfCastCheckbox")
+  BOM.Tool.TooltipText(
+          spell.frames.SelfCast,
+          BOM.FormatTexture(BOM.ICON_SELF_CAST_ON) .. " - " .. L.TooltipSelfCastCheckbox_Self .. "|n"
+                  .. BOM.FormatTexture(BOM.ICON_SELF_CAST_OFF) .. " - " .. L.TooltipSelfCastCheckbox_Party)
 
   prev_control = spell.frames.SelfCast
   dx = 2
@@ -40,17 +46,21 @@ local function add_row_of_class_buttons(isHorde, spell, dx, prev_control)
     if spell.frames[class] == nil then
       spell.frames[class] = BOM.CreateMyButton(
               BomC_SpellTab_Scroll_Child,
-              BOM.IconClasses,
-              BOM.IconEmpty,
-              BOM.IconDisabled,
-              BOM.IconClassesCoord[class])
+              BOM.CLASS_ICONS_ATLAS,
+              BOM.ICON_EMPTY,
+              BOM.ICON_DISABLED,
+              BOM.CLASS_ICONS_ATLAS_TEX_COORD[class])
     end
 
     spell.frames[class]:SetPoint("TOPLEFT", prev_control, "TOPRIGHT", dx, 0)
     spell.frames[class]:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID].Class, class)
     spell.frames[class]:SetOnClick(BOM.DoBlessingOnClick)
-    BOM.Tool.TooltipText(spell.frames[class],
-            L.TooltipCastOnClass .. BOM.Tool.IconClass[class] .. " " .. BOM.Tool.ClassName[class])
+
+    BOM.Tool.TooltipText(
+            spell.frames[class],
+            BOM.Tool.IconClass[class] .. " - " .. L.TooltipCastOnClass .. ": " .. BOM.Tool.ClassName[class] .. "|n"
+                    .. BOM.FormatTexture(BOM.ICON_EMPTY) .. " - " .. L.TabDoNotBuff .. ": " .. BOM.Tool.ClassName[class] .. "|n"
+                    .. BOM.FormatTexture(BOM.ICON_DISABLED) .. " - " .. L.TabBuffOnlySelf)
 
     if (isHorde and class == "PALADIN")
             or (not isHorde and class == "SHAMAN") then
@@ -63,32 +73,32 @@ local function add_row_of_class_buttons(isHorde, spell, dx, prev_control)
   if spell.frames["tank"] == nil then
     spell.frames["tank"] = BOM.CreateMyButton(
             BomC_SpellTab_Scroll_Child,
-            BOM.IconTank,
-            BOM.IconEmpty,
-            BOM.IconDisabled,
-            BOM.IconTankCoord)
+            BOM.ICON_TANK,
+            BOM.ICON_EMPTY,
+            BOM.ICON_DISABLED,
+            BOM.ICON_TANK_COORD)
   end
 
   spell.frames["tank"]:SetPoint("TOPLEFT", prev_control, "TOPRIGHT", dx, 0)
   spell.frames["tank"]:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID].Class, "tank")
   spell.frames["tank"]:SetOnClick(BOM.DoBlessingOnClick)
-  BOM.Tool.Tooltip(spell.frames["tank"], "TooltipCastOnTank")
+  BOM.Tool.TooltipText(spell.frames["tank"], BOM.FormatTexture(BOM.ICON_TANK) .. " - " .. L.TooltipCastOnTank)
 
   prev_control = spell.frames["tank"]
 
   if spell.frames["pet"] == nil then
     spell.frames["pet"] = BOM.CreateMyButton(
             BomC_SpellTab_Scroll_Child,
-            BOM.IconPet,
-            BOM.IconEmpty,
-            BOM.IconDisabled,
-            BOM.IconPetCoord)
+            BOM.ICON_PET,
+            BOM.ICON_EMPTY,
+            BOM.ICON_DISABLED,
+            BOM.ICON_PET_COORD)
   end
 
   spell.frames["pet"]:SetPoint("TOPLEFT", prev_control, "TOPRIGHT", dx, 0)
   spell.frames["pet"]:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID].Class, "pet")
   spell.frames["pet"]:SetOnClick(BOM.DoBlessingOnClick)
-  BOM.Tool.Tooltip(spell.frames["pet"], "TooltipCastOnPet")
+  BOM.Tool.TooltipText(spell.frames["pet"], BOM.FormatTexture(BOM.ICON_PET) .. " - " .. L.TooltipCastOnPet)
   prev_control = spell.frames["pet"]
 
   dx = 7
@@ -96,9 +106,9 @@ local function add_row_of_class_buttons(isHorde, spell, dx, prev_control)
   if spell.frames.target == nil then
     spell.frames.target = BOM.CreateMyButton(
             BomC_SpellTab_Scroll_Child,
-            BOM.IconTargetOn,
-            BOM.IconTargetOff,
-            BOM.IconDisabled)
+            BOM.ICON_TARGET_ON,
+            BOM.ICON_TARGET_OFF,
+            BOM.ICON_DISABLED)
   end
 
   spell.frames.target:SetPoint("TOPLEFT", prev_control, "TOPRIGHT", dx, 0)
@@ -141,8 +151,8 @@ local function add_spell_cancel_buttons(spell, dx, dy, prev_control, last)
   if spell.frames.Enable == nil then
     spell.frames.Enable = BOM.CreateMyButton(
             BomC_SpellTab_Scroll_Child,
-            BOM.IconOptionEnabled,
-            BOM.IconOptionDisabled)
+            BOM.ICON_OPT_ENABLED,
+            BOM.ICON_OPT_DISABLED)
   end
 
   spell.frames.Enable:SetPoint("LEFT", spell.frames.info, "RIGHT", 7, 0)
@@ -179,7 +189,7 @@ local function fill_last_section(last)
   if SpellSettingsFrames.Settings == nil then
     SpellSettingsFrames.Settings = BOM.CreateMyButton(
             BomC_SpellTab_Scroll_Child,
-            BOM.IconGear,
+            BOM.ICON_GEAR,
             nil,
             nil,
             { 0.1, 0.9, 0.1, 0.9 })
@@ -195,7 +205,7 @@ local function fill_last_section(last)
   if SpellSettingsFrames[0] == nil then
     SpellSettingsFrames[0] = BOM.CreateMyButton(
             BomC_SpellTab_Scroll_Child,
-            BOM.IconGroup,
+            BOM.ICON_GROUP,
             nil,
             nil,
             { 0.1, 0.9, 0.1, 0.9 })
@@ -213,14 +223,14 @@ local function fill_last_section(last)
     if SpellSettingsFrames[i] == nil then
       SpellSettingsFrames[i] = BOM.CreateMyButton(
               BomC_SpellTab_Scroll_Child,
-              BOM.IconGroupItem,
-              BOM.IconGroupNone)
+              BOM.ICON_GROUP_ITEM,
+              BOM.ICON_GROUP_NONE)
     end
 
     SpellSettingsFrames[i]:SetPoint("TOPLEFT", l, "TOPRIGHT", dx, 0)
     SpellSettingsFrames[i]:SetVariable(BomCharacterState.WatchGroup, i)
     SpellSettingsFrames[i]:SetText(i)
-    BOM.Tool.TooltipText(SpellSettingsFrames[i], string.format(L.TTGroup, i))
+    BOM.Tool.TooltipText(SpellSettingsFrames[i], string.format(L.TooltipGroup, i))
 
     -- Let the MyButton library function handle the data update, and update the tab text too
     SpellSettingsFrames[i]:SetOnClick(function()
@@ -277,8 +287,8 @@ local function fill_last_section(last)
   --    if SpellSettingsFrames[key] == nil then
   --      SpellSettingsFrames[key] = BOM.CreateMyButton(
   --              BomC_SpellTab_Scroll_Child,
-  --              BOM.IconSettingOn,
-  --              BOM.IconSettingOff,
+  --              BOM.ICON_SETTING_ON,
+  --              BOM.ICON_SETTING_OFF,
   --              nil,
   --              nil,
   --              nil)
@@ -329,8 +339,8 @@ end
 ---@param dy number - Y offset
 ---@param last void - some previous control or something
 ---@param section string - section name for spell type
----@param selfClassName string - Character class
-local function create_tab_row(isHorde, spell, dy, last, section, selfClassName)
+---@param self_class string - Character class
+local function bom_create_tab_row(isHorde, spell, dy, last, section, self_class)
   spell.frames = spell.frames or {}
 
   --------------------------------
@@ -388,8 +398,8 @@ local function create_tab_row(isHorde, spell, dy, last, section, selfClassName)
   if spell.frames.Enable == nil then
     spell.frames.Enable = BOM.CreateMyButton(
             BomC_SpellTab_Scroll_Child,
-            BOM.IconOptionEnabled,
-            BOM.IconOptionDisabled)
+            BOM.ICON_OPT_ENABLED,
+            BOM.ICON_OPT_DISABLED)
   end
 
   spell.frames.Enable:SetPoint("TOPLEFT", prev_control, "TOPRIGHT", dx, 0)
@@ -412,8 +422,8 @@ local function create_tab_row(isHorde, spell, dy, last, section, selfClassName)
     if spell.frames.Set == nil then
       spell.frames.Set = BOM.CreateMyButtonSecure(
               BomC_SpellTab_Scroll_Child,
-              BOM.IconChecked,
-              BOM.IconUnChecked)
+              BOM.ICON_CHECKED,
+              BOM.ICON_CHECKED_OFF)
     end
 
     spell.frames.Set:SetPoint("TOPLEFT", prev_control, "TOPRIGHT", dx, 0)
@@ -427,8 +437,8 @@ local function create_tab_row(isHorde, spell, dy, last, section, selfClassName)
     if spell.frames.Whisper == nil then
       spell.frames.Whisper = BOM.CreateMyButton(
               BomC_SpellTab_Scroll_Child,
-              BOM.IconWhisperOn,
-              BOM.IconWhisperOff)
+              BOM.ICON_WHISPER_ON,
+              BOM.ICON_WHISPER_OFF)
     end
 
     spell.frames.Whisper:SetPoint("TOPLEFT", prev_control, "TOPRIGHT", dx, 0)
@@ -445,7 +455,7 @@ local function create_tab_row(isHorde, spell, dy, last, section, selfClassName)
               BomC_SpellTab_Scroll_Child,
               BOM.IconMainHandOn,
               BOM.IconMainHandOff,
-              BOM.IconDisabled,
+              BOM.ICON_DISABLED,
               BOM.IconMainHandOnCoord)
     end
 
@@ -461,7 +471,7 @@ local function create_tab_row(isHorde, spell, dy, last, section, selfClassName)
               BomC_SpellTab_Scroll_Child,
               BOM.IconSecondaryHandOn,
               BOM.IconSecondaryHandOff,
-              BOM.IconDisabled,
+              BOM.ICON_DISABLED,
               BOM.IconSecondaryHandOnCoord)
     end
 
@@ -546,7 +556,7 @@ local function create_tab(isHorde)
             and not tContains(spell.onlyUsableFor, selfClassName) then
       -- skip
     else
-      dy, last, section = create_tab_row(isHorde, spell, dy, last, section, selfClassName)
+      dy, last, section = bom_create_tab_row(isHorde, spell, dy, last, section, selfClassName)
     end
 
   end
@@ -605,7 +615,7 @@ local function update_selected_spell(spell)
 
     else
       spell.frames.target:Disable()
-      BOM.Tool.TooltipText(spell.frames.target, L.TooltipForceCastOnTarget .. "|n" .. L.TTSelectTarget)
+      BOM.Tool.TooltipText(spell.frames.target, L.TooltipForceCastOnTarget .. "|n" .. L.TooltipSelectTarget)
       spell.frames.target:SetVariable()
     end
   end

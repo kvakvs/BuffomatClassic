@@ -63,12 +63,13 @@ BOM.locales = {
     EboxMinBuff = "Number of missing buffs required to use a group buff",
     EboxMinBlessing = "Number of missing blessing required to use a greater blessing",
 
-    TooltipSelfCastCheckbox = "Self-cast only (one silhouette) or include party/raid (silhouettes of friends)",
+    TooltipSelfCastCheckbox_Self = "Self-cast only",
+    TooltipSelfCastCheckbox_Party = "Buff party and groups in raid",
     TooltipEnableSpell = "Add this buff to the task list",
     TooltipEnableBuffCancel = "Cancel this buff as soon as it is found",
     TooltipForceCastOnTarget = "Force spell on current Target",
-    TTSelectTarget = "Select a raid/party member to enable this option",
-    TTGroup = "Watch buffs in raid group %d",
+    TooltipSelectTarget = "Select a raid/party member to enable this option",
+    TooltipGroup = "Watch buffs in raid group %d",
     TooltipRaidGroupsSettings = "Raid groups watch settings",
 
     HintCancelThisBuff = "Cancel this buff",
@@ -81,6 +82,7 @@ BOM.locales = {
     TTAnyRank = "any",
 
     TabBuff = "Buff",
+    TabDoNotBuff = "Do not buff",
     TabBuffOnlySelf = "Buff Self Only", -- Shown when all raid groups are deselected
     TabSpells = "Spells",
     --TabItems = "Items",
@@ -117,7 +119,7 @@ BOM.locales = {
 
     Tank = "Tank", -- unused?
     Pet = "Pet", -- unused?
-    TooltipCastOnClass = "Cast on class: ",
+    TooltipCastOnClass = "Cast on class",
     TooltipCastOnTank = "Cast on tanks",
     TooltipCastOnPet = "Cast on pets",
 
@@ -228,12 +230,12 @@ BOM.locales = {
     ["TTAnyRank"] = "Alle Varianten",
     ["TooltipEnableSpell"] = "Buffüberwachung ein-/ausschalten",
     ["TooltipEnableBuffCancel"] = "Automatisches beenden des Buff ein-/ausschalten",
-    ["TTGroup"] = "Gruppe %d",
+    ["TooltipGroup"] = "Gruppe %d",
     ["TooltipMainHand"] = "Waffenhand",
     ["TooltipOffHand"] = "Schildhand",
     ["HintCancelThisBuff_Combat"] = "Nur direkt vor einem Kampf",
-    ["TTSelectTarget"] = "Wähle ein Gruppenmitglied um diese Option zu aktivieren.",
-    ["TooltipSelfCastCheckbox"] = "Wirke auf Gruppe/Raid oder nur auf sich selbst",
+    ["TooltipSelectTarget"] = "Wähle ein Gruppenmitglied um diese Option zu aktivieren.",
+    --split into _Self and _Party ["TooltipSelfCastCheckbox"] = "Wirke auf Gruppe/Raid oder nur auf sich selbst",
     ["TooltipForceCastOnTarget"] = "Buff dauerhaft auf Ziel halten",
     ["TooltipWhisperWhenExpired"] = "Quelle anflüstern, wenn abgelaufen."
   },
@@ -266,11 +268,11 @@ BOM.locales = {
     EboxTime1800 = "Durée <=30 min:",
     EboxTime3600 = "Durée <=60 min:",
 
-    TooltipSelfCastCheckbox = "Buff groupe/raid ou uniquement sois-même",
+    --split into _Self and _Party TooltipSelfCastCheckbox = "Buff groupe/raid ou uniquement sois-même",
     TooltipEnableSpell = "Activer/Désactiver sort",
     TooltipForceCastOnTarget = "Forcer sort sur Cible actuelle",
-    TTSelectTarget = "Choisir un membre groupe/raid pour activer cette option",
-    TTGroup = "Groupe %d",
+    TooltipSelectTarget = "Choisir un membre groupe/raid pour activer cette option",
+    TooltipGroup = "Groupe %d",
 
     TabBuff = "Buff",
     TabSpells = "Sorts",
@@ -364,15 +366,16 @@ BOM.locales = {
     ["TabBuffOnlySelf"] = "Баф только себя", -- Shown if all raid groups deselected
     ["TabSpells"] = "Заклинания",
     ["TooltipEnableSpell"] = "Вкл./откл. заклинание",
-    ["TTGroup"] = "Следить за группой %d в рейде",
+    ["TooltipGroup"] = "Следить за группой %d в рейде",
     ["TooltipRaidGroupsSettings"] = "Настройки рейдовых групп",
 
     ["HintCancelThisBuff"] = "Отменять баф",
     ["HintCancelThisBuff_Combat"] = "Перед боем",
     ["HintCancelThisBuff_Always"] = "Сразу",
 
-    ["TTSelectTarget"] = "Выберите участника рейда/группы, чтобы включить эту опцию",
-    ["TooltipSelfCastCheckbox"] = "Применить только на себя (один силуэт) или на группу и рейд (силуэты друзей)",
+    ["TooltipSelectTarget"] = "Выберите участника рейда/группы, чтобы включить эту опцию",
+    ["TooltipSelfCastCheckbox_Self"] = "Применить баф только на себя",
+    ["TooltipSelfCastCheckbox_Party"] = "Бафать группу или рейд",
     ["TooltipForceCastOnTarget"] = "Наложить заклинание на текущую цель"
   },
 
@@ -446,8 +449,8 @@ BOM.locales = {
     ["TabBuff"] = "Buff",
     ["TabSpells"] = "法术",
     ["TooltipEnableSpell"] = "启用/禁用 法术",
-    ["TTGroup"] = "队伍 %d",
-    ["TTSelectTarget"] = "选择一个团队/小队成员,启用这个选项",
+    ["TooltipGroup"] = "队伍 %d",
+    ["TooltipSelectTarget"] = "选择一个团队/小队成员,启用这个选项",
     ["TooltipSelfCastCheckbox"] = "施放给小队/团队,或仅自己",
     ["TooltipForceCastOnTarget"] = "对当前目标强制施法"
   },

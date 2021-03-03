@@ -7,6 +7,7 @@
 ## SavedVariables: BomSharedState
 ## SavedVariablesPerCharacter: BomCharacterState
 
+BomTexture.lua
 BomOptions.lua
 BomMinimapButton.lua
 BomToolbox.lua

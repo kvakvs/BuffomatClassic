@@ -430,11 +430,11 @@ local function bom_get_member(unitid, NameGroup, NameRole)
       link = BOM.Tool.IconClass[class] .. "|Hunit:" .. guid .. ":" .. name .. "|h|c" .. RAID_CLASS_COLORS[class].colorStr .. name .. "|r|h"
     else
       class = ""
-      link = BOM.FormatTexture(BOM.IconPet) .. name
+      link = BOM.FormatTexture(BOM.ICON_PET) .. name
     end
   else
     class = ""
-    link = BOM.FormatTexture(BOM.IconPet) .. name
+    link = BOM.FormatTexture(BOM.ICON_PET) .. name
   end
 
   MemberCache[unitid] = MemberCache[unitid] or {}
@@ -1492,7 +1492,7 @@ local function bom_add_blessing(spell, player_member, in_range)
 
       local add = ""
       if BOM.CurrentProfile.Spell[BOM.BLESSING_ID][member.name] ~= nil then
-        add = string.format(BOM.PICTURE_FORMAT, BOM.IconTargetOn)
+        add = string.format(BOM.PICTURE_FORMAT, BOM.ICON_TARGET_ON)
       end
 
       local test_in_range = (IsSpellInRange(spell.single, member.unitId) == 1)
@@ -1576,7 +1576,7 @@ local function bom_add_buff(spell, player_member, in_range)
 
       local add = ""
       if BOM.CurrentProfile.Spell[spell.ConfigID].ForcedTarget[member.name] then
-        add = string.format(BOM.PICTURE_FORMAT, BOM.IconTargetOn)
+        add = string.format(BOM.PICTURE_FORMAT, BOM.ICON_TARGET_ON)
       end
 
       local isInRange = (IsSpellInRange(spell.single, member.unitId) == 1)
@@ -1600,6 +1600,7 @@ end
 ---Adds a display text for a weapon buff
 ---@param spell table - the spell to cast
 ---@param player_member table - the player
+---@param in_range boolean - value for range check
 ---@return table (bag_title string, bag_command string)
 local function bom_add_resurrection(spell, player_member, in_range)
   local clearskip = true
@@ -1628,8 +1629,6 @@ local function bom_add_resurrection(spell, player_member, in_range)
 
   for memberIndex, member in ipairs(spell.NeedMember) do
     if not tContains(spell.SkipList, member.name) then
-      --table.foreach(member, print)
-
       BOM.RepeatUpdate = true
 
       -- Is the body in range?
@@ -1647,8 +1646,7 @@ local function bom_add_resurrection(spell, player_member, in_range)
 
       -- If in range, we can res?
       -- Should we try and resurrect ghosts when their corpse is not targetable?
-      if is_in_range
-              or (BOM.SharedState.ResGhost and member.isGhost) then
+      if is_in_range or (BOM.SharedState.ResGhost and member.isGhost) then
         bom_catch_a_spell(spell.singleMana, spell.singleId, spell.singleLink, member, spell)
       end
     end
@@ -1856,7 +1854,7 @@ function BOM.UpdateScan()
 
   BOM.ScanModifier = false
 
-  ------------------------------
+  --<<---------------------------
   for _, spell in ipairs(BOM.SelectedSpells) do
     if spell.isInfo and BOM.CurrentProfile.Spell[spell.ConfigID].Whisper then
       bom_whisper_expired(spell)
@@ -1934,7 +1932,7 @@ function BOM.UpdateScan()
       end
     end
   end -- for all selected spells
-  ------------------------------
+  -->>--------------------------
 
   -- check argent dawn
   do
@@ -1956,6 +1954,7 @@ function BOM.UpdateScan()
 
   -- enchantment on weapons
   local hasMainHandEnchant, mainHandExpiration, mainHandCharges, mainHandEnchantID, hasOffHandEnchant, offHandExpiration, offHandCharges, offHandEnchantId = GetWeaponEnchantInfo()
+
   if BOM.SharedState.MainHand and not hasMainHandEnchant then
     local link = GetInventoryItemLink("player", GetInventorySlotInfo("MainHandSlot"))
     if link then
