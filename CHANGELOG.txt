@@ -1,16 +1,33 @@
+Buffomat Classic 1.9.2 (Alpha)
+- Improved tooltips on self/group buff switches. Inactive switches texture 
+  changed to offline (gray circle) texture.
+- Added Naxxramas instance IDs from Lich King, for AD trinket reminders.
+- Internal code refactoring for the scan module.
+
 Buffomat Classic 1.9
-- Internal code improvements, even though I constantly play with it and it shows no signs of problems, things will possibly be unstable for a moment.
-- Menu popup is simpler now, options removed from the main Spells tab. Options submenu renamed to "Quick Options" and Options menu item renamed to "Options Window".
-- Cancel auras now has text label and not just an empty row without any explanation. Can cancel int and spirit buffs.
-- Added 2 more cancel buffs (int and spirit, useful for tanks in raids). Added agi elixir for cheapskates like me.
-- Class-restrictions, limiting mana int and spirit buffs to mana classes, limiting agi, str and AP buffs to physical dmg classes - makes the list of consumables shorter.
+- Internal code improvements, even though I constantly play with it and it
+  shows no signs of problems, things will possibly be unstable for a moment.
+- Menu popup is simpler now, options removed from the main Spells tab. Options 
+  submenu renamed to "Quick Options" and Options menu item renamed to "Options 
+  Window".
+- Cancel auras now has text label and not just an empty row without any 
+  explanation. Can cancel int and spirit buffs.
+- Added 2 more cancel buffs (int and spirit, useful for tanks in raids). Added 
+  agi elixir for cheapskates like me.
+- Class-restrictions, limiting mana int and spirit buffs to mana classes,
+  limiting agi, str and AP buffs to physical dmg classes - makes the list of
+  consumables shorter.
 - Resurrection targets are sorted to prefer priests, shamans and paladins first
-- Multiple nice tooltips added reminding that keybind setting exists and that the macro button can be used.
+- Multiple nice tooltips added reminding that keybind setting exists and that
+  the macro button can be used.
 - Buff tab now displays selected buff groups in tab text
-- Watched groups are saved if the user is in raid (relogs and reloads do not lose the settings). Reset to watch all when user leaves the raid.
-- Warriors can now have Battle Shout in watched buffs. Hunters now don't have all trackers enabled by default - choose yourself.
+- Watched groups are saved if the user is in raid (relogs and reloads do not
+  lose the settings). Reset to watch all when user leaves the raid.
+- Warriors can now have Battle Shout in watched buffs. Hunters now don't have
+  all trackers enabled by default - choose yourself.
 - Fonts made slightly bigger
-- Green and red circles changed to more familiar checkboxes improving the UI overall feel.
+- Green and red circles changed to more familiar checkboxes improving the UI 
+  overall feel.
 
 Buffomat Classic 1.83
 - Forked and renamed abandoned addon to become "Buffomat Classic". Reuploading to Curse.

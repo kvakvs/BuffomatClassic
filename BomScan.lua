@@ -76,6 +76,7 @@ end
 
 BOM.WipeCachedItems = true
 
+-- Stores copies of GetContainerItemInfo parse results
 local _GetItemListCached = {}
 
 function BOM.GetItemList()
@@ -87,30 +88,38 @@ function BOM.GetItemList()
       for slot = 1, GetContainerNumSlots(bag) do
         --local itemID = GetContainerItemID(bag,slot)
 
-        local icon, itemCount, locked, quality, readable, lootable, itemLink, isFiltered, noValue, itemID = GetContainerItemInfo(bag, slot)
+        local icon, itemCount, _locked, quality, readable, lootable, itemLink, isFiltered, noValue, itemID = GetContainerItemInfo(bag, slot)
 
         for iList, list in ipairs(BOM.ItemList) do
           if tContains(list, itemID) then
-            tinsert(_GetItemListCached, { Index = iList, ID = itemID, CD = { }, Link = itemLink, Bag = bag, Slot = slot, Texture = icon })
+            tinsert(_GetItemListCached, { Index   = iList,
+                                          ID      = itemID,
+                                          CD      = { },
+                                          Link    = itemLink,
+                                          Bag     = bag,
+                                          Slot    = slot,
+                                          Texture = icon })
           end
         end
 
         if lootable and BOM.SharedState.OpenLootable then
           local locked = false
+
           for i, text in ipairs(BOM.Tool.ScanToolTip("SetBagItem", bag, slot)) do
             if text == LOCKED then
               locked = true
               break
             end
           end
+
           if not locked then
             tinsert(_GetItemListCached, { Index = 0, ID = itemID, CD = nil, Link = itemLink, Bag = bag, Slot = slot, Lootable = true, Texture = icon })
           end
 
         end
 
-      end
-    end
+      end -- for all bag slots in the current bag
+    end -- for all bags
   end
 
   --Update CD
@@ -123,33 +132,34 @@ function BOM.GetItemList()
   return _GetItemListCached
 end
 
-local function format_spell_link(spellId, icon, name, rank)
+---Formats a spell icon + spell name as a link
+---@param spellId number - spell id
+---@param icon string - spell icon, formatted as texture escape sequence
+---@param name string - spell name
+---@param rank string - ignored
+local function bom_format_spell_link(spellId, icon, name, rank)
   --local name, rank, icon, castTime, minRange, maxRange, spellId = GetSpellInfo(spell)
   if spellId == nil then
     return "NIL SPELLID"
-  else
-    rank = rank or "MISSING RANK"
-    name = name or "MISSING NAME"
-    icon = icon or "MISSING ICON"
-    if rank ~= "" then
-      rank = "(" .. rank .. ")"
-    end
-    rank = ""
-    return "|Hspell:" .. spellId
-            .. "|h|r |cff71d5ff"
-            .. BOM.FormatTexture(icon)
-            .. name
-            .. rank
-            .. "|r|h"
   end
+
+  name = name or "MISSING NAME"
+  icon = icon or "MISSING ICON"
+
+  return "|Hspell:" .. spellId
+          .. "|h|r |cff71d5ff"
+          .. BOM.FormatTexture(icon)
+          .. name
+          .. "|r|h"
 end
 
----Unused? TODO: Rename to lower_case
-local function SpellLink(spell)
+---Unused
+local function bom_spell_link_from_spell(spell)
   local name, rank, icon, castTime, minRange, maxRange, spellId = GetSpellInfo(spell)
-  return format_spell_link(spellId, icon, name)
+  return bom_format_spell_link(spellId, icon, name)
 end
 
+--Flag set to true when custom spells and cancel-spells were imported from the config
 local SpellsIncluded = false
 
 function BOM.GetSpells()
@@ -186,9 +196,9 @@ function BOM.GetSpells()
           or BOM.Carrot.Link == nil then
     do
       local name, rank, icon, castTime, minRange, maxRange, spellId = GetSpellInfo(BOM.ArgentumDawn.spell)
-      BOM.ArgentumDawn.Link = format_spell_link(spellId, icon, name, rank)
+      BOM.ArgentumDawn.Link = bom_format_spell_link(spellId, icon, name, rank)
       name, rank, icon, castTime, minRange, maxRange, spellId = GetSpellInfo(BOM.Carrot.spell)
-      BOM.Carrot.Link = format_spell_link(spellId, icon, name, rank)
+      BOM.Carrot.Link = bom_format_spell_link(spellId, icon, name, rank)
     end
   end
 
@@ -206,7 +216,7 @@ function BOM.GetSpells()
     local name, rank, icon, castTime, minRange, maxRange, spellId = GetSpellInfo(spell.singleId)
     spell.single = name
     rank = GetSpellSubtext(spell.singleId) or ""
-    spell.singleLink = format_spell_link(spellId, icon, name, rank)
+    spell.singleLink = bom_format_spell_link(spellId, icon, name, rank)
     spell.Icon = icon
 
     BOM.Tool.iMerge(BOM.AllSpellIds, spell.singleFamily)
@@ -266,7 +276,7 @@ function BOM.GetSpells()
         local name, rank, icon, castTime, minRange, maxRange, spellId = GetSpellInfo(spell.singleId)
         spell.single = name
         rank = GetSpellSubtext(spell.singleId) or ""
-        spell.singleLink = format_spell_link(spellId, icon, name, rank)
+        spell.singleLink = bom_format_spell_link(spellId, icon, name, rank)
         spell.Icon = icon
 
         if spell.isTracking then
@@ -286,7 +296,7 @@ function BOM.GetSpells()
         local name, rank, icon, castTime, minRange, maxRange, spellId = GetSpellInfo(spell.groupId)
         spell.group = name
         rank = GetSpellSubtext(spell.groupId) or ""
-        spell.groupLink = format_spell_link(spellId, icon, name, rank)
+        spell.groupLink = bom_format_spell_link(spellId, icon, name, rank)
 
         if spell.groupDuration
                 and BOM.SharedState.Duration[name] == nil
@@ -333,9 +343,14 @@ function BOM.GetSpells()
         if not spell.isScanned then
           local itemName, itemLink, _, _, _, _, _, _, _, itemIcon, _, _, _, _, _, _, _ = GetItemInfo(spell.item)
 
-          if (not itemName or not itemLink or not itemIcon) and BOM.SharedState.Cache.Item[spell.item] then
+          if (not itemName or not itemLink or not itemIcon)
+                  and BOM.SharedState.Cache.Item[spell.item]
+          then
             itemName, itemLink, itemIcon = unpack(BOM.SharedState.Cache.Item[spell.item])
-          elseif (not itemName or not itemLink or not itemIcon) and BOM.ItemCache[spell.item] then
+
+          elseif (not itemName or not itemLink or not itemIcon)
+                  and BOM.ItemCache[spell.item]
+          then
             itemName, itemLink, itemIcon = unpack(BOM.ItemCache[spell.item])
           end
 
@@ -350,7 +365,9 @@ function BOM.GetSpells()
               itemName, itemLink, itemIcon
             }
           else
-            print(BOM.CHAT_MSG_PREFIX, "Item not found!", spell.single, spell.singleId, spell.item, "x", BOM.ItemCache[spell.item])
+            print(BOM.CHAT_MSG_PREFIX, "Item not found!",
+                    spell.single, spell.singleId,
+                    spell.item, "x", BOM.ItemCache[spell.item])
           end
         else
           add = true
@@ -409,6 +426,16 @@ function BOM.GetSpells()
   end -- for all BOM-supported spells
 end
 
+---Table<UnitID: string, Table<>> with keys
+---  .distance - 10k yards default
+---  .unitId
+---  .name
+---  .group: number
+---  .hasResurrection: boolean
+---  .class: string
+---  .link: string
+---  .isTank: boolean
+---  .buffs: table
 local MemberCache = {}
 
 local function bom_get_member(unitid, NameGroup, NameRole)
@@ -452,7 +479,10 @@ local function bom_get_member(unitid, NameGroup, NameRole)
   return member
 end
 
-local savedParty, savedPlayerMember
+local PartyCache --Copy of party members, a dict of dicts
+
+---table(duration, expirationTime, source, isSingle)
+local PlayerMemberCache --Copy of player info dict
 
 local function bom_count_members()
   local countTo
@@ -509,18 +539,17 @@ end
 
 function BOM.GetPartyMembers()
   -- and buffs
-
   local party
-  local playerMember
+  local player_member --table(duration, expirationTime, source, isSingle)
 
   -- check if stored party is correct!
   if not BOM.PartyUpdateNeeded
-          and savedParty ~= nil
-          and savedPlayerMember ~= nil then
+          and PartyCache ~= nil
+          and PlayerMemberCache ~= nil then
 
-    if #savedParty == bom_count_members() + (BOM.SaveTargetName and 1 or 0) then
+    if #PartyCache == bom_count_members() + (BOM.SaveTargetName and 1 or 0) then
       local ok = true
-      for i, member in ipairs(savedParty) do
+      for i, member in ipairs(PartyCache) do
         local name = (UnitFullName(member.unitId))
         if name ~= member.name then
           ok = false
@@ -528,14 +557,14 @@ function BOM.GetPartyMembers()
         end
       end
       if ok then
-        party = savedParty
-        playerMember = savedPlayerMember
+        party = PartyCache
+        player_member = PlayerMemberCache
       end
     end
   end
 
   -- read party data
-  if party == nil or playerMember == nil then
+  if party == nil or player_member == nil then
     party = {}
 
     if IsInRaid() then
@@ -558,7 +587,7 @@ function BOM.GetPartyMembers()
 
         if member then
           if UnitIsUnit(member.unitId, "player") then
-            playerMember = member
+            player_member = member
           end
           tinsert(party, member)
 
@@ -585,8 +614,8 @@ function BOM.GetPartyMembers()
           tinsert(party, member)
         end
       end
-      playerMember = bom_get_member("player")
-      tinsert(party, playerMember)
+      player_member = bom_get_member("player")
+      tinsert(party, player_member)
       member = bom_get_member("pet")
       if member then
         member.group = 9
@@ -608,8 +637,8 @@ function BOM.GetPartyMembers()
       end
     end
 
-    savedParty = party
-    savedPlayerMember = playerMember
+    PartyCache = party
+    PlayerMemberCache = player_member
 
     -- Cleanup BOM.PlayerBuffs
     for name, val in pairs(BOM.PlayerBuffs) do
@@ -629,9 +658,9 @@ function BOM.GetPartyMembers()
   end
 
   BOM.PartyUpdateNeeded = false
-
   BOM.SomeBodyGhost = false
-  local zonePlayer = C_Map.GetBestMapForUnit("player")
+
+  local player_zone = C_Map.GetBestMapForUnit("player")
 
   if IsAltKeyDown() then
     BOM.DeclineHasResurrection = true
@@ -639,8 +668,13 @@ function BOM.GetPartyMembers()
   end
 
   for i, member in ipairs(party) do
-    member.isSameZone = (C_Map.GetBestMapForUnit(member.unitId) == zonePlayer) or member.isGhost or member.unitId == "target"
-    if not member.isDead or BOM.DeclineHasResurrection then
+    member.isSameZone = (C_Map.GetBestMapForUnit(member.unitId) == player_zone)
+            or member.isGhost
+            or member.unitId == "target"
+
+    if not member.isDead
+            or BOM.DeclineHasResurrection
+    then
       member.hasResurrection = false
       member.distance = BOM.Tool.UnitDistanceSquared(member.unitId)
     else
@@ -648,7 +682,7 @@ function BOM.GetPartyMembers()
     end
 
     if BOM.ForceUpdate then
-      member.isPlayer = (member == playerMember)
+      member.isPlayer = (member == player_member)
       member.isDead = UnitIsDeadOrGhost(member.unitId) and not UnitIsFeignDeath(member.unitId)
       member.isGhost = UnitIsGhost(member.unitId)
       member.isConnected = UnitIsConnected(member.unitId)
@@ -668,8 +702,9 @@ function BOM.GetPartyMembers()
         repeat
           buffIndex = buffIndex + 1
 
-          local name, icon, count, debuffType, duration, expirationTime, source, isStealable,
-          nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, castByPlayer, nameplateShowAll, timeMod = BOM.UnitAura(member.unitId, buffIndex, "HELPFUL")
+          local name, icon, count, debuffType, duration, expirationTime, source, isStealable
+          , nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, castByPlayer
+          , nameplateShowAll, timeMod = BOM.UnitAura(member.unitId, buffIndex, "HELPFUL")
 
           spellId = BOM.SpellToSpell[spellId] or spellId
 
@@ -699,16 +734,17 @@ function BOM.GetPartyMembers()
           end
 
         until (not name)
-      end
-    end
-  end
+      end -- if is not dead
+    end -- if force update
+  end -- for all in party
 
   -- weapon-buffs
   -- Clear old
-  local OldMainHandBuff = playerMember.MainHandBuff
-  local OldOffHandBuff = playerMember.OffHandBuff
+  local OldMainHandBuff = player_member.MainHandBuff
+  local OldOffHandBuff = player_member.OffHandBuff
 
-  local hasMainHandEnchant, mainHandExpiration, mainHandCharges, mainHandEnchantID, hasOffHandEnchant, offHandExpiration, offHandCharges, offHandEnchantId = GetWeaponEnchantInfo()
+  local hasMainHandEnchant, mainHandExpiration, mainHandCharges, mainHandEnchantID
+  , hasOffHandEnchant, offHandExpiration, offHandCharges, offHandEnchantId = GetWeaponEnchantInfo()
 
   if hasMainHandEnchant and mainHandEnchantID
           and BOM.EnchantToSpell[mainHandEnchantID] then
@@ -721,15 +757,15 @@ function BOM.GetPartyMembers()
       duration = 300
     end
 
-    playerMember.buffs[configId] = {
+    player_member.buffs[configId] = {
       ["duration"]       = duration,
       ["expirationTime"] = GetTime() + mainHandExpiration / 1000,
       ["source"]         = "player",
       ["isSingle"]       = true,
     }
-    playerMember.MainHandBuff = configId
+    player_member.MainHandBuff = configId
   else
-    playerMember.MainHandBuff = nil
+    player_member.MainHandBuff = nil
   end
 
   if hasOffHandEnchant
@@ -744,30 +780,34 @@ function BOM.GetPartyMembers()
       duration = 300
     end
 
-    playerMember.buffs[-configId] = {
+    player_member.buffs[-configId] = {
       ["duration"]       = duration,
       ["expirationTime"] = GetTime() + offHandExpiration / 1000,
       ["source"]         = "player",
       ["isSingle"]       = true,
     }
-    playerMember.OffHandBuff = configId
+    player_member.OffHandBuff = configId
   else
-    playerMember.OffHandBuff = nil
+    player_member.OffHandBuff = nil
   end
 
-  if OldMainHandBuff ~= playerMember.MainHandBuff then
+  if OldMainHandBuff ~= player_member.MainHandBuff then
     BOM.ForceUpdate = true
   end
 
-  if OldOffHandBuff ~= playerMember.OffHandBuff then
+  if OldOffHandBuff ~= player_member.OffHandBuff then
     BOM.ForceUpdate = true
   end
 
   BOM.DeclineHasResurrection = false
 
-  return party, playerMember
+  return party, player_member
 end
 
+---Check for party, spell and player, which targets that spell goes onto
+---@param party table
+---@param spell table
+---@param playerMember table
 function BOM.GetNeedBuff(party, spell, playerMember)
   spell.NeedMember = spell.NeedMember or {}
   spell.NeedGroup = spell.NeedGroup or {}
@@ -795,6 +835,7 @@ function BOM.GetNeedBuff(party, spell, playerMember)
 
   elseif spell.isInfo then
     spell.playerActiv = false
+
     for i, member in ipairs(party) do
       if member.buffs[spell.ConfigID] then
         tinsert(spell.NeedMember, member)
@@ -979,6 +1020,10 @@ function BOM.GetNeedBuff(party, spell, playerMember)
   return SomeBodyDeath
 end
 
+---Updates the BOM macro
+---@param member table - next target to buff
+---@param spellId number - spell to cast
+---@param command string - bag command
 function BOM.UpdateMacro(member, spellId, command)
   if (GetMacroInfo(BOM.MACRO_NAME)) == nil then
     local perAccount, perChar = GetNumMacros()
@@ -1515,9 +1560,10 @@ end
 
 ---Add a paladin blessing
 ---@param spell table - spell to cast
+---@param party table - the party
 ---@param player_member table - player
 ---@param in_range boolean - spell target is in range
-local function bom_add_buff(spell, player_member, in_range)
+local function bom_add_buff(spell, party, player_member, in_range)
   local ok, bag, slot, count
 
   if spell.NeededGroupItem then
@@ -1928,7 +1974,7 @@ function BOM.UpdateScan()
         in_range = bom_add_blessing(spell, player_member, in_range)
 
       else
-        in_range = bom_add_buff(spell, player_member, in_range)
+        in_range = bom_add_buff(spell, party, player_member, in_range)
       end
     end
   end -- for all selected spells
