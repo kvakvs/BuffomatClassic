@@ -829,7 +829,7 @@ local function Event_UI_ERROR_MESSAGE(errorType, message)
       if message == SPELL_FAILED_LOWLEVEL then
         BOM.DownGrade()
       else
-        BOM.ADDSKIP()
+        BOM.AddMemberToSkipList()
       end
     end
   end
