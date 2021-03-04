@@ -10,7 +10,7 @@ local L = setmetatable(
             end
           end
         })
-BUFFOMAT_ADDON = BOM
+BUFFOMAT_ADDON = BOM --global
 
 BOM.BehaviourSettings = {
   { "AutoOpen", true },
@@ -1001,45 +1001,45 @@ end
 ---OnLoad is called when XML frame for the main window is loaded into existence
 ---BOM.Init() will also be called when the addon is loaded (earlier than this)
 function BOM.OnLoad()
-  BOM.Tool.RegisterEvent("TAXIMAP_OPENED", Event_TAXIMAP_OPENED)
-  BOM.Tool.RegisterEvent("ADDON_LOADED", Event_ADDON_LOADED)
-  BOM.Tool.RegisterEvent("UNIT_POWER_UPDATE", Event_UNIT_POWER_UPDATE)
-  BOM.Tool.RegisterEvent("PLAYER_STARTED_MOVING", Event_PLAYER_STARTED_MOVING)
-  BOM.Tool.RegisterEvent("PLAYER_STOPPED_MOVING", Event_PLAYER_STOPPED_MOVING)
-  BOM.Tool.RegisterEvent("PLAYER_TARGET_CHANGED", Event_PLAYER_TARGET_CHANGED)
-  BOM.Tool.RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED", Event_COMBAT_LOG_EVENT_UNFILTERED)
-  BOM.Tool.RegisterEvent("UI_ERROR_MESSAGE", Event_UI_ERROR_MESSAGE)
+  BOM.RegisterEvent("TAXIMAP_OPENED", Event_TAXIMAP_OPENED)
+  BOM.RegisterEvent("ADDON_LOADED", Event_ADDON_LOADED)
+  BOM.RegisterEvent("UNIT_POWER_UPDATE", Event_UNIT_POWER_UPDATE)
+  BOM.RegisterEvent("PLAYER_STARTED_MOVING", Event_PLAYER_STARTED_MOVING)
+  BOM.RegisterEvent("PLAYER_STOPPED_MOVING", Event_PLAYER_STOPPED_MOVING)
+  BOM.RegisterEvent("PLAYER_TARGET_CHANGED", Event_PLAYER_TARGET_CHANGED)
+  BOM.RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED", Event_COMBAT_LOG_EVENT_UNFILTERED)
+  BOM.RegisterEvent("UI_ERROR_MESSAGE", Event_UI_ERROR_MESSAGE)
 
-  BOM.Tool.RegisterEvent("UNIT_SPELLCAST_START", Event_UNIT_SPELLCAST_START)
-  BOM.Tool.RegisterEvent("UNIT_SPELLCAST_STOP", Event_UNIT_SPELLCAST_STOP)
-  BOM.Tool.RegisterEvent("UNIT_SPELLCAST_SUCCEEDED", Event_UNIT_SPELLCAST_errors)
-  BOM.Tool.RegisterEvent("UNIT_SPELLCAST_INTERRUPTED", Event_UNIT_SPELLCAST_errors)
-  BOM.Tool.RegisterEvent("UNIT_SPELLCAST_FAILED", Event_UNIT_SPELLCAST_errors)
+  BOM.RegisterEvent("UNIT_SPELLCAST_START", Event_UNIT_SPELLCAST_START)
+  BOM.RegisterEvent("UNIT_SPELLCAST_STOP", Event_UNIT_SPELLCAST_STOP)
+  BOM.RegisterEvent("UNIT_SPELLCAST_SUCCEEDED", Event_UNIT_SPELLCAST_errors)
+  BOM.RegisterEvent("UNIT_SPELLCAST_INTERRUPTED", Event_UNIT_SPELLCAST_errors)
+  BOM.RegisterEvent("UNIT_SPELLCAST_FAILED", Event_UNIT_SPELLCAST_errors)
 
   for i, event in ipairs(EVT_COMBAT_START) do
-    BOM.Tool.RegisterEvent(event, Event_CombatStart)
+    BOM.RegisterEvent(event, Event_CombatStart)
   end
   for i, event in ipairs(EVT_COMBAT_STOP) do
-    BOM.Tool.RegisterEvent(event, Event_CombatStop)
+    BOM.RegisterEvent(event, Event_CombatStop)
   end
   for i, event in ipairs(EVT_LOADING_SCREEN_START) do
-    BOM.Tool.RegisterEvent(event, Event_LoadingStart)
+    BOM.RegisterEvent(event, Event_LoadingStart)
   end
   for i, event in ipairs(EVT_LOADING_SCREEN_END) do
-    BOM.Tool.RegisterEvent(event, Event_LoadingStop)
+    BOM.RegisterEvent(event, Event_LoadingStop)
   end
 
   for i, event in ipairs(EVT_SPELLBOOK_CHANGED) do
-    BOM.Tool.RegisterEvent(event, Event_SpellsChanged)
+    BOM.RegisterEvent(event, Event_SpellsChanged)
   end
   for i, event in ipairs(EVT_PARTY_CHANGED) do
-    BOM.Tool.RegisterEvent(event, Event_PartyChanged)
+    BOM.RegisterEvent(event, Event_PartyChanged)
   end
   for i, event in ipairs(EVT_UPDATE) do
-    BOM.Tool.RegisterEvent(event, Event_GenericUpdate)
+    BOM.RegisterEvent(event, Event_GenericUpdate)
   end
   for i, event in ipairs(EVT_BAG_CHANGED) do
-    BOM.Tool.RegisterEvent(event, Event_Bag)
+    BOM.RegisterEvent(event, Event_Bag)
   end
 end
 

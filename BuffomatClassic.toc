@@ -1,22 +1,23 @@
 ## Interface: 11304
 ## Title: Buffomat Classic
 ## Notes: Semi-automatic buff and resurrection bot, compatible with Classic
-## Version: 1.9.2
+## Version: 1.9.3
 ## Author: kvakvs; Original author: GPI / Erytheia-Razorfen
 ## DefaultState: enabled
 ## SavedVariables: BomSharedState
 ## SavedVariablesPerCharacter: BomCharacterState
 
-BomTexture.lua
-BomOptions.lua
-BomMinimapButton.lua
-BomToolbox.lua
-BomL10n.lua
-BomToolbox.lua
-BomScan.lua
+const/BomTexture.lua
+const/BomSpells.lua
+
+src/BomOptions.lua
+src/BomMinimapButton.lua
+src/BomToolbox.lua
+src/BomL10n.lua
+src/BomToolbox.lua
+src/BomScan.lua
+src/BomTab.lua
+src/BomMyButton.lua
+
 Bom.lua
 Bom.xml
-
-BomSpells.lua
-BomTab.lua
-BomMyButton.lua

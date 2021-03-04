@@ -125,7 +125,7 @@ local function bom_gpiprivat_update_handler(self, ...)
   end
 end
 
-function Tool.RegisterEvent(event, func)
+function BOM.RegisterEvent(event, func)
   if eventFrame == nil then
     eventFrame = CreateFrame("Frame")
   end
