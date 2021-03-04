@@ -489,7 +489,8 @@ local function bom_create_tab_row(isHorde, spell, dy, last, section, self_class)
   end
 
   if spell.isWeapon then
-    spell.frames.buff:SetText((spell.single or "-") .. " (" .. L.TTAnyRank .. ")")
+    spell.frames.buff:SetText((spell.single or "-")
+            .. " (" .. L.TooltipIncludesAllRanks .. ")")
   else
     spell.frames.buff:SetText(spell.single or "-")
   end

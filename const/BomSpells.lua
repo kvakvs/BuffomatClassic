@@ -301,10 +301,10 @@ BOM.AllBuffomatSpells = {
 
   { singleId      = 25123, item = 20748, items = { 20748, 20747, 20745 }, isBuff = true,
     isWeapon      = true, duration = 1800, default = false,
-    onlyUsableFor = BOM_MANA_CLASSES }, --Brilliant Mana Oil
+    onlyUsableFor = BOM_MANA_CLASSES }, --Brilliant|Lesser|Minor Mana Oil
   { singleId      = 25122, item = 20749, items = { 20749, 20746, 20744, 20750 }, isBuff = true,
     isWeapon      = true, duration = 1800, default = false,
-    onlyUsableFor = BOM_MANA_CLASSES }, --Brilliant Wizard Oil
+    onlyUsableFor = BOM_MANA_CLASSES }, --Brilliant|Lesser|Minor Wizard Oil
   { singleId      = 28898, item = 23123, isBuff = true, isWeapon = true,
     duration      = 3600, default = false,
     onlyUsableFor = BOM_MANA_CLASSES }, --Blessed Wizard Oil

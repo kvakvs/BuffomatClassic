@@ -80,7 +80,7 @@ BOM.locales = {
     TooltipWhisperWhenExpired     = "Whisper the player who casted the buff, when the buff has expired",
     TooltipMainHand               = "Main hand",
     TooltipOffHand                = "Off hand",
-    TTAnyRank                     = "any",
+    TooltipIncludesAllRanks       = "Will use any rank",
 
     TabBuff                       = "Buff",
     TabDoNotBuff                  = "Do not buff",
@@ -228,7 +228,7 @@ BOM.locales = {
     ["TabBuff"]                       = "Buff",
     ["TabSpells"]                     = "Zauber",
     ["Tank"]                          = "Tank",
-    ["TTAnyRank"]                     = "Alle Varianten",
+    ["TooltipIncludesAllRanks"]       = "Alle Varianten",
     ["TooltipEnableSpell"]            = "Buffüberwachung ein-/ausschalten",
     ["TooltipEnableBuffCancel"]       = "Automatisches beenden des Buff ein-/ausschalten",
     ["TooltipGroup"]                  = "Gruppe %d",
@@ -374,6 +374,11 @@ BOM.locales = {
     ["HintCancelThisBuff"]            = "Отменять баф",
     ["HintCancelThisBuff_Combat"]     = "Перед боем",
     ["HintCancelThisBuff_Always"]     = "Сразу",
+
+    ["TooltipWhisperWhenExpired"]     = "Сообщить игроку, который дал этот баф, когда время бафа истечёт",
+    ["TooltipMainHand"]               = "Правая рука",
+    ["TooltipOffHand"]                = "Левая рука",
+    ["TooltipIncludesAllRanks"]       = "Любые варианты этого бафа",
 
     ["TooltipSelectTarget"]           = "Выберите участника рейда/группы, чтобы включить эту опцию",
     ["TooltipSelfCastCheckbox_Self"]  = "Применить баф только на себя",
