@@ -556,7 +556,11 @@ end
 
 ---@return table - pair (party: table, player_member: table)
 local function bom_get_5man_members(player_member)
+  local name_group = {}
+  local name_role = {}
+  local party = {}
   local member
+
   for groupIndex = 1, 4 do
     member = bom_get_member("party" .. groupIndex)
 

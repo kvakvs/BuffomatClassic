@@ -275,7 +275,7 @@
         Contains list of spells selected to be casted, sorted by distance and cast-ability
         Contains the cast button
         -->
-      <Frame name="BomC_ListTab" hidden="false">
+      <Frame name="BomC_ListTab">
         <Anchors>
           <Anchor point="TOPLEFT">
             <Offset>
@@ -303,11 +303,10 @@
               </Anchor>
               <Anchor point="BOTTOMRIGHT">
                 <Offset>
-                  <AbsDimension x="-2" y="12"/>
+                  <AbsDimension x="-18" y="12"/>
                 </Offset>
               </Anchor>
             </Anchors>
-
           </Button>
 
           <ScrollingMessageFrame enableMouseWheel="true"

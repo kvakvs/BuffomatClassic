@@ -51,12 +51,10 @@ BOM.MAX_AURAS = 40
 BOM.BLESSING_ID = "blessing"
 BOM.LOADING_SCREEN_TIMEOUT = 2
 
-BOM.CHAT_MSG_PREFIX = "Buffomat: "
-
 ---Print a text with "Buffomat: " prefix in the game chat window
 ---@param t string
 function BOM.Print(t)
-  DEFAULT_CHAT_FRAME:AddMessage(BOM.CHAT_MSG_PREFIX .. t)
+  DEFAULT_CHAT_FRAME:AddMessage(L.CHAT_MSG_PREFIX .. t)
 end
 
 ---Creates a string which will display a picture in a FontString
@@ -462,6 +460,27 @@ function bom_update_buff_tab_text()
 end
 
 BOM.UpdateBuffTabText = bom_update_buff_tab_text
+
+---Creates small mybutton which toggles group buff setting, next to CAST button
+function BOM.CreateSingleBuffCastCheckbox(parent_frame)
+  if BOM.QuickSingleBuff == nil then
+    BOM.QuickSingleBuff = BOM.CreateMyButton(
+            parent_frame,
+            BOM.ICON_SELF_CAST_ON,
+            BOM.ICON_SELF_CAST_OFF)
+    BOM.QuickSingleBuff:SetPoint("BOTTOMLEFT", parent_frame, "BOTTOMRIGHT", -18, 0);
+    BOM.QuickSingleBuff:SetPoint("BOTTOMRIGHT", parent_frame, "BOTTOMRIGHT", 0, 12);
+    BOM.QuickSingleBuff:SetVariable(BOM.SharedState, "NoGroupBuff")
+    BOM.QuickSingleBuff:SetOnClick(BOM.MyButtonOnClick)
+    BOM.Tool.TooltipText(
+            BOM.QuickSingleBuff,
+            BOM.FormatTexture(BOM.ICON_SELF_CAST_ON) .. " - " .. L.CboxNoGroupBuff
+                    .. "|n"
+                    .. BOM.FormatTexture(BOM.ICON_SELF_CAST_OFF) .. " - " .. L.CboxGroupBuff)
+
+    BOM.QuickSingleBuff:Show()
+  end
+end
 
 ---Called from event handler on Addon Loaded event
 ---Execution start here

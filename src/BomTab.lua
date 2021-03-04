@@ -663,8 +663,7 @@ function BOM.UpdateSpellsTab()
     BOM.SpellTabsCreatedFlag = true
   end
 
-  -- className, classFilename, classId
-  local _, selfClassName, _ = UnitClass("player")
+  local _className, selfClassName, _classId = UnitClass("player")
 
   for i, spell in ipairs(BOM.SelectedSpells) do
     if type(spell.onlyUsableFor) == "table"
@@ -678,4 +677,7 @@ function BOM.UpdateSpellsTab()
   for _i, spell in ipairs(BOM.CancelBuffs) do
     spell.frames.Enable:SetVariable(BOM.CurrentProfile.CancelBuff[spell.ConfigID], "Enable")
   end
+
+  --Create small checkbox to the right of [Cast <spell>] button
+  BOM.CreateSingleBuffCastCheckbox(BomC_ListTab) --maybe not created yet?
 end

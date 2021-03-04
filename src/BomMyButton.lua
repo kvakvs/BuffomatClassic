@@ -172,6 +172,7 @@ function BOM.MyButton_SetSpell(self, spell)
   self:SetAttribute("unit", "player")
 end
 
+---Contains all MyButtons
 local MyButtonsFrames = {}
 
 ---Creates small clickable button in the spell tab
