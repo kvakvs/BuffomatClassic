@@ -1239,54 +1239,56 @@ function BOM.TimeCheck(ti, duration)
   return false
 end
 
----@type table - pairs of [1]=text, [2]=distance
-local displayCache = {}
-
-local display = {}
-local displayInfo = {}
-local displayI
+---@type table - pairs of [1]=text, [2]=distance - list of all strings to be displayed
+local bom_messages_cache = {}
+---@type table - list of text strings to be displayed (spell and target)
+local bom_cast_messages = {}
+---@type table - list of info strings to be displayed (yellow)
+local bom_info_messages = {}
+---@type number - index to insert another line
+local bom_insert_index
 
 ---Adds a text line to display in the message frame. The line is stored in DisplayCache
 ---@param text string - Text to display
 ---@param distance number - Distance
 ---@param isInfo boolean - Whether the text is info text
 local function bom_display_text(text, distance, isInfo)
-  displayI = displayI + 1
-  displayCache[displayI] = displayCache[displayI] or {}
-  displayCache[displayI][1] = text
-  displayCache[displayI][2] = distance
+  bom_insert_index = bom_insert_index + 1
+  bom_messages_cache[bom_insert_index] = bom_messages_cache[bom_insert_index] or {}
+  bom_messages_cache[bom_insert_index][1] = text
+  bom_messages_cache[bom_insert_index][2] = distance
 
   if not isInfo then
-    tinsert(display, displayCache[displayI])
+    tinsert(bom_cast_messages, bom_messages_cache[bom_insert_index])
   else
-    tinsert(displayInfo, displayCache[displayI])
+    tinsert(bom_info_messages, bom_messages_cache[bom_insert_index])
   end
 end
 
 ---Clear the cached text, and clear the message frame
 local function bom_clear_display_cache()
   BomC_ListTab_MessageFrame:Clear()
-  displayI = 0
-  wipe(display)
-  wipe(displayInfo)
+  bom_insert_index = 0
+  wipe(bom_cast_messages)
+  wipe(bom_info_messages)
 end
 
 ---Unload the contents of DisplayInfo cache into BomC_ListTab_MessageFrame
 ---The messages (tasks) are sorted
 local function bom_display_text_in_messageframe()
-  table.sort(display, function(a, b)
+  table.sort(bom_cast_messages, function(a, b)
     return a[2] > b[2] or (a[2] == b[2] and a[1] > b[1])
   end)
 
-  table.sort(displayInfo, function(a, b)
+  table.sort(bom_info_messages, function(a, b)
     return a[1] > b[1]
   end)
 
-  for i, txt in ipairs(displayInfo) do
+  for i, txt in ipairs(bom_info_messages) do
     BomC_ListTab_MessageFrame:AddMessage(txt[1])
   end
 
-  for i, txt in ipairs(display) do
+  for i, txt in ipairs(bom_cast_messages) do
     BomC_ListTab_MessageFrame:AddMessage(txt[1])
   end
 end
@@ -1873,6 +1875,18 @@ local function bom_add_weapon_buff(spell, player_member, bag_title, bag_command)
   return bag_title, bag_command
 end
 
+---Set text and enable the cast button (or disable)
+---@param t string - text for the cast button
+---@param enable boolean - whether to enable the button or not
+function bom_cast_button(t, enable)
+  BomC_ListTab_Button:SetText(t)
+  if enable then
+    BomC_ListTab_Button:Enable()
+  else
+    BomC_ListTab_Button:Disable()
+  end
+end
+
 ---Scan the available spells and group members to find who needs the rebuff/res
 ---and what would be their priority?
 function BOM.UpdateScan()
@@ -1891,7 +1905,7 @@ function BOM.UpdateScan()
   if InCombatLockdown() then
     BOM.ForceUpdate = false
     BOM.CheckForError = false
-    BomC_ListTab_Button:SetText(L.MsgCombat)
+    bom_cast_button(L.MsgCombat, true)
     return
   end
 
@@ -1899,8 +1913,7 @@ function BOM.UpdateScan()
     BOM.ForceUpdate = false
     BOM.CheckForError = false
     BOM.UpdateMacro()
-    BomC_ListTab_Button:SetText(L.MsgDead)
-    BomC_ListTab_Button:Disable()
+    bom_cast_button(SetText(L.MsgDead), false)
     BOM.AutoClose()
     return
   end
@@ -1922,8 +1935,7 @@ function BOM.UpdateScan()
     BOM.CheckForError = false
     BOM.ForceUpdate = false
     BOM.UpdateMacro()
-    BomC_ListTab_Button:SetText(L.MsgDisabled)
-    BomC_ListTab_Button:Disable()
+    bom_cast_button(L.MsgDisabled, false)
     BOM.AutoClose()
     return
   end
@@ -2116,8 +2128,8 @@ function BOM.UpdateScan()
     end
   end
 
-  if #display > 0
-          or #displayInfo > 0 then
+  if #bom_cast_messages > 0
+          or #bom_info_messages > 0 then
     BOM.AutoOpen()
   else
     BOM.AutoClose()
@@ -2129,16 +2141,16 @@ function BOM.UpdateScan()
 
   if BOM.PlayerCasting then
     --Print player is busy (casting)
-    BomC_ListTab_Button:SetText(L.MsgBusy)
+    bom_cast_button(L.MsgBusy, false)
     BOM.UpdateMacro()
-    BomC_ListTab_Button:Disable()
 
   elseif next_cast_spell.Member and next_cast_spell.SpellId then
     --Next cast is already defined - update the button text
-    BomC_ListTab_Button:SetText(
+    bom_cast_button(
             string.format(L["MsgNextCast"],
                     next_cast_spell.Link,
-                    next_cast_spell.Member.link))
+                    next_cast_spell.Member.link),
+            true)
 
     BOM.UpdateMacro(next_cast_spell.Member, next_cast_spell.SpellId)
 
@@ -2154,10 +2166,10 @@ function BOM.UpdateScan()
     BOM.CastFailedSpell = next_cast_spell.Spell
     BOM.CastFailedSpellTarget = next_cast_spell.Member
   else
-    if #display == 0 then
+    if #bom_cast_messages == 0 then
       --If don't have any strings to display, and nothing to do -
       --Clear the cast button
-      BomC_ListTab_Button:SetText(L.MsgEmpty)
+      bom_cast_button(L.MsgEmpty, true)
 
       for spellIndex, spell in ipairs(BOM.SelectedSpells) do
         if #spell.SkipList > 0 then
@@ -2167,12 +2179,12 @@ function BOM.UpdateScan()
 
     else
       if someone_is_dead and BOM.SharedState.DeathBlock then
-        BomC_ListTab_Button:SetText(L.MsgSomebodyDead)
+        bom_cast_button(L.MsgSomebodyDead, false)
       else
         if in_range then
-          BomC_ListTab_Button:SetText(ERR_OUT_OF_MANA)
+          bom_cast_button(ERR_OUT_OF_MANA, false)
         else
-          BomC_ListTab_Button:SetText(ERR_SPELL_OUT_OF_RANGE)
+          bom_cast_button(ERR_SPELL_OUT_OF_RANGE, false)
           local skipreset = false
 
           for spellIndex, spell in ipairs(BOM.SelectedSpells) do
@@ -2191,7 +2203,7 @@ function BOM.UpdateScan()
     end -- if #display == 0
 
     if bag_title then
-      BomC_ListTab_Button:SetText(bag_title)
+      bom_cast_button(bag_title, true)
     end
 
     BomC_ListTab_Button:Enable()
