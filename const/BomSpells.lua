@@ -134,7 +134,7 @@ BOM.AllBuffomatSpells = {
     singleFamily = { 6229, 11739, 11740, 28610 } },
   { singleId     = 11735, isOwn = true, default = false, -- Demon Armor
     singleFamily = { 706, 1086, 11733, 11734, 11735 } },
-  { singleId     = 696, isOwn = true, default = false, -- Demon skin
+  { singleId     = 696, isOwn = true, default = false, -- Demon skin (Low Level)
     singleFamily = { 687, 696 } },
   { singleId = 18788, isOwn = true, default = true }, -- Demonic Sacrifice
   { singleId     = 17953, isOwn = true, default = false, ItemLock = { 1254, 13699, 13700, 13701 }, -- Firestone

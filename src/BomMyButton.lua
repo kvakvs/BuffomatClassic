@@ -173,7 +173,7 @@ function BOM.MyButton_SetSpell(self, spell)
 end
 
 ---Contains all MyButtons
-local MyButtonsFrames = {}
+local bom_managed_mybuttons = {}
 
 ---Creates small clickable button in the spell tab
 ---@param parent table - UI parent frame
@@ -183,24 +183,29 @@ local MyButtonsFrames = {}
 ---@param selCoord table - texcoord for selected
 ---@param unselCoord table - texcoord for unselected
 ---@param disCoord table - texcoord for disabled
-function BOM.CreateMyButton(parent, sel, unsel, dis, selCoord, unselCoord, disCoord)
-  Frame = CreateFrame("frame", nil, parent, "BomC_MyButton")
-  BOM.MyButton_OnLoad(Frame)
-  Frame:SetTextures(sel, unsel, dis, selCoord, unselCoord, disCoord)
-  tinsert(MyButtonsFrames, Frame)
-  return Frame
+---@param unmanaged boolean - set to true to not add button to bom_managed_mybuttons
+function BOM.CreateMyButton(parent, sel, unsel, dis, selCoord, unselCoord, disCoord, unmanaged)
+  new_button_frame = CreateFrame("frame", nil, parent, "BomC_MyButton")
+  BOM.MyButton_OnLoad(new_button_frame)
+  new_button_frame:SetTextures(sel, unsel, dis, selCoord, unselCoord, disCoord)
+
+  if unmanaged == nil or unmanaged == false then
+    tinsert(bom_managed_mybuttons, new_button_frame)
+  end
+
+  return new_button_frame
 end
 
 function BOM.CreateMyButtonSecure(parent, sel, unsel, dis, selCoord, unselCoord, disCoord)
-  Frame = CreateFrame("Button", nil, parent, "BomC_MyButtonSecure")
-  BOM.MyButton_OnLoad(Frame, true)
-  Frame:SetTextures(sel, unsel, dis, selCoord, unselCoord, disCoord)
-  tinsert(MyButtonsFrames, Frame)
-  return Frame
+  new_button_frame = CreateFrame("Button", nil, parent, "BomC_MyButtonSecure")
+  BOM.MyButton_OnLoad(new_button_frame, true)
+  new_button_frame:SetTextures(sel, unsel, dis, selCoord, unselCoord, disCoord)
+  tinsert(bom_managed_mybuttons, new_button_frame)
+  return new_button_frame
 end
 
 function BOM.MyButtonUpdateAll()
-  for i, Frame in ipairs(MyButtonsFrames) do
+  for i, Frame in ipairs(bom_managed_mybuttons) do
     if Frame.SetState then
       Frame:SetState()
     end
@@ -209,7 +214,7 @@ end
 
 -- Hides all icons and clickable buttons in the spells tab
 function BOM.MyButtonHideAll()
-  for i, Frame in ipairs(MyButtonsFrames) do
+  for i, Frame in ipairs(bom_managed_mybuttons) do
     Frame:Hide()
   end
 end

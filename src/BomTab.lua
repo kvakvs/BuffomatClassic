@@ -678,6 +678,6 @@ function BOM.UpdateSpellsTab()
     spell.frames.Enable:SetVariable(BOM.CurrentProfile.CancelBuff[spell.ConfigID], "Enable")
   end
 
-  --Create small checkbox to the right of [Cast <spell>] button
-  BOM.CreateSingleBuffCastCheckbox(BomC_ListTab) --maybe not created yet?
+  --Create small toggle button to the right of [Cast <spell>] button
+  BOM.CreateSingleBuffButton(BomC_ListTab) --maybe not created yet?
 end

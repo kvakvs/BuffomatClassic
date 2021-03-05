@@ -2146,11 +2146,12 @@ function BOM.UpdateScan()
 
   elseif next_cast_spell.Member and next_cast_spell.SpellId then
     --Next cast is already defined - update the button text
-    bom_cast_button(
-            string.format(L["MsgNextCast"],
-                    next_cast_spell.Link,
-                    next_cast_spell.Member.link),
-            true)
+    --bom_cast_button(
+    --        string.format(L["MsgNextCast"],
+    --                next_cast_spell.Link,
+    --                next_cast_spell.Member.link),
+    --        true)
+    bom_cast_button(next_cast_spell.Link, true)
 
     BOM.UpdateMacro(next_cast_spell.Member, next_cast_spell.SpellId)
 
@@ -2206,12 +2207,13 @@ function BOM.UpdateScan()
       bom_cast_button(bag_title, true)
     end
 
-    BomC_ListTab_Button:Enable()
     BOM.UpdateMacro(nil, nil, bag_command)
   end -- if not player casting
 
 end -- end function UpdateScan()
 
+---If a spell cast failed, the member is temporarily added to skip list, to
+---continue casting buffs on other members
 function BOM.AddMemberToSkipList()
   if BOM.CastFailedSpell
           and BOM.CastFailedSpell.SkipList

@@ -462,14 +462,16 @@ end
 BOM.UpdateBuffTabText = bom_update_buff_tab_text
 
 ---Creates small mybutton which toggles group buff setting, next to CAST button
-function BOM.CreateSingleBuffCastCheckbox(parent_frame)
+function BOM.CreateSingleBuffButton(parent_frame)
   if BOM.QuickSingleBuff == nil then
     BOM.QuickSingleBuff = BOM.CreateMyButton(
             parent_frame,
             BOM.ICON_SELF_CAST_ON,
-            BOM.ICON_SELF_CAST_OFF)
+            BOM.ICON_SELF_CAST_OFF,
+            nil, nil, nil, nil,
+            true)
     BOM.QuickSingleBuff:SetPoint("BOTTOMLEFT", parent_frame, "BOTTOMRIGHT", -18, 0);
-    BOM.QuickSingleBuff:SetPoint("BOTTOMRIGHT", parent_frame, "BOTTOMRIGHT", 0, 12);
+    BOM.QuickSingleBuff:SetPoint("BOTTOMRIGHT", parent_frame, "BOTTOMRIGHT", -2, 12);
     BOM.QuickSingleBuff:SetVariable(BOM.SharedState, "NoGroupBuff")
     BOM.QuickSingleBuff:SetOnClick(BOM.MyButtonOnClick)
     BOM.Tool.TooltipText(
@@ -657,6 +659,9 @@ function BOM.Init()
 
   _G["BINDING_NAME_MACRO Buff'o'mat"] = L["BtnPerformeBuff"]
   _G["BINDING_HEADER_BUFFOMATHEADER"] = "Buffomat Classic"
+
+  ----Create small toggle button to the right of [Cast <spell>] button
+  --BOM.CreateSingleBuffButton(BomC_ListTab) --maybe not created yet?
 
   print("|cFFFF1C1C Loaded: " .. GetAddOnMetadata(TOCNAME, "Title") .. " "
           .. GetAddOnMetadata(TOCNAME, "Version")
