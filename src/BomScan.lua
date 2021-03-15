@@ -1879,6 +1879,13 @@ end
 ---@param t string - text for the cast button
 ---@param enable boolean - whether to enable the button or not
 function bom_cast_button(t, enable)
+  -- not really a necessary check but for safety
+  if InCombatLockdown()
+          or BomC_ListTab_Button == nil
+          or BomC_ListTab_Button.SetText == nil then
+    return
+  end
+
   BomC_ListTab_Button:SetText(t)
   if enable then
     BomC_ListTab_Button:Enable()
@@ -1913,7 +1920,7 @@ function BOM.UpdateScan()
     BOM.ForceUpdate = false
     BOM.CheckForError = false
     BOM.UpdateMacro()
-    bom_cast_button(SetText(L.MsgDead), false)
+    bom_cast_button(L.MsgDead, false)
     BOM.AutoClose()
     return
   end
