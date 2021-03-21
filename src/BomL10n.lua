@@ -95,7 +95,7 @@ BOM.locales = {
     BtnCancel                     = "Cancel",
     BtnQuickSettings              = "Quick Settings",
     BtnSettings                   = "Settings Window",
-    --BtnSettingsSpells = "Settings Spells",
+    BtnSettingsSpells             = "Settings Spells",
     BtnBuffs                      = "Consumables",
     BtnPerformeBuff               = "Cast buff",
 
@@ -153,7 +153,7 @@ BOM.locales = {
     ["BtnOpen"]                       = "Öffnen",
     ["BtnPerformeBuff"]               = "Zaubere Buff",
     ["BtnSettings"]                   = "Einstellungen",
-    --["BtnSettingsSpells"] = "Einstellungen Zauber",
+    ["BtnSettingsSpells"]             = "Einstellungen Zauber",
     ["CboxArgentumDawn"]              = "Erinnere an die Anstecknadel der Argentumdämmerung",
     ["CboxAutoDismount"]              = "Automatisches Absitzen beim Zaubern",
     ["CboxAutoDisTravel"]             = "Automatisch  Reiseform abbrechen beim Zaubern",
@@ -283,7 +283,7 @@ BOM.locales = {
     BtnOpen                       = "Ouvrir",
     BtnCancel                     = "Annuler",
     BtnSettings                   = "Réglages",
-    --BtnSettingsSpells = "Réglage sorts",
+    BtnSettingsSpells             = "Réglage sorts",
 
     Header_TRACKING               = "Pistage",
     HeaderSupportedSpells         = "Sorts supportés",
@@ -315,7 +315,7 @@ BOM.locales = {
     ["BtnCancel"]                     = "Закрыть",
     ["BtnOpen"]                       = "Открыть",
     ["BtnSettings"]                   = "Настройки",
-    --["BtnSettingsSpells"] = "Настройки заклинаний",
+    ["BtnSettingsSpells"]             = "Настройки заклинаний",
     ["CboxArgentumDawn"]              = "Не забудьте (снять)экипировать Жетон Серебряного Рассвета",
     ["CboxAutoOpen"]                  = "Автоматическое открытие/закрытие",
     ["CboxDeathBlock"]                = "Не применять групповые эффекты, когда кто-то мертв",
@@ -398,7 +398,7 @@ BOM.locales = {
     ["BtnCancel"]                     = "取消",
     ["BtnOpen"]                       = "打开",
     ["BtnSettings"]                   = "设置",
-    --["BtnSettingsSpells"] = "设置各个法术",
+    ["BtnSettingsSpells"]             = "设置各个法术",
     --[[Translation missing --]]
     --[[ ["CboxArgentumDawn"] = "Remember to (un)equip Argent Dawn Commission",--]]
     ["CboxAutoOpen"]                  = "自动 打开/取消",
@@ -466,7 +466,6 @@ BOM.locales = {
     ["TooltipSelfCastCheckbox"]       = "施放给小队/团队,或仅自己",
     ["TooltipForceCastOnTarget"]      = "对当前目标强制施法"
   },
-
 
 }
 

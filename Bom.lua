@@ -36,7 +36,7 @@ BOM.BehaviourSettings = {
   { "DontUseConsumables", false },
 }
 
---BOM.TOC_VERSION = GetAddOnMetadata(TOCNAME, "Version") --unused?
+BOM.TOC_VERSION = GetAddOnMetadata(TOCNAME, "Version") --used for display in options
 BOM.TOC_TITLE = GetAddOnMetadata(TOCNAME, "Title")
 
 BOM.MACRO_ICON = "Ability_Druid_ChallangingRoar"
@@ -213,63 +213,45 @@ local function bom_add_editbox(Var, Init, width)
   BOM.Options.AddEditBox(BOM.SharedState, Var, Init, L["Ebox" .. Var], 50, width or 150, true)
 end
 
-function BOM.OptionsInit()
-  BOM.Options.Init(
-          function()
-            -- doOk
-            BOM.Options.DoOk()
-            BOM.OptionsUpdate()
-          end,
-          function()
-            -- doCancel
-            BOM.Options.DoCancel()
-            BOM.OptionsUpdate()
-          end,
-          function()
-            --doDefault
-            BOM.Options.DoDefault()
-            BOM.SharedState.Minimap.position = 50
-            BOM.ResetWindow()
-            BOM.OptionsUpdate()
-          end
-  )
+local function bom_options_add_main_panel()
+  local opt = BOM.Options
+  opt.AddPanel(BOM.TOC_TITLE, false, true)
+  opt.AddVersion('Version |cff00c0ff' .. BOM.TOC_VERSION .. "|r")
 
-  -- Main
-  BOM.Options.AddPanel(BOM.TOC_TITLE, false, true)
-  --BOM.Options.AddVersion('|cff00c0ff' .. BOM.TOC_VERSION .. "|r")
-
-  BOM.Options.AddCheckBox(BOM.SharedState.Minimap, "visible", true, L["Cboxshowminimapbutton"])
-  BOM.Options.AddCheckBox(BOM.SharedState.Minimap, "lock", false, L["CboxLockMinimapButton"])
-  BOM.Options.AddCheckBox(BOM.SharedState.Minimap, "lockDistance", false, L["CboxLockMinimapButtonDistance"])
-  BOM.Options.AddSpace()
-  BOM.Options.AddCheckBox(BOM.CharacterState, "UseProfiles", false, L["CboxUseProfiles"])
-  BOM.Options.AddSpace()
+  opt.AddCheckBox(BOM.SharedState.Minimap, "visible", true, L["Cboxshowminimapbutton"])
+  opt.AddCheckBox(BOM.SharedState.Minimap, "lock", false, L["CboxLockMinimapButton"])
+  opt.AddCheckBox(BOM.SharedState.Minimap, "lockDistance", false, L["CboxLockMinimapButtonDistance"])
+  opt.AddSpace()
+  opt.AddCheckBox(BOM.CharacterState, "UseProfiles", false, L["CboxUseProfiles"])
+  opt.AddSpace()
 
   for i, set in ipairs(BOM.BehaviourSettings) do
     bom_add_checkbox(set[1], set[2])
   end
 
-  BOM.Options.AddSpace()
+  opt.AddSpace()
   bom_add_editbox("MinBuff", 3, 350)
   bom_add_editbox("MinBlessing", 3, 350)
-  BOM.Options.AddSpace()
-  BOM.Options.AddCategory(L.HeaderRenew)
-  BOM.Options.Indent(20)
-  bom_add_editbox("Time60", 10)--60s
-  bom_add_editbox("Time300", 60)--5m
-  bom_add_editbox("Time600", 120)--10m
-  bom_add_editbox("Time1800", 300)--30m
-  bom_add_editbox("Time3600", 300)--60m
-  BOM.Options.Indent(-20)
-  BOM.Options.AddSpace()
-  BOM.Options.AddButton(L.BtnSettingsSpells, BOM.ShowSpellSettings)
+  opt.AddSpace()
+  opt.AddCategory(L.HeaderRenew)
+  opt.Indent(20)
+  bom_add_editbox("Time60", 10)--60 s rebuff in 10 s
+  bom_add_editbox("Time300", 60)--5 m rebuff in 1 min
+  bom_add_editbox("Time600", 120)--10 m rebuff in 2 min
+  bom_add_editbox("Time1800", 300)--30 m rebuff in 5 min
+  bom_add_editbox("Time3600", 300)--60 m rebuff in 5 min
+  opt.Indent(-20)
+  opt.AddSpace()
+  opt.AddButton(L.BtnSettingsSpells, BOM.ShowSpellSettings)
+end
 
-  -- localization
+local function bom_options_add_localization_panel()
+  local opt = BOM.Options
 
-  BOM.Options.AddPanel(L["HeaderCustomLocales"], false, true)
-  BOM.Options.SetScale(0.85)
-  BOM.Options.AddText(L["MsgLocalRestart"])
-  BOM.Options.AddSpace()
+  opt.AddPanel(L["HeaderCustomLocales"], false, true)
+  opt.SetScale(0.85)
+  opt.AddText(L["MsgLocalRestart"])
+  opt.AddSpace()
 
   local locales = BOM.locales.enEN
   local t = {}
@@ -284,76 +266,113 @@ function BOM.OptionsInit()
     local col = L[key] ~= locales[key] and "|cffffffff" or "|cffff4040"
     local txt = L[key .. "_org"] ~= "[" .. key .. "_org]" and L[key .. "_org"] or L[key]
 
-    BOM.Options.AddEditBox(BOM.SharedState.CustomLocales, key, "", col .. "[" .. key .. "]", 450, 200, false, locales[key], txt)
+    opt.AddEditBox(
+            BOM.SharedState.CustomLocales,
+            key,
+            "",
+            col .. "[" .. key .. "]",
+            450, 200,
+            false,
+            locales[key],
+            txt)
   end
 
-  BOM.Options.SetScale(1)
+  opt.SetScale(1)
+end
 
-  -- About
-  local panel = BOM.Options.AddPanel(L.PanelAbout, false, true)
+local function bom_options_add_about_panel()
+  local opt = BOM.Options
+
+  local panel = opt.AddPanel(L.PanelAbout, false, true)
   panel:SetHyperlinksEnabled(true);
   panel:SetScript("OnHyperlinkEnter", BOM.EnterHyperlink)
   panel:SetScript("OnHyperlinkLeave", BOM.LeaveHyperlink)
 
   local function bom_add_text(txt)
-    BOM.Options.AddText(txt)
+    opt.AddText(txt)
   end
 
-  BOM.Options.AddCategory("|cFFFF1C1C" .. GetAddOnMetadata(TOCNAME, "Title") .. " " .. GetAddOnMetadata(TOCNAME, "Version") .. " by " .. GetAddOnMetadata(TOCNAME, "Author"))
-  BOM.Options.Indent(10)
-  BOM.Options.AddText(GetAddOnMetadata(TOCNAME, "Notes"))
-  BOM.Options.Indent(-10)
+  opt.AddCategory("|cFFFF1C1C" .. GetAddOnMetadata(TOCNAME, "Title")
+          .. " " .. GetAddOnMetadata(TOCNAME, "Version")
+          .. " by " .. GetAddOnMetadata(TOCNAME, "Author"))
+  opt.Indent(10)
+  opt.AddText(GetAddOnMetadata(TOCNAME, "Notes"))
+  opt.Indent(-10)
 
-  BOM.Options.AddCategory(L["HeaderInfo"])
-  BOM.Options.Indent(10)
-  BOM.Options.AddText(L["AboutInfo"], -20)
-  BOM.Options.Indent(-10)
+  opt.AddCategory(L["HeaderInfo"])
+  opt.Indent(10)
+  opt.AddText(L["AboutInfo"], -20)
+  opt.Indent(-10)
 
-  BOM.Options.AddCategory(L["HeaderUsage"])
-  BOM.Options.Indent(10)
-  BOM.Options.AddText(L["AboutUsage"], -20)
-  BOM.Options.Indent(-10)
+  opt.AddCategory(L["HeaderUsage"])
+  opt.Indent(10)
+  opt.AddText(L["AboutUsage"], -20)
+  opt.Indent(-10)
 
-  BOM.Options.AddCategory(L["HeaderSlashCommand"])
-  BOM.Options.Indent(10)
-  BOM.Options.AddText(L["AboutSlashCommand"], -20)
+  opt.AddCategory(L["HeaderSlashCommand"])
+  opt.Indent(10)
+  opt.AddText(L["AboutSlashCommand"], -20)
   BOM.Tool.PrintSlashCommand(nil, nil, bom_add_text)
-  BOM.Options.Indent(-10)
+  opt.Indent(-10)
 
-  BOM.Options.AddCategory(L["HeaderCredits"])
-  BOM.Options.Indent(10)
-  BOM.Options.AddText(L["AboutCredits"], -20)
-  BOM.Options.Indent(-10)
+  opt.AddCategory(L["HeaderCredits"])
+  opt.Indent(10)
+  opt.AddText(L["AboutCredits"], -20)
+  opt.Indent(-10)
 
-  BOM.Options.AddCategory(L.HeaderSupportedSpells)
-  BOM.Options.Indent(20)
+  opt.AddCategory(L.HeaderSupportedSpells)
+  opt.Indent(20)
 
   for i, spell in ipairs(BOM.AllBuffomatSpells) do
     if type(spell) == "table" then
-      spell.optionText = BOM.Options.AddText("<placeholder>")
+      spell.optionText = opt.AddText("<placeholder>")
     else
-      BOM.Options.Indent(-10)
+      opt.Indent(-10)
       if LOCALIZED_CLASS_NAMES_MALE[spell] then
-        BOM.Options.AddCategory(LOCALIZED_CLASS_NAMES_MALE[spell])
+        opt.AddCategory(LOCALIZED_CLASS_NAMES_MALE[spell])
       else
-        BOM.Options.AddCategory(L["Header_" .. spell])
+        opt.AddCategory(L["Header_" .. spell])
       end
-      BOM.Options.Indent(10)
+      opt.Indent(10)
     end
   end
 
-  BOM.Options.Indent(-10)
-  BOM.Options.AddCategory(L["Header_CANCELBUFF"])
-  BOM.Options.Indent(10)
+  opt.Indent(-10)
+  opt.AddCategory(L["Header_CANCELBUFF"])
+  opt.Indent(10)
 
   for i, spell in ipairs(BOM.CancelBuffs) do
-    spell.optionText = BOM.Options.AddText("<placeholder>")
+    spell.optionText = opt.AddText("<placeholder>")
   end
 
-  BOM.Options.Indent(-10)
-  BOM.Options.AddCategory(" ")
+  opt.Indent(-10)
+  opt.AddCategory(" ")
 end
 
+function BOM.OptionsInit()
+  local newDoOk = function()
+    BOM.Options.DoOk()
+    BOM.OptionsUpdate()
+  end
+  local newDoCancel = function()
+    BOM.Options.DoCancel()
+    BOM.OptionsUpdate()
+  end
+  local newDoDefault = function()
+    BOM.Options.DoDefault()
+    BOM.SharedState.Minimap.position = 50
+    BOM.ResetWindow()
+    BOM.OptionsUpdate()
+  end
+
+  BOM.Options.Init(newDoOk, newDoCancel, newDoDefault)
+
+  bom_options_add_main_panel()
+  bom_options_add_localization_panel()
+  bom_options_add_about_panel()
+end
+
+---Update spell list in options, called from Event_SpellsChanged
 function BOM.OptionsInsertSpells()
   for i, spell in ipairs(BOM.AllBuffomatSpells) do
     if type(spell) == "table" and spell.optionText then
@@ -542,7 +561,8 @@ function BOM.Init()
 
   BOM.LocalizationInit()
 
-  local x, y, w, h = BOM.SharedState.X, BOM.SharedState.Y, BOM.SharedState.Width, BOM.SharedState.Height
+  local x, y = BOM.SharedState.X, BOM.SharedState.Y
+  local w, h = BOM.SharedState.Width, BOM.SharedState.Height
 
   if not x or not y or not w or not h then
     BOM.SaveWindowPosition()

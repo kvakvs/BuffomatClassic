@@ -30,13 +30,19 @@ end
 
 function Options.DoOk(dblimit)
   for name, cbox in pairs(Options.CBox) do
-    if Options.Vars[name .. "_db"] ~= nil and Options.Vars[name] ~= nil and (dblimit == nil or Options.Vars[name .. "_db"] == dblimit) then
+    if Options.Vars[name .. "_db"] ~= nil
+            and Options.Vars[name] ~= nil
+            and (dblimit == nil or Options.Vars[name .. "_db"] == dblimit)
+    then
       Options.Vars[name .. "_db"][Options.Vars[name]] = cbox:GetChecked()
     end
   end
 
   for name, color in pairs(Options.Color) do
-    if Options.Vars[name .. "_db"] ~= nil and Options.Vars[name] ~= nil and (dblimit == nil or Options.Vars[name .. "_db"] == dblimit) then
+    if Options.Vars[name .. "_db"] ~= nil
+            and Options.Vars[name] ~= nil
+            and (dblimit == nil or Options.Vars[name .. "_db"] == dblimit)
+    then
       Options.Vars[name .. "_db"][Options.Vars[name]].r = color.ColR
       Options.Vars[name .. "_db"][Options.Vars[name]].g = color.ColG
       Options.Vars[name .. "_db"][Options.Vars[name]].b = color.ColB
@@ -65,20 +71,27 @@ end
 
 function Options.DoCancel(dblimit)
   for name, cbox in pairs(Options.CBox) do
-    if Options.Vars[name .. "_db"] ~= nil and Options.Vars[name] ~= nil and (dblimit == nil or Options.Vars[name .. "_db"] == dblimit) then
+    if Options.Vars[name .. "_db"] ~= nil
+            and Options.Vars[name] ~= nil
+            and (dblimit == nil or Options.Vars[name .. "_db"] == dblimit) then
       cbox:SetChecked(Options.Vars[name .. "_db"][Options.Vars[name]])
     end
   end
 
   for name, color in pairs(Options.Color) do
-    if Options.Vars[name .. "_db"] ~= nil and Options.Vars[name] ~= nil and (dblimit == nil or Options.Vars[name .. "_db"] == dblimit) then
+    if Options.Vars[name .. "_db"] ~= nil
+            and Options.Vars[name] ~= nil
+            and (dblimit == nil or Options.Vars[name .. "_db"] == dblimit) then
       color:GetNormalTexture():SetVertexColor(
               Options.Vars[name .. "_db"][Options.Vars[name]].r,
               Options.Vars[name .. "_db"][Options.Vars[name]].g,
               Options.Vars[name .. "_db"][Options.Vars[name]].b,
               Options.Vars[name .. "_db"][Options.Vars[name]].a
       )
-      color.ColR, color.ColG, color.ColB, color.ColA = Options.Vars[name .. "_db"][Options.Vars[name]].r, Options.Vars[name .. "_db"][Options.Vars[name]].g, Options.Vars[name .. "_db"][Options.Vars[name]].b, Options.Vars[name .. "_db"][Options.Vars[name]].a
+      color.ColR = Options.Vars[name .. "_db"][Options.Vars[name]].r
+      color.ColG = Options.Vars[name .. "_db"][Options.Vars[name]].g
+      color.ColB = Options.Vars[name .. "_db"][Options.Vars[name]].b
+      color.ColA = Options.Vars[name .. "_db"][Options.Vars[name]].a
     end
   end
 
@@ -96,13 +109,17 @@ end
 
 function Options.DoDefault(dblimit)
   for name, cbox in pairs(Options.CBox) do
-    if Options.Vars[name .. "_db"] ~= nil and Options.Vars[name] ~= nil and (dblimit == nil or Options.Vars[name .. "_db"] == dblimit) then
+    if Options.Vars[name .. "_db"] ~= nil
+            and Options.Vars[name] ~= nil
+            and (dblimit == nil or Options.Vars[name .. "_db"] == dblimit) then
       Options.Vars[name .. "_db"][Options.Vars[name]] = Options.Vars[name .. "_init"]
     end
   end
 
   for name, color in pairs(Options.Color) do
-    if Options.Vars[name .. "_db"] ~= nil and Options.Vars[name] ~= nil and (dblimit == nil or Options.Vars[name .. "_db"] == dblimit) then
+    if Options.Vars[name .. "_db"] ~= nil
+            and Options.Vars[name] ~= nil
+            and (dblimit == nil or Options.Vars[name .. "_db"] == dblimit) then
       Options.Vars[name .. "_db"][Options.Vars[name]].r = Options.Vars[name .. "_init"].r
       Options.Vars[name .. "_db"][Options.Vars[name]].g = Options.Vars[name .. "_init"].g
       Options.Vars[name .. "_db"][Options.Vars[name]].b = Options.Vars[name .. "_init"].b
@@ -145,7 +162,11 @@ function Options.AddPanel(Title, noheader, scrollable)
 
   if scrollable then
 
-    Options.Panel["scroll" .. c] = CreateFrame("ScrollFrame", FrameName .. "Scroll", Options.CurrentPanel, "UIPanelScrollFrameTemplate")
+    Options.Panel["scroll" .. c] = CreateFrame(
+            "ScrollFrame",
+            FrameName .. "Scroll",
+            Options.CurrentPanel,
+            "UIPanelScrollFrameTemplate")
     Options.Panel["scroll" .. c]:SetPoint("TOPLEFT", 0, -10)
     Options.Panel["scroll" .. c]:SetPoint("BOTTOMRIGHT", -30, 10)
     Options.Panel["scrollChild" .. c] = CreateFrame("Frame", FrameName .. "ScrollChild")
@@ -155,7 +176,8 @@ function Options.AddPanel(Title, noheader, scrollable)
     Options.CurrentPanel = Options.Panel["scrollChild" .. c]
   end
 
-  Options.Frames["title_" .. c] = Options.CurrentPanel:CreateFontString(FrameName .. "_Title", "OVERLAY", "GameFontNormalLarge")
+  Options.Frames["title_" .. c] = Options.CurrentPanel:CreateFontString(
+          FrameName .. "_Title", "OVERLAY", "GameFontNormalLarge")
   if noheader == true then
     Options.Frames["title_" .. c]:SetHeight(1)
   else
@@ -199,9 +221,11 @@ function Options.SetRightSide(w)
   Options.NextRelativX = (w or 310) / Options.scale
   Options.NextRelativY = 0
 end
+
 function Options.AnchorRightSide()
   Options.RightSide = Options.NextRelativ
 end
+
 function Options.EndRightSide()
   Options.NextRelativ = Options.oldNextRelativ
   Options.NextRelativX = Options.oldNextRelativX
@@ -222,9 +246,14 @@ function Options.AddCategory(Text)
   local c = Options.Frames.count + 1
   Options.Frames.count = c
   local CatName = Options.Prefix .. "Cat" .. c
-  Options.Frames[CatName] = Options.CurrentPanel:CreateFontString(CatName, "OVERLAY", "GameFontNormal")
+  local cat_frame = Options.CurrentPanel:CreateFontString(
+          CatName, "OVERLAY", "GameFontNormal")
+  Options.Frames[CatName] = cat_frame
+
   Options.Frames[CatName]:SetText('|cffffffff' .. Text .. '|r')
-  Options.Frames[CatName]:SetPoint("TOPLEFT", Options.NextRelativ, "BOTTOMLEFT", Options.NextRelativX, Options.NextRelativY - 10)
+  Options.Frames[CatName]:SetPoint(
+          "TOPLEFT", Options.NextRelativ, "BOTTOMLEFT",
+          Options.NextRelativX, Options.NextRelativY - 10)
   Options.Frames[CatName]:SetFontObject("GameFontNormalLarge")
   Options.Frames[CatName]:SetScale(Options.scale)
   Options.NextRelativ = CatName
@@ -232,6 +261,7 @@ function Options.AddCategory(Text)
   Options.NextRelativY = 0
   return Options.Frames[CatName]
 end
+
 function Options.EditCategory(cat, Text)
   local c = Options.Frames.count + 1
   cat:SetText('|cffffffff' .. Text .. '|r')
@@ -241,30 +271,31 @@ function Options.AddButton(Text, func)
   local c = Options.Frames.count + 1
   Options.Frames.count = c
   local ButtonName = Options.Prefix .. "BUTTON_" .. c
-
-  Options.Btn[ButtonName] = CreateFrame("Button", ButtonName, Options.CurrentPanel, "UIPanelButtonTemplate")
-  Options.Btn[ButtonName]:ClearAllPoints()
+  local button = CreateFrame("Button", ButtonName, Options.CurrentPanel, "UIPanelButtonTemplate")
+  Options.Btn[ButtonName] = button
+  button:ClearAllPoints()
 
   if Options.inLine ~= true or Options.LineRelativ == nil then
-    Options.Btn[ButtonName]:SetPoint("TOPLEFT", Options.NextRelativ, "BOTTOMLEFT", Options.NextRelativX, Options.NextRelativY)
+    button:SetPoint(
+            "TOPLEFT", Options.NextRelativ, "BOTTOMLEFT",
+            Options.NextRelativX, Options.NextRelativY)
     Options.NextRelativ = ButtonName
     Options.LineRelativ = ButtonName
     Options.NextRelativX = 0
     Options.NextRelativY = 0
   else
-    Options.Btn[ButtonName]:SetPoint("TOP", Options.LineRelativ, "TOP", 0, 0)
-    Options.Btn[ButtonName]:SetPoint("LEFT", Options.LineRelativ .. "Text", "RIGHT", 10, 0)
+    button:SetPoint("TOP", Options.LineRelativ, "TOP", 0, 0)
+    button:SetPoint("LEFT", Options.LineRelativ .. "Text", "RIGHT", 10, 0)
     Options.LineRelativ = ButtonName
   end
 
-  Options.Btn[ButtonName]:SetScale(Options.scale)
-  Options.Btn[ButtonName]:SetScript("OnClick", func)
-  Options.Btn[ButtonName]:SetText(Text)
-  Options.Btn[ButtonName]:SetWidth(Options.Btn[ButtonName]:GetTextWidth() + 20)
-  return Options.Btn[ButtonName]
+  button:SetScale(Options.scale)
+  button:SetScript("OnClick", func)
+  button:SetText(Text)
+  button:SetWidth(button:GetTextWidth() + 20)
+  return button
 end
 
----is this used?
 local function CheckBox_OnRightClick(self, func)
   self.Lib_GPI_rclick = func
   self:SetScript("OnMouseDown", options_check_button_right_click)
@@ -291,32 +322,46 @@ function Options.AddCheckBox(DB, Var, Init, Text, width)
     end
   end
 
-  Options.CBox[ButtonName] = CreateFrame("CheckButton", ButtonName, Options.CurrentPanel, "ChatConfigCheckButtonTemplate")
-  _G[ButtonName .. "Text"]:SetText(Text)
+  Options.CBox[ButtonName] = CreateFrame(
+          "CheckButton",
+          ButtonName,
+          Options.CurrentPanel,
+          "ChatConfigCheckButtonTemplate")
+
+  local button = _G[ButtonName .. "Text"]
+  button:SetText(Text)
+
   if width then
-    _G[ButtonName .. "Text"]:SetWidth(width)
-    _G[ButtonName .. "Text"]:SetNonSpaceWrap(false)
-    _G[ButtonName .. "Text"]:SetMaxLines(1)
+    button:SetWidth(width)
+    button:SetNonSpaceWrap(false)
+    button:SetMaxLines(1)
     Options.CBox[ButtonName]:SetHitRectInsets(0, -width, 0, 0)
   else
-    Options.CBox[ButtonName]:SetHitRectInsets(0, -_G[ButtonName .. "Text"]:GetStringWidth() - 2, 0, 0)
+    Options.CBox[ButtonName]:SetHitRectInsets(
+            0, -button:GetStringWidth() - 2,
+            0, 0)
   end
 
   Options.CBox[ButtonName]:ClearAllPoints()
 
   if Options.inLine ~= true or Options.LineRelativ == nil then
-    Options.CBox[ButtonName]:SetPoint("TOPLEFT", Options.NextRelativ, "BOTTOMLEFT", Options.NextRelativX, Options.NextRelativY)
+    Options.CBox[ButtonName]:SetPoint(
+            "TOPLEFT", Options.NextRelativ, "BOTTOMLEFT",
+            Options.NextRelativX, Options.NextRelativY)
     Options.NextRelativ = ButtonName
     Options.LineRelativ = ButtonName
     Options.NextRelativX = 0
     Options.NextRelativY = 0
   else
-    Options.CBox[ButtonName]:SetPoint("TOP", Options.LineRelativ, "TOP", 0, 0)
-    Options.CBox[ButtonName]:SetPoint("LEFT", Options.LineRelativ .. "Text", "RIGHT", 10, 0)
+    Options.CBox[ButtonName]:SetPoint(
+            "TOP", Options.LineRelativ, "TOP", 0, 0)
+    Options.CBox[ButtonName]:SetPoint(
+            "LEFT", Options.LineRelativ .. "Text", "RIGHT", 10, 0)
     Options.LineRelativ = ButtonName
   end
 
   Options.CBox[ButtonName]:SetScale(Options.scale)
+
   if DB ~= nil and Var ~= nil then
     Options.CBox[ButtonName]:SetChecked(DB[Var])
   else
@@ -350,11 +395,12 @@ function Options.AddColorButton(DB, Var, Init, Text, width)
 
   if DB ~= nil and Var ~= nil then
     if DB[Var] == nil then
-      DB[Var] = {}
-      DB[Var].r = Init.r
-      DB[Var].g = Init.g
-      DB[Var].b = Init.b
-      DB[Var].a = Init.a
+      DB[Var] = {
+        r = Init.r,
+        g = Init.g,
+        b = Init.b,
+        a = Init.a
+      }
     end
   end
 
@@ -407,8 +453,9 @@ function Options.AddColorButton(DB, Var, Init, Text, width)
     ColorPickerFrame.hasOpacity, ColorPickerFrame.opacity = true, 1.0 - a
     ColorPickerFrame.previousValues = { r, g, b, a }
 
-    ColorPickerFrame.func, ColorPickerFrame.opacityFunc, ColorPickerFrame.cancelFunc
-    = colorpicker_callback, colorpicker_callback, colorpicker_callback
+    ColorPickerFrame.func = colorpicker_callback
+    ColorPickerFrame.opacityFunc = colorpicker_callback
+    ColorPickerFrame.cancelFunc = colorpicker_callback
 
     ColorPickerFrame:SetColorRGB(r, g, b)
     ColorPickerFrame:Hide()
@@ -435,14 +482,16 @@ function Options.EditCheckBox(toEdit, DB, Var, Init, Text, width)
     end
   end
 
-  _G[ButtonName .. "Text"]:SetText(Text)
+  local button = _G[ButtonName .. "Text"]
+  button:SetText(Text)
+
   if width then
-    _G[ButtonName .. "Text"]:SetWidth(width)
-    _G[ButtonName .. "Text"]:SetNonSpaceWrap(false)
-    _G[ButtonName .. "Text"]:SetMaxLines(1)
+    button:SetWidth(width)
+    button:SetNonSpaceWrap(false)
+    button:SetMaxLines(1)
     Options.CBox[ButtonName]:SetHitRectInsets(0, -width, 0, 0)
   else
-    Options.CBox[ButtonName]:SetHitRectInsets(0, -_G[ButtonName .. "Text"]:GetStringWidth() - 2, 0, 0)
+    Options.CBox[ButtonName]:SetHitRectInsets(0, -button:GetStringWidth() - 2, 0, 0)
   end
 
   if DB ~= nil and Var ~= nil then
@@ -453,6 +502,10 @@ function Options.EditCheckBox(toEdit, DB, Var, Init, Text, width)
   end
 end
 
+---AddText
+---@param TXT string
+---@param width number | nil
+---@param centre boolean
 function Options.AddText(TXT, width, centre)
   local textbox
 
@@ -463,6 +516,7 @@ function Options.AddText(TXT, width, centre)
 
   if width == nil or width == 0 then
     textbox:SetWidth(textbox:GetStringWidth())
+
   elseif width < 0 then
     if string.sub(Options.CurrentPanel:GetName(), -11) == "ScrollChild" then
       textbox:SetPoint("RIGHT", Options.CurrentPanel:GetParent():GetParent(), "RIGHT", width, 0)
@@ -473,6 +527,7 @@ function Options.AddText(TXT, width, centre)
       textbox:SetJustifyH("LEFT")
       textbox:SetJustifyV("TOP")
     end
+
   else
     textbox:SetWidth(width)
     if not centre then
@@ -480,13 +535,16 @@ function Options.AddText(TXT, width, centre)
       textbox:SetJustifyV("TOP")
     end
   end
+
   Options.NextRelativ = textbox
   Options.NextRelativX = 0
   Options.NextRelativY = 0
   return textbox
 end
+
 function Options.EditText(textbox, TXT, width, centre)
   textbox:SetText(TXT)
+
   if width == nil or width == 0 then
     textbox:SetWidth(textbox:GetStringWidth())
   elseif width < 0 then
@@ -546,7 +604,18 @@ function Options.__EditBoxOnEnterPressed(self)
   self:ClearFocus()
 end
 
-function Options.AddEditBox(DB, Var, Init, TXTLeft, width, widthLeft, onlynumbers, tooltip, suggestion)
+---AddEditBox
+---@param DB table - some storage table where the values go
+---@param Var string - name for control to create
+---@param Init table - some initial value?
+---@param TXTLeft string - some colored text (left side)
+---@param width number | nil - width
+---@param widthLeft number | nil - category frame width?
+---@param onlynumbers boolean - numeric value only allowed
+---@param tooltip string
+---@param suggestion table
+function Options.AddEditBox(DB, Var, Init, TXTLeft, width, widthLeft, onlynumbers,
+                            tooltip, suggestion)
   if width == nil then
     width = 200
   end
@@ -556,16 +625,21 @@ function Options.AddEditBox(DB, Var, Init, TXTLeft, width, widthLeft, onlynumber
   local ButtonName = Options.Prefix .. "Edit_" .. c .. Var
   local CatName = ButtonName .. "_Text"
 
-  Options.Frames[CatName] = Options.CurrentPanel:CreateFontString(CatName, "OVERLAY", "GameFontNormal")
-  Options.Frames[CatName]:SetText('|cffffffff' .. TXTLeft .. '|r')
-  Options.Frames[CatName]:SetPoint("TOPLEFT", Options.NextRelativ, "BOTTOMLEFT", Options.NextRelativX, Options.NextRelativY - 2)
-  Options.Frames[CatName]:SetScale(Options.scale)
+  local cat_frame = Options.CurrentPanel:CreateFontString(
+          CatName, "OVERLAY", "GameFontNormal")
+  Options.Frames[CatName] = cat_frame
+
+  cat_frame:SetText('|cffffffff' .. TXTLeft .. '|r')
+  cat_frame:SetPoint("TOPLEFT", Options.NextRelativ, "BOTTOMLEFT",
+          Options.NextRelativX, Options.NextRelativY - 2)
+  cat_frame:SetScale(Options.scale)
+
   if widthLeft == nil or widthLeft == 0 then
-    Options.Frames[CatName]:SetWidth(Options.Frames[CatName]:GetStringWidth())
+    cat_frame:SetWidth(cat_frame:GetStringWidth())
   else
-    Options.Frames[CatName]:SetWidth(widthLeft)
-    Options.Frames[CatName]:SetJustifyH("LEFT")
-    Options.Frames[CatName]:SetJustifyV("TOP")
+    cat_frame:SetWidth(widthLeft)
+    cat_frame:SetJustifyH("LEFT")
+    cat_frame:SetJustifyV("TOP")
   end
 
   Options.Vars[ButtonName] = Var
@@ -577,46 +651,49 @@ function Options.AddEditBox(DB, Var, Init, TXTLeft, width, widthLeft, onlynumber
     DB[Var] = Init
   end
 
-  Options.Edit[ButtonName] = CreateFrame("EditBox", ButtonName, Options.CurrentPanel, "InputBoxTemplate")
-  Options.Edit[ButtonName]:SetPoint("TOPLEFT", Options.Frames[CatName], "TOPRIGHT", 5, 2)
-  Options.Edit[ButtonName]:SetScale(Options.scale)
-  Options.Edit[ButtonName]:SetWidth(width)
-  Options.Edit[ButtonName]:SetHeight(20)
+  local button = CreateFrame(
+          "EditBox", ButtonName, Options.CurrentPanel, "InputBoxTemplate")
+  Options.Edit[ButtonName] = button
 
-  Options.Edit[ButtonName]:SetScript("OnEnterPressed", Options.__EditBoxOnEnterPressed)
+  button:SetPoint("TOPLEFT", cat_frame, "TOPRIGHT", 5, 2)
+  button:SetScale(Options.scale)
+  button:SetWidth(width)
+  button:SetHeight(20)
 
-  Options.Edit[ButtonName].GPI_Options = Options
+  button:SetScript("OnEnterPressed", Options.__EditBoxOnEnterPressed)
+
+  button.GPI_Options = Options
 
   if onlynumbers then
-    Options.Edit[ButtonName]:SetNumeric(true)
-    Options.Edit[ButtonName]:SetNumber(DB[Var])
+    button:SetNumeric(true)
+    button:SetNumber(DB[Var])
   else
-    Options.Edit[ButtonName]:SetText(DB[Var])
+    button:SetText(DB[Var])
   end
 
-  Options.Edit[ButtonName]:SetCursorPosition(0)
-  Options.Edit[ButtonName]:HighlightText(0, 0)
-  Options.Edit[ButtonName]:SetAutoFocus(false)
-  Options.Edit[ButtonName]:ClearFocus()
+  button:SetCursorPosition(0)
+  button:HighlightText(0, 0)
+  button:SetAutoFocus(false)
+  button:ClearFocus()
   if tooltip and tooltip ~= "" then
-    Options.Edit[ButtonName]:SetScript("OnEnter", Options.__EditBoxTooltipShow)
-    Options.Edit[ButtonName]:SetScript("onLeave", Options.__EditBoxTooltipHide)
+    button:SetScript("OnEnter", Options.__EditBoxTooltipShow)
+    button:SetScript("onLeave", Options.__EditBoxTooltipHide)
     Options.Vars[ButtonName .. "_tooltip"] = tooltip
   end
 
   if suggestion and suggestion ~= "" then
-    Options.Edit[ButtonName]:SetScript("OnEditFocusGained", Options.__EditBoxGetFocus)
-    Options.Edit[ButtonName]:SetScript("OnEditFocusLost", Options.__EditBoxLostFocus)
+    button:SetScript("OnEditFocusGained", Options.__EditBoxGetFocus)
+    button:SetScript("OnEditFocusLost", Options.__EditBoxLostFocus)
     Options.Vars[ButtonName .. "_suggestion"] = suggestion
   end
 
-  Options.Frames[CatName]:SetHeight(Options.Edit[ButtonName]:GetHeight() - 10)
+  cat_frame:SetHeight(button:GetHeight() - 10)
 
   Options.NextRelativ = CatName
   Options.NextRelativX = 0
   Options.NextRelativY = -10
 
-  return Options.Edit[ButtonName]
+  return button
 end
 
 function Options.AddSpace(factor)
