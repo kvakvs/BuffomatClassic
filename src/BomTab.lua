@@ -70,6 +70,7 @@ local function add_row_of_class_buttons(isHorde, spell, dx, prev_control)
     end
   end -- for each class in class_sort_order
 
+  --========================================
   if spell.frames["tank"] == nil then
     spell.frames["tank"] = BOM.CreateMyButton(
             BomC_SpellTab_Scroll_Child,
@@ -86,6 +87,7 @@ local function add_row_of_class_buttons(isHorde, spell, dx, prev_control)
 
   prev_control = spell.frames["tank"]
 
+  --========================================
   if spell.frames["pet"] == nil then
     spell.frames["pet"] = BOM.CreateMyButton(
             BomC_SpellTab_Scroll_Child,
@@ -103,21 +105,43 @@ local function add_row_of_class_buttons(isHorde, spell, dx, prev_control)
 
   dx = 7
 
-  if spell.frames.target == nil then
-    spell.frames.target = BOM.CreateMyButton(
+  --========================================
+  -- Force Cast Button -(+)-
+  --========================================
+  if spell.frames.ForceCastButton == nil then
+    spell.frames.ForceCastButton = BOM.CreateMyButton(
             BomC_SpellTab_Scroll_Child,
             BOM.ICON_TARGET_ON,
             BOM.ICON_TARGET_OFF,
             BOM.ICON_DISABLED)
   end
 
-  spell.frames.target:SetPoint("TOPLEFT", prev_control, "TOPRIGHT", dx, 0)
-  spell.frames.target:SetOnClick(BOM.MyButtonOnClick)
-  BOM.Tool.Tooltip(spell.frames.target, "TooltipForceCastOnTarget")
+  spell.frames.ForceCastButton:SetPoint("TOPLEFT", prev_control, "TOPRIGHT", dx, 0)
+  spell.frames.ForceCastButton:SetOnClick(BOM.MyButtonOnClick)
+  BOM.Tool.Tooltip(spell.frames.ForceCastButton, "TooltipForceCastOnTarget")
 
-  prev_control = spell.frames.target
+  prev_control = spell.frames.ForceCastButton
+  dx = 4
+
+  --========================================
+  -- Exclude/Ignore Buff Target Button (X)
+  --========================================
+  if spell.frames.ExcludeButton == nil then
+    spell.frames.ExcludeButton = BOM.CreateMyButton(
+            BomC_SpellTab_Scroll_Child,
+            BOM.ICON_TARGET_EXCLUDE,
+            BOM.ICON_TARGET_OFF,
+            BOM.ICON_DISABLED)
+  end
+
+  spell.frames.ExcludeButton:SetPoint("TOPLEFT", prev_control, "TOPRIGHT", dx, 0)
+  spell.frames.ExcludeButton:SetOnClick(BOM.MyButtonOnClick)
+  BOM.Tool.Tooltip(spell.frames.ExcludeButton, "TooltipExcludeTarget")
+
+  prev_control = spell.frames.ExcludeButton
   dx = 7
 
+  --========================================
   return dx, prev_control
 end
 
@@ -504,7 +528,8 @@ local function bom_create_tab_row(isHorde, spell, dy, last, section, self_class)
 
   if BOM.SpellHasClasses(spell) then
     spell.frames.SelfCast:Show()
-    spell.frames.target:Show()
+    spell.frames.ForceCastButton:Show()
+    spell.frames.ExcludeButton:Show()
 
     for ci, class in ipairs(BOM.Tool.Classes) do
       if (isHorde and class == "PALADIN")
@@ -578,26 +603,51 @@ local function create_tab(isHorde)
   end
 end
 
+---Build a tooltip string to add to the target force-cast or exclude button
+---@param prefix string - if table is not empty, will prefix tooltip with this string
+---@param empty_text string - if table is empty, use this text
+---@param name_table table - keys from table are formatted comma-separated
+local function bom_targets_tooltip(prefix, empty_text, name_table)
+  local text = ""
+  for name, value in pairs(name_table) do
+    if value then
+      if text ~= "" then
+        text = text .. ", "
+      end
+      text = text .. name
+    end
+  end
+
+  if text == "" then
+    return "|n" .. empty_text
+  else
+    return "|n" .. prefix .. text
+  end
+end
+
 local function update_selected_spell(spell)
-  spell.frames.Enable:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID], "Enable")
+  -- the pointer to spell in current BOM profile
+  local profile_spell = BOM.CurrentProfile.Spell[spell.ConfigID]
+
+  spell.frames.Enable:SetVariable(profile_spell, "Enable")
 
   if BOM.SpellHasClasses(spell) then
-    spell.frames.SelfCast:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID], "SelfCast")
+    spell.frames.SelfCast:SetVariable(profile_spell, "SelfCast")
 
     for ci, class in ipairs(BOM.Tool.Classes) do
-      spell.frames[class]:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID].Class, class)
+      spell.frames[class]:SetVariable(profile_spell.Class, class)
 
-      if BOM.CurrentProfile.Spell[spell.ConfigID].SelfCast then
+      if profile_spell.SelfCast then
         spell.frames[class]:Disable()
       else
         spell.frames[class]:Enable()
       end
-    end
+    end -- for all class names
 
-    spell.frames["tank"]:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID].Class, "tank")
-    spell.frames["pet"]:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID].Class, "pet")
+    spell.frames["tank"]:SetVariable(profile_spell.Class, "tank")
+    spell.frames["pet"]:SetVariable(profile_spell.Class, "pet")
 
-    if BOM.CurrentProfile.Spell[spell.ConfigID].SelfCast then
+    if profile_spell.SelfCast then
       spell.frames["tank"]:Disable()
       spell.frames["pet"]:Disable()
     else
@@ -605,29 +655,80 @@ local function update_selected_spell(spell)
       spell.frames["pet"]:Enable()
     end
 
+    --========================================
+    local force_cast_button = spell.frames.ForceCastButton
+    local exclude_button = spell.frames.ExcludeButton
+    local tooltip_force_targets = bom_targets_tooltip(
+            L.FormatAllForceCastTargets,
+            L.FormatForceCastNone,
+            profile_spell.ForcedTarget or {})
+    local tooltip_exclude_targets = bom_targets_tooltip(
+            L.FormatAllExcludeTargets,
+            L.FormatExcludeNone,
+            profile_spell.ExcludedTarget or {})
+
     if BOM.lastTarget ~= nil then
-      spell.frames.target:Enable()
-      BOM.Tool.TooltipText(spell.frames.target, L.TooltipForceCastOnTarget .. "|n" .. BOM.lastTarget)
+      force_cast_button:Enable()
+      BOM.Tool.TooltipText(
+              force_cast_button,
+              L.TooltipForceCastOnTarget .. "|n"
+                      .. string.format(L.FormatToggleTarget, BOM.lastTarget)
+                      .. tooltip_force_targets)
+
       if spell.isBlessing then
-        spell.frames.target:SetVariable(BOM.CurrentProfile.Spell[BOM.BLESSING_ID], BOM.lastTarget, spell.ConfigID)
+        force_cast_button:SetVariable(
+                BOM.CurrentProfile.Spell[BOM.BLESSING_ID],
+                BOM.lastTarget,
+                spell.ConfigID)
       else
-        spell.frames.target:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID].ForcedTarget, BOM.lastTarget, true)
+        force_cast_button:SetVariable(
+                profile_spell.ForcedTarget,
+                BOM.lastTarget,
+                true)
+      end
+      -------------------------
+      exclude_button:Enable()
+      BOM.Tool.TooltipText(
+              exclude_button,
+              L.TooltipExcludeTarget .. "|n"
+                      .. string.format(L.FormatToggleTarget, BOM.lastTarget)
+                      .. tooltip_exclude_targets)
+
+      if spell.isBlessing then
+        exclude_button:SetVariable(
+                BOM.CurrentProfile.Spell[BOM.BLESSING_ID],
+                BOM.lastTarget,
+                spell.ConfigID)
+      else
+        exclude_button:SetVariable(
+                profile_spell.ExcludedTarget,
+                BOM.lastTarget,
+                true)
       end
 
     else
-      spell.frames.target:Disable()
-      BOM.Tool.TooltipText(spell.frames.target, L.TooltipForceCastOnTarget .. "|n" .. L.TooltipSelectTarget)
-      spell.frames.target:SetVariable()
+      --======================================
+      force_cast_button:Disable()
+      BOM.Tool.TooltipText(
+              force_cast_button,
+              L.TooltipForceCastOnTarget .. "|n" .. L.TooltipSelectTarget .. tooltip_force_targets)
+      force_cast_button:SetVariable()
+      ---------------------------------
+      exclude_button:Disable()
+      BOM.Tool.TooltipText(
+              exclude_button,
+              L.TooltipExcludeTarget .. "|n" .. L.TooltipSelectTarget .. tooltip_exclude_targets)
+      exclude_button:SetVariable()
     end
-  end
+  end -- end if has classes
 
   if spell.isInfo and spell.allowWhisper then
-    spell.frames.Whisper:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID], "Whisper")
+    spell.frames.Whisper:SetVariable(profile_spell, "Whisper")
   end
 
   if spell.isWeapon then
-    spell.frames.MainHand:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID], "MainHandEnable")
-    spell.frames.OffHand:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID], "OffHandEnable")
+    spell.frames.MainHand:SetVariable(profile_spell, "MainHandEnable")
+    spell.frames.OffHand:SetVariable(profile_spell, "OffHandEnable")
   end
 
   if (spell.isTracking or spell.isAura or spell.isSeal) and spell.needForm == nil then

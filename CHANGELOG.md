@@ -1,5 +1,13 @@
 # Changelog
 
+## Buffomat Classic 1.9.6
+
+- "Force cast" on target and "Exclude target". Target a member of your group and
+  click Force or Exclude button. The setting is saved per character and is not
+  reset when you leave raid. Force/exclude button tooltip shows current list of
+  names.
+- Added Argent Dawn strength food (Blessed Sunfruit)
+
 ## Buffomat Classic 1.9.3
 
 - Improved tooltips on self/group buff switches. Inactive switches texture

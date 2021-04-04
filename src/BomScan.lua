@@ -409,29 +409,35 @@ function BOM.GetSpells()
 
         --setDefaultValues!
         for j, profil in ipairs(BOM.ProfileNames) do
+          local spell_ptr = BOM.CharacterState[profil].Spell[spell.ConfigID]
 
-          if BOM.CharacterState[profil].Spell[spell.ConfigID] == nil then
-            BOM.CharacterState[profil].Spell[spell.ConfigID] = {}
-            BOM.CharacterState[profil].Spell[spell.ConfigID].Class = BOM.CharacterState[profil].Spell[spell.ConfigID].Class or {}
-            BOM.CharacterState[profil].Spell[spell.ConfigID].ForcedTarget = BOM.CharacterState[profil].Spell[spell.ConfigID].ForcedTarget or {}
+          if spell_ptr == nil then
+            spell_ptr = {}
+            BOM.CharacterState[profil].Spell[spell.ConfigID] = spell_ptr
 
-            BOM.CharacterState[profil].Spell[spell.ConfigID].Enable = spell.default or false
+            spell_ptr.Class = spell_ptr.Class or {}
+            spell_ptr.ForcedTarget = spell_ptr.ForcedTarget or {}
+            spell_ptr.ExcludedTarget = spell_ptr.ExcludedTarget or {}
+
+            spell_ptr.Enable = spell.default or false
 
             if BOM.SpellHasClasses(spell) then
               local SelfCast = true
-              BOM.CharacterState[profil].Spell[spell.ConfigID].SelfCast = false
+              spell_ptr.SelfCast = false
 
               for ci, class in ipairs(BOM.Tool.Classes) do
-                BOM.CharacterState[profil].Spell[spell.ConfigID].Class[class] = tContains(spell.classes, class)
-                SelfCast = BOM.CharacterState[profil].Spell[spell.ConfigID].Class[class] and false or SelfCast
+                spell_ptr.Class[class] = tContains(spell.classes, class)
+                SelfCast = spell_ptr.Class[class] and false or SelfCast
               end
 
-              BOM.CharacterState[profil].Spell[spell.ConfigID].ForcedTarget = {}
-              BOM.CharacterState[profil].Spell[spell.ConfigID].SelfCast = SelfCast
+              spell_ptr.ForcedTarget = {}
+              spell_ptr.ExcludedTarget = {}
+              spell_ptr.SelfCast = SelfCast
             end
           else
-            BOM.CharacterState[profil].Spell[spell.ConfigID].Class = BOM.CharacterState[profil].Spell[spell.ConfigID].Class or {}
-            BOM.CharacterState[profil].Spell[spell.ConfigID].ForcedTarget = BOM.CharacterState[profil].Spell[spell.ConfigID].ForcedTarget or {}
+            spell_ptr.Class = spell_ptr.Class or {}
+            spell_ptr.ForcedTarget = spell_ptr.ForcedTarget or {}
+            spell_ptr.ExcludedTarget = spell_ptr.ExcludedTarget or {}
           end
 
         end -- for all profile names
@@ -1006,22 +1012,26 @@ function bom_update_spell_targets(party, spell, player_member, someone_is_dead)
     --spells
     for i, member in ipairs(party) do
       local ok = false
+      local profile_spell = BOM.CurrentProfile.Spell[spell.ConfigID]
 
-      if BOM.CurrentProfile.Spell[spell.ConfigID].Class[member.class]
+      if profile_spell.Class[member.class]
               and (not IsInRaid() or BomCharacterState.WatchGroup[member.group])
-              and not BOM.CurrentProfile.Spell[spell.ConfigID].SelfCast then
+              and not profile_spell.SelfCast then
         ok = true
       end
-      if BOM.CurrentProfile.Spell[spell.ConfigID].SelfCast
+      if profile_spell.SelfCast
               and UnitIsUnit(member.unitId, "player") then
         ok = true
       end
-      if BOM.CurrentProfile.Spell[spell.ConfigID].ForcedTarget[member.name] then
+      if profile_spell.ForcedTarget[member.name] then
         ok = true
       end
-      if member.isTank and BOM.CurrentProfile.Spell[spell.ConfigID].Class["tank"]
-              and not BOM.CurrentProfile.Spell[spell.ConfigID].SelfCast then
+      if member.isTank and profile_spell.Class["tank"]
+              and not profile_spell.SelfCast then
         ok = true
+      end
+      if profile_spell.ExcludedTarget[member.name] then
+        ok = false
       end
 
       if member.NeedBuff

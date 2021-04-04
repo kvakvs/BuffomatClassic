@@ -24,6 +24,7 @@ BOM.ICON_DISABLED = "Interface\\FriendsFrame\\StatusIcon-Offline" --grey circle
 
 --"Interface\\COMMON\\VOICECHAT-MUTED"
 BOM.ICON_TARGET_ON = "Interface\\CURSOR\\Crosshairs"
+BOM.ICON_TARGET_EXCLUDE = "Interface\\Buttons\\UI-GroupLoot-Pass-Up"
 BOM.ICON_TARGET_OFF = BOM.ICON_EMPTY
 
 BOM.ICON_CHECKED = "Interface\\Buttons\\UI-CheckBox-Check"

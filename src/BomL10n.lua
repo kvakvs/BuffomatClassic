@@ -70,7 +70,13 @@ BOM.locales = {
     TooltipSelfCastCheckbox_Party = "Buff party and groups in raid",
     TooltipEnableSpell            = "Add this buff to the task list",
     TooltipEnableBuffCancel       = "Cancel this buff as soon as it is found",
-    TooltipForceCastOnTarget      = "Force spell on current Target",
+    FormatToggleTarget            = "Click to toggle player: %s",
+    FormatAllForceCastTargets     = "Force cast on: ",
+    FormatForceCastNone           = "Force cast list is empty",
+    FormatAllExcludeTargets       = "Ignoring: ",
+    FormatExcludeNone             = "Ignore list is empty",
+    TooltipForceCastOnTarget      = "Add the current raid or group target to watch list for buffs",
+    TooltipExcludeTarget          = "Add the current raid or group target to exclude list",
     TooltipSelectTarget           = "Select a raid/party member to enable this option",
     TooltipGroup                  = "Watch buffs in raid group %d",
     TooltipRaidGroupsSettings     = "Raid groups watch settings",
@@ -274,6 +280,7 @@ BOM.locales = {
     --split into _Self and _Party TooltipSelfCastCheckbox = "Buff groupe/raid ou uniquement sois-même",
     TooltipEnableSpell            = "Activer/Désactiver sort",
     TooltipForceCastOnTarget      = "Forcer sort sur Cible actuelle",
+    --missing TooltipExcludeTarget
     TooltipSelectTarget           = "Choisir un membre groupe/raid pour activer cette option",
     TooltipGroup                  = "Groupe %d",
 
@@ -383,6 +390,8 @@ BOM.locales = {
     ["TooltipMainHand"]               = "Правая рука",
     ["TooltipOffHand"]                = "Левая рука",
     ["TooltipIncludesAllRanks"]       = "Любые варианты этого бафа",
+    ["TooltipForceCastOnTarget"]      = "Добавить выбранного игрока в список целей для бафа",
+    ["TooltipExcludeTarget"]          = "Добавить выбранного игрока в список исключений и не бафать",
 
     ["TooltipSelectTarget"]           = "Выберите участника рейда/группы, чтобы включить эту опцию",
     ["TooltipSelfCastCheckbox_Self"]  = "Применить баф только на себя",
