@@ -225,7 +225,8 @@ BOM.AllBuffomatSpells = {
 
   ----WARRIOR----
   { singleId     = 25289, isOwn = true, default = true, --Battle Shout
-    singleFamily = { 6673, 5242, 6192, 11549, 11550, 11551, 25289 } },
+    singleFamily = { 6673, 5242, 6192, 11549, 11550, 11551, 25289 },
+    default = false },
 
   ----UNIT AND RESOURCE TRACKING----
   { singleId = 2383, isTracking = true, default = true }, -- Find Herbs / kräuter

@@ -408,17 +408,16 @@ function BOM.GetSpells()
         end
 
         --setDefaultValues!
-        for j, profil in ipairs(BOM.ProfileNames) do
-          local spell_ptr = BOM.CharacterState[profil].Spell[spell.ConfigID]
+        for j, each_profile in ipairs(BOM.ProfileNames) do
+          local spell_ptr = BOM.CharacterState[each_profile].Spell[spell.ConfigID]
 
           if spell_ptr == nil then
-            spell_ptr = {}
-            BOM.CharacterState[profil].Spell[spell.ConfigID] = spell_ptr
+            BOM.CharacterState[each_profile].Spell[spell.ConfigID] = {}
+            spell_ptr = BOM.CharacterState[each_profile].Spell[spell.ConfigID]
 
             spell_ptr.Class = spell_ptr.Class or {}
             spell_ptr.ForcedTarget = spell_ptr.ForcedTarget or {}
             spell_ptr.ExcludedTarget = spell_ptr.ExcludedTarget or {}
-
             spell_ptr.Enable = spell.default or false
 
             if BOM.SpellHasClasses(spell) then
@@ -486,7 +485,8 @@ local function bom_get_member(unitid, NameGroup, NameRole)
   end
 
   MemberCache[unitid] = MemberCache[unitid] or {}
-  member = MemberCache[unitid]
+
+  local member = MemberCache[unitid]
   member.distance = 100000
   member.unitId = unitid
   member.name = name
@@ -1773,7 +1773,7 @@ end
 ---@return table (bag_title string, bag_command string)
 local function bom_add_self_buff(spell, player_member)
   if (not spell.NeedOutdoors or IsOutdoors())
-          and not tContains(spell.SkipList, member.name) then
+          and not tContains(spell.SkipList, player_member.name) then
     bom_display_text(
             string.format(L["FORMAT_BUFF_SINGLE"], player_member.link, spell.singleLink),
             player_member.name)
