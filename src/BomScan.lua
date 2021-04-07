@@ -9,7 +9,7 @@ end })
 
 local bom_save_someone_is_dead = false
 
-BOM.ProfileNames = { "solo", "group", "raid", "battleground" }
+BOM.ALL_PROFILES = { "solo", "group", "raid", "battleground" }
 
 function BOM.CancelBuff(list)
   local ret = false
@@ -172,7 +172,7 @@ end
 local SpellsIncluded = false
 
 function BOM.GetSpells()
-  for i, profil in ipairs(BOM.ProfileNames) do
+  for i, profil in ipairs(BOM.ALL_PROFILES) do
     BOM.CharacterState[profil].Spell = BOM.CharacterState[profil].Spell or {}
     BOM.CharacterState[profil].CancelBuff = BOM.CharacterState[profil].CancelBuff or {}
     BOM.CharacterState[profil].Spell[BOM.BLESSING_ID] = BOM.CharacterState[profil].Spell[BOM.BLESSING_ID] or {}
@@ -213,7 +213,7 @@ function BOM.GetSpells()
 
   for i, spell in ipairs(BOM.CancelBuffs) do
     -- save "ConfigID"
-    spell.ConfigID = spell.ConfigID or spell.singleId
+    --spell.ConfigID = spell.ConfigID or spell.singleId
 
     if spell.singleFamily then
       for sindex, sID in ipairs(spell.singleFamily) do
@@ -230,7 +230,7 @@ function BOM.GetSpells()
 
     BOM.Tool.iMerge(BOM.AllSpellIds, spell.singleFamily)
 
-    for i, profil in ipairs(BOM.ProfileNames) do
+    for i, profil in ipairs(BOM.ALL_PROFILES) do
       if BOM.CharacterState[profil].CancelBuff[spell.ConfigID] == nil then
         BOM.CharacterState[profil].CancelBuff[spell.ConfigID] = {}
         BOM.CharacterState[profil].CancelBuff[spell.ConfigID].Enable = spell.default or false
@@ -239,209 +239,205 @@ function BOM.GetSpells()
   end
 
   for i, spell in ipairs(BOM.AllBuffomatSpells) do
-    if type(spell) == "table" then
-      -- save "ConfigID"
-      spell.ConfigID = spell.ConfigID or spell.singleId
-      spell.SkipList = {}
-      BOM.ConfigToSpell[spell.ConfigID] = spell
+    spell.SkipList = {}
+    BOM.ConfigToSpell[spell.ConfigID] = spell
 
-      -- get highest rank and store SpellID=ConfigID
-      if spell.singleFamily then
-        for sindex, sID in ipairs(spell.singleFamily) do
-          BOM.SpellIdtoConfig[sID] = spell.ConfigID
-          BOM.SpellIdIsSingle[sID] = true
-          BOM.ConfigToSpell[sID] = spell
+    -- get highest rank and store SpellID=ConfigID
+    if spell.singleFamily then
+      for sindex, sID in ipairs(spell.singleFamily) do
+        BOM.SpellIdtoConfig[sID] = spell.ConfigID
+        BOM.SpellIdIsSingle[sID] = true
+        BOM.ConfigToSpell[sID] = spell
 
-          if IsSpellKnown(sID) then
-            spell.singleId = sID
-          end
+        if IsSpellKnown(sID) then
+          spell.singleId = sID
         end
       end
+    end
 
-      if spell.singleId then
-        BOM.SpellIdtoConfig[spell.singleId] = spell.ConfigID
-        BOM.SpellIdIsSingle[spell.singleId] = true
-        BOM.ConfigToSpell[spell.singleId] = spell
-      end
+    if spell.singleId then
+      BOM.SpellIdtoConfig[spell.singleId] = spell.ConfigID
+      BOM.SpellIdIsSingle[spell.singleId] = true
+      BOM.ConfigToSpell[spell.singleId] = spell
+    end
 
-      if spell.groupFamily then
-        for sindex, sID in ipairs(spell.groupFamily) do
-          BOM.SpellIdtoConfig[sID] = spell.ConfigID
-          BOM.ConfigToSpell[sID] = spell
+    if spell.groupFamily then
+      for sindex, sID in ipairs(spell.groupFamily) do
+        BOM.SpellIdtoConfig[sID] = spell.ConfigID
+        BOM.ConfigToSpell[sID] = spell
 
-          if IsSpellKnown(sID) then
-            spell.groupId = sID
-          end
+        if IsSpellKnown(sID) then
+          spell.groupId = sID
         end
       end
+    end
 
-      if spell.groupId then
-        BOM.SpellIdtoConfig[spell.groupId] = spell.ConfigID
-        BOM.ConfigToSpell[spell.groupId] = spell
+    if spell.groupId then
+      BOM.SpellIdtoConfig[spell.groupId] = spell.ConfigID
+      BOM.ConfigToSpell[spell.groupId] = spell
+    end
+
+    -- GetSpellNames and set default duration
+    if spell.singleId
+            and not spell.isBuff
+    then
+      local name, rank, icon, castTime, minRange, maxRange, spellId = GetSpellInfo(spell.singleId)
+      spell.single = name
+      rank = GetSpellSubtext(spell.singleId) or ""
+      spell.singleLink = bom_format_spell_link(spellId, icon, name, rank)
+      spell.Icon = icon
+
+      if spell.isTracking then
+        spell.TrackingIcon = icon
       end
 
-      -- GetSpellNames and set default duration
-      if spell.singleId
+      if not spell.isInfo
               and not spell.isBuff
-      then
-        local name, rank, icon, castTime, minRange, maxRange, spellId = GetSpellInfo(spell.singleId)
-        spell.single = name
-        rank = GetSpellSubtext(spell.singleId) or ""
-        spell.singleLink = bom_format_spell_link(spellId, icon, name, rank)
-        spell.Icon = icon
-
-        if spell.isTracking then
-          spell.TrackingIcon = icon
-        end
-
-        if not spell.isInfo
-                and not spell.isBuff
-                and spell.singleDuration
-                and BOM.SharedState.Duration[name] == nil
-                and IsSpellKnown(spell.singleId) then
-          BOM.SharedState.Duration[name] = spell.singleDuration
-        end
+              and spell.singleDuration
+              and BOM.SharedState.Duration[name] == nil
+              and IsSpellKnown(spell.singleId) then
+        BOM.SharedState.Duration[name] = spell.singleDuration
       end
+    end
 
-      if spell.groupId then
-        local name, rank, icon, castTime, minRange, maxRange, spellId = GetSpellInfo(spell.groupId)
-        spell.group = name
-        rank = GetSpellSubtext(spell.groupId) or ""
-        spell.groupLink = bom_format_spell_link(spellId, icon, name, rank)
+    if spell.groupId then
+      local name, rank, icon, castTime, minRange, maxRange, spellId = GetSpellInfo(spell.groupId)
+      spell.group = name
+      rank = GetSpellSubtext(spell.groupId) or ""
+      spell.groupLink = bom_format_spell_link(spellId, icon, name, rank)
 
-        if spell.groupDuration
-                and BOM.SharedState.Duration[name] == nil
-                and IsSpellKnown(spell.groupId)
-        then
-          BOM.SharedState.Duration[name] = spell.groupDuration
-        end
-      end
-
-      -- has Spell? Manacost?
-      local add = false
-
-      if IsSpellKnown(spell.singleId) then
-        add = true
-        spell.singleMana = 0
-        local cost = GetSpellPowerCost(spell.single)
-
-        if type(cost) == "table" then
-          for j = 1, #cost do
-            if cost[j] and cost[j].name == "MANA" then
-              spell.singleMana = cost[j].cost or 0
-            end
-          end
-        end
-      end
-
-      if spell.group
+      if spell.groupDuration
+              and BOM.SharedState.Duration[name] == nil
               and IsSpellKnown(spell.groupId)
       then
-        add = true
-        spell.groupMana = 0
-        local cost = GetSpellPowerCost(spell.group)
+        BOM.SharedState.Duration[name] = spell.groupDuration
+      end
+    end
 
-        if type(cost) == "table" then
-          for j = 1, #cost do
-            if cost[j] and cost[j].name == "MANA" then
-              spell.groupMana = cost[j].cost or 0
-            end
+    -- has Spell? Manacost?
+    local add = false
+
+    if IsSpellKnown(spell.singleId) then
+      add = true
+      spell.singleMana = 0
+      local cost = GetSpellPowerCost(spell.single)
+
+      if type(cost) == "table" then
+        for j = 1, #cost do
+          if cost[j] and cost[j].name == "MANA" then
+            spell.singleMana = cost[j].cost or 0
           end
         end
       end
+    end
 
-      if spell.isBuff then
-        if not spell.isScanned then
-          local itemName, itemLink, _rarity, _ilvl, _minLevel, _itType, _itSubtype
-          , _itStackCount, _itemEquipLoc, itemIcon, _, _, _, _, _, _, _ = GetItemInfo(spell.item)
+    if spell.group
+            and IsSpellKnown(spell.groupId)
+    then
+      add = true
+      spell.groupMana = 0
+      local cost = GetSpellPowerCost(spell.group)
 
-          if (not itemName or not itemLink or not itemIcon)
-                  and BOM.SharedState.Cache.Item[spell.item]
-          then
-            itemName, itemLink, itemIcon = unpack(BOM.SharedState.Cache.Item[spell.item])
-
-          elseif (not itemName or not itemLink or not itemIcon)
-                  and BOM.ItemCache[spell.item]
-          then
-            itemName, itemLink, itemIcon = unpack(BOM.ItemCache[spell.item])
+      if type(cost) == "table" then
+        for j = 1, #cost do
+          if cost[j] and cost[j].name == "MANA" then
+            spell.groupMana = cost[j].cost or 0
           end
+        end
+      end
+    end
 
-          if itemName and itemLink and itemIcon then
-            add = true
-            spell.single = itemName
-            spell.singleLink = BOM.FormatTexture(itemIcon) .. itemLink
-            spell.Icon = itemIcon
-            spell.isScanned = true
+    if spell.isBuff then
+      if not spell.isScanned then
+        local itemName, itemLink, _rarity, _ilvl, _minLevel, _itType, _itSubtype
+        , _itStackCount, _itemEquipLoc, itemIcon, _, _, _, _, _, _, _ = GetItemInfo(spell.item)
 
-            BOM.SharedState.Cache.Item[spell.item] = {
-              itemName, itemLink, itemIcon
-            }
-          else
-            print(BOM.CHAT_MSG_PREFIX, "Item not found!",
-                    spell.single, spell.singleId,
-                    spell.item, "x", BOM.ItemCache[spell.item])
+        if (not itemName or not itemLink or not itemIcon)
+                and BOM.SharedState.Cache.Item[spell.item]
+        then
+          itemName, itemLink, itemIcon = unpack(BOM.SharedState.Cache.Item[spell.item])
+
+        elseif (not itemName or not itemLink or not itemIcon)
+                and BOM.ItemCache[spell.item]
+        then
+          itemName, itemLink, itemIcon = unpack(BOM.ItemCache[spell.item])
+        end
+
+        if itemName and itemLink and itemIcon then
+          add = true
+          spell.single = itemName
+          spell.singleLink = BOM.FormatTexture(itemIcon) .. itemLink
+          spell.Icon = itemIcon
+          spell.isScanned = true
+
+          BOM.SharedState.Cache.Item[spell.item] = {
+            itemName, itemLink, itemIcon
+          }
+        else
+          print(BOM.CHAT_MSG_PREFIX, "Item not found!",
+                  spell.single, spell.singleId,
+                  spell.item, "x", BOM.ItemCache[spell.item])
+        end
+      else
+        add = true
+      end
+
+      if spell.items == nil then
+        spell.items = { spell.item }
+      end
+    end -- if buff
+
+    if spell.isInfo then
+      add = true
+    end
+
+    --|--------------------------
+    --| Add
+    --|--------------------------
+    if add then
+      tinsert(BOM.SelectedSpells, spell)
+      BOM.Tool.iMerge(BOM.AllSpellIds, spell.singleFamily, spell.groupFamily,
+              spell.singleId, spell.groupId)
+
+      if spell.cancelForm then
+        BOM.Tool.iMerge(BOM.cancelForm, spell.singleFamily, spell.groupFamily,
+                spell.singleId, spell.groupId)
+      end
+
+      --setDefaultValues!
+      for j, each_profile in ipairs(BOM.ALL_PROFILES) do
+        local spell_ptr = BOM.CharacterState[each_profile].Spell[spell.ConfigID]
+
+        if spell_ptr == nil then
+          BOM.CharacterState[each_profile].Spell[spell.ConfigID] = {}
+          spell_ptr = BOM.CharacterState[each_profile].Spell[spell.ConfigID]
+
+          spell_ptr.Class = spell_ptr.Class or {}
+          spell_ptr.ForcedTarget = spell_ptr.ForcedTarget or {}
+          spell_ptr.ExcludedTarget = spell_ptr.ExcludedTarget or {}
+          spell_ptr.Enable = spell.default or false
+
+          if BOM.SpellHasClasses(spell) then
+            local SelfCast = true
+            spell_ptr.SelfCast = false
+
+            for ci, class in ipairs(BOM.Tool.Classes) do
+              spell_ptr.Class[class] = tContains(spell.classes, class)
+              SelfCast = spell_ptr.Class[class] and false or SelfCast
+            end
+
+            spell_ptr.ForcedTarget = {}
+            spell_ptr.ExcludedTarget = {}
+            spell_ptr.SelfCast = SelfCast
           end
         else
-          add = true
+          spell_ptr.Class = spell_ptr.Class or {}
+          spell_ptr.ForcedTarget = spell_ptr.ForcedTarget or {}
+          spell_ptr.ExcludedTarget = spell_ptr.ExcludedTarget or {}
         end
 
-        if spell.items == nil then
-          spell.items = { spell.item }
-        end
-      end -- if buff
-
-      if spell.isInfo then
-        add = true
-      end
-
-      --|--------------------------
-      --| Add
-      --|--------------------------
-      if add then
-        tinsert(BOM.SelectedSpells, spell)
-        BOM.Tool.iMerge(BOM.AllSpellIds, spell.singleFamily, spell.groupFamily,
-                spell.singleId, spell.groupId)
-
-        if spell.cancelForm then
-          BOM.Tool.iMerge(BOM.cancelForm, spell.singleFamily, spell.groupFamily,
-                  spell.singleId, spell.groupId)
-        end
-
-        --setDefaultValues!
-        for j, each_profile in ipairs(BOM.ProfileNames) do
-          local spell_ptr = BOM.CharacterState[each_profile].Spell[spell.ConfigID]
-
-          if spell_ptr == nil then
-            BOM.CharacterState[each_profile].Spell[spell.ConfigID] = {}
-            spell_ptr = BOM.CharacterState[each_profile].Spell[spell.ConfigID]
-
-            spell_ptr.Class = spell_ptr.Class or {}
-            spell_ptr.ForcedTarget = spell_ptr.ForcedTarget or {}
-            spell_ptr.ExcludedTarget = spell_ptr.ExcludedTarget or {}
-            spell_ptr.Enable = spell.default or false
-
-            if BOM.SpellHasClasses(spell) then
-              local SelfCast = true
-              spell_ptr.SelfCast = false
-
-              for ci, class in ipairs(BOM.Tool.Classes) do
-                spell_ptr.Class[class] = tContains(spell.classes, class)
-                SelfCast = spell_ptr.Class[class] and false or SelfCast
-              end
-
-              spell_ptr.ForcedTarget = {}
-              spell_ptr.ExcludedTarget = {}
-              spell_ptr.SelfCast = SelfCast
-            end
-          else
-            spell_ptr.Class = spell_ptr.Class or {}
-            spell_ptr.ForcedTarget = spell_ptr.ForcedTarget or {}
-            spell_ptr.ExcludedTarget = spell_ptr.ExcludedTarget or {}
-          end
-
-        end -- for all profile names
-      end -- if spell is OK to be added
-    end -- if spell is a 'table' type (dictionary)
+      end -- for all profile names
+    end -- if spell is OK to be added
   end -- for all BOM-supported spells
 end
 

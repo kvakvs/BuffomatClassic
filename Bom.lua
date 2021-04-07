@@ -130,7 +130,7 @@ function BOM.Popup(self, minimap)
     BOM.PopupDynamic:SubMenu(L["HeaderProfiles"], "subProfiles")
     BOM.PopupDynamic:AddItem(L["profile_auto"], false, BOM.ChooseProfile, "auto")
 
-    for _i, profile in pairs(BOM.ProfileNames) do
+    for _i, profile in pairs(BOM.ALL_PROFILES) do
       BOM.PopupDynamic:AddItem(L["profile_" .. profile], false, BOM.ChooseProfile, profile)
     end
 
@@ -422,7 +422,7 @@ end
 
 ---When BomCharacterState.WatchGroup has changed, update the buff tab text to show what's
 ---being buffed. Example: "Buff All", "Buff G3,5-7"...
-function bom_update_buff_tab_text()
+local function bom_update_buff_tab_text()
   local selected_groups = 0
   local t = BomC_MainWindow.Tabs[1]
 
@@ -503,6 +503,54 @@ function BOM.CreateSingleBuffButton(parent_frame)
   end
 end
 
+local function bom_init_ui()
+  BomC_ListTab_MessageFrame:SetFading(false);
+  BomC_ListTab_MessageFrame:SetFontObject(GameFontNormalSmall);
+  BomC_ListTab_MessageFrame:SetJustifyH("LEFT");
+  BomC_ListTab_MessageFrame:SetHyperlinksEnabled(true);
+  BomC_ListTab_MessageFrame:Clear()
+  BomC_ListTab_MessageFrame:SetMaxLines(100)
+
+  BomC_ListTab_Button:SetAttribute("type", "macro")
+  BomC_ListTab_Button:SetAttribute("macro", BOM.MACRO_NAME)
+
+  BOM.Tool.OnUpdate(BOM.UpdateTimer)
+
+  BOM.PopupDynamic = BOM.Tool.CreatePopup(BOM.OptionsUpdate)
+
+  BOM.MinimapButton.Init(
+          BOM.SharedState.Minimap,
+          BOM.MACRO_ICON_FULLPATH,
+          function(self, button)
+            if button == "LeftButton" then
+              BOM.ToggleWindow()
+            else
+              BOM.Popup(self.button, true)
+            end
+          end,
+          BOM.TOC_TITLE)
+
+  BomC_MainWindow_Title:SetText(
+          BOM.FormatTexture(BOM.MACRO_ICON_FULLPATH)
+                  .. " "
+                  .. L.Buffomat
+                  .. " - "
+                  .. L.profile_solo)
+  --BomC_ListTab_Button:SetText(L["BtnGetMacro"])
+
+  BOM.OptionsInit()
+  BOM.PartyUpdateNeeded = true
+  BOM.RepeatUpdate = false
+
+  -- Make main frame draggable
+  BOM.Tool.EnableMoving(BomC_MainWindow, BOM.SaveWindowPosition)
+  BomC_MainWindow:SetMinResize(180, 90)
+
+  BOM.Tool.AddTab(BomC_MainWindow, L.TabBuff, BomC_ListTab, true)
+  BOM.Tool.AddTab(BomC_MainWindow, L.TabSpells, BomC_SpellTab, true)
+  BOM.Tool.SelectTab(BomC_MainWindow, 1)
+end
+
 ---Called from event handler on Addon Loaded event
 ---Execution start here
 function BOM.Init()
@@ -536,8 +584,8 @@ function BOM.Init()
     BomSharedState.Duration = {}
   end
 
-  if not BomCharacterState[BOM.ProfileNames[1]] then
-    BomCharacterState[BOM.ProfileNames[1]] = {
+  if not BomCharacterState[BOM.ALL_PROFILES[1]] then
+    BomCharacterState[BOM.ALL_PROFILES[1]] = {
       ["CancelBuff"] = BomCharacterState.CancelBuff,
       ["Spell"]      = BomCharacterState.Spell,
       ["LastAura"]   = BomCharacterState.LastAura,
@@ -549,28 +597,31 @@ function BOM.Init()
     BomCharacterState.LastSeal = nil
   end
 
-  for i, profil in ipairs(BOM.ProfileNames) do
-    if not BomCharacterState[profil] then
-      BomCharacterState[profil] = {}
+  for i, each_profile in ipairs(BOM.ALL_PROFILES) do
+    if not BomCharacterState[each_profile] then
+      BomCharacterState[each_profile] = {}
     end
   end
 
   BOM.SharedState = BomSharedState
   BOM.CharacterState = BomCharacterState
-  BOM.CurrentProfile = BomCharacterState[BOM.ProfileNames[1]]
+  BOM.CurrentProfile = BomCharacterState[BOM.ALL_PROFILES[1]]
 
   BOM.LocalizationInit()
 
-  local x, y = BOM.SharedState.X, BOM.SharedState.Y
-  local w, h = BOM.SharedState.Width, BOM.SharedState.Height
+  do
+    -- addon window position
+    local x, y = BOM.SharedState.X, BOM.SharedState.Y
+    local w, h = BOM.SharedState.Width, BOM.SharedState.Height
 
-  if not x or not y or not w or not h then
-    BOM.SaveWindowPosition()
-  else
-    BomC_MainWindow:ClearAllPoints()
-    BomC_MainWindow:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", x, y)
-    BomC_MainWindow:SetWidth(w)
-    BomC_MainWindow:SetHeight(h)
+    if not x or not y or not w or not h then
+      BOM.SaveWindowPosition()
+    else
+      BomC_MainWindow:ClearAllPoints()
+      BomC_MainWindow:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", x, y)
+      BomC_MainWindow:SetWidth(w)
+      BomC_MainWindow:SetHeight(h)
+    end
   end
 
   BOM.Tool.EnableSize(BomC_MainWindow, 8, nil, function()
@@ -622,51 +673,7 @@ function BOM.Init()
     { "", L["SlashOpen"], BOM.ShowWindow },
   })
 
-  BomC_ListTab_MessageFrame:SetFading(false);
-  BomC_ListTab_MessageFrame:SetFontObject(GameFontNormalSmall);
-  BomC_ListTab_MessageFrame:SetJustifyH("LEFT");
-  BomC_ListTab_MessageFrame:SetHyperlinksEnabled(true);
-  BomC_ListTab_MessageFrame:Clear()
-  BomC_ListTab_MessageFrame:SetMaxLines(100)
-
-  BomC_ListTab_Button:SetAttribute("type", "macro")
-  BomC_ListTab_Button:SetAttribute("macro", BOM.MACRO_NAME)
-
-  BOM.Tool.OnUpdate(BOM.UpdateTimer)
-
-  BOM.PopupDynamic = BOM.Tool.CreatePopup(BOM.OptionsUpdate)
-
-  BOM.MinimapButton.Init(
-          BOM.SharedState.Minimap,
-          BOM.MACRO_ICON_FULLPATH,
-          function(self, button)
-            if button == "LeftButton" then
-              BOM.ToggleWindow()
-            else
-              BOM.Popup(self.button, true)
-            end
-          end,
-          BOM.TOC_TITLE)
-
-  BomC_MainWindow_Title:SetText(
-          BOM.FormatTexture(BOM.MACRO_ICON_FULLPATH)
-                  .. " "
-                  .. L.Buffomat
-                  .. " - "
-                  .. L.profile_solo)
-  --BomC_ListTab_Button:SetText(L["BtnGetMacro"])
-
-  BOM.OptionsInit()
-  BOM.PartyUpdateNeeded = true
-  BOM.RepeatUpdate = false
-
-  -- Make main frame draggable
-  BOM.Tool.EnableMoving(BomC_MainWindow, BOM.SaveWindowPosition)
-  BomC_MainWindow:SetMinResize(180, 90)
-
-  BOM.Tool.AddTab(BomC_MainWindow, L.TabBuff, BomC_ListTab, true)
-  BOM.Tool.AddTab(BomC_MainWindow, L.TabSpells, BomC_SpellTab, true)
-  BOM.Tool.SelectTab(BomC_MainWindow, 1)
+  bom_init_ui()
 
   -- Which groups are watched by the buff scanner - save in character state
   if not BomCharacterState.WatchGroup then
@@ -675,6 +682,7 @@ function BOM.Init()
       BomCharacterState.WatchGroup[i] = true
     end
   end
+
   bom_update_buff_tab_text()
 
   _G["BINDING_NAME_MACRO Buff'o'mat"] = L["BtnPerformeBuff"]
@@ -1269,3 +1277,40 @@ end
 function BOM.MyButtonOnClick(self)
   BOM.OptionsUpdate()
 end
+
+-- Convert a lua table into a lua syntactically correct string
+--local function table_to_string(tbl)
+--  if type(tbl) ~= "table" then
+--    return tostring(tbl)
+--  end
+--
+--  local result = "{"
+--  for k, v in pairs(tbl) do
+--    -- Check the key type (ignore any numerical keys - assume its an array)
+--    if type(k) == "string" then
+--      result = result .. "[\"" .. k .. "\"]" .. "="
+--    end
+--
+--    -- Check the value type
+--    if type(v) == "table" then
+--      result = result .. table_to_string(v)
+--      --elseif type(v) == "boolean" then
+--      --  result = result..tostring(v)
+--      --else
+--      --  result = result.."\""..v.."\""
+--    else
+--      result = result .. tostring(v)
+--    end
+--    result = result .. ", "
+--  end
+--  -- Remove leading commas from the result
+--  if result ~= "" then
+--    result = result:sub(1, result:len() - 1)
+--  end
+--  return result .. "}"
+--end
+--BOM.DbgTableToString = table_to_string
+
+BOM.AllBuffomatSpells = BOM.SetupSpells()
+BOM.CancelBuffs = BOM.SetupCancelBuffs()
+BOM.ItemCache = BOM.SetupItemCache()
