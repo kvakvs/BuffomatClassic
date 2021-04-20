@@ -1,0 +1,5 @@
+﻿rem COPY this to install.bat and edit path to your game to have a quick install option
+rem
+
+python3 buffomat.py --version=classic --dst="../_Releases" zip
+python3 buffomat.py --version=tbc --dst="../Releases" zip
