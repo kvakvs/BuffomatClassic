@@ -13,6 +13,8 @@ BOM.MANA_CLASSES = BOM_MANA_CLASSES --used in BomScan.lua
 
 local BOM_MELEE_CLASSES = { "WARRIOR", "ROGUE", "DRUID", "SHAMAN", "PALADIN" }
 local BOM_SHADOW_CLASSES = { "PRIEST", "WARLOCK" }
+local BOM_FIRE_CLASSES = { "MAGE", "WARLOCK", "SHAMAN", "HUNTER" }
+local BOM_FROST_CLASSES = { "MAGE", "SHAMAN" }
 local BOM_PHYSICAL_CLASSES = { "HUNTER", "ROGUE", "SHAMAN", "WARRIOR", "DRUID" }
 
 ---Add PRIEST spells
@@ -132,12 +134,14 @@ local function bom_setup_shaman_spells(s)
   tinsert(s, BOM.SpellDef:new(16316, --Rockbiter Weapon
           { isSeal       = true, default = true, singleDuration = 500,
             singleFamily = { 8017, 8018, 8019, 10399, 16314, 16315, 16316 } }))
-  tinsert(s, BOM.SpellDef:new(16362, --Windfury Weapon
+  tinsert(s, BOM.SpellDef:new(25505, --Windfury Weapon
           { isSeal       = true, default = true, singleDuration = 500,
-            singleFamily = { 8232, 8235, 10486, 16362 } }))
+            singleFamily = { 8232, 8235, 10486, 16362, 25505 } }))
   tinsert(s, BOM.SpellDef:new(10432, -- Lightning Shield / Blitzschlagschild
           { isOwn        = true, default = true,
             singleFamily = { 324, 325, 905, 945, 8134, 10431, 10432 } }))
+  tinsert(s, BOM.SpellDef:new(33736, -- Water Shield 1, 2
+          { isOwn = true, default = true, singleFamily = { 24398, 33736 } }))
   tinsert(s, BOM.SpellDef:new(20777, -- Resurrection / Auferstehung
           { isResurrection = true, default = true,
             singleFamily   = { 2008, 20609, 20610, 20776, 20777 } }))
@@ -353,16 +357,159 @@ local function bom_setup_misc_spells(s)
 end
 
 ---ITEMS, applicable to most of the classes, self buffs, containers to open etc
-local function bom_setup_item_spells(s)
+local function bom_setup_phys_dps_battle_elixirs(s)
+  if BOM.TBC then
+    tinsert(s, BOM.SpellDef:new(28497, --TBC: Elixir of Major Agility +35 AGI +20 CRIT
+            { item = 22831, isBuff = true, default = false, onlyUsableFor = BOM_PHYSICAL_CLASSES }))
+    tinsert(s, BOM.SpellDef:new(38954, --TBC: Fel Strength Elixir +90AP -10 STA
+            { item = 31679, isBuff = true, default = false, onlyUsableFor = BOM_PHYSICAL_CLASSES }))
+    tinsert(s, BOM.SpellDef:new(28490, --TBC: Elixir of Major Strength +35 STR
+            { item = 22824, isBuff = true, default = false, onlyUsableFor = BOM_PHYSICAL_CLASSES }))
+    tinsert(s, BOM.SpellDef:new(33720, --TBC: Onslaught Elixir +60 AP
+            { item = 28102, isBuff = true, default = false, onlyUsableFor = BOM_PHYSICAL_CLASSES }))
+  end -- END TBC
+
+  return s
+end
+
+---ITEMS, applicable to most of the classes, self buffs, containers to open etc
+local function bom_setup_phys_dps_guardian_elixirs(s)
+  if BOM.TBC then
+  end -- END TBC
+
+  return s
+end
+
+---ITEMS, applicable to most of the classes, self buffs, containers to open etc
+local function bom_setup_phys_dps_buffs(s)
   tinsert(s, BOM.SpellDef:new(17538, --Elixir of the Mongoose
-          { item          = 13452, isBuff = true, default = false,
-            onlyUsableFor = BOM_PHYSICAL_CLASSES }))
+          { item = 13452, isBuff = true, default = false, onlyUsableFor = BOM_PHYSICAL_CLASSES }))
   tinsert(s, BOM.SpellDef:new(11334, --Elixir of Greater Agility
-          { item          = 9187, isBuff = true, default = false,
-            onlyUsableFor = BOM_PHYSICAL_CLASSES }))
+          { item = 9187, isBuff = true, default = false, onlyUsableFor = BOM_PHYSICAL_CLASSES }))
+  tinsert(s, BOM.SpellDef:new(11405, --Elixir of Giants
+          { item = 9206, isBuff = true, default = false, onlyUsableFor = BOM_PHYSICAL_CLASSES }))
+  tinsert(s, BOM.SpellDef:new(17038, --Winterfall Firewater
+          { item = 12820, isBuff = true, default = false, onlyUsableFor = BOM_PHYSICAL_CLASSES }))
+  tinsert(s, BOM.SpellDef:new(16329, --Juju Might +40AP
+          { item = 12460, isBuff = true, default = false }))
+  tinsert(s, BOM.SpellDef:new(16323, --Juju Power +30Str
+          { item = 12451, isBuff = true, default = false }))
+  tinsert(s, BOM.SpellDef:new(16622, --Weightstone
+          { item   = 12643, items = { 12643, 7965, 3241, 3240, 3239 },
+            isBuff = true, isWeapon = true, duration = 1800, default = false, onlyUsableFor = BOM_PHYSICAL_CLASSES }))
+  tinsert(s, BOM.SpellDef:new(16138, --Sharpening Stone
+          { item   = 12404, items = { 12404, 7964, 2871, 2863, 2862 },
+            isBuff = true, isWeapon = true, duration = 1800, default = false, onlyUsableFor = BOM_PHYSICAL_CLASSES }))
+  tinsert(s, BOM.SpellDef:new(28891, --Consecrated Sharpening Stone
+          { item     = 23122, isBuff = true, isWeapon = true,
+            duration = 3600, default = false, onlyUsableFor = BOM_PHYSICAL_CLASSES }))
+
+  if not BOM.TBC then
+    tinsert(s, BOM.SpellDef:new(18192, --Grilled Squid +10 Agility
+            { item = 13928, isBuff = true, default = false, onlyUsableFor = BOM_PHYSICAL_CLASSES }))
+    tinsert(s, BOM.SpellDef:new(24799, --Smoked Desert Dumplings +Strength
+            { item = 20452, isBuff = true, default = false, onlyUsableFor = BOM_PHYSICAL_CLASSES }))
+    tinsert(s, BOM.SpellDef:new(18141, --Blessed Sunfruit Juice +Strength
+            { item = 13813, isBuff = true, default = false, onlyUsableFor = BOM_MELEE_CLASSES }))
+  end -- Disable old food in TBC
+
+  return s
+end
+
+---ITEMS, applicable to most of the classes, self buffs, containers to open etc
+local function bom_setup_caster_battle_elixirs(s)
+  if BOM.TBC then
+    tinsert(s, BOM.SpellDef:new(28509, --TBC: Elixir of Major Mageblood +16 mp5
+            { item = 22840, isBuff = true, default = false }))
+    tinsert(s, BOM.SpellDef:new(28503, --TBC: Elixir of Major Shadow Power +55 SHADOW
+            { item = 22835, isBuff = true, default = false, onlyUsableFor = BOM_SHADOW_CLASSES }))
+    tinsert(s, BOM.SpellDef:new(28501, --TBC: Elixir of Major Firepower +55 FIRE
+            { item = 22833, isBuff = true, default = false, onlyUsableFor = BOM_FIRE_CLASSES }))
+    tinsert(s, BOM.SpellDef:new(28493, --TBC: Elixir of Major Frost Power +55 FROST
+            { item = 22827, isBuff = true, default = false, onlyUsableFor = BOM_FROST_CLASSES }))
+    tinsert(s, BOM.SpellDef:new(28491, --TBC: Elixir of Healing Power +50 HEAL
+            { item = 22825, isBuff = true, default = false, onlyUsableFor = BOM_MANA_CLASSES }))
+    tinsert(s, BOM.SpellDef:new(33721, --TBC: Adept's Elixir +24 SPELL, +24 SPELLCRIT
+            { item = 28103, isBuff = true, default = false, onlyUsableFor = BOM_MANA_CLASSES }))
+    tinsert(s, BOM.SpellDef:new(39627, --TBC: Elixir of Draenic Wisdom +30 SPI
+            { item = 32067, isBuff = true, default = false, onlyUsableFor = BOM_MANA_CLASSES }))
+  end -- END TBC
+
   tinsert(s, BOM.SpellDef:new(24363, --Mageblood Potion
-          { item          = 20007, isBuff = true, default = false,
-            onlyUsableFor = BOM_MANA_CLASSES }))
+          { item = 20007, isBuff = true, default = false, onlyUsableFor = BOM_MANA_CLASSES }))
+  tinsert(s, BOM.SpellDef:new(17539, --Greater Arcane Elixir
+          { item = 13454, isBuff = true, default = false, onlyUsableFor = BOM_MANA_CLASSES }))
+  tinsert(s, BOM.SpellDef:new(11390, --Greater Arcane Elixir
+          { item = 9155, isBuff = true, default = false, onlyUsableFor = BOM_MANA_CLASSES }))
+  tinsert(s, BOM.SpellDef:new(11474, -- Elixir of Shadow Power
+          { item = 9264, isBuff = true, default = false, onlyUsableFor = BOM_SHADOW_CLASSES }))
+  tinsert(s, BOM.SpellDef:new(26276, --Elixir of Greater Firepower
+          { item = 21546, isBuff = true, default = false, onlyUsableFor = BOM_FIRE_CLASSES }))
+  tinsert(s, BOM.SpellDef:new(21920, --Elixir of Frost Power
+          { item = 17708, isBuff = true, default = false, onlyUsableFor = BOM_FROST_CLASSES }))
+
+  return s
+end
+
+---ITEMS, applicable to most of the classes, self buffs, containers to open etc
+local function bom_setup_caster_guardian_elixirs(s)
+  if BOM.TBC then
+    tinsert(s, BOM.SpellDef:new(28514, --TBC: Elixir of Empowerment, -30 TARGET RESIST
+            { item = 22848, isBuff = true, default = false }))
+  end -- END TBC
+
+  return s
+end
+
+local function bom_setup_caster_buffs(s)
+  if not BOM.TBC then
+    tinsert(s, BOM.SpellDef:new(18194, --Nightfin Soup +Mana/5
+            { item = 13931, isBuff = true, default = false, onlyUsableFor = BOM_MANA_CLASSES }))
+    tinsert(s, BOM.SpellDef:new(19710, --Monster Omelette
+            { item = 12218, isBuff = true, default = false, onlyUsableFor = BOM_MANA_CLASSES }))
+    tinsert(s, BOM.SpellDef:new(18125, --Blessed Sunfruit +Spirit
+            { item = 13810, isBuff = true, default = false, onlyUsableFor = BOM_MANA_CLASSES }))
+  end -- Disable old food in TBC
+
+  tinsert(s, BOM.SpellDef:new(25123, --Brilliant|Lesser|Minor Mana Oil
+          { item     = 20748, items = { 20748, 20747, 20745 }, isBuff = true,
+            isWeapon = true, duration = 1800, default = false, onlyUsableFor = BOM_MANA_CLASSES }))
+  tinsert(s, BOM.SpellDef:new(25122, --Brilliant|Lesser|Minor Wizard Oil
+          { item   = 20749, items = { 20749, 20746, 20744, 20750 },
+            isBuff = true, isWeapon = true, duration = 1800, default = false, onlyUsableFor = BOM_MANA_CLASSES }))
+  tinsert(s, BOM.SpellDef:new(28898, --Blessed Wizard Oil
+          { item     = 23123, isBuff = true, isWeapon = true,
+            duration = 3600, default = false, onlyUsableFor = BOM_MANA_CLASSES }))
+  tinsert(s, BOM.SpellDef:new(22756, --Elemental Sharpening Stone
+          { item     = 18262, isBuff = true, isWeapon = true,
+            duration = 1800, default = false, onlyUsableFor = BOM_PHYSICAL_CLASSES }))
+  return s
+end
+
+local function bom_setup_battle_elixirs(s)
+  if BOM.TBC then
+    -- Sunwell only
+    --tinsert(s, BOM.SpellDef:new(45373, --TBC: Bloodberry Elixir +15 all stats
+    --        { item = 34537, isBuff = true, default = false }))
+    tinsert(s, BOM.SpellDef:new(33726, --TBC: Elixir of Mastery +15 all stats
+            { item = 28104, isBuff = true, default = false }))
+  end -- END TBC
+
+  return s
+end
+
+local function bom_setup_guardian_elixirs(s)
+  if BOM.TBC then
+    tinsert(s, BOM.SpellDef:new(28502, --TBC: Elixir of Major Defense +550 ARMOR
+            { item = 22834, isBuff = true, default = false }))
+    tinsert(s, BOM.SpellDef:new(39628, --TBC: Elixir of Ironskin +30 RESIL
+            { item = 32068, isBuff = true, default = false }))
+    tinsert(s, BOM.SpellDef:new(39625, --TBC: Elixir of Major Fortitude +250 HP and 10 HP/5
+            { item = 32062, isBuff = true, default = false }))
+    tinsert(s, BOM.SpellDef:new(39626, --TBC: Earthen Elixir -20 ALL DMG TAKEN
+            { item = 32063, isBuff = true, default = false }))
+  end -- END TBC
+
   tinsert(s, BOM.SpellDef:new(3593, --Elixir of Fortitude
           { item = 3825, isBuff = true, default = false }))
   tinsert(s, BOM.SpellDef:new(11348, --Elixir of Superior Defense
@@ -371,68 +518,24 @@ local function bom_setup_item_spells(s)
           { item = 20004, isBuff = true, default = false }))
   tinsert(s, BOM.SpellDef:new(11371, --Gift of Arthas
           { item = 9088, isBuff = true, default = false }))
-  tinsert(s, BOM.SpellDef:new(11405, --Elixir of Giants
-          { item          = 9206, isBuff = true, default = false,
-            onlyUsableFor = BOM_PHYSICAL_CLASSES }))
-  tinsert(s, BOM.SpellDef:new(17539, --Greater Arcane Elixir
-          { item          = 13454, isBuff = true, default = false,
-            onlyUsableFor = BOM_MANA_CLASSES }))
-  tinsert(s, BOM.SpellDef:new(11390, --Greater Arcane Elixir
-          { item          = 9155, isBuff = true, default = false,
-            onlyUsableFor = BOM_MANA_CLASSES }))
-  tinsert(s, BOM.SpellDef:new(11474, -- Elixir of Shadow Power
-          { item          = 9264, isBuff = true, default = false,
-            onlyUsableFor = BOM_SHADOW_CLASSES }))
-  tinsert(s, BOM.SpellDef:new(26276, --Elixir of Greater Firepower
-          { item          = 21546, isBuff = true, default = false,
-            onlyUsableFor = { "MAGE", "WARLOCK", "SHAMAN" } }))
-  tinsert(s, BOM.SpellDef:new(21920, --Elixir of Frost Power
-          { item          = 17708, isBuff = true, default = false,
-            onlyUsableFor = { "SHAMAN", "MAGE" } }))
-  tinsert(s, BOM.SpellDef:new(17038, --Winterfall Firewater
-          { item          = 12820, isBuff = true, default = false,
-            onlyUsableFor = BOM_PHYSICAL_CLASSES }))
   tinsert(s, BOM.SpellDef:new(16326, --Juju Ember +15FR
           { item = 12455, isBuff = true, default = false }))
   tinsert(s, BOM.SpellDef:new(16325, --Juju Chill +15FrostR
           { item = 12457, isBuff = true, default = false }))
-  tinsert(s, BOM.SpellDef:new(16329, --Juju Might +40AP
-          { item = 12460, isBuff = true, default = false }))
-  tinsert(s, BOM.SpellDef:new(16323, --Juju Power +30Str
-          { item = 12451, isBuff = true, default = false }))
-  tinsert(s, BOM.SpellDef:new(15233, --Crystal Ward
-          { item = 11564, isBuff = true, default = false }))
-  tinsert(s, BOM.SpellDef:new(15279, --Crystal Spire
-          { item = 11567, isBuff = true, default = false }))
-  tinsert(s, BOM.SpellDef:new(18192, --Grilled Squid +10 Agility
-          { item          = 13928, isBuff = true, default = false,
-            onlyUsableFor = BOM_PHYSICAL_CLASSES }))
-  tinsert(s, BOM.SpellDef:new(24799, --Smoked Desert Dumplings +Strength
-          { item          = 20452, isBuff = true, default = false,
-            onlyUsableFor = BOM_PHYSICAL_CLASSES }))
-  tinsert(s, BOM.SpellDef:new(18194, --Nightfin Soup +Mana/5
-          { item          = 13931, isBuff = true, default = false,
-            onlyUsableFor = BOM_MANA_CLASSES }))
-  tinsert(s, BOM.SpellDef:new(22730, --Runn Tum Tuber Surprise
-          { item = 18254, isBuff = true, default = false }))
-  tinsert(s, BOM.SpellDef:new(19710, --Monster Omelette
-          { item          = 12218, isBuff = true, default = false,
-            onlyUsableFor = BOM_MANA_CLASSES }))
-  tinsert(s, BOM.SpellDef:new(25661, --Dirge's Kickin' Chimaerok Chops x
-          { item = 21023, isBuff = true, default = false }))
-  tinsert(s, BOM.SpellDef:new(18141, --Blessed Sunfruit Juice +Strength
-          { item          = 13813, isBuff = true, default = false,
-            onlyUsableFor = BOM_MELEE_CLASSES }))
-  tinsert(s, BOM.SpellDef:new(18125, --Blessed Sunfruit +Spirit
-          { item          = 13810, isBuff = true, default = false,
-            onlyUsableFor = BOM_MANA_CLASSES }))
-  tinsert(s, BOM.SpellDef:new(22790, --Kreeg's Stout Beatdown
-          { item          = 18284, isBuff = true, default = false,
-            onlyUsableFor = BOM_MANA_CLASSES }))
-  tinsert(s, BOM.SpellDef:new(22789, --Gordok Green Grog
-          { item = 18269, isBuff = true, default = false }))
-  tinsert(s, BOM.SpellDef:new(25804, --Rumsey Rum Black Label
-          { item = 21151, isBuff = true, default = false }))
+
+  if not BOM.TBC then
+    tinsert(s, BOM.SpellDef:new(22730, --Runn Tum Tuber Surprise
+            { item = 18254, isBuff = true, default = false }))
+    tinsert(s, BOM.SpellDef:new(25661, --Dirge's Kickin' Chimaerok Chops x
+            { item = 21023, isBuff = true, default = false }))
+    tinsert(s, BOM.SpellDef:new(22790, --Kreeg's Stout Beatdown
+            { item          = 18284, isBuff = true, default = false,
+              onlyUsableFor = BOM_MANA_CLASSES }))
+    tinsert(s, BOM.SpellDef:new(22789, --Gordok Green Grog
+            { item = 18269, isBuff = true, default = false }))
+    tinsert(s, BOM.SpellDef:new(25804, --Rumsey Rum Black Label
+            { item = 21151, isBuff = true, default = false }))
+  end -- Disable old food in TBC
 
   tinsert(s, BOM.SpellDef:new(17549, --Greater Arcane Protection Potion
           { item = 13461, isBuff = true, default = false }))
@@ -445,35 +548,47 @@ local function bom_setup_item_spells(s)
   tinsert(s, BOM.SpellDef:new(17548, --Greater Shadow Protection Potion
           { item = 13459, isBuff = true, default = false }))
 
-  tinsert(s, BOM.SpellDef:new(25123, --Brilliant|Lesser|Minor Mana Oil
-          { item          = 20748, items = { 20748, 20747, 20745 }, isBuff = true,
-            isWeapon      = true, duration = 1800, default = false,
-            onlyUsableFor = BOM_MANA_CLASSES }))
-  tinsert(s, BOM.SpellDef:new(25122, --Brilliant|Lesser|Minor Wizard Oil
-          { item          = 20749, items = { 20749, 20746, 20744, 20750 },
-            isBuff        = true, isWeapon = true, duration = 1800, default = false,
-            onlyUsableFor = BOM_MANA_CLASSES }))
-  tinsert(s, BOM.SpellDef:new(28898, --Blessed Wizard Oil
-          { item          = 23123, isBuff = true, isWeapon = true,
-            duration      = 3600, default = false,
-            onlyUsableFor = BOM_MANA_CLASSES }))
+  return s
+end
 
-  tinsert(s, BOM.SpellDef:new(16622, --Weightstone
-          { item          = 12643, items = { 12643, 7965, 3241, 3240, 3239 },
-            isBuff        = true, isWeapon = true, duration = 1800, default = false,
-            onlyUsableFor = BOM_PHYSICAL_CLASSES }))
-  tinsert(s, BOM.SpellDef:new(16138, --Sharpening Stone
-          { item          = 12404, items = { 12404, 7964, 2871, 2863, 2862 },
-            isBuff        = true, isWeapon = true, duration = 1800, default = false,
-            onlyUsableFor = BOM_PHYSICAL_CLASSES }))
-  tinsert(s, BOM.SpellDef:new(28891, --Consecrated Sharpening Stone
-          { item          = 23122, isBuff = true, isWeapon = true,
-            duration      = 3600, default = false,
-            onlyUsableFor = BOM_PHYSICAL_CLASSES }))
-  tinsert(s, BOM.SpellDef:new(22756, --Elemental Sharpening Stone
-          { item          = 18262, isBuff = true, isWeapon = true,
-            duration      = 1800, default = false,
-            onlyUsableFor = BOM_PHYSICAL_CLASSES }))
+local function bom_setup_item_spells(s)
+  if not BOM.TBC then
+    tinsert(s, BOM.SpellDef:new(15233, --Crystal Ward
+            { item = 11564, isBuff = true, default = false }))
+    tinsert(s, BOM.SpellDef:new(15279, --Crystal Spire
+            { item = 11567, isBuff = true, default = false }))
+  end -- Disable old food in TBC
+
+  return s
+end
+
+local function bom_setup_flasks(s)
+  if BOM.TBC then
+    tinsert(s, BOM.SpellDef:new(28540, --TBC: Flask of Pure Death +80 SHADOW +80 FIRE +80 FROST
+            { item = 22866, isBuff = true, default = false, onlyUsableFor = BOM_MANA_CLASSES }))
+    tinsert(s, BOM.SpellDef:new(28520, --TBC: Flask of Relentless Assault +120 AP
+            { item = 22854, isBuff = true, default = false, onlyUsableFor = BOM_PHYSICAL_CLASSES }))
+    tinsert(s, BOM.SpellDef:new(28521, --TBC: Flask of Blinding Light +80 ARC +80 HOLY +80 NATURE
+            { item = 22861, isBuff = true, default = false, onlyUsableFor = BOM_MANA_CLASSES }))
+    tinsert(s, BOM.SpellDef:new(28518, --TBC: Flask of Fortification +500 HP +10 DEF RATING
+            { item = 22851, isBuff = true, default = false }))
+    tinsert(s, BOM.SpellDef:new(28519, --TBC: Flask of Mighty Restoration +25 MP/5
+            { item = 22853, isBuff = true, default = false }))
+    tinsert(s, BOM.SpellDef:new(42735, --TBC: Flask of Chromatic Wonder +35 ALL RESIST +18 ALL STATS
+            { item = 33208, isBuff = true, default = false }))
+    -- TODO: Shattrath Flask of... (SSC and Tempest Keep only)
+    -- TODO: Unstable Flask of... (Blade's Edge and Gruul's Lair only)
+  end
+
+  tinsert(s, BOM.SpellDef:new(17628, --Flask of Supreme Power +70 SPELL
+          { item = 13512, isBuff = true, default = false, onlyUsableFor = BOM_MANA_CLASSES }))
+  tinsert(s, BOM.SpellDef:new(17626, --Flask of the Titans +400 HP
+          { item = 13510, isBuff = true, default = false }))
+  tinsert(s, BOM.SpellDef:new(17627, --Flask of Distilled Wisdom +65 INT
+          { item = 13511, isBuff = true, default = false, onlyUsableFor = BOM_MANA_CLASSES }))
+  tinsert(s, BOM.SpellDef:new(17629, --Flask of Chromatic Resistance
+          { item = 13513, isBuff = true, default = false }))
+
   return s
 end
 
@@ -496,7 +611,20 @@ function BOM.SetupSpells()
 
   s = bom_setup_tracking_spells(s)
   s = bom_setup_misc_spells(s)
+
+  s = bom_setup_phys_dps_buffs(s)
+  s = bom_setup_phys_dps_battle_elixirs(s)
+  s = bom_setup_phys_dps_guardian_elixirs(s)
+
+  s = bom_setup_caster_buffs(s)
+  s = bom_setup_caster_battle_elixirs(s)
+  s = bom_setup_caster_guardian_elixirs(s)
+
   s = bom_setup_item_spells(s)
+  s = bom_setup_battle_elixirs(s)
+  s = bom_setup_guardian_elixirs(s)
+
+  s = bom_setup_flasks(s)
 
   --Preload items!
   for x, spell in ipairs(s) do
@@ -584,7 +712,7 @@ BOM.EnchantList = {--weapon-echantment to spellid
   [16342] = { 3, 4, 5, 523, 1665, 1666 }, --Flametongue
   [16356] = { 2, 12, 524, 1667, 1668 }, --Frostbrand
   [16316] = { 1, 6, 29, 503, 683, 1663, 1664 }, --Rockbiter
-  [16362] = { 283, 284, 525, 1669 }, --Windfury
+  [16362] = { 283, 284, 525, 1669, 2636 }, --Windfury
   [25123] = { 2629, 2625, 2624 }, --Brilliant Mana Oil
   [25122] = { 2628, 2626, 2623, 2627 }, --Brilliant Wizard Oil
   [16622] = { 1703, 484, 21, 20, 19 }, -- Weightstone

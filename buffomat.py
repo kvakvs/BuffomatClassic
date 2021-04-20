@@ -10,7 +10,7 @@ import subprocess
 import sys
 import zipfile
 
-BOM_VERSION = '2021.4.0'  # year.month.build_num
+BOM_VERSION = '2021.4.1'  # year.month.build_num
 UI_VERSION_CLASSIC = '11304'
 UI_VERSION_CLASSIC_TBC = '20501'
 BOM_NAME_CLASSIC = 'BuffomatClassic'

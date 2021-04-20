@@ -38,6 +38,10 @@ BOM.CachedHasItems = {}
 ---@param list table - the item?
 ---@param cd boolean - respect the cooldown?
 function BOM.HasItem(list, cd)
+  if list == nil then
+    return true, nil, nil, 1 -- spell.items is nil, no items required
+  end
+
   local key = list[1] .. (cd and "CD" or "")
   local x = BOM.CachedHasItems[key]
 
