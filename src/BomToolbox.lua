@@ -18,23 +18,23 @@ local Tool = BOM.Tool
 --Tool.IconClassTextureCoord = CLASS_ICON_TCOORDS
 Tool.IconClass = {
   ["WARRIOR"] = "|TInterface\\WorldStateFrame\\ICONS-CLASSES:0:0:0:0:256:256:0:64:0:64|t",
-  ["MAGE"] = "|TInterface\\WorldStateFrame\\ICONS-CLASSES:0:0:0:0:256:256:64:128:0:64|t",
-  ["ROGUE"] = "|TInterface\\WorldStateFrame\\ICONS-CLASSES:0:0:0:0:256:256:128:192:0:64|t",
-  ["DRUID"] = "|TInterface\\WorldStateFrame\\ICONS-CLASSES:0:0:0:0:256:256:192:256:0:64|t",
-  ["HUNTER"] = "|TInterface\\WorldStateFrame\\ICONS-CLASSES:0:0:0:0:256:256:0:64:64:128|t",
-  ["SHAMAN"] = "|TInterface\\WorldStateFrame\\ICONS-CLASSES:0:0:0:0:256:256:64:128:64:128|t",
-  ["PRIEST"] = "|TInterface\\WorldStateFrame\\ICONS-CLASSES:0:0:0:0:256:256:128:192:64:128|t",
+  ["MAGE"]    = "|TInterface\\WorldStateFrame\\ICONS-CLASSES:0:0:0:0:256:256:64:128:0:64|t",
+  ["ROGUE"]   = "|TInterface\\WorldStateFrame\\ICONS-CLASSES:0:0:0:0:256:256:128:192:0:64|t",
+  ["DRUID"]   = "|TInterface\\WorldStateFrame\\ICONS-CLASSES:0:0:0:0:256:256:192:256:0:64|t",
+  ["HUNTER"]  = "|TInterface\\WorldStateFrame\\ICONS-CLASSES:0:0:0:0:256:256:0:64:64:128|t",
+  ["SHAMAN"]  = "|TInterface\\WorldStateFrame\\ICONS-CLASSES:0:0:0:0:256:256:64:128:64:128|t",
+  ["PRIEST"]  = "|TInterface\\WorldStateFrame\\ICONS-CLASSES:0:0:0:0:256:256:128:192:64:128|t",
   ["WARLOCK"] = "|TInterface\\WorldStateFrame\\ICONS-CLASSES:0:0:0:0:256:256:192:256:64:128|t",
   ["PALADIN"] = "|TInterface\\WorldStateFrame\\ICONS-CLASSES:0:0:0:0:256:256:0:64:128:192|t",
 }
 Tool.IconClassBig = {
   ["WARRIOR"] = "|TInterface\\WorldStateFrame\\ICONS-CLASSES:18:18:-4:4:256:256:0:64:0:64|t",
-  ["MAGE"] = "|TInterface\\WorldStateFrame\\ICONS-CLASSES:18:18:-4:4:256:256:64:128:0:64|t",
-  ["ROGUE"] = "|TInterface\\WorldStateFrame\\ICONS-CLASSES:18:18:-4:4:256:256:128:192:0:64|t",
-  ["DRUID"] = "|TInterface\\WorldStateFrame\\ICONS-CLASSES:18:18:-4:4:256:256:192:256:0:64|t",
-  ["HUNTER"] = "|TInterface\\WorldStateFrame\\ICONS-CLASSES:18:18:-4:4:256:256:0:64:64:128|t",
-  ["SHAMAN"] = "|TInterface\\WorldStateFrame\\ICONS-CLASSES:18:18:-4:4:256:256:64:128:64:128|t",
-  ["PRIEST"] = "|TInterface\\WorldStateFrame\\ICONS-CLASSES:18:18:-4:4:256:256:128:192:64:128|t",
+  ["MAGE"]    = "|TInterface\\WorldStateFrame\\ICONS-CLASSES:18:18:-4:4:256:256:64:128:0:64|t",
+  ["ROGUE"]   = "|TInterface\\WorldStateFrame\\ICONS-CLASSES:18:18:-4:4:256:256:128:192:0:64|t",
+  ["DRUID"]   = "|TInterface\\WorldStateFrame\\ICONS-CLASSES:18:18:-4:4:256:256:192:256:0:64|t",
+  ["HUNTER"]  = "|TInterface\\WorldStateFrame\\ICONS-CLASSES:18:18:-4:4:256:256:0:64:64:128|t",
+  ["SHAMAN"]  = "|TInterface\\WorldStateFrame\\ICONS-CLASSES:18:18:-4:4:256:256:64:128:64:128|t",
+  ["PRIEST"]  = "|TInterface\\WorldStateFrame\\ICONS-CLASSES:18:18:-4:4:256:256:128:192:64:128|t",
   ["WARLOCK"] = "|TInterface\\WorldStateFrame\\ICONS-CLASSES:18:18:-4:4:256:256:192:256:64:128|t",
   ["PALADIN"] = "|TInterface\\WorldStateFrame\\ICONS-CLASSES:18:18:-4:4:256:256:0:64:128:192|t",
 }
@@ -700,12 +700,12 @@ function Tool.AddDataBrocker(icon, onClick, onTooltipShow, text)
     if Launcher ~= nil then
       DataBrocker = true
       Launcher:NewDataObject(TOCNAME, {
-        type = "launcher",
-        icon = icon,
-        OnClick = onClick,
+        type          = "launcher",
+        icon          = icon,
+        OnClick       = onClick,
         OnTooltipShow = onTooltipShow,
-        tocname = TOCNAME,
-        label = text or GetAddOnMetadata(TOCNAME, "Title"),
+        tocname       = TOCNAME,
+        label         = text or GetAddOnMetadata(TOCNAME, "Title"),
       })
     end
   end
@@ -812,20 +812,27 @@ local CopyPastSavedText
 local CopyPastText
 
 local function bom_create_copypaste()
-  local frame = CreateFrame("Frame", nil, UIParent)
+  local frame
+
+  if BOM.TBC then
+    frame = CreateFrame("Frame", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate")
+  else
+    frame = CreateFrame("Frame", nil, UIParent)
+    frame:SetBackdrop({
+      bgFile   = "Interface/DialogFrame/UI-DialogBox-Background",
+      tile     = true,
+      edgeFile = "Interface/DialogFrame/UI-DialogBox-Border",
+      edgeSize = 32,
+      insets   = {
+        left   = 11,
+        right  = 12,
+        top    = 12,
+        bottom = 11,
+      },
+    })
+  end
+
   frame:SetFrameStrata("DIALOG")
-  frame:SetBackdrop({
-    bgFile = "Interface/DialogFrame/UI-DialogBox-Background",
-    tile = true,
-    edgeFile = "Interface/DialogFrame/UI-DialogBox-Border",
-    edgeSize = 32,
-    insets = {
-      left = 11,
-      right = 12,
-      top = 12,
-      bottom = 11,
-    },
-  })
   frame:SetSize(700, 450)
   frame:SetPoint("CENTER")
   frame:EnableMouse(true)
@@ -953,7 +960,7 @@ local function bom_find_spellid(spellName)
   while true do
     local spellAndRank = My_GetSpellName(i, BOOKTYPE_SPELL);
     if (not spellAndRank) then
-      break;
+      break ;
     end
     if (spellName == spellAndRank) then
       --print at this point like "Fireball(Rank 13)"
@@ -969,8 +976,7 @@ end
 ---@param link string - the string in format "spell:<id>" or "item:<id>"
 function Tool.TooltipLink(control, link)
   control:SetScript("OnEnter", function()
-    local spellId =
-    GameTooltip:SetOwner(control, "ANCHOR_RIGHT")
+    local spellId = GameTooltip:SetOwner(control, "ANCHOR_RIGHT")
     GameTooltip:SetHyperlink(link)
     GameTooltip:Show()
   end)

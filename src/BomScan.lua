@@ -374,9 +374,9 @@ function BOM.GetSpells()
             itemName, itemLink, itemIcon
           }
         else
-          print(BOM.CHAT_MSG_PREFIX, "Item not found!",
-                  spell.single, spell.singleId,
-                  spell.item, "x", BOM.ItemCache[spell.item])
+          BOM.Print("Item not found! " ..
+                  spell.single .. " " .. spell.singleId ..
+                  spell.item .. "x" .. BOM.ItemCache[spell.item])
         end
       else
         add = true

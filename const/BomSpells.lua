@@ -321,12 +321,15 @@ end
 
 ---Add RESOURCE TRACKING spells
 local function bom_setup_tracking_spells(s)
-  tinsert(s, BOM.SpellDef:new(2383, -- Find Herbs / kräuter
-          { isTracking = true, default = true }))
-  tinsert(s, BOM.SpellDef:new(2580, -- Find Minerals / erz
-          { isTracking = true, default = true }))
-  tinsert(s, BOM.SpellDef:new(2481, -- Find Treasure / Schatzsuche / Zwerge
-          { isTracking = true, default = true }))
+  if not BOM.TBC then
+    -- TBC tracking works differently
+    tinsert(s, BOM.SpellDef:new(2383, -- Find Herbs / kräuter
+            { isTracking = true, default = true }))
+    tinsert(s, BOM.SpellDef:new(2580, -- Find Minerals / erz
+            { isTracking = true, default = true }))
+    tinsert(s, BOM.SpellDef:new(2481, -- Find Treasure / Schatzsuche / Zwerge
+            { isTracking = true, default = true }))
+  end
   return s
 end
 

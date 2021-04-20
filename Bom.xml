@@ -163,9 +163,24 @@
     <HighlightTexture inherits="UIPanelButtonHighlightTexture"/>
   </Button>
 
+  <Frame name="BomC_BackdropTemplate" virtual="true">
+    <Scripts>
+      <OnLoad inherit="prepend">
+        if BackdropTemplateMixin then
+          Mixin(self, BackdropTemplateMixin);
+        end
+      </OnLoad>
+      <OnSizeChanged inherit="prepend">
+        if self.OnBackdropSizeChanged then
+          self:OnBackdropSizeChanged();
+        end
+      </OnSizeChanged>
+    </Scripts>
+  </Frame>
 
   <Frame name="BomC_MainWindow" parent="UIParent" hidden="true"
-         enableMouse="true" frameStrata="LOW" clampedToScreen="true">
+         enableMouse="true" frameStrata="LOW" clampedToScreen="true"
+         inherits="BomC_BackdropTemplate">
     <Size>
       <AbsDimension x="256" y="170"/>
     </Size>
@@ -175,19 +190,6 @@
         <AbsDimension x="300" y="0"/>
       </Offset>
     </Anchors>
-    <Backdrop name="$parentBackdrop"
-              bgFile="Interface\TutorialFrame\TutorialFrameBackground"
-              edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
-      <EdgeSize>
-        <AbsValue val="16"/>
-      </EdgeSize>
-      <TileSize>
-        <AbsValue val="64"/>
-      </TileSize>
-      <BackgroundInsets>
-        <AbsInset left="5" right="5" top="5" bottom="5"/>
-      </BackgroundInsets>
-    </Backdrop>
 
     <Layers>
       <Layer level="BACKGROUND">
@@ -395,7 +397,16 @@
     </Frames>
 
     <Scripts>
-      <OnLoad>BUFFOMAT_ADDON.OnLoad()</OnLoad>
+      <OnLoad inherit="prepend">
+        BUFFOMAT_ADDON.OnLoad()
+        self:SetBackdrop({
+          bgFile="Interface\\DialogFrame\\UI-DialogBox-Background-Dark",
+          edgeFile="Interface\\DialogFrame\\UI-DialogBox-Border",
+          tile=true,
+          edgeSize=16, tileSize=64,
+          insets={left=5, right=5, top=5, bottom=5}
+        });
+      </OnLoad>
     </Scripts>
   </Frame>
 </Ui>

@@ -1,0 +1,25 @@
+## Interface: 20501
+## Title: Buffomat Classic TBC
+## Notes: Semi-automatic buff and resurrection bot, compatible with Burning Crusade Classic
+## Version: 1.9.7
+## Author: kvakvs; Original author: GPI / Erytheia-Razorfen
+## DefaultState: enabled
+## SavedVariables: BomSharedState
+## SavedVariablesPerCharacter: BomCharacterState
+
+const/BomTexture.lua
+const/BomSpells.lua
+
+src/classes/SpellDef.lua
+
+src/BomOptions.lua
+src/BomMinimapButton.lua
+src/BomToolbox.lua
+src/BomL10n.lua
+src/BomToolbox.lua
+src/BomScan.lua
+src/BomTab.lua
+src/BomMyButton.lua
+
+Bom.lua
+Bom.xml

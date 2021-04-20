@@ -51,6 +51,17 @@ BOM.MAX_AURAS = 40
 BOM.BLESSING_ID = "blessing"
 BOM.LOADING_SCREEN_TIMEOUT = 2
 
+local function bom_is_tbc()
+  local function get_version()
+    return select(4, GetBuildInfo())
+  end
+
+  local ui_ver = get_version()
+  return ui_ver >= 20000 and ui_ver <= 29999
+end
+
+BOM.TBC = bom_is_tbc()
+
 ---Print a text with "Buffomat: " prefix in the game chat window
 ---@param t string
 function BOM.Print(t)
@@ -1067,6 +1078,8 @@ function BOM.OnLoad()
   BOM.RegisterEvent("UNIT_SPELLCAST_SUCCEEDED", Event_UNIT_SPELLCAST_errors)
   BOM.RegisterEvent("UNIT_SPELLCAST_INTERRUPTED", Event_UNIT_SPELLCAST_errors)
   BOM.RegisterEvent("UNIT_SPELLCAST_FAILED", Event_UNIT_SPELLCAST_errors)
+
+  -- TODO for TBC: PLAYER_REGEN_DISABLED / ENABLED is sent before/after the combat and protected frames lock up
 
   for i, event in ipairs(EVT_COMBAT_START) do
     BOM.RegisterEvent(event, Event_CombatStart)
