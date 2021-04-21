@@ -3,6 +3,7 @@ local TOCNAME, BOM = ...
 ---
 --- A class describing a spell in available spells collection
 ---
+---@class SpellDef
 ---@field classes table - list of target classes which are shown as toggle boxes to enable cast per class
 ---@field default boolean - whether the spell auto-cast is enabled by default
 ---@field groupDuration number - buff duration for group buff in seconds
@@ -26,8 +27,9 @@ BOM.SpellDef.__index = BOM.SpellDef
 local CLASS_TAG = "spelldef"
 
 ---Creates a new SpellDef
----@param single_id number - spell id also serving as configId key
----@param fields table - other fields
+---@param single_id number Spell id also serving as configId key
+---@param fields table<string, any> Other fields
+---@return SpellDef
 function BOM.SpellDef:new(single_id, fields)
   fields = fields or {}
   setmetatable(fields, BOM.SpellDef)

@@ -138,17 +138,20 @@ end
 
 ---Add SHAMAN spells
 local function bom_setup_shaman_spells(s)
+  local duration = DURATION_10M
+  if BOM.TBC then duration = DURATION_30M end
+
   tinsert(s, BOM.SpellDef:new(16342, --Flametongue Weapon
-          { isSeal       = true, default = true, singleDuration = DURATION_5M, isShamanDualwield = true,
+          { isSeal       = true, default = true, singleDuration = duration, isShamanDualwield = true,
             singleFamily = { 8024, 8027, 8030, 16339, 16341, 16342 } }))
   tinsert(s, BOM.SpellDef:new(16356, --Frostbrand Weapon
-          { isSeal       = true, default = true, singleDuration = DURATION_5M, isShamanDualwield = true,
+          { isSeal       = true, default = true, singleDuration = duration, isShamanDualwield = true,
             singleFamily = { 8033, 8038, 10456, 16355, 16356 } }))
   tinsert(s, BOM.SpellDef:new(16316, --Rockbiter Weapon
-          { isSeal       = true, default = true, singleDuration = DURATION_5M, isShamanDualwield = true,
+          { isSeal       = true, default = true, singleDuration = duration, isShamanDualwield = true,
             singleFamily = { 8017, 8018, 8019, 10399, 16314, 16315, 16316 } }))
   tinsert(s, BOM.SpellDef:new(25505, --Windfury Weapon
-          { isSeal       = true, default = true, singleDuration = DURATION_5M, isShamanDualwield = true,
+          { isSeal       = true, default = true, singleDuration = duration, isShamanDualwield = true,
             singleFamily = { 8232, 8235, 10486, 16362, 25505 } }))
 
   tinsert(s, BOM.SpellDef:new(10432, -- Lightning Shield / Blitzschlagschild
@@ -770,6 +773,8 @@ function BOM.SetupItemCache()
   make_item(9206, "Elixir of Giants", W, 134841)
   make_item(13459, "Greater Shadow Protection Potion", W, 134803)
   make_item(3776, "Crippling Poison II", W, 134799)
+
+  return s
 end
 
 BOM.ArgentumDawn = {
