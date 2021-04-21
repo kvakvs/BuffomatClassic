@@ -17,6 +17,14 @@ local BOM_FIRE_CLASSES = { "MAGE", "WARLOCK", "SHAMAN", "HUNTER" }
 local BOM_FROST_CLASSES = { "MAGE", "SHAMAN" }
 local BOM_PHYSICAL_CLASSES = { "HUNTER", "ROGUE", "SHAMAN", "WARRIOR", "DRUID" }
 
+--- From 2 choices return TBC if BOM.TBC is true, otherwise return classic
+local function tbc_or_classic(tbc, classic)
+  if BOM.TBC then
+    return tbc
+  end
+  return classic
+end
+
 ---Add PRIEST spells
 local function bom_setup_priest_spells(s)
   tinsert(s, BOM.SpellDef:new(10938, -- Fortitude / Seelenstärke
@@ -126,22 +134,24 @@ end
 ---Add SHAMAN spells
 local function bom_setup_shaman_spells(s)
   tinsert(s, BOM.SpellDef:new(16342, --Flametongue Weapon
-          { isSeal       = true, default = true, singleDuration = 500,
+          { isSeal       = true, default = true, singleDuration = 500, isShamanDualwield = true,
             singleFamily = { 8024, 8027, 8030, 16339, 16341, 16342 } }))
   tinsert(s, BOM.SpellDef:new(16356, --Frostbrand Weapon
-          { isSeal       = true, default = true, singleDuration = 500,
+          { isSeal       = true, default = true, singleDuration = 500, isShamanDualwield = true,
             singleFamily = { 8033, 8038, 10456, 16355, 16356 } }))
   tinsert(s, BOM.SpellDef:new(16316, --Rockbiter Weapon
-          { isSeal       = true, default = true, singleDuration = 500,
+          { isSeal       = true, default = true, singleDuration = 500, isShamanDualwield = true,
             singleFamily = { 8017, 8018, 8019, 10399, 16314, 16315, 16316 } }))
   tinsert(s, BOM.SpellDef:new(25505, --Windfury Weapon
-          { isSeal       = true, default = true, singleDuration = 500,
+          { isSeal       = true, default = true, singleDuration = 500, isShamanDualwield = true,
             singleFamily = { 8232, 8235, 10486, 16362, 25505 } }))
+
   tinsert(s, BOM.SpellDef:new(10432, -- Lightning Shield / Blitzschlagschild
           { isOwn        = true, default = true,
             singleFamily = { 324, 325, 905, 945, 8134, 10431, 10432 } }))
   tinsert(s, BOM.SpellDef:new(33736, -- Water Shield 1, 2
           { isOwn = true, default = true, singleFamily = { 24398, 33736 } }))
+
   tinsert(s, BOM.SpellDef:new(20777, -- Resurrection / Auferstehung
           { isResurrection = true, default = true,
             singleFamily   = { 2008, 20609, 20610, 20776, 20777 } }))
@@ -302,24 +312,39 @@ end
 
 ---Add ROGUE spells
 local function bom_setup_rogue_spells(s)
+  local duration = 1800
+  if BOM.TBC then
+    duration = 3600
+  end -- in TBC poisons become 1 hour
+
   tinsert(s, BOM.SpellDef:new(25351, --Deadly Poison
-          { item          = 20844, items = { 20844, 8985, 8984, 2893, 2892 }, isBuff = true,
-            isWeapon      = true, duration = 1800, default = false,
-            onlyUsableFor = { "ROGUE" } }))
+          { item   = tbc_or_classic(22054, 20844),
+            items  = { 22054, 22053, -- TBC: Deadly Poison
+                       20844, 8985, 8984, 2893, 2892 },
+            isBuff = true, isWeapon = true, duration = duration, default = false, onlyUsableFor = { "ROGUE" } }))
   tinsert(s, BOM.SpellDef:new(11399, --Mind-numbing Poison
           { item     = 9186, items = { 9186, 6951, 5237 }, isBuff = true, isWeapon = true,
-            duration = 1800, default = false, onlyUsableFor = { "ROGUE" } }))
+            duration = duration, default = false, onlyUsableFor = { "ROGUE" } }))
   tinsert(s, BOM.SpellDef:new(11340, --Instant Poison
-          { item          = 8928, items = { 8928, 8927, 8926, 6950, 6949, 6947 }, isBuff = true,
-            isWeapon      = true, duration = 1800, default = false,
-            onlyUsableFor = { "ROGUE" } }))
+          { item   = tbc_or_classic(21927, 8928),
+            items  = { 21927, -- TBC: Instant Poison
+                       8928, 8927, 8926, 6950, 6949, 6947 },
+            isBuff = true, isWeapon = true, duration = duration, default = false, onlyUsableFor = { "ROGUE" } }))
   tinsert(s, BOM.SpellDef:new(13227, --Wound Poison
-          { item          = 10922, items = { 10922, 10921, 10920, 10918 }, isBuff = true,
-            isWeapon      = true, duration = 1800, default = false,
-            onlyUsableFor = { "ROGUE" } }))
+          { item   = tbc_or_classic(22055, 10922),
+            items  = { 22055, -- TBC: Wound Poison
+                       10922, 10921, 10920, 10918 },
+            isBuff = true, isWeapon = true, duration = duration, default = false, onlyUsableFor = { "ROGUE" } }))
   tinsert(s, BOM.SpellDef:new(11202, --Crippling Poison
           { item     = 3776, items = { 3776, 3775 }, isBuff = true, isWeapon = true,
-            duration = 1800, default = false, onlyUsableFor = { "ROGUE" } }))
+            duration = duration, default = false, onlyUsableFor = { "ROGUE" } }))
+
+  if BOM.TBC then
+    tinsert(s, BOM.SpellDef:new(26785, --TBC: Anesthetic Poison
+            { item   = 21835, items = { 21835 },
+              isBuff = true, isWeapon = true, duration = duration, default = false, onlyUsableFor = { "ROGUE" } }))
+  end
+
   return s
 end
 
@@ -339,15 +364,20 @@ end
 
 ---MISC spells applicable to every class
 local function bom_setup_misc_spells(s)
-  tinsert(s, BOM.SpellDef:new(432, -- Water | drink
-          { isInfo       = true, default = false,
-            singleFamily = { 430, 431, 432, 1133, 1135, 1137, 22734, 25696, 26475, 26261, 29007,
-                             26473, 10250, 26402 } }))
-  tinsert(s, BOM.SpellDef:new(434, -- Food | essen
-          { isInfo       = true, default = false,
-            singleFamily = { 10256, 1127, 1129, 22731, 5006, 433, 1131, 18230, 18233, 5007, 24800, 5005,
-                             18232, 5004, 435, 434, 18234, 24869, 18229, 25888, 6410, 2639, 24005, 7737,
-                             29073, 26260, 26474, 18231, 10257, 26472, 28616, 25700 } }))
+  -- TODO: TBC drink and food spells
+  --tinsert(s, BOM.SpellDef:new(432, -- Water | drink
+  --        { isInfo       = true, default = false,
+  --          singleFamily = { 430, 431, 432, 1133, 1135, 1137, 22734, 25696, 26475, 26261, 29007,
+  --                           26473, 10250, 26402,
+  --            -- TBC: Drink
+  --                           34291, 34062, 22018, 27089 } }))
+  --tinsert(s, BOM.SpellDef:new(434, -- Food | essen
+  --        { isInfo       = true, default = false,
+  --          singleFamily = { 10256, 1127, 1129, 22731, 5006, 433, 1131, 18230, 18233, 5007, 24800, 5005,
+  --                           18232, 5004, 435, 434, 18234, 24869, 18229, 25888, 6410, 2639, 24005, 7737,
+  --                           29073, 26260, 26474, 18231, 10257, 26472, 28616, 25700,
+  --            -- TBC: Food
+  --                           34062, 22019 } }))
   tinsert(s, BOM.SpellDef:new(20762, --Soulstone | Seelenstein
           { isInfo       = true, allowWhisper = true, default = false,
             singleFamily = { 20707, 20762, 20763, 20765, 20764 } }))
@@ -382,6 +412,8 @@ end
 
 ---ITEMS, applicable to most of the classes, self buffs, containers to open etc
 local function bom_setup_phys_dps_buffs(s)
+  -- TODO: TBC sharpening stones, blacksmithing runes
+
   tinsert(s, BOM.SpellDef:new(17538, --Elixir of the Mongoose
           { item = 13452, isBuff = true, default = false, onlyUsableFor = BOM_PHYSICAL_CLASSES }))
   tinsert(s, BOM.SpellDef:new(11334, --Elixir of Greater Agility
@@ -469,6 +501,7 @@ local function bom_setup_caster_buffs(s)
             { item = 12218, isBuff = true, default = false, onlyUsableFor = BOM_MANA_CLASSES }))
     tinsert(s, BOM.SpellDef:new(18125, --Blessed Sunfruit +Spirit
             { item = 13810, isBuff = true, default = false, onlyUsableFor = BOM_MANA_CLASSES }))
+    -- TODO: TBC wizard oils
   end -- Disable old food in TBC
 
   tinsert(s, BOM.SpellDef:new(25123, --Brilliant|Lesser|Minor Mana Oil
@@ -662,7 +695,14 @@ function BOM.SetupItemCache()
   make_item(9186, "Mind-numbing Poison III", W, 136066)
   make_item(9155, "Arcane Elixir", W, 134810)
   make_item(20452, "Smoked Desert Dumplings", W, 134020)
-  make_item(10922, "Wound Poison IV", W, 132274)
+
+  if BOM.TBC then
+    make_item(22055, "Wound Poison V", W, 132274)
+    make_item(21835, "Anesthetic Poison", W, 132274)
+  else
+    make_item(10922, "Wound Poison IV", W, 132274)
+  end
+
   make_item(21023, "Dirge's Kickin' Chimaerok Chops", W, 134021)
   make_item(12404, "Dense Sharpening Stone", W, 135252)
   make_item(21151, "Rumsey Rum Black Label", W, 132791)
@@ -675,7 +715,13 @@ function BOM.SetupItemCache()
   make_item(20749, "Brilliant Wizard Oil", W, 134727)
   make_item(5654, "Instant Toxin", W, 134799)
   make_item(18262, "Elemental Sharpening Stone", G, 135228)
-  make_item(20844, "Deadly Poison V", W, 132290)
+
+  if BOM.TBC then
+    make_item(22054, "Deadly Poison VII", W, 132290)
+  else
+    make_item(20844, "Deadly Poison V", W, 132290)
+  end
+
   make_item(20004, "Major Troll's Blood Potion", W, 134860)
   make_item(12820, "Winterfall Firewater", W, 134872)
   make_item(20007, "Mageblood Potion", W, 134825)
@@ -720,12 +766,16 @@ BOM.EnchantList = {--weapon-echantment to spellid
   [22756] = { 2506 }, --Elemental Sharpening Stone
   [16138] = { 1643, 483, 14, 13, 40 }, --Sharpening Stone
   [28898] = { 2685 }, --Blessed Wizard Oil
-  [25351] = { 2630, 627, 626, 8, 7 }, --Deadly Poison
+  [25351] = { 2643, 2642, -- TBC: Deadly Poison
+              2630, 627, 626, 8, 7 }, --Deadly Poison
   [11399] = { 643, 23, 35 }, --Mind-numbing Poison
-  [11340] = { 625, 624, 623, 325, 324, 323 }, --Instant Poison
+  [11340] = { 2641, -- TBC: Instant Poison
+              625, 624, 623, 325, 324, 323 }, --Instant Poison
   --[6650]  = { 42 }, --Instant Toxin - not available to players
-  [13227] = { 706, 705, 704, 703 }, --Wound Poison
+  [13227] = { 2644, -- TBC: Wound Poison
+              706, 705, 704, 703 }, --Wound Poison
   [11202] = { 603, 22 }, --Crippling Poison
+  [26785] = { 2640, }, --TBC: Anesthetic Poison
   --[]={},--
   --[]={},--
 }

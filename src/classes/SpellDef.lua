@@ -19,6 +19,7 @@ local TOCNAME, BOM = ...
 ---@field singleDuration number - buff duration for single buff in seconds
 ---@field singleFamily table - family of single buff spell ids which are mutually exclusive
 ---@field singleId number - spell id for single buff
+---@field isShamanDualwield boolean - if true, will display seal spell for both hands (TBC shamans!)
 BOM.SpellDef = {}
 BOM.SpellDef.__index = BOM.SpellDef
 
