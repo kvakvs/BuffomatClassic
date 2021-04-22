@@ -861,7 +861,7 @@ end
 ---Check for party, spell and player, which targets that spell goes onto
 ---Update spell.NeedMember, spell.NeedGroup and spell.DeathGroup
 ---@param party table - the party
----@param spell table - the spell to update
+---@param spell SpellDef - the spell to update
 ---@param player_member table - the player
 ---@param someone_is_dead boolean - the flag that buffing cannot continue while someone is dead
 ---@return boolean - updated someone_is_dead
@@ -1193,7 +1193,7 @@ end
 ---@param spell_name string
 ---@param party table
 ---@param class string
----@param spell table
+---@param spell SpellDef
 local function bom_get_class_in_range(spell_name, party, class, spell)
   local minDist
   local ret = nil
@@ -1311,7 +1311,7 @@ local player_mana
 ---@param id number - Spell id to capture
 ---@param link string
 ---@param member table
----@param spell table - Spell to capture
+---@param spell SpellDef - Spell to capture
 local function bom_catch_a_spell(cost, id, link, member, spell)
   if cost > player_mana then
     return -- ouch
@@ -1537,7 +1537,7 @@ local function bom_whisper_expired(spell)
 end
 
 ---Add a paladin blessing
----@param spell table - spell to cast
+---@param spell SpellDef - spell to cast
 ---@param player_member table - player
 ---@param in_range boolean - spell target is in range
 local function bom_add_blessing(spell, player_member, in_range)
@@ -1623,7 +1623,7 @@ local function bom_add_blessing(spell, player_member, in_range)
 end
 
 ---Add a paladin blessing
----@param spell table - spell to cast
+---@param spell SpellDef - spell to cast
 ---@param party table - the party
 ---@param player_member table - player
 ---@param in_range boolean - spell target is in range
@@ -1708,7 +1708,7 @@ local function bom_add_buff(spell, party, player_member, in_range)
 end
 
 ---Adds a display text for a weapon buff
----@param spell table - the spell to cast
+---@param spell SpellDef - the spell to cast
 ---@param player_member table - the player
 ---@param in_range boolean - value for range check
 ---@return table (bag_title string, bag_command string)
@@ -1766,7 +1766,7 @@ local function bom_add_resurrection(spell, player_member, in_range)
 end
 
 ---Adds a display text for a self buff or tracking or seal/weapon self-enchant
----@param spell table - the spell to cast
+---@param spell SpellDef - the spell to cast
 ---@param player_member table - the player
 ---@param bag_title string - if not empty, is item name from the bag
 ---@param bag_command string - console command to use item from the bag
@@ -1789,7 +1789,7 @@ local function bom_add_self_buff(spell, player_member)
 end
 
 ---Adds a display text for a weapon buff
----@param spell table - the spell to cast
+---@param spell SpellDef - the spell to cast
 ---@param player_member table - the player
 ---@param bag_title string - if not empty, is item name from the bag
 ---@param bag_command string - console command to use item from the bag
@@ -1825,7 +1825,7 @@ local function bom_add_regular_buff(spell, player_member, bag_title, bag_command
 end
 
 ---Adds a display text for a weapon buff
----@param spell table - the spell to cast
+---@param spell SpellDef - the spell to cast
 ---@param player_member table - the player
 ---@param bag_title string - if not empty, is item name from the bag
 ---@param bag_command string - console command to use item from the bag

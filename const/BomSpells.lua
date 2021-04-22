@@ -33,47 +33,67 @@ end
 ---Add PRIEST spells
 local function bom_setup_priest_spells(s)
   tinsert(s, BOM.SpellDef:new(10938, -- Fortitude / Seelenstärke
-          { groupId         = 21562, default = true,
-            singleFamily    = { 1243, 1244, 1245, 2791, 10937, 10938 },
-            groupFamily     = { 21562, 21564 },
-            singleDuration  = DURATION_30M,
-            groupDuration   = DURATION_1H,
-            NeededGroupItem = { 17028, 17029 },
-            classes         = BOM_ALL_CLASSES }))
-  tinsert(s, BOM.SpellDef:new(14819, -- Prayer of Spirit / Willenstärke
-          { groupId        = 27681, default = true,
-            singleFamily   = { 14752, 14818, 14819, 27841 },
+          { groupId        = 21562, default = true,
+            singleFamily   = { 1243, 1244, 1245, 2791, 10937, 10938, -- Ranks 1-6
+                               25389 }, -- TBC: Rank 7
+            groupFamily    = { 21562, 21564, -- Ranks 1-2
+                               25392 }, -- TBC: Rank 3
             singleDuration = DURATION_30M, groupDuration = DURATION_1H, NeededGroupItem = { 17028, 17029 },
-            classes        = BOM_MANA_CLASSES }))
-  tinsert(s, BOM.SpellDef:new(10958, --Prayer of Shadow / Schattenschutz
-          { groupId        = 27683, default = false,
-            singleFamily   = { 976, 10957, 10958 }, NeededGroupItem = { 17028, 17029 },
-            singleDuration = 600, groupDuration = 1200,
             classes        = BOM_ALL_CLASSES }))
+
+  BOM.SpellDef_PrayerOfSpirit = function()
+    return BOM.SpellDef:new(14819, -- Divine Spirit / Prayer of Spirit / Willenstärke
+            { groupId        = 27681, default = true,
+              singleFamily   = { 14752, 14818, 14819, 27841, -- Ranks 1-4
+                                 25312 }, -- TBC: Rank 5
+              groupFamily    = { 27681, -- Rank 1
+                                 32999 }, --- TBC: Rank 2
+              singleDuration = DURATION_30M, groupDuration = DURATION_1H, NeededGroupItem = { 17028, 17029 },
+              classes        = BOM_MANA_CLASSES })
+  end
+  tinsert(s, BOM.SpellDef_PrayerOfSpirit())
+
+  tinsert(s, BOM.SpellDef:new(10958, --Shadow Protection / Prayer of Shadow / Schattenschutz
+          { groupId         = 27683, default = false, singleDuration = DURATION_10M, groupDuration = 1200,
+            singleFamily    = { 976, 10957, 10958, -- Ranks 1-3
+                                25433 }, -- TBC: Rank 4
+            groupFamily     = { 27683, -- Rank 1
+                                39374 }, -- TBC: Rank 2
+            NeededGroupItem = { 17028, 17029 }, classes = BOM_ALL_CLASSES }))
   tinsert(s, BOM.SpellDef:new(6346, -- Fear Ward
-          { default = false, singleDuration = 600, hasCD = true, classes = BOM_ALL_CLASSES }))
-  tinsert(s, BOM.SpellDef:new(10901, -- Power Word: Shield / Powerword:Shild
-          { default        = false,
-            singleFamily   = { 17, 592, 600, 3747, 6065, 6066, 10898, 10899, 10900, 10901 },
-            singleDuration = 30, hasCD = true,
-            classes        = { } }))
+          { default = false, singleDuration = DURATION_10M, hasCD = true, classes = BOM_ALL_CLASSES }))
+
+  BOM.SpellDef_PW_Shield = function()
+    return BOM.SpellDef:new(10901, -- Power Word: Shield / Powerword:Shild
+            { default        = false,
+              singleFamily   = { 17, 592, 600, 3747, 6065, 6066, 10898, 10899, 10900, 10901, -- Ranks 1-10
+                                 25217, 25218 }, -- TBC: Ranks 11-12
+              singleDuration = 30, hasCD = true, classes = { } })
+  end
+  tinsert(s, BOM.SpellDef_PW_Shield())
+
   tinsert(s, BOM.SpellDef:new(19266, -- Touch of Weakness / Berührung der Schwäche
           { default      = true, isOwn = true,
-            singleFamily = { 2652, 19261, 19262, 19264, 19265, 19266 } }))
+            singleFamily = { 2652, 19261, 19262, 19264, 19265, 19266, -- Ranks 1-6
+                             25461 } })) -- TBC: Rank 7
   tinsert(s, BOM.SpellDef:new(10952, -- Inner Fire / inneres Feuer
           { default      = true, isOwn = true,
-            singleFamily = { 588, 7128, 602, 1006, 10951, 10952 } }))
+            singleFamily = { 588, 7128, 602, 1006, 10951, 10952, -- Ranks 1-6
+                             25431 } })) -- TBC: Rank 7
   tinsert(s, BOM.SpellDef:new(19312, -- Shadowguard
           { default      = true, isOwn = true,
-            singleFamily = { 18137, 19308, 19309, 19310, 19311, 19312 } }))
+            singleFamily = { 18137, 19308, 19309, 19310, 19311, 19312, -- Ranks 1-6
+                             25477 } })) -- TBC: Rank 7
   tinsert(s, BOM.SpellDef:new(19293, -- Elune's Grace
           { default      = true, isOwn = true,
-            singleFamily = { 2651, 19289, 19291, 19292, 19293 } }))
+            singleFamily = { 2651, -- Rank 1 also TBC: The only rank
+                             19289, 19291, 19292, 19293 } })) -- Ranks 2-5 (non-TBC)
   tinsert(s, BOM.SpellDef:new(15473, -- Shadow Form
           { default = false, isOwn = true }))
   tinsert(s, BOM.SpellDef:new(20770, -- Resurrection / Auferstehung
-          { cancelForm = true, isResurrection = true,
-            default    = true, singleFamily = { 2006, 2010, 10880, 10881, 20770 } }))
+          { cancelForm   = true, isResurrection = true, default = true,
+            singleFamily = { 2006, 2010, 10880, 10881, 20770, -- Ranks 1-5
+                             25435 } })) -- TBC: Rank 6
 
   return s
 end
@@ -88,7 +108,7 @@ local function bom_setup_druid_spells(s)
   tinsert(s, BOM.SpellDef:new(9910, --Thorns | Dornen
           { cancelForm     = true, default = false,
             singleFamily   = { 467, 782, 1075, 8914, 9756, 9910 },
-            singleDuration = 600, classes = BOM_MELEE_CLASSES }))
+            singleDuration = DURATION_10M, classes = BOM_MELEE_CLASSES }))
   tinsert(s, BOM.SpellDef:new(16864, --omen of clarity
           { isOwn = true, cancelForm = true, default = true }))
   tinsert(s, BOM.SpellDef:new(17329, -- Nature's Grasp | Griff der Natur
@@ -104,16 +124,20 @@ end
 ---Add MAGE spells
 local function bom_setup_mage_spells(s)
   --{singleId=10938, isOwn=true, default=true, ItemLock={8008}}, -- manastone/debug
-  tinsert(s, BOM.SpellDef:new(10157, --Arcane Intellect | Brilliance
-          { groupId        = 23028, default = true,
-            singleFamily   = { 1459, 1460, 1461, 10156, 10157 },
-            singleDuration = DURATION_30M, groupDuration = DURATION_1H, NeededGroupItem = { 17020 },
-            classes        = BOM_MANA_CLASSES }))
+  BOM.SpellDef_ArcaneIntelligence = function()
+    return BOM.SpellDef:new(10157, --Arcane Intellect | Brilliance
+            { groupId        = 23028, default = true,
+              singleFamily   = { 1459, 1460, 1461, 10156, 10157 },
+              singleDuration = DURATION_30M, groupDuration = DURATION_1H, NeededGroupItem = { 17020 },
+              classes        = BOM_MANA_CLASSES })
+  end
+  tinsert(s, BOM.SpellDef_ArcaneIntelligence())
+
   tinsert(s, BOM.SpellDef:new(10174, --Dampen Magic
-          { default      = false, singleDuration = 600, classes = { },
+          { default      = false, singleDuration = DURATION_10M, classes = { },
             singleFamily = { 604, 8450, 8451, 10173, 10174 } }))
   tinsert(s, BOM.SpellDef:new(10170, --Amplify Magic
-          { default      = false, singleDuration = 600, classes = { },
+          { default      = false, singleDuration = DURATION_10M, classes = { },
             singleFamily = { 1008, 8455, 10169, 10170 } }))
   tinsert(s, BOM.SpellDef:new(10220, -- Ice Armor / eisrüstung
           { isSeal = true, default = false, singleFamily = { 7302, 7320, 10219, 10220 } }))
@@ -139,7 +163,9 @@ end
 ---Add SHAMAN spells
 local function bom_setup_shaman_spells(s)
   local duration = DURATION_10M
-  if BOM.TBC then duration = DURATION_30M end
+  if BOM.TBC then
+    duration = DURATION_30M
+  end
 
   tinsert(s, BOM.SpellDef:new(16342, --Flametongue Weapon
           { isSeal       = true, default = true, singleDuration = duration, isShamanDualwield = true,
@@ -170,10 +196,10 @@ end
 ---Add WARLOCK spells
 local function bom_setup_warlock_spells(s)
   tinsert(s, BOM.SpellDef:new(5697, -- Unending Breath
-          { default = false, singleDuration = 600, classes = BOM_ALL_CLASSES }))
+          { default = false, singleDuration = DURATION_10M, classes = BOM_ALL_CLASSES }))
   tinsert(s, BOM.SpellDef:new(11743, -- Detect Greater Invisibility | Große Unsichtbarkeit entdecken
           { default        = false, singleFamily = { 132, 2970, 11743 },
-            singleDuration = 600, classes = BOM_ALL_CLASSES }))
+            singleDuration = DURATION_10M, classes = BOM_ALL_CLASSES }))
   tinsert(s, BOM.SpellDef:new(28610, -- Shadow Ward / Schattenzauberschutz
           { isOwn = true, default = false, singleFamily = { 6229, 11739, 11740, 28610 } }))
   tinsert(s, BOM.SpellDef:new(11735, -- Demon Armor
@@ -652,7 +678,7 @@ end
 ---All spells known to Buffomat
 ---Note: you can add your own spell in the "WTF\Account\<accountname>\SavedVariables\buffOmat.lua"
 ---table CustomSpells
----@return table - all known spells table (all spells to be scanned)
+---@return table<number, SpellDef> All known spells table (all spells to be scanned)
 function BOM.SetupSpells()
   local s = {}
 
@@ -847,21 +873,14 @@ BOM.ItemListSpell = {
 }
 BOM.ItemListTarget = {}
 
+---@return table<number, SpellDef>
 function BOM.SetupCancelBuffs()
   -- Note: you can add your own spell in the "WTF\Account\<accountname>\SavedVariables\buffOmat.lua"
   -- table CustomCancelBuff
   local s = {
-    BOM.SpellDef:new(10901, --Power Word: Shield
-            { default      = false, -- default no cancel
-              singleFamily = { 17, 592, 600, 3747, 6065, 6066, 10898, 10899,
-                               10900, 10901 } }),
-    BOM.SpellDef:new(14819, -- Prayer of Spirit / willenstärke
-            { groupId      = 27681, default = false, -- default no cancel
-              singleFamily = { 14752, 14818, 14819, 27841 } }),
-    BOM.SpellDef:new(10157, -- Arcane Intelligence
-            { groupId      = 23028, -- Arcane Brilliance
-              default      = false, -- default no cancel
-              singleFamily = { 1459, 1460, 1461, 10156, 10157 } }),
+    BOM.SpellDef_PW_Shield(),
+    BOM.SpellDef_PrayerOfSpirit(),
+    BOM.SpellDef_ArcaneIntelligence(),
   }
 
   do

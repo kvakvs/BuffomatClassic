@@ -10,9 +10,9 @@ import subprocess
 import sys
 import zipfile
 
-BOM_VERSION = '2021.4.1'  # year.month.build_num
-UI_VERSION_CLASSIC = '11304'
-UI_VERSION_CLASSIC_TBC = '20501'
+BOM_VERSION = '2021.4.2'  # year.month.build_num
+UI_VERSION_CLASSIC = '11307'  # patch 1.13.7
+UI_VERSION_CLASSIC_TBC = '20501'  # patch 2.5.1
 BOM_NAME_CLASSIC = 'BuffomatClassic'
 BOM_NAME_CLASSIC_TBC = 'BuffomatClassicTBC'
 COPY_DIRS = ['src', 'const']

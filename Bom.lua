@@ -915,7 +915,7 @@ end
 local bom_last_update_timestamp = 0
 local bom_last_modifier
 local bom_fps_check = 0
-local bom_update_timer_limit = 1.500 --bumped from 0.1 which potentially causes Naxxramas lag?
+local bom_update_timer_limit = 0.500 --bumped from 0.1 which potentially causes Naxxramas lag?
 local bom_slow_count = 0
 
 function BOM.UpdateTimer()
