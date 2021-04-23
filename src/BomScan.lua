@@ -1542,8 +1542,8 @@ end
 ---@param in_range boolean - spell target is in range
 local function bom_add_blessing(spell, player_member, in_range)
   local ok, bag, slot, count
-  if spell.NeededGroupItem then
-    ok, bag, slot, count = BOM.HasItem(spell.NeededGroupItem, true)
+  if spell.reagentRequired then
+    ok, bag, slot, count = BOM.HasItem(spell.reagentRequired, true)
   end
 
   if type(count) == "number" then
@@ -1630,8 +1630,8 @@ end
 local function bom_add_buff(spell, party, player_member, in_range)
   local ok, bag, slot, count
 
-  if spell.NeededGroupItem then
-    ok, bag, slot, count = BOM.HasItem(spell.NeededGroupItem, true)
+  if spell.reagentRequired then
+    ok, bag, slot, count = BOM.HasItem(spell.reagentRequired, true)
   end
 
   if type(count) == "number" then

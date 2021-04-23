@@ -19,6 +19,7 @@ local BOM_PHYSICAL_CLASSES = { "HUNTER", "ROGUE", "SHAMAN", "WARRIOR", "DRUID" }
 
 local DURATION_1H = 3600
 local DURATION_30M = 1800
+local DURATION_15M = 900
 local DURATION_10M = 600
 local DURATION_5M = 300
 
@@ -38,7 +39,7 @@ local function bom_setup_priest_spells(s)
                                25389 }, -- TBC: Rank 7
             groupFamily    = { 21562, 21564, -- Ranks 1-2
                                25392 }, -- TBC: Rank 3
-            singleDuration = DURATION_30M, groupDuration = DURATION_1H, NeededGroupItem = { 17028, 17029 },
+            singleDuration = DURATION_30M, groupDuration = DURATION_1H, reagentRequired = { 17028, 17029 },
             classes        = BOM_ALL_CLASSES }))
 
   BOM.SpellDef_PrayerOfSpirit = function()
@@ -48,7 +49,7 @@ local function bom_setup_priest_spells(s)
                                  25312 }, -- TBC: Rank 5
               groupFamily    = { 27681, -- Rank 1
                                  32999 }, --- TBC: Rank 2
-              singleDuration = DURATION_30M, groupDuration = DURATION_1H, NeededGroupItem = { 17028, 17029 },
+              singleDuration = DURATION_30M, groupDuration = DURATION_1H, reagentRequired = { 17028, 17029 },
               classes        = BOM_MANA_CLASSES })
   end
   tinsert(s, BOM.SpellDef_PrayerOfSpirit())
@@ -59,7 +60,7 @@ local function bom_setup_priest_spells(s)
                                 25433 }, -- TBC: Rank 4
             groupFamily     = { 27683, -- Rank 1
                                 39374 }, -- TBC: Rank 2
-            NeededGroupItem = { 17028, 17029 }, classes = BOM_ALL_CLASSES }))
+            reagentRequired = { 17028, 17029 }, classes = BOM_ALL_CLASSES }))
   tinsert(s, BOM.SpellDef:new(6346, -- Fear Ward
           { default = false, singleDuration = DURATION_10M, hasCD = true, classes = BOM_ALL_CLASSES }))
 
@@ -104,7 +105,7 @@ local function bom_setup_druid_spells(s)
           { groupId         = 21849, cancelForm = true, default = true,
             singleFamily    = { 1126, 5232, 6756, 5234, 8907, 9884, 9885 },
             groupFamily     = { 21849, 21850 }, singleDuration = DURATION_30M, groupDuration = DURATION_1H,
-            NeededGroupItem = { 17021, 17026 }, classes = BOM_ALL_CLASSES }))
+            reagentRequired = { 17021, 17026 }, classes = BOM_ALL_CLASSES }))
   tinsert(s, BOM.SpellDef:new(9910, --Thorns | Dornen
           { cancelForm     = true, default = false,
             singleFamily   = { 467, 782, 1075, 8914, 9756, 9910 },
@@ -126,36 +127,58 @@ local function bom_setup_mage_spells(s)
   --{singleId=10938, isOwn=true, default=true, ItemLock={8008}}, -- manastone/debug
   BOM.SpellDef_ArcaneIntelligence = function()
     return BOM.SpellDef:new(10157, --Arcane Intellect | Brilliance
-            { groupId        = 23028, default = true,
-              singleFamily   = { 1459, 1460, 1461, 10156, 10157 },
-              singleDuration = DURATION_30M, groupDuration = DURATION_1H, NeededGroupItem = { 17020 },
-              classes        = BOM_MANA_CLASSES })
+            { singleFamily    = { 1459, 1460, 1461, 10156, 10157, -- Ranks 1-5
+                                  27126 }, -- TBC: Rank 6
+              groupFamily     = { 23028, -- Brilliance Rank 1
+                                  27127 }, -- TBC: Brillance Rank 2
+              default         = true, singleDuration = DURATION_30M, groupDuration = DURATION_1H,
+              reagentRequired = { 17020 }, classes = BOM_MANA_CLASSES })
   end
   tinsert(s, BOM.SpellDef_ArcaneIntelligence())
 
   tinsert(s, BOM.SpellDef:new(10174, --Dampen Magic
           { default      = false, singleDuration = DURATION_10M, classes = { },
-            singleFamily = { 604, 8450, 8451, 10173, 10174 } }))
+            singleFamily = { 604, 8450, 8451, 10173, 10174, -- Ranks 1-5
+                             33944 } })) -- TBC: Rank 6
   tinsert(s, BOM.SpellDef:new(10170, --Amplify Magic
           { default      = false, singleDuration = DURATION_10M, classes = { },
-            singleFamily = { 1008, 8455, 10169, 10170 } }))
+            singleFamily = { 1008, 8455, 10169, 10170, -- Ranks 1-4
+                             27130, 33946 } })) -- TBC: Ranks 5-6
   tinsert(s, BOM.SpellDef:new(10220, -- Ice Armor / eisrüstung
-          { isSeal = true, default = false, singleFamily = { 7302, 7320, 10219, 10220 } }))
+          { isSeal       = true, default = false,
+            singleFamily = { 7302, 7320, 10219, 10220, -- Ranks 1-4, levels 30 40 50 60
+                             27124 } })) -- TBC: Rank 5, level 69
   tinsert(s, BOM.SpellDef:new(7301, -- Frost Armor / frostrüstung
-          { isSeal = true, default = false, singleFamily = { 168, 7300, 7301 } }))
+          { isSeal       = true, default = false,
+            singleFamily = { 168, 7300, 7301 } })) -- Ranks 1-3, Levels 1, 10, 20
+  tinsert(s, BOM.SpellDef:new(30482, -- TBC: Molten Armor
+          { isSeal = true, default = false, singleFamily = { 30482 } })) -- TBC: Rank 1
   tinsert(s, BOM.SpellDef:new(22783, -- Mage Armor / magische rüstung
-          { isSeal = true, default = false, singleFamily = { 6117, 22782, 22783 } }))
-  tinsert(s, BOM.SpellDef:new(10193, --Manaschild - unabhängig von allen.
+          { isSeal       = true, default = false,
+            singleFamily = { 6117, 22782, 22783, -- Ranks 1-3
+                             27125 } })) -- TBC: Rank 4
+  tinsert(s, BOM.SpellDef:new(10193, --Mana Shield | Manaschild - unabhängig von allen.
           { isOwn        = true, default = false, singleDuration = 60,
-            singleFamily = { 1463, 8494, 8495, 10191, 10192, 10193 } }))
-  tinsert(s, BOM.SpellDef:new(13033, --ice barrier
+            singleFamily = { 1463, 8494, 8495, 10191, 10192, 10193, -- Ranks 1-6
+                             27131 } })) -- TBC: Rank 7
+  tinsert(s, BOM.SpellDef:new(13033, --Ice Barrier
           { isOwn        = true, default = false, singleDuration = 60,
-            singleFamily = { 11426, 13031, 13032, 13033 } }))
-  tinsert(s, BOM.SpellDef:new(10053, -- manastone
-          { isOwn        = true, default = true, ItemLock = { 5514, 5513, 8007 },
-            singleFamily = { 759, 3552, 10053 } }))
-  tinsert(s, BOM.SpellDef:new(10054, -- manastone
-          { isOwn = true, default = true, ItemLock = { 8008 } }))
+            singleFamily = { 11426, 13031, 13032, 13033, -- Ranks 1-4
+                             27134, 33405 } })) -- TBC: Ranks 5-6
+  tinsert(s, BOM.SpellDef:new(10053, -- Conjure Mana Stone (Max Rank)
+          { isOwn        = true, default = true,
+            ItemLock     = { 5514, 5513, 8007, 8008, -- Items: Agate, Jade, Citrine, Ruby
+                             22044 }, -- TBC: Item: Emerald
+            singleFamily = { 759, 3552, 10053, 10054, -- Agate, Jade, Citrine, Ruby
+                             27101 } })) -- TBC: Emerald
+  -- Note: At ranks below max this will look identical with the previous
+  tinsert(s, BOM.SpellDef:new(10053, -- Conjure Mana Stone (1 Rank Lower than Max)
+          { isOwn        = true, default = true,
+            ItemLock     = { 5514, 5513, 8007, 8008 }, -- Items: Agate, Jade, Citrine, Ruby
+            singleFamily = { 759, 3552, 10053, 10054 } })) -- Agate, Jade, Citrine, Ruby
+
+  --tinsert(s, BOM.SpellDef:new(27101, -- TBC: Conjure Emerald, blocked by having a ruby
+  --        { isOwn = true, default = true, ItemLock = { 22044 } }))
 
   return s
 end
@@ -221,7 +244,7 @@ local function bom_setup_warlock_spells(s)
             ItemLock     = { 5232, 16892, 16893, 16895, 16896 },
             singleFamily = { 693, 20752, 20755, 20756, 20757 } }))
   tinsert(s, BOM.SpellDef:new(5500, --Sense Demons
-          { isTracking = true, default = true }))
+          { isTracking = true, default = false }))
 
   return s
 end
@@ -267,64 +290,104 @@ end
 
 ---Add PALADIN spells
 local function bom_setup_paladin_spells(s)
-  tinsert(s, BOM.SpellDef:new(25780, --Righteous Fury
-          { isOwn = true, default = true }))
+  tinsert(s, BOM.SpellDef:new(25780, --Righteous Fury, same in TBC
+          { isOwn = true, default = false }))
+
+  local blessing_duration = tbc_or_classic(DURATION_10M, DURATION_5M)
+  local greater_blessing_duration = tbc_or_classic(DURATION_15M, DURATION_30M)
   tinsert(s, BOM.SpellDef:new(20217, --Blessing of Kings
-          { groupId        = 25898, isBlessing = true, default = true,
-            singleDuration = 300, groupDuration = 900, NeededGroupItem = { 21177 },
-            classes        = { "MAGE", "HUNTER", "WARLOCK" } }))
+          { groupId         = 25898, isBlessing = true, default = true,
+            singleDuration  = blessing_duration, groupDuration = greater_blessing_duration,
+            reagentRequired = { 21177 }, classes = { "MAGE", "HUNTER", "WARLOCK" } }))
   tinsert(s, BOM.SpellDef:new(19979, --Blessing of Light
-          { groupId        = 25890, isBlessing = true, default = true,
-            singleFamily   = { 19977, 19978, 19979 }, NeededGroupItem = { 21177 },
-            singleDuration = 300, groupDuration = 900,
-            classes        = {} }))
+          { groupFamily     = { 25890, -- Rank 1
+                                27145 }, -- TBC: Rank 2
+            singleFamily    = { 19977, 19978, 19979, -- Ranks 1-3
+                                27144 }, -- TBC: Rank 4
+            isBlessing      = true, default = true,
+            reagentRequired = { 21177 }, singleDuration = blessing_duration,
+            groupDuration   = greater_blessing_duration, classes = {} }))
   tinsert(s, BOM.SpellDef:new(25291, --Blessing of Might
-          { groupId        = 25916, isBlessing = true, default = true,
-            singleFamily   = { 19740, 19834, 19835, 19836, 19837, 19838, 25291 }, groupFamily = { 25782, 25916 },
-            singleDuration = 300, groupDuration = 900, NeededGroupItem = { 21177 },
-            classes        = { "WARRIOR", "ROGUE" } }))
+          { isBlessing      = true, default = true,
+            singleFamily    = { 19740, 19834, 19835, 19836, 19837, 19838, 25291, -- Ranks 1-7
+                                27140 }, -- TBS: Rank 8
+            groupFamily     = { 25782, 25916, -- Ranks 1-2
+                                27141 }, -- TBC: Rank 3
+            singleDuration  = blessing_duration, groupDuration = greater_blessing_duration,
+            reagentRequired = { 21177 }, classes = { "WARRIOR", "ROGUE" } }))
   tinsert(s, BOM.SpellDef:new(1038, --Blessing of Salvation
-          { groupId        = 25895, isBlessing = true, default = true,
-            singleDuration = 300, groupDuration = 900, NeededGroupItem = { 21177 },
-            classes        = { } }))
+          { groupId         = 25895, isBlessing = true, default = true,
+            singleDuration  = blessing_duration, groupDuration = greater_blessing_duration,
+            reagentRequired = { 21177 }, classes = { } }))
   tinsert(s, BOM.SpellDef:new(20914, --Blessing of Sanctuary
-          { groupId        = 25899, isBlessing = true, default = true,
-            singleFamily   = { 20911, 20912, 20913, 20914 }, NeededGroupItem = { 21177 },
-            singleDuration = 300, groupDuration = 900,
-            classes        = { } }))
-  tinsert(s, BOM.SpellDef:new(25290, --Blessing of Wisdom -
-          { groupId        = 25918, isBlessing = true, default = true,
-            singleFamily   = { 19742, 19850, 19852, 19853, 19854, 25290 }, groupFamily = { 25894, 25918 },
-            singleDuration = 300, groupDuration = 900, NeededGroupItem = { 21177 },
-            classes        = { "DRUID", "SHAMAN", "PRIEST", "PALADIN" } }))
+          { isBlessing      = true, default = true,
+            groupFamily     = { 25899, -- Rank 1
+                                27169 }, -- TBC: Rank 2
+            singleFamily    = { 20911, 20912, 20913, 20914, -- Ranks 1-4
+                                27168 }, -- TBC: Rank 5
+            reagentRequired = { 21177 },
+            singleDuration  = blessing_duration, groupDuration = greater_blessing_duration,
+            classes         = { } }))
+  tinsert(s, BOM.SpellDef:new(25290, --Blessing of Wisdom
+          { isBlessing      = true, default = true,
+            singleFamily    = { 19742, 19850, 19852, 19853, 19854, 25290, -- Ranks 1-6
+                                27142 }, -- TBC: Rank 7
+            groupFamily     = { 25894, 25918, -- Ranks 1-2
+                                27143 }, -- TBC: Rank 3
+            singleDuration  = blessing_duration, groupDuration = greater_blessing_duration,
+            reagentRequired = { 21177 }, classes = { "DRUID", "SHAMAN", "PRIEST", "PALADIN" } }))
+
   tinsert(s, BOM.SpellDef:new(10293, -- Devotion Aura
-          { isAura = true, default = true, singleFamily = { 465, 10290, 643, 10291, 1032, 10292, 10293 } }))
+          { isAura       = true, default = false,
+            singleFamily = { 465, 10290, 643, 10291, 1032, 10292, 10293, -- Rank 1-7
+                             27149 } })) -- TBC: Rank 8
   tinsert(s, BOM.SpellDef:new(10301, -- Retribution Aura
-          { isAura = true, default = true, singleFamily = { 7294, 10298, 10299, 10300, 10301 } }))
+          { isAura       = true, default = true,
+            singleFamily = { 7294, 10298, 10299, 10300, 10301, -- Ranks 1-5
+                             27150 } })) -- TBC: Rank 6
   tinsert(s, BOM.SpellDef:new(19746, --Concentration Aura
-          { isAura = true, default = true }))
+          { isAura = true, default = false }))
   tinsert(s, BOM.SpellDef:new(19896, -- Shadow Resistance Aura
-          { isAura = true, default = true, singleFamily = { 19876, 19895, 19896 } }))
+          { isAura = true, default = false, singleFamily = { 19876, 19895, 19896, -- Rank 1-3
+                                                             27151 } })) -- TBC: Rank 4
   tinsert(s, BOM.SpellDef:new(19898, -- Frost Resistance Aura
-          { isAura = true, default = true, singleFamily = { 19888, 19897, 19898 } }))
+          { isAura = true, default = false, singleFamily = { 19888, 19897, 19898, -- Rank 1-3
+                                                             27152 } })) -- TBC: Rank 4
   tinsert(s, BOM.SpellDef:new(19900, -- Fire Resistance Aura
-          { isAura = true, default = true, singleFamily = { 19891, 19899, 19900 } }))
+          { isAura = true, default = false, singleFamily = { 19891, 19899, 19900, -- Rank 1-3
+                                                             27153 } })) -- TBC: Rank 4
   tinsert(s, BOM.SpellDef:new(20218, --Sanctity Aura
-          { isAura = true, default = true }))
+          { isAura = true, default = false }))
   tinsert(s, BOM.SpellDef:new(20773, -- Redemption / Auferstehung
           { isResurrection = true, default = true, singleFamily = { 7328, 10322, 10324, 20772, 20773 } }))
-  tinsert(s, BOM.SpellDef:new(20164, -- Sanctity seal
-          { isSeal = true, default = false }))
+
+  if not BOM.TBC then
+    tinsert(s, BOM.SpellDef:new(20164, -- Sanctity seal
+            { isSeal = true, default = false }))
+    tinsert(s, BOM.SpellDef:new(5502, -- Sense undead (auto-recast is broken in TBC)
+            { isTracking = true, default = false }))
+  end
+
   tinsert(s, BOM.SpellDef:new(20165, -- Seal of Light
-          { isSeal = true, default = false }))
+          { isSeal       = true, default = false,
+            singleFamily = { 20165, 20347, 20348, 20349, -- Ranks 1-4
+                             27160 } })) -- TBC: Rank 5
   tinsert(s, BOM.SpellDef:new(20154, -- Seal of Righteousness
-          { isSeal = true, default = false }))
-  tinsert(s, BOM.SpellDef:new(21084, -- Seal of Righteousness
-          { isSeal = true, default = false }))
+          { isSeal       = true, default = false,
+            singleFamily = { 20154, 20287, 20288, 20289, 20290, 20291, 20292, 20293, -- Ranks 1-8
+                             27155 } })) -- TBC: Seal rank 9
   tinsert(s, BOM.SpellDef:new(20166, -- Seal of Wisdom
           { isSeal = true, default = false }))
-  tinsert(s, BOM.SpellDef:new(5502, -- Sense undead
-          { isTracking = true, default = true }))
+  tinsert(s, BOM.SpellDef:new(348704, -- TBC: Seal of Vengeance
+          { isSeal       = true, default = false,
+            singleFamily = { 31801, -- TBC: level 70 spell for Blood Elf
+                             348704 } })) -- TBC: Base spell for the alliance races
+  tinsert(s, BOM.SpellDef:new(348700, -- TBC: Seal of the Martyr (Draenei, Dwarf, Human)
+          { isSeal = true, default = false }))
+  tinsert(s, BOM.SpellDef:new(31892, -- TBC: Seal of Blood
+          { isSeal       = true, default = false,
+            singleFamily = { 31892, -- TBC: Base Blood Elf spell
+                             38008 } })) -- TBC: Alliance version???
 
   return s
 end
