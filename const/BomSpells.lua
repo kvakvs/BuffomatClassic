@@ -195,26 +195,37 @@ end
 local function bom_setup_shaman_spells(s)
   local duration = tbc_or_classic(DURATION_30M, DURATION_10M)
 
+  -- --- Remember to update Weapon Enchant ids in BOM.EnchantList ---
   tinsert(s, BOM.SpellDef:new(16342, --Flametongue Weapon
-          { isSeal       = true, default = true, singleDuration = duration, isShamanDualwield = true,
-            singleFamily = { 8024, 8027, 8030, 16339, 16341, 16342 } }))
+          { isSeal       = true, default = false, singleDuration = duration, isShamanDualwield = true,
+            singleFamily = { 8024, 8027, 8030, 16339, 16341, 16342, -- Ranks 1-6
+                             25489 } })) -- TBC: Rank 7
   tinsert(s, BOM.SpellDef:new(16356, --Frostbrand Weapon
-          { isSeal       = true, default = true, singleDuration = duration, isShamanDualwield = true,
-            singleFamily = { 8033, 8038, 10456, 16355, 16356 } }))
+          { isSeal       = true, default = false, singleDuration = duration, isShamanDualwield = true,
+            singleFamily = { 8033, 8038, 10456, 16355, 16356, -- Ranks 1-5
+                             25500 } })) -- TBC: Rank 6
   tinsert(s, BOM.SpellDef:new(16316, --Rockbiter Weapon
-          { isSeal       = true, default = true, singleDuration = duration, isShamanDualwield = true,
-            singleFamily = { 8017, 8018, 8019, 10399, 16314, 16315, 16316 } }))
+          { isSeal       = true, default = false, singleDuration = duration, isShamanDualwield = true,
+            singleFamily = { 8017, 8018, 8019, 10399, 16314, 16315, 16316, -- Ranks 1-7
+                             25479, 25485 } })) -- TBC: Ranks 8-9
   tinsert(s, BOM.SpellDef:new(25505, --Windfury Weapon
-          { isSeal       = true, default = true, singleDuration = duration, isShamanDualwield = true,
-            singleFamily = { 8232, 8235, 10486, 16362, 25505 } }))
+          { isSeal       = true, default = false, singleDuration = duration, isShamanDualwield = true,
+            singleFamily = { 8232, 8235, 10486, 16362, -- Ranks 1-4
+                             25505 } })) -- TBC: Rank 5
+  -- --- Remember to update Weapon Enchant ids in BOM.EnchantList ---
 
   tinsert(s, BOM.SpellDef:new(10432, -- Lightning Shield / Blitzschlagschild
-          { isOwn        = true, default = true, duration = DURATION_10M,
-            singleFamily = { 324, 325, 905, 945, 8134, 10431, 10432 } }))
-  tinsert(s, BOM.SpellDef:new(33736, -- Water Shield 1, 2
-          { isOwn = true, default = true, duration = DURATION_10M, singleFamily = { 24398, 33736 } }))
+          { isOwn        = true, default = false, duration = DURATION_10M,
+            singleFamily = { 324, 325, 905, 945, 8134, 10431, 10432, -- Ranks 1-7
+                             25469, 25472 } })) -- TBC: Ranks 8-9
 
-  tinsert(s, BOM.SpellDef:new(20777, -- Resurrection / Auferstehung
+  if BOM.TBC then
+    tinsert(s, BOM.SpellDef:new(33736, -- TBC: Water Shield 1, 2
+            { isOwn        = true, default = true, duration = DURATION_10M,
+              singleFamily = { 24398, 33736 } }))
+  end
+
+  tinsert(s, BOM.SpellDef:new(20777, -- Ancestral Spirit / Auferstehung
           { isResurrection = true, default = true,
             singleFamily   = { 2008, 20609, 20610, 20776, 20777 } }))
 
@@ -315,7 +326,7 @@ local function bom_setup_paladin_spells(s)
   tinsert(s, BOM.SpellDef:new(25291, --Blessing of Might
           { isBlessing      = true, default = true,
             singleFamily    = { 19740, 19834, 19835, 19836, 19837, 19838, 25291, -- Ranks 1-7
-                                27140 }, -- TBS: Rank 8
+                                27140 }, -- TBC: Rank 8
             groupFamily     = { 25782, 25916, -- Ranks 1-2
                                 27141 }, -- TBC: Rank 3
             singleDuration  = blessing_duration, groupDuration = greater_blessing_duration,
@@ -881,10 +892,14 @@ BOM.Carrot = {
 }
 
 BOM.EnchantList = {--weapon-echantment to spellid
-  [16342] = { 3, 4, 5, 523, 1665, 1666 }, --Flametongue
-  [16356] = { 2, 12, 524, 1667, 1668 }, --Frostbrand
-  [16316] = { 1, 6, 29, 503, 683, 1663, 1664 }, --Rockbiter
-  [16362] = { 283, 284, 525, 1669, 2636 }, --Windfury
+  [16342] = { 3, 4, 5, 523, 1665, 1666, --Flametongue
+              2634 }, --TBC: Flametongue 7
+  [16356] = { 2, 12, 524, 1667, 1668, -- Frostbrand
+              2635 }, -- TBC: Frostbrand 6
+  [16316] = { 1, 6, 29, 503, 683, 1663, 1664, -- Rockbiter
+              2632, 2633 }, -- TBC: Rockbiter 8-9
+  [16362] = { 283, 284, 525, 1669, 2636, -- Windfury 1-4
+              2636 }, -- TBC: Windfury 5
   [25123] = { 2629, 2625, 2624 }, --Brilliant Mana Oil
   [25122] = { 2628, 2626, 2623, 2627 }, --Brilliant Wizard Oil
   [16622] = { 1703, 484, 21, 20, 19 }, -- Weightstone
