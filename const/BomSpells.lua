@@ -103,21 +103,29 @@ end
 local function bom_setup_druid_spells(s)
   tinsert(s, BOM.SpellDef:new(9885, --Gift/Mark of the Wild | Gabe/Mal der Wildniss
           { groupId         = 21849, cancelForm = true, default = true,
-            singleFamily    = { 1126, 5232, 6756, 5234, 8907, 9884, 9885 },
-            groupFamily     = { 21849, 21850 }, singleDuration = DURATION_30M, groupDuration = DURATION_1H,
+            singleFamily    = { 1126, 5232, 6756, 5234, 8907, 9884, 9885, -- Ranks 1-7
+                                26990 }, -- TBC: Rank 8
+            groupFamily     = { 21849, 21850, -- Ranks 1-2
+                                26991 }, -- TBC: Rank 3
+            singleDuration  = DURATION_30M, groupDuration = DURATION_1H,
             reagentRequired = { 17021, 17026 }, classes = BOM_ALL_CLASSES }))
   tinsert(s, BOM.SpellDef:new(9910, --Thorns | Dornen
           { cancelForm     = true, default = false,
-            singleFamily   = { 467, 782, 1075, 8914, 9756, 9910 },
+            singleFamily   = { 467, 782, 1075, 8914, 9756, 9910, -- Ranks 1-6
+                               26992 }, -- TBC: Rank 7
             singleDuration = DURATION_10M, classes = BOM_MELEE_CLASSES }))
   tinsert(s, BOM.SpellDef:new(16864, --omen of clarity
           { isOwn = true, cancelForm = true, default = true }))
   tinsert(s, BOM.SpellDef:new(17329, -- Nature's Grasp | Griff der Natur
           { isOwn        = true, cancelForm = true, default = false,
-            hasCD        = true, NeedOutdoors = true,
-            singleFamily = { 16689, 16810, 16811, 16812, 16813, 17329 } }))
-  tinsert(s, BOM.SpellDef:new(5225, -- Track Humanoids (Cat Form)
-          { isTracking = true, needForm = CAT_FORM, default = true }))
+            hasCD        = true, requiresOutdoors = true,
+            singleFamily = { 16689, 16810, 16811, 16812, 16813, 17329, -- Rank 1-6
+                             27009 } })) -- TBC: Rank 7
+  if not BOM.TBC then
+    -- Tracking auto-recast broken in TBC
+    tinsert(s, BOM.SpellDef:new(5225, -- Track Humanoids (Cat Form)
+            { isTracking = true, needForm = CAT_FORM, default = true }))
+  end
 
   return s
 end
@@ -185,10 +193,7 @@ end
 
 ---Add SHAMAN spells
 local function bom_setup_shaman_spells(s)
-  local duration = DURATION_10M
-  if BOM.TBC then
-    duration = DURATION_30M
-  end
+  local duration = tbc_or_classic(DURATION_30M, DURATION_10M)
 
   tinsert(s, BOM.SpellDef:new(16342, --Flametongue Weapon
           { isSeal       = true, default = true, singleDuration = duration, isShamanDualwield = true,

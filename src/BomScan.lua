@@ -1772,7 +1772,7 @@ end
 ---@param bag_command string - console command to use item from the bag
 ---@return table (bag_title string, bag_command string)
 local function bom_add_self_buff(spell, player_member)
-  if (not spell.NeedOutdoors or IsOutdoors())
+  if (not spell.requiresOutdoors or IsOutdoors())
           and not tContains(spell.SkipList, player_member.name) then
     bom_display_text(
             string.format(L["FORMAT_BUFF_SINGLE"], player_member.link, spell.singleLink),
