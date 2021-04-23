@@ -121,7 +121,10 @@ local function bom_setup_druid_spells(s)
             hasCD        = true, requiresOutdoors = true,
             singleFamily = { 16689, 16810, 16811, 16812, 16813, 17329, -- Rank 1-6
                              27009 } })) -- TBC: Rank 7
-  if not BOM.TBC then
+  if BOM.TBC then
+    tinsert(s, BOM.SpellDef:new(33891, --TBC: Tree of life
+            { isOwn = true, default = true, default = false, singleId = 33891, shapeshiftFormId = 2 }))
+  else
     -- Tracking auto-recast broken in TBC
     tinsert(s, BOM.SpellDef:new(5225, -- Track Humanoids (Cat Form)
             { isTracking = true, needForm = CAT_FORM, default = true }))
