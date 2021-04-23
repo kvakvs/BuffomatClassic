@@ -242,6 +242,9 @@ function BOM.GetSpells()
     end
   end
 
+  --
+  -- Scan all available spells check if they exist (learned) and appropriate
+  --
   for i, spell in ipairs(BOM.AllBuffomatSpells) do
     spell.SkipList = {}
     BOM.ConfigToSpell[spell.ConfigID] = spell
@@ -2044,7 +2047,9 @@ function BOM.UpdateScan()
               or spell.isAura
               or spell.isSeal)
       then
-        if #spell.NeedMember > 0 then
+        if spell.shapeshiftFormId and GetShapeshiftFormID() == spell.shapeshiftFormId then
+          -- if spell is shapeshift, and is already active, skip it
+        elseif #spell.NeedMember > 0 then
           bom_add_self_buff(spell, player_member)
         end
 

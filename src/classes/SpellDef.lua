@@ -17,6 +17,7 @@ local TOCNAME, BOM = ...
 ---@field itemLock table<number> Item ids which prevent this buff (unique conjured items for example)
 ---@field reagentRequired table<number> | number Reagent item ids required for group buff
 ---@field onlyUsableFor table<string> list of classes which only can see this buff (hidden for others)
+---@field shapeshiftFormId number Class-based form id (coming from GetShapeshiftFormID LUA API) if active, the spell is skipped
 ---@field singleDuration number - buff duration for single buff in seconds
 ---@field singleFamily table<number> Family of single buff spell ids which are mutually exclusive
 ---@field singleId number Spell id for single buff

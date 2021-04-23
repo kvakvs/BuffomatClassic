@@ -411,9 +411,15 @@ end
 ---Add WARRIOR spells
 local function bom_setup_warrior_spells(s)
   tinsert(s, BOM.SpellDef:new(25289, --Battle Shout
-          { isOwn        = true, default = true,
-            singleFamily = { 6673, 5242, 6192, 11549, 11550, 11551, 25289 },
-            default      = false }))
+          { isOwn        = true, default = true, default = false,
+            singleFamily = { 6673, 5242, 6192, 11549, 11550, 11551, 25289, -- Ranks 1-7
+                             2048 } })) -- TBC: Rank 8
+  tinsert(s, BOM.SpellDef:new(2457, --Battle Stance
+          { isOwn = true, default = true, default = false, singleId = 2457, shapeshiftFormId = 17 }))
+  tinsert(s, BOM.SpellDef:new(71, --Defensive Stance
+          { isOwn = true, default = true, default = false, singleId = 71, shapeshiftFormId = 18 }))
+  tinsert(s, BOM.SpellDef:new(2458, --Berserker Stance
+          { isOwn = true, default = true, default = false, singleId = 2458, shapeshiftFormId = 19 }))
   return s
 end
 
