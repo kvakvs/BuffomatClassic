@@ -1,5 +1,6 @@
 ---@type BuffomatAddon
 local TOCNAME, BOM = ...
+BOM.Class = BOM.Class or {}
 
 ---@class Options
 ---@field Btn table
@@ -22,7 +23,7 @@ local TOCNAME, BOM = ...
 ---@field RightSide Control
 ---@field scale number Options GUI scale
 ---@field Vars table<string, table<string, any>>
-BOM.Options = {}
-BOM.Options.__index = BOM.Options
+BOM.Class.Options = {}
+BOM.Class.Options.__index = BOM.Class.Options
 
 local CLASS_TAG = "options"

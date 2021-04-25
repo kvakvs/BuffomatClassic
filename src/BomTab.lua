@@ -572,7 +572,7 @@ local function create_tab(is_horde)
   --local prev_control
   --local dy = 0
   --local section
-  local row_builder = BOM.RowBuilder:new()
+  local row_builder = BOM.Class.RowBuilder:new()
 
   -- className, classFilename, classId
   local _, self_class, _ = UnitClass("player")

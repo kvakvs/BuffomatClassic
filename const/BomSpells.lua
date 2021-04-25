@@ -34,7 +34,7 @@ end
 
 ---Add PRIEST spells
 local function bom_setup_priest_spells(s)
-  tinsert(s, BOM.SpellDef:new(10938, -- Fortitude / Seelenstärke
+  tinsert(s, BOM.Class.SpellDef:new(10938, -- Fortitude / Seelenstärke
           { groupId        = 21562, default = true,
             singleFamily   = { 1243, 1244, 1245, 2791, 10937, 10938, -- Ranks 1-6
                                25389 }, -- TBC: Rank 7
@@ -44,7 +44,7 @@ local function bom_setup_priest_spells(s)
             classes        = BOM_ALL_CLASSES }))
 
   BOM.SpellDef_PrayerOfSpirit = function()
-    return BOM.SpellDef:new(14819, -- Divine Spirit / Prayer of Spirit / Willenstärke
+    return BOM.Class.SpellDef:new(14819, -- Divine Spirit / Prayer of Spirit / Willenstärke
             { groupId        = 27681, default = true,
               singleFamily   = { 14752, 14818, 14819, 27841, -- Ranks 1-4
                                  25312 }, -- TBC: Rank 5
@@ -55,18 +55,18 @@ local function bom_setup_priest_spells(s)
   end
   tinsert(s, BOM.SpellDef_PrayerOfSpirit())
 
-  tinsert(s, BOM.SpellDef:new(10958, --Shadow Protection / Prayer of Shadow / Schattenschutz
+  tinsert(s, BOM.Class.SpellDef:new(10958, --Shadow Protection / Prayer of Shadow / Schattenschutz
           { groupId         = 27683, default = false, singleDuration = DURATION_10M, groupDuration = 1200,
             singleFamily    = { 976, 10957, 10958, -- Ranks 1-3
                                 25433 }, -- TBC: Rank 4
             groupFamily     = { 27683, -- Rank 1
                                 39374 }, -- TBC: Rank 2
             reagentRequired = { 17028, 17029 }, classes = BOM_ALL_CLASSES }))
-  tinsert(s, BOM.SpellDef:new(6346, -- Fear Ward
+  tinsert(s, BOM.Class.SpellDef:new(6346, -- Fear Ward
           { default = false, singleDuration = DURATION_10M, hasCD = true, classes = BOM_ALL_CLASSES }))
 
   BOM.SpellDef_PW_Shield = function()
-    return BOM.SpellDef:new(10901, -- Power Word: Shield / Powerword:Shild
+    return BOM.Class.SpellDef:new(10901, -- Power Word: Shield / Powerword:Shild
             { default        = false,
               singleFamily   = { 17, 592, 600, 3747, 6065, 6066, 10898, 10899, 10900, 10901, -- Ranks 1-10
                                  25217, 25218 }, -- TBC: Ranks 11-12
@@ -74,25 +74,25 @@ local function bom_setup_priest_spells(s)
   end
   tinsert(s, BOM.SpellDef_PW_Shield())
 
-  tinsert(s, BOM.SpellDef:new(19266, -- Touch of Weakness / Berührung der Schwäche
+  tinsert(s, BOM.Class.SpellDef:new(19266, -- Touch of Weakness / Berührung der Schwäche
           { default      = true, isOwn = true,
             singleFamily = { 2652, 19261, 19262, 19264, 19265, 19266, -- Ranks 1-6
                              25461 } })) -- TBC: Rank 7
-  tinsert(s, BOM.SpellDef:new(10952, -- Inner Fire / inneres Feuer
+  tinsert(s, BOM.Class.SpellDef:new(10952, -- Inner Fire / inneres Feuer
           { default      = true, isOwn = true,
             singleFamily = { 588, 7128, 602, 1006, 10951, 10952, -- Ranks 1-6
                              25431 } })) -- TBC: Rank 7
-  tinsert(s, BOM.SpellDef:new(19312, -- Shadowguard
+  tinsert(s, BOM.Class.SpellDef:new(19312, -- Shadowguard
           { default      = true, isOwn = true,
             singleFamily = { 18137, 19308, 19309, 19310, 19311, 19312, -- Ranks 1-6
                              25477 } })) -- TBC: Rank 7
-  tinsert(s, BOM.SpellDef:new(19293, -- Elune's Grace
+  tinsert(s, BOM.Class.SpellDef:new(19293, -- Elune's Grace
           { default      = true, isOwn = true,
             singleFamily = { 2651, -- Rank 1 also TBC: The only rank
                              19289, 19291, 19292, 19293 } })) -- Ranks 2-5 (non-TBC)
-  tinsert(s, BOM.SpellDef:new(15473, -- Shadow Form
+  tinsert(s, BOM.Class.SpellDef:new(15473, -- Shadow Form
           { default = false, isOwn = true }))
-  tinsert(s, BOM.SpellDef:new(20770, -- Resurrection / Auferstehung
+  tinsert(s, BOM.Class.SpellDef:new(20770, -- Resurrection / Auferstehung
           { cancelForm   = true, isResurrection = true, default = true,
             singleFamily = { 2006, 2010, 10880, 10881, 20770, -- Ranks 1-5
                              25435 } })) -- TBC: Rank 6
@@ -102,7 +102,7 @@ end
 
 ---Add DRUID spells
 local function bom_setup_druid_spells(s)
-  tinsert(s, BOM.SpellDef:new(9885, --Gift/Mark of the Wild | Gabe/Mal der Wildniss
+  tinsert(s, BOM.Class.SpellDef:new(9885, --Gift/Mark of the Wild | Gabe/Mal der Wildniss
           { groupId         = 21849, cancelForm = true, default = true,
             singleFamily    = { 1126, 5232, 6756, 5234, 8907, 9884, 9885, -- Ranks 1-7
                                 26990 }, -- TBC: Rank 8
@@ -110,24 +110,24 @@ local function bom_setup_druid_spells(s)
                                 26991 }, -- TBC: Rank 3
             singleDuration  = DURATION_30M, groupDuration = DURATION_1H,
             reagentRequired = { 17021, 17026 }, classes = BOM_ALL_CLASSES }))
-  tinsert(s, BOM.SpellDef:new(9910, --Thorns | Dornen
+  tinsert(s, BOM.Class.SpellDef:new(9910, --Thorns | Dornen
           { cancelForm     = true, default = false,
             singleFamily   = { 467, 782, 1075, 8914, 9756, 9910, -- Ranks 1-6
                                26992 }, -- TBC: Rank 7
             singleDuration = DURATION_10M, classes = BOM_MELEE_CLASSES }))
-  tinsert(s, BOM.SpellDef:new(16864, --omen of clarity
+  tinsert(s, BOM.Class.SpellDef:new(16864, --omen of clarity
           { isOwn = true, cancelForm = true, default = true }))
-  tinsert(s, BOM.SpellDef:new(17329, -- Nature's Grasp | Griff der Natur
+  tinsert(s, BOM.Class.SpellDef:new(17329, -- Nature's Grasp | Griff der Natur
           { isOwn        = true, cancelForm = true, default = false,
             hasCD        = true, requiresOutdoors = true,
             singleFamily = { 16689, 16810, 16811, 16812, 16813, 17329, -- Rank 1-6
                              27009 } })) -- TBC: Rank 7
   if BOM.TBC then
-    tinsert(s, BOM.SpellDef:new(33891, --TBC: Tree of life
+    tinsert(s, BOM.Class.SpellDef:new(33891, --TBC: Tree of life
             { isOwn = true, default = true, default = false, singleId = 33891, shapeshiftFormId = 2 }))
   else
     -- Tracking auto-recast broken in TBC
-    tinsert(s, BOM.SpellDef:new(5225, -- Track Humanoids (Cat Form)
+    tinsert(s, BOM.Class.SpellDef:new(5225, -- Track Humanoids (Cat Form)
             { isTracking = true, needForm = CAT_FORM, default = true }))
   end
 
@@ -138,7 +138,7 @@ end
 local function bom_setup_mage_spells(s)
   --{singleId=10938, isOwn=true, default=true, lockIfHaveItem={8008}}, -- manastone/debug
   BOM.SpellDef_ArcaneIntelligence = function()
-    return BOM.SpellDef:new(10157, --Arcane Intellect | Brilliance
+    return BOM.Class.SpellDef:new(10157, --Arcane Intellect | Brilliance
             { singleFamily    = { 1459, 1460, 1461, 10156, 10157, -- Ranks 1-5
                                   27126 }, -- TBC: Rank 6
               groupFamily     = { 23028, -- Brilliance Rank 1
@@ -148,48 +148,48 @@ local function bom_setup_mage_spells(s)
   end
   tinsert(s, BOM.SpellDef_ArcaneIntelligence())
 
-  tinsert(s, BOM.SpellDef:new(10174, --Dampen Magic
+  tinsert(s, BOM.Class.SpellDef:new(10174, --Dampen Magic
           { default      = false, singleDuration = DURATION_10M, classes = { },
             singleFamily = { 604, 8450, 8451, 10173, 10174, -- Ranks 1-5
                              33944 } })) -- TBC: Rank 6
-  tinsert(s, BOM.SpellDef:new(10170, --Amplify Magic
+  tinsert(s, BOM.Class.SpellDef:new(10170, --Amplify Magic
           { default      = false, singleDuration = DURATION_10M, classes = { },
             singleFamily = { 1008, 8455, 10169, 10170, -- Ranks 1-4
                              27130, 33946 } })) -- TBC: Ranks 5-6
-  tinsert(s, BOM.SpellDef:new(10220, -- Ice Armor / eisrüstung
+  tinsert(s, BOM.Class.SpellDef:new(10220, -- Ice Armor / eisrüstung
           { isSeal       = true, default = false,
             singleFamily = { 7302, 7320, 10219, 10220, -- Ranks 1-4, levels 30 40 50 60
                              27124 } })) -- TBC: Rank 5, level 69
-  tinsert(s, BOM.SpellDef:new(7301, -- Frost Armor / frostrüstung
+  tinsert(s, BOM.Class.SpellDef:new(7301, -- Frost Armor / frostrüstung
           { isSeal       = true, default = false,
             singleFamily = { 168, 7300, 7301 } })) -- Ranks 1-3, Levels 1, 10, 20
-  tinsert(s, BOM.SpellDef:new(30482, -- TBC: Molten Armor
+  tinsert(s, BOM.Class.SpellDef:new(30482, -- TBC: Molten Armor
           { isSeal = true, default = false, singleFamily = { 30482 } })) -- TBC: Rank 1
-  tinsert(s, BOM.SpellDef:new(22783, -- Mage Armor / magische rüstung
+  tinsert(s, BOM.Class.SpellDef:new(22783, -- Mage Armor / magische rüstung
           { isSeal       = true, default = false,
             singleFamily = { 6117, 22782, 22783, -- Ranks 1-3
                              27125 } })) -- TBC: Rank 4
-  tinsert(s, BOM.SpellDef:new(10193, --Mana Shield | Manaschild - unabhängig von allen.
+  tinsert(s, BOM.Class.SpellDef:new(10193, --Mana Shield | Manaschild - unabhängig von allen.
           { isOwn        = true, default = false, singleDuration = 60,
             singleFamily = { 1463, 8494, 8495, 10191, 10192, 10193, -- Ranks 1-6
                              27131 } })) -- TBC: Rank 7
-  tinsert(s, BOM.SpellDef:new(13033, --Ice Barrier
+  tinsert(s, BOM.Class.SpellDef:new(13033, --Ice Barrier
           { isOwn        = true, default = false, singleDuration = 60,
             singleFamily = { 11426, 13031, 13032, 13033, -- Ranks 1-4
                              27134, 33405 } })) -- TBC: Ranks 5-6
-  tinsert(s, BOM.SpellDef:new(10053, -- Conjure Mana Stone (Max Rank)
+  tinsert(s, BOM.Class.SpellDef:new(10053, -- Conjure Mana Stone (Max Rank)
           { isOwn          = true, default = true,
             lockIfHaveItem = { 5514, 5513, 8007, 8008, -- Items: Agate, Jade, Citrine, Ruby
                                22044 }, -- TBC: Item: Emerald
             singleFamily   = { 759, 3552, 10053, 10054, -- Agate, Jade, Citrine, Ruby
                                27101 } })) -- TBC: Emerald
   -- Note: At ranks below max this will look identical with the previous
-  tinsert(s, BOM.SpellDef:new(10053, -- Conjure Mana Stone (1 Rank Lower than Max)
+  tinsert(s, BOM.Class.SpellDef:new(10053, -- Conjure Mana Stone (1 Rank Lower than Max)
           { isOwn          = true, default = true,
             lockIfHaveItem = { 5514, 5513, 8007, 8008 }, -- Items: Agate, Jade, Citrine, Ruby
             singleFamily   = { 759, 3552, 10053, 10054 } })) -- Agate, Jade, Citrine, Ruby
 
-  --tinsert(s, BOM.SpellDef:new(27101, -- TBC: Conjure Emerald, blocked by having a ruby
+  --tinsert(s, BOM.Class.SpellDef:new(27101, -- TBC: Conjure Emerald, blocked by having a ruby
   --        { isOwn = true, default = true, lockIfHaveItem = { 22044 } }))
 
   return s
@@ -200,36 +200,36 @@ local function bom_setup_shaman_spells(s)
   local duration = tbc_or_classic(DURATION_30M, DURATION_10M)
 
   -- --- Remember to update Weapon Enchant ids in BOM.EnchantList ---
-  tinsert(s, BOM.SpellDef:new(16342, --Flametongue Weapon
+  tinsert(s, BOM.Class.SpellDef:new(16342, --Flametongue Weapon
           { isSeal       = true, default = false, singleDuration = duration, isShamanDualwield = true,
             singleFamily = { 8024, 8027, 8030, 16339, 16341, 16342, -- Ranks 1-6
                              25489 } })) -- TBC: Rank 7
-  tinsert(s, BOM.SpellDef:new(16356, --Frostbrand Weapon
+  tinsert(s, BOM.Class.SpellDef:new(16356, --Frostbrand Weapon
           { isSeal       = true, default = false, singleDuration = duration, isShamanDualwield = true,
             singleFamily = { 8033, 8038, 10456, 16355, 16356, -- Ranks 1-5
                              25500 } })) -- TBC: Rank 6
-  tinsert(s, BOM.SpellDef:new(16316, --Rockbiter Weapon
+  tinsert(s, BOM.Class.SpellDef:new(16316, --Rockbiter Weapon
           { isSeal       = true, default = false, singleDuration = duration, isShamanDualwield = true,
             singleFamily = { 8017, 8018, 8019, 10399, 16314, 16315, 16316, -- Ranks 1-7
                              25479, 25485 } })) -- TBC: Ranks 8-9
-  tinsert(s, BOM.SpellDef:new(25505, --Windfury Weapon
+  tinsert(s, BOM.Class.SpellDef:new(25505, --Windfury Weapon
           { isSeal       = true, default = false, singleDuration = duration, isShamanDualwield = true,
             singleFamily = { 8232, 8235, 10486, 16362, -- Ranks 1-4
                              25505 } })) -- TBC: Rank 5
   -- --- Remember to update Weapon Enchant ids in BOM.EnchantList ---
 
-  tinsert(s, BOM.SpellDef:new(10432, -- Lightning Shield / Blitzschlagschild
+  tinsert(s, BOM.Class.SpellDef:new(10432, -- Lightning Shield / Blitzschlagschild
           { isOwn        = true, default = false, duration = DURATION_10M,
             singleFamily = { 324, 325, 905, 945, 8134, 10431, 10432, -- Ranks 1-7
                              25469, 25472 } })) -- TBC: Ranks 8-9
 
   if BOM.TBC then
-    tinsert(s, BOM.SpellDef:new(33736, -- TBC: Water Shield 1, 2
+    tinsert(s, BOM.Class.SpellDef:new(33736, -- TBC: Water Shield 1, 2
             { isOwn        = true, default = true, duration = DURATION_10M,
               singleFamily = { 24398, 33736 } }))
   end
 
-  tinsert(s, BOM.SpellDef:new(20777, -- Ancestral Spirit / Auferstehung
+  tinsert(s, BOM.Class.SpellDef:new(20777, -- Ancestral Spirit / Auferstehung
           { isResurrection = true, default = true,
             singleFamily   = { 2008, 20609, 20610, 20776, 20777 } }))
 
@@ -238,41 +238,41 @@ end
 
 ---Add WARLOCK spells
 local function bom_setup_warlock_spells(s)
-  tinsert(s, BOM.SpellDef:new(5697, -- Unending Breath
+  tinsert(s, BOM.Class.SpellDef:new(5697, -- Unending Breath
           { default = false, singleDuration = DURATION_10M, classes = BOM_ALL_CLASSES }))
-  tinsert(s, BOM.SpellDef:new(11743, -- Detect Greater Invisibility | Große Unsichtbarkeit entdecken
+  tinsert(s, BOM.Class.SpellDef:new(11743, -- Detect Greater Invisibility | Große Unsichtbarkeit entdecken
           { default        = false, singleFamily = { 132, 2970, 11743 },
             singleDuration = DURATION_10M, classes = BOM_ALL_CLASSES }))
-  tinsert(s, BOM.SpellDef:new(28610, -- Shadow Ward / Schattenzauberschutz
+  tinsert(s, BOM.Class.SpellDef:new(28610, -- Shadow Ward / Schattenzauberschutz
           { isOwn = true, default = false, singleFamily = { 6229, 11739, 11740, 28610 } }))
-  tinsert(s, BOM.SpellDef:new(11735, -- Demon Armor
+  tinsert(s, BOM.Class.SpellDef:new(11735, -- Demon Armor
           { isOwn = true, default = false, singleFamily = { 706, 1086, 11733, 11734, 11735, -- Rank 5
                                                             27260 } })) -- TBC: Rank 6
-  tinsert(s, BOM.SpellDef:new(696, -- Demon skin (Low Level)
+  tinsert(s, BOM.Class.SpellDef:new(696, -- Demon skin (Low Level)
           { isOwn = true, default = false, singleFamily = { 687, 696 } }))
-  tinsert(s, BOM.SpellDef:new(18788, -- Demonic Sacrifice
+  tinsert(s, BOM.Class.SpellDef:new(18788, -- Demonic Sacrifice
           { isOwn = true, default = true }))
-  tinsert(s, BOM.SpellDef:new(17953, -- Firestone
+  tinsert(s, BOM.Class.SpellDef:new(17953, -- Firestone
           { isOwn          = true, default = false,
             lockIfHaveItem = { 1254, 13699, 13700, 13701,
                                22128 }, -- TBC: Master Firestone
             singleFamily   = { 6366, 17951, 17952, 17953, -- Rank 1-4
                                27250 } })) -- TBC: Rank 5
-  tinsert(s, BOM.SpellDef:new(11730, -- Healtstone
+  tinsert(s, BOM.Class.SpellDef:new(11730, -- Healtstone
           { isOwn          = true, default = true,
             lockIfHaveItem = { 5512, 19005, 19004, 5511, 19007, 19006, 5509, 19009,
                                19008, 5510, 19011, 19010, 9421, 19013, 19012, -- Healthstones (3 talent ranks)
                                22103, 22104, 22105 }, -- TBC: Master Healthstone (3 talent ranks)
             singleFamily   = { 6201, 6202, 5699, 11729, 11730, -- Rank 1-5
                                27230 } })) -- TBC: Rank 6
-  tinsert(s, BOM.SpellDef:new(20757, --Soulstone
+  tinsert(s, BOM.Class.SpellDef:new(20757, --Soulstone
           { isOwn          = true, default = true,
             lockIfHaveItem = { 5232, 16892, 16893, 16895, 16896,
                                22116 }, -- TBC: Master Soulstone
             singleFamily   = { 693, 20752, 20755, 20756, 20757, -- Ranks 1-5
                                27238 } })) -- TBC: Rank 6
   if not BOM.TBC then
-    tinsert(s, BOM.SpellDef:new(5500, --Sense Demons
+    tinsert(s, BOM.Class.SpellDef:new(5500, --Sense Demons
             { isTracking = true, default = false }))
   end
 
@@ -281,46 +281,46 @@ end
 
 ---Add HUNTER spells
 local function bom_setup_hunter_spells(s)
-  tinsert(s, BOM.SpellDef:new(20906, -- Trueshot Aura
+  tinsert(s, BOM.Class.SpellDef:new(20906, -- Trueshot Aura
           { isOwn        = true, default = true,
             singleFamily = { 19506, 20905, 20906, -- Ranks 1-3
                              27066 } })) -- TBC: Rank 4
 
-  tinsert(s, BOM.SpellDef:new(25296, --Aspect of the Hawk
+  tinsert(s, BOM.Class.SpellDef:new(25296, --Aspect of the Hawk
           { isAura       = true, default = true,
             singleFamily = { 13165, 14318, 14319, 14320, 14321, 14322, 25296, -- Rank 1-7
                              27044 } })) -- TBC: Rank 8
-  tinsert(s, BOM.SpellDef:new(13163, --Aspect of the monkey
+  tinsert(s, BOM.Class.SpellDef:new(13163, --Aspect of the monkey
           { isAura = true, default = false }))
-  tinsert(s, BOM.SpellDef:new(34074, -- TBC: Aspect of the Viper
+  tinsert(s, BOM.Class.SpellDef:new(34074, -- TBC: Aspect of the Viper
           { isAura = true, default = false }))
-  tinsert(s, BOM.SpellDef:new(20190, --Aspect of the wild
+  tinsert(s, BOM.Class.SpellDef:new(20190, --Aspect of the wild
           { isAura       = true, default = false,
             singleFamily = { 20043, 20190, -- Ranks 1-2
                              27045 } })) -- TBC: Rank 3
-  tinsert(s, BOM.SpellDef:new(5118, --Aspect of the Cheetah
+  tinsert(s, BOM.Class.SpellDef:new(5118, --Aspect of the Cheetah
           { isAura = true, default = false }))
-  tinsert(s, BOM.SpellDef:new(13159, --Aspect of the pack
+  tinsert(s, BOM.Class.SpellDef:new(13159, --Aspect of the pack
           { isAura = true, default = false }))
-  tinsert(s, BOM.SpellDef:new(13161, -- Aspect of the beast
+  tinsert(s, BOM.Class.SpellDef:new(13161, -- Aspect of the beast
           { isAura = true, default = false }))
 
   --if not BOM.TBC then
-  tinsert(s, BOM.SpellDef:new(1494, -- Track Beast
+  tinsert(s, BOM.Class.SpellDef:new(1494, -- Track Beast
           { isTracking = true, default = false }))
-  tinsert(s, BOM.SpellDef:new(19878, -- Track Demon
+  tinsert(s, BOM.Class.SpellDef:new(19878, -- Track Demon
           { isTracking = true, default = false }))
-  tinsert(s, BOM.SpellDef:new(19879, -- Track Dragonkin
+  tinsert(s, BOM.Class.SpellDef:new(19879, -- Track Dragonkin
           { isTracking = true, default = false }))
-  tinsert(s, BOM.SpellDef:new(19880, -- Track Elemental
+  tinsert(s, BOM.Class.SpellDef:new(19880, -- Track Elemental
           { isTracking = true, default = false }))
-  tinsert(s, BOM.SpellDef:new(19883, -- Track Humanoids
+  tinsert(s, BOM.Class.SpellDef:new(19883, -- Track Humanoids
           { isTracking = true, default = false }))
-  tinsert(s, BOM.SpellDef:new(19882, -- Track Giants / riesen
+  tinsert(s, BOM.Class.SpellDef:new(19882, -- Track Giants / riesen
           { isTracking = true, default = false }))
-  tinsert(s, BOM.SpellDef:new(19884, -- Track Undead
+  tinsert(s, BOM.Class.SpellDef:new(19884, -- Track Undead
           { isTracking = true, default = false }))
-  tinsert(s, BOM.SpellDef:new(19885, -- Track Hidden / verborgenes
+  tinsert(s, BOM.Class.SpellDef:new(19885, -- Track Hidden / verborgenes
           { isTracking = true, default = false }))
   --end
 
@@ -329,16 +329,16 @@ end
 
 ---Add PALADIN spells
 local function bom_setup_paladin_spells(s)
-  tinsert(s, BOM.SpellDef:new(25780, --Righteous Fury, same in TBC
+  tinsert(s, BOM.Class.SpellDef:new(25780, --Righteous Fury, same in TBC
           { isOwn = true, default = false }))
 
   local blessing_duration = tbc_or_classic(DURATION_10M, DURATION_5M)
   local greater_blessing_duration = tbc_or_classic(DURATION_15M, DURATION_30M)
-  tinsert(s, BOM.SpellDef:new(20217, --Blessing of Kings
+  tinsert(s, BOM.Class.SpellDef:new(20217, --Blessing of Kings
           { groupId         = 25898, isBlessing = true, default = true,
             singleDuration  = blessing_duration, groupDuration = greater_blessing_duration,
             reagentRequired = { 21177 }, classes = { "MAGE", "HUNTER", "WARLOCK" } }))
-  tinsert(s, BOM.SpellDef:new(19979, --Blessing of Light
+  tinsert(s, BOM.Class.SpellDef:new(19979, --Blessing of Light
           { groupFamily     = { 25890, -- Rank 1
                                 27145 }, -- TBC: Rank 2
             singleFamily    = { 19977, 19978, 19979, -- Ranks 1-3
@@ -346,7 +346,7 @@ local function bom_setup_paladin_spells(s)
             isBlessing      = true, default = true,
             reagentRequired = { 21177 }, singleDuration = blessing_duration,
             groupDuration   = greater_blessing_duration, classes = {} }))
-  tinsert(s, BOM.SpellDef:new(25291, --Blessing of Might
+  tinsert(s, BOM.Class.SpellDef:new(25291, --Blessing of Might
           { isBlessing      = true, default = true,
             singleFamily    = { 19740, 19834, 19835, 19836, 19837, 19838, 25291, -- Ranks 1-7
                                 27140 }, -- TBC: Rank 8
@@ -354,11 +354,11 @@ local function bom_setup_paladin_spells(s)
                                 27141 }, -- TBC: Rank 3
             singleDuration  = blessing_duration, groupDuration = greater_blessing_duration,
             reagentRequired = { 21177 }, classes = { "WARRIOR", "ROGUE" } }))
-  tinsert(s, BOM.SpellDef:new(1038, --Blessing of Salvation
+  tinsert(s, BOM.Class.SpellDef:new(1038, --Blessing of Salvation
           { groupId         = 25895, isBlessing = true, default = true,
             singleDuration  = blessing_duration, groupDuration = greater_blessing_duration,
             reagentRequired = { 21177 }, classes = { } }))
-  tinsert(s, BOM.SpellDef:new(20914, --Blessing of Sanctuary
+  tinsert(s, BOM.Class.SpellDef:new(20914, --Blessing of Sanctuary
           { isBlessing      = true, default = true,
             groupFamily     = { 25899, -- Rank 1
                                 27169 }, -- TBC: Rank 2
@@ -367,7 +367,7 @@ local function bom_setup_paladin_spells(s)
             reagentRequired = { 21177 },
             singleDuration  = blessing_duration, groupDuration = greater_blessing_duration,
             classes         = { } }))
-  tinsert(s, BOM.SpellDef:new(25290, --Blessing of Wisdom
+  tinsert(s, BOM.Class.SpellDef:new(25290, --Blessing of Wisdom
           { isBlessing      = true, default = true,
             singleFamily    = { 19742, 19850, 19852, 19853, 19854, 25290, -- Ranks 1-6
                                 27142 }, -- TBC: Rank 7
@@ -376,54 +376,54 @@ local function bom_setup_paladin_spells(s)
             singleDuration  = blessing_duration, groupDuration = greater_blessing_duration,
             reagentRequired = { 21177 }, classes = { "DRUID", "SHAMAN", "PRIEST", "PALADIN" } }))
 
-  tinsert(s, BOM.SpellDef:new(10293, -- Devotion Aura
+  tinsert(s, BOM.Class.SpellDef:new(10293, -- Devotion Aura
           { isAura       = true, default = false,
             singleFamily = { 465, 10290, 643, 10291, 1032, 10292, 10293, -- Rank 1-7
                              27149 } })) -- TBC: Rank 8
-  tinsert(s, BOM.SpellDef:new(10301, -- Retribution Aura
+  tinsert(s, BOM.Class.SpellDef:new(10301, -- Retribution Aura
           { isAura       = true, default = true,
             singleFamily = { 7294, 10298, 10299, 10300, 10301, -- Ranks 1-5
                              27150 } })) -- TBC: Rank 6
-  tinsert(s, BOM.SpellDef:new(19746, --Concentration Aura
+  tinsert(s, BOM.Class.SpellDef:new(19746, --Concentration Aura
           { isAura = true, default = false }))
-  tinsert(s, BOM.SpellDef:new(19896, -- Shadow Resistance Aura
+  tinsert(s, BOM.Class.SpellDef:new(19896, -- Shadow Resistance Aura
           { isAura = true, default = false, singleFamily = { 19876, 19895, 19896, -- Rank 1-3
                                                              27151 } })) -- TBC: Rank 4
-  tinsert(s, BOM.SpellDef:new(19898, -- Frost Resistance Aura
+  tinsert(s, BOM.Class.SpellDef:new(19898, -- Frost Resistance Aura
           { isAura = true, default = false, singleFamily = { 19888, 19897, 19898, -- Rank 1-3
                                                              27152 } })) -- TBC: Rank 4
-  tinsert(s, BOM.SpellDef:new(19900, -- Fire Resistance Aura
+  tinsert(s, BOM.Class.SpellDef:new(19900, -- Fire Resistance Aura
           { isAura = true, default = false, singleFamily = { 19891, 19899, 19900, -- Rank 1-3
                                                              27153 } })) -- TBC: Rank 4
-  tinsert(s, BOM.SpellDef:new(20218, --Sanctity Aura
+  tinsert(s, BOM.Class.SpellDef:new(20218, --Sanctity Aura
           { isAura = true, default = false }))
-  tinsert(s, BOM.SpellDef:new(20773, -- Redemption / Auferstehung
+  tinsert(s, BOM.Class.SpellDef:new(20773, -- Redemption / Auferstehung
           { isResurrection = true, default = true, singleFamily = { 7328, 10322, 10324, 20772, 20773 } }))
 
   if not BOM.TBC then
-    tinsert(s, BOM.SpellDef:new(20164, -- Sanctity seal
+    tinsert(s, BOM.Class.SpellDef:new(20164, -- Sanctity seal
             { isSeal = true, default = false }))
-    tinsert(s, BOM.SpellDef:new(5502, -- Sense undead (auto-recast is broken in TBC)
+    tinsert(s, BOM.Class.SpellDef:new(5502, -- Sense undead (auto-recast is broken in TBC)
             { isTracking = true, default = false }))
   end
 
-  tinsert(s, BOM.SpellDef:new(20165, -- Seal of Light
+  tinsert(s, BOM.Class.SpellDef:new(20165, -- Seal of Light
           { isSeal       = true, default = false,
             singleFamily = { 20165, 20347, 20348, 20349, -- Ranks 1-4
                              27160 } })) -- TBC: Rank 5
-  tinsert(s, BOM.SpellDef:new(20154, -- Seal of Righteousness
+  tinsert(s, BOM.Class.SpellDef:new(20154, -- Seal of Righteousness
           { isSeal       = true, default = false,
             singleFamily = { 20154, 20287, 20288, 20289, 20290, 20291, 20292, 20293, -- Ranks 1-8
                              27155 } })) -- TBC: Seal rank 9
-  tinsert(s, BOM.SpellDef:new(20166, -- Seal of Wisdom
+  tinsert(s, BOM.Class.SpellDef:new(20166, -- Seal of Wisdom
           { isSeal = true, default = false }))
-  tinsert(s, BOM.SpellDef:new(348704, -- TBC: Seal of Vengeance
+  tinsert(s, BOM.Class.SpellDef:new(348704, -- TBC: Seal of Vengeance
           { isSeal       = true, default = false,
             singleFamily = { 31801, -- TBC: level 70 spell for Blood Elf
                              348704 } })) -- TBC: Base spell for the alliance races
-  tinsert(s, BOM.SpellDef:new(348700, -- TBC: Seal of the Martyr (Draenei, Dwarf, Human)
+  tinsert(s, BOM.Class.SpellDef:new(348700, -- TBC: Seal of the Martyr (Draenei, Dwarf, Human)
           { isSeal = true, default = false }))
-  tinsert(s, BOM.SpellDef:new(31892, -- TBC: Seal of Blood
+  tinsert(s, BOM.Class.SpellDef:new(31892, -- TBC: Seal of Blood
           { isSeal       = true, default = false,
             singleFamily = { 31892, -- TBC: Base Blood Elf spell
                              38008 } })) -- TBC: Alliance version???
@@ -433,15 +433,15 @@ end
 
 ---Add WARRIOR spells
 local function bom_setup_warrior_spells(s)
-  tinsert(s, BOM.SpellDef:new(25289, --Battle Shout
+  tinsert(s, BOM.Class.SpellDef:new(25289, --Battle Shout
           { isOwn        = true, default = true, default = false,
             singleFamily = { 6673, 5242, 6192, 11549, 11550, 11551, 25289, -- Ranks 1-7
                              2048 } })) -- TBC: Rank 8
-  tinsert(s, BOM.SpellDef:new(2457, --Battle Stance
+  tinsert(s, BOM.Class.SpellDef:new(2457, --Battle Stance
           { isOwn = true, default = true, default = false, singleId = 2457, shapeshiftFormId = 17 }))
-  tinsert(s, BOM.SpellDef:new(71, --Defensive Stance
+  tinsert(s, BOM.Class.SpellDef:new(71, --Defensive Stance
           { isOwn = true, default = true, default = false, singleId = 71, shapeshiftFormId = 18 }))
-  tinsert(s, BOM.SpellDef:new(2458, --Berserker Stance
+  tinsert(s, BOM.Class.SpellDef:new(2458, --Berserker Stance
           { isOwn = true, default = true, default = false, singleId = 2458, shapeshiftFormId = 19 }))
   return s
 end
@@ -453,30 +453,30 @@ local function bom_setup_rogue_spells(s)
     duration = DURATION_1H
   end -- in TBC poisons become 1 hour
 
-  tinsert(s, BOM.SpellDef:new(25351, --Deadly Poison
+  tinsert(s, BOM.Class.SpellDef:new(25351, --Deadly Poison
           { item   = tbc_or_classic(22054, 20844),
             items  = { 22054, 22053, -- TBC: Deadly Poison
                        20844, 8985, 8984, 2893, 2892 },
             isBuff = true, isWeapon = true, duration = duration, default = false, onlyUsableFor = { "ROGUE" } }))
-  tinsert(s, BOM.SpellDef:new(11399, --Mind-numbing Poison
+  tinsert(s, BOM.Class.SpellDef:new(11399, --Mind-numbing Poison
           { item     = 9186, items = { 9186, 6951, 5237 }, isBuff = true, isWeapon = true,
             duration = duration, default = false, onlyUsableFor = { "ROGUE" } }))
-  tinsert(s, BOM.SpellDef:new(11340, --Instant Poison
+  tinsert(s, BOM.Class.SpellDef:new(11340, --Instant Poison
           { item   = tbc_or_classic(21927, 8928),
             items  = { 21927, -- TBC: Instant Poison
                        8928, 8927, 8926, 6950, 6949, 6947 },
             isBuff = true, isWeapon = true, duration = duration, default = false, onlyUsableFor = { "ROGUE" } }))
-  tinsert(s, BOM.SpellDef:new(13227, --Wound Poison
+  tinsert(s, BOM.Class.SpellDef:new(13227, --Wound Poison
           { item   = tbc_or_classic(22055, 10922),
             items  = { 22055, -- TBC: Wound Poison
                        10922, 10921, 10920, 10918 },
             isBuff = true, isWeapon = true, duration = duration, default = false, onlyUsableFor = { "ROGUE" } }))
-  tinsert(s, BOM.SpellDef:new(11202, --Crippling Poison
+  tinsert(s, BOM.Class.SpellDef:new(11202, --Crippling Poison
           { item     = 3776, items = { 3776, 3775 }, isBuff = true, isWeapon = true,
             duration = duration, default = false, onlyUsableFor = { "ROGUE" } }))
 
   if BOM.TBC then
-    tinsert(s, BOM.SpellDef:new(26785, --TBC: Anesthetic Poison
+    tinsert(s, BOM.Class.SpellDef:new(26785, --TBC: Anesthetic Poison
             { item   = 21835, items = { 21835 },
               isBuff = true, isWeapon = true, duration = duration, default = false, onlyUsableFor = { "ROGUE" } }))
   end
@@ -488,11 +488,11 @@ end
 local function bom_setup_tracking_spells(s)
   if not BOM.TBC then
     -- TBC tracking works differently
-    tinsert(s, BOM.SpellDef:new(2383, -- Find Herbs / kräuter
+    tinsert(s, BOM.Class.SpellDef:new(2383, -- Find Herbs / kräuter
             { isTracking = true, default = true }))
-    tinsert(s, BOM.SpellDef:new(2580, -- Find Minerals / erz
+    tinsert(s, BOM.Class.SpellDef:new(2580, -- Find Minerals / erz
             { isTracking = true, default = true }))
-    tinsert(s, BOM.SpellDef:new(2481, -- Find Treasure / Schatzsuche / Zwerge
+    tinsert(s, BOM.Class.SpellDef:new(2481, -- Find Treasure / Schatzsuche / Zwerge
             { isTracking = true, default = true }))
   end
   return s
@@ -501,20 +501,20 @@ end
 ---MISC spells applicable to every class
 local function bom_setup_misc_spells(s)
   -- TODO: TBC drink and food spells
-  --tinsert(s, BOM.SpellDef:new(432, -- Water | drink
+  --tinsert(s, BOM.Class.SpellDef:new(432, -- Water | drink
   --        { isInfo       = true, default = false,
   --          singleFamily = { 430, 431, 432, 1133, 1135, 1137, 22734, 25696, 26475, 26261, 29007,
   --                           26473, 10250, 26402,
   --            -- TBC: Drink
   --                           34291, 34062, 22018, 27089 } }))
-  --tinsert(s, BOM.SpellDef:new(434, -- Food | essen
+  --tinsert(s, BOM.Class.SpellDef:new(434, -- Food | essen
   --        { isInfo       = true, default = false,
   --          singleFamily = { 10256, 1127, 1129, 22731, 5006, 433, 1131, 18230, 18233, 5007, 24800, 5005,
   --                           18232, 5004, 435, 434, 18234, 24869, 18229, 25888, 6410, 2639, 24005, 7737,
   --                           29073, 26260, 26474, 18231, 10257, 26472, 28616, 25700,
   --            -- TBC: Food
   --                           34062, 22019 } }))
-  tinsert(s, BOM.SpellDef:new(20762, --Soulstone | Seelenstein
+  tinsert(s, BOM.Class.SpellDef:new(20762, --Soulstone | Seelenstein
           { isInfo       = true, allowWhisper = true, default = false,
             singleFamily = { 20707, 20762, 20763, 20765, 20764 } }))
   --{singleId=10938, isInfo=true, allowWhisper=true,default=false,	--ausdauer-antworten!
@@ -525,13 +525,13 @@ end
 ---ITEMS, applicable to most of the classes, self buffs, containers to open etc
 local function bom_setup_phys_dps_battle_elixirs(s)
   if BOM.TBC then
-    tinsert(s, BOM.SpellDef:new(28497, --TBC: Elixir of Major Agility +35 AGI +20 CRIT
+    tinsert(s, BOM.Class.SpellDef:new(28497, --TBC: Elixir of Major Agility +35 AGI +20 CRIT
             { item = 22831, isBuff = true, default = false, onlyUsableFor = BOM_PHYSICAL_CLASSES }))
-    tinsert(s, BOM.SpellDef:new(38954, --TBC: Fel Strength Elixir +90AP -10 STA
+    tinsert(s, BOM.Class.SpellDef:new(38954, --TBC: Fel Strength Elixir +90AP -10 STA
             { item = 31679, isBuff = true, default = false, onlyUsableFor = BOM_PHYSICAL_CLASSES }))
-    tinsert(s, BOM.SpellDef:new(28490, --TBC: Elixir of Major Strength +35 STR
+    tinsert(s, BOM.Class.SpellDef:new(28490, --TBC: Elixir of Major Strength +35 STR
             { item = 22824, isBuff = true, default = false, onlyUsableFor = BOM_PHYSICAL_CLASSES }))
-    tinsert(s, BOM.SpellDef:new(33720, --TBC: Onslaught Elixir +60 AP
+    tinsert(s, BOM.Class.SpellDef:new(33720, --TBC: Onslaught Elixir +60 AP
             { item = 28102, isBuff = true, default = false, onlyUsableFor = BOM_PHYSICAL_CLASSES }))
   end -- END TBC
 
@@ -548,49 +548,49 @@ end
 
 ---ITEMS, applicable to most of the classes, self buffs, containers to open etc
 local function bom_setup_phys_dps_buffs(s)
-  tinsert(s, BOM.SpellDef:new(17538, --Elixir of the Mongoose
+  tinsert(s, BOM.Class.SpellDef:new(17538, --Elixir of the Mongoose
           { item = 13452, isBuff = true, default = false, onlyUsableFor = BOM_PHYSICAL_CLASSES }))
-  tinsert(s, BOM.SpellDef:new(11334, --Elixir of Greater Agility
+  tinsert(s, BOM.Class.SpellDef:new(11334, --Elixir of Greater Agility
           { item = 9187, isBuff = true, default = false, onlyUsableFor = BOM_PHYSICAL_CLASSES }))
-  tinsert(s, BOM.SpellDef:new(11405, --Elixir of Giants
+  tinsert(s, BOM.Class.SpellDef:new(11405, --Elixir of Giants
           { item = 9206, isBuff = true, default = false, onlyUsableFor = BOM_PHYSICAL_CLASSES }))
-  tinsert(s, BOM.SpellDef:new(17038, --Winterfall Firewater
+  tinsert(s, BOM.Class.SpellDef:new(17038, --Winterfall Firewater
           { item = 12820, isBuff = true, default = false, onlyUsableFor = BOM_PHYSICAL_CLASSES }))
-  tinsert(s, BOM.SpellDef:new(16329, --Juju Might +40AP
+  tinsert(s, BOM.Class.SpellDef:new(16329, --Juju Might +40AP
           { item = 12460, isBuff = true, default = false }))
-  tinsert(s, BOM.SpellDef:new(16323, --Juju Power +30Str
+  tinsert(s, BOM.Class.SpellDef:new(16323, --Juju Power +30Str
           { item = 12451, isBuff = true, default = false }))
 
   if BOM.TBC then
-    tinsert(s, BOM.SpellDef:new(29453, --TBC: Adamantite Sharpening Stone +12 WEAPON +14 CRIT
+    tinsert(s, BOM.Class.SpellDef:new(29453, --TBC: Adamantite Sharpening Stone +12 WEAPON +14 CRIT
             { item    = 23529, items = { 23529 }, isBuff = true, isWeapon = true, duration = DURATION_1H,
               default = false, onlyUsableFor = BOM_PHYSICAL_CLASSES }))
-    tinsert(s, BOM.SpellDef:new(29452, --TBC: Fel Sharpening Stone +12 WEAPON
+    tinsert(s, BOM.Class.SpellDef:new(29452, --TBC: Fel Sharpening Stone +12 WEAPON
             { item    = 23528, items = { 23528 }, isBuff = true, isWeapon = true, duration = DURATION_1H,
               default = false, onlyUsableFor = BOM_PHYSICAL_CLASSES }))
-    tinsert(s, BOM.SpellDef:new(34340, --TBC: Adamantite Weightstone +12 BLUNT +14 CRIT
+    tinsert(s, BOM.Class.SpellDef:new(34340, --TBC: Adamantite Weightstone +12 BLUNT +14 CRIT
             { item    = 28421, items = { 28421 }, isBuff = true, isWeapon = true, duration = DURATION_1H,
               default = false, onlyUsableFor = BOM_PHYSICAL_CLASSES }))
-    tinsert(s, BOM.SpellDef:new(34339, --TBC: Fel Weightstone +12 BLUNT
+    tinsert(s, BOM.Class.SpellDef:new(34339, --TBC: Fel Weightstone +12 BLUNT
             { item    = 28420, items = { 28420 }, isBuff = true, isWeapon = true, duration = DURATION_1H,
               default = false, onlyUsableFor = BOM_PHYSICAL_CLASSES }))
   end -- TBC sharpening and runes
 
   if not BOM.TBC then
-    tinsert(s, BOM.SpellDef:new(18192, --Grilled Squid +10 Agility
+    tinsert(s, BOM.Class.SpellDef:new(18192, --Grilled Squid +10 Agility
             { item = 13928, isBuff = true, default = false, onlyUsableFor = BOM_PHYSICAL_CLASSES }))
-    tinsert(s, BOM.SpellDef:new(24799, --Smoked Desert Dumplings +Strength
+    tinsert(s, BOM.Class.SpellDef:new(24799, --Smoked Desert Dumplings +Strength
             { item = 20452, isBuff = true, default = false, onlyUsableFor = BOM_PHYSICAL_CLASSES }))
-    tinsert(s, BOM.SpellDef:new(18141, --Blessed Sunfruit Juice +Strength
+    tinsert(s, BOM.Class.SpellDef:new(18141, --Blessed Sunfruit Juice +Strength
             { item = 13813, isBuff = true, default = false, onlyUsableFor = BOM_MELEE_CLASSES }))
 
-    tinsert(s, BOM.SpellDef:new(16622, --Weightstone
+    tinsert(s, BOM.Class.SpellDef:new(16622, --Weightstone
             { item   = 12643, items = { 12643, 7965, 3241, 3240, 3239 },
               isBuff = true, isWeapon = true, duration = DURATION_30M, default = false, onlyUsableFor = BOM_PHYSICAL_CLASSES }))
-    tinsert(s, BOM.SpellDef:new(16138, --Sharpening Stone
+    tinsert(s, BOM.Class.SpellDef:new(16138, --Sharpening Stone
             { item   = 12404, items = { 12404, 7964, 2871, 2863, 2862 },
               isBuff = true, isWeapon = true, duration = DURATION_30M, default = false, onlyUsableFor = BOM_PHYSICAL_CLASSES }))
-    tinsert(s, BOM.SpellDef:new(28891, --Consecrated Sharpening Stone
+    tinsert(s, BOM.Class.SpellDef:new(28891, --Consecrated Sharpening Stone
             { item     = 23122, isBuff = true, isWeapon = true,
               duration = DURATION_1H, default = false, onlyUsableFor = BOM_PHYSICAL_CLASSES }))
   end -- Disable old food in TBC
@@ -601,33 +601,33 @@ end
 ---ITEMS, applicable to most of the classes, self buffs, containers to open etc
 local function bom_setup_caster_battle_elixirs(s)
   if BOM.TBC then
-    tinsert(s, BOM.SpellDef:new(28509, --TBC: Elixir of Major Mageblood +16 mp5
+    tinsert(s, BOM.Class.SpellDef:new(28509, --TBC: Elixir of Major Mageblood +16 mp5
             { item = 22840, isBuff = true, default = false }))
-    tinsert(s, BOM.SpellDef:new(28503, --TBC: Elixir of Major Shadow Power +55 SHADOW
+    tinsert(s, BOM.Class.SpellDef:new(28503, --TBC: Elixir of Major Shadow Power +55 SHADOW
             { item = 22835, isBuff = true, default = false, onlyUsableFor = BOM_SHADOW_CLASSES }))
-    tinsert(s, BOM.SpellDef:new(28501, --TBC: Elixir of Major Firepower +55 FIRE
+    tinsert(s, BOM.Class.SpellDef:new(28501, --TBC: Elixir of Major Firepower +55 FIRE
             { item = 22833, isBuff = true, default = false, onlyUsableFor = BOM_FIRE_CLASSES }))
-    tinsert(s, BOM.SpellDef:new(28493, --TBC: Elixir of Major Frost Power +55 FROST
+    tinsert(s, BOM.Class.SpellDef:new(28493, --TBC: Elixir of Major Frost Power +55 FROST
             { item = 22827, isBuff = true, default = false, onlyUsableFor = BOM_FROST_CLASSES }))
-    tinsert(s, BOM.SpellDef:new(28491, --TBC: Elixir of Healing Power +50 HEAL
+    tinsert(s, BOM.Class.SpellDef:new(28491, --TBC: Elixir of Healing Power +50 HEAL
             { item = 22825, isBuff = true, default = false, onlyUsableFor = BOM_MANA_CLASSES }))
-    tinsert(s, BOM.SpellDef:new(33721, --TBC: Adept's Elixir +24 SPELL, +24 SPELLCRIT
+    tinsert(s, BOM.Class.SpellDef:new(33721, --TBC: Adept's Elixir +24 SPELL, +24 SPELLCRIT
             { item = 28103, isBuff = true, default = false, onlyUsableFor = BOM_MANA_CLASSES }))
-    tinsert(s, BOM.SpellDef:new(39627, --TBC: Elixir of Draenic Wisdom +30 SPI
+    tinsert(s, BOM.Class.SpellDef:new(39627, --TBC: Elixir of Draenic Wisdom +30 SPI
             { item = 32067, isBuff = true, default = false, onlyUsableFor = BOM_MANA_CLASSES }))
   end -- END TBC
 
-  tinsert(s, BOM.SpellDef:new(24363, --Mageblood Potion
+  tinsert(s, BOM.Class.SpellDef:new(24363, --Mageblood Potion
           { item = 20007, isBuff = true, default = false, onlyUsableFor = BOM_MANA_CLASSES }))
-  tinsert(s, BOM.SpellDef:new(17539, --Greater Arcane Elixir
+  tinsert(s, BOM.Class.SpellDef:new(17539, --Greater Arcane Elixir
           { item = 13454, isBuff = true, default = false, onlyUsableFor = BOM_MANA_CLASSES }))
-  tinsert(s, BOM.SpellDef:new(11390, --Greater Arcane Elixir
+  tinsert(s, BOM.Class.SpellDef:new(11390, --Greater Arcane Elixir
           { item = 9155, isBuff = true, default = false, onlyUsableFor = BOM_MANA_CLASSES }))
-  tinsert(s, BOM.SpellDef:new(11474, -- Elixir of Shadow Power
+  tinsert(s, BOM.Class.SpellDef:new(11474, -- Elixir of Shadow Power
           { item = 9264, isBuff = true, default = false, onlyUsableFor = BOM_SHADOW_CLASSES }))
-  tinsert(s, BOM.SpellDef:new(26276, --Elixir of Greater Firepower
+  tinsert(s, BOM.Class.SpellDef:new(26276, --Elixir of Greater Firepower
           { item = 21546, isBuff = true, default = false, onlyUsableFor = BOM_FIRE_CLASSES }))
-  tinsert(s, BOM.SpellDef:new(21920, --Elixir of Frost Power
+  tinsert(s, BOM.Class.SpellDef:new(21920, --Elixir of Frost Power
           { item = 17708, isBuff = true, default = false, onlyUsableFor = BOM_FROST_CLASSES }))
 
   return s
@@ -636,7 +636,7 @@ end
 ---ITEMS, applicable to most of the classes, self buffs, containers to open etc
 local function bom_setup_caster_guardian_elixirs(s)
   if BOM.TBC then
-    tinsert(s, BOM.SpellDef:new(28514, --TBC: Elixir of Empowerment, -30 TARGET RESIST
+    tinsert(s, BOM.Class.SpellDef:new(28514, --TBC: Elixir of Empowerment, -30 TARGET RESIST
             { item = 22848, isBuff = true, default = false }))
   end -- END TBC
 
@@ -645,33 +645,33 @@ end
 
 local function bom_setup_caster_buffs(s)
   if not BOM.TBC then
-    tinsert(s, BOM.SpellDef:new(18194, --Nightfin Soup +Mana/5
+    tinsert(s, BOM.Class.SpellDef:new(18194, --Nightfin Soup +Mana/5
             { item = 13931, isBuff = true, default = false, onlyUsableFor = BOM_MANA_CLASSES }))
-    tinsert(s, BOM.SpellDef:new(19710, --Monster Omelette
+    tinsert(s, BOM.Class.SpellDef:new(19710, --Monster Omelette
             { item = 12218, isBuff = true, default = false, onlyUsableFor = BOM_MANA_CLASSES }))
-    tinsert(s, BOM.SpellDef:new(18125, --Blessed Sunfruit +Spirit
+    tinsert(s, BOM.Class.SpellDef:new(18125, --Blessed Sunfruit +Spirit
             { item = 13810, isBuff = true, default = false, onlyUsableFor = BOM_MANA_CLASSES }))
   end -- Disable old food in TBC
 
   if BOM.TBC then
-    tinsert(s, BOM.SpellDef:new(28017, --Superior Wizard Oil +42 SPELL
+    tinsert(s, BOM.Class.SpellDef:new(28017, --Superior Wizard Oil +42 SPELL
             { item     = 22522, items = { 22522 }, isBuff = true,
               isWeapon = true, duration = DURATION_1H, default = false, onlyUsableFor = BOM_MANA_CLASSES }))
-    tinsert(s, BOM.SpellDef:new(28013, --Superior Mana Oil +14 mp5
+    tinsert(s, BOM.Class.SpellDef:new(28013, --Superior Mana Oil +14 mp5
             { item     = 22521, items = { 22521 }, isBuff = true,
               isWeapon = true, duration = DURATION_1H, default = false, onlyUsableFor = BOM_MANA_CLASSES }))
   end -- end TBC weapon enchants
 
-  tinsert(s, BOM.SpellDef:new(25123, --Brilliant|Lesser|Minor Mana Oil
+  tinsert(s, BOM.Class.SpellDef:new(25123, --Brilliant|Lesser|Minor Mana Oil
           { item     = 20748, items = { 20748, 20747, 20745 }, isBuff = true,
             isWeapon = true, duration = DURATION_30M, default = false, onlyUsableFor = BOM_MANA_CLASSES }))
-  tinsert(s, BOM.SpellDef:new(25122, --Brilliant|Lesser|Minor Wizard Oil
+  tinsert(s, BOM.Class.SpellDef:new(25122, --Brilliant|Lesser|Minor Wizard Oil
           { item   = 20749, items = { 20749, 20746, 20744, 20750 },
             isBuff = true, isWeapon = true, duration = DURATION_30M, default = false, onlyUsableFor = BOM_MANA_CLASSES }))
-  tinsert(s, BOM.SpellDef:new(28898, --Blessed Wizard Oil
+  tinsert(s, BOM.Class.SpellDef:new(28898, --Blessed Wizard Oil
           { item     = 23123, isBuff = true, isWeapon = true,
             duration = DURATION_1H, default = false, onlyUsableFor = BOM_MANA_CLASSES }))
-  tinsert(s, BOM.SpellDef:new(22756, --Elemental Sharpening Stone
+  tinsert(s, BOM.Class.SpellDef:new(22756, --Elemental Sharpening Stone
           { item     = 18262, isBuff = true, isWeapon = true,
             duration = DURATION_30M, default = false, onlyUsableFor = BOM_PHYSICAL_CLASSES }))
   return s
@@ -680,9 +680,9 @@ end
 local function bom_setup_battle_elixirs(s)
   if BOM.TBC then
     -- Sunwell only
-    --tinsert(s, BOM.SpellDef:new(45373, --TBC: Bloodberry Elixir +15 all stats
+    --tinsert(s, BOM.Class.SpellDef:new(45373, --TBC: Bloodberry Elixir +15 all stats
     --        { item = 34537, isBuff = true, default = false }))
-    tinsert(s, BOM.SpellDef:new(33726, --TBC: Elixir of Mastery +15 all stats
+    tinsert(s, BOM.Class.SpellDef:new(33726, --TBC: Elixir of Mastery +15 all stats
             { item = 28104, isBuff = true, default = false }))
   end -- END TBC
 
@@ -691,52 +691,52 @@ end
 
 local function bom_setup_guardian_elixirs(s)
   if BOM.TBC then
-    tinsert(s, BOM.SpellDef:new(28502, --TBC: Elixir of Major Defense +550 ARMOR
+    tinsert(s, BOM.Class.SpellDef:new(28502, --TBC: Elixir of Major Defense +550 ARMOR
             { item = 22834, isBuff = true, default = false }))
-    tinsert(s, BOM.SpellDef:new(39628, --TBC: Elixir of Ironskin +30 RESIL
+    tinsert(s, BOM.Class.SpellDef:new(39628, --TBC: Elixir of Ironskin +30 RESIL
             { item = 32068, isBuff = true, default = false }))
-    tinsert(s, BOM.SpellDef:new(39625, --TBC: Elixir of Major Fortitude +250 HP and 10 HP/5
+    tinsert(s, BOM.Class.SpellDef:new(39625, --TBC: Elixir of Major Fortitude +250 HP and 10 HP/5
             { item = 32062, isBuff = true, default = false }))
-    tinsert(s, BOM.SpellDef:new(39626, --TBC: Earthen Elixir -20 ALL DMG TAKEN
+    tinsert(s, BOM.Class.SpellDef:new(39626, --TBC: Earthen Elixir -20 ALL DMG TAKEN
             { item = 32063, isBuff = true, default = false }))
   end -- END TBC
 
-  tinsert(s, BOM.SpellDef:new(3593, --Elixir of Fortitude
+  tinsert(s, BOM.Class.SpellDef:new(3593, --Elixir of Fortitude
           { item = 3825, isBuff = true, default = false }))
-  tinsert(s, BOM.SpellDef:new(11348, --Elixir of Superior Defense
+  tinsert(s, BOM.Class.SpellDef:new(11348, --Elixir of Superior Defense
           { item = 13445, isBuff = true, default = false }))
-  tinsert(s, BOM.SpellDef:new(24361, --Major Troll's Blood Potion
+  tinsert(s, BOM.Class.SpellDef:new(24361, --Major Troll's Blood Potion
           { item = 20004, isBuff = true, default = false }))
-  tinsert(s, BOM.SpellDef:new(11371, --Gift of Arthas
+  tinsert(s, BOM.Class.SpellDef:new(11371, --Gift of Arthas
           { item = 9088, isBuff = true, default = false }))
-  tinsert(s, BOM.SpellDef:new(16326, --Juju Ember +15FR
+  tinsert(s, BOM.Class.SpellDef:new(16326, --Juju Ember +15FR
           { item = 12455, isBuff = true, default = false }))
-  tinsert(s, BOM.SpellDef:new(16325, --Juju Chill +15FrostR
+  tinsert(s, BOM.Class.SpellDef:new(16325, --Juju Chill +15FrostR
           { item = 12457, isBuff = true, default = false }))
 
   if not BOM.TBC then
-    tinsert(s, BOM.SpellDef:new(22730, --Runn Tum Tuber Surprise
+    tinsert(s, BOM.Class.SpellDef:new(22730, --Runn Tum Tuber Surprise
             { item = 18254, isBuff = true, default = false }))
-    tinsert(s, BOM.SpellDef:new(25661, --Dirge's Kickin' Chimaerok Chops x
+    tinsert(s, BOM.Class.SpellDef:new(25661, --Dirge's Kickin' Chimaerok Chops x
             { item = 21023, isBuff = true, default = false }))
-    tinsert(s, BOM.SpellDef:new(22790, --Kreeg's Stout Beatdown
+    tinsert(s, BOM.Class.SpellDef:new(22790, --Kreeg's Stout Beatdown
             { item          = 18284, isBuff = true, default = false,
               onlyUsableFor = BOM_MANA_CLASSES }))
-    tinsert(s, BOM.SpellDef:new(22789, --Gordok Green Grog
+    tinsert(s, BOM.Class.SpellDef:new(22789, --Gordok Green Grog
             { item = 18269, isBuff = true, default = false }))
-    tinsert(s, BOM.SpellDef:new(25804, --Rumsey Rum Black Label
+    tinsert(s, BOM.Class.SpellDef:new(25804, --Rumsey Rum Black Label
             { item = 21151, isBuff = true, default = false }))
   end -- Disable old food in TBC
 
-  tinsert(s, BOM.SpellDef:new(17549, --Greater Arcane Protection Potion
+  tinsert(s, BOM.Class.SpellDef:new(17549, --Greater Arcane Protection Potion
           { item = 13461, isBuff = true, default = false }))
-  tinsert(s, BOM.SpellDef:new(17543, --Greater Fire Protection Potion
+  tinsert(s, BOM.Class.SpellDef:new(17543, --Greater Fire Protection Potion
           { item = 13457, isBuff = true, default = false }))
-  tinsert(s, BOM.SpellDef:new(17544, --Greater Frost Protection Potion
+  tinsert(s, BOM.Class.SpellDef:new(17544, --Greater Frost Protection Potion
           { item = 13456, isBuff = true, default = false }))
-  tinsert(s, BOM.SpellDef:new(17546, --Greater Nature Protection Potion
+  tinsert(s, BOM.Class.SpellDef:new(17546, --Greater Nature Protection Potion
           { item = 13458, isBuff = true, default = false }))
-  tinsert(s, BOM.SpellDef:new(17548, --Greater Shadow Protection Potion
+  tinsert(s, BOM.Class.SpellDef:new(17548, --Greater Shadow Protection Potion
           { item = 13459, isBuff = true, default = false }))
 
   return s
@@ -744,9 +744,9 @@ end
 
 local function bom_setup_item_spells(s)
   if not BOM.TBC then
-    tinsert(s, BOM.SpellDef:new(15233, --Crystal Ward
+    tinsert(s, BOM.Class.SpellDef:new(15233, --Crystal Ward
             { item = 11564, isBuff = true, default = false }))
-    tinsert(s, BOM.SpellDef:new(15279, --Crystal Spire
+    tinsert(s, BOM.Class.SpellDef:new(15279, --Crystal Spire
             { item = 11567, isBuff = true, default = false }))
   end -- Disable old food in TBC
 
@@ -755,29 +755,29 @@ end
 
 local function bom_setup_flasks(s)
   if BOM.TBC then
-    tinsert(s, BOM.SpellDef:new(28540, --TBC: Flask of Pure Death +80 SHADOW +80 FIRE +80 FROST
+    tinsert(s, BOM.Class.SpellDef:new(28540, --TBC: Flask of Pure Death +80 SHADOW +80 FIRE +80 FROST
             { item = 22866, isBuff = true, default = false, onlyUsableFor = BOM_MANA_CLASSES }))
-    tinsert(s, BOM.SpellDef:new(28520, --TBC: Flask of Relentless Assault +120 AP
+    tinsert(s, BOM.Class.SpellDef:new(28520, --TBC: Flask of Relentless Assault +120 AP
             { item = 22854, isBuff = true, default = false, onlyUsableFor = BOM_PHYSICAL_CLASSES }))
-    tinsert(s, BOM.SpellDef:new(28521, --TBC: Flask of Blinding Light +80 ARC +80 HOLY +80 NATURE
+    tinsert(s, BOM.Class.SpellDef:new(28521, --TBC: Flask of Blinding Light +80 ARC +80 HOLY +80 NATURE
             { item = 22861, isBuff = true, default = false, onlyUsableFor = BOM_MANA_CLASSES }))
-    tinsert(s, BOM.SpellDef:new(28518, --TBC: Flask of Fortification +500 HP +10 DEF RATING
+    tinsert(s, BOM.Class.SpellDef:new(28518, --TBC: Flask of Fortification +500 HP +10 DEF RATING
             { item = 22851, isBuff = true, default = false }))
-    tinsert(s, BOM.SpellDef:new(28519, --TBC: Flask of Mighty Restoration +25 MP/5
+    tinsert(s, BOM.Class.SpellDef:new(28519, --TBC: Flask of Mighty Restoration +25 MP/5
             { item = 22853, isBuff = true, default = false }))
-    tinsert(s, BOM.SpellDef:new(42735, --TBC: Flask of Chromatic Wonder +35 ALL RESIST +18 ALL STATS
+    tinsert(s, BOM.Class.SpellDef:new(42735, --TBC: Flask of Chromatic Wonder +35 ALL RESIST +18 ALL STATS
             { item = 33208, isBuff = true, default = false }))
     -- TODO: Shattrath Flask of... (SSC and Tempest Keep only)
     -- TODO: Unstable Flask of... (Blade's Edge and Gruul's Lair only)
   end
 
-  tinsert(s, BOM.SpellDef:new(17628, --Flask of Supreme Power +70 SPELL
+  tinsert(s, BOM.Class.SpellDef:new(17628, --Flask of Supreme Power +70 SPELL
           { item = 13512, isBuff = true, default = false, onlyUsableFor = BOM_MANA_CLASSES }))
-  tinsert(s, BOM.SpellDef:new(17626, --Flask of the Titans +400 HP
+  tinsert(s, BOM.Class.SpellDef:new(17626, --Flask of the Titans +400 HP
           { item = 13510, isBuff = true, default = false }))
-  tinsert(s, BOM.SpellDef:new(17627, --Flask of Distilled Wisdom +65 INT
+  tinsert(s, BOM.Class.SpellDef:new(17627, --Flask of Distilled Wisdom +65 INT
           { item = 13511, isBuff = true, default = false, onlyUsableFor = BOM_MANA_CLASSES }))
-  tinsert(s, BOM.SpellDef:new(17629, --Flask of Chromatic Resistance
+  tinsert(s, BOM.Class.SpellDef:new(17629, --Flask of Chromatic Resistance
           { item = 13513, isBuff = true, default = false }))
 
   return s
@@ -998,12 +998,12 @@ function BOM.SetupCancelBuffs()
   do
     local _, class, _ = UnitClass("unit")
     if class == "HUNTER" then
-      tinsert(s, BOM.SpellDef:new(5118, --Aspect of the Cheetah/of the pack
+      tinsert(s, BOM.Class.SpellDef:new(5118, --Aspect of the Cheetah/of the pack
               { OnlyCombat = true, default = true, singleFamily = { 5118, 13159 } }))
     end
 
     if (UnitFactionGroup("player")) ~= "Horde" or BOM.TBC then
-      tinsert(s, BOM.SpellDef:new(1038, --Blessing of Salvation
+      tinsert(s, BOM.Class.SpellDef:new(1038, --Blessing of Salvation
               { default = false, singleFamily = { 1038, 25895 } }))
     end
   end

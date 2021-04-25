@@ -1,5 +1,6 @@
 ---@type BuffomatAddon
 local TOCNAME, BOM = ...
+BOM.Class = BOM.Class or {}
 
 ---@class BuffomatAddon
 ---@field ALL_PROFILES table<string> Lists all buffomat profile names (none, solo... etc)
@@ -18,8 +19,8 @@ local TOCNAME, BOM = ...
 ---@field CancelBuffSource string Unit who casted the buff to be auto-canceled
 ---@field Carrot table Equipped Riding trinket: Spell to and zone ids to check
 ---@field CheckForError boolean Used by error suppression code
----@field CurrentProfile Profile
----@field CharacterState table<string, State> Copy of state only for the current character
+---@field CurrentProfile State Current profile from CharacterState.Profiles
+---@field CharacterState CharacterState Copy of state only for the current character, with separate states per profile
 ---@field SharedState State Copy of state shared with all accounts
 ---@field DeclineHasResurrection boolean Set to true on combat start, stop, holding Alt, cleared on party update
 ---@field EnchantList table<number, table<number>> Spell ids  mapping to enchant ids
@@ -68,56 +69,69 @@ local TOCNAME, BOM = ...
 ---@field ICON_GROUP_NONE string
 ---@field ICON_GEAR string
 ---@field IconAutoOpenOn string
----@field IconAutoOpenOnCoord table
+---@field IconAutoOpenOnCoord table<number>
 ---@field IconAutoOpenOff string
----@field IconAutoOpenOffCoord table
+---@field IconAutoOpenOffCoord table<number>
 ---@field IconDeathBlockOn string
 ---@field IconDeathBlockOff string
----@field IconDeathBlockOffCoord table
+---@field IconDeathBlockOffCoord table<number>
 ---@field IconNoGroupBuffOn string
----@field IconNoGroupBuffOnCoord table
+---@field IconNoGroupBuffOnCoord table<number>
 ---@field IconNoGroupBuffOff string
----@field IconNoGroupBuffOffCoord table
+---@field IconNoGroupBuffOffCoord table<number>
 ---@field IconSameZoneOn string
----@field IconSameZoneOnCoord table
+---@field IconSameZoneOnCoord table<number>
 ---@field IconSameZoneOff string
----@field IconSameZoneOffCoord table
+---@field IconSameZoneOffCoord table<number>
 ---@field IconResGhostOn string
----@field IconResGhostOnCoord table
+---@field IconResGhostOnCoord table<number>
 ---@field IconResGhostOff string
----@field IconResGhostOffCoord table
+---@field IconResGhostOffCoord table<number>
 ---@field IconReplaceSingleOff string
----@field IconReplaceSingleOffCoord table
+---@field IconReplaceSingleOffCoord table<number>
 ---@field IconReplaceSingleOn string
----@field IconReplaceSingleOnCoord table
+---@field IconReplaceSingleOnCoord table<number>
 ---@field IconArgentumDawnOff string
 ---@field IconArgentumDawnOn string
----@field IconArgentumDawnOnCoord table
+---@field IconArgentumDawnOnCoord table<number>
 ---@field IconCarrotOff string
 ---@field IconCarrotOn string
----@field IconCarrotOnCoord table
+---@field IconCarrotOnCoord table<number>
 ---@field IconMainHandOff string
 ---@field IconMainHandOn string
----@field IconMainHandOnCoord table
+---@field IconMainHandOnCoord table<number>
 ---@field IconSecondaryHandOff string
 ---@field IconSecondaryHandOn string
----@field IconSecondaryHandOnCoord table
+---@field IconSecondaryHandOnCoord table<number>
 ---@field ICON_TANK string
----@field ICON_TANK_COORD table
+---@field ICON_TANK_COORD table<number>
 ---@field ICON_PET string
----@field ICON_PET_COORD table
+---@field ICON_PET_COORD table<number>
 ---@field IconInPVPOff string
 ---@field IconInPVPOn string
----@field IconInPVPOnCoord table
+---@field IconInPVPOnCoord table<number>
 ---@field IconInWorldOff string
 ---@field IconInWorldOn string
----@field IconInWorldOnCoord table
+---@field IconInWorldOnCoord table<number>
 ---@field IconInInstanceOff string
 ---@field IconInInstanceOn string
----@field IconInInstanceOnCoord table
+---@field IconInInstanceOnCoord table<number>
 ---@field IconUseRankOff string
 ---@field IconUseRankOn string
-BOM.BuffomatAddon = {}
-BOM.BuffomatAddon.__index = BOM.BuffomatAddon
+---
+---@field TOC_VERSION string Addon version from TOC file
+---@field TOC_TITLE string Addon name
+---@field MACRO_ICON string
+---@field MACRO_ICON_DISABLED string
+---@field MACRO_ICON_FULLPATH string
+---@field ICON_FORMAT string
+---@field PICTURE_FORMAT string
+---@field MACRO_NAME string
+---@field MAX_AURAS number
+---@field BLESSING_ID string
+---@field LOADING_SCREEN_TIMEOUT number
+---@field BehaviourSettings table<string, boolean> Key names and Defaults for 'Profile' settings
+BOM.Class.BuffomatAddon = {}
+BOM.Class.BuffomatAddon.__index = BOM.Class.BuffomatAddon
 
 local CLASS_TAG = "buffomat_addon"

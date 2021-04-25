@@ -500,7 +500,7 @@ end
 ---@type table<table>
 local PartyCache --Copy of party members, a dict of dicts
 
----table(duration, expirationTime, source, isSingle)
+---@type Member
 local PlayerMemberCache --Copy of player info dict
 
 local function bom_count_members()
@@ -635,7 +635,9 @@ local function bom_get_40man_raid_members(player_member)
   return party, player_member
 end
 
---Force updates party member buffs (vs. current player?)
+---Force updates party member buffs (vs. current player?)
+---@param member Member
+---@param player_member Member
 local function bom_get_party_members_force_update(member, player_member)
   member.isPlayer = (member == player_member)
   member.isDead = UnitIsDeadOrGhost(member.unitId) and not UnitIsFeignDeath(member.unitId)
@@ -695,10 +697,11 @@ local function bom_get_party_members_force_update(member, player_member)
 end
 
 ---Retrieve a table with party members
+---@return table<Member>, Member
 local function bom_get_party_members()
   -- and buffs
   local party
-  local player_member --table(duration, expirationTime, source, isSingle)
+  local player_member --- @type Member
 
   -- check if stored party is correct!
   if not BOM.PartyUpdateNeeded
@@ -812,12 +815,12 @@ local function bom_get_party_members()
       duration = 300
     end
 
-    player_member.buffs[configId] = {
-      ["duration"]       = duration,
-      ["expirationTime"] = GetTime() + mainHandExpiration / 1000,
-      ["source"]         = "player",
-      ["isSingle"]       = true,
-    }
+    player_member.buffs[configId] = BOM.Class.Buff:new(
+            configId,
+            duration,
+            GetTime() + mainHandExpiration / 1000,
+            "player",
+            true)
     player_member.MainHandBuff = configId
   else
     player_member.MainHandBuff = nil
@@ -835,12 +838,13 @@ local function bom_get_party_members()
       duration = 300
     end
 
-    player_member.buffs[-configId] = {
-      ["duration"]       = duration,
-      ["expirationTime"] = GetTime() + offHandExpiration / 1000,
-      ["source"]         = "player",
-      ["isSingle"]       = true,
-    }
+    player_member.buffs[-configId] = BOM.Class.Buff:new(
+            -configId,
+            duration,
+            GetTime() + offHandExpiration / 1000,
+            "player",
+            true)
+
     player_member.OffHandBuff = configId
   else
     player_member.OffHandBuff = nil
@@ -901,9 +905,9 @@ end
 
 ---Check for party, spell and player, which targets that spell goes onto
 ---Update spell.NeedMember, spell.NeedGroup and spell.DeathGroup
----@param party table - the party
+---@param party table<Member> - the party
 ---@param spell SpellDef - the spell to update
----@param player_member table - the player
+---@param player_member Member - the player
 ---@param someone_is_dead boolean - the flag that buffing cannot continue while someone is dead
 ---@return boolean - updated someone_is_dead
 function bom_update_spell_targets(party, spell, player_member, someone_is_dead)
@@ -1454,8 +1458,8 @@ local function bom_choose_profile()
   return is_bom_disabled, auto_profile
 end
 
----@param party table - the party
----@param player_member table - the player
+---@param party table<Member> - the party
+---@param player_member Member - the player
 local function bom_force_update(party, player_member)
   --reset tracking
   BOM.ForceTracking = nil

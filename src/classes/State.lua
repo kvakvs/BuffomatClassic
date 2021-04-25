@@ -1,5 +1,6 @@
 ---@type BuffomatAddon
 local TOCNAME, BOM = ...
+BOM.Class = BOM.Class or {}
 
 ---@class State Snapshot of current options state as selected by the player
 ---Named options: Are addressed by their string name in translations, control names, etc
@@ -24,9 +25,7 @@ local TOCNAME, BOM = ...
 ---@field SecondaryHand boolean Warn about offhand temporary enchant missing 
 ---@field SelfFirst boolean Buff self first 
 ---@field UseRank boolean Use ranked spells 
----
----@field Spell table<number, SpellDef>
-BOM.State = {}
-BOM.State.__index = BOM.State
+BOM.Class.Profile = {}
+BOM.Class.Profile.__index = BOM.Class.Profile
 
 local CLASS_TAG = "buffomat_state"

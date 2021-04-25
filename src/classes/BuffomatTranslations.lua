@@ -1,5 +1,6 @@
 ---@type BuffomatAddon
 local TOCNAME, BOM = ...
+BOM.Class = BOM.Class or {}
 
 ---@class BuffomatTranslations Contains translated strings
 ---@field enEN table<string, string>
@@ -7,7 +8,7 @@ local TOCNAME, BOM = ...
 ---@field frFR table<string, string>
 ---@field ruRU table<string, string>
 ---@field zhCN table<string, string>
-BOM.BuffomatTranslations = {}
-BOM.BuffomatTranslations.__index = BOM.BuffomatTranslations
+BOM.Class.BuffomatTranslations = {}
+BOM.Class.BuffomatTranslations.__index = BOM.Class.BuffomatTranslations
 
 local CLASS_TAG = "buffomat_translations"

@@ -979,9 +979,14 @@ end
 
 BOM.PlayerBuffs = {}
 
+---UnitAura
+---@param unitId string 
+---@param buffIndex number Index of buff/debuff slot starts 1 max 40?
+---@param filter string Filter string like "HELPFUL", "PLAYER", "RAID"... etc
 function BOM.UnitAura(unitId, buffIndex, filter)
-  local name, icon, count, debuffType, duration, expirationTime, source, isStealable,
-  nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, castByPlayer, nameplateShowAll, timeMod = UnitAura(unitId, buffIndex, filter)
+  local name, icon, count, debuffType, duration, expirationTime, source, isStealable
+  , nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, castByPlayer
+  , nameplateShowAll, timeMod = UnitAura(unitId, buffIndex, filter)
 
   if spellId and BOM.AllSpellIds and tContains(BOM.AllSpellIds, spellId) then
 
