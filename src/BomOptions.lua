@@ -1,4 +1,6 @@
+---@type BuffomatAddon
 local TOCNAME, BOM = ...
+
 BOM.Options = BOM.Options or {}
 local Options = BOM.Options
 

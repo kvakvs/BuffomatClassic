@@ -1,3 +1,4 @@
+---@type BuffomatAddon
 local TOCNAME, BOM = ...
 
 ---
@@ -21,6 +22,14 @@ local TOCNAME, BOM = ...
 ---@field singleDuration number - buff duration for single buff in seconds
 ---@field singleFamily table<number> Family of single buff spell ids which are mutually exclusive
 ---@field singleId number Spell id for single buff
+---
+---Fields created dynamically while the addon is running
+---
+---@field NeedMember table List of group members who might need this buff
+---@field NeedGroup table List of group members who might need group version of this buff
+---@field DeathGroup table List of group members who might be dead but in need of this buff
+---@field TrackingIcon number Numeric id for the tracking texture icon
+---@field SkipList table If spell cast failed, contains recently failed targets
 ---xxx field isShamanDualwield boolean If true, will display seal spell for both hands (TBC shamans!)
 BOM.SpellDef = {}
 BOM.SpellDef.__index = BOM.SpellDef

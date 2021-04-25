@@ -1,3 +1,4 @@
+---@type BuffomatAddon
 local TOCNAME, BOM = ...
 local L = setmetatable({}, { __index = function(t, k)
   if BOM.L and BOM.L[k] then
@@ -245,6 +246,7 @@ function BOM.GetSpells()
   --
   -- Scan all available spells check if they exist (learned) and appropriate
   --
+  ---@param spell SpellDef
   for i, spell in ipairs(BOM.AllBuffomatSpells) do
     spell.SkipList = {}
     BOM.ConfigToSpell[spell.ConfigID] = spell
@@ -861,6 +863,46 @@ local function bom_get_party_members()
   return party, player_member
 end
 
+---Checks whether a tracking spell is now active
+---@param spell SpellDef The tracking spell which might have tracking enabled
+local function bom_is_tracking_active(spell)
+  if BOM.TBC then
+    for i = 1, GetNumTrackingTypes() do
+      local _name, texture, active, _category, _, spellId = GetTrackingInfo(i)
+
+      if spellId == spell.singleId then
+        -- found, compare texture with spell icon
+        return texture == spell.TrackingIcon
+      end
+    end
+    -- not found
+    return false
+  else
+    return GetTrackingTexture() == spell.TrackingIcon
+  end
+end
+
+---Tries to activate tracking described by `spell`
+---@param spell SpellDef The tracking spell to activate
+---@param value boolean Whether tracking should be enabled
+local function bom_set_tracking(spell, value)
+  if BOM.TBC then
+    for i = 1, GetNumTrackingTypes() do
+      local name, texture, active, _category, _, spellId = GetTrackingInfo(i)
+      print("Set tracking active for " .. name)
+
+      if spellId == spell.singleId then
+        -- found, compare texture with spell icon
+        BOM.Print("Trying to activate tracking: " .. name)
+        SetTracking(i, value)
+        return
+      end
+    end
+  else
+    CastSpellByID(spell.singleId)
+  end
+end
+
 ---Check for party, spell and player, which targets that spell goes onto
 ---Update spell.NeedMember, spell.NeedGroup and spell.DeathGroup
 ---@param party table - the party
@@ -913,8 +955,8 @@ function bom_update_spell_targets(party, spell, player_member, someone_is_dead)
     end
   elseif spell.isOwn then
     if not player_member.isDead then
-      if spell.ItemLock then
-        if IsSpellKnown(spell.singleId) and not (BOM.HasItem(spell.ItemLock)) then
+      if spell.lockIfHaveItem then
+        if IsSpellKnown(spell.singleId) and not (BOM.HasItem(spell.lockIfHaveItem)) then
           tinsert(spell.NeedMember, player_member)
         end
       elseif not (player_member.buffs[spell.ConfigID]
@@ -936,8 +978,9 @@ function bom_update_spell_targets(party, spell, player_member, someone_is_dead)
     end
 
   elseif spell.isTracking then
-    if GetTrackingTexture() ~= spell.TrackingIcon
-            and (BOM.ForceTracking == nil or BOM.ForceTracking == spell.TrackingIcon)
+    if not bom_is_tracking_active(spell)
+            and (BOM.ForceTracking == nil
+            or BOM.ForceTracking == spell.TrackingIcon)
     then
       tinsert(spell.NeedMember, player_member)
     end
@@ -1410,6 +1453,7 @@ local function bom_force_update(party, player_member)
   --reset tracking
   BOM.ForceTracking = nil
 
+  ---@param spell SpellDef
   for i, spell in ipairs(BOM.SelectedSpells) do
     if spell.isTracking then
       if BOM.CurrentProfile.Spell[spell.ConfigID].Enable then
@@ -1419,7 +1463,7 @@ local function bom_force_update(party, player_member)
             BOM.ForceTracking = spell.TrackingIcon
             BOM.UpdateSpellsTab()
           end
-        elseif GetTrackingTexture() == spell.TrackingIcon
+        elseif bom_is_tracking_active(spell)
                 and BOM.CharacterState.LastTracking ~= spell.TrackingIcon then
           BOM.CharacterState.LastTracking = spell.TrackingIcon
           BOM.UpdateSpellsTab()
@@ -2034,7 +2078,7 @@ function BOM.UpdateScan()
       elseif spell.isTracking then
         if #spell.NeedMember > 0 then
           if not BOM.PlayerCasting then
-            CastSpellByID(spell.singleId)
+            bom_set_tracking(spell, true)
           else
             bom_display_text(
                     string.format(L["FORMAT_BUFF_SINGLE"], player_member.name, spell.single),

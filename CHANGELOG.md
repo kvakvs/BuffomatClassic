@@ -1,5 +1,11 @@
 # Changelog
 
+## Buffomat Classic and TBC 2021.4.0-3
+
+- TBC Classic: New class spells and new consumables
+- BUG: TBC tracking (the addon did not know whether tracking was enabled and
+  recasted it repeatedly)
+
 ## Buffomat Classic 1.9.6
 
 - "Force cast" on target and "Exclude target". Target a member of your group and

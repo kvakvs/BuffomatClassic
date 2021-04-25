@@ -10,8 +10,10 @@
 const/BomTexture.lua
 const/BomSpells.lua
 
+src/classes/BuffomatAddon.lua
 src/classes/SpellDef.lua
 src/classes/RowBuilder.lua
+src/classes/Profile.lua
 
 src/BomOptions.lua
 src/BomMinimapButton.lua

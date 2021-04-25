@@ -1,3 +1,4 @@
+---@type BuffomatAddon
 local TOCNAME, BOM = ...
 
 local BOM_ALL_CLASSES = { "WARRIOR", "MAGE", "ROGUE", "DRUID", "HUNTER", "PRIEST", "WARLOCK",
@@ -135,7 +136,7 @@ end
 
 ---Add MAGE spells
 local function bom_setup_mage_spells(s)
-  --{singleId=10938, isOwn=true, default=true, ItemLock={8008}}, -- manastone/debug
+  --{singleId=10938, isOwn=true, default=true, lockIfHaveItem={8008}}, -- manastone/debug
   BOM.SpellDef_ArcaneIntelligence = function()
     return BOM.SpellDef:new(10157, --Arcane Intellect | Brilliance
             { singleFamily    = { 1459, 1460, 1461, 10156, 10157, -- Ranks 1-5
@@ -177,19 +178,19 @@ local function bom_setup_mage_spells(s)
             singleFamily = { 11426, 13031, 13032, 13033, -- Ranks 1-4
                              27134, 33405 } })) -- TBC: Ranks 5-6
   tinsert(s, BOM.SpellDef:new(10053, -- Conjure Mana Stone (Max Rank)
-          { isOwn        = true, default = true,
-            ItemLock     = { 5514, 5513, 8007, 8008, -- Items: Agate, Jade, Citrine, Ruby
-                             22044 }, -- TBC: Item: Emerald
-            singleFamily = { 759, 3552, 10053, 10054, -- Agate, Jade, Citrine, Ruby
-                             27101 } })) -- TBC: Emerald
+          { isOwn          = true, default = true,
+            lockIfHaveItem = { 5514, 5513, 8007, 8008, -- Items: Agate, Jade, Citrine, Ruby
+                               22044 }, -- TBC: Item: Emerald
+            singleFamily   = { 759, 3552, 10053, 10054, -- Agate, Jade, Citrine, Ruby
+                               27101 } })) -- TBC: Emerald
   -- Note: At ranks below max this will look identical with the previous
   tinsert(s, BOM.SpellDef:new(10053, -- Conjure Mana Stone (1 Rank Lower than Max)
-          { isOwn        = true, default = true,
-            ItemLock     = { 5514, 5513, 8007, 8008 }, -- Items: Agate, Jade, Citrine, Ruby
-            singleFamily = { 759, 3552, 10053, 10054 } })) -- Agate, Jade, Citrine, Ruby
+          { isOwn          = true, default = true,
+            lockIfHaveItem = { 5514, 5513, 8007, 8008 }, -- Items: Agate, Jade, Citrine, Ruby
+            singleFamily   = { 759, 3552, 10053, 10054 } })) -- Agate, Jade, Citrine, Ruby
 
   --tinsert(s, BOM.SpellDef:new(27101, -- TBC: Conjure Emerald, blocked by having a ruby
-  --        { isOwn = true, default = true, ItemLock = { 22044 } }))
+  --        { isOwn = true, default = true, lockIfHaveItem = { 22044 } }))
 
   return s
 end
@@ -245,25 +246,35 @@ local function bom_setup_warlock_spells(s)
   tinsert(s, BOM.SpellDef:new(28610, -- Shadow Ward / Schattenzauberschutz
           { isOwn = true, default = false, singleFamily = { 6229, 11739, 11740, 28610 } }))
   tinsert(s, BOM.SpellDef:new(11735, -- Demon Armor
-          { isOwn = true, default = false, singleFamily = { 706, 1086, 11733, 11734, 11735 } }))
+          { isOwn = true, default = false, singleFamily = { 706, 1086, 11733, 11734, 11735, -- Rank 5
+                                                            27260 } })) -- TBC: Rank 6
   tinsert(s, BOM.SpellDef:new(696, -- Demon skin (Low Level)
           { isOwn = true, default = false, singleFamily = { 687, 696 } }))
   tinsert(s, BOM.SpellDef:new(18788, -- Demonic Sacrifice
           { isOwn = true, default = true }))
   tinsert(s, BOM.SpellDef:new(17953, -- Firestone
-          { isOwn        = true, default = false, ItemLock = { 1254, 13699, 13700, 13701 },
-            singleFamily = { 6366, 17951, 17952, 17953 } }))
+          { isOwn          = true, default = false,
+            lockIfHaveItem = { 1254, 13699, 13700, 13701,
+                               22128 }, -- TBC: Master Firestone
+            singleFamily   = { 6366, 17951, 17952, 17953, -- Rank 1-4
+                               27250 } })) -- TBC: Rank 5
   tinsert(s, BOM.SpellDef:new(11730, -- Healtstone
-          { isOwn        = true, default = true,
-            ItemLock     = { 5512, 19005, 19004, 5511, 19007, 19006, 5509, 19009,
-                             19008, 5510, 19011, 19010, 9421, 19013, 19012 },
-            singleFamily = { 6201, 6202, 5699, 11729, 11730 } }))
+          { isOwn          = true, default = true,
+            lockIfHaveItem = { 5512, 19005, 19004, 5511, 19007, 19006, 5509, 19009,
+                               19008, 5510, 19011, 19010, 9421, 19013, 19012, -- Healthstones (3 talent ranks)
+                               22103, 22104, 22105 }, -- TBC: Master Healthstone (3 talent ranks)
+            singleFamily   = { 6201, 6202, 5699, 11729, 11730, -- Rank 1-5
+                               27230 } })) -- TBC: Rank 6
   tinsert(s, BOM.SpellDef:new(20757, --Soulstone
-          { isOwn        = true, default = true,
-            ItemLock     = { 5232, 16892, 16893, 16895, 16896 },
-            singleFamily = { 693, 20752, 20755, 20756, 20757 } }))
-  tinsert(s, BOM.SpellDef:new(5500, --Sense Demons
-          { isTracking = true, default = false }))
+          { isOwn          = true, default = true,
+            lockIfHaveItem = { 5232, 16892, 16893, 16895, 16896,
+                               22116 }, -- TBC: Master Soulstone
+            singleFamily   = { 693, 20752, 20755, 20756, 20757, -- Ranks 1-5
+                               27238 } })) -- TBC: Rank 6
+  if not BOM.TBC then
+    tinsert(s, BOM.SpellDef:new(5500, --Sense Demons
+            { isTracking = true, default = false }))
+  end
 
   return s
 end
@@ -271,22 +282,30 @@ end
 ---Add HUNTER spells
 local function bom_setup_hunter_spells(s)
   tinsert(s, BOM.SpellDef:new(20906, -- Trueshot Aura
-          { isOwn = true, default = true, singleFamily = { 19506, 20905, 20906 } }))
+          { isOwn        = true, default = true,
+            singleFamily = { 19506, 20905, 20906, -- Ranks 1-3
+                             27066 } })) -- TBC: Rank 4
 
   tinsert(s, BOM.SpellDef:new(25296, --Aspect of the Hawk
           { isAura       = true, default = true,
-            singleFamily = { 13165, 14318, 14319, 14320, 14321, 14322, 25296 } }))
+            singleFamily = { 13165, 14318, 14319, 14320, 14321, 14322, 25296, -- Rank 1-7
+                             27044 } })) -- TBC: Rank 8
   tinsert(s, BOM.SpellDef:new(13163, --Aspect of the monkey
+          { isAura = true, default = false }))
+  tinsert(s, BOM.SpellDef:new(34074, -- TBC: Aspect of the Viper
           { isAura = true, default = false }))
   tinsert(s, BOM.SpellDef:new(20190, --Aspect of the wild
           { isAura       = true, default = false,
-            singleFamily = { 20043, 20190 } }))
+            singleFamily = { 20043, 20190, -- Ranks 1-2
+                             27045 } })) -- TBC: Rank 3
   tinsert(s, BOM.SpellDef:new(5118, --Aspect of the Cheetah
           { isAura = true, default = false }))
   tinsert(s, BOM.SpellDef:new(13159, --Aspect of the pack
           { isAura = true, default = false }))
   tinsert(s, BOM.SpellDef:new(13161, -- Aspect of the beast
           { isAura = true, default = false }))
+
+  --if not BOM.TBC then
   tinsert(s, BOM.SpellDef:new(1494, -- Track Beast
           { isTracking = true, default = false }))
   tinsert(s, BOM.SpellDef:new(19878, -- Track Demon
@@ -303,6 +322,7 @@ local function bom_setup_hunter_spells(s)
           { isTracking = true, default = false }))
   tinsert(s, BOM.SpellDef:new(19885, -- Track Hidden / verborgenes
           { isTracking = true, default = false }))
+  --end
 
   return s
 end
@@ -990,6 +1010,9 @@ function BOM.SetupCancelBuffs()
   return s
 end
 
-BOM.BuffIgnoreAll = { 4511 }
+-- Having this buff on target excludes the target (phaseshifted imp for example)
+BOM.BuffIgnoreAll = {
+  4511 -- Phase Shift (imp)
+}
 
 local ShapeShiftTravel = { 2645, 783 } --Ghost wolf and travel druid

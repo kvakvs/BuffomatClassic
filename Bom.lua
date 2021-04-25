@@ -1,3 +1,4 @@
+---@type BuffomatAddon
 local TOCNAME, BOM = ...
 local L = setmetatable(
         {},

@@ -1,4 +1,5 @@
 ---| Module contains code to update the already selected spells in tabs
+---@type BuffomatAddon
 local TOCNAME, BOM = ...
 local L = setmetatable(
         {},
@@ -626,6 +627,7 @@ local function bom_targets_tooltip(prefix, empty_text, name_table)
   end
 end
 
+---@param spell SpellDef
 local function update_selected_spell(spell)
   -- the pointer to spell in current BOM profile
   local profile_spell = BOM.CurrentProfile.Spell[spell.ConfigID]
