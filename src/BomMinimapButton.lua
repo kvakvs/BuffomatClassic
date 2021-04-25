@@ -1,8 +1,10 @@
-local TOCNAME, Addon = ...
-Addon.MinimapButton = Addon.MinimapButton or {}
-local MinimapButton = Addon.MinimapButton
+---@type BuffomatAddon
+local TOCNAME, BOM = ...
+BOM.MinimapButton = BOM.MinimapButton or {}
+local MinimapButton = BOM.MinimapButton
 
 ---Change minimap button texture position slightly
+---@param button Control
 local function minimap_button_texture_zoom(button)
   local deltaX, deltaY = 0, 0
 

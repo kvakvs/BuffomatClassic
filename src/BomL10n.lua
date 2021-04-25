@@ -1,3 +1,4 @@
+---@type BuffomatAddon
 local TOCNAME, BOM = ...
 local L = setmetatable({}, { __index = function(t, k)
   if BOM.L and BOM.L[k] then

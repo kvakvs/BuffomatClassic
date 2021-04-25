@@ -5,6 +5,8 @@ local TOCNAME, BOM = ...
 ---@field ALL_PROFILES table<string> Lists all buffomat profile names (none, solo... etc)
 ---@field RESURRECT_CLASS table<string> Classes who can resurrect others
 ---@field MANA_CLASSES table<string> Classes with mana resource
+---@field locales table<string, table<string, string>> Translations (same as BOM.L)
+---@field L table<string, table<string, string>> Translations (same as BOM.locales)
 ---
 ---@field ArgentumDawn table Equipped AD trinket: Spell to and zone ids to check
 ---@field BuffExchangeId table<number, table<number>> Combines spell ids of spellrank flavours into main spell id
@@ -14,6 +16,8 @@ local TOCNAME, BOM = ...
 ---@field Carrot table Equipped Riding trinket: Spell to and zone ids to check
 ---@field CheckForError boolean Used by error suppression code
 ---@field CurrentProfile Profile
+---@field CharacterState State Copy of state only for the current character
+---@field SharedState State Copy of state shared with all accounts
 ---@field DeclineHasResurrection boolean Set to true on combat start, stop, holding Alt, cleared on party update
 ---@field EnchantList table<number, table<number>> Spell ids  mapping to enchant ids
 ---@field EnchantToSpell table<number, number> Reverse-maps enchant ids back to spells
@@ -23,12 +27,15 @@ local TOCNAME, BOM = ...
 ---@field ItemList table<table<number>> Group different ranks of item together
 ---@field ItemListSpell table<number, number> Map itemid to spell?
 ---@field ItemListTarget table<number, string> Remember who casted item buff on you?
+---@field lastTarget string|nil Last player's target
 ---@field PartyUpdateNeeded boolean Requests player party update
 ---@field PlayerCasting boolean Indicates that the player is currently casting (updated in event handlers)
 ---@field SpellTabsCreatedFlag boolean Indicated spells tab already populated with controls
 ---@field SpellToSpell table<number, number> Maps spells ids to other spell ids
 ---@field TBC boolean Whether we are running TBC classic
 ---@field WipeCachedItems boolean Command to reset cached items
+---@field MinimapButton Control Minimap button control
+---@field Options Options
 BOM.BuffomatAddon = {}
 BOM.BuffomatAddon.__index = BOM.BuffomatAddon
 

@@ -1295,12 +1295,15 @@ function BOM.TimeCheck(ti, duration)
   return false
 end
 
----@type table - pairs of [1]=text, [2]=distance - list of all strings to be displayed
+---@type table<number, table> - pairs of [1]=text, [2]=distance - list of all strings to be displayed
 local bom_messages_cache = {}
----@type table - list of text strings to be displayed (spell and target)
+
+---@type table<string> - list of text strings to be displayed (spell and target)
 local bom_cast_messages = {}
----@type table - list of info strings to be displayed (yellow)
+
+---@type table<string> - list of info strings to be displayed (yellow)
 local bom_info_messages = {}
+
 ---@type number - index to insert another line
 local bom_insert_index
 

@@ -616,6 +616,7 @@ end
 ---@param onlynumbers boolean - numeric value only allowed
 ---@param tooltip string
 ---@param suggestion table
+---@return Control
 function Options.AddEditBox(DB, Var, Init, TXTLeft, width, widthLeft, onlynumbers,
                             tooltip, suggestion)
   if width == nil then

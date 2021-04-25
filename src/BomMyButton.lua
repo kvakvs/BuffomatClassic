@@ -184,8 +184,9 @@ local bom_managed_mybuttons = {}
 ---@param unselCoord table - texcoord for unselected
 ---@param disCoord table - texcoord for disabled
 ---@param unmanaged boolean - set to true to not add button to bom_managed_mybuttons
+---@return Control
 function BOM.CreateMyButton(parent, sel, unsel, dis, selCoord, unselCoord, disCoord, unmanaged)
-  new_button_frame = CreateFrame("frame", nil, parent, "BomC_MyButton")
+  local new_button_frame = CreateFrame("frame", nil, parent, "BomC_MyButton")
   BOM.MyButton_OnLoad(new_button_frame)
   new_button_frame:SetTextures(sel, unsel, dis, selCoord, unselCoord, disCoord)
 
@@ -196,8 +197,9 @@ function BOM.CreateMyButton(parent, sel, unsel, dis, selCoord, unselCoord, disCo
   return new_button_frame
 end
 
+---@return Control
 function BOM.CreateMyButtonSecure(parent, sel, unsel, dis, selCoord, unselCoord, disCoord)
-  new_button_frame = CreateFrame("Button", nil, parent, "BomC_MyButtonSecure")
+  local new_button_frame = CreateFrame("Button", nil, parent, "BomC_MyButtonSecure")
   BOM.MyButton_OnLoad(new_button_frame, true)
   new_button_frame:SetTextures(sel, unsel, dis, selCoord, unselCoord, disCoord)
   tinsert(bom_managed_mybuttons, new_button_frame)
