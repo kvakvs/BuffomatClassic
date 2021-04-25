@@ -16,6 +16,8 @@ src/classes/RowBuilder.lua
 src/classes/Profile.lua
 src/classes/Control.lua
 src/classes/Options.lua
+src/classes/State.lua
+src/classes/Member.lua
 
 src/BomOptions.lua
 src/BomMinimapButton.lua

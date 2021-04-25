@@ -1,3 +1,4 @@
+---@type BuffomatAddon
 local TOCNAME, BOM = ...
 
 BOM.ICON_OPT_ENABLED = "Interface\\Buttons\\UI-CheckBox-Check"

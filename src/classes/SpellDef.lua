@@ -11,8 +11,12 @@ local TOCNAME, BOM = ...
 ---@field groupFamily table<number> Family of group buff spell ids which are mutually exclusive
 ---@field groupId number Spell id for group buff
 ---@field hasCD boolean There's a cooldown on this spell
----@field isAura boolean True if the buff affects others in radius, and not a target buff
+---@field isAura boolean No target buff check. True if the buff affects others in radius, and not a target buff
 ---@field isTracking boolean True if the buff is tracking of some resource or enemy
+---@field isInfo boolean
+---@field isBuff boolean
+---@field isSeal boolean TODO: Document this - Only one can be active/casts on self???
+---@field isOwn boolean Spell only casts on self
 ---@field isWeapon boolean The buff is a temporary weapon enchant on user's weapons
 ---@field item number - buff is granted by an item in user's bag
 ---@field itemLock table<number> Item ids which prevent this buff (unique conjured items for example)
@@ -22,14 +26,23 @@ local TOCNAME, BOM = ...
 ---@field singleDuration number - buff duration for single buff in seconds
 ---@field singleFamily table<number> Family of single buff spell ids which are mutually exclusive
 ---@field singleId number Spell id for single buff
+---@field singleMana number Mana cost
+---@field groupMana number Mana cost for group buff
 ---
 ---Fields created dynamically while the addon is running
 ---
+---@field ConfigID number Spell id of level 60 spell used as key everywhere else
 ---@field NeedMember table List of group members who might need this buff
 ---@field NeedGroup table List of group members who might need group version of this buff
 ---@field DeathGroup table List of group members who might be dead but in need of this buff
 ---@field TrackingIcon number Numeric id for the tracking texture icon
 ---@field SkipList table If spell cast failed, contains recently failed targets
+---@field Class table
+---@field ForcedTarget table<string> List of extra targets to buff
+---@field ExcludedTarget table<string> List of target names to never buff
+---@field Enable boolean Whether buff is to be watched
+---@field SelfCast boolean
+---@field frames table<string, Control> Dynamic list of controls associated with this spell
 ---xxx field isShamanDualwield boolean If true, will display seal spell for both hands (TBC shamans!)
 BOM.SpellDef = {}
 BOM.SpellDef.__index = BOM.SpellDef

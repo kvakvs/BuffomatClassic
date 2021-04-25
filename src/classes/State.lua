@@ -23,6 +23,8 @@ local TOCNAME, BOM = ...
 ---@field SecondaryHand boolean Warn about offhand temporary enchant missing (set by string name)
 ---@field SelfFirst boolean Buff self first (set by string name)
 ---@field UseRank boolean Use ranked spells (set by string name)
+---
+---@field Spell table<number, SpellDef>
 BOM.State = {}
 BOM.State.__index = BOM.State
 

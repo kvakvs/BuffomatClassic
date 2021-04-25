@@ -235,7 +235,7 @@ function BOM.GetSpells()
 
     BOM.Tool.iMerge(BOM.AllSpellIds, spell.singleFamily)
 
-    for i, profil in ipairs(BOM.ALL_PROFILES) do
+    for j, profil in ipairs(BOM.ALL_PROFILES) do
       if BOM.CharacterState[profil].CancelBuff[spell.ConfigID] == nil then
         BOM.CharacterState[profil].CancelBuff[spell.ConfigID] = {}
         BOM.CharacterState[profil].CancelBuff[spell.ConfigID].Enable = spell.default or false
@@ -450,18 +450,10 @@ function BOM.GetSpells()
   end -- for all BOM-supported spells
 end
 
----Table<UnitID: string, Table<>> with keys
----  .distance - 10k yards default
----  .unitId
----  .name
----  .group: number
----  .hasResurrection: boolean
----  .class: string
----  .link: string
----  .isTank: boolean
----  .buffs: table
+---@type table<string, Member>
 local MemberCache = {}
 
+---@return Member
 local function bom_get_member(unitid, NameGroup, NameRole)
   local name = (UnitFullName(unitid))
 
@@ -505,6 +497,7 @@ local function bom_get_member(unitid, NameGroup, NameRole)
   return member
 end
 
+---@type table<table>
 local PartyCache --Copy of party members, a dict of dicts
 
 ---table(duration, expirationTime, source, isSingle)
@@ -565,12 +558,13 @@ function BOM.MaybeResetWatchGroups()
   end
 end
 
----@return table - pair (party: table, player_member: table)
+---@return table, Member
+---@param player_member Member
 local function bom_get_5man_members(player_member)
   local name_group = {}
   local name_role = {}
   local party = {}
-  local member
+  local member ---@type Member
 
   for groupIndex = 1, 4 do
     member = bom_get_member("party" .. groupIndex)
@@ -590,6 +584,7 @@ local function bom_get_5man_members(player_member)
 
   player_member = bom_get_member("player")
   tinsert(party, player_member)
+
   member = bom_get_member("pet")
 
   if member then
@@ -602,7 +597,8 @@ local function bom_get_5man_members(player_member)
 end
 
 ---For when player is in raid, retrieve all 40 raid members
----@return table - pair (party: table, player_member: table)
+---@param player_member Member
+---@return table, Member
 local function bom_get_40man_raid_members(player_member)
   local name_group = {}
   local name_role = {}
@@ -1134,7 +1130,7 @@ end
 function BOM.UpdateMacro(member, spellId, command)
   if (GetMacroInfo(BOM.MACRO_NAME)) == nil then
     local perAccount, perChar = GetNumMacros()
-    local isChar = nil
+    local isChar
 
     if perChar < MAX_CHARACTER_MACROS then
       isChar = 1
@@ -1217,7 +1213,7 @@ end
 
 local function bom_get_group_in_range(SpellName, party, groupNb, spell)
   local minDist
-  local ret = nil
+  local ret
   for i, member in ipairs(party) do
     if member.group == groupNb then
       if not (IsSpellInRange(SpellName, member.unitId) == 1 or member.isDead) then
@@ -1242,7 +1238,7 @@ end
 ---@param spell SpellDef
 local function bom_get_class_in_range(spell_name, party, class, spell)
   local minDist
-  local ret = nil
+  local ret
 
   for i, member in ipairs(party) do
     if member.class == class then
@@ -1352,7 +1348,15 @@ local function bom_display_text_in_messageframe()
   end
 end
 
+---@class BomScan_NextCastSpell
+---@field Spell SpellDef
+---@field Link string|nil
+---@field Member string|nil
+---@field SpellId number|nil
+---@field manaCost number
 local next_cast_spell = {}
+
+---@type number
 local player_mana
 
 ---Stores a spell with cost/id/spell link to be casted in the `cast` global
@@ -1818,9 +1822,6 @@ end
 ---Adds a display text for a self buff or tracking or seal/weapon self-enchant
 ---@param spell SpellDef - the spell to cast
 ---@param player_member table - the player
----@param bag_title string - if not empty, is item name from the bag
----@param bag_command string - console command to use item from the bag
----@return table (bag_title string, bag_command string)
 local function bom_add_self_buff(spell, player_member)
   if (not spell.requiresOutdoors or IsOutdoors())
           and not tContains(spell.SkipList, player_member.name) then
@@ -2159,7 +2160,7 @@ function BOM.UpdateScan()
 
   for i, item in ipairs(ItemList) do
     local ok = false
-    local target = nil
+    local target
 
     if item.CD then
       if (item.CD[1] or 0) ~= 0 then

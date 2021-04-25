@@ -1,3 +1,4 @@
+---@type BuffomatAddon
 local TOCNAME, BOM = ...
 
 local ONIcon = "|TInterface\\RAIDFRAME\\ReadyCheck-Ready:0:0:0:0:64:64:4:60:4:60|t"
@@ -173,6 +174,7 @@ function BOM.MyButton_SetSpell(self, spell)
 end
 
 ---Contains all MyButtons
+---@type table<string, Control>
 local bom_managed_mybuttons = {}
 
 ---Creates small clickable button in the spell tab

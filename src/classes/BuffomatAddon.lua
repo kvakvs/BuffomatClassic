@@ -7,6 +7,9 @@ local TOCNAME, BOM = ...
 ---@field MANA_CLASSES table<string> Classes with mana resource
 ---@field locales table<string, table<string, string>> Translations (same as BOM.L)
 ---@field L table<string, table<string, string>> Translations (same as BOM.locales)
+---@field AllBuffomatSpells table<number, SpellDef> All spells known to Buffomat
+---@field CancelBuffs table<number, SpellDef> All spells to be canceled on detection
+---@field ItemCache table<number, table> Precreated precached items
 ---
 ---@field ArgentumDawn table Equipped AD trinket: Spell to and zone ids to check
 ---@field BuffExchangeId table<number, table<number>> Combines spell ids of spellrank flavours into main spell id
@@ -16,7 +19,7 @@ local TOCNAME, BOM = ...
 ---@field Carrot table Equipped Riding trinket: Spell to and zone ids to check
 ---@field CheckForError boolean Used by error suppression code
 ---@field CurrentProfile Profile
----@field CharacterState State Copy of state only for the current character
+---@field CharacterState table<string, State> Copy of state only for the current character
 ---@field SharedState State Copy of state shared with all accounts
 ---@field DeclineHasResurrection boolean Set to true on combat start, stop, holding Alt, cleared on party update
 ---@field EnchantList table<number, table<number>> Spell ids  mapping to enchant ids
@@ -28,14 +31,92 @@ local TOCNAME, BOM = ...
 ---@field ItemListSpell table<number, number> Map itemid to spell?
 ---@field ItemListTarget table<number, string> Remember who casted item buff on you?
 ---@field lastTarget string|nil Last player's target
+---@field ManaLimit number Player max mana
 ---@field PartyUpdateNeeded boolean Requests player party update
 ---@field PlayerCasting boolean Indicates that the player is currently casting (updated in event handlers)
+---@field SelectedSpells table<number, SpellDef>
+---@field SpellIdIsSingle table<number, boolean> Whether spell ids are single buffs
 ---@field SpellTabsCreatedFlag boolean Indicated spells tab already populated with controls
 ---@field SpellToSpell table<number, number> Maps spells ids to other spell ids
 ---@field TBC boolean Whether we are running TBC classic
 ---@field WipeCachedItems boolean Command to reset cached items
 ---@field MinimapButton Control Minimap button control
 ---@field Options Options
+---
+---@field ICON_PET string
+---@field ICON_OPT_ENABLED string
+---@field ICON_OPT_DISABLED string
+---@field ICON_SELF_CAST_ON string
+---@field ICON_SELF_CAST_OFF string
+---@field CLASS_ICONS_ATLAS string
+---@field CLASS_ICONS_ATLAS_TEX_COORD string
+---@field ICON_EMPTY string
+---@field ICON_SETTING_ON string
+---@field ICON_SETTING_OFF string
+---@field ICON_WHISPER_ON string
+---@field ICON_WHISPER_OFF string
+---@field ICON_BUFF_ON string
+---@field ICON_BUFF_OFF string
+---@field ICON_DISABLED string
+---@field ICON_TARGET_ON string
+---@field ICON_TARGET_OFF string
+---@field ICON_TARGET_EXCLUDE string
+---@field ICON_CHECKED string
+---@field ICON_CHECKED_OFF string
+---@field ICON_GROUP string
+---@field ICON_GROUP_ITEM string
+---@field ICON_GROUP_NONE string
+---@field ICON_GEAR string
+---@field IconAutoOpenOn string
+---@field IconAutoOpenOnCoord table
+---@field IconAutoOpenOff string
+---@field IconAutoOpenOffCoord table
+---@field IconDeathBlockOn string
+---@field IconDeathBlockOff string
+---@field IconDeathBlockOffCoord table
+---@field IconNoGroupBuffOn string
+---@field IconNoGroupBuffOnCoord table
+---@field IconNoGroupBuffOff string
+---@field IconNoGroupBuffOffCoord table
+---@field IconSameZoneOn string
+---@field IconSameZoneOnCoord table
+---@field IconSameZoneOff string
+---@field IconSameZoneOffCoord table
+---@field IconResGhostOn string
+---@field IconResGhostOnCoord table
+---@field IconResGhostOff string
+---@field IconResGhostOffCoord table
+---@field IconReplaceSingleOff string
+---@field IconReplaceSingleOffCoord table
+---@field IconReplaceSingleOn string
+---@field IconReplaceSingleOnCoord table
+---@field IconArgentumDawnOff string
+---@field IconArgentumDawnOn string
+---@field IconArgentumDawnOnCoord table
+---@field IconCarrotOff string
+---@field IconCarrotOn string
+---@field IconCarrotOnCoord table
+---@field IconMainHandOff string
+---@field IconMainHandOn string
+---@field IconMainHandOnCoord table
+---@field IconSecondaryHandOff string
+---@field IconSecondaryHandOn string
+---@field IconSecondaryHandOnCoord table
+---@field ICON_TANK string
+---@field ICON_TANK_COORD table
+---@field ICON_PET string
+---@field ICON_PET_COORD table
+---@field IconInPVPOff string
+---@field IconInPVPOn string
+---@field IconInPVPOnCoord table
+---@field IconInWorldOff string
+---@field IconInWorldOn string
+---@field IconInWorldOnCoord table
+---@field IconInInstanceOff string
+---@field IconInInstanceOn string
+---@field IconInInstanceOnCoord table
+---@field IconUseRankOff string
+---@field IconUseRankOn string
 BOM.BuffomatAddon = {}
 BOM.BuffomatAddon.__index = BOM.BuffomatAddon
 
