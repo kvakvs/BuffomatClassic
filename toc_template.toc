@@ -10,10 +10,10 @@
 const/BomTexture.lua
 const/BomSpells.lua
 
+src/classes/Control.lua
 src/classes/Buff.lua
 src/classes/BuffomatAddon.lua
 src/classes/BuffomatTranslations.lua
-src/classes/Control.lua
 src/classes/Member.lua
 src/classes/Options.lua
 src/classes/RowBuilder.lua

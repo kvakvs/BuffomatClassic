@@ -42,7 +42,7 @@ BOM.Class = BOM.Class or {}
 ---@field SpellToSpell table<number, number> Maps spells ids to other spell ids
 ---@field TBC boolean Whether we are running TBC classic
 ---@field WipeCachedItems boolean Command to reset cached items
----@field MinimapButton Control Minimap button control
+---@field MinimapButton GPIMinimapButton Minimap button control
 ---@field Options Options
 ---
 ---@field ICON_PET string

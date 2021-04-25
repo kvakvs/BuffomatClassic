@@ -1,5 +1,6 @@
 ---@type BuffomatAddon
 local TOCNAME, BOM = ...
+
 BOM.MinimapButton = BOM.MinimapButton or {}
 local MinimapButton = BOM.MinimapButton
 
@@ -17,6 +18,7 @@ local function minimap_button_texture_zoom(button)
 end
 
 ---Called when minimap button is dragged to update.
+---@param button Control
 local function minimap_button_drag_update(button)
   local mx, my = Minimap:GetCenter()
   local px, py = GetCursorPosition()
@@ -93,8 +95,8 @@ local function minimap_button_mouse_up(button)
   minimap_button_texture_zoom(button)
 end
 
-function MinimapButton.Init(DB, Texture, DoOnClick, Tooltip)
-  MinimapButton.db = DB
+function MinimapButton.Init(Database, Texture, DoOnClick, Tooltip)
+  MinimapButton.db = Database
   MinimapButton.onClick = DoOnClick
   MinimapButton.Tooltip = Tooltip
   MinimapButton.isMinimapButton = true
@@ -206,7 +208,8 @@ function MinimapButton.UpdatePosition()
   else
     local diagRadius = math.sqrt(2 * (w) ^ 2) - rounding
     x = math.max(-w, math.min(x * diagRadius, w))
-    local diagRadius = math.sqrt(2 * (h) ^ 2) - rounding
+
+    diagRadius = math.sqrt(2 * (h) ^ 2) - rounding
     y = math.max(-h, math.min(y * diagRadius, h))
   end
 

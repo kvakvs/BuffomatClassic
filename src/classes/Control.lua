@@ -12,6 +12,28 @@ BOM.Class = BOM.Class or {}
 BOM.Class.GPIMenuItem = {}
 BOM.Class.GPIMenuItem.__index = BOM.Class.GPIMenuItem
 
+
+---@class GPIMinimapButtonConfigData
+---@field position number|nil
+---@field distance number|nil
+---@field visible boolean|nil
+---@field lock boolean|nil
+---@field lockDistance boolean|nil
+BOM.Class.GPIMinimapButtonConfigData = {}
+BOM.Class.GPIMinimapButtonConfigData.__index = BOM.Class.GPIMinimapButtonConfigData
+
+
+---@class GPIMinimapButton
+---@field icon table
+---@field isMouseDown boolean
+---@field isDraggingButton boolean
+---@field db GPIMinimapButtonConfigData Config database which will persist between addon reloads
+---@field Tooltip string
+---@field onClick function
+BOM.Class.GPIMinimapButton = {}
+BOM.Class.GPIMinimapButton.__index = BOM.Class.GPIMinimapButton
+
+
 ---@class Control A blizzard UI frame but may contain private fields used by internal library by GPI
 ---@field _GPIPRIVAT_events table<string, function> Events
 ---@field _GPIPRIVAT_updates table<function> private field
@@ -24,6 +46,7 @@ BOM.Class.GPIMenuItem.__index = BOM.Class.GPIMenuItem
 ---@field GPI_DoStart boolean
 ---@field GPI_DoStop boolean
 ---@field GPI_SIZETYPE string
+---@field Lib_GPI_MinimapButton GPIMinimapButton Stores extra values for minimap button control
 BOM.Class.Control = {}
 BOM.Class.Control.__index = BOM.Class.Control
 
