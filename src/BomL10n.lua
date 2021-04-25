@@ -107,6 +107,7 @@ BOM.locales = {
     BtnPerformeBuff               = "Cast buff",
 
     Header_TRACKING               = "Tracking",
+    --ActivateTracking              = "Activate tracking:", -- message when tracking is enabled
     Header_INFO                   = "Information",
     Header_CANCELBUFF             = "Cancel Buff",
     Header_item                   = "Consumables",

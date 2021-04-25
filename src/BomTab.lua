@@ -735,7 +735,7 @@ local function update_selected_spell(spell)
   end
 
   if (spell.isTracking or spell.isAura or spell.isSeal) and spell.needForm == nil then
-    if (spell.isTracking and BOM.CharacterState.LastTracking == spell.TrackingIcon) or
+    if (spell.isTracking and BOM.CharacterState.LastTracking == spell.trackingIconId) or
             (spell.isAura and spell.ConfigID == BOM.CurrentProfile.LastAura) or
             (spell.isSeal and spell.ConfigID == BOM.CurrentProfile.LastSeal) then
       spell.frames.Set:SetState(true)

@@ -66,7 +66,7 @@ BOM.TBC = bom_is_tbc()
 ---Print a text with "Buffomat: " prefix in the game chat window
 ---@param t string
 function BOM.Print(t)
-  DEFAULT_CHAT_FRAME:AddMessage(L.CHAT_MSG_PREFIX .. t)
+  DEFAULT_CHAT_FRAME:AddMessage("|c80808080" .. L.CHAT_MSG_PREFIX .. "|r" .. t)
 end
 
 ---Creates a string which will display a picture in a FontString

@@ -290,6 +290,7 @@ function BOM.GetSpells()
     if spell.singleId
             and not spell.isBuff
     then
+      -- Load spell info and save some good fields for later use
       local name, rank, icon, castTime, minRange, maxRange, spellId = GetSpellInfo(spell.singleId)
       spell.single = name
       rank = GetSpellSubtext(spell.singleId) or ""
@@ -297,7 +298,8 @@ function BOM.GetSpells()
       spell.Icon = icon
 
       if spell.isTracking then
-        spell.TrackingIcon = icon
+        spell.trackingIconId = icon
+        spell.trackingSpellName = name
       end
 
       if not spell.isInfo
@@ -868,17 +870,13 @@ end
 local function bom_is_tracking_active(spell)
   if BOM.TBC then
     for i = 1, GetNumTrackingTypes() do
-      local _name, texture, active, _category, _nesting, spellId = GetTrackingInfo(i)
-
-      if spellId == spell.singleId then
-        -- found, compare texture with spell icon
-        return texture == spell.TrackingIcon
-      end
+      local _name, _texture, active, _category, _nesting, spellId = GetTrackingInfo(i)
+      if spellId == spell.singleId then return active end
     end
     -- not found
     return false
   else
-    return GetTrackingTexture() == spell.TrackingIcon
+    return GetTrackingTexture() == spell.trackingIconId
   end
 end
 
@@ -889,16 +887,15 @@ local function bom_set_tracking(spell, value)
   if BOM.TBC then
     for i = 1, GetNumTrackingTypes() do
       local name, texture, active, _category, _nesting, spellId = GetTrackingInfo(i)
-      print("Set tracking active for " .. name)
-
       if spellId == spell.singleId then
         -- found, compare texture with spell icon
-        BOM.Print("Trying to activate tracking: " .. name)
+        --BOM.Print(BOM.L.ActivateTracking .. " " .. name)
         SetTracking(i, value)
         return
       end
     end
   else
+    --BOM.Print(BOM.L.ActivateTracking .. " " .. spell.trackingSpellName)
     CastSpellByID(spell.singleId)
   end
 end
@@ -978,10 +975,12 @@ function bom_update_spell_targets(party, spell, player_member, someone_is_dead)
     end
 
   elseif spell.isTracking then
+    --print("Need tracking? ", spell.singleId, bom_is_tracking_active(spell), BOM.ForceTracking, spell.trackingIconId)
     if not bom_is_tracking_active(spell)
             and (BOM.ForceTracking == nil
-            or BOM.ForceTracking == spell.TrackingIcon)
+            or BOM.ForceTracking == spell.trackingIconId)
     then
+      --print("Need tracking: ", spell.singleId)
       tinsert(spell.NeedMember, player_member)
     end
 
@@ -1470,17 +1469,17 @@ local function bom_force_update(party, player_member)
       if BOM.CurrentProfile.Spell[spell.ConfigID].Enable then
         if spell.needForm ~= nil then
           if GetShapeshiftFormID() == spell.needForm
-                  and BOM.ForceTracking ~= spell.TrackingIcon then
-            BOM.ForceTracking = spell.TrackingIcon
+                  and BOM.ForceTracking ~= spell.trackingIconId then
+            BOM.ForceTracking = spell.trackingIconId
             BOM.UpdateSpellsTab()
           end
         elseif bom_is_tracking_active(spell)
-                and BOM.CharacterState.LastTracking ~= spell.TrackingIcon then
-          BOM.CharacterState.LastTracking = spell.TrackingIcon
+                and BOM.CharacterState.LastTracking ~= spell.trackingIconId then
+          BOM.CharacterState.LastTracking = spell.trackingIconId
           BOM.UpdateSpellsTab()
         end
       else
-        if BOM.CharacterState.LastTracking == spell.TrackingIcon
+        if BOM.CharacterState.LastTracking == spell.trackingIconId
                 and BOM.CharacterState.LastTracking ~= nil then
           BOM.CharacterState.LastTracking = nil
           BOM.UpdateSpellsTab()

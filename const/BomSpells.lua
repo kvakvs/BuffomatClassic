@@ -125,11 +125,10 @@ local function bom_setup_druid_spells(s)
   if BOM.TBC then
     tinsert(s, BOM.Class.SpellDef:new(33891, --TBC: Tree of life
             { isOwn = true, default = true, default = false, singleId = 33891, shapeshiftFormId = 2 }))
-  else
-    -- Tracking auto-recast broken in TBC
-    tinsert(s, BOM.Class.SpellDef:new(5225, -- Track Humanoids (Cat Form)
-            { isTracking = true, needForm = CAT_FORM, default = true }))
   end
+
+  tinsert(s, BOM.Class.SpellDef:new(5225, -- Track Humanoids (Cat Form)
+          { isTracking = true, needForm = CAT_FORM, default = true }))
 
   return s
 end
@@ -271,10 +270,8 @@ local function bom_setup_warlock_spells(s)
                                22116 }, -- TBC: Master Soulstone
             singleFamily   = { 693, 20752, 20755, 20756, 20757, -- Ranks 1-5
                                27238 } })) -- TBC: Rank 6
-  if not BOM.TBC then
-    tinsert(s, BOM.Class.SpellDef:new(5500, --Sense Demons
-            { isTracking = true, default = false }))
-  end
+  tinsert(s, BOM.Class.SpellDef:new(5500, --Sense Demons
+          { isTracking = true, default = false }))
 
   return s
 end
@@ -305,7 +302,6 @@ local function bom_setup_hunter_spells(s)
   tinsert(s, BOM.Class.SpellDef:new(13161, -- Aspect of the beast
           { isAura = true, default = false }))
 
-  --if not BOM.TBC then
   tinsert(s, BOM.Class.SpellDef:new(1494, -- Track Beast
           { isTracking = true, default = false }))
   tinsert(s, BOM.Class.SpellDef:new(19878, -- Track Demon
@@ -322,7 +318,6 @@ local function bom_setup_hunter_spells(s)
           { isTracking = true, default = false }))
   tinsert(s, BOM.Class.SpellDef:new(19885, -- Track Hidden / verborgenes
           { isTracking = true, default = false }))
-  --end
 
   return s
 end
@@ -403,9 +398,9 @@ local function bom_setup_paladin_spells(s)
   if not BOM.TBC then
     tinsert(s, BOM.Class.SpellDef:new(20164, -- Sanctity seal
             { isSeal = true, default = false }))
-    tinsert(s, BOM.Class.SpellDef:new(5502, -- Sense undead (auto-recast is broken in TBC)
-            { isTracking = true, default = false }))
   end
+  tinsert(s, BOM.Class.SpellDef:new(5502, -- Sense undead
+          { isTracking = true, default = false }))
 
   tinsert(s, BOM.Class.SpellDef:new(20165, -- Seal of Light
           { isSeal       = true, default = false,
@@ -486,15 +481,13 @@ end
 
 ---Add RESOURCE TRACKING spells
 local function bom_setup_tracking_spells(s)
-  if not BOM.TBC then
-    -- TBC tracking works differently
-    tinsert(s, BOM.Class.SpellDef:new(2383, -- Find Herbs / kräuter
-            { isTracking = true, default = true }))
-    tinsert(s, BOM.Class.SpellDef:new(2580, -- Find Minerals / erz
-            { isTracking = true, default = true }))
-    tinsert(s, BOM.Class.SpellDef:new(2481, -- Find Treasure / Schatzsuche / Zwerge
-            { isTracking = true, default = true }))
-  end
+  tinsert(s, BOM.Class.SpellDef:new(2383, -- Find Herbs / kräuter
+          { isTracking = true, default = true }))
+  tinsert(s, BOM.Class.SpellDef:new(2580, -- Find Minerals / erz
+          { isTracking = true, default = true }))
+  tinsert(s, BOM.Class.SpellDef:new(2481, -- Find Treasure / Schatzsuche / Zwerge
+          { isTracking = true, default = true }))
+
   return s
 end
 

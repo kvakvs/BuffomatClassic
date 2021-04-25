@@ -34,18 +34,20 @@ BOM.Class = BOM.Class or {}
 ---
 ---Fields created dynamically while the addon is running
 ---
----@field ConfigID number Spell id of level 60 spell used as key everywhere else
----@field NeedMember table<Member> List of group members who might need this buff
----@field NeedGroup table List of group members who might need group version of this buff
----@field DeathGroup table List of group members who might be dead but in need of this buff
----@field TrackingIcon number Numeric id for the tracking texture icon
----@field SkipList table If spell cast failed, contains recently failed targets
 ---@field Class table
----@field ForcedTarget table<string> List of extra targets to buff
----@field ExcludedTarget table<string> List of target names to never buff
+---@field ConfigID number Spell id of level 60 spell used as key everywhere else
+---@field DeathGroup table List of group members who might be dead but in need of this buff
 ---@field Enable boolean Whether buff is to be watched
----@field SelfCast boolean
+---@field ExcludedTarget table<string> List of target names to never buff
+---@field ForcedTarget table<string> List of extra targets to buff
 ---@field frames table<string, Control> Dynamic list of controls associated with this spell
+---@field NeedGroup table List of group members who might need group version of this buff
+---@field NeedMember table<Member> List of group members who might need this buff
+---@field SelfCast boolean
+---@field SkipList table If spell cast failed, contains recently failed targets
+---@field trackingIconId number Numeric id for the tracking texture icon
+---@field trackingSpellName string For tracking spells, contains string name for the spell
+---@field shapeshiftFormId number Check this shapeshift form to know whether spell is already casted
 ---xxx field isShamanDualwield boolean If true, will display seal spell for both hands (TBC shamans!)
 BOM.Class.SpellDef = {}
 BOM.Class.SpellDef.__index = BOM.Class.SpellDef
