@@ -1,3 +1,4 @@
+---@type BuffomatAddon
 local TOCNAME, BOM = ...
 local L = setmetatable(
         {},
@@ -10,8 +11,18 @@ local L = setmetatable(
             end
           end
         })
+---@class BuffomatTool
+---@field IconClass table<string, string> Class icon strings indexed by class name
+---@field IconClassBig table<string, string> Class icon strings indexed by class name
+---@field RaidIconNames table<string, number>
+---@field RaidIcon table<string>
+---@field Classes table<string>
+---@field ClassName table<string> Localized class names (male)
+---@field ClassColor table<string, table> Localized class colors
+---@field NameToClass table<string, string> Reverse class name lookup
+---@field _EditBox Control
 BOM.Tool = BOM.Tool or {}
-local Tool = BOM.Tool
+local Tool = BOM.Tool ---@type BuffomatTool
 
 --Tool.IconClassTexture = "Interface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES"
 --Tool.IconClassTextureWithoutBorder = "Interface\\WorldStateFrame\\ICONS-CLASSES"
@@ -108,9 +119,10 @@ function Tool.EnableHyperlink(frame)
   frame:SetScript("OnHyperlinkLeave", bom_on_leave_hyperlink)
 end
 
--- EventHandler
-local eventFrame
+--- EventHandler
+local eventFrame ---@type Control
 
+---@param self Control
 local function bom_gpiprivat_event_handler(self, event, ...)
   for i, Entry in pairs(self._GPIPRIVAT_events) do
     if Entry[1] == event then
@@ -119,6 +131,7 @@ local function bom_gpiprivat_event_handler(self, event, ...)
   end
 end
 
+---@param self Control
 local function bom_gpiprivat_update_handler(self, ...)
   for i, Entry in pairs(self._GPIPRIVAT_updates) do
     Entry(...)
@@ -173,7 +186,7 @@ end
 
 -- misc tools
 
-local MyScanningTooltip
+local MyScanningTooltip ---@type Control
 
 function Tool.ScanToolTip(what, ...)
   local TextList = {}
@@ -314,10 +327,14 @@ function Tool.iMerge(t1, ...)
   return t1
 end
 
+---@param str string
+---@return string
 function Tool.stripChars(str)
   return string.gsub(str, "[%z\1-\127\194-\244][\128-\191]*", _tableAccents)
 end
 
+---@param pattern string
+---@param maximize boolean
 function Tool.CreatePattern(pattern, maximize)
   pattern = string.gsub(pattern, "[%(%)%-%+%[%]]", "%%%1")
   if not maximize then
@@ -381,7 +398,8 @@ end
 
 -- Size 
 
-local ResizeCursor
+local ResizeCursor ---@type Control
+
 local SizingStop = function(self, button)
   self:GetParent():StopMovingOrSizing()
   if self.GPI_DoStop then
@@ -396,6 +414,7 @@ local SizingStart = function(self, button)
   end
 end
 
+---@type Control
 local SizingEnter = function(self)
   if not (GetCursorInfo()) then
     ResizeCursor:Show()
@@ -409,8 +428,9 @@ local SizingLeave = function(self, button)
 end
 
 local sizecount = 0
-local CreateSizeBorder = function(frame, name, a1, x1, y1, a2, x2, y2, cursor, rot, OnStart, OnStop)
-  local FrameSizeBorder
+
+local function CreateSizeBorder(frame, name, a1, x1, y1, a2, x2, y2, cursor, rot, OnStart, OnStop)
+  local FrameSizeBorder ---@type Control
   sizecount = sizecount + 1
   FrameSizeBorder = CreateFrame("Frame", (frame:GetName() or TOCNAME .. sizecount) .. "_size_" .. name, frame)
   FrameSizeBorder:SetPoint("TOPLEFT", frame, a1, x1, y1)
@@ -460,11 +480,10 @@ function Tool.EnableSize(frame, border, OnStart, OnStop)
   CreateSizeBorder(frame, "BOTTOMLEFT", "BOTTOMLEFT", 0, 0, "BOTTOMLEFT", border, border, "Interface\\CURSOR\\UI-Cursor-SizeLeft", 0, OnStart, OnStop)
   CreateSizeBorder(frame, "TOPRIGHT", "TOPRIGHT", 0, 0, "TOPRIGHT", -border, -border, "Interface\\CURSOR\\UI-Cursor-SizeLeft", 0, OnStart, OnStop)
   CreateSizeBorder(frame, "BOTTOMRIGHT", "BOTTOMRIGHT", 0, 0, "BOTTOMRIGHT", -border, border, "Interface\\CURSOR\\UI-Cursor-SizeRight", 0, OnStart, OnStop)
-
 end
 
 -- popup
-local PopupDepth
+local PopupDepth ---@type number|nil
 
 local function PopupClick(self, arg1, arg2, checked)
   if type(self.value) == "table" then
@@ -486,7 +505,7 @@ local function PopupAddItem(self, text, disabled, value, arg1, arg2)
   if not self._Frame._GPIPRIVAT_Items[c] then
     self._Frame._GPIPRIVAT_Items[c] = {}
   end
-  local t = self._Frame._GPIPRIVAT_Items[c]
+  local t = self._Frame._GPIPRIVAT_Items[c] ---@type GPIMenuItem
   t.text = text or ""
   t.disabled = disabled or false
   t.value = value
@@ -505,6 +524,8 @@ local function PopupAddSubMenu(self, text, value)
 end
 
 local PopupLastWipeName
+
+---@param self Control
 local function PopupWipe(self, WipeName)
   self._Frame._GPIPRIVAT_Items.count = 0
   PopupDepth = nil
@@ -650,9 +671,9 @@ function Tool.GetSelectedTab(frame)
 end
 
 ---Adds a Tab to a frame (main window for example)
----@param frame table | string - where to add a tab
+---@param frame Control | string - where to add a tab
 ---@param name string - tab text
----@param tabFrame table | string - tab text
+---@param tabFrame Control | string - tab text
 ---@param combatlockdown boolean - accessible in combat or not
 function Tool.AddTab(frame, name, tabFrame, combatlockdown)
   local frameName
@@ -672,7 +693,9 @@ function Tool.AddTab(frame, name, tabFrame, combatlockdown)
     frame.Tabs = {}
   end
 
-  frame.Tabs[frame.numTabs] = CreateFrame("Button", frameName .. "Tab" .. frame.numTabs, frame, "CharacterFrameTabButtonTemplate")
+  frame.Tabs[frame.numTabs] = CreateFrame(
+          "Button", frameName .. "Tab" .. frame.numTabs, frame,
+          "CharacterFrameTabButtonTemplate")
   frame.Tabs[frame.numTabs]:SetID(frame.numTabs)
   frame.Tabs[frame.numTabs]:SetText(name)
   frame.Tabs[frame.numTabs]:SetScript("OnClick", bom_select_tab)
@@ -916,8 +939,8 @@ end
 
 ---If maybe_label is nil, creates a text label under the parent. Calls position_fn
 ---on the label to set its position.
----@param maybe_label void - the existing label or nil
----@param parent void - parent where the label is created
+---@param maybe_label Control|nil - the existing label or nil
+---@param parent Control - parent where the label is created
 ---@param position_fn function - applies function after creating the label
 function bom_create_smalltext_label(maybe_label, parent, position_fn)
   if maybe_label == nil then
@@ -928,7 +951,7 @@ function bom_create_smalltext_label(maybe_label, parent, position_fn)
 end
 
 ---Add onenter/onleave scripts to show the tooltip with translation by key
----@param control table
+---@param control Control
 ---@param translation_key string - the key from BomL10n.lua
 function Tool.Tooltip(control, translation_key)
   control:SetScript("OnEnter", function()
@@ -942,7 +965,7 @@ function Tool.Tooltip(control, translation_key)
 end
 
 ---Add onenter/onleave scripts to show the tooltip with TEXT
----@param control table
+---@param control Control
 ---@param text string - the localized text to display
 function Tool.TooltipText(control, text)
   control:SetScript("OnEnter", function()
@@ -955,6 +978,7 @@ function Tool.TooltipText(control, text)
   end)
 end
 
+---@param spellName string
 local function bom_find_spellid(spellName)
   local i = 1;
   while true do
@@ -972,8 +996,8 @@ local function bom_find_spellid(spellName)
 end
 
 ---Add onenter/onleave scripts to show the tooltip with spell
----@param control table
----@param link string - the string in format "spell:<id>" or "item:<id>"
+---@param control Control
+---@param link string The string in format "spell:<id>" or "item:<id>"
 function Tool.TooltipLink(control, link)
   control:SetScript("OnEnter", function()
     local spellId = GameTooltip:SetOwner(control, "ANCHOR_RIGHT")

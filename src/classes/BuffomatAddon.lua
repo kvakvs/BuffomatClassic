@@ -3,7 +3,7 @@ local TOCNAME, BOM = ...
 BOM.Class = BOM.Class or {}
 
 ---@class BuffomatAddon
----@field ALL_PROFILES table<string> Lists all buffomat profile names (none, solo... etc)
+---@field ALL_PROFILES table<string> Lists all buffomat profile names (group, solo... etc)
 ---@field RESURRECT_CLASS table<string> Classes who can resurrect others
 ---@field MANA_CLASSES table<string> Classes with mana resource
 ---@field locales BuffomatTranslations (same as BOM.L)
@@ -12,6 +12,7 @@ BOM.Class = BOM.Class or {}
 ---@field CancelBuffs table<number, SpellDef> All spells to be canceled on detection
 ---@field ItemCache table<number, table> Precreated precached items
 ---
+---@field ForceProfile string|nil Nil will choose profile name automatically, otherwise this profile will be used
 ---@field ArgentumDawn table Equipped AD trinket: Spell to and zone ids to check
 ---@field BuffExchangeId table<number, table<number>> Combines spell ids of spellrank flavours into main spell id
 ---@field BuffIgnoreAll table<number> Having this buff on target excludes the target (phaseshifted imp for example)
@@ -131,6 +132,7 @@ BOM.Class = BOM.Class or {}
 ---@field BLESSING_ID string
 ---@field LOADING_SCREEN_TIMEOUT number
 ---@field BehaviourSettings table<string, boolean> Key names and Defaults for 'Profile' settings
+---@field QuickSingleBuff Control Button for single/group buff toggling next to cast button
 BOM.Class.BuffomatAddon = {}
 BOM.Class.BuffomatAddon.__index = BOM.Class.BuffomatAddon
 

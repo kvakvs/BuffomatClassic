@@ -1421,7 +1421,7 @@ end
 
 ---Based on profile settings and current PVE or PVP instance choose the mode
 ---of operation
----@return table - (is_bom_disabled boolean, auto_profile string)
+---@return boolean, string
 local function bom_choose_profile()
   local in_instance, instance_type = IsInInstance()
   local is_bom_disabled
