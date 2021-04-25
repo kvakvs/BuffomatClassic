@@ -5,8 +5,8 @@ local TOCNAME, BOM = ...
 ---@field ALL_PROFILES table<string> Lists all buffomat profile names (none, solo... etc)
 ---@field RESURRECT_CLASS table<string> Classes who can resurrect others
 ---@field MANA_CLASSES table<string> Classes with mana resource
----@field locales table<string, table<string, string>> Translations (same as BOM.L)
----@field L table<string, table<string, string>> Translations (same as BOM.locales)
+---@field locales BuffomatTranslations (same as BOM.L)
+---@field L BuffomatTranslations (same as BOM.locales)
 ---@field AllBuffomatSpells table<number, SpellDef> All spells known to Buffomat
 ---@field CancelBuffs table<number, SpellDef> All spells to be canceled on detection
 ---@field ItemCache table<number, table> Precreated precached items

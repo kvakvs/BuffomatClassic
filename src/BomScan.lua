@@ -864,7 +864,7 @@ end
 local function bom_is_tracking_active(spell)
   if BOM.TBC then
     for i = 1, GetNumTrackingTypes() do
-      local _name, texture, active, _category, _, spellId = GetTrackingInfo(i)
+      local _name, texture, active, _category, _nesting, spellId = GetTrackingInfo(i)
 
       if spellId == spell.singleId then
         -- found, compare texture with spell icon
@@ -884,7 +884,7 @@ end
 local function bom_set_tracking(spell, value)
   if BOM.TBC then
     for i = 1, GetNumTrackingTypes() do
-      local name, texture, active, _category, _, spellId = GetTrackingInfo(i)
+      local name, texture, active, _category, _nesting, spellId = GetTrackingInfo(i)
       print("Set tracking active for " .. name)
 
       if spellId == spell.singleId then
