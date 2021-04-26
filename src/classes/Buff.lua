@@ -21,9 +21,7 @@ local CLASS_TAG = "buff"
 ---@param isSingle boolean
 ---@return Buff
 function BOM.Class.Buff:new(singleId, duration, expirationTime, source, isSingle)
-  setmetatable(fields, BOM.SpellDef)
-
-  return {
+  local fields = {
     t              = CLASS_TAG,
     singleId       = singleId,
     duration       = duration,
@@ -31,4 +29,6 @@ function BOM.Class.Buff:new(singleId, duration, expirationTime, source, isSingle
     source         = source,
     isSingle       = isSingle
   }
+  setmetatable(fields, BOM.Class.Buff)
+  return fields
 end
