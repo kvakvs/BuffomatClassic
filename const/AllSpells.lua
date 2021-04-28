@@ -135,7 +135,7 @@ end
 
 ---Add MAGE spells
 local function bom_setup_mage_spells(s)
-  --{singleId=10938, isOwn=true, default=true, lockIfHaveItem={8008}}, -- manastone/debug
+  --{singleId=10938, isOwn=true, default=true, lockIfHaveItem={BOM.ItemId.Mage.ManaRuby}}, -- manastone/debug
   BOM.SpellDef_ArcaneIntelligence = function()
     return BOM.Class.SpellDef:new(10157, --Arcane Intellect | Brilliance
             { singleFamily    = { 1459, 1460, 1461, 10156, 10157, -- Ranks 1-5
@@ -176,20 +176,37 @@ local function bom_setup_mage_spells(s)
           { isOwn        = true, default = false, singleDuration = 60,
             singleFamily = { 11426, 13031, 13032, 13033, -- Ranks 1-4
                              27134, 33405 } })) -- TBC: Ranks 5-6
-  tinsert(s, BOM.Class.SpellDef:new(10053, -- Conjure Mana Stone (Max Rank)
-          { isOwn          = true, default = true,
-            lockIfHaveItem = { 5514, 5513, 8007, 8008, -- Items: Agate, Jade, Citrine, Ruby
-                               22044 }, -- TBC: Item: Emerald
-            singleFamily   = { 759, 3552, 10053, 10054, -- Agate, Jade, Citrine, Ruby
-                               27101 } })) -- TBC: Emerald
-  -- Note: At ranks below max this will look identical with the previous
-  tinsert(s, BOM.Class.SpellDef:new(10053, -- Conjure Mana Stone (1 Rank Lower than Max)
-          { isOwn          = true, default = true,
-            lockIfHaveItem = { 5514, 5513, 8007, 8008 }, -- Items: Agate, Jade, Citrine, Ruby
-            singleFamily   = { 759, 3552, 10053, 10054 } })) -- Agate, Jade, Citrine, Ruby
 
-  --tinsert(s, BOM.Class.SpellDef:new(27101, -- TBC: Conjure Emerald, blocked by having a ruby
-  --        { isOwn = true, default = true, lockIfHaveItem = { 22044 } }))
+  -- Adds conjure max rank mana stone (uses the singleID of TBC spell)
+  tinsert(s, BOM.Class.SpellDef:new(BOM.SpellId.Mage.ConjureManaEmerald, -- Conjure Mana Stone (Max Rank)
+          { isOwn          = true, default = true,
+            lockIfHaveItem = { BOM.ItemId.Mage.ManaAgate,
+                               BOM.ItemId.Mage.ManaJade,
+                               BOM.ItemId.Mage.ManaCitrine,
+                               BOM.ItemId.Mage.ManaRuby,
+                               BOM.ItemId.Mage.ManaEmerald },
+            singleFamily   = { BOM.SpellId.Mage.ConjureManaAgate,
+                               BOM.SpellId.Mage.ConjureManaJade,
+                               BOM.SpellId.Mage.ConjureManaCitrine,
+                               BOM.SpellId.Mage.ConjureManaRuby,
+                               BOM.SpellId.Mage.ConjureManaEmerald } }))
+
+  -- This will add a checkbox to conjure mana gem 1 rank down
+  if UnitLevel("player") >= 68 then
+    -- if IsSpellKnown(BOM.SpellId.Mage.ConjureManaEmerald) then -- if knows Emerald, add Ruby
+    tinsert(s, BOM.Class.SpellDef:new(BOM.SpellId.Mage.ConjureManaRuby,
+            { isOwn          = true, default = true,
+              lockIfHaveItem = { BOM.ItemId.Mage.ManaRuby },
+              singleFamily   = { BOM.SpellId.Mage.ConjureManaRuby } }))
+  else
+    if UnitLevel("player") >= 58 then
+      -- if IsSpellKnown(BOM.SpellId.Mage.ConjureManaRuby) then -- if knows Ruby, add Citrine
+      tinsert(s, BOM.Class.SpellDef:new(BOM.SpellId.Mage.ConjureManaCitrine,
+              { isOwn          = true, default = true,
+                lockIfHaveItem = { BOM.ItemId.Mage.ManaCitrine },
+                singleFamily   = { BOM.SpellId.Mage.ConjureManaCitrine } }))
+    end
+  end
 
   return s
 end

@@ -133,6 +133,9 @@ BOM.Class = BOM.Class or {}
 ---@field LOADING_SCREEN_TIMEOUT number
 ---@field BehaviourSettings table<string, boolean> Key names and Defaults for 'Profile' settings
 ---@field QuickSingleBuff Control Button for single/group buff toggling next to cast button
+---
+---@field SpellId table<string, table<string, number>> Map of spell name to id
+---@field ItemId table<string, table<string, number>> Map of item name to id
 BOM.Class.BuffomatAddon = {}
 BOM.Class.BuffomatAddon.__index = BOM.Class.BuffomatAddon
 
