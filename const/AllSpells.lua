@@ -177,35 +177,26 @@ local function bom_setup_mage_spells(s)
             singleFamily = { 11426, 13031, 13032, 13033, -- Ranks 1-4
                              27134, 33405 } })) -- TBC: Ranks 5-6
 
-  -- Adds conjure max rank mana stone (uses the singleID of TBC spell)
-  tinsert(s, BOM.Class.SpellDef:new(BOM.SpellId.Mage.ConjureManaEmerald, -- Conjure Mana Stone (Max Rank)
-          { isOwn          = true, default = true,
-            lockIfHaveItem = { BOM.ItemId.Mage.ManaAgate,
-                               BOM.ItemId.Mage.ManaJade,
-                               BOM.ItemId.Mage.ManaCitrine,
-                               BOM.ItemId.Mage.ManaRuby,
-                               BOM.ItemId.Mage.ManaEmerald },
-            singleFamily   = { BOM.SpellId.Mage.ConjureManaAgate,
-                               BOM.SpellId.Mage.ConjureManaJade,
-                               BOM.SpellId.Mage.ConjureManaCitrine,
-                               BOM.SpellId.Mage.ConjureManaRuby,
-                               BOM.SpellId.Mage.ConjureManaEmerald } }))
-
-  -- This will add a checkbox to conjure mana gem 1 rank down
-  if UnitLevel("player") >= 68 then
-    -- if IsSpellKnown(BOM.SpellId.Mage.ConjureManaEmerald) then -- if knows Emerald, add Ruby
-    tinsert(s, BOM.Class.SpellDef:new(BOM.SpellId.Mage.ConjureManaRuby,
-            { isOwn          = true, default = true,
-              lockIfHaveItem = { BOM.ItemId.Mage.ManaRuby },
-              singleFamily   = { BOM.SpellId.Mage.ConjureManaRuby } }))
-  else
-    if UnitLevel("player") >= 58 then
-      -- if IsSpellKnown(BOM.SpellId.Mage.ConjureManaRuby) then -- if knows Ruby, add Citrine
-      tinsert(s, BOM.Class.SpellDef:new(BOM.SpellId.Mage.ConjureManaCitrine,
-              { isOwn          = true, default = true,
-                lockIfHaveItem = { BOM.ItemId.Mage.ManaCitrine },
-                singleFamily   = { BOM.SpellId.Mage.ConjureManaCitrine } }))
+  if UnitLevel("player") >= 58 then
+    -- Conjure separate mana gems of 3 kinds
+    tinsert(s, BOM.Class.SpellDef:conjure_item(BOM.SpellId.Mage.ConjureManaEmerald, BOM.ItemId.Mage.ManaEmerald))
+    tinsert(s, BOM.Class.SpellDef:conjure_item(BOM.SpellId.Mage.ConjureManaRuby, BOM.ItemId.Mage.ManaRuby))
+    if UnitLevel("player") < 68 then -- Players > 68 will not be interested in Citrine
+      tinsert(s, BOM.Class.SpellDef:conjure_item(BOM.SpellId.Mage.ConjureManaCitrine, BOM.ItemId.Mage.ManaCitrine))
     end
+  else -- For < 58 - Have generic conjuration of 1 gem (only max rank)
+    tinsert(s, BOM.Class.SpellDef:new(BOM.SpellId.Mage.ConjureManaEmerald, -- Conjure Mana Stone (Max Rank)
+            { isOwn          = true, default = true,
+              lockIfHaveItem = { BOM.ItemId.Mage.ManaAgate,
+                                 BOM.ItemId.Mage.ManaJade,
+                                 BOM.ItemId.Mage.ManaCitrine,
+                                 BOM.ItemId.Mage.ManaRuby,
+                                 BOM.ItemId.Mage.ManaEmerald },
+              singleFamily   = { BOM.SpellId.Mage.ConjureManaAgate,
+                                 BOM.SpellId.Mage.ConjureManaJade,
+                                 BOM.SpellId.Mage.ConjureManaCitrine,
+                                 BOM.SpellId.Mage.ConjureManaRuby,
+                                 BOM.SpellId.Mage.ConjureManaEmerald } }))
   end
 
   return s

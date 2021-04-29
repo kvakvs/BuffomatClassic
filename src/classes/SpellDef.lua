@@ -68,3 +68,13 @@ function BOM.Class.SpellDef:new(single_id, fields)
 
   return fields
 end
+
+---@param spellId number
+---@param itemId number
+function BOM.Class.SpellDef:conjure_item(spellId, itemId)
+  return BOM.Class.SpellDef:new(spellId,
+          { isOwn          = true,
+            default        = true,
+            lockIfHaveItem = { itemId },
+            singleFamily   = { spellId } })
+end
