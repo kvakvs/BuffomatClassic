@@ -1,6 +1,6 @@
 # Changelog
 
-## Buffomat Classic and TBC 2021.4.0-3
+## Buffomat Classic and TBC 2021.4.0-6
 
 - TBC Classic: New class spells and new consumables
 - BUG: TBC tracking (the addon did not know whether tracking was enabled and

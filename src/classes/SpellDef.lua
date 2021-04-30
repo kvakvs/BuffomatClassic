@@ -22,6 +22,7 @@ BOM.Class = BOM.Class or {}
 ---@field isTracking boolean True if the buff is tracking of some resource or enemy
 ---@field isWeapon boolean The buff is a temporary weapon enchant on user's weapons
 ---@field item number - buff is granted by an item in user's bag
+---@field items table<number> - ids of items providing the enchant or buff?
 ---@field lockIfHaveItem table<number> Item ids which prevent this buff (unique conjured items for example)
 ---@field onlyUsableFor table<string> list of classes which only can see this buff (hidden for others)
 ---@field reagentRequired table<number> | number Reagent item ids required for group buff

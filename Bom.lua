@@ -1330,6 +1330,6 @@ end
 --end
 --BOM.DbgTableToString = table_to_string
 
-BOM.AllBuffomatSpells = BOM.SetupSpells()
-BOM.CancelBuffs = BOM.SetupCancelBuffs()
-BOM.ItemCache = BOM.SetupItemCache()
+BOM.SetupSpells()
+BOM.SetupCancelBuffs()
+BOM.SetupItemCache()

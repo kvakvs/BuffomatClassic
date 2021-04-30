@@ -9,6 +9,7 @@ BOM.Class = BOM.Class or {}
 ---@field locales BuffomatTranslations (same as BOM.L)
 ---@field L BuffomatTranslations (same as BOM.locales)
 ---@field AllBuffomatSpells table<number, SpellDef> All spells known to Buffomat
+---@field EnchantList table<number, table<number>> Spell ids mapping to enchant ids
 ---@field CancelBuffs table<number, SpellDef> All spells to be canceled on detection
 ---@field ItemCache table<number, table> Precreated precached items
 ---
@@ -24,7 +25,6 @@ BOM.Class = BOM.Class or {}
 ---@field CharacterState CharacterState Copy of state only for the current character, with separate states per profile
 ---@field SharedState State Copy of state shared with all accounts
 ---@field DeclineHasResurrection boolean Set to true on combat start, stop, holding Alt, cleared on party update
----@field EnchantList table<number, table<number>> Spell ids  mapping to enchant ids
 ---@field EnchantToSpell table<number, number> Reverse-maps enchant ids back to spells
 ---@field ForceTracking number|nil Defines icon id for enforced tracking
 ---@field ForceUpdate boolean Requests immediate spells/buffs refresh
