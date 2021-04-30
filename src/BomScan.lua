@@ -288,7 +288,7 @@ function BOM.GetSpells()
 
     -- GetSpellNames and set default duration
     if spell.singleId
-            and not spell.isBuff
+            and not spell.isConsumable
     then
       -- Load spell info and save some good fields for later use
       local name, rank, icon, castTime, minRange, maxRange, spellId = GetSpellInfo(spell.singleId)
@@ -297,13 +297,13 @@ function BOM.GetSpells()
       spell.singleLink = bom_format_spell_link(spellId, icon, name, rank)
       spell.Icon = icon
 
-      if spell.isTracking then
+      if spell.type == "tracking" then
         spell.trackingIconId = icon
         spell.trackingSpellName = name
       end
 
       if not spell.isInfo
-              and not spell.isBuff
+              and not spell.isConsumable
               and spell.singleDuration
               and BOM.SharedState.Duration[name] == nil
               and IsSpellKnown(spell.singleId) then
@@ -358,7 +358,7 @@ function BOM.GetSpells()
       end
     end
 
-    if spell.isBuff then
+    if spell.isConsumable then
       if not spell.isScanned then
         local itemName, itemLink, _rarity, _ilvl, _minLevel, _itType, _itSubtype
         , _itStackCount, _itemEquipLoc, itemIcon, _, _, _, _, _, _, _ = GetItemInfo(spell.item)
@@ -871,7 +871,9 @@ local function bom_is_tracking_active(spell)
   if BOM.TBC then
     for i = 1, GetNumTrackingTypes() do
       local _name, _texture, active, _category, _nesting, spellId = GetTrackingInfo(i)
-      if spellId == spell.singleId then return active end
+      if spellId == spell.singleId then
+        return active
+      end
     end
     -- not found
     return false
@@ -907,7 +909,7 @@ end
 ---@param player_member Member - the player
 ---@param someone_is_dead boolean - the flag that buffing cannot continue while someone is dead
 ---@return boolean - updated someone_is_dead
-function bom_update_spell_targets(party, spell, player_member, someone_is_dead)
+local function bom_update_spell_targets(party, spell, player_member, someone_is_dead)
   spell.NeedMember = spell.NeedMember or {}
   spell.NeedGroup = spell.NeedGroup or {}
   spell.DeathGroup = spell.DeathGroup or {}
@@ -920,14 +922,14 @@ function bom_update_spell_targets(party, spell, player_member, someone_is_dead)
 
   if not BOM.CurrentProfile.Spell[spell.ConfigID].Enable then
     --nothing!
-  elseif spell.isWeapon then
+  elseif spell.type == "weapon" then
     if (BOM.CurrentProfile.Spell[spell.ConfigID].MainHandEnable and player_member.MainHandBuff == nil)
             or (BOM.CurrentProfile.Spell[spell.ConfigID].OffHandEnable and player_member.OffHandBuff == nil)
     then
       tinsert(spell.NeedMember, player_member)
     end
 
-  elseif spell.isBuff then
+  elseif spell.isConsumable then
     if not player_member.buffs[spell.ConfigID] then
       tinsert(spell.NeedMember, player_member)
     end
@@ -963,7 +965,7 @@ function bom_update_spell_targets(party, spell, player_member, someone_is_dead)
       end
     end
 
-  elseif spell.isResurrection then
+  elseif spell.type == "resurrection" then
     for i, member in ipairs(party) do
       if member.isDead
               and not member.hasResurrection
@@ -974,7 +976,7 @@ function bom_update_spell_targets(party, spell, player_member, someone_is_dead)
       end
     end
 
-  elseif spell.isTracking then
+  elseif spell.type == "tracking" then
     --print("Need tracking? ", spell.singleId, bom_is_tracking_active(spell), BOM.ForceTracking, spell.trackingIconId)
     if not bom_is_tracking_active(spell)
             and (BOM.ForceTracking == nil
@@ -984,14 +986,14 @@ function bom_update_spell_targets(party, spell, player_member, someone_is_dead)
       tinsert(spell.NeedMember, player_member)
     end
 
-  elseif spell.isAura then
+  elseif spell.type == "aura" then
     if BOM.ActivAura ~= spell.ConfigID
             and (BOM.CurrentProfile.LastAura == nil or BOM.CurrentProfile.LastAura == spell.ConfigID)
     then
       tinsert(spell.NeedMember, player_member)
     end
 
-  elseif spell.isSeal then
+  elseif spell.type == "seal" then
     if BOM.ActivSeal ~= spell.ConfigID
             and (BOM.CurrentProfile.LastSeal == nil or BOM.CurrentProfile.LastSeal == spell.ConfigID)
     then
@@ -1363,27 +1365,27 @@ local next_cast_spell = {}
 local player_mana
 
 ---Stores a spell with cost/id/spell link to be casted in the `cast` global
----@param cost number - Resource cost (mana cost)
----@param id number - Spell id to capture
----@param link string
----@param member table
----@param spell SpellDef - Spell to capture
+---@param cost number Resource cost (mana cost)
+---@param id number Spell id to capture
+---@param link string Spell link for a picture
+---@param member Member player to benefit from the spell
+---@param spell SpellDef the spell to be added
 local function bom_catch_a_spell(cost, id, link, member, spell)
   if cost > player_mana then
     return -- ouch
   end
 
-  if not spell.isResurrection and member.isDead then
+  if not spell.type == "resurrection" and member.isDead then
     -- Cannot cast resurrections on deads
     return
-  elseif next_cast_spell.Spell and not spell.isTracking then
-    if next_cast_spell.Spell.isTracking then
+  elseif next_cast_spell.Spell and spell.type ~= "tracking" then
+    if next_cast_spell.Spell.type == "tracking" then
       return
-    elseif spell.isResurrection then
+    elseif spell.type == "resurrection" then
       --------------------
       -- If resurrection
       --------------------
-      if next_cast_spell.Spell.isResurrection then
+      if next_cast_spell.Spell.type == "resurrection" then
         if (tContains(BOM.RESURRECT_CLASS, next_cast_spell.Member.class) and not tContains(BOM.RESURRECT_CLASS, member.class))
                 or (tContains(BOM.MANA_CLASSES, next_cast_spell.Member.class) and not tContains(BOM.MANA_CLASSES, member.class))
                 or (not next_cast_spell.Member.isGhost and member.isGhost)
@@ -1465,7 +1467,7 @@ local function bom_force_update(party, player_member)
 
   ---@param spell SpellDef
   for i, spell in ipairs(BOM.SelectedSpells) do
-    if spell.isTracking then
+    if spell.type == "tracking" then
       if BOM.CurrentProfile.Spell[spell.ConfigID].Enable then
         if spell.needForm ~= nil then
           if GetShapeshiftFormID() == spell.needForm
@@ -1498,7 +1500,7 @@ local function bom_force_update(party, player_member)
 
   for i, spell in ipairs(BOM.SelectedSpells) do
     if player_member.buffs[spell.ConfigID] then
-      if spell.isAura then
+      if spell.type == "aura" then
         if (BOM.ActivAura == nil and BOM.LastAura == spell.ConfigID)
                 or UnitIsUnit(player_member.buffs[spell.ConfigID].source, "player")
         then
@@ -1507,7 +1509,7 @@ local function bom_force_update(party, player_member)
           end
         end
 
-      elseif spell.isSeal then
+      elseif spell.type == "seal" then
         if UnitIsUnit(player_member.buffs[spell.ConfigID].source, "player") then
           if BOM.TimeCheck(player_member.buffs[spell.ConfigID].expirationTime, player_member.buffs[spell.ConfigID].duration) then
             BOM.ActivSeal = spell.ConfigID
@@ -1519,7 +1521,7 @@ local function bom_force_update(party, player_member)
 
   --reset aura/seal
   for i, spell in ipairs(BOM.SelectedSpells) do
-    if spell.isAura then
+    if spell.type == "aura" then
       if BOM.CurrentProfile.Spell[spell.ConfigID].Enable then
         if BOM.ActivAura == spell.ConfigID
                 and BOM.CurrentProfile.LastAura ~= spell.ConfigID then
@@ -1534,7 +1536,7 @@ local function bom_force_update(party, player_member)
         end
       end -- if currentprofile.spell.enable
 
-    elseif spell.isSeal then
+    elseif spell.type == "seal" then
       if BOM.CurrentProfile.Spell[spell.ConfigID].Enable then
         if BOM.ActivSeal == spell.ConfigID
                 and BOM.CurrentProfile.LastSeal ~= spell.ConfigID then
@@ -1831,7 +1833,7 @@ local function bom_add_self_buff(spell, player_member)
     bom_display_text(
             string.format(L["FORMAT_BUFF_SINGLE"], player_member.link, spell.singleLink),
             player_member.name)
-    inRange = true
+    --inRange = true
 
     bom_catch_a_spell(
             spell.singleMana, spell.singleId, spell.singleLink,
@@ -1878,13 +1880,14 @@ local function bom_add_regular_buff(spell, player_member, bag_title, bag_command
   return bag_title, bag_command
 end
 
----Adds a display text for a weapon buff
+---Adds a display text for a weapon buff created by a consumable item
 ---@param spell SpellDef - the spell to cast
 ---@param player_member table - the player
----@param bag_title string - if not empty, is item name from the bag
----@param bag_command string - console command to use item from the bag
----@return table (bag_title string, bag_command string)
-local function bom_add_weapon_buff(spell, player_member, bag_title, bag_command)
+---@param cast_button_title string - if not empty, is item name from the bag
+---@param macro_command string - console command to use item from the bag
+---@return string, string cast button title and macro command
+local function bom_add_weapon_consumable_buff(spell, player_member,
+                                              cast_button_title, macro_command)
   -- count - reagent count remaining for the spell
   local ok, bag, slot, count = BOM.HasItem(spell.items, true)
   count = count or 0
@@ -1903,11 +1906,11 @@ local function bom_add_weapon_buff(spell, player_member, bag_title, bag_command)
                 player_member.distance,
                 true)
       else
-        bag_title = BOM.FormatTexture(texture)
+        cast_button_title = BOM.FormatTexture(texture)
                 .. item_link .. "x" .. count .. " (" .. L.TooltipOffHand .. ")"
-        bag_command = "/use " .. bag .. " " .. slot
+        macro_command = "/use " .. bag .. " " .. slot
                 .. "\n/use 17" -- offhand
-        bom_display_text(bag_title, player_member.distance, true)
+        bom_display_text(cast_button_title, player_member.distance, true)
       end
     end
 
@@ -1922,11 +1925,11 @@ local function bom_add_weapon_buff(spell, player_member, bag_title, bag_command)
                 player_member.distance,
                 true)
       else
-        bag_title = BOM.FormatTexture(texture)
+        cast_button_title = BOM.FormatTexture(texture)
                 .. item_link .. "x" .. count
                 .. " (" .. L.TooltipMainHand .. ")"
-        bag_command = "/use " .. bag .. " " .. slot .. "\n/use 16" -- mainhand
-        bom_display_text(bag_title, player_member.distance, true)
+        macro_command = "/use " .. bag .. " " .. slot .. "\n/use 16" -- mainhand
+        bom_display_text(cast_button_title, player_member.distance, true)
       end
     end
     BOM.ScanModifier = BOM.SharedState.DontUseConsumables
@@ -1936,13 +1939,42 @@ local function bom_add_weapon_buff(spell, player_member, bag_title, bag_command)
             true)
   end
 
-  return bag_title, bag_command
+  return cast_button_title, macro_command
+end
+
+---Adds a display text for a weapon buff created by a spell (shamans and paladins)
+---@param spell SpellDef - the spell to cast
+---@param player_member Member - the player
+---@param cast_button_title string - if not empty, is item name from the bag
+---@param macro_command string - console command to use item from the bag
+---@return string, string cast button title and macro command
+local function bom_add_weapon_enchant_spell(spell, player_member,
+                                            cast_button_title, macro_command)
+  if BOM.CurrentProfile.Spell[spell.ConfigID].OffHandEnable
+          and player_member.OffHandBuff == nil then
+    cast_button_title = spell.singleLink .. " (" .. L.TooltipOffHand .. ")"
+    macro_command = "/cast " .. spell.single
+            .. "\n/use 17" -- offhand slot
+            .. "\n/click StaticPopup1Button1" -- click away "overwrite warning"
+    bom_display_text(cast_button_title, player_member.distance, true)
+  end
+
+  if BOM.CurrentProfile.Spell[spell.ConfigID].MainHandEnable
+          and player_member.MainHandBuff == nil then
+    cast_button_title = spell.singleLink .. " (" .. L.TooltipMainHand .. ")"
+    macro_command = "/cast " .. spell.single
+            .. "\n/use 16" -- mainhand slot
+            .. "\n/click StaticPopup1Button1" -- click away "overwrite warning"
+    bom_display_text(cast_button_title, player_member.distance, true)
+  end
+
+  return cast_button_title, macro_command
 end
 
 ---Set text and enable the cast button (or disable)
 ---@param t string - text for the cast button
 ---@param enable boolean - whether to enable the button or not
-function bom_cast_button(t, enable)
+local function bom_cast_button(t, enable)
   -- not really a necessary check but for safety
   if InCombatLockdown()
           or BomC_ListTab_Button == nil
@@ -2029,8 +2061,8 @@ function BOM.UpdateScan()
 
   bom_clear_spell()
 
-  local bag_command
-  local bag_title
+  local macro_command ---@type string
+  local cast_button_title ---@type string
   local in_range = false
 
   BOM.ScanModifier = false
@@ -2046,7 +2078,7 @@ function BOM.UpdateScan()
             and (spell.needForm == nil or GetShapeshiftFormID() == spell.needForm) then
       if #spell.NeedMember > 0
               and not spell.isInfo
-              and not spell.isBuff
+              and not spell.isConsumable
       then
         if spell.singleMana < BOM.ManaLimit
                 and spell.singleMana > player_mana then
@@ -2060,16 +2092,20 @@ function BOM.UpdateScan()
         end
       end
 
-      if spell.isWeapon then
+      if spell.type == "weapon" then
         if #spell.NeedMember > 0 then
-          bag_title, bag_command = bom_add_weapon_buff(
-                  spell, player_member, bag_title, bag_command)
+          if spell.isConsumable then
+            cast_button_title, macro_command = bom_add_weapon_consumable_buff(
+                    spell, player_member, cast_button_title, macro_command)
+          else
+            cast_button_title, macro_command = bom_add_weapon_enchant_spell(spell, player_member)
+          end
         end
 
-      elseif spell.isBuff then
+      elseif spell.isConsumable then
         if #spell.NeedMember > 0 then
-          bag_title, bag_command = bom_add_regular_buff(
-                  spell, player_member, bag_title, bag_command)
+          cast_button_title, macro_command = bom_add_regular_buff(
+                  spell, player_member, cast_button_title, macro_command)
         end
 
       elseif spell.isInfo then
@@ -2082,7 +2118,7 @@ function BOM.UpdateScan()
           end
         end
 
-      elseif spell.isTracking then
+      elseif spell.type == "tracking" then
         if #spell.NeedMember > 0 then
           if not BOM.PlayerCasting then
             bom_set_tracking(spell, true)
@@ -2094,9 +2130,9 @@ function BOM.UpdateScan()
         end
 
       elseif (spell.isOwn
-              or spell.isTracking
-              or spell.isAura
-              or spell.isSeal)
+              or spell.type == "tracking"
+              or spell.type == "aura"
+              or spell.type == "seal")
       then
         if spell.shapeshiftFormId and GetShapeshiftFormID() == spell.shapeshiftFormId then
           -- if spell is shapeshift, and is already active, skip it
@@ -2104,7 +2140,7 @@ function BOM.UpdateScan()
           bom_add_self_buff(spell, player_member)
         end
 
-      elseif spell.isResurrection then
+      elseif spell.type == "resurrection" then
         in_range = bom_add_resurrection(spell, player_member, in_range)
 
       elseif spell.isBlessing then
@@ -2186,16 +2222,16 @@ function BOM.UpdateScan()
     end
 
     if ok then
-      bag_title = BOM.FormatTexture(item.Texture)
+      cast_button_title = BOM.FormatTexture(item.Texture)
               .. item.Link
               .. (target and (" @" .. target) or "")
-      bag_command = (target and ("/target " .. target .. "/n") or "")
+      macro_command = (target and ("/target " .. target .. "/n") or "")
               .. "/use " .. item.Bag .. " " .. item.Slot
-      bom_display_text(bag_title, player_member.distance, true)
+      bom_display_text(cast_button_title, player_member.distance, true)
 
       if BOM.SharedState.DontUseConsumables and not IsModifierKeyDown() then
-        bag_command = nil
-        bag_title = nil
+        macro_command = nil
+        cast_button_title = nil
       end
       BOM.ScanModifier = BOM.SharedState.DontUseConsumables
     end
@@ -2276,11 +2312,11 @@ function BOM.UpdateScan()
       end -- if somebodydeath and deathblock
     end -- if #display == 0
 
-    if bag_title then
-      bom_cast_button(bag_title, true)
+    if cast_button_title then
+      bom_cast_button(cast_button_title, true)
     end
 
-    BOM.UpdateMacro(nil, nil, bag_command)
+    BOM.UpdateMacro(nil, nil, macro_command)
   end -- if not player casting
 
 end -- end function UpdateScan()
@@ -2346,12 +2382,13 @@ function BOM.BattleCancelBuffs()
   end
 end
 
+---@param spell SpellDef
 function BOM.SpellHasClasses(spell)
-  return not (spell.isBuff
+  return not (spell.isConsumable
           or spell.isOwn
-          or spell.isResurrection
-          or spell.isSeal
-          or spell.isTracking
-          or spell.isAura
+          or spell.type == "resurrection"
+          or spell.type == "seal"
+          or spell.type == "tracking"
+          or spell.type == "aura"
           or spell.isInfo)
 end

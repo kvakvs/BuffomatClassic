@@ -2,6 +2,7 @@ local TOCNAME, BOM = ...
 BOM.Class = BOM.Class or {}
 
 ---@class RowBuilder
+---@field section string
 BOM.Class.RowBuilder = {}
 BOM.Class.RowBuilder.__index = BOM.Class.RowBuilder
 

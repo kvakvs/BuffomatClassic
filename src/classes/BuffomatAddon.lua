@@ -12,6 +12,8 @@ BOM.Class = BOM.Class or {}
 ---@field EnchantList table<number, table<number>> Spell ids mapping to enchant ids
 ---@field CancelBuffs table<number, SpellDef> All spells to be canceled on detection
 ---@field ItemCache table<number, table> Precreated precached items
+---@field ActivAura nil|number Spell id of aura if an unique aura was casted (only one can be active)
+---@field ActivSeal nil|number Spell id of weapon seal, if an seal-type temporary enchant was used (only one can be active)
 ---
 ---@field ForceProfile string|nil Nil will choose profile name automatically, otherwise this profile will be used
 ---@field ArgentumDawn table Equipped AD trinket: Spell to and zone ids to check

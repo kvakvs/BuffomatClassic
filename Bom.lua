@@ -152,7 +152,7 @@ function BOM.Popup(self, minimap)
   BOM.PopupDynamic:AddItem()
 
   for i, spell in ipairs(BOM.SelectedSpells) do
-    if not spell.isBuff then
+    if not spell.isConsumable then
       BOM.PopupDynamic:AddItem(spell.singleLink or spell.single,
               "keep",
               BOM.CurrentProfile.Spell[spell.ConfigID],

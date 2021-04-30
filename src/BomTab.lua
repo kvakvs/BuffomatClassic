@@ -372,7 +372,7 @@ local function bom_create_tab_row(row_builder, is_horde, spell, self_class)
             { 0.1, 0.9, 0.1, 0.9 })
   end
 
-  if spell.isBuff then
+  if spell.isConsumable then
     --spell.frames.info:SetTooltipLink("item:" .. spell.item)
     BOM.Tool.TooltipLink(spell.frames.info, "item:" .. spell.item)
   else
@@ -385,20 +385,20 @@ local function bom_create_tab_row(row_builder, is_horde, spell, self_class)
 
   if spell.isOwn and row_builder.section ~= "isOwn" then
     row_builder.section = "isOwn"
-  elseif spell.isTracking and row_builder.section ~= "isTracking" then
+  elseif spell.type == "tracking" and row_builder.section ~= "isTracking" then
     row_builder.section = "isTracking"
-  elseif spell.isResurrection and row_builder.section ~= "isResurrection" then
+  elseif spell.type == "resurrection" and row_builder.section ~= "isResurrection" then
     row_builder.section = "isResurrection"
-  elseif spell.isSeal and row_builder.section ~= "isSeal" then
+  elseif spell.type == "seal" and row_builder.section ~= "isSeal" then
     row_builder.section = "isSeal"
-  elseif spell.isAura and row_builder.section ~= "isAura" then
+  elseif spell.type == "aura" and row_builder.section ~= "isAura" then
     row_builder.section = "isAura"
   elseif spell.isBlessing and row_builder.section ~= "isBlessing" then
     row_builder.section = "isBlessing"
   elseif spell.isInfo and row_builder.section ~= "isInfo" then
     row_builder.section = "isInfo"
-  elseif spell.isBuff and row_builder.section ~= "isBuff" then
-    row_builder.section = "isBuff"
+  elseif spell.isConsumable and row_builder.section ~= "isConsumable" then
+    row_builder.section = "isConsumable"
   else
     row_builder.dy = 2
   end
@@ -432,9 +432,9 @@ local function bom_create_tab_row(row_builder, is_horde, spell, self_class)
     add_row_of_class_buttons(row_builder, is_horde, spell)
   end
 
-  if (spell.isTracking
-          or spell.isAura
-          or spell.isSeal)
+  if (spell.type == "tracking"
+          or spell.type == "aura"
+          or spell.type == "seal")
           and spell.needForm == nil then
     if spell.frames.Set == nil then
       spell.frames.Set = BOM.CreateMyButtonSecure(
@@ -467,7 +467,7 @@ local function bom_create_tab_row(row_builder, is_horde, spell, self_class)
     row_builder.dx = 2
   end
 
-  if spell.isWeapon then
+  if spell.type == "weapon" then
     if spell.frames.MainHand == nil then
       spell.frames.MainHand = BOM.CreateMyButton(
               BomC_SpellTab_Scroll_Child,
@@ -508,7 +508,7 @@ local function bom_create_tab_row(row_builder, is_horde, spell, self_class)
             nil, "OVERLAY", "GameFontNormalSmall")
   end
 
-  if spell.isWeapon then
+  if spell.type == "weapon" then
     spell.frames.buff:SetText((spell.single or "-")
             .. " (" .. L.TooltipIncludesAllRanks .. ")")
   else
@@ -729,15 +729,18 @@ local function update_selected_spell(spell)
     spell.frames.Whisper:SetVariable(profile_spell, "Whisper")
   end
 
-  if spell.isWeapon then
+  if spell.type == "weapon" then
     spell.frames.MainHand:SetVariable(profile_spell, "MainHandEnable")
     spell.frames.OffHand:SetVariable(profile_spell, "OffHandEnable")
   end
 
-  if (spell.isTracking or spell.isAura or spell.isSeal) and spell.needForm == nil then
-    if (spell.isTracking and BOM.CharacterState.LastTracking == spell.trackingIconId) or
-            (spell.isAura and spell.ConfigID == BOM.CurrentProfile.LastAura) or
-            (spell.isSeal and spell.ConfigID == BOM.CurrentProfile.LastSeal) then
+  if (spell.type == "tracking"
+          or spell.type == "aura"
+          or spell.type == "seal") and spell.needForm == nil
+  then
+    if (spell.type == "tracking" and BOM.CharacterState.LastTracking == spell.trackingIconId) or
+            (spell.type == "aura" and spell.ConfigID == BOM.CurrentProfile.LastAura) or
+            (spell.type == "seal" and spell.ConfigID == BOM.CurrentProfile.LastSeal) then
       spell.frames.Set:SetState(true)
     else
       spell.frames.Set:SetState(false)

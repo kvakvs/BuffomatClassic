@@ -13,17 +13,27 @@ BOM.Class = BOM.Class or {}
 ---@field groupId number Spell id for group buff
 ---@field groupMana number Mana cost for group buff
 ---@field hasCD boolean There's a cooldown on this spell
----@field isAura boolean No target buff check. True if the buff affects others in radius, and not a target buff
----@field isBuff boolean
+---
+--- Selected spell casting and display on the cast button
+---@field singleLink string Printable link for single buff
+---@field groupLink string Printable link for group buff
+---@field single string Name of single buff spell
+---@field group string Name of group buff spell
+---
+---type="aura" Auras are no target buff check. True if the buff affects others in radius, and not a target buff
+---type="seal" Seals are 1hand enchants which are unique for equipped weapon. Paladins use seals. Shamans also use seals but in TBC shamans have 2 independent seals.
+---type="resurrection" The spell will bring up a dead person
+---type="tracking" the buff grants the tracking of some resource or enemy type
+---type="weapon" The buff is a temporary weapon enchant on user's weapons (poison or shaman etc)
+---@field type string Defines type: "aura", "consumable", "weapon" for Enchant Consumables, "seal", "tracking", "resurrection"
+---@field isConsumable boolean Is an item-based buff; the spell must have 'items' field too
 ---@field isInfo boolean
 ---@field isOwn boolean Spell only casts on self
----@field isResurrection boolean Spell will bring up a dead person
----@field isSeal boolean TODO: Document this - Only one can be active/casts on self???
----@field isTracking boolean True if the buff is tracking of some resource or enemy
----@field isWeapon boolean The buff is a temporary weapon enchant on user's weapons
----@field item number - buff is granted by an item in user's bag
+---
+---@field item number - buff is granted by an item in user's bag. Number is item id shows as the icon.
 ---@field items table<number> - ids of items providing the enchant or buff?
 ---@field lockIfHaveItem table<number> Item ids which prevent this buff (unique conjured items for example)
+---@field needForm number Required shapeshift form ID to cast this buff
 ---@field onlyUsableFor table<string> list of classes which only can see this buff (hidden for others)
 ---@field reagentRequired table<number> | number Reagent item ids required for group buff
 ---@field shapeshiftFormId number Class-based form id (coming from GetShapeshiftFormID LUA API) if active, the spell is skipped
@@ -31,7 +41,6 @@ BOM.Class = BOM.Class or {}
 ---@field singleFamily table<number> Family of single buff spell ids which are mutually exclusive
 ---@field singleId number Spell id for single buff
 ---@field singleMana number Mana cost
----@field needForm number Required shapeshift form ID to cast this buff
 ---
 ---Fields created dynamically while the addon is running
 ---
@@ -49,7 +58,6 @@ BOM.Class = BOM.Class or {}
 ---@field trackingIconId number Numeric id for the tracking texture icon
 ---@field trackingSpellName string For tracking spells, contains string name for the spell
 ---@field shapeshiftFormId number Check this shapeshift form to know whether spell is already casted
----xxx field isShamanDualwield boolean If true, will display seal spell for both hands (TBC shamans!)
 BOM.Class.SpellDef = {}
 BOM.Class.SpellDef.__index = BOM.Class.SpellDef
 
