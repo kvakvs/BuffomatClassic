@@ -87,3 +87,11 @@ function BOM.Class.SpellDef:conjure_item(spellId, itemId)
             lockIfHaveItem = { itemId },
             singleFamily   = { spellId } })
 end
+
+function BOM.Class.SpellDef.ShamanEnchant(self)
+  -- for before TBC make this a seal spell, for TBC do not modify
+  if not BOM.TBC then
+    self.type = "seal"
+  end
+  return self
+end

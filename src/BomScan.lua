@@ -1309,19 +1309,21 @@ local bom_info_messages = {}
 local bom_insert_index
 
 ---Adds a text line to display in the message frame. The line is stored in DisplayCache
----@param text string - Text to display
----@param distance number - Distance
----@param isInfo boolean - Whether the text is info text
-local function bom_display_text(text, distance, isInfo)
+---@param text string Text to display
+---@param distance number Distance
+---@param is_info boolean Whether the text is info text or a cast
+local function bom_display_text(text, distance, is_info)
   bom_insert_index = bom_insert_index + 1
   bom_messages_cache[bom_insert_index] = bom_messages_cache[bom_insert_index] or {}
   bom_messages_cache[bom_insert_index][1] = text
   bom_messages_cache[bom_insert_index][2] = distance
 
-  if not isInfo then
-    tinsert(bom_cast_messages, bom_messages_cache[bom_insert_index])
-  else
+  if is_info then
+    -- this will be displayed nicely without an action to take
     tinsert(bom_info_messages, bom_messages_cache[bom_insert_index])
+  else
+    -- this will be casted
+    tinsert(bom_cast_messages, bom_messages_cache[bom_insert_index])
   end
 end
 
@@ -1950,23 +1952,46 @@ end
 ---@return string, string cast button title and macro command
 local function bom_add_weapon_enchant_spell(spell, player_member,
                                             cast_button_title, macro_command)
-  if BOM.CurrentProfile.Spell[spell.ConfigID].OffHandEnable
-          and player_member.OffHandBuff == nil then
-    cast_button_title = spell.singleLink .. " (" .. L.TooltipOffHand .. ")"
-    macro_command = "/cast " .. spell.single
-            .. "\n/use 17" -- offhand slot
-            .. "\n/click StaticPopup1Button1" -- click away "overwrite warning"
-    bom_display_text(cast_button_title, player_member.distance, true)
+  local block_mainhand_enchant = false -- set to true to block temporarily
+  local block_offhand_enchant = false -- set to true to block temporarily
+
+  local _, self_class, _ = UnitClass("player")
+  if BOM.TBC and self_class == "SHAMAN" then
+    -- Special handling for TBC shamans, you cannot specify slot for enchants, and it goes into main then offhand
+    local has_mh, _mh_expire, _mh_charges, _mh_enchantid, has_oh, _oh_expire, _oh_charges, _oh_enchantid = GetWeaponEnchantInfo()
+    if has_mh then
+      block_mainhand_enchant = true
+    else
+      block_offhand_enchant = true -- shamans in TBC can't enchant offhand if MH enchant is missing
+    end
+
+    if has_oh then
+      block_offhand_enchant = true
+    end
   end
 
   if BOM.CurrentProfile.Spell[spell.ConfigID].MainHandEnable
           and player_member.MainHandBuff == nil then
-    cast_button_title = spell.singleLink .. " (" .. L.TooltipMainHand .. ")"
-    macro_command = "/cast " .. spell.single
-            .. "\n/use 16" -- mainhand slot
-            .. "\n/click StaticPopup1Button1" -- click away "overwrite warning"
-    bom_display_text(cast_button_title, player_member.distance, true)
+    if block_mainhand_enchant then
+      local t = spell.singleLink .. " (" .. L.TooltipMainHand .. ") "
+              .. L.ShamanEnchantBlocked
+      bom_display_text(t, player_member.distance, true)
+    else
+      bom_catch_a_spell(spell.singleMana, spell.singleId, spell.singleLink, player_member, spell)
+    end
   end
+
+  if BOM.CurrentProfile.Spell[spell.ConfigID].OffHandEnable
+          and player_member.OffHandBuff == nil then
+    if block_offhand_enchant then
+      local t = spell.singleLink .. " (" .. L.TooltipOffHand .. ") "
+              .. L.ShamanEnchantBlocked
+      bom_display_text(t, player_member.distance, true)
+    else
+      bom_catch_a_spell(spell.singleMana, spell.singleId, spell.singleLink, player_member, spell)
+    end
+  end
+
 
   return cast_button_title, macro_command
 end

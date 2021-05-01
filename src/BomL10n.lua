@@ -89,6 +89,7 @@ BOM.locales = {
     TooltipWhisperWhenExpired     = "Whisper the player who casted the buff, when the buff has expired",
     TooltipMainHand               = "Main hand",
     TooltipOffHand                = "Off hand",
+    ShamanEnchantBlocked          = "Waiting for the other hand", -- TBC: Shown when shaman cannot enchant this hand because the other hand goes first
     TooltipIncludesAllRanks       = "Will use any rank",
 
     TabBuff                       = "Buff",
@@ -391,6 +392,7 @@ BOM.locales = {
     ["TooltipWhisperWhenExpired"]     = "Сообщить игроку, который дал этот баф, когда время бафа истечёт",
     ["TooltipMainHand"]               = "Правая рука",
     ["TooltipOffHand"]                = "Левая рука",
+    ["ShamanEnchantBlocked"]          = "Ожидание бафа на другую руку", -- TBC
     ["TooltipIncludesAllRanks"]       = "Любые варианты этого бафа",
     ["TooltipForceCastOnTarget"]      = "Добавить выбранного игрока в список целей для бафа",
     ["TooltipExcludeTarget"]          = "Добавить выбранного игрока в список исключений и не бафать",

@@ -1,5 +1,9 @@
 # Changelog
 
+## Buffomat Classic and TBC 2021.4.7
+
+- Fixes shaman enchants in live classic; adds new main/offhand enchants for TBC shamans
+
 ## Buffomat Classic and TBC 2021.4.0-6
 
 - TBC Classic: New class spells and new consumables

@@ -210,33 +210,37 @@ end
 ---@param enchants table<string, table<number>>
 local function bom_setup_shaman_spells(spells, enchants)
   local duration = tbc_or_classic(DURATION_20M, DURATION_10M)
-  local enchant_duration = tbc_or_classic(DURATION_10M, DURATION_5M) -- TBC: Poisons become 1 hour
+  local enchant_duration = tbc_or_classic(DURATION_30M, DURATION_5M) -- TBC: Shaman enchants become 30min
 
   tinsert(spells, BOM.Class.SpellDef:new(16342, --Flametongue Weapon
-          { type         = "weapon", isOwn = true, isConsumable = false, default = false, singleDuration = enchant_duration,
+          { type         = "weapon", isOwn = true, isConsumable = false,
+            default = false, singleDuration = enchant_duration,
             singleFamily = { 8024, 8027, 8030, 16339, 16341, 16342, -- Ranks 1-6
-                             25489 } })) -- TBC: Rank 7
+                             25489 } }):ShamanEnchant()) -- TBC: Rank 7
   enchants[16342] = { 3, 4, 5, 523, 1665, 1666, --Flametongue
                       2634 } --TBC: Flametongue 7
 
   tinsert(spells, BOM.Class.SpellDef:new(16356, --Frostbrand Weapon
-          { type         = "weapon", isOwn = true, isConsumable = false, default = false, singleDuration = enchant_duration,
+          { type         = "weapon", isOwn = true, isConsumable = false,
+            default = false, singleDuration = enchant_duration,
             singleFamily = { 8033, 8038, 10456, 16355, 16356, -- Ranks 1-5
-                             25500 } })) -- TBC: Rank 6
+                             25500 } }):ShamanEnchant()) -- TBC: Rank 6
   enchants[16356] = { 2, 12, 524, 1667, 1668, -- Frostbrand
                       2635 } -- TBC: Frostbrand 6
 
   tinsert(spells, BOM.Class.SpellDef:new(16316, --Rockbiter Weapon
-          { type         = "weapon", isOwn = true, isConsumable = false, default = false, singleDuration = enchant_duration,
+          { type         = "weapon", isOwn = true, isConsumable = false,
+            default = false, singleDuration = enchant_duration,
             singleFamily = { 8017, 8018, 8019, 10399, 16314, 16315, 16316, -- Ranks 1-7
-                             25479, 25485 } })) -- TBC: Ranks 8-9
+                             25479, 25485 } }):ShamanEnchant()) -- TBC: Ranks 8-9
   enchants[16316] = { 1, 6, 29, 503, 683, 1663, 1664, -- Rockbiter
                       2632, 2633 } -- TBC: Rockbiter 8-9
 
   tinsert(spells, BOM.Class.SpellDef:new(16362, --Windfury Weapon
-          { type         = "weapon", isOwn = true, isConsumable = false, default = false, singleDuration = enchant_duration,
+          { type         = "weapon", isOwn = true, isConsumable = false,
+            default = false, singleDuration = enchant_duration,
             singleFamily = { 8232, 8235, 10486, 16362, -- Ranks 1-4
-                             25505 } })) -- TBC: Rank 5
+                             25505 } }):ShamanEnchant()) -- TBC: Rank 5
   enchants[16362] = { 283, 284, 525, 1669, -- Windfury 1-4
                       2636 } -- TBC: Windfury 5
 
