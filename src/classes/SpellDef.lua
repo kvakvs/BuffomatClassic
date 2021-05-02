@@ -13,6 +13,8 @@ BOM.Class = BOM.Class or {}
 ---@field groupId number Spell id for group buff
 ---@field groupMana number Mana cost for group buff
 ---@field hasCD boolean There's a cooldown on this spell
+-- ---@field minLevel number If not nil, will hide spell when below this level
+-- ---@field maxLevel number If not nil, will hide spell when above this level
 ---
 --- Selected spell casting and display on the cast button
 ---@field singleLink string Printable link for single buff

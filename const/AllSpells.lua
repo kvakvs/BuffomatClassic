@@ -273,8 +273,13 @@ local function bom_setup_warlock_spells(spells, enchants)
   tinsert(spells, BOM.Class.SpellDef:new(11735, -- Demon Armor
           { isOwn = true, default = false, singleFamily = { 706, 1086, 11733, 11734, 11735, -- Rank 5
                                                             27260 } })) -- TBC: Rank 6
-  tinsert(spells, BOM.Class.SpellDef:new(696, -- Demon skin (Low Level)
-          { isOwn = true, default = false, singleFamily = { 687, 696 } }))
+  if UnitLevel("player") <= 20 then
+    -- Obsolete at level 20, assuming the player will visit the trainer and at 21
+    -- the spell will disappear from Buffomat
+    tinsert(spells, BOM.Class.SpellDef:new(696, -- Demon skin
+            { isOwn = true, default = false, singleFamily = { 687, 696 } }))
+  end
+
   tinsert(spells, BOM.Class.SpellDef:new(18788, -- Demonic Sacrifice
           { isOwn = true, default = true }))
   tinsert(spells, BOM.Class.SpellDef:new(17953, -- Firestone
@@ -283,6 +288,12 @@ local function bom_setup_warlock_spells(spells, enchants)
                                22128 }, -- TBC: Master Firestone
             singleFamily   = { 6366, 17951, 17952, 17953, -- Rank 1-4
                                27250 } })) -- TBC: Rank 5
+  tinsert(spells, BOM.Class.SpellDef:new(17728, -- Spellstone
+          { isOwn          = true, default = false,
+            lockIfHaveItem = { 5522, 13602, 13603, -- "normal", Greater, Major Spellstone
+                               22646 }, -- TBC: Master Spellstone
+            singleFamily   = { 2362, 17727, 17728, -- Rank 1-3
+                               28172 } })) -- TBC: Rank 4
   tinsert(spells, BOM.Class.SpellDef:new(11730, -- Healtstone
           { isOwn          = true, default = true,
             lockIfHaveItem = { 5512, 19005, 19004, 5511, 19007, 19006, 5509, 19009,

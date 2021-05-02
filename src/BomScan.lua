@@ -918,7 +918,8 @@ local function bom_update_spell_targets(party, spell, player_member, someone_is_
   wipe(spell.NeedMember)
   wipe(spell.DeathGroup)
 
-  local SomeBodyDeath = false
+  local player_level = UnitLevel("player")
+  local somebody_is_dead = false
 
   if not BOM.CurrentProfile.Spell[spell.ConfigID].Enable then
     --nothing!
@@ -1032,7 +1033,7 @@ local function bom_update_spell_targets(party, spell, player_member, someone_is_
 
         if member.isDead then
           if member.group ~= 9 and member.class ~= "pet" then
-            SomeBodyDeath = true
+            somebody_is_dead = true
             spell.DeathGroup[member.class] = true
           end
 
@@ -1088,7 +1089,7 @@ local function bom_update_spell_targets(party, spell, player_member, someone_is_
         local found = false
 
         if member.isDead then
-          SomeBodyDeath = true
+          somebody_is_dead = true
           spell.DeathGroup[member.group] = true
 
         elseif member.buffs[spell.ConfigID] then
@@ -1121,11 +1122,11 @@ local function bom_update_spell_targets(party, spell, player_member, someone_is_
         BOM.MinTimer = startTime
       end
 
-      SomeBodyDeath = false
+      somebody_is_dead = false
     end
   end
 
-  return SomeBodyDeath
+  return somebody_is_dead
 end
 
 ---Updates the BOM macro
