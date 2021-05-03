@@ -887,6 +887,25 @@ end
 
 ---@param spells table<string, SpellDef>
 ---@param enchants table<string, table<number>>
+local function bom_setup_food(spells, enchants)
+  BOM.Class.SpellDef:tbc_consumable(spells, 33257, { 33052, 27667 }) --Well Fed +30 STA +20 SPI
+
+  BOM.Class.SpellDef:tbc_consumable(spells, 35254, { 27651, 30155, 27662, 33025 }) --Well Fed +20 STA +20 SPI
+  BOM.Class.SpellDef:tbc_consumable(spells, 35272, {27660, 31672, 33026}) --Well Fed +20 STA +20 SPI
+
+  BOM.Class.SpellDef:tbc_consumable(spells, 33261, { 27659, 30358, 27664 }) --Well Fed +20 AGI +20 SPI
+  BOM.Class.SpellDef:tbc_consumable(spells, 43764, 33872) --Spicy Hot Talbuk: Well Fed +20 HITRATING +20 SPI
+  BOM.Class.SpellDef:tbc_consumable(spells, 33256, { 27658, 30359 }) -- Well Fed +20 STR +20 SPI
+  BOM.Class.SpellDef:tbc_consumable(spells, 33259, 27655) --Ravager Dog: Well Fed +40 AP +20 SPI
+  BOM.Class.SpellDef:tbc_consumable(spells, 41030, 32721) --Skyguard Rations: Well Fed +15 STA +15 SPI
+  BOM.Class.SpellDef:tbc_consumable(spells, 46899, 35563) --Charred Bear Kabobs +24 AP
+  BOM.Class.SpellDef:tbc_consumable(spells, 33263, { 27657, 31673, 27665, 30361 }) --Well Fed +23 SPELL +20 SPI
+  BOM.Class.SpellDef:tbc_consumable(spells, 33265, 27663) --Blackened Sporefish: Well Fed +8 MP5 +20 STA
+  BOM.Class.SpellDef:tbc_consumable(spells, 33268, {27666, 30357}) --Golden Fish Sticks: Well Fed +44 HEAL +20 SPI
+end
+
+---@param spells table<string, SpellDef>
+---@param enchants table<string, table<number>>
 local function bom_setup_flasks(spells, enchants)
   BOM.Class.SpellDef:tbc_consumable(spells, 28540, 22866, --TBC: Flask of Pure Death +80 SHADOW +80 FIRE +80 FROST
           { playerClass = BOM_MANA_CLASSES })
@@ -927,18 +946,22 @@ function BOM.SetupSpells()
   bom_setup_paladin_spells(spells, enchants)
   bom_setup_warrior_spells(spells, enchants)
   bom_setup_rogue_spells(spells, enchants)
+
   bom_setup_tracking_spells(spells, enchants)
   bom_setup_misc_spells(spells, enchants)
+
   bom_setup_phys_dps_buffs(spells, enchants)
   bom_setup_phys_dps_battle_elixirs(spells, enchants)
   bom_setup_phys_dps_guardian_elixirs(spells, enchants)
   bom_setup_caster_buffs(spells, enchants)
   bom_setup_caster_battle_elixirs(spells, enchants)
   bom_setup_caster_guardian_elixirs(spells, enchants)
-  bom_setup_item_spells(spells, enchants)
   bom_setup_battle_elixirs(spells, enchants)
   bom_setup_guardian_elixirs(spells, enchants)
   bom_setup_flasks(spells, enchants)
+
+  bom_setup_item_spells(spells, enchants)
+  bom_setup_food(spells, enchants)
 
   --Preload items!
   for x, spell in ipairs(spells) do
