@@ -34,7 +34,9 @@ BOM.BehaviourSettings = {
   { "BuffTarget", false },
   { "OpenLootable", true },
   { "SelfFirst", false },
-  { "DontUseConsumables", false },
+  { "DontUseConsumables", false }
+  --{ "ShowClassicConsumables", true},
+  --{ "ShowTBCConsumables", true},
 }
 
 BOM.TOC_VERSION = GetAddOnMetadata(TOCNAME, "Version") --used for display in options
@@ -980,7 +982,7 @@ end
 BOM.PlayerBuffs = {}
 
 ---UnitAura
----@param unitId string 
+---@param unitId string
 ---@param buffIndex number Index of buff/debuff slot starts 1 max 40?
 ---@param filter string Filter string like "HELPFUL", "PLAYER", "RAID"... etc
 function BOM.UnitAura(unitId, buffIndex, filter)

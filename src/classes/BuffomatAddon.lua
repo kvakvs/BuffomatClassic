@@ -6,6 +6,8 @@ BOM.Class = BOM.Class or {}
 ---@field ALL_PROFILES table<string> Lists all buffomat profile names (group, solo... etc)
 ---@field RESURRECT_CLASS table<string> Classes who can resurrect others
 ---@field MANA_CLASSES table<string> Classes with mana resource
+---@field CLASSIC_ERA string Constant for era classification of a consumable
+---@field TBC_ERA string Constant for era classification of a consumable
 ---@field locales BuffomatTranslations (same as BOM.L)
 ---@field L BuffomatTranslations (same as BOM.locales)
 ---@field AllBuffomatSpells table<number, SpellDef> All spells known to Buffomat

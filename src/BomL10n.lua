@@ -57,6 +57,8 @@ BOM.locales = {
     CboxUseProfiles               = "Use profiles",
     CboxSelfFirst                 = "Always buff self first",
     CboxDontUseConsumables        = "Use consumables only with Shift, Ctrl or Alt",
+    CboxShowClassicConsumables    = "Show consumables available in Classic",
+    CboxShowTBCConsumables        = "Show consumables available in TBC",
 
     HeaderRenew                   = "Renew before it expires (in Seconds)",
     EboxTime60                    = "Duration <=60 sec:",
@@ -341,6 +343,8 @@ BOM.locales = {
     ["CboxSameZone"]                  = "Только если находится в одной зоне со мной",
     ["Cboxshowminimapbutton"]         = "Показать кнопку у миникарты",
     ["CboxUseRank"]                   = "Использовать заклинание с рангом",
+    ["CboxShowClassicConsumables"]    = "Показывать бафы из классической версии",
+    ["CboxShowTBCConsumables"]        = "Показывать бафы из TBC",
     ["EboxMinBlessing"]               = "Количество пропущенных благословений, необходимых для использования большего благословения",
     ["EboxMinBuff"]                   = "Количество отсутствующих эффектов, необходимое для использования группового эффекта",
     ["EboxTime1800"]                  = "Продолжительность <=30 мин:",

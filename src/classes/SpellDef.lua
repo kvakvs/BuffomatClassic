@@ -6,15 +6,16 @@ BOM.Class = BOM.Class or {}
 --- A class describing a spell in available spells collection
 ---
 ---@class SpellDef
----@field classes table<string> List of target classes which are shown as toggle boxes to enable cast per class
+---@field targetClasses table<string> List of target classes which are shown as toggle boxes to enable cast per class
 ---@field default boolean Whether the spell auto-cast is enabled by default
 ---@field groupDuration number Buff duration for group buff in seconds
 ---@field groupFamily table<number> Family of group buff spell ids which are mutually exclusive
 ---@field groupId number Spell id for group buff
 ---@field groupMana number Mana cost for group buff
 ---@field hasCD boolean There's a cooldown on this spell
--- ---@field minLevel number If not nil, will hide spell when below this level
--- ---@field maxLevel number If not nil, will hide spell when above this level
+---@field minLevel number If not nil, will hide spell when below this level
+---@field maxLevel number If not nil, will hide spell when above this level
+---@field consumableEra string One of constants BOM.CLASSIC_ERA or BOM.TBC_ERA which will affect buff visibility based on used choice
 ---
 --- Selected spell casting and display on the cast button
 ---@field singleLink string Printable link for single buff
@@ -32,8 +33,8 @@ BOM.Class = BOM.Class or {}
 ---@field isInfo boolean
 ---@field isOwn boolean Spell only casts on self
 ---
----@field item number - buff is granted by an item in user's bag. Number is item id shows as the icon.
----@field items table<number> - ids of items providing the enchant or buff?
+---@field item number Buff is granted by an item in user's bag. Number is item id shows as the icon.
+---@field items table<number> All inventory item ids providing the same effect
 ---@field lockIfHaveItem table<number> Item ids which prevent this buff (unique conjured items for example)
 ---@field needForm number Required shapeshift form ID to cast this buff
 ---@field onlyUsableFor table<string> list of classes which only can see this buff (hidden for others)
@@ -78,6 +79,128 @@ function BOM.Class.SpellDef:new(single_id, fields)
   fields.singleId = single_id
 
   return fields
+end
+
+---@param dst table<SpellDef>
+---@param single_id number
+---@param item_id number|table<number> Item or multiple items giving this buff
+function BOM.Class.SpellDef:tbc_consumable(dst, single_id, item_id, limitations)
+  if not BOM.TBC then
+    return
+  end
+
+  ---@type SpellDef
+  local fields = { isConsumable  = true,
+                   default       = false,
+                   consumableEra = BOM.TBC_ERA }
+
+  if type(item_id) == "table" then
+    fields.item = item_id[1]
+    fields.items = item_id
+  else
+    fields.item = item_id
+  end
+
+  BOM.Class.SpellDef:scan_spell(dst, single_id, fields, limitations)
+end
+
+---@param dst table<SpellDef>
+---@param single_id number
+---@param item_id number
+function BOM.Class.SpellDef:classic_consumable(dst, single_id, item_id, limitations)
+  BOM.Class.SpellDef:scan_spell(dst, single_id,
+          { item = item_id, isConsumable = true, default = false, consumableEra = BOM.CLASSIC_ERA },
+          limitations)
+end
+
+local _, bom_player_class, _ = UnitClass("player")
+
+local function bom_check_limitations(spell, limitations)
+  -- empty limitations return true
+  if limitations == nil or limitations == { } then
+    return true
+  end
+
+  for lim, val in pairs(limitations) do
+    if lim == "isTBC" then
+      if (BOM.TBC == true and val == false) or (BOM.TBC == false and val == true) then
+        return false
+      end
+    end
+
+    if lim == "minLevel" then
+      if UnitLevel("player") < val then
+        return false
+      end
+    end
+
+    if lim == "maxLevel" then
+      if UnitLevel("player") > val then
+        return false
+      end
+    end
+
+    --if lim == "consumableEra" then
+    --  if BOM.TBC then
+    --    -- Fail if era is TBC, and consumable is from Classic era and show Classic consumes is disabled
+    --    if val == BOM.CLASSIC_ERA and not BOM.SharedState.ShowClassicConsumables then
+    --      return false
+    --    end
+    --  else
+    --    -- Fail if era is Classic, and consumable is from TBC era and show TBC consumes is disabled
+    --    if val == BOM.TBC_ERA and not BOM.SharedState.ShowTBCConsumables then
+    --      return false
+    --    end
+    --  end
+    --end
+
+    if lim == "playerClass" then
+      if type(val) == "table" then
+        -- Fail if val is a table and player class is not in it
+        if not tContains(val, bom_player_class) then
+          return false
+        end
+      else
+        -- Fail if val is not equal to the player class
+        if val ~= bom_player_class then
+          return false
+        end
+      end
+    end -- if playerclass check
+  end -- for all limitations
+
+  return true
+end
+
+---@param spell SpellDef
+---@param modifications table<function>
+local function bom_check_modifications(spell, modifications)
+  -- empty modifications do not change the spell
+  if modifications == nil or modifications == { } then
+    return true
+  end
+
+  for _, mod in ipairs(modifications) do
+    if mod == "shamanEnchant" then
+      spell:ShamanEnchant()
+    end
+  end
+end
+
+---Create a spelldef if the limitations apply and add to the table.
+---Only check permanent limitations here like minlevel, TBC, or player class.
+---@param dst table<SpellDef>
+---@param single_id number
+---@param fields table<string, any>
+---@param limitations table<function> Check these conditions to skip adding the spell. Permanent conditions only like minlevel or class
+---@param modifications table<function> Check these conditions and maybe modify the spelldef.
+function BOM.Class.SpellDef:scan_spell(dst, single_id, fields, limitations, modifications)
+  local spell = BOM.Class.SpellDef:new(single_id, fields)
+
+  if bom_check_limitations(spell, limitations) then
+    bom_check_modifications(spell, modifications)
+    tinsert(dst, spell)
+  end
 end
 
 ---@param spellId number

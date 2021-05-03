@@ -385,9 +385,10 @@ function BOM.GetSpells()
             itemName, itemLink, itemIcon
           }
         else
-          BOM.Print("Item not found! " ..
-                  spell.single .. " " .. spell.singleId ..
-                  spell.item .. "x" .. BOM.ItemCache[spell.item])
+          BOM.Print("Item not found! " .. spell.singleId)
+          --BOM.Print("Item not found! " ..
+          --        spell.single .. " " .. spell.singleId ..
+          --        spell.item .. "x" .. BOM.ItemCache[spell.item])
         end
       else
         add = true
@@ -433,7 +434,7 @@ function BOM.GetSpells()
             spell_ptr.SelfCast = false
 
             for ci, class in ipairs(BOM.Tool.Classes) do
-              spell_ptr.Class[class] = tContains(spell.classes, class)
+              spell_ptr.Class[class] = tContains(spell.targetClasses, class)
               SelfCast = spell_ptr.Class[class] and false or SelfCast
             end
 
@@ -908,7 +909,7 @@ end
 ---@param spell SpellDef - the spell to update
 ---@param player_member Member - the player
 ---@param someone_is_dead boolean - the flag that buffing cannot continue while someone is dead
----@return boolean - updated someone_is_dead
+---@return boolean someone_is_dead
 local function bom_update_spell_targets(party, spell, player_member, someone_is_dead)
   spell.NeedMember = spell.NeedMember or {}
   spell.NeedGroup = spell.NeedGroup or {}
@@ -917,9 +918,6 @@ local function bom_update_spell_targets(party, spell, player_member, someone_is_
   wipe(spell.NeedGroup)
   wipe(spell.NeedMember)
   wipe(spell.DeathGroup)
-
-  local player_level = UnitLevel("player")
-  local somebody_is_dead = false
 
   if not BOM.CurrentProfile.Spell[spell.ConfigID].Enable then
     --nothing!
@@ -1020,7 +1018,8 @@ local function bom_update_spell_targets(party, spell, player_member, someone_is_
                 and not BOM.CurrentProfile.Spell[spell.ConfigID].SelfCast then
           ok = true
         end
-        if BOM.CurrentProfile.Spell[spell.ConfigID].SelfCast and UnitIsUnit(member.unitId, "player") then
+        if BOM.CurrentProfile.Spell[spell.ConfigID].SelfCast
+                and UnitIsUnit(member.unitId, "player") then
           ok = true
         end
       end
@@ -1033,7 +1032,7 @@ local function bom_update_spell_targets(party, spell, player_member, someone_is_
 
         if member.isDead then
           if member.group ~= 9 and member.class ~= "pet" then
-            somebody_is_dead = true
+            someone_is_dead = true
             spell.DeathGroup[member.class] = true
           end
 
@@ -1089,7 +1088,7 @@ local function bom_update_spell_targets(party, spell, player_member, someone_is_
         local found = false
 
         if member.isDead then
-          somebody_is_dead = true
+          someone_is_dead = true
           spell.DeathGroup[member.group] = true
 
         elseif member.buffs[spell.ConfigID] then
@@ -1122,11 +1121,11 @@ local function bom_update_spell_targets(party, spell, player_member, someone_is_
         BOM.MinTimer = startTime
       end
 
-      somebody_is_dead = false
+      someone_is_dead = false
     end
   end
 
-  return somebody_is_dead
+  return someone_is_dead
 end
 
 ---Updates the BOM macro

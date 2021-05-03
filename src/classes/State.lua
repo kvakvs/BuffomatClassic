@@ -24,7 +24,9 @@ BOM.Class = BOM.Class or {}
 ---@field SameZone boolean Check only in the same zone 
 ---@field SecondaryHand boolean Warn about offhand temporary enchant missing 
 ---@field SelfFirst boolean Buff self first 
----@field UseRank boolean Use ranked spells 
+---@field UseRank boolean Use ranked spells
+---@field ShowClassicConsumables boolean Will show pre-TBC consumables
+---@field ShowTBCConsumables boolean Will show TBC consumables in the list
 BOM.Class.Profile = {}
 BOM.Class.Profile.__index = BOM.Class.Profile
 
