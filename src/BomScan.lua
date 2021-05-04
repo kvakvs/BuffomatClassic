@@ -2145,7 +2145,7 @@ function BOM.UpdateScan()
 
       elseif spell.type == "tracking" then
         if #spell.NeedMember > 0 then
-          if not BOM.PlayerCasting then
+          if BOM.PlayerCasting == nil then
             bom_set_tracking(spell, true)
           else
             bom_display_text(
@@ -2273,9 +2273,14 @@ function BOM.UpdateScan()
 
   BOM.ForceUpdate = false
 
-  if BOM.PlayerCasting then
-    --Print player is busy (casting)
+  if BOM.PlayerCasting == "cast" then
+    --Print player is busy (casting normal spell)
     bom_cast_button(L.MsgBusy, false)
+    BOM.UpdateMacro()
+
+  elseif BOM.PlayerCasting == "channel" then
+    --Print player is busy (casting channeled spell)
+    bom_cast_button(L.MsgBusyChanneling, false)
     BOM.UpdateMacro()
 
   elseif next_cast_spell.Member and next_cast_spell.SpellId then

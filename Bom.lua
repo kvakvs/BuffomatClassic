@@ -779,15 +779,30 @@ local function Event_UNIT_SPELLCAST_errors(unit)
 end
 
 local function Event_UNIT_SPELLCAST_START(unit)
-  if UnitIsUnit(unit, "player") then
-    BOM.PlayerCasting = true
+  if UnitIsUnit(unit, "player") and not BOM.PlayerCasting then
+    BOM.PlayerCasting = "cast"
     BOM.ForceUpdate = true
   end
 end
 
 local function Event_UNIT_SPELLCAST_STOP(unit)
-  if UnitIsUnit(unit, "player") then
-    BOM.PlayerCasting = false
+  if UnitIsUnit(unit, "player") and BOM.PlayerCasting then
+    BOM.PlayerCasting = nil
+    BOM.ForceUpdate = true
+    BOM.CheckForError = false
+  end
+end
+
+local function Event_UNIT_SPELLCHANNEL_START(unit)
+  if UnitIsUnit(unit, "player") and not BOM.PlayerCasting then
+    BOM.PlayerCasting = "channel"
+    BOM.ForceUpdate = true
+  end
+end
+
+local function Event_UNIT_SPELLCHANNEL_STOP(unit)
+  if UnitIsUnit(unit, "player") and BOM.PlayerCasting then
+    BOM.PlayerCasting = nil
     BOM.ForceUpdate = true
     BOM.CheckForError = false
   end
@@ -1083,6 +1098,9 @@ function BOM.OnLoad()
 
   BOM.RegisterEvent("UNIT_SPELLCAST_START", Event_UNIT_SPELLCAST_START)
   BOM.RegisterEvent("UNIT_SPELLCAST_STOP", Event_UNIT_SPELLCAST_STOP)
+  BOM.RegisterEvent("UNIT_SPELLCAST_CHANNEL_START", Event_UNIT_SPELLCHANNEL_START)
+  BOM.RegisterEvent("UNIT_SPELLCAST_CHANNEL_STOP", Event_UNIT_SPELLCHANNEL_STOP)
+
   BOM.RegisterEvent("UNIT_SPELLCAST_SUCCEEDED", Event_UNIT_SPELLCAST_errors)
   BOM.RegisterEvent("UNIT_SPELLCAST_INTERRUPTED", Event_UNIT_SPELLCAST_errors)
   BOM.RegisterEvent("UNIT_SPELLCAST_FAILED", Event_UNIT_SPELLCAST_errors)

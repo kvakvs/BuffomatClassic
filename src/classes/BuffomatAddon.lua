@@ -39,7 +39,7 @@ BOM.Class = BOM.Class or {}
 ---@field lastTarget string|nil Last player's target
 ---@field ManaLimit number Player max mana
 ---@field PartyUpdateNeeded boolean Requests player party update
----@field PlayerCasting boolean Indicates that the player is currently casting (updated in event handlers)
+---@field PlayerCasting string|nil Indicates that the player is currently casting (updated in event handlers)
 ---@field SelectedSpells table<number, SpellDef>
 ---@field SpellIdIsSingle table<number, boolean> Whether spell ids are single buffs
 ---@field SpellTabsCreatedFlag boolean Indicated spells tab already populated with controls
