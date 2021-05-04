@@ -360,32 +360,34 @@ function BOM.GetSpells()
 
     if spell.isConsumable then
       if not spell.isScanned then
-        local itemName, itemLink, _rarity, _ilvl, _minLevel, _itType, _itSubtype
-        , _itStackCount, _itemEquipLoc, itemIcon, _, _, _, _, _, _, _ = GetItemInfo(spell.item)
+        --local itemName, itemLink, _rarity, _ilvl, _minLevel, _itType, _itSubtype
+        --, _itStackCount, _itemEquipLoc, itemIcon, _, _, _, _, _, _, _ = GetItemInfo(spell.item)
+        local item_info = BOM.GetItemInfo(spell.item)
 
-        if (not itemName or not itemLink or not itemIcon)
+        if (not item_info.itemName or not item_info.itemLink or not item_info.itemIcon)
                 and BOM.SharedState.Cache.Item[spell.item]
         then
-          itemName, itemLink, itemIcon = unpack(BOM.SharedState.Cache.Item[spell.item])
+          item_info.itemName, item_info.itemLink, item_info.itemIcon = unpack(BOM.SharedState.Cache.Item[spell.item])
 
-        elseif (not itemName or not itemLink or not itemIcon)
+        elseif (not item_info.itemName or not item_info.itemLink or not item_info.itemIcon)
                 and BOM.ItemCache[spell.item]
         then
-          itemName, itemLink, itemIcon = unpack(BOM.ItemCache[spell.item])
+          item_info.itemName, item_info.itemLink, item_info.itemIcon = unpack(BOM.ItemCache[spell.item])
         end
 
-        if itemName and itemLink and itemIcon then
+        if item_info.itemName and item_info.itemLink and item_info.itemIcon then
           add = true
-          spell.single = itemName
-          spell.singleLink = BOM.FormatTexture(itemIcon) .. itemLink
-          spell.Icon = itemIcon
+          spell.single = item_info.itemName
+          spell.singleLink = BOM.FormatTexture(item_info.itemIcon) .. item_info.itemLink
+          spell.Icon = item_info.itemIcon
           spell.isScanned = true
 
           BOM.SharedState.Cache.Item[spell.item] = {
-            itemName, itemLink, itemIcon
+            item_info.itemName, item_info.itemLink, item_info.itemIcon
           }
         else
-          BOM.Print("Item not found! " .. spell.singleId)
+          BOM.Print("Item not found! Spell=" .. tostring(spell.singleId)
+                  .. " Item=" .. tostring(spell.item))
           --BOM.Print("Item not found! " ..
           --        spell.single .. " " .. spell.singleId ..
           --        spell.item .. "x" .. BOM.ItemCache[spell.item])

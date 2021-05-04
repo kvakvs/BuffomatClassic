@@ -1,3 +1,6 @@
+#
+# Do not edit - this file is generated from TOC_TEMPLATE.TOC
+#
 ## Interface: ${UI_VERSION}
 ## Title: Buffomat Classic TBC
 ## Notes: Semi-automatic buff and resurrection bot, compatible with Burning Crusade Classic
@@ -23,6 +26,7 @@ src/classes/SpellDef.lua
 src/classes/State.lua
 src/classes/CharacterState.lua
 
+src/Cache.lua
 src/BomOptions.lua
 src/BomMinimapButton.lua
 src/BomToolbox.lua

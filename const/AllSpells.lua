@@ -891,7 +891,8 @@ local function bom_setup_food(spells, enchants)
   BOM.Class.SpellDef:tbc_consumable(spells, 33257, { 33052, 27667 }) --Well Fed +30 STA +20 SPI
 
   BOM.Class.SpellDef:tbc_consumable(spells, 35254, { 27651, 30155, 27662, 33025 }) --Well Fed +20 STA +20 SPI
-  BOM.Class.SpellDef:tbc_consumable(spells, 35272, {27660, 31672, 33026}) --Well Fed +20 STA +20 SPI
+  BOM.Class.SpellDef:tbc_consumable(spells, 35272, {-- 27660,
+                                                    31672, 33026}) --Well Fed +20 STA +20 SPI
 
   BOM.Class.SpellDef:tbc_consumable(spells, 33261, { 27659, 30358, 27664 }) --Well Fed +20 AGI +20 SPI
   BOM.Class.SpellDef:tbc_consumable(spells, 43764, 33872) --Spicy Hot Talbuk: Well Fed +20 HITRATING +20 SPI
@@ -966,7 +967,7 @@ function BOM.SetupSpells()
   --Preload items!
   for x, spell in ipairs(spells) do
     if spell.isConsumable then
-      GetItemInfo(spell.item)
+      BOM.GetItemInfo(spell.item)
     end
   end
 
