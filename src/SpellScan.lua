@@ -1381,9 +1381,10 @@ local function bom_prevent_pvp_poisoning(link, member)
       local t = link .. " - " .. L.PreventPVPTagBlocked
       -- Text: [Spell Name] Player is PvP
       bom_display_text(t, member.distance, true)
-      return
+      return true
     end
   end
+  return false
 end
 
 ---Stores a spell with cost/id/spell link to be casted in the `cast` global
