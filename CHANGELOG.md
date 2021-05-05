@@ -1,8 +1,17 @@
 # Changelog
 
+## Buffomat Classic and TBC 2021.5.1-2
+
+- Warlock summoning fix (all channeled spells) - do not get stuck in Busy state
+- Enhancement shaman TBC weapons enchant fix (wait for mainhand enchant first)
+- Prevent buffing a PVP person if player is not PVP, and is in the open world (
+  also an option for it)
+- TBC food buffs added
+
 ## Buffomat Classic and TBC 2021.4.7
 
-- Fixes shaman enchants in live classic; adds new main/offhand enchants for TBC shamans
+- Fixes shaman enchants in live classic; adds new main/offhand enchants for TBC
+  shamans
 
 ## Buffomat Classic and TBC 2021.4.0-6
 
