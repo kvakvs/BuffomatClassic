@@ -1368,6 +1368,24 @@ local next_cast_spell = {}
 ---@type number
 local player_mana
 
+---@param link string
+---@param member Member
+---@return boolean True if spell cast is prevented by PvP guard, false if spell can be casted
+local function bom_prevent_pvp_poisoning(link, member)
+  if BOM.SharedState.PreventPVPTag then
+    -- TODO: Move Player PVP check and instance check outside
+    local _in_instance, instance_type = IsInInstance()
+    if instance_type == "none"
+            and not UnitIsPVP("player")
+            and UnitIsPVP(member.name) then
+      local t = link .. " - " .. L.PreventPVPTagBlocked
+      -- Text: [Spell Name] Player is PvP
+      bom_display_text(t, member.distance, true)
+      return
+    end
+  end
+end
+
 ---Stores a spell with cost/id/spell link to be casted in the `cast` global
 ---@param cost number Resource cost (mana cost)
 ---@param id number Spell id to capture
@@ -1632,6 +1650,8 @@ local function bom_add_blessing(spell, player_member, in_range)
         if class_in_range ~= nil
                 and (not spell.DeathGroup[member.group] or not BOM.SharedState.DeathBlock)
         then
+          -- Group buff
+          -- Text: Group 5 [Spell Name] x Reagents
           bom_display_text(
                   string.format(L["FORMAT_BUFF_GROUP"],
                           "|c" .. RAID_CLASS_COLORS[groupIndex].colorStr .. BOM.Tool.ClassName[groupIndex] .. "|r",
@@ -1642,7 +1662,11 @@ local function bom_add_blessing(spell, player_member, in_range)
 
           bom_catch_a_spell(spell.groupMana, spell.groupId, spell.groupLink, class_in_range, spell)
         else
-          bom_display_text(string.format(L["FORMAT_BUFF_GROUP"], BOM.Tool.ClassName[groupIndex], spell.group .. count), "!" .. groupIndex)
+          -- Group buff (just text)
+          -- Text: Group 5 [Spell Name] x Reagents
+          bom_display_text(string.format(L["FORMAT_BUFF_GROUP"],
+                  BOM.Tool.ClassName[groupIndex], spell.group .. count),
+                  "!" .. groupIndex)
         end
       end -- if needgroup >= minblessing
     end -- for all classes
@@ -1667,10 +1691,13 @@ local function bom_add_blessing(spell, player_member, in_range)
         add = string.format(BOM.PICTURE_FORMAT, BOM.ICON_TARGET_ON)
       end
 
-      local test_in_range = (IsSpellInRange(spell.single, member.unitId) == 1)
+      local test_in_range = IsSpellInRange(spell.single, member.unitId) == 1
               and not tContains(spell.SkipList, member.name)
-
-      if test_in_range then
+      if bom_prevent_pvp_poisoning(spell.singleLink, member) then
+        -- Nothing, prevent poison function has already added the text
+      elseif test_in_range then
+        -- Single buff on group member
+        -- Text: Target [Spell Name]
         bom_display_text(string.format(L["FORMAT_BUFF_SINGLE"], add .. member.link, spell.singleLink),
                 member.name)
 
@@ -1678,6 +1705,8 @@ local function bom_add_blessing(spell, player_member, in_range)
 
         bom_catch_a_spell(spell.singleMana, spell.singleId, spell.singleLink, member, spell)
       else
+        -- Single buff on group member (inactive just text)
+        -- Text: Target "SpellName"
         bom_display_text(string.format(L["FORMAT_BUFF_SINGLE"], add .. member.name, spell.single),
                 member.name)
       end -- if in range
@@ -1719,13 +1748,15 @@ local function bom_add_buff(spell, party, player_member, in_range)
         if Group ~= nil
                 and (not spell.DeathGroup[group_index] or not BOM.SharedState.DeathBlock)
         then
-          bom_display_text(string.format(L["FORMAT_BUFF_GROUP"], group_index, (spell.groupLink or spell.group) .. count),
+          -- Text: Group 5 [Spell Name]
+          bom_display_text(string.format(L["FORMAT_BUFF_GROUP"], group_index,
+                  (spell.groupLink or spell.group) .. count),
                   "!" .. group_index)
           in_range = true
 
           bom_catch_a_spell(spell.groupMana, spell.groupId, spell.groupLink, Group, spell)
-
         else
+          -- Text: Group 5 [Spell Name]
           bom_display_text(string.format(L["FORMAT_BUFF_GROUP"], group_index, spell.group .. count),
                   "!" .. group_index)
         end -- if group not nil
@@ -1752,16 +1783,21 @@ local function bom_add_buff(spell, party, player_member, in_range)
         add = string.format(BOM.PICTURE_FORMAT, BOM.ICON_TARGET_ON)
       end
 
-      local isInRange = (IsSpellInRange(spell.single, member.unitId) == 1)
+      local is_in_range = (IsSpellInRange(spell.single, member.unitId) == 1)
               and not tContains(spell.SkipList, member.name)
 
-      if isInRange then
+      if bom_prevent_pvp_poisoning(spell.singleLink, member) then
+        -- Nothing, prevent poison function has already added the text
+      elseif is_in_range then
+        -- Text: Target [Spell Name]
         bom_display_text(string.format(L["FORMAT_BUFF_SINGLE"], add .. member.link, spell.singleLink),
                 member.name)
         in_range = true
         bom_catch_a_spell(spell.singleMana, spell.singleId, spell.singleLink, member, spell)
       else
-        bom_display_text(string.format(L["FORMAT_BUFF_SINGLE"], add .. member.name, spell.single),
+        -- Text: Target "SpellName"
+        bom_display_text(string.format(L["FORMAT_BUFF_SINGLE"],
+                add .. member.name, spell.single),
                 member.name)
       end
     end
@@ -1810,9 +1846,11 @@ local function bom_add_resurrection(spell, player_member, in_range)
 
       if is_in_range then
         in_range = true
+        -- Text: Target [Spell Name]
         bom_display_text(string.format(L["FORMAT_BUFF_SINGLE"], member.link, spell.singleLink),
                 member.name)
       else
+        -- Text: Target "SpellName"
         bom_display_text(string.format(L["FORMAT_BUFF_SINGLE"], member.name, spell.single),
                 member.name)
       end
@@ -1820,6 +1858,7 @@ local function bom_add_resurrection(spell, player_member, in_range)
       -- If in range, we can res?
       -- Should we try and resurrect ghosts when their corpse is not targetable?
       if is_in_range or (BOM.SharedState.ResGhost and member.isGhost) then
+        -- Prevent resurrecting PvP players in the world?
         bom_catch_a_spell(spell.singleMana, spell.singleId, spell.singleLink, member, spell)
       end
     end
@@ -1834,15 +1873,16 @@ end
 local function bom_add_self_buff(spell, player_member)
   if (not spell.requiresOutdoors or IsOutdoors())
           and not tContains(spell.SkipList, player_member.name) then
+    -- Text: Target [Spell Name]
     bom_display_text(
             string.format(L["FORMAT_BUFF_SINGLE"], player_member.link, spell.singleLink),
             player_member.name)
     --inRange = true
 
-    bom_catch_a_spell(
-            spell.singleMana, spell.singleId, spell.singleLink,
+    bom_catch_a_spell(spell.singleMana, spell.singleId, spell.singleLink,
             player_member, spell)
   else
+    -- Text: Target "SpellName"
     bom_display_text(string.format(L["FORMAT_BUFF_SINGLE"], player_member.name, spell.single),
             player_member.name)
   end
@@ -1863,6 +1903,7 @@ local function bom_add_regular_buff(spell, player_member, bag_title, bag_command
 
     if BOM.SharedState.DontUseConsumables
             and not IsModifierKeyDown() then
+      -- Text: [Icon] [Consumable Name] x Count
       bom_display_text(
               BOM.FormatTexture(texture)
                       .. item_link .. "x" .. count,
@@ -1871,11 +1912,14 @@ local function bom_add_regular_buff(spell, player_member, bag_title, bag_command
     else
       bag_title = BOM.FormatTexture(texture) .. item_link .. "x" .. count
       bag_command = "/use " .. bag .. " " .. slot
+
+      -- Text: [Icon] [Consumable Name] x Count
       bom_display_text(bag_title, player_member.distance, true)
     end
 
     BOM.ScanModifier = BOM.SharedState.DontUseConsumables
   else
+    -- Text: [Icon] "ConsumableName" x Count
     bom_display_text(spell.single .. "x" .. count,
             player_member.distance,
             true)
@@ -1893,25 +1937,28 @@ end
 local function bom_add_weapon_consumable_buff(spell, player_member,
                                               cast_button_title, macro_command)
   -- count - reagent count remaining for the spell
-  local ok, bag, slot, count = BOM.HasItem(spell.items, true)
+  local have_item, bag, slot, count = BOM.HasItem(spell.items, true)
   count = count or 0
 
-  if ok then
+  if have_item then
+    -- Have item, display the cast message and setup the cast button
     local texture, _, _, _, _, _, item_link, _, _, _ = GetContainerItemInfo(bag, slot)
 
     if BOM.CurrentProfile.Spell[spell.ConfigID].OffHandEnable
             and player_member.OffHandBuff == nil then
+      local function offhand_message()
+        return BOM.FormatTexture(texture)
+                .. item_link .. "x" .. count
+                .. " (" .. L.TooltipOffHand .. ")"
+      end
+
       if BOM.SharedState.DontUseConsumables
               and not IsModifierKeyDown() then
-        bom_display_text(
-                BOM.FormatTexture(texture)
-                        .. item_link .. "x" .. count
-                        .. " (" .. L.TooltipOffHand .. ")",
-                player_member.distance,
-                true)
+        -- Text: [Icon] [Consumable Name] x Count (Off-hand)
+        bom_display_text(offhand_message(), player_member.distance, true)
       else
-        cast_button_title = BOM.FormatTexture(texture)
-                .. item_link .. "x" .. count .. " (" .. L.TooltipOffHand .. ")"
+        -- Text: [Icon] [Consumable Name] x Count (Off-hand)
+        cast_button_title = offhand_message()
         macro_command = "/use " .. bag .. " " .. slot
                 .. "\n/use 17" -- offhand
         bom_display_text(cast_button_title, player_member.distance, true)
@@ -1920,24 +1967,27 @@ local function bom_add_weapon_consumable_buff(spell, player_member,
 
     if BOM.CurrentProfile.Spell[spell.ConfigID].MainHandEnable
             and player_member.MainHandBuff == nil then
-      if BOM.SharedState.DontUseConsumables
-              and not IsModifierKeyDown() then
-        bom_display_text(
-                BOM.FormatTexture(texture)
-                        .. item_link .. "x" .. count
-                        .. " (" .. L.TooltipMainHand .. ")",
-                player_member.distance,
-                true)
-      else
-        cast_button_title = BOM.FormatTexture(texture)
+      local function mainhand_message()
+        return BOM.FormatTexture(texture)
                 .. item_link .. "x" .. count
                 .. " (" .. L.TooltipMainHand .. ")"
+      end
+
+      if BOM.SharedState.DontUseConsumables
+              and not IsModifierKeyDown() then
+        -- Text: [Icon] [Consumable Name] x Count (Main hand)
+        bom_display_text(mainhand_message(), player_member.distance, true)
+      else
+        -- Text: [Icon] [Consumable Name] x Count (Main hand)
+        cast_button_title = mainhand_message()
         macro_command = "/use " .. bag .. " " .. slot .. "\n/use 16" -- mainhand
         bom_display_text(cast_button_title, player_member.distance, true)
       end
     end
     BOM.ScanModifier = BOM.SharedState.DontUseConsumables
   else
+    -- Don't have item but display the intent
+    -- Text: [Icon] [Consumable Name] x Count
     bom_display_text(spell.single .. "x" .. count,
             player_member.distance,
             true)
@@ -1954,16 +2004,13 @@ end
 ---@return string, string cast button title and macro command
 local function bom_add_weapon_enchant_spell(spell, player_member,
                                             cast_button_title, macro_command)
-  local block_mainhand_enchant = false -- set to true to block temporarily
   local block_offhand_enchant = false -- set to true to block temporarily
 
   local _, self_class, _ = UnitClass("player")
   if BOM.TBC and self_class == "SHAMAN" then
     -- Special handling for TBC shamans, you cannot specify slot for enchants, and it goes into main then offhand
     local has_mh, _mh_expire, _mh_charges, _mh_enchantid, has_oh, _oh_expire, _oh_charges, _oh_enchantid = GetWeaponEnchantInfo()
-    if has_mh then
-      block_mainhand_enchant = true
-    else
+    if not has_mh then
       block_offhand_enchant = true -- shamans in TBC can't enchant offhand if MH enchant is missing
     end
 
@@ -1974,13 +2021,11 @@ local function bom_add_weapon_enchant_spell(spell, player_member,
 
   if BOM.CurrentProfile.Spell[spell.ConfigID].MainHandEnable
           and player_member.MainHandBuff == nil then
-    if block_mainhand_enchant then
-      local t = spell.singleLink .. " (" .. L.TooltipMainHand .. ") "
-              .. L.ShamanEnchantBlocked
-      bom_display_text(t, player_member.distance, true)
-    else
-      bom_catch_a_spell(spell.singleMana, spell.singleId, spell.singleLink, player_member, spell)
-    end
+    -- Text: [Spell Name] (Main hand)
+    bom_display_text(spell.singleLink .. " (" .. L.TooltipMainHand .. ") ",
+            player_member.distance, true)
+    bom_catch_a_spell(spell.singleMana, spell.singleId, spell.singleLink,
+            player_member, spell)
   end
 
   if BOM.CurrentProfile.Spell[spell.ConfigID].OffHandEnable
@@ -1988,12 +2033,16 @@ local function bom_add_weapon_enchant_spell(spell, player_member,
     if block_offhand_enchant then
       local t = spell.singleLink .. " (" .. L.TooltipOffHand .. ") "
               .. L.ShamanEnchantBlocked
+      -- Text: [Spell Name] (Off-hand) Blocked waiting
       bom_display_text(t, player_member.distance, true)
     else
-      bom_catch_a_spell(spell.singleMana, spell.singleId, spell.singleLink, player_member, spell)
+      -- Text: [Spell Name] (Off-hand)
+      bom_display_text(spell.singleLink .. " (" .. L.TooltipOffHand .. ") ",
+              player_member.distance, true)
+      bom_catch_a_spell(spell.singleMana, spell.singleId, spell.singleLink,
+              player_member, spell)
     end
   end
-
 
   return cast_button_title, macro_command
 end
@@ -2138,6 +2187,7 @@ function BOM.UpdateScan()
       elseif spell.isInfo then
         if #spell.NeedMember then
           for memberIndex, member in ipairs(spell.NeedMember) do
+            -- Text: [Player Link] [Spell Link]
             bom_display_text(
                     string.format(L["FORMAT_BUFF_SINGLE"], member.link, spell.singleLink),
                     member.distance,
@@ -2150,6 +2200,7 @@ function BOM.UpdateScan()
           if BOM.PlayerCasting == nil then
             bom_set_tracking(spell, true)
           else
+            -- Text: "Player" "Spell Name"
             bom_display_text(
                     string.format(L["FORMAT_BUFF_SINGLE"], player_member.name, spell.single),
                     player_member.name)
@@ -2164,6 +2215,7 @@ function BOM.UpdateScan()
         if spell.shapeshiftFormId and GetShapeshiftFormID() == spell.shapeshiftFormId then
           -- if spell is shapeshift, and is already active, skip it
         elseif #spell.NeedMember > 0 then
+          -- self buffs are not pvp-guarded
           bom_add_self_buff(spell, player_member)
         end
 
@@ -2189,12 +2241,14 @@ function BOM.UpdateScan()
     if BOM.SharedState.ArgentumDawn then
       -- settings to remind to remove AD trinket != instance compatible with AD Commission
       if player_member.hasArgentumDawn ~= tContains(BOM.ArgentumDawn.dungeon, instanceID) then
+        -- Text: [Argent Dawn Commission]
         bom_display_text(BOM.ArgentumDawn.Link, player_member.distance, true)
       end
     end
 
     if BOM.SharedState.Carrot then
       if player_member.hasCarrot and not tContains(BOM.Carrot.dungeon, instanceID) then
+        -- Text: [Carrot on a Stick]
         bom_display_text(BOM.Carrot.Link, player_member.distance, true)
       end
     end
@@ -2209,6 +2263,7 @@ function BOM.UpdateScan()
     local link = GetInventoryItemLink("player", GetInventorySlotInfo("MainHandSlot"))
 
     if link then
+      -- Text: [Consumable Enchant Link]
       bom_display_text(link, player_member.distance, true)
     end
   end
@@ -2254,6 +2309,7 @@ function BOM.UpdateScan()
               .. (target and (" @" .. target) or "")
       macro_command = (target and ("/target " .. target .. "/n") or "")
               .. "/use " .. item.Bag .. " " .. item.Slot
+      -- Text: [Icon] [Item Link] @Target
       bom_display_text(cast_button_title, player_member.distance, true)
 
       if BOM.SharedState.DontUseConsumables and not IsModifierKeyDown() then

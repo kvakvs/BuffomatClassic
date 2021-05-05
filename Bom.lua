@@ -18,6 +18,7 @@ BOM.BehaviourSettings = {
   { "InWorld", true },
   { "InPVP", true },
   { "InInstance", true },
+  { "PreventPVPTag", true },
   { "DeathBlock", true },
   { "NoGroupBuff", false },
   { "SameZone", false },

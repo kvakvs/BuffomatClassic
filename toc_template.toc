@@ -27,14 +27,14 @@ src/classes/State.lua
 src/classes/CharacterState.lua
 
 src/Cache.lua
-src/BomOptions.lua
-src/BomMinimapButton.lua
-src/BomToolbox.lua
-src/BomL10n.lua
-src/BomToolbox.lua
-src/BomScan.lua
-src/BomTab.lua
-src/BomMyButton.lua
+src/Options.lua
+src/MinimapButton.lua
+src/Toolbox.lua
+src/Languages.lua
+src/Toolbox.lua
+src/SpellScan.lua
+src/UiTabs.lua
+src/MyButton.lua
 
 Bom.lua
 Bom.xml

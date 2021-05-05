@@ -952,7 +952,7 @@ end
 
 ---Add onenter/onleave scripts to show the tooltip with translation by key
 ---@param control Control
----@param translation_key string - the key from BomL10n.lua
+---@param translation_key string - the key from Languages.lua
 function Tool.Tooltip(control, translation_key)
   control:SetScript("OnEnter", function()
     GameTooltip:SetOwner(control, "ANCHOR_RIGHT")
