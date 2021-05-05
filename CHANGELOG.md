@@ -9,6 +9,7 @@
 - TBC food buffs added
 - Option to skip buffing PvP targets if you are not PvP - to prevent PVP
   poisoning of open world raids
+- Bug where checking intellect buff or fortitude
 
 ## Buffomat Classic and TBC 2021.4.7
 

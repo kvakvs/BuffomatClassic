@@ -569,6 +569,10 @@ end
 ---Called from event handler on Addon Loaded event
 ---Execution start here
 function BOM.Init()
+  BOM.SetupSpells()
+  BOM.SetupCancelBuffs()
+  BOM.SetupItemCache()
+
   function SetDefault(db, var, init)
     if db[var] == nil then
       db[var] = init
@@ -1350,7 +1354,3 @@ end
 --  return result .. "}"
 --end
 --BOM.DbgTableToString = table_to_string
-
-BOM.SetupSpells()
-BOM.SetupCancelBuffs()
-BOM.SetupItemCache()
