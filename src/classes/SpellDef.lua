@@ -32,6 +32,7 @@ BOM.Class = BOM.Class or {}
 ---@field isConsumable boolean Is an item-based buff; the spell must have 'items' field too
 ---@field isInfo boolean
 ---@field isOwn boolean Spell only casts on self
+---@field isBlessing boolean Spell will be cast on group members of the same class
 ---
 ---@field item number Buff is granted by an item in user's bag. Number is item id shows as the icon.
 ---@field items table<number> All inventory item ids providing the same effect
@@ -44,6 +45,8 @@ BOM.Class = BOM.Class or {}
 ---@field singleFamily table<number> Family of single buff spell ids which are mutually exclusive
 ---@field singleId number Spell id for single buff
 ---@field singleMana number Mana cost
+---@field ignoreIfHaveBuff table<number> If these auras are present on target, the buff is not queued
+---@field section string Custom section to begin new spells group in the row builder
 ---
 ---Fields created dynamically while the addon is running
 ---

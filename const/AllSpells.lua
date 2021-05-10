@@ -414,33 +414,41 @@ local function bom_setup_paladin_spells(spells, enchants)
   local blessing_duration = tbc_or_classic(DURATION_10M, DURATION_5M)
   local greater_blessing_duration = tbc_or_classic(DURATION_15M, DURATION_30M)
 
+  --
+  -- LESSER BLESSINGS
+
   BOM.Class.SpellDef:scan_spell(spells, 20217, --Blessing of Kings
-          { groupId         = 25898, isBlessing = true, default = true,
-            singleDuration  = blessing_duration, groupDuration = greater_blessing_duration,
-            reagentRequired = { 21177 }, targetClasses = { "MAGE", "HUNTER", "WARLOCK" } },
+          { groupFamily    = { 25898 }, isBlessing = true, default = true,
+            singleDuration = blessing_duration, ignoreIfHaveBuff = { 25898 }, -- Greater kings
+            targetClasses  = { "MAGE", "HUNTER", "WARLOCK" } },
           { playerClass = "PALADIN" })
-  BOM.Class.SpellDef:scan_spell(spells, 19979, --Blessing of Light
-          { groupFamily     = { 25890, -- Rank 1
-                                27145 }, -- TBC: Rank 2
-            singleFamily    = { 19977, 19978, 19979, -- Ranks 1-3
-                                27144 }, -- TBC: Rank 4
-            isBlessing      = true, default = true,
-            reagentRequired = { 21177 }, singleDuration = blessing_duration,
-            groupDuration   = greater_blessing_duration, targetClasses = BOM_NO_CLASS },
+
+  BOM.Class.SpellDef:scan_spell(spells, 19979, -- Blessing of Light
+          { singleFamily   = { 19977, 19978, 19979, -- Ranks 1-3
+                               27144 }, -- TBC: Rank 4
+            isBlessing     = true, default = true, ignoreIfHaveBuff = { 21177 }, -- Greater Light
+            singleDuration = blessing_duration, groupDuration = greater_blessing_duration,
+            targetClasses  = BOM_NO_CLASS },
           { playerClass = "PALADIN" })
+
   BOM.Class.SpellDef:scan_spell(spells, 25291, --Blessing of Might
-          { isBlessing      = true, default = true,
-            singleFamily    = { 19740, 19834, 19835, 19836, 19837, 19838, 25291, -- Ranks 1-7
-                                27140 }, -- TBC: Rank 8
-            groupFamily     = { 25782, 25916, -- Ranks 1-2
-                                27141 }, -- TBC: Rank 3
-            singleDuration  = blessing_duration, groupDuration = greater_blessing_duration,
-            reagentRequired = { 21177 }, targetClasses = { "WARRIOR", "ROGUE" } },
+          { isBlessing     = true, default = true, ignoreIfHaveBuff = { 25782, 25916, 27141 }, -- Greater Might
+            singleFamily   = { 19740, 19834, 19835, 19836, 19837, 19838, 25291, -- Ranks 1-7
+                               27140 }, -- TBC: Rank 8
+            singleDuration = blessing_duration, targetClasses = { "WARRIOR", "ROGUE" } },
           { playerClass = "PALADIN" })
+
   BOM.Class.SpellDef:scan_spell(spells, 1038, --Blessing of Salvation
-          { groupId         = 25895, isBlessing = true, default = true,
+          { isBlessing    = true, default = true, singleDuration = blessing_duration,
+            targetClasses = BOM_NO_CLASS, ignoreIfHaveBuff = { 25895 }, },
+          { playerClass = "PALADIN" })
+
+  BOM.Class.SpellDef:scan_spell(spells, 25290, --Blessing of Wisdom
+          { isBlessing      = true, default = true,
+            singleFamily    = { 19742, 19850, 19852, 19853, 19854, 25290, -- Ranks 1-6
+                                27142 }, -- TBC: Rank 7
             singleDuration  = blessing_duration, groupDuration = greater_blessing_duration,
-            reagentRequired = { 21177 }, targetClasses = BOM_NO_CLASS },
+            targetClasses = { "DRUID", "SHAMAN", "PRIEST", "PALADIN" } },
           { playerClass = "PALADIN" })
   BOM.Class.SpellDef:scan_spell(spells, 20914, --Blessing of Sanctuary
           { isBlessing      = true, default = true,
@@ -452,16 +460,45 @@ local function bom_setup_paladin_spells(spells, enchants)
             singleDuration  = blessing_duration, groupDuration = greater_blessing_duration,
             targetClasses   = BOM_NO_CLASS },
           { playerClass = "PALADIN" })
-  BOM.Class.SpellDef:scan_spell(spells, 25290, --Blessing of Wisdom
-          { isBlessing      = true, default = true,
-            singleFamily    = { 19742, 19850, 19852, 19853, 19854, 25290, -- Ranks 1-6
-                                27142 }, -- TBC: Rank 7
-            groupFamily     = { 25894, 25918, -- Ranks 1-2
-                                27143 }, -- TBC: Rank 3
-            singleDuration  = blessing_duration, groupDuration = greater_blessing_duration,
+  --
+  -- GREATER BLESSINGS
+  --
+  BOM.Class.SpellDef:scan_spell(spells, 25898, --Greater Blessing of Kings
+          { isBlessing      = true, default = true, singleDuration = greater_blessing_duration,
+            reagentRequired = { 21177 }, targetClasses = { "MAGE", "HUNTER", "WARLOCK" }, },
+          { playerClass = "PALADIN" })
+
+  BOM.Class.SpellDef:scan_spell(spells, 25890, -- Greater Blessing of Light
+          { singleFamily     = { 25890, -- Rank 1
+                                27145 }, -- TBC: Rank 2
+            isBlessing      = true, default = false,
+            reagentRequired = { 21177 }, singleDuration = greater_blessing_duration,
+            targetClasses   = BOM_NO_CLASS },
+          { playerClass = "PALADIN" })
+  BOM.Class.SpellDef:scan_spell(spells, 25916, --Greater Blessing of Might
+          { isBlessing      = true, default = false,
+            singleFamily     = { 25782, 25916, -- Ranks 1-2
+                                27141 }, -- TBC: Rank 3
+            singleDuration   = greater_blessing_duration,
+            reagentRequired = { 21177 }, targetClasses = { "WARRIOR", "ROGUE" } },
+          { playerClass = "PALADIN" })
+  BOM.Class.SpellDef:scan_spell(spells, 25895, --Greater Blessing of Salvation
+          { singleFamily     = { 25895 }, isBlessing = true, default = false,
+            singleDuration   = greater_blessing_duration,
+            reagentRequired = { 21177 }, targetClasses = BOM_NO_CLASS },
+          { playerClass = "PALADIN" })
+  BOM.Class.SpellDef:scan_spell(spells, 25918, --Greater Blessing of Wisdom
+          { isBlessing      = true, default = false,
+            singleFamily     = { 25894, 25918, -- Ranks 1-2
+                                 27143 }, -- TBC: Rank 3
+            singleDuration  = greater_blessing_duration,
             reagentRequired = { 21177 }, targetClasses = { "DRUID", "SHAMAN", "PRIEST", "PALADIN" } },
           { playerClass = "PALADIN" })
 
+  -- END ------
+  --
+  -- ----------------------------------
+  --
   BOM.Class.SpellDef:scan_spell(spells, 10293, -- Devotion Aura
           { type         = "aura", default = false,
             singleFamily = { 465, 10290, 643, 10291, 1032, 10292, 10293, -- Rank 1-7
@@ -490,6 +527,9 @@ local function bom_setup_paladin_spells(spells, enchants)
   BOM.Class.SpellDef:scan_spell(spells, 20218, --Sanctity Aura
           { type = "aura", default = false },
           { playerClass = "PALADIN" })
+  --
+  -- ----------------------------------
+  --
   BOM.Class.SpellDef:scan_spell(spells, 20773, -- Redemption / Auferstehung
           { type = "resurrection", default = true, singleFamily = { 7328, 10322, 10324, 20772, 20773 } },
           { playerClass = "PALADIN" })

@@ -1304,7 +1304,7 @@ function BOM.ShowSpellSettings()
   BOM.ShowWindow(2)
 end
 
-function BOM.DoBlessin4gOnClick(self)
+function BOM.DoBlessingOnClick(self)
   local saved = self._privat_DB[self._privat_Var]
 
   for i, spell in ipairs(BOM.SelectedSpells) do

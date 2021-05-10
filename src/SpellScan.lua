@@ -420,6 +420,7 @@ function BOM.GetSpells()
 
       --setDefaultValues!
       for j, each_profile in ipairs(BOM.ALL_PROFILES) do
+        ---@type SpellDef
         local spell_ptr = BOM.CharacterState[each_profile].Spell[spell.ConfigID]
 
         if spell_ptr == nil then
@@ -673,6 +674,7 @@ local function bom_get_party_members_force_update(member, player_member)
       spellId = BOM.SpellToSpell[spellId] or spellId
 
       if spellId then
+        -- Skip members who have a buff on the global ignore list - example phaseshifted imps
         if tContains(BOM.BuffIgnoreAll, spellId) then
           wipe(member.buffs)
           member.NeedBuff = false
@@ -1061,6 +1063,7 @@ local function bom_update_spell_targets(party, spell, player_member, someone_is_
     --spells
     for i, member in ipairs(party) do
       local ok = false
+      ---@type SpellDef
       local profile_spell = BOM.CurrentProfile.Spell[spell.ConfigID]
 
       if profile_spell.Class[member.class]

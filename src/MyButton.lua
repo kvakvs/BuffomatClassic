@@ -150,6 +150,9 @@ function BOM.MyButton_SetTextures(self, sel, unsel, dis, selCoord, unselCoord, d
   BOM.MyButton_Update(self)
 end
 
+---@param db table<string, any> A storage table where clicking the button will modify something
+---@param var string Key in the table to be modified
+---@param set any Value to be written to the table if the button is clicked
 function BOM.MyButton_SetVariable(self, db, var, set)
   self._privat_DB = db
   self._privat_Var = var

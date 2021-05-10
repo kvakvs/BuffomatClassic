@@ -37,7 +37,7 @@ local function add_row_of_class_buttons(row_builder, is_horde, spell)
                   .. BOM.FormatTexture(BOM.ICON_SELF_CAST_OFF) .. " - " .. L.TooltipSelfCastCheckbox_Party)
 
   row_builder.prev_control = spell.frames.SelfCast
-  row_builder.dx = 2
+  row_builder.dx = 0
 
   --------------------------------------
   -- Class-Cast checkboxes one per class
@@ -381,24 +381,35 @@ local function bom_create_tab_row(row_builder, is_horde, spell, self_class)
   end
   --<<----------------------------
 
-  row_builder.dy = 12
+  row_builder.dy = 12 -- step down 12 pixels if a new section is starting
+
+  --if spell.section ~= nil and row_builder.section ~= spell.section then
+  --  row_builder.section = spell.section -- custom section
 
   if spell.isOwn and row_builder.section ~= "isOwn" then
     row_builder.section = "isOwn"
+
   elseif spell.type == "tracking" and row_builder.section ~= "isTracking" then
     row_builder.section = "isTracking"
+
   elseif spell.type == "resurrection" and row_builder.section ~= "isResurrection" then
     row_builder.section = "isResurrection"
+
   elseif spell.type == "seal" and row_builder.section ~= "isSeal" then
     row_builder.section = "isSeal"
+
   elseif spell.type == "aura" and row_builder.section ~= "isAura" then
     row_builder.section = "isAura"
+
   elseif spell.isBlessing and row_builder.section ~= "isBlessing" then
     row_builder.section = "isBlessing"
+
   elseif spell.isInfo and row_builder.section ~= "isInfo" then
     row_builder.section = "isInfo"
+
   elseif spell.isConsumable and row_builder.section ~= "isConsumable" then
     row_builder.section = "isConsumable"
+
   else
     row_builder.dy = 2
   end
@@ -630,6 +641,7 @@ end
 ---@param spell SpellDef
 local function update_selected_spell(spell)
   -- the pointer to spell in current BOM profile
+  ---@type SpellDef
   local profile_spell = BOM.CurrentProfile.Spell[spell.ConfigID]
 
   spell.frames.Enable:SetVariable(profile_spell, "Enable")
@@ -661,6 +673,7 @@ local function update_selected_spell(spell)
     --========================================
     local force_cast_button = spell.frames.ForceCastButton
     local exclude_button = spell.frames.ExcludeButton
+
     local tooltip_force_targets = bom_targets_tooltip(
             L.FormatAllForceCastTargets,
             L.FormatForceCastNone,
