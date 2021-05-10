@@ -85,7 +85,17 @@ end
 
 BOM.WipeCachedItems = true
 
+---@class GetContainerItemInfoResult
+---@field Index number
+---@field ID number
+---@field CD table
+---@field Link string
+---@field Bag number
+---@field Slot number
+---@field Texture number|string
+
 -- Stores copies of GetContainerItemInfo parse results
+---@type table<number, GetContainerItemInfoResult>
 local _GetItemListCached = {}
 
 function BOM.GetItemList()
@@ -147,30 +157,25 @@ function BOM.GetItemList()
 end
 
 ---Formats a spell icon + spell name as a link
----@param spellId number - spell id
----@param icon string - spell icon, formatted as texture escape sequence
----@param name string - spell name
----@param rank string - ignored
-local function bom_format_spell_link(spellId, icon, name, rank)
-  --local name, rank, icon, castTime, minRange, maxRange, spellId = GetSpellInfo(spell)
-  if spellId == nil then
+---@param spell_info GSICacheItem spell info from the cache via BOM.GetSpellInfo
+local function bom_format_spell_link(spell_info)
+  if spell_info == nil then
+    return "NIL SPELL"
+  end
+  if spell_info.spellId == nil then
     return "NIL SPELLID"
   end
 
-  name = name or "MISSING NAME"
-  icon = icon or "MISSING ICON"
-
-  return "|Hspell:" .. spellId
+  return "|Hspell:" .. spell_info.spellId
           .. "|h|r |cff71d5ff"
-          .. BOM.FormatTexture(icon)
-          .. name
+          .. BOM.FormatTexture(spell_info.icon)
+          .. spell_info.name
           .. "|r|h"
 end
 
 ---Unused
 local function bom_spell_link_from_spell(spell)
-  local name, rank, icon, castTime, minRange, maxRange, spellId = GetSpellInfo(spell)
-  return bom_format_spell_link(spellId, icon, name)
+  return bom_format_spell_link(BOM.GetSpellInfo(spell))
 end
 
 --Flag set to true when custom spells and cancel-spells were imported from the config
@@ -209,10 +214,8 @@ function BOM.GetSpells()
   if BOM.ArgentumDawn.Link == nil
           or BOM.Carrot.Link == nil then
     do
-      local name, rank, icon, castTime, minRange, maxRange, spellId = GetSpellInfo(BOM.ArgentumDawn.spell)
-      BOM.ArgentumDawn.Link = bom_format_spell_link(spellId, icon, name, rank)
-      name, rank, icon, castTime, minRange, maxRange, spellId = GetSpellInfo(BOM.Carrot.spell)
-      BOM.Carrot.Link = bom_format_spell_link(spellId, icon, name, rank)
+      BOM.ArgentumDawn.Link = bom_format_spell_link(BOM.GetSpellInfo(BOM.ArgentumDawn.spell))
+      BOM.Carrot.Link = bom_format_spell_link(BOM.GetSpellInfo(BOM.Carrot.spell))
     end
   end
 
@@ -227,11 +230,12 @@ function BOM.GetSpells()
     end
 
     -- GetSpellNames and set default duration
-    local name, rank, icon, castTime, minRange, maxRange, spellId = GetSpellInfo(spell.singleId)
-    spell.single = name
-    rank = GetSpellSubtext(spell.singleId) or ""
-    spell.singleLink = bom_format_spell_link(spellId, icon, name, rank)
-    spell.Icon = icon
+    local spell_info = BOM.GetSpellInfo(spell.singleId)
+
+    spell.single = spell_info.name
+    spell_info.rank = GetSpellSubtext(spell.singleId) or ""
+    spell.singleLink = bom_format_spell_link(spell_info)
+    spell.Icon = spell_info.icon
 
     BOM.Tool.iMerge(BOM.AllSpellIds, spell.singleFamily)
 
@@ -291,37 +295,37 @@ function BOM.GetSpells()
             and not spell.isConsumable
     then
       -- Load spell info and save some good fields for later use
-      local name, rank, icon, castTime, minRange, maxRange, spellId = GetSpellInfo(spell.singleId)
-      spell.single = name
-      rank = GetSpellSubtext(spell.singleId) or ""
-      spell.singleLink = bom_format_spell_link(spellId, icon, name, rank)
-      spell.Icon = icon
+      local spell_info = BOM.GetSpellInfo(spell.singleId)
+      spell.single = spell_info.name
+      spell_info.rank = GetSpellSubtext(spell.singleId) or ""
+      spell.singleLink = bom_format_spell_link(spell_info)
+      spell.Icon = spell_info.icon
 
       if spell.type == "tracking" then
-        spell.trackingIconId = icon
-        spell.trackingSpellName = name
+        spell.trackingIconId = spell_info.icon
+        spell.trackingSpellName = spell_info.name
       end
 
       if not spell.isInfo
               and not spell.isConsumable
               and spell.singleDuration
-              and BOM.SharedState.Duration[name] == nil
+              and BOM.SharedState.Duration[spell_info.name] == nil
               and IsSpellKnown(spell.singleId) then
-        BOM.SharedState.Duration[name] = spell.singleDuration
+        BOM.SharedState.Duration[spell_info.name] = spell.singleDuration
       end
     end
 
     if spell.groupId then
-      local name, rank, icon, castTime, minRange, maxRange, spellId = GetSpellInfo(spell.groupId)
-      spell.group = name
-      rank = GetSpellSubtext(spell.groupId) or ""
-      spell.groupLink = bom_format_spell_link(spellId, icon, name, rank)
+      local spell_info = BOM.GetSpellInfo(spell.groupId)
+      spell.group = spell_info.name
+      spell_info.rank = GetSpellSubtext(spell.groupId) or ""
+      spell.groupLink = bom_format_spell_link(spell_info)
 
       if spell.groupDuration
-              and BOM.SharedState.Duration[name] == nil
+              and BOM.SharedState.Duration[spell_info.name] == nil
               and IsSpellKnown(spell.groupId)
       then
-        BOM.SharedState.Duration[name] = spell.groupDuration
+        BOM.SharedState.Duration[spell_info.name] = spell.groupDuration
       end
     end
 
@@ -359,11 +363,10 @@ function BOM.GetSpells()
     end
 
     if spell.isConsumable then
-      if not spell.isScanned then
-        --local itemName, itemLink, _rarity, _ilvl, _minLevel, _itType, _itSubtype
-        --, _itStackCount, _itemEquipLoc, itemIcon, _, _, _, _, _, _, _ = GetItemInfo(spell.item)
-        local item_info = BOM.GetItemInfo(spell.item)
+      -- call results are cached if they are successful, should not be a performance hit
+      local item_info = BOM.GetItemInfo(spell.item)
 
+      if not spell.isScanned and item_info then
         if (not item_info.itemName or not item_info.itemLink or not item_info.itemIcon)
                 and BOM.SharedState.Cache.Item[spell.item]
         then
@@ -388,9 +391,6 @@ function BOM.GetSpells()
         else
           BOM.Print("Item not found! Spell=" .. tostring(spell.singleId)
                   .. " Item=" .. tostring(spell.item))
-          --BOM.Print("Item not found! " ..
-          --        spell.single .. " " .. spell.singleId ..
-          --        spell.item .. "x" .. BOM.ItemCache[spell.item])
         end
       else
         add = true

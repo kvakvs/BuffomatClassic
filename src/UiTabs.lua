@@ -62,8 +62,8 @@ local function add_row_of_class_buttons(row_builder, is_horde, spell)
                     .. BOM.FormatTexture(BOM.ICON_EMPTY) .. " - " .. L.TabDoNotBuff .. ": " .. BOM.Tool.ClassName[class] .. "|n"
                     .. BOM.FormatTexture(BOM.ICON_DISABLED) .. " - " .. L.TabBuffOnlySelf)
 
-    if (is_horde and class == "PALADIN")
-            or (not is_horde and class == "SHAMAN") then
+    if not BOM.TBC and ( -- if not TBC hide paladin for horde, hide shaman for alliance
+            (is_horde and class == "PALADIN") or (not is_horde and class == "SHAMAN")) then
       spell.frames[class]:Hide()
     else
       row_builder.prev_control = spell.frames[class]
@@ -529,8 +529,8 @@ local function bom_create_tab_row(row_builder, is_horde, spell, self_class)
     spell.frames.ExcludeButton:Show()
 
     for ci, class in ipairs(BOM.Tool.Classes) do
-      if (is_horde and class == "PALADIN")
-              or (not is_horde and class == "SHAMAN") then
+      if not BOM.TBC and -- if not TBC, hide paladin for horde, hide shaman for alliance
+              ((is_horde and class == "PALADIN") or (not is_horde and class == "SHAMAN")) then
         spell.frames[class]:Hide()
       else
         spell.frames[class]:Show()
