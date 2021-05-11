@@ -109,9 +109,10 @@ local function add_row_of_class_buttons(row_builder, is_horde, spell)
   -- Force Cast Button -(+)-
   --========================================
   if spell.frames.ForceCastButton == nil then
-    spell.frames.ForceCastButton = BOM.UI.CreateButton20(
+    spell.frames.ForceCastButton = BOM.UI.CreateSmallButton(
             "ForceCast" .. spell.singleId,
-            BomC_SpellTab_Scroll_Child)
+            BomC_SpellTab_Scroll_Child,
+            BOM.ICON_TARGET_ON)
     spell.frames.ForceCastButton:SetWidth(20);
     spell.frames.ForceCastButton:SetHeight(20);
   end
@@ -126,11 +127,10 @@ local function add_row_of_class_buttons(row_builder, is_horde, spell)
   -- Exclude/Ignore Buff Target Button (X)
   --========================================
   if spell.frames.ExcludeButton == nil then
-    spell.frames.ExcludeButton = CreateFrame(
-            "Button",
+    spell.frames.ExcludeButton = BOM.UI.CreateSmallButton(
             "Exclude" .. spell.singleId,
             BomC_SpellTab_Scroll_Child,
-            "UIPanelButtonTemplate")
+            BOM.ICON_TARGET_EXCLUDE)
     spell.frames.ExcludeButton:SetWidth(20);
     spell.frames.ExcludeButton:SetHeight(20);
   end
@@ -718,10 +718,12 @@ local function update_selected_spell(spell)
 
       force_cast_button:SetScript("OnClick", function(self)
         if spell_force[last_target] == nil then
-          BOM.Print("Added forced target: " .. last_target)
+          BOM.Print(BOM.FormatTexture(BOM.ICON_TARGET_ON) .. " "
+                  .. L.MessageAddedForced .. ": " .. last_target)
           spell_force[last_target] = last_target
         else
-          BOM.Print("Cleared forced target: " .. last_target)
+          BOM.Print(BOM.FormatTexture(BOM.ICON_TARGET_ON) .. " "
+                  .. L.MessageClearedForced .. ": " .. last_target)
           spell_force[last_target] = nil
         end
         bom_update_forcecast_tooltip(self, profile_spell)
@@ -735,10 +737,12 @@ local function update_selected_spell(spell)
 
       exclude_button:SetScript("OnClick", function(self)
         if spell_exclude[last_target] == nil then
-          BOM.Print("Added excluded target: " .. last_target)
+          BOM.Print(BOM.FormatTexture(BOM.ICON_TARGET_EXCLUDE) .. " "
+                  .. L.MessageAddedExcluded .. ": " .. last_target)
           spell_exclude[last_target] = last_target
         else
-          BOM.Print("Cleared excluded target: " .. last_target)
+          BOM.Print(BOM.FormatTexture(BOM.ICON_TARGET_EXCLUDE) .. " "
+                  .. L.MessageClearedExcluded .. ": " .. last_target)
           spell_exclude[last_target] = nil
         end
         bom_update_exclude_tooltip(self, profile_spell)

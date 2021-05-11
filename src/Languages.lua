@@ -85,6 +85,10 @@ BOM.locales = {
     TooltipSelectTarget           = "Select a raid/party member to enable this option",
     TooltipGroup                  = "Watch buffs in raid group %d",
     TooltipRaidGroupsSettings     = "Raid groups watch settings",
+    MessageAddedForced            = "Will force buff ",
+    MessageClearedForced          = "Removed force buff for",
+    MessageAddedExcluded          = "Will never buff ",
+    MessageClearedExcluded        = "Removed exclusion for",
 
     HintCancelThisBuff            = "Cancel this buff",
     HintCancelThisBuff_Combat     = "Before combat",
@@ -393,6 +397,10 @@ BOM.locales = {
     ["TooltipEnableSpell"]            = "Вкл./откл. заклинание",
     ["TooltipGroup"]                  = "Следить за группой %d в рейде",
     ["TooltipRaidGroupsSettings"]     = "Настройки рейдовых групп",
+    ["MessageAddedForced"]            = "Добавлена цель в список бафов",
+    ["MessageClearedForced"]          = "Убрана дополнительная цель из списка бафов",
+    ["MessageAddedExcluded"]          = "Добавлена цель в список пропуска",
+    ["MessageClearedExcluded"]        = "Цель убрана из списка пропуска",
 
     ["HintCancelThisBuff"]            = "Отменять баф",
     ["HintCancelThisBuff_Combat"]     = "Перед боем",
