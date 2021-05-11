@@ -26,6 +26,7 @@ src/classes/SpellDef.lua
 src/classes/State.lua
 src/classes/CharacterState.lua
 
+src/UiButton.lua
 src/Cache.lua
 src/Options.lua
 src/MinimapButton.lua

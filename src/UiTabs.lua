@@ -109,11 +109,9 @@ local function add_row_of_class_buttons(row_builder, is_horde, spell)
   -- Force Cast Button -(+)-
   --========================================
   if spell.frames.ForceCastButton == nil then
-    spell.frames.ForceCastButton = CreateFrame(
-            "Button",
+    spell.frames.ForceCastButton = BOM.UI.CreateButton20(
             "ForceCast" .. spell.singleId,
-            BomC_SpellTab_Scroll_Child,
-            "UIPanelButtonTemplate")
+            BomC_SpellTab_Scroll_Child)
     spell.frames.ForceCastButton:SetWidth(20);
     spell.frames.ForceCastButton:SetHeight(20);
   end
