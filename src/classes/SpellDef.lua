@@ -71,7 +71,7 @@ local CLASS_TAG = "spelldef"
 
 ---Creates a new SpellDef
 ---@param single_id number Spell id also serving as configId key
----@param fields table<string, any> Other fields
+---@param fields SpellDef Other fields
 ---@return SpellDef
 function BOM.Class.SpellDef:new(single_id, fields)
   fields = fields or {}
@@ -80,6 +80,9 @@ function BOM.Class.SpellDef:new(single_id, fields)
   fields.t = CLASS_TAG
   fields.ConfigID = single_id
   fields.singleId = single_id
+
+  fields.ForcedTarget = {}
+  fields.ExcludedTarget = {}
 
   return fields
 end

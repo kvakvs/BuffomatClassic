@@ -296,36 +296,40 @@ function BOM.GetSpells()
     then
       -- Load spell info and save some good fields for later use
       local spell_info = BOM.GetSpellInfo(spell.singleId)
-      spell.single = spell_info.name
-      spell_info.rank = GetSpellSubtext(spell.singleId) or ""
-      spell.singleLink = bom_format_spell_link(spell_info)
-      spell.Icon = spell_info.icon
+      if spell_info ~= nil then
+        spell.single = spell_info.name
+        spell_info.rank = GetSpellSubtext(spell.singleId) or ""
+        spell.singleLink = bom_format_spell_link(spell_info)
+        spell.Icon = spell_info.icon
 
-      if spell.type == "tracking" then
-        spell.trackingIconId = spell_info.icon
-        spell.trackingSpellName = spell_info.name
-      end
+        if spell.type == "tracking" then
+          spell.trackingIconId = spell_info.icon
+          spell.trackingSpellName = spell_info.name
+        end
 
-      if not spell.isInfo
-              and not spell.isConsumable
-              and spell.singleDuration
-              and BOM.SharedState.Duration[spell_info.name] == nil
-              and IsSpellKnown(spell.singleId) then
-        BOM.SharedState.Duration[spell_info.name] = spell.singleDuration
-      end
+        if not spell.isInfo
+                and not spell.isConsumable
+                and spell.singleDuration
+                and BOM.SharedState.Duration[spell_info.name] == nil
+                and IsSpellKnown(spell.singleId) then
+          BOM.SharedState.Duration[spell_info.name] = spell.singleDuration
+        end
+      end -- spell info returned success
     end
 
     if spell.groupId then
       local spell_info = BOM.GetSpellInfo(spell.groupId)
-      spell.group = spell_info.name
-      spell_info.rank = GetSpellSubtext(spell.groupId) or ""
-      spell.groupLink = bom_format_spell_link(spell_info)
+      if spell_info ~= nil then
+        spell.group = spell_info.name
+        spell_info.rank = GetSpellSubtext(spell.groupId) or ""
+        spell.groupLink = bom_format_spell_link(spell_info)
 
-      if spell.groupDuration
-              and BOM.SharedState.Duration[spell_info.name] == nil
-              and IsSpellKnown(spell.groupId)
-      then
-        BOM.SharedState.Duration[spell_info.name] = spell.groupDuration
+        if spell.groupDuration
+                and BOM.SharedState.Duration[spell_info.name] == nil
+                and IsSpellKnown(spell.groupId)
+        then
+          BOM.SharedState.Duration[spell_info.name] = spell.groupDuration
+        end
       end
     end
 

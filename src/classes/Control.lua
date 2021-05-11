@@ -35,6 +35,14 @@ BOM.Class.GPIMinimapButton.__index = BOM.Class.GPIMinimapButton
 
 
 ---@class Control A blizzard UI frame but may contain private fields used by internal library by GPI
+---@field _privat_DB table Stores value when button is clicked
+---@field _privat_Var string Variable name in the _privat_DB
+---@field _privat_Set any Value to be set/reset to nil when the button is clicked, use nil to toggle a boolean
+---@field _privat_OnClick function
+---@field _privat_state boolean
+---@field _privat_disabled boolean
+---@field _privat_Text string
+---
 ---@field _GPIPRIVAT_events table<string, function> Events
 ---@field _GPIPRIVAT_updates table<function> private field
 ---@field _GPIPRIVAT_MovingStopCallback any private field

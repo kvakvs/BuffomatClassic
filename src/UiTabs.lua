@@ -62,7 +62,7 @@ local function add_row_of_class_buttons(row_builder, is_horde, spell)
                     .. BOM.FormatTexture(BOM.ICON_EMPTY) .. " - " .. L.TabDoNotBuff .. ": " .. BOM.Tool.ClassName[class] .. "|n"
                     .. BOM.FormatTexture(BOM.ICON_DISABLED) .. " - " .. L.TabBuffOnlySelf)
 
-    if not BOM.TBC and ( -- if not TBC hide paladin for horde, hide shaman for alliance
+    if not BOM.TBC and (-- if not TBC hide paladin for horde, hide shaman for alliance
             (is_horde and class == "PALADIN") or (not is_horde and class == "SHAMAN")) then
       spell.frames[class]:Hide()
     else
@@ -109,37 +109,39 @@ local function add_row_of_class_buttons(row_builder, is_horde, spell)
   -- Force Cast Button -(+)-
   --========================================
   if spell.frames.ForceCastButton == nil then
-    spell.frames.ForceCastButton = BOM.CreateMyButton(
+    spell.frames.ForceCastButton = CreateFrame(
+            "Button",
+            "ForceCast" .. spell.singleId,
             BomC_SpellTab_Scroll_Child,
-            BOM.ICON_TARGET_ON,
-            BOM.ICON_TARGET_OFF,
-            BOM.ICON_DISABLED)
+            "UIPanelButtonTemplate")
+    spell.frames.ForceCastButton:SetWidth(20);
+    spell.frames.ForceCastButton:SetHeight(20);
   end
 
   spell.frames.ForceCastButton:SetPoint("TOPLEFT", row_builder.prev_control, "TOPRIGHT", row_builder.dx, 0)
-  spell.frames.ForceCastButton:SetOnClick(BOM.MyButtonOnClick)
   BOM.Tool.Tooltip(spell.frames.ForceCastButton, "TooltipForceCastOnTarget")
 
   row_builder.prev_control = spell.frames.ForceCastButton
-  row_builder.dx = 4
+  row_builder.dx = 0
 
   --========================================
   -- Exclude/Ignore Buff Target Button (X)
   --========================================
   if spell.frames.ExcludeButton == nil then
-    spell.frames.ExcludeButton = BOM.CreateMyButton(
+    spell.frames.ExcludeButton = CreateFrame(
+            "Button",
+            "Exclude" .. spell.singleId,
             BomC_SpellTab_Scroll_Child,
-            BOM.ICON_TARGET_EXCLUDE,
-            BOM.ICON_TARGET_OFF,
-            BOM.ICON_DISABLED)
+            "UIPanelButtonTemplate")
+    spell.frames.ExcludeButton:SetWidth(20);
+    spell.frames.ExcludeButton:SetHeight(20);
   end
 
   spell.frames.ExcludeButton:SetPoint("TOPLEFT", row_builder.prev_control, "TOPRIGHT", row_builder.dx, 0)
-  spell.frames.ExcludeButton:SetOnClick(BOM.MyButtonOnClick)
   BOM.Tool.Tooltip(spell.frames.ExcludeButton, "TooltipExcludeTarget")
 
   row_builder.prev_control = spell.frames.ExcludeButton
-  row_builder.dx = 7
+  row_builder.dx = 2
 end
 
 ---Add a row with spell cancel buttons
@@ -638,6 +640,40 @@ local function bom_targets_tooltip(prefix, empty_text, name_table)
   end
 end
 
+local function bom_tooltip_force_targets(spell)
+  return bom_targets_tooltip(
+        L.FormatAllForceCastTargets,
+        L.FormatForceCastNone,
+        spell.ForcedTarget or {})
+end
+
+---@param spell SpellDef
+local function bom_update_forcecast_tooltip(button, spell)
+  local tooltip_force_targets = bom_tooltip_force_targets(spell)
+  BOM.Tool.TooltipText(
+          button,
+          L.TooltipForceCastOnTarget .. "|n"
+                  .. string.format(L.FormatToggleTarget, BOM.lastTarget)
+                  .. tooltip_force_targets)
+end
+
+local function bom_tooltip_exclude_targets(spell)
+  return bom_targets_tooltip(
+          L.FormatAllExcludeTargets,
+          L.FormatExcludeNone,
+          spell.ExcludedTarget or {})
+end
+
+---@param spell SpellDef
+local function bom_update_exclude_tooltip(button, spell)
+  local tooltip_exclude_targets = bom_tooltip_exclude_targets(spell)
+  BOM.Tool.TooltipText(
+          button,
+          L.TooltipExcludeTarget .. "|n"
+                  .. string.format(L.FormatToggleTarget, BOM.lastTarget)
+                  .. tooltip_exclude_targets)
+end
+
 ---@param spell SpellDef
 local function update_selected_spell(spell)
   -- the pointer to spell in current BOM profile
@@ -671,70 +707,60 @@ local function update_selected_spell(spell)
     end
 
     --========================================
-    local force_cast_button = spell.frames.ForceCastButton
-    local exclude_button = spell.frames.ExcludeButton
-
-    local tooltip_force_targets = bom_targets_tooltip(
-            L.FormatAllForceCastTargets,
-            L.FormatForceCastNone,
-            profile_spell.ForcedTarget or {})
-    local tooltip_exclude_targets = bom_targets_tooltip(
-            L.FormatAllExcludeTargets,
-            L.FormatExcludeNone,
-            profile_spell.ExcludedTarget or {})
+    local force_cast_button = spell.frames.ForceCastButton ---@type Control
+    local exclude_button = spell.frames.ExcludeButton ---@type Control
 
     if BOM.lastTarget ~= nil then
+      -------------------------
       force_cast_button:Enable()
-      BOM.Tool.TooltipText(
-              force_cast_button,
-              L.TooltipForceCastOnTarget .. "|n"
-                      .. string.format(L.FormatToggleTarget, BOM.lastTarget)
-                      .. tooltip_force_targets)
+      bom_update_forcecast_tooltip(force_cast_button, profile_spell)
 
-      if spell.isBlessing then
-        force_cast_button:SetVariable(
-                BOM.CurrentProfile.Spell[BOM.BLESSING_ID],
-                BOM.lastTarget,
-                spell.ConfigID)
-      else
-        force_cast_button:SetVariable(
-                profile_spell.ForcedTarget,
-                BOM.lastTarget,
-                true)
-      end
+      local spell_force = profile_spell.ForcedTarget
+      local last_target = BOM.lastTarget
+
+      force_cast_button:SetScript("OnClick", function(self)
+        if spell_force[last_target] == nil then
+          BOM.Print("Added forced target: " .. last_target)
+          spell_force[last_target] = last_target
+        else
+          BOM.Print("Cleared forced target: " .. last_target)
+          spell_force[last_target] = nil
+        end
+        bom_update_forcecast_tooltip(self, profile_spell)
+      end)
       -------------------------
       exclude_button:Enable()
-      BOM.Tool.TooltipText(
-              exclude_button,
-              L.TooltipExcludeTarget .. "|n"
-                      .. string.format(L.FormatToggleTarget, BOM.lastTarget)
-                      .. tooltip_exclude_targets)
+      bom_update_exclude_tooltip(exclude_button, profile_spell)
 
-      if spell.isBlessing then
-        exclude_button:SetVariable(
-                BOM.CurrentProfile.Spell[BOM.BLESSING_ID],
-                BOM.lastTarget,
-                spell.ConfigID)
-      else
-        exclude_button:SetVariable(
-                profile_spell.ExcludedTarget,
-                BOM.lastTarget,
-                true)
-      end
+      local spell_exclude = profile_spell.ExcludedTarget
+      last_target = BOM.lastTarget
+
+      exclude_button:SetScript("OnClick", function(self)
+        if spell_exclude[last_target] == nil then
+          BOM.Print("Added excluded target: " .. last_target)
+          spell_exclude[last_target] = last_target
+        else
+          BOM.Print("Cleared excluded target: " .. last_target)
+          spell_exclude[last_target] = nil
+        end
+        bom_update_exclude_tooltip(self, profile_spell)
+      end)
 
     else
       --======================================
       force_cast_button:Disable()
       BOM.Tool.TooltipText(
               force_cast_button,
-              L.TooltipForceCastOnTarget .. "|n" .. L.TooltipSelectTarget .. tooltip_force_targets)
-      force_cast_button:SetVariable()
+              L.TooltipForceCastOnTarget .. "|n" .. L.TooltipSelectTarget
+                      .. bom_tooltip_force_targets(profile_spell))
+      --force_cast_button:SetVariable()
       ---------------------------------
       exclude_button:Disable()
       BOM.Tool.TooltipText(
               exclude_button,
-              L.TooltipExcludeTarget .. "|n" .. L.TooltipSelectTarget .. tooltip_exclude_targets)
-      exclude_button:SetVariable()
+              L.TooltipExcludeTarget .. "|n" .. L.TooltipSelectTarget
+                      .. bom_tooltip_exclude_targets(profile_spell))
+      --exclude_button:SetVariable()
     end
   end -- end if has classes
 

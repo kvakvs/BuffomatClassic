@@ -24,6 +24,7 @@ function BOM.MyButton_Update(self)
   end
 end
 
+---@param self Control
 function BOM.MyButton_SetOnClick(self, func)
   self._privat_OnClick = func
 end
@@ -38,6 +39,7 @@ function BOM.MyButton_OnEnable(self)
   BOM.MyButton_Update(self)
 end
 
+---@param self Control
 function BOM.MyButton_OnEnter(self)
   if self._privat_ToolTipLink or self._privat_ToolTipText then
     GameTooltip_SetDefaultAnchor(BomC_Tooltip, UIParent)
@@ -73,6 +75,7 @@ function BOM.MyButton_OnLeave(self)
   self._iconHighlight:SetVertexColor(1, 1, 1, 0);
 end
 
+---@param self Control
 function BOM.MyButton_OnMouseUp(self, button)
   if not self._privat_disabled then
     if self._privat_DB and self._privat_Var then
@@ -99,6 +102,7 @@ function BOM.MyButton_SetText(self, text)
   BOM.MyButton_Update(self)
 end
 
+---@param self Control
 function BOM.MyButton_OnLoad(self, isSecure)
   self._privat_state = true
   self._privat_disabled = false
@@ -108,6 +112,7 @@ function BOM.MyButton_OnLoad(self, isSecure)
   self.SetTooltip = BOM.MyButton_SetTooltip
   self.SetVariable = BOM.MyButton_SetVariable
   self.SetText = BOM.MyButton_SetText
+
   if not isSecure then
     self:SetScript("OnMouseUp", BOM.MyButton_OnMouseUp)
     self.SetOnClick = BOM.MyButton_SetOnClick
@@ -123,6 +128,7 @@ function BOM.MyButton_OnLoad(self, isSecure)
   self:SetScript("OnLeave", BOM.MyButton_OnLeave)
 end
 
+---@param self Control
 function BOM.MyButton_SetState(self, state)
   if state == nil then
     if self._privat_DB and self._privat_Var then
@@ -153,6 +159,7 @@ end
 ---@param db table<string, any> A storage table where clicking the button will modify something
 ---@param var string Key in the table to be modified
 ---@param set any Value to be written to the table if the button is clicked
+---@param self Control
 function BOM.MyButton_SetVariable(self, db, var, set)
   self._privat_DB = db
   self._privat_Var = var
