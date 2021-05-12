@@ -12,21 +12,22 @@ BOM.Class = BOM.Class or {}
 ---@field BuffTarget boolean Also try and buff the current target 
 ---@field Carrot boolean Whether to track carrot equipped in dungeons 
 ---@field DeathBlock boolean Don't cast group buffs, when somebody is dead
----@field DontUseConsumables boolean Prevent use of consumables 
----@field InInstance boolean Buff while in an instance 
----@field InPVP boolean Buff while in PvP instance 
----@field InWorld boolean Buff in the open world 
----@field MainHand boolean Warn about mainhand missing temporary enchant 
----@field NoGroupBuff boolean Avoid casting group buffs 
----@field OpenLootable boolean List lootable items for opening in the task list 
----@field ReplaceSingle boolean Replace single buffs with group 
----@field ResGhost boolean Attempt resurrecting ghosts 
----@field SameZone boolean Check only in the same zone 
----@field SecondaryHand boolean Warn about offhand temporary enchant missing 
----@field SelfFirst boolean Buff self first 
----@field UseRank boolean Use ranked spells
+---@field DisableInRestArea boolean Hide BOM and clear tasks if in resting area ZZZ/city or inn
+---@field DontUseConsumables boolean Prevent use of consumables
+---@field InInstance boolean Buff while in an instance
+---@field InPVP boolean Buff while in PvP instance
+---@field InWorld boolean Buff in the open world
+---@field MainHand boolean Warn about mainhand missing temporary enchant
+---@field NoGroupBuff boolean Avoid casting group buffs
+---@field OpenLootable boolean List lootable items for opening in the task list
+---@field ReplaceSingle boolean Replace single buffs with group
+---@field ResGhost boolean Attempt resurrecting ghosts
+---@field SameZone boolean Check only in the same zone
+---@field SecondaryHand boolean Warn about offhand temporary enchant missing
+---@field SelfFirst boolean Buff self first
 ---@field ShowClassicConsumables boolean Will show pre-TBC consumables
 ---@field ShowTBCConsumables boolean Will show TBC consumables in the list
+---@field UseRank boolean Use ranked spells
 BOM.Class.Profile = {}
 BOM.Class.Profile.__index = BOM.Class.Profile
 

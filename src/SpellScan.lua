@@ -2089,6 +2089,14 @@ function BOM.UpdateScan()
   bom_clear_display_cache()
   BOM.RepeatUpdate = false
 
+  -- Cancel buff tasks if is in a resting area
+  if BOM.SharedState.DisableInRestArea and IsResting() then
+    BOM.AutoClose()
+    bom_cast_button(L.MsgIsResting, false)
+    return
+  end
+
+  -- Cancel buff tasks if in combat
   if InCombatLockdown() then
     BOM.ForceUpdate = false
     BOM.CheckForError = false

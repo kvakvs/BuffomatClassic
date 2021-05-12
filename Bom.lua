@@ -18,6 +18,7 @@ BUFFOMAT_ADDON = BOM
 
 BOM.BehaviourSettings = {
   { "AutoOpen", true },
+  { "DisableInRestArea", true },
   { "InWorld", true },
   { "InPVP", true },
   { "InInstance", true },
@@ -38,7 +39,7 @@ BOM.BehaviourSettings = {
   { "BuffTarget", false },
   { "OpenLootable", true },
   { "SelfFirst", false },
-  { "DontUseConsumables", false }
+  { "DontUseConsumables", false },
   --{ "ShowClassicConsumables", true},
   --{ "ShowTBCConsumables", true},
 }
