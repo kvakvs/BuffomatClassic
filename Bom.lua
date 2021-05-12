@@ -11,7 +11,10 @@ local L = setmetatable(
             end
           end
         })
-BUFFOMAT_ADDON = BOM --global
+
+-- global, visible from XML files and from script console and chat commands
+---@type BuffomatAddon
+BUFFOMAT_ADDON = BOM
 
 BOM.BehaviourSettings = {
   { "AutoOpen", true },
@@ -704,8 +707,10 @@ function BOM.Init()
 
   bom_update_buff_tab_text()
 
-  _G["BINDING_NAME_MACRO Buff'o'mat"] = L["BtnPerformeBuff"]
+  -- Key Binding section header and key translations (see Bindings.XML)
   _G["BINDING_HEADER_BUFFOMATHEADER"] = "Buffomat Classic"
+  _G["BINDING_NAME_MACRO Buffomat Classic"] = L["ButtonCastBuff"]
+  _G["BINDING_NAME_BUFFOMAT_WINDOW"] = L["ButtonBuffomatWindow"]
 
   ----Create small toggle button to the right of [Cast <spell>] button
   --BOM.CreateSingleBuffButton(BomC_ListTab) --maybe not created yet?
@@ -1156,10 +1161,13 @@ function BOM.ShowWindow(tab)
     if not BOM.WindowVisible() then
       BomC_MainWindow:Show()
       autoHelper = "KeepOpen"
+    else
+      BOM.BtnClose()
     end
     BOM.Tool.SelectTab(BomC_MainWindow, tab or 1)
+  else
+    BOM.Print(L.MsgShowWindowInCombat)
   end
-
 end
 
 function BOM.WindowVisible()

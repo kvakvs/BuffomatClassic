@@ -1902,7 +1902,7 @@ end
 ---@param bag_title string - if not empty, is item name from the bag
 ---@param bag_command string - console command to use item from the bag
 ---@return table (bag_title string, bag_command string)
-local function bom_add_regular_buff(spell, player_member, bag_title, bag_command)
+local function bom_add_consumable_self_buff(spell, player_member, bag_title, bag_command)
   local ok, bag, slot, count = BOM.HasItem(spell.items, true)
   count = count or 0
 
@@ -2188,7 +2188,7 @@ function BOM.UpdateScan()
 
       elseif spell.isConsumable then
         if #spell.NeedMember > 0 then
-          cast_button_title, macro_command = bom_add_regular_buff(
+          cast_button_title, macro_command = bom_add_consumable_self_buff(
                   spell, player_member, cast_button_title, macro_command)
         end
 

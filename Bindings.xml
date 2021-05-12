@@ -1,3 +1,6 @@
 <Bindings>
   <Binding name="MACRO Buffomat Classic" header="BUFFOMATHEADER"/>
+  <Binding name="BUFFOMAT_WINDOW" header="BUFFOMATHEADER">
+    BUFFOMAT_ADDON.ShowWindow()
+  </Binding>
 </Bindings>

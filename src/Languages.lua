@@ -29,6 +29,7 @@ BOM.locales = {
     MsgDisabled                   = "Disabled",
     MsgCancelBuff                 = "Cancel buff %s from %s",
     MsgSpellExpired               = "%s expired.",
+    MsgShowWindowInCombat         = "Can't show/hide window in combat",
 
     MsgDownGrade                  = "Spell rank downgrade %s for %s. Please cast again.",
 
@@ -114,7 +115,8 @@ BOM.locales = {
     BtnSettings                   = "Settings Window",
     BtnSettingsSpells             = "Settings Spells",
     BtnBuffs                      = "Consumables",
-    BtnPerformeBuff               = "Cast buff",
+    ButtonCastBuff                = "Cast buff",
+    ButtonBuffomatWindow          = "Show/hide Buffomat Window",
 
     Header_TRACKING               = "Tracking",
     --ActivateTracking              = "Activate tracking:", -- message when tracking is enabled
@@ -169,7 +171,7 @@ BOM.locales = {
     ["BtnBuffs"]                      = "Verbrauchbares",
     ["BtnCancel"]                     = "Abbruch",
     ["BtnOpen"]                       = "Öffnen",
-    ["BtnPerformeBuff"]               = "Zaubere Buff",
+    ["ButtonCastBuff"]                = "Zaubere Buff",
     ["BtnSettings"]                   = "Einstellungen",
     ["BtnSettingsSpells"]             = "Einstellungen Zauber",
     ["CboxArgentumDawn"]              = "Erinnere an die Anstecknadel der Argentumdämmerung",
@@ -379,6 +381,9 @@ BOM.locales = {
     ["MsgCombat"]                     = "В бою",
     ["MsgDead"]                       = "Мертв",
     ["MsgDisabled"]                   = "Отключено",
+    ["MsgCancelBuff"]                 = "Отменён баф %s от %s",
+    ["MsgSpellExpired"]               = "%s заклинание истекло.",
+    ["MsgShowWindowInCombat"]         = "Во время боя нельзя показывать или скрывать панели",
     ["MsgDownGrade"]                  = "Понижение ранга заклинания %s для %s. Попробуйте выполнить баф ещё раз.",
     ["MsgEmpty"]                      = "Нечего делать",
     ["MsgLocalRestart"]               = "Настройки не подействуют до перезагрузки модов (команда /reload)",

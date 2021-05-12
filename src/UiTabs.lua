@@ -580,12 +580,8 @@ end
 ---Filter all known spells through current player spellbook.
 ---Called below from BOM.UpdateSpellsTab()
 local function create_tab(is_horde)
-  --local prev_control
-  --local dy = 0
-  --local section
   local row_builder = BOM.Class.RowBuilder:new()
 
-  -- className, classFilename, classId
   local _, self_class, _ = UnitClass("player")
 
   for i, spell in ipairs(BOM.SelectedSpells) do
@@ -811,11 +807,11 @@ function BOM.UpdateSpellsTab()
     BOM.SpellTabsCreatedFlag = true
   end
 
-  local _className, selfClassName, _classId = UnitClass("player")
+  local _className, self_class_name, _classId = UnitClass("player")
 
   for i, spell in ipairs(BOM.SelectedSpells) do
     if type(spell.onlyUsableFor) == "table"
-            and not tContains(spell.onlyUsableFor, selfClassName) then
+            and not tContains(spell.onlyUsableFor, self_class_name) then
       -- skip
     else
       update_selected_spell(spell)
