@@ -209,7 +209,7 @@ function BOM.GetSpells()
   BOM.ConfigToSpell = {}
 
   BOM.SharedState.Cache = BOM.SharedState.Cache or {}
-  BOM.SharedState.Cache.Item = BOM.SharedState.Cache.Item or {}
+  BOM.SharedState.Cache.Item2 = BOM.SharedState.Cache.Item2 or {}
 
   if BOM.ArgentumDawn.Link == nil
           or BOM.Carrot.Link == nil then
@@ -371,30 +371,46 @@ function BOM.GetSpells()
       local item_info = BOM.GetItemInfo(spell.item)
 
       if not spell.isScanned and item_info then
-        if (not item_info.itemName or not item_info.itemLink or not item_info.itemIcon)
-                and BOM.SharedState.Cache.Item[spell.item]
+        if (not item_info
+                or not item_info.itemName
+                or not item_info.itemLink
+                or not item_info.itemIcon) and BOM.SharedState.Cache.Item2[spell.item]
         then
-          item_info.itemName, item_info.itemLink, item_info.itemIcon = unpack(BOM.SharedState.Cache.Item[spell.item])
+          item_info = BOM.SharedState.Cache.Item2[spell.item]
 
-        elseif (not item_info.itemName or not item_info.itemLink or not item_info.itemIcon)
-                and BOM.ItemCache[spell.item]
+        elseif (not item_info
+                or not item_info.itemName
+                or not item_info.itemLink
+                or not item_info.itemIcon) and BOM.ItemCache[spell.item]
         then
-          item_info.itemName, item_info.itemLink, item_info.itemIcon = unpack(BOM.ItemCache[spell.item])
+          item_info = BOM.ItemCache[spell.item]
         end
 
-        if item_info.itemName and item_info.itemLink and item_info.itemIcon then
+        if item_info
+                and item_info.itemName
+                and item_info.itemLink
+                and item_info.itemIcon then
           add = true
           spell.single = item_info.itemName
           spell.singleLink = BOM.FormatTexture(item_info.itemIcon) .. item_info.itemLink
           spell.Icon = item_info.itemIcon
           spell.isScanned = true
 
-          BOM.SharedState.Cache.Item[spell.item] = {
-            item_info.itemName, item_info.itemLink, item_info.itemIcon
-          }
+          BOM.SharedState.Cache.Item2[spell.item] = item_info
         else
-          BOM.Print("Item not found! Spell=" .. tostring(spell.singleId)
-                  .. " Item=" .. tostring(spell.item))
+            --BOM.Print("Item not found! Spell=" .. tostring(spell.singleId)
+            --      .. " Item=" .. tostring(spell.item))
+
+          -- Go delayed fetch
+          local item = Item:CreateFromItemID(spell.item)
+          item:ContinueOnItemLoad(function()
+            local name = item:GetItemName()
+            local link = item:GetItemLink()
+            local icon = item:GetItemIcon()
+            BOM.SharedState.Cache.Item2[spell.item] = { itemName = name,
+                                                        itemLink = link,
+                                                        itemIcon = icon }
+          end)
         end
       else
         add = true

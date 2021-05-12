@@ -40,6 +40,7 @@ BOM.BehaviourSettings = {
   { "OpenLootable", true },
   { "SelfFirst", false },
   { "DontUseConsumables", false },
+  { "SlowerHardware", false },
   --{ "ShowClassicConsumables", true},
   --{ "ShowTBCConsumables", true},
 }
@@ -122,7 +123,7 @@ local ERR_IS_SHAPESHIFT = {
 
 ---Makes a tuple to pass to the menubuilder to display a settings checkbox in popup menu
 ---@param db table - BomSharedState reference to read settings from it
----@param var string - variable name
+---@param var string Variable name from BOM.BehaviourSettings
 local function bom_make_popup_menu_settings_row(db, var)
   return L["Cbox" .. var], false, db, var
 end
@@ -941,11 +942,28 @@ local function Event_TAXIMAP_OPENED()
   end
 end
 
+---PLAYER_LEVEL_UP Event
+local function Event_PLAYER_LEVEL_UP(level)
+  -- TODO: Rebuild the UI buttons for new spells which appeared due to level up
+  --BOM.SetupSpells()
+  --BOM.ForceUpdate = true
+  --BOM.UpdateScan()
+end
+
+-- Update timers for Buffomat checking spells and buffs
+-- See option: BOM.SharedState.SlowerHardware
 local bom_last_update_timestamp = 0
 local bom_last_modifier
 local bom_fps_check = 0
-local bom_update_timer_limit = 0.500 --bumped from 0.1 which potentially causes Naxxramas lag?
 local bom_slow_count = 0
+
+---bumped from 0.1 which potentially causes Naxxramas lag?
+---Checking BOM.SharedState.SlowerHardware will use bom_slowerhardware_update_timer_limit
+local bom_update_timer_limit = 0.500
+local bom_slowerhardware_update_timer_limit = 1.500
+-- This is written to bom_update_timer_limit if overload is detected in a large raid or slow hardware
+local BOM_THROTTLE_TIMER_LIMIT = 1.000
+local BOM_THROTTLE_SLOWER_HARDWARE_TIMER_LIMIT = 2.000
 
 function BOM.UpdateTimer()
   if BOM.InLoading and BOM.LoadingScreenTimeOut then
@@ -977,10 +995,18 @@ function BOM.UpdateTimer()
     BOM.ForceUpdate = true
   end
 
+  --
+  -- Update timers, slow hardware and auto-throttling
+  --
   bom_fps_check = bom_fps_check + 1
 
+  local update_timer_limit = bom_update_timer_limit
+  if BOM.SharedState.SlowerHardware then
+    update_timer_limit = bom_slowerhardware_update_timer_limit
+  end
+
   if (BOM.ForceUpdate or BOM.RepeatUpdate)
-          and GetTime() - (bom_last_update_timestamp or 0) > bom_update_timer_limit
+          and GetTime() - (bom_last_update_timestamp or 0) > update_timer_limit
           and InCombatLockdown() == false
   then
     bom_last_update_timestamp = GetTime()
@@ -990,11 +1016,12 @@ function BOM.UpdateTimer()
 
     if (debugprofilestop() - bom_fps_check) > 6 and BOM.RepeatUpdate then
       bom_slow_count = bom_slow_count + 1
-      if bom_slow_count >= 6 and bom_update_timer_limit < 1 then
-        bom_update_timer_limit = 1
+
+      if bom_slow_count >= 6 and update_timer_limit < 1 then
+        bom_update_timer_limit = BOM_THROTTLE_TIMER_LIMIT
+        bom_slowerhardware_update_timer_limit = BOM_THROTTLE_SLOWER_HARDWARE_TIMER_LIMIT
         BOM.Print("Overwhelmed - entering slow mode!")
       end
-
     else
       bom_slow_count = 0
     end
@@ -1098,6 +1125,8 @@ end
 ---OnLoad is called when XML frame for the main window is loaded into existence
 ---BOM.Init() will also be called when the addon is loaded (earlier than this)
 function BOM.OnLoad()
+  BOM.RegisterEvent("PLAYER_LEVEL_UP", Event_PLAYER_LEVEL_UP)
+
   BOM.RegisterEvent("TAXIMAP_OPENED", Event_TAXIMAP_OPENED)
   BOM.RegisterEvent("ADDON_LOADED", Event_ADDON_LOADED)
   BOM.RegisterEvent("UNIT_POWER_UPDATE", Event_UNIT_POWER_UPDATE)

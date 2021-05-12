@@ -64,6 +64,7 @@ BOM.locales = {
     CboxShowClassicConsumables    = "Show consumables available in Classic",
     CboxShowTBCConsumables        = "Show consumables available in TBC",
     CboxDisableInRestArea         = "No Buffomat in rest areas (city and inn)",
+    CboxSlowerHardware            = "Less frequent buff checks (slow hardware/raid)",
 
     HeaderRenew                   = "Renew before it expires (in Seconds)",
     EboxTime60                    = "Duration <=60 sec:",

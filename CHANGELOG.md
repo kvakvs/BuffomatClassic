@@ -16,6 +16,17 @@
 - Fixes shaman enchants in live classic; adds new main/offhand enchants for TBC
   shamans
 
+## Buffomat Classic and TBC 2021.4.7
+
+- Paladin blessings now split into single and greater
+- Disable Buffomat in resting areas (toggle option, on by default)
+- Slower hardware option (toggle option) will use 1.5 sec update instead of 0.5
+  sec
+- Fix: Include and Exclude buttons now work again
+- Fix: Spell and item scanning code had a typo
+- Fix: Cache for items is now fixed and it should not print item not found
+  errors anymore (or do /reload once)
+
 ## Buffomat Classic and TBC 2021.4.0-6
 
 - TBC Classic: New class spells and new consumables

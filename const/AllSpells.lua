@@ -444,11 +444,11 @@ local function bom_setup_paladin_spells(spells, enchants)
           { playerClass = "PALADIN" })
 
   BOM.Class.SpellDef:scan_spell(spells, 25290, --Blessing of Wisdom
-          { isBlessing      = true, default = true,
-            singleFamily    = { 19742, 19850, 19852, 19853, 19854, 25290, -- Ranks 1-6
-                                27142 }, -- TBC: Rank 7
-            singleDuration  = blessing_duration, groupDuration = greater_blessing_duration,
-            targetClasses = { "DRUID", "SHAMAN", "PRIEST", "PALADIN" } },
+          { isBlessing     = true, default = true,
+            singleFamily   = { 19742, 19850, 19852, 19853, 19854, 25290, -- Ranks 1-6
+                               27142 }, -- TBC: Rank 7
+            singleDuration = blessing_duration, groupDuration = greater_blessing_duration,
+            targetClasses  = { "DRUID", "SHAMAN", "PRIEST", "PALADIN" } },
           { playerClass = "PALADIN" })
   BOM.Class.SpellDef:scan_spell(spells, 20914, --Blessing of Sanctuary
           { isBlessing      = true, default = true,
@@ -469,7 +469,7 @@ local function bom_setup_paladin_spells(spells, enchants)
           { playerClass = "PALADIN" })
 
   BOM.Class.SpellDef:scan_spell(spells, 25890, -- Greater Blessing of Light
-          { singleFamily     = { 25890, -- Rank 1
+          { singleFamily    = { 25890, -- Rank 1
                                 27145 }, -- TBC: Rank 2
             isBlessing      = true, default = false,
             reagentRequired = { 21177 }, singleDuration = greater_blessing_duration,
@@ -477,20 +477,20 @@ local function bom_setup_paladin_spells(spells, enchants)
           { playerClass = "PALADIN" })
   BOM.Class.SpellDef:scan_spell(spells, 25916, --Greater Blessing of Might
           { isBlessing      = true, default = false,
-            singleFamily     = { 25782, 25916, -- Ranks 1-2
+            singleFamily    = { 25782, 25916, -- Ranks 1-2
                                 27141 }, -- TBC: Rank 3
-            singleDuration   = greater_blessing_duration,
+            singleDuration  = greater_blessing_duration,
             reagentRequired = { 21177 }, targetClasses = { "WARRIOR", "ROGUE" } },
           { playerClass = "PALADIN" })
   BOM.Class.SpellDef:scan_spell(spells, 25895, --Greater Blessing of Salvation
-          { singleFamily     = { 25895 }, isBlessing = true, default = false,
-            singleDuration   = greater_blessing_duration,
+          { singleFamily    = { 25895 }, isBlessing = true, default = false,
+            singleDuration  = greater_blessing_duration,
             reagentRequired = { 21177 }, targetClasses = BOM_NO_CLASS },
           { playerClass = "PALADIN" })
   BOM.Class.SpellDef:scan_spell(spells, 25918, --Greater Blessing of Wisdom
           { isBlessing      = true, default = false,
-            singleFamily     = { 25894, 25918, -- Ranks 1-2
-                                 27143 }, -- TBC: Rank 3
+            singleFamily    = { 25894, 25918, -- Ranks 1-2
+                                27143 }, -- TBC: Rank 3
             singleDuration  = greater_blessing_duration,
             reagentRequired = { 21177 }, targetClasses = { "DRUID", "SHAMAN", "PRIEST", "PALADIN" } },
           { playerClass = "PALADIN" })
@@ -599,14 +599,14 @@ local function bom_setup_rogue_spells(spells, enchants)
             items        = { 22054, 22053, -- TBC: Deadly Poison
                              20844, 8985, 8984, 2893, 2892 },
             isConsumable = true, type = "weapon", duration = duration, default = false },
-          { playerClass = "ROGUE" })
+          { playerClass = "ROGUE", minLevel = 2 })
   enchants[25351] = { 2643, 2642, -- TBC: Deadly Poison
                       2630, 627, 626, 8, 7 } --Deadly Poison
 
   BOM.Class.SpellDef:scan_spell(spells, 11399, --Mind-numbing Poison
           { item     = 9186, items = { 9186, 6951, 5237 }, isConsumable = true, type = "weapon",
             duration = duration, default = false },
-          { playerClass = "ROGUE" })
+          { playerClass = "ROGUE", minLevel = 24 })
   enchants[11399] = { 643, 23, 35 } --Mind-numbing Poison
 
   BOM.Class.SpellDef:scan_spell(spells, 11340, --Instant Poison
@@ -614,7 +614,7 @@ local function bom_setup_rogue_spells(spells, enchants)
             items        = { 21927, -- TBC: Instant Poison
                              8928, 8927, 8926, 6950, 6949, 6947 },
             isConsumable = true, type = "weapon", duration = duration, default = false },
-          { playerClass = "ROGUE" })
+          { playerClass = "ROGUE", minLevel = 20 })
   enchants[11340] = { 2641, -- TBC: Instant Poison
                       625, 624, 623, 325, 324, 323 } --Instant Poison
 
@@ -623,20 +623,20 @@ local function bom_setup_rogue_spells(spells, enchants)
             items        = { 22055, -- TBC: Wound Poison
                              10922, 10921, 10920, 10918 },
             isConsumable = true, type = "weapon", duration = duration, default = false },
-          { playerClass = "ROGUE" })
+          { playerClass = "ROGUE", minLevel = 32 })
   enchants[13227] = { 2644, -- TBC: Wound Poison
                       706, 705, 704, 703 } --Wound Poison
 
   BOM.Class.SpellDef:scan_spell(spells, 11202, --Crippling Poison
           { item     = 3776, items = { 3776, 3775 }, isConsumable = true, type = "weapon",
             duration = duration, default = false },
-          { playerClass = "ROGUE" })
+          { playerClass = "ROGUE", minLevel = 20 })
   enchants[11202] = { 603, 22 } --Crippling Poison
 
   BOM.Class.SpellDef:scan_spell(spells, 26785, --TBC: Anesthetic Poison
           { item         = 21835, items = { 21835 },
             isConsumable = true, type = "weapon", duration = duration, default = false },
-          { playerClass = "ROGUE", isTBC = true })
+          { playerClass = "ROGUE", isTBC = true, minLevel = 68 })
   enchants[26785] = { 2640, } --TBC: Anesthetic Poison
 end
 
@@ -672,9 +672,9 @@ local function bom_setup_misc_spells(spells, enchants)
   --                           29073, 26260, 26474, 18231, 10257, 26472, 28616, 25700,
   --            -- TBC: Food
   --                           34062, 22019 } }))
-  tinsert(spells, BOM.Class.SpellDef:new(20762, --Soulstone | Seelenstein
-          { isInfo       = true, allowWhisper = true, default = false,
-            singleFamily = { 20707, 20762, 20763, 20765, 20764 } }))
+  --tinsert(spells, BOM.Class.SpellDef:new(20762, --Soulstone | Seelenstein
+  --        { isInfo       = true, allowWhisper = true, default = false,
+  --          singleFamily = { 20707, 20762, 20763, 20765, 20764 } }))
   return spells
 end
 
@@ -1025,12 +1025,19 @@ end
 --TODO: This can be calculated from AllSpells spell ids
 function BOM.SetupItemCache()
   local s = {}
-  local function make_item(id, name, color, x)
-    tinsert(s, {
-      name, -- [1]
-      "|cff" .. color .. "|Hitem:" .. tostring(id) .. "::::::::1:::::::|h[" .. name .. "]|h|r", -- [2]
-      x, -- [3]
-    })
+
+  ---@param icon number
+  ---@param id number Item ID
+  local function make_item(id, name, color, icon)
+    local link = "|cff" .. color .. "|Hitem:" .. tostring(id) .. "::::::::1:::::::|h[" .. name .. "]|h|r"
+    --tinsert(s, {
+    --  name, -- [1]
+    --  link, -- [2]
+    --  x, -- [3]
+    --})
+    tinsert(s, { itemName = name,
+                 itemLink = link,
+                 itemIcon = icon })
   end
   local W = LE_ITEM_QUALITY_COMMON
   local G = LE_ITEM_QUALITY_UNCOMMON
@@ -1095,6 +1102,7 @@ function BOM.SetupItemCache()
   make_item(13928, "Grilled Squid", W, 133899)
   make_item(13456, "Greater Frost Protection Potion", W, 134800)
   make_item(13452, "Elixir of the Mongoose", W, 134812)
+  make_item(11564, "Crystal Ward", W, 134129)
   make_item(11567, "Crystal Spire", W, 134134)
   make_item(20748, "Brilliant Mana Oil", W, 134722)
   make_item(13458, "Greater Nature Protection Potion", W, 134802)

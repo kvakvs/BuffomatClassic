@@ -50,6 +50,7 @@ BOM.Class = BOM.Class or {}
 ---
 ---Fields created dynamically while the addon is running
 ---
+---@field isScanned boolean
 ---@field Class table
 ---@field ConfigID number Spell id of level 60 spell used as key everywhere else
 ---@field DeathGroup table List of group members who might be dead but in need of this buff

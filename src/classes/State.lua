@@ -28,6 +28,9 @@ BOM.Class = BOM.Class or {}
 ---@field ShowClassicConsumables boolean Will show pre-TBC consumables
 ---@field ShowTBCConsumables boolean Will show TBC consumables in the list
 ---@field UseRank boolean Use ranked spells
+---@field SlowerHardware boolean Less frequent updates
+---
+---@field Cache table<number, table> Caches responses from GetItemInfo() and GetSpellInfo()
 BOM.Class.Profile = {}
 BOM.Class.Profile.__index = BOM.Class.Profile
 
