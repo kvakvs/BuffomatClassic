@@ -1,5 +1,18 @@
 # Changelog
 
+## Buffomat Classic and TBC 2021.5.8
+
+- Key binding: show/hide Buffomat window, does same as /bom, which you can also
+  macro
+- Paladin blessings now split into single and greater, TBC allows buffing
+  shamans and paladins in the same group
+- Option: Disable Buffomat in resting areas (on by default)
+- Option: Slower hardware, will use 1.5 sec update instead of 0.5 sec
+- Fix: Include and Exclude buttons now work again
+- Fix: Spell and item scanning code had a typo
+- Fix: Cache for items is now fixed and it should not print item not found
+  errors anymore (or do /reload once)
+
 ## Buffomat Classic and TBC 2021.5.1-3
 
 - Warlock summoning fix (all channeled spells) - do not get stuck in Busy state
