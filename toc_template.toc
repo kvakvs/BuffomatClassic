@@ -2,7 +2,7 @@
 # Do not edit - this file is generated from TOC_TEMPLATE.TOC
 #
 ## Interface: ${UI_VERSION}
-## Title: Buffomat Classic TBC
+## Title: ${ADDON_TITLE}
 ## Notes: Semi-automatic buff and resurrection bot, compatible with Burning Crusade Classic
 ## Version: ${BOM_VERSION}
 ## Author: kvakvs; by GPI/Erytheia-Razorfen

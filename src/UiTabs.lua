@@ -438,7 +438,7 @@ local function bom_create_tab_row(row_builder, is_horde, spell, self_class)
   row_builder.prev_control = spell.frames.Enable
   row_builder.dx = 7
 
-  if BOM.SpellHasClasses(spell) then
+  if spell:HasClasses() then
     -- Create checkboxes one per class
     add_row_of_class_buttons(row_builder, is_horde, spell)
   end
@@ -534,7 +534,7 @@ local function bom_create_tab_row(row_builder, is_horde, spell, self_class)
   spell.frames.info:Show()
   spell.frames.Enable:Show()
 
-  if BOM.SpellHasClasses(spell) then
+  if spell:HasClasses() then
     spell.frames.SelfCast:Show()
     spell.frames.ForceCastButton:Show()
     spell.frames.ExcludeButton:Show()
@@ -676,7 +676,7 @@ local function update_selected_spell(spell)
 
   spell.frames.Enable:SetVariable(profile_spell, "Enable")
 
-  if BOM.SpellHasClasses(spell) then
+  if spell:HasClasses() then
     spell.frames.SelfCast:SetVariable(profile_spell, "SelfCast")
 
     for ci, class in ipairs(BOM.Tool.Classes) do

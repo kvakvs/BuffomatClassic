@@ -431,7 +431,7 @@ function BOM.ChooseProfile (profile)
     BOM.Print("Set profile to " .. profile)
 
   else
-    BOM.Print("Unknown profile")
+    BOM.Print("Unknown profile: " .. profile)
   end
 
   BOM.ClearSkip()
@@ -836,7 +836,8 @@ local function Event_CombatStart()
   if not InCombatLockdown() then
     BomC_ListTab_Button:Disable()
   end
-  BOM.BattleCancelBuffs()
+
+  BOM.DoCancelBuffs()
 end
 
 local function Event_CombatStop()

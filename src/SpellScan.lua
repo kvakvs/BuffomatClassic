@@ -452,7 +452,7 @@ function BOM.GetSpells()
           spell_ptr.ExcludedTarget = spell_ptr.ExcludedTarget or {}
           spell_ptr.Enable = spell.default or false
 
-          if BOM.SpellHasClasses(spell) then
+          if spell:HasClasses() then
             local SelfCast = true
             spell_ptr.SelfCast = false
 
@@ -2487,7 +2487,8 @@ function BOM.ClearSkip()
   end
 end
 
-function BOM.BattleCancelBuffs()
+---On Combat Start go through cancel buffs list and cancel those bufs
+function BOM.DoCancelBuffs()
   if BOM.SelectedSpells == nil or BOM.CurrentProfile == nil then
     return
   end
@@ -2500,15 +2501,4 @@ function BOM.BattleCancelBuffs()
               UnitName(BOM.CancelBuffSource) or ""))
     end
   end
-end
-
----@param spell SpellDef
-function BOM.SpellHasClasses(spell)
-  return not (spell.isConsumable
-          or spell.isOwn
-          or spell.type == "resurrection"
-          or spell.type == "seal"
-          or spell.type == "tracking"
-          or spell.type == "aura"
-          or spell.isInfo)
 end
