@@ -20,8 +20,8 @@ BOM.Class = BOM.Class or {}
 --- Selected spell casting and display on the cast button
 ---@field singleLink string Printable link for single buff
 ---@field groupLink string Printable link for group buff
----@field single string Name of single buff spell
----@field group string Name of group buff spell
+---@field single string Name of single buff spell (from GetSpellInfo())
+---@field group string Name of group buff spell (from GetSpellInfo())
 ---
 ---type="aura" Auras are no target buff check. True if the buff affects others in radius, and not a target buff
 ---type="seal" Seals are 1hand enchants which are unique for equipped weapon. Paladins use seals. Shamans also use seals but in TBC shamans have 2 independent seals.
@@ -65,6 +65,7 @@ BOM.Class = BOM.Class or {}
 ---@field trackingIconId number Numeric id for the tracking texture icon
 ---@field trackingSpellName string For tracking spells, contains string name for the spell
 ---@field shapeshiftFormId number Check this shapeshift form to know whether spell is already casted
+---@field optionText string Used to create sections in spell list in the options page
 BOM.Class.SpellDef = {}
 BOM.Class.SpellDef.__index = BOM.Class.SpellDef
 
@@ -220,10 +221,23 @@ function BOM.Class.SpellDef:conjure_item(spellId, itemId)
             singleFamily   = { spellId } })
 end
 
+---@param self SpellDef
 function BOM.Class.SpellDef.ShamanEnchant(self)
   -- for before TBC make this a seal spell, for TBC do not modify
   if not BOM.TBC then
     self.type = "seal"
   end
   return self
+end
+
+---@param self SpellDef
+---@return boolean Whether the spell allows user to do target class choices
+function BOM.Class.SpellDef.HasClasses(self)
+  return not (self.isConsumable
+          or self.isOwn
+          or self.type == "resurrection"
+          or self.type == "seal"
+          or self.type == "tracking"
+          or self.type == "aura"
+          or self.isInfo)
 end

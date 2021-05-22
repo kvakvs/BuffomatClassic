@@ -10,11 +10,16 @@ import subprocess
 import sys
 import zipfile
 
-BOM_VERSION = '2021.5.7'  # year.month.build_num
+VERSION = '2021.5.9'  # year.month.build_num
+
 UI_VERSION_CLASSIC = '11307'  # patch 1.13.7
+BOM_NAME_CLASSIC = 'BuffomatClassic'  # Directory and zip name
+BOM_TITLE_CLASSIC = "Buffomat Classic"  # Title field in TOC
+
 UI_VERSION_CLASSIC_TBC = '20501'  # patch 2.5.1
-BOM_NAME_CLASSIC = 'BuffomatClassic'
-BOM_NAME_CLASSIC_TBC = 'BuffomatClassicTBC'
+BOM_NAME_CLASSIC_TBC = 'BuffomatClassicTBC'  # Directory and zip name
+BOM_TITLE_CLASSIC_TBC = "Buffomat Classic TBC"  # Title field in TOC
+
 COPY_DIRS = ['src', 'const']
 COPY_FILES = ['Bindings.xml', 'Bom.lua', 'Bom.xml', 'CHANGELOG.md',
               'LICENSE.txt', 'README.md', 'README.Deutsch.txt']
@@ -23,11 +28,15 @@ COPY_FILES = ['Bindings.xml', 'Bom.lua', 'Bom.xml', 'CHANGELOG.md',
 class BuildTool:
     def __init__(self, args: argparse.Namespace):
         self.args = args
-        self.version = BOM_VERSION
+        self.version = VERSION
         self.copy_dirs = COPY_DIRS[:]
         self.copy_files = COPY_FILES[:]
-        self.create_toc(f'{BOM_NAME_CLASSIC}.toc', UI_VERSION_CLASSIC)
-        self.create_toc(f'{BOM_NAME_CLASSIC_TBC}.toc', UI_VERSION_CLASSIC_TBC)
+        self.create_toc(dst=f'{BOM_NAME_CLASSIC}.toc',
+                        ui_version=UI_VERSION_CLASSIC,
+                        title=BOM_TITLE_CLASSIC)
+        self.create_toc(dst=f'{BOM_NAME_CLASSIC_TBC}.toc',
+                        ui_version=UI_VERSION_CLASSIC_TBC,
+                        title=BOM_TITLE_CLASSIC_TBC)
 
     def do_install(self, toc_name: str):
         self.copy_files.append(f'{toc_name}.toc')
@@ -84,12 +93,13 @@ class BuildTool:
         hash = str(p).rstrip("\\n'").lstrip("b'")
         return hash[:8]
 
-    def create_toc(self, dst: str, ui_version: str):
+    def create_toc(self, dst: str, ui_version: str, title: str):
         hash = BuildTool.git_hash()
 
         template = open('toc_template.toc', "rt").read()
         template = template.replace('${UI_VERSION}', ui_version)
-        template = template.replace('${BOM_VERSION}', f'{BOM_VERSION}-{hash}')
+        template = template.replace('${VERSION}', f'{VERSION}-{hash}')
+        template = template.replace('${ADDON_TITLE}', title)
 
         with open(dst, "wt") as out_f:
             out_f.write(template)

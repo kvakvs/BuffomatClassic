@@ -32,6 +32,7 @@ BOM.Class = BOM.Class or {}
 ---@field EnchantToSpell table<number, number> Reverse-maps enchant ids back to spells
 ---@field ForceTracking number|nil Defines icon id for enforced tracking
 ---@field ForceUpdate boolean Requests immediate spells/buffs refresh
+---@field RepeatUpdate boolean Requests some sort of spells update similar to ForceUpdate
 ---@field IsMoving boolean Indicated that the player is moving (updated in event handlers)
 ---@field ItemList table<table<number>> Group different ranks of item together
 ---@field ItemListSpell table<number, number> Map itemid to spell?
