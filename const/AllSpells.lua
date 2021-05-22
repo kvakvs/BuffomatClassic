@@ -1,5 +1,16 @@
 ---@type BuffomatAddon
 local TOCNAME, BOM = ...
+local L = setmetatable(
+        {},
+        {
+          __index = function(_t, k)
+            if BOM.L and BOM.L[k] then
+              return BOM.L[k]
+            else
+              return "[" .. k .. "]"
+            end
+          end
+        })
 
 local BOM_ALL_CLASSES = { "WARRIOR", "MAGE", "ROGUE", "DRUID", "HUNTER", "PRIEST", "WARLOCK",
                           "SHAMAN", "PALADIN" }
@@ -144,8 +155,10 @@ local function bom_setup_druid_spells(spells, enchants)
           { isOwn = true, default = true, default = false, singleId = 33891, shapeshiftFormId = 2 },
           { isTBC = true, playerClass = "DRUID" })
 
-  BOM.Class.SpellDef:scan_spell(spells, 5225, -- Track Humanoids (Cat Form)
-          { type = "tracking", needForm = CAT_FORM, default = true },
+  -- Special code: This will disable herbalism and mining tracking in Cat Form
+  BOM.Class.SpellDef:scan_spell(spells, BOM.SpellId.Druid.TrackHumanoids, -- Track Humanoids (Cat Form)
+          { type = "tracking", needForm = CAT_FORM, default = true,
+          extraText = L.SpellLabel_TrackHumanoids},
           { playerClass = "DRUID" })
 end
 
@@ -644,9 +657,9 @@ end
 ---@param spells table<string, SpellDef>
 ---@param enchants table<string, table<number>>
 local function bom_setup_tracking_spells(spells, enchants)
-  tinsert(spells, BOM.Class.SpellDef:new(2383, -- Find Herbs / kräuter
+  tinsert(spells, BOM.Class.SpellDef:new(BOM.SpellId.FindHerbs, -- Find Herbs / kräuter
           { type = "tracking", default = true }))
-  tinsert(spells, BOM.Class.SpellDef:new(2580, -- Find Minerals / erz
+  tinsert(spells, BOM.Class.SpellDef:new(BOM.SpellId.FindMinerals, -- Find Minerals / erz
           { type = "tracking", default = true }))
   tinsert(spells, BOM.Class.SpellDef:new(2481, -- Find Treasure / Schatzsuche / Zwerge
           { type = "tracking", default = true }))
@@ -928,20 +941,26 @@ end
 ---@param spells table<string, SpellDef>
 ---@param enchants table<string, table<number>>
 local function bom_setup_food(spells, enchants)
-  BOM.Class.SpellDef:tbc_consumable(spells, 33257, { 33052, 27667 }) --Well Fed +30 STA +20 SPI
+  BOM.Class.SpellDef:tbc_consumable(spells, 33257, { 33052, 27667 }, --Well Fed +30 STA +20 SPI
+          nil, L.TooltipSimilarFoods)
 
-  BOM.Class.SpellDef:tbc_consumable(spells, 35254, { 27651, 30155, 27662, 33025 }) --Well Fed +20 STA +20 SPI
+  BOM.Class.SpellDef:tbc_consumable(spells, 35254, { 27651, 30155, 27662, 33025 }, --Well Fed +20 STA +20 SPI
+          nil, L.TooltipSimilarFoods)
   --BOM.Class.SpellDef:tbc_consumable(spells, 35272, { 27660, 31672, 33026 }) --Well Fed +20 STA +20 SPI
 
-  BOM.Class.SpellDef:tbc_consumable(spells, 33261, { 27659, 30358, 27664 }) --Well Fed +20 AGI +20 SPI
+  BOM.Class.SpellDef:tbc_consumable(spells, 33261, { 27659, 30358, 27664 }, --Well Fed +20 AGI +20 SPI
+          nil, L.TooltipSimilarFoods)
   BOM.Class.SpellDef:tbc_consumable(spells, 43764, 33872) --Spicy Hot Talbuk: Well Fed +20 HITRATING +20 SPI
-  BOM.Class.SpellDef:tbc_consumable(spells, 33256, { 27658, 30359 }) -- Well Fed +20 STR +20 SPI
+  BOM.Class.SpellDef:tbc_consumable(spells, 33256, { 27658, 30359 }, -- Well Fed +20 STR +20 SPI
+          nil, L.TooltipSimilarFoods)
   BOM.Class.SpellDef:tbc_consumable(spells, 33259, 27655) --Ravager Dog: Well Fed +40 AP +20 SPI
   BOM.Class.SpellDef:tbc_consumable(spells, 41030, 32721) --Skyguard Rations: Well Fed +15 STA +15 SPI
   BOM.Class.SpellDef:tbc_consumable(spells, 46899, 35563) --Charred Bear Kabobs +24 AP
-  BOM.Class.SpellDef:tbc_consumable(spells, 33263, { 27657, 31673, 27665, 30361 }) --Well Fed +23 SPELL +20 SPI
+  BOM.Class.SpellDef:tbc_consumable(spells, 33263, { 27657, 31673, 27665, 30361 }, --Well Fed +23 SPELL +20 SPI
+          nil, L.TooltipSimilarFoods)
   BOM.Class.SpellDef:tbc_consumable(spells, 33265, 27663) --Blackened Sporefish: Well Fed +8 MP5 +20 STA
-  BOM.Class.SpellDef:tbc_consumable(spells, 33268, { 27666, 30357 }) --Golden Fish Sticks: Well Fed +44 HEAL +20 SPI
+  BOM.Class.SpellDef:tbc_consumable(spells, 33268, { 27666, 30357 }, --Golden Fish Sticks: Well Fed +44 HEAL +20 SPI
+          nil, L.TooltipSimilarFoods)
 end
 
 ---@param spells table<string, SpellDef>

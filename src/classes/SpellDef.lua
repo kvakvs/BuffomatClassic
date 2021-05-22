@@ -18,6 +18,7 @@ BOM.Class = BOM.Class or {}
 ---@field consumableEra string One of constants BOM.CLASSIC_ERA or BOM.TBC_ERA which will affect buff visibility based on used choice
 ---
 --- Selected spell casting and display on the cast button
+---@field extraText string Added to the right of spell name in the spells config
 ---@field singleLink string Printable link for single buff
 ---@field groupLink string Printable link for group buff
 ---@field single string Name of single buff spell (from GetSpellInfo())
@@ -92,7 +93,9 @@ end
 ---@param dst table<SpellDef>
 ---@param single_id number
 ---@param item_id number|table<number> Item or multiple items giving this buff
-function BOM.Class.SpellDef:tbc_consumable(dst, single_id, item_id, limitations)
+---@param limitations table Add extra conditions, if not nil
+---@param extraText string Add extra text to the right if not nil
+function BOM.Class.SpellDef:tbc_consumable(dst, single_id, item_id, limitations, extraText)
   if not BOM.TBC then
     return
   end
@@ -107,6 +110,10 @@ function BOM.Class.SpellDef:tbc_consumable(dst, single_id, item_id, limitations)
     fields.items = item_id
   else
     fields.item = item_id
+  end
+
+  if extraText then
+    fields.extraText = extraText
   end
 
   BOM.Class.SpellDef:scan_spell(dst, single_id, fields, limitations)

@@ -519,12 +519,15 @@ local function bom_create_tab_row(row_builder, is_horde, spell, self_class)
             nil, "OVERLAY", "GameFontNormalSmall")
   end
 
+  -- Calculate label to the right of the spell config buttons,
+  -- spell name and extra text label
+  local label = spell.single or "-"
   if spell.type == "weapon" then
-    spell.frames.buff:SetText((spell.single or "-")
-            .. " (" .. L.TooltipIncludesAllRanks .. ")")
-  else
-    spell.frames.buff:SetText(spell.single or "-")
+    label = label .. ": " .. BOM.Color("bbbbee", L.TooltipIncludesAllRanks)
+  elseif spell.extraText then
+    label = label .. ": " .. BOM.Color("bbbbee", spell.extraText)
   end
+  spell.frames.buff:SetText(label)
 
   spell.frames.buff:SetPoint("TOPLEFT", row_builder.prev_control, "TOPRIGHT", 7, -1)
 

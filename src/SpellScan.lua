@@ -1000,8 +1000,14 @@ local function bom_update_spell_targets(party, spell, player_member, someone_is_
     end
 
   elseif spell.type == "tracking" then
-    --print("Need tracking? ", spell.singleId, bom_is_tracking_active(spell), BOM.ForceTracking, spell.trackingIconId)
-    if not bom_is_tracking_active(spell)
+    -- Special handling: Having find herbs and find ore will be ignored if
+    -- in cat form and track humanoids is enabled
+    if (spell.singleId == BOM.SpellId.FindHerbs or
+            spell.singleId == BOM.SpellId.FindMinerals)
+                    and GetShapeshiftFormID() == CAT_FORM
+                    and BOM.CurrentProfile.Spell[BOM.SpellId.Druid.TrackHumanoids].Enable then
+      -- Do nothing - ignore herbs and minerals in catform if enabled track humanoids
+    elseif not bom_is_tracking_active(spell)
             and (BOM.ForceTracking == nil
             or BOM.ForceTracking == spell.trackingIconId)
     then
@@ -2176,6 +2182,7 @@ local function bom_update_scan_2()
         end
 
       elseif spell.type == "tracking" then
+        -- TODO: Move this to its own periodic timer
         if #spell.NeedMember > 0 then
           if BOM.PlayerCasting == nil then
             bom_set_tracking(spell, true)
