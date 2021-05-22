@@ -122,10 +122,14 @@ end
 ---@param dst table<SpellDef>
 ---@param single_id number
 ---@param item_id number
-function BOM.Class.SpellDef:classic_consumable(dst, single_id, item_id, limitations)
-  BOM.Class.SpellDef:scan_spell(dst, single_id,
-          { item = item_id, isConsumable = true, default = false, consumableEra = BOM.CLASSIC_ERA },
-          limitations)
+---@param limitations table Add extra conditions, if not nil
+---@param extraText string Add extra text to the right if not nil
+function BOM.Class.SpellDef:classic_consumable(dst, single_id, item_id, limitations, extraText)
+  local fields = { item = item_id, isConsumable = true, default = false, consumableEra = BOM.CLASSIC_ERA }
+  if extraText then
+    fields.extraText = extraText
+  end
+  BOM.Class.SpellDef:scan_spell(dst, single_id, fields, limitations)
 end
 
 local _, bom_player_class, _ = UnitClass("player")

@@ -157,8 +157,8 @@ local function bom_setup_druid_spells(spells, enchants)
 
   -- Special code: This will disable herbalism and mining tracking in Cat Form
   BOM.Class.SpellDef:scan_spell(spells, BOM.SpellId.Druid.TrackHumanoids, -- Track Humanoids (Cat Form)
-          { type = "tracking", needForm = CAT_FORM, default = true,
-          extraText = L.SpellLabel_TrackHumanoids},
+          { type      = "tracking", needForm = CAT_FORM, default = true,
+            extraText = L.SpellLabel_TrackHumanoids },
           { playerClass = "DRUID" })
 end
 
@@ -935,7 +935,8 @@ end
 ---@param enchants table<string, table<number>>
 local function bom_setup_item_spells(spells, enchants)
   BOM.Class.SpellDef:classic_consumable(spells, 15233, 11564) --Crystal Ward
-  BOM.Class.SpellDef:classic_consumable(spells, 15279, 11567) --Crystal Spire
+  BOM.Class.SpellDef:classic_consumable(spells, 15279, 11567) --Crystal Spire +12 THORNS
+  BOM.Class.SpellDef:classic_consumable(spells, 15231, 11563) --Crystal Force +30 SPI
 end
 
 ---@param spells table<string, SpellDef>
@@ -949,18 +950,24 @@ local function bom_setup_food(spells, enchants)
   --BOM.Class.SpellDef:tbc_consumable(spells, 35272, { 27660, 31672, 33026 }) --Well Fed +20 STA +20 SPI
 
   BOM.Class.SpellDef:tbc_consumable(spells, 33261, { 27659, 30358, 27664 }, --Well Fed +20 AGI +20 SPI
-          nil, L.TooltipSimilarFoods)
-  BOM.Class.SpellDef:tbc_consumable(spells, 43764, 33872) --Spicy Hot Talbuk: Well Fed +20 HITRATING +20 SPI
+          {playerClass = BOM_PHYSICAL_CLASSES}, L.TooltipSimilarFoods)
+  BOM.Class.SpellDef:tbc_consumable(spells, 43764, 33872, --Spicy Hot Talbuk: Well Fed +20 HITRATING +20 SPI
+          {playerClass = BOM_PHYSICAL_CLASSES})
   BOM.Class.SpellDef:tbc_consumable(spells, 33256, { 27658, 30359 }, -- Well Fed +20 STR +20 SPI
-          nil, L.TooltipSimilarFoods)
+          {playerClass = BOM_MELEE_CLASSES}, L.TooltipSimilarFoods)
   BOM.Class.SpellDef:tbc_consumable(spells, 33259, 27655) --Ravager Dog: Well Fed +40 AP +20 SPI
-  BOM.Class.SpellDef:tbc_consumable(spells, 41030, 32721) --Skyguard Rations: Well Fed +15 STA +15 SPI
-  BOM.Class.SpellDef:tbc_consumable(spells, 46899, 35563) --Charred Bear Kabobs +24 AP
+  BOM.Class.SpellDef:tbc_consumable(spells, 41030, 32721, --Skyguard Rations: Well Fed +15 STA +15 SPI
+          {playerClass = BOM_MANA_CLASSES})
+  BOM.Class.SpellDef:tbc_consumable(spells, 46899, 35563, --Charred Bear Kabobs +24 AP
+          {playerClass = BOM_PHYSICAL_CLASSES})
   BOM.Class.SpellDef:tbc_consumable(spells, 33263, { 27657, 31673, 27665, 30361 }, --Well Fed +23 SPELL +20 SPI
-          nil, L.TooltipSimilarFoods)
-  BOM.Class.SpellDef:tbc_consumable(spells, 33265, 27663) --Blackened Sporefish: Well Fed +8 MP5 +20 STA
+          {playerClass = BOM_MANA_CLASSES},
+          L.TooltipSimilarFoods)
+  BOM.Class.SpellDef:tbc_consumable(spells, 33265, 27663, --Blackened Sporefish: Well Fed +8 MP5 +20 STA
+          {playerClass = BOM_MANA_CLASSES})
   BOM.Class.SpellDef:tbc_consumable(spells, 33268, { 27666, 30357 }, --Golden Fish Sticks: Well Fed +44 HEAL +20 SPI
-          nil, L.TooltipSimilarFoods)
+          {playerClass = BOM_MANA_CLASSES},
+          L.TooltipSimilarFoods)
 end
 
 ---@param spells table<string, SpellDef>
@@ -1049,11 +1056,6 @@ function BOM.SetupItemCache()
   ---@param id number Item ID
   local function make_item(id, name, color, icon)
     local link = "|cff" .. color .. "|Hitem:" .. tostring(id) .. "::::::::1:::::::|h[" .. name .. "]|h|r"
-    --tinsert(s, {
-    --  name, -- [1]
-    --  link, -- [2]
-    --  x, -- [3]
-    --})
     tinsert(s, { itemName = name,
                  itemLink = link,
                  itemIcon = icon })
@@ -1121,8 +1123,12 @@ function BOM.SetupItemCache()
   make_item(13928, "Grilled Squid", W, 133899)
   make_item(13456, "Greater Frost Protection Potion", W, 134800)
   make_item(13452, "Elixir of the Mongoose", W, 134812)
+
+  -- Ungoro Crystal items
   make_item(11564, "Crystal Ward", W, 134129)
   make_item(11567, "Crystal Spire", W, 134134)
+  make_item(11563, "Crystal Force", W, 134088)
+
   make_item(20748, "Brilliant Mana Oil", W, 134722)
   make_item(13458, "Greater Nature Protection Potion", W, 134802)
   make_item(9206, "Elixir of Giants", W, 134841)
