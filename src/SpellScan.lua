@@ -2012,9 +2012,13 @@ local function bom_add_weapon_consumable_buff(spell, player_member,
   else
     -- Don't have item but display the intent
     -- Text: [Icon] [Consumable Name] x Count
-    bom_display_text(spell.single .. "x" .. count,
-            player_member.distance,
-            true)
+    if spell.single then -- spell.single can be nil on addon load
+      bom_display_text(spell.single .. "x" .. count,
+              player_member.distance,
+              true)
+    else
+      BOM.ForceUpdate = true -- try rescan?
+    end
   end
 
   return cast_button_title, macro_command
@@ -2032,10 +2036,14 @@ local function bom_add_weapon_enchant_spell(spell, player_member,
 
   local _, self_class, _ = UnitClass("player")
   if BOM.TBC and self_class == "SHAMAN" then
-    -- Special handling for TBC shamans, you cannot specify slot for enchants, and it goes into main then offhand
-    local has_mh, _mh_expire, _mh_charges, _mh_enchantid, has_oh, _oh_expire, _oh_charges, _oh_enchantid = GetWeaponEnchantInfo()
+    -- Special handling for TBC shamans, you cannot specify slot for enchants,
+    -- and it goes into main then offhand
+    local has_mh, _mh_expire, _mh_charges, _mh_enchantid, has_oh, _oh_expire
+    , _oh_charges, _oh_enchantid = GetWeaponEnchantInfo()
+
     if not has_mh then
-      block_offhand_enchant = true -- shamans in TBC can't enchant offhand if MH enchant is missing
+      -- shamans in TBC can't enchant offhand if MH enchant is missing
+      block_offhand_enchant = true
     end
 
     if has_oh then

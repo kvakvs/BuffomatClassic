@@ -10,7 +10,7 @@ import subprocess
 import sys
 import zipfile
 
-BOM_VERSION = '2021.5.9'  # year.month.build_num
+VERSION = '2021.5.9'  # year.month.build_num
 
 UI_VERSION_CLASSIC = '11307'  # patch 1.13.7
 BOM_NAME_CLASSIC = 'BuffomatClassic'  # Directory and zip name
@@ -28,7 +28,7 @@ COPY_FILES = ['Bindings.xml', 'Bom.lua', 'Bom.xml', 'CHANGELOG.md',
 class BuildTool:
     def __init__(self, args: argparse.Namespace):
         self.args = args
-        self.version = BOM_VERSION
+        self.version = VERSION
         self.copy_dirs = COPY_DIRS[:]
         self.copy_files = COPY_FILES[:]
         self.create_toc(dst=f'{BOM_NAME_CLASSIC}.toc',
@@ -98,7 +98,7 @@ class BuildTool:
 
         template = open('toc_template.toc', "rt").read()
         template = template.replace('${UI_VERSION}', ui_version)
-        template = template.replace('${BOM_VERSION}', f'{BOM_VERSION}-{hash}')
+        template = template.replace('${VERSION}', f'{VERSION}-{hash}')
         template = template.replace('${ADDON_TITLE}', title)
 
         with open(dst, "wt") as out_f:
