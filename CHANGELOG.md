@@ -1,5 +1,11 @@
 # Changelog
 
+## Buffomat Classic and TBC 2021.5.10
+
+- Renamed option: Scan in rest areas (off by default), before: disable in rest
+  areas (on by default)
+- New option: Scan in stealth (off by default)
+
 ## Buffomat Classic and TBC 2021.5.8
 
 - Key binding: show/hide Buffomat window, does same as /bom, which you can also

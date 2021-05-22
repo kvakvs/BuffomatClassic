@@ -18,7 +18,8 @@ BUFFOMAT_ADDON = BOM
 
 BOM.BehaviourSettings = {
   { "AutoOpen", true },
-  { "DisableInRestArea", true },
+  { "ScanInRestArea", false },
+  { "ScanInStealth", false },
   { "InWorld", true },
   { "InPVP", true },
   { "InInstance", true },

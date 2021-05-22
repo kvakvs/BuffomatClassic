@@ -2098,67 +2098,7 @@ local function bom_cast_button(t, enable)
   end
 end
 
----Scan the available spells and group members to find who needs the rebuff/res
----and what would be their priority?
-function BOM.UpdateScan()
-  if BOM.SelectedSpells == nil then
-    return
-  end
-
-  if BOM.InLoading then
-    return
-  end
-
-  BOM.MinTimer = GetTime() + 36000 -- 10 hours
-  bom_clear_display_cache()
-  BOM.RepeatUpdate = false
-
-  -- Cancel buff tasks if is in a resting area
-  if BOM.SharedState.DisableInRestArea and IsResting() then
-    BOM.AutoClose()
-    bom_cast_button(L.MsgIsResting, false)
-    return
-  end
-
-  -- Cancel buff tasks if in combat
-  if InCombatLockdown() then
-    BOM.ForceUpdate = false
-    BOM.CheckForError = false
-    bom_cast_button(L.MsgCombat, true)
-    return
-  end
-
-  if UnitIsDeadOrGhost("player") then
-    BOM.ForceUpdate = false
-    BOM.CheckForError = false
-    BOM.UpdateMacro()
-    bom_cast_button(L.MsgDead, false)
-    BOM.AutoClose()
-    return
-  end
-
-  --Choose Profile
-  local is_bom_disabled, auto_profile = bom_choose_profile()
-
-  if BOM.CurrentProfile ~= BOM.CharacterState[auto_profile] then
-    BOM.CurrentProfile = BOM.CharacterState[auto_profile]
-    BOM.UpdateSpellsTab()
-    BomC_MainWindow_Title:SetText(
-            BOM.FormatTexture(BOM.MACRO_ICON_FULLPATH)
-                    .. " " .. BOM.TOC_TITLE .. " - "
-                    .. L["profile_" .. auto_profile])
-    BOM.ForceUpdate = true
-  end
-
-  if is_bom_disabled then
-    BOM.CheckForError = false
-    BOM.ForceUpdate = false
-    BOM.UpdateMacro()
-    bom_cast_button(L.MsgDisabled, false)
-    BOM.AutoClose()
-    return
-  end
-
+local function bom_update_scan_2()
   local party, player_member = bom_get_party_members()
   local someone_is_dead
 
@@ -2447,7 +2387,80 @@ function BOM.UpdateScan()
     BOM.UpdateMacro(nil, nil, macro_command)
   end -- if not player casting
 
+end -- end function bom_update_scan_2()
+
+---Scan the available spells and group members to find who needs the rebuff/res
+---and what would be their priority?
+function BOM.UpdateScan()
+  if BOM.SelectedSpells == nil then
+    return
+  end
+
+  if BOM.InLoading then
+    return
+  end
+
+  BOM.MinTimer = GetTime() + 36000 -- 10 hours
+  bom_clear_display_cache()
+  BOM.RepeatUpdate = false
+
+  -- Cancel buff tasks if is in a resting area, and option to scan is not set
+  if not BOM.SharedState.ScanInRestArea and IsResting() then
+    BOM.AutoClose()
+    bom_cast_button(L.MsgIsResting, false)
+    return
+  end
+
+  -- Cancel buff tasks if is in stealth, and option to scan is not set
+  if not BOM.SharedState.ScanInStealth and IsStealthed() then
+    BOM.AutoClose()
+    bom_cast_button(L.MsgIsStealthed, false)
+    return
+  end
+
+  -- Cancel buff tasks if in combat
+  if InCombatLockdown() then
+    BOM.ForceUpdate = false
+    BOM.CheckForError = false
+    bom_cast_button(L.MsgCombat, true)
+    return
+  end
+
+  if UnitIsDeadOrGhost("player") then
+    BOM.ForceUpdate = false
+    BOM.CheckForError = false
+    BOM.UpdateMacro()
+    bom_cast_button(L.MsgDead, false)
+    BOM.AutoClose()
+    return
+  end
+
+  --Choose Profile
+  local is_bom_disabled, auto_profile = bom_choose_profile()
+
+  if BOM.CurrentProfile ~= BOM.CharacterState[auto_profile] then
+    BOM.CurrentProfile = BOM.CharacterState[auto_profile]
+    BOM.UpdateSpellsTab()
+    BomC_MainWindow_Title:SetText(
+            BOM.FormatTexture(BOM.MACRO_ICON_FULLPATH)
+                    .. " " .. BOM.TOC_TITLE .. " - "
+                    .. L["profile_" .. auto_profile])
+    BOM.ForceUpdate = true
+  end
+
+  if is_bom_disabled then
+    BOM.CheckForError = false
+    BOM.ForceUpdate = false
+    BOM.UpdateMacro()
+    bom_cast_button(L.MsgDisabled, false)
+    BOM.AutoClose()
+    return
+  end
+
+  -- All pre-checks passed
+  bom_update_scan_2()
 end -- end function UpdateScan()
+
 
 ---If a spell cast failed, the member is temporarily added to skip list, to
 ---continue casting buffs on other members
