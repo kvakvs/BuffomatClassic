@@ -168,7 +168,7 @@ function BOM.Popup(self, minimap)
     if not spell.isConsumable then
       BOM.PopupDynamic:AddItem(spell.singleLink or spell.single,
               "keep",
-              BOM.CurrentProfile.Spell[spell.ConfigID],
+              BOM.GetProfileSpell(spell.ConfigID),
               "Enable")
     end
   end
@@ -1353,6 +1353,7 @@ function BOM.DoBlessingOnClick(self)
 
   for i, spell in ipairs(BOM.SelectedSpells) do
     if spell.isBlessing then
+      -- TODO: use spell instead of BOM.CurrentProfile.Spell[]
       BOM.CurrentProfile.Spell[spell.ConfigID].Class[self._privat_Var] = false
     end
   end

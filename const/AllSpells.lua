@@ -276,8 +276,9 @@ local function bom_setup_shaman_spells(spells, enchants)
                              25479, 25485 } }, -- TBC: Ranks 8-9
           { playerClass = "SHAMAN" },
           { "shamanEnchant" })
-  enchants[16316] = { 1, 6, 29, 503, 683, 1663, 1664, -- Rockbiter
-                      2632, 2633 } -- TBC: Rockbiter 8-9
+  enchants[16316] = { 1, 6, 29, 503, 504, 683, 1663, 1664, -- Rockbiter, also 504 some special +80 Rockbiter?
+                      3040, -- rockbiter 7
+                      2632, 2633} -- TBC: Rockbiter 8-9
 
   BOM.Class.SpellDef:scan_spell(spells, 16362, --Windfury Weapon
           { type         = "weapon", isOwn = true, isConsumable = false,

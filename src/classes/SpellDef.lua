@@ -252,3 +252,32 @@ function BOM.Class.SpellDef.HasClasses(self)
           or self.type == "aura"
           or self.isInfo)
 end
+
+---@param spell_id number
+---@param profile_name string|nil
+function BOM.GetProfileSpell(spell_id, profile_name)
+  local spell
+  if profile_name == nil then
+    spell = BOM.CurrentProfile.Spell[spell_id]
+  else
+    local profile = BOM.CharacterState[profile_name]
+    if profile == nil then
+      return nil
+    end
+    spell = profile.Spell[spell_id]
+  end
+
+  return spell
+end
+
+---Returns true whether spell is enabled by the player (has checkbox)
+---@param spell_id number
+---@return boolean
+---@param profile_name string|nil
+function BOM.IsSpellEnabled(spell_id, profile_name)
+  local spell = BOM.GetProfileSpell(spell_id, profile_name)
+  if spell == nil then
+    return false
+  end
+  return spell.Enable
+end

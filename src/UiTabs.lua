@@ -28,8 +28,10 @@ local function add_row_of_class_buttons(row_builder, is_horde, spell)
             BOM.ICON_SELF_CAST_OFF)
   end
 
+  local profile_spell = BOM.GetProfileSpell(spell.ConfigID)
+
   spell.frames.SelfCast:SetPoint("TOPLEFT", row_builder.prev_control, "TOPRIGHT", row_builder.dx, 0)
-  spell.frames.SelfCast:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID], "SelfCast")
+  spell.frames.SelfCast:SetVariable(profile_spell, "SelfCast")
   spell.frames.SelfCast:SetOnClick(BOM.MyButtonOnClick)
   BOM.Tool.TooltipText(
           spell.frames.SelfCast,
@@ -53,7 +55,7 @@ local function add_row_of_class_buttons(row_builder, is_horde, spell)
     end
 
     spell.frames[class]:SetPoint("TOPLEFT", row_builder.prev_control, "TOPRIGHT", row_builder.dx, 0)
-    spell.frames[class]:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID].Class, class)
+    spell.frames[class]:SetVariable(profile_spell.Class, class)
     spell.frames[class]:SetOnClick(BOM.DoBlessingOnClick)
 
     BOM.Tool.TooltipText(
@@ -81,7 +83,7 @@ local function add_row_of_class_buttons(row_builder, is_horde, spell)
   end
 
   spell.frames["tank"]:SetPoint("TOPLEFT", row_builder.prev_control, "TOPRIGHT", row_builder.dx, 0)
-  spell.frames["tank"]:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID].Class, "tank")
+  spell.frames["tank"]:SetVariable(profile_spell.Class, "tank")
   spell.frames["tank"]:SetOnClick(BOM.DoBlessingOnClick)
   BOM.Tool.TooltipText(spell.frames["tank"], BOM.FormatTexture(BOM.ICON_TANK) .. " - " .. L.TooltipCastOnTank)
 
@@ -98,7 +100,7 @@ local function add_row_of_class_buttons(row_builder, is_horde, spell)
   end
 
   spell.frames["pet"]:SetPoint("TOPLEFT", row_builder.prev_control, "TOPRIGHT", row_builder.dx, 0)
-  spell.frames["pet"]:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID].Class, "pet")
+  spell.frames["pet"]:SetVariable(profile_spell.Class, "pet")
   spell.frames["pet"]:SetOnClick(BOM.DoBlessingOnClick)
   BOM.Tool.TooltipText(spell.frames["pet"], BOM.FormatTexture(BOM.ICON_PET) .. " - " .. L.TooltipCastOnPet)
   row_builder.prev_control = spell.frames["pet"]
@@ -430,8 +432,10 @@ local function bom_create_tab_row(row_builder, is_horde, spell, self_class)
             BOM.ICON_OPT_DISABLED)
   end
 
+  local profile_spell = BOM.GetProfileSpell(spell.ConfigID)
+
   spell.frames.Enable:SetPoint("TOPLEFT", row_builder.prev_control, "TOPRIGHT", row_builder.dx, 0)
-  spell.frames.Enable:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID], "Enable")
+  spell.frames.Enable:SetVariable(profile_spell, "Enable")
   spell.frames.Enable:SetOnClick(BOM.MyButtonOnClick)
   BOM.Tool.Tooltip(spell.frames.Enable, "TooltipEnableSpell")
 
@@ -470,7 +474,7 @@ local function bom_create_tab_row(row_builder, is_horde, spell, self_class)
     end
 
     spell.frames.Whisper:SetPoint("TOPLEFT", row_builder.prev_control, "TOPRIGHT", row_builder.dx, 0)
-    spell.frames.Whisper:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID], "Whisper")
+    spell.frames.Whisper:SetVariable(profile_spell, "Whisper")
     spell.frames.Whisper:SetOnClick(BOM.MyButtonOnClick)
     BOM.Tool.Tooltip(spell.frames.Whisper, "TooltipWhisperWhenExpired")
 
@@ -489,7 +493,7 @@ local function bom_create_tab_row(row_builder, is_horde, spell, self_class)
     end
 
     spell.frames.MainHand:SetPoint("TOPLEFT", row_builder.prev_control, "TOPRIGHT", row_builder.dx, 0)
-    spell.frames.MainHand:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID], "MainHandEnable")
+    spell.frames.MainHand:SetVariable(profile_spell, "MainHandEnable")
     spell.frames.MainHand:SetOnClick(BOM.MyButtonOnClick)
     BOM.Tool.Tooltip(spell.frames.MainHand, "TooltipMainHand")
 
@@ -506,7 +510,7 @@ local function bom_create_tab_row(row_builder, is_horde, spell, self_class)
     end
 
     spell.frames.OffHand:SetPoint("TOPLEFT", row_builder.prev_control, "TOPRIGHT", row_builder.dx, 0)
-    spell.frames.OffHand:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID], "OffHandEnable")
+    spell.frames.OffHand:SetVariable(profile_spell, "OffHandEnable")
     spell.frames.OffHand:SetOnClick(BOM.MyButtonOnClick)
     BOM.Tool.Tooltip(spell.frames.OffHand, "TooltipOffHand")
 

@@ -398,8 +398,8 @@ function BOM.GetSpells()
 
           BOM.SharedState.Cache.Item2[spell.item] = item_info
         else
-            --BOM.Print("Item not found! Spell=" .. tostring(spell.singleId)
-            --      .. " Item=" .. tostring(spell.item))
+          --BOM.Print("Item not found! Spell=" .. tostring(spell.singleId)
+          --      .. " Item=" .. tostring(spell.item))
 
           -- Go delayed fetch
           local item = Item:CreateFromItemID(spell.item)
@@ -524,10 +524,10 @@ local function bom_get_member(unitid, NameGroup, NameRole)
 end
 
 ---@type table<table>
-local PartyCache --Copy of party members, a dict of dicts
+local bom_party_cache --Copy of party members, a dict of dicts
 
 ---@type Member
-local PlayerMemberCache --Copy of player info dict
+local bom_player_member_cache --Copy of player info dict
 
 local function bom_count_members()
   local countTo
@@ -732,12 +732,12 @@ local function bom_get_party_members()
 
   -- check if stored party is correct!
   if not BOM.PartyUpdateNeeded
-          and PartyCache ~= nil
-          and PlayerMemberCache ~= nil then
+          and bom_party_cache ~= nil
+          and bom_player_member_cache ~= nil then
 
-    if #PartyCache == bom_count_members() + (BOM.SaveTargetName and 1 or 0) then
+    if #bom_party_cache == bom_count_members() + (BOM.SaveTargetName and 1 or 0) then
       local ok = true
-      for i, member in ipairs(PartyCache) do
+      for i, member in ipairs(bom_party_cache) do
         local name = (UnitFullName(member.unitId))
         if name ~= member.name then
           ok = false
@@ -745,8 +745,8 @@ local function bom_get_party_members()
         end
       end
       if ok then
-        party = PartyCache
-        player_member = PlayerMemberCache
+        party = bom_party_cache
+        player_member = bom_player_member_cache
       end
     end
   end
@@ -773,8 +773,8 @@ local function bom_get_party_members()
       end
     end
 
-    PartyCache = party
-    PlayerMemberCache = player_member
+    bom_party_cache = party
+    bom_player_member_cache = player_member
 
     -- Cleanup BOM.PlayerBuffs
     for name, val in pairs(BOM.PlayerBuffs) do
@@ -943,11 +943,13 @@ local function bom_update_spell_targets(party, spell, player_member, someone_is_
   wipe(spell.NeedMember)
   wipe(spell.DeathGroup)
 
-  if not BOM.CurrentProfile.Spell[spell.ConfigID].Enable then
+  if not BOM.IsSpellEnabled(spell.ConfigID) then
     --nothing!
   elseif spell.type == "weapon" then
-    if (BOM.CurrentProfile.Spell[spell.ConfigID].MainHandEnable and player_member.MainHandBuff == nil)
-            or (BOM.CurrentProfile.Spell[spell.ConfigID].OffHandEnable and player_member.OffHandBuff == nil)
+    local weapon_spell = BOM.GetProfileSpell(spell.ConfigID)
+
+    if (weapon_spell.MainHandEnable and player_member.MainHandBuff == nil)
+            or (weapon_spell.OffHandEnable and player_member.OffHandBuff == nil)
     then
       tinsert(spell.NeedMember, player_member)
     end
@@ -1004,8 +1006,8 @@ local function bom_update_spell_targets(party, spell, player_member, someone_is_
     -- in cat form and track humanoids is enabled
     if (spell.singleId == BOM.SpellId.FindHerbs or
             spell.singleId == BOM.SpellId.FindMinerals)
-                    and GetShapeshiftFormID() == CAT_FORM
-                    and BOM.CurrentProfile.Spell[BOM.SpellId.Druid.TrackHumanoids].Enable then
+            and GetShapeshiftFormID() == CAT_FORM
+            and BOM.IsSpellEnabled(BOM.SpellId.Druid.TrackHumanoids) then
       -- Do nothing - ignore herbs and minerals in catform if enabled track humanoids
     elseif not bom_is_tracking_active(spell)
             and (BOM.ForceTracking == nil
@@ -1033,22 +1035,24 @@ local function bom_update_spell_targets(party, spell, player_member, someone_is_
     for i, member in ipairs(party) do
       local ok = false
       local notGroup = false
+      local blessing_name = BOM.GetProfileSpell(BOM.BLESSING_ID)
+      local blessing_spell = BOM.GetProfileSpell(spell.ConfigID)
 
-      if BOM.CurrentProfile.Spell[BOM.BLESSING_ID][member.name] == spell.ConfigID
+      if blessing_name[member.name] == spell.ConfigID
               or (member.isTank
-              and BOM.CurrentProfile.Spell[spell.ConfigID].Class["tank"]
-              and not BOM.CurrentProfile.Spell[spell.ConfigID].SelfCast)
+              and blessing_spell.Class["tank"]
+              and not blessing_spell.SelfCast)
       then
         ok = true
         notGroup = true
 
-      elseif BOM.CurrentProfile.Spell[BOM.BLESSING_ID][member.name] == nil then
-        if BOM.CurrentProfile.Spell[spell.ConfigID].Class[member.class]
+      elseif blessing_name[member.name] == nil then
+        if blessing_spell.Class[member.class]
                 and (not IsInRaid() or BomCharacterState.WatchGroup[member.group])
-                and not BOM.CurrentProfile.Spell[spell.ConfigID].SelfCast then
+                and not blessing_spell.SelfCast then
           ok = true
         end
-        if BOM.CurrentProfile.Spell[spell.ConfigID].SelfCast
+        if blessing_spell.SelfCast
                 and UnitIsUnit(member.unitId, "player") then
           ok = true
         end
@@ -1465,7 +1469,7 @@ local function bom_catch_a_spell(cost, id, link, member, spell)
 end
 
 ---Cleares the spell from `cast` global
-local function bom_clear_spell()
+local function bom_clear_next_cast_spell()
   next_cast_spell.manaCost = -1
   next_cast_spell.SpellId = nil
   next_cast_spell.Member = nil
@@ -1520,7 +1524,7 @@ local function bom_force_update(party, player_member)
   ---@param spell SpellDef
   for i, spell in ipairs(BOM.SelectedSpells) do
     if spell.type == "tracking" then
-      if BOM.CurrentProfile.Spell[spell.ConfigID].Enable then
+      if BOM.IsSpellEnabled(spell.ConfigID) then
         if spell.needForm ~= nil then
           if GetShapeshiftFormID() == spell.needForm
                   and BOM.ForceTracking ~= spell.trackingIconId then
@@ -1574,7 +1578,7 @@ local function bom_force_update(party, player_member)
   --reset aura/seal
   for i, spell in ipairs(BOM.SelectedSpells) do
     if spell.type == "aura" then
-      if BOM.CurrentProfile.Spell[spell.ConfigID].Enable then
+      if BOM.IsSpellEnabled(spell.ConfigID) then
         if BOM.ActivAura == spell.ConfigID
                 and BOM.CurrentProfile.LastAura ~= spell.ConfigID then
           BOM.CurrentProfile.LastAura = spell.ConfigID
@@ -1589,7 +1593,7 @@ local function bom_force_update(party, player_member)
       end -- if currentprofile.spell.enable
 
     elseif spell.type == "seal" then
-      if BOM.CurrentProfile.Spell[spell.ConfigID].Enable then
+      if BOM.IsSpellEnabled(spell.ConfigID) then
         if BOM.ActivSeal == spell.ConfigID
                 and BOM.CurrentProfile.LastSeal ~= spell.ConfigID then
           BOM.CurrentProfile.LastSeal = spell.ConfigID
@@ -1717,7 +1721,8 @@ local function bom_add_blessing(spell, player_member, in_range)
       end
 
       local add = ""
-      if BOM.CurrentProfile.Spell[BOM.BLESSING_ID][member.name] ~= nil then
+      local blessing_name = BOM.GetProfileSpell(BOM.BLESSING_ID)
+      if blessing_name[member.name] ~= nil then
         add = string.format(BOM.PICTURE_FORMAT, BOM.ICON_TARGET_ON)
       end
 
@@ -1809,7 +1814,9 @@ local function bom_add_buff(spell, party, player_member, in_range)
       end
 
       local add = ""
-      if BOM.CurrentProfile.Spell[spell.ConfigID].ForcedTarget[member.name] then
+      local profile_spell = BOM.GetProfileSpell(spell.ConfigID)
+
+      if profile_spell.ForcedTarget[member.name] then
         add = string.format(BOM.PICTURE_FORMAT, BOM.ICON_TARGET_ON)
       end
 
@@ -1973,8 +1980,9 @@ local function bom_add_weapon_consumable_buff(spell, player_member,
   if have_item then
     -- Have item, display the cast message and setup the cast button
     local texture, _, _, _, _, _, item_link, _, _, _ = GetContainerItemInfo(bag, slot)
+    local profile_spell = BOM.GetProfileSpell(spell.ConfigID)
 
-    if BOM.CurrentProfile.Spell[spell.ConfigID].OffHandEnable
+    if profile_spell.OffHandEnable
             and player_member.OffHandBuff == nil then
       local function offhand_message()
         return BOM.FormatTexture(texture)
@@ -1995,7 +2003,7 @@ local function bom_add_weapon_consumable_buff(spell, player_member,
       end
     end
 
-    if BOM.CurrentProfile.Spell[spell.ConfigID].MainHandEnable
+    if profile_spell.MainHandEnable
             and player_member.MainHandBuff == nil then
       local function mainhand_message()
         return BOM.FormatTexture(texture)
@@ -2018,7 +2026,8 @@ local function bom_add_weapon_consumable_buff(spell, player_member,
   else
     -- Don't have item but display the intent
     -- Text: [Icon] [Consumable Name] x Count
-    if spell.single then -- spell.single can be nil on addon load
+    if spell.single then
+      -- spell.single can be nil on addon load
       bom_display_text(spell.single .. "x" .. count,
               player_member.distance,
               true)
@@ -2057,7 +2066,9 @@ local function bom_add_weapon_enchant_spell(spell, player_member,
     end
   end
 
-  if BOM.CurrentProfile.Spell[spell.ConfigID].MainHandEnable
+  local profile_spell = BOM.GetProfileSpell(spell.ConfigID)
+
+  if profile_spell.MainHandEnable
           and player_member.MainHandBuff == nil then
     -- Text: [Spell Name] (Main hand)
     bom_display_text(spell.singleLink .. " (" .. L.TooltipMainHand .. ") ",
@@ -2066,7 +2077,7 @@ local function bom_add_weapon_enchant_spell(spell, player_member,
             player_member, spell)
   end
 
-  if BOM.CurrentProfile.Spell[spell.ConfigID].OffHandEnable
+  if profile_spell.OffHandEnable
           and player_member.OffHandBuff == nil then
     if block_offhand_enchant then
       local t = spell.singleLink .. " (" .. L.TooltipOffHand .. ") "
@@ -2121,7 +2132,7 @@ local function bom_update_scan_2()
   player_mana = UnitPower("player", 0) or 0 --mana
   BOM.ManaLimit = UnitPowerMax("player", 0) or 0
 
-  bom_clear_spell()
+  bom_clear_next_cast_spell()
 
   local macro_command ---@type string
   local cast_button_title ---@type string
@@ -2131,12 +2142,14 @@ local function bom_update_scan_2()
 
   --<<---------------------------
   for _, spell in ipairs(BOM.SelectedSpells) do
-    if spell.isInfo and BOM.CurrentProfile.Spell[spell.ConfigID].Whisper then
+    local profile_spell = BOM.GetProfileSpell(spell.ConfigID)
+
+    if spell.isInfo and profile_spell.Whisper then
       bom_whisper_expired(spell)
     end
 
     -- if spell is enabled and we're in the correct shapeshift form
-    if BOM.CurrentProfile.Spell[spell.ConfigID].Enable
+    if BOM.IsSpellEnabled(spell.ConfigID)
             and (spell.needForm == nil or GetShapeshiftFormID() == spell.needForm) then
       if #spell.NeedMember > 0
               and not spell.isInfo
