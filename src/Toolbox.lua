@@ -21,7 +21,8 @@ local L = setmetatable(
 ---@field ClassColor table<string, table> Localized class colors
 ---@field NameToClass table<string, string> Reverse class name lookup
 ---@field _EditBox Control
-BOM.Tool = BOM.Tool or {}
+
+BOM.Tool = BOM.Tool or {} ---@type BuffomatTool
 local Tool = BOM.Tool ---@type BuffomatTool
 
 --Tool.IconClassTexture = "Interface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES"
@@ -273,10 +274,12 @@ function Tool.UnitDistanceSquared(uId)
   --    * Martin Verges (Nitram @ EU-Azshara) (DBM-GUI)
 
   local range
+
   if UnitIsUnit(uId, "player") then
     range = 0
   else
     local distanceSquared, checkedDistance = UnitDistanceSquared(uId)
+
     if checkedDistance then
       range = distanceSquared
     elseif C_Map.GetBestMapForUnit(uId) ~= C_Map.GetBestMapForUnit("player") then
@@ -314,6 +317,7 @@ end
 function Tool.iMerge(t1, ...)
   for index = 1, select("#", ...) do
     local var = select(index, ...)
+
     if type(var) == "table" then
       for i, v in ipairs(var) do
         if tContains(t1, v) == false then

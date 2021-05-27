@@ -26,3 +26,72 @@ BOM.Class.Member = {}
 BOM.Class.Member.__index = BOM.Class.Member
 
 local CLASS_TAG = "member"
+
+function BOM.Class.Member:new(fields)
+  fields = fields or {}
+  setmetatable(fields, BOM.Class.Member)
+  return fields
+end
+
+---Force updates buffs for one party member
+---@param self Member
+---@param player_member Member
+function BOM.Class.Member:ForceUpdateBuffs(player_member)
+
+  self.isPlayer = (self == player_member)
+  self.isDead = UnitIsDeadOrGhost(self.unitId) and not UnitIsFeignDeath(self.unitId)
+  self.isGhost = UnitIsGhost(self.unitId)
+  self.isConnected = UnitIsConnected(self.unitId)
+
+  self.NeedBuff = true
+
+  wipe(self.buffs)
+
+  BOM.SomeBodyGhost = BOM.SomeBodyGhost or self.isGhost
+
+  if self.isDead then
+    BOM.PlayerBuffs[self.name] = nil
+  else
+    self.hasArgentumDawn = false
+    self.hasCarrot = false
+
+    local buffIndex = 0
+
+    repeat
+      buffIndex = buffIndex + 1
+
+      local name, icon, count, debuffType, duration, expirationTime, source, isStealable
+      , nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, castByPlayer
+      , nameplateShowAll, timeMod = BOM.UnitAura(self.unitId, buffIndex, "HELPFUL")
+
+      spellId = BOM.SpellToSpell[spellId] or spellId
+
+      if spellId then
+        -- Skip members who have a buff on the global ignore list - example phaseshifted imps
+        if tContains(BOM.BuffIgnoreAll, spellId) then
+          wipe(self.buffs)
+          self.NeedBuff = false
+          break
+        end
+
+        if spellId == BOM.ArgentumDawn.spell then
+          self.hasArgentumDawn = true
+        end
+
+        if spellId == BOM.Carrot.spell then
+          self.hasCarrot = true
+        end
+
+        if tContains(BOM.AllSpellIds, spellId) then
+          self.buffs[BOM.SpellIdtoConfig[spellId]] = {
+            ["duration"]       = duration,
+            ["expirationTime"] = expirationTime,
+            ["source"]         = source,
+            ["isSingle"]       = BOM.SpellIdIsSingle[spellId],
+          }
+        end
+      end
+
+    until (not name)
+  end -- if is not dead
+end

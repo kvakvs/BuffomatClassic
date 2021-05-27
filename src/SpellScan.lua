@@ -158,7 +158,7 @@ end
 
 ---Formats a spell icon + spell name as a link
 ---@param spell_info GSICacheItem spell info from the cache via BOM.GetSpellInfo
-local function bom_format_spell_link(spell_info)
+local function FormatSpellLink(spell_info)
   if spell_info == nil then
     return "NIL SPELL"
   end
@@ -175,7 +175,7 @@ end
 
 ---Unused
 local function bom_spell_link_from_spell(spell)
-  return bom_format_spell_link(BOM.GetSpellInfo(spell))
+  return FormatSpellLink(BOM.GetSpellInfo(spell))
 end
 
 --Flag set to true when custom spells and cancel-spells were imported from the config
@@ -214,8 +214,8 @@ function BOM.GetSpells()
   if BOM.ArgentumDawn.Link == nil
           or BOM.Carrot.Link == nil then
     do
-      BOM.ArgentumDawn.Link = bom_format_spell_link(BOM.GetSpellInfo(BOM.ArgentumDawn.spell))
-      BOM.Carrot.Link = bom_format_spell_link(BOM.GetSpellInfo(BOM.Carrot.spell))
+      BOM.ArgentumDawn.Link = FormatSpellLink(BOM.GetSpellInfo(BOM.ArgentumDawn.spell))
+      BOM.Carrot.Link = FormatSpellLink(BOM.GetSpellInfo(BOM.Carrot.spell))
     end
   end
 
@@ -234,7 +234,7 @@ function BOM.GetSpells()
 
     spell.single = spell_info.name
     spell_info.rank = GetSpellSubtext(spell.singleId) or ""
-    spell.singleLink = bom_format_spell_link(spell_info)
+    spell.singleLink = FormatSpellLink(spell_info)
     spell.Icon = spell_info.icon
 
     BOM.Tool.iMerge(BOM.AllSpellIds, spell.singleFamily)
@@ -299,7 +299,7 @@ function BOM.GetSpells()
       if spell_info ~= nil then
         spell.single = spell_info.name
         spell_info.rank = GetSpellSubtext(spell.singleId) or ""
-        spell.singleLink = bom_format_spell_link(spell_info)
+        spell.singleLink = FormatSpellLink(spell_info)
         spell.Icon = spell_info.icon
 
         if spell.type == "tracking" then
@@ -322,7 +322,7 @@ function BOM.GetSpells()
       if spell_info ~= nil then
         spell.group = spell_info.name
         spell_info.rank = GetSpellSubtext(spell.groupId) or ""
-        spell.groupLink = bom_format_spell_link(spell_info)
+        spell.groupLink = FormatSpellLink(spell_info)
 
         if spell.groupDuration
                 and BOM.SharedState.Duration[spell_info.name] == nil
@@ -507,7 +507,7 @@ local function bom_get_member(unitid, NameGroup, NameRole)
     link = BOM.FormatTexture(BOM.ICON_PET) .. name
   end
 
-  MemberCache[unitid] = MemberCache[unitid] or {}
+  MemberCache[unitid] = MemberCache[unitid] or BOM.Class.Member:new({})
 
   local member = MemberCache[unitid]
   member.distance = 100000
@@ -529,7 +529,7 @@ local bom_party_cache --Copy of party members, a dict of dicts
 ---@type Member
 local bom_player_member_cache --Copy of player info dict
 
-local function bom_count_members()
+local function bomGetMembersCount()
   local countTo
   local prefix
   local count
@@ -586,7 +586,7 @@ end
 
 ---@return table, Member
 ---@param player_member Member
-local function bom_get_5man_members(player_member)
+local function bomGet5manPartyMembers(player_member)
   local name_group = {}
   local name_role = {}
   local party = {}
@@ -625,7 +625,7 @@ end
 ---For when player is in raid, retrieve all 40 raid members
 ---@param player_member Member
 ---@return table, Member
-local function bom_get_40man_raid_members(player_member)
+local function bomGet40manRaidMembers(player_member)
   local name_group = {}
   local name_role = {}
   local party = {}
@@ -661,71 +661,9 @@ local function bom_get_40man_raid_members(player_member)
   return party, player_member
 end
 
----Force updates party member buffs (vs. current player?)
----@param member Member
----@param player_member Member
-local function bom_get_party_members_force_update(member, player_member)
-  member.isPlayer = (member == player_member)
-  member.isDead = UnitIsDeadOrGhost(member.unitId) and not UnitIsFeignDeath(member.unitId)
-  member.isGhost = UnitIsGhost(member.unitId)
-  member.isConnected = UnitIsConnected(member.unitId)
-
-  member.NeedBuff = true
-
-  wipe(member.buffs)
-
-  BOM.SomeBodyGhost = BOM.SomeBodyGhost or member.isGhost
-
-  if member.isDead then
-    BOM.PlayerBuffs[member.name] = nil
-  else
-    member.hasArgentumDawn = false
-    member.hasCarrot = false
-
-    local buffIndex = 0
-
-    repeat
-      buffIndex = buffIndex + 1
-
-      local name, icon, count, debuffType, duration, expirationTime, source, isStealable
-      , nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, castByPlayer
-      , nameplateShowAll, timeMod = BOM.UnitAura(member.unitId, buffIndex, "HELPFUL")
-
-      spellId = BOM.SpellToSpell[spellId] or spellId
-
-      if spellId then
-        -- Skip members who have a buff on the global ignore list - example phaseshifted imps
-        if tContains(BOM.BuffIgnoreAll, spellId) then
-          wipe(member.buffs)
-          member.NeedBuff = false
-          break
-        end
-
-        if spellId == BOM.ArgentumDawn.spell then
-          member.hasArgentumDawn = true
-        end
-
-        if spellId == BOM.Carrot.spell then
-          member.hasCarrot = true
-        end
-
-        if tContains(BOM.AllSpellIds, spellId) then
-          member.buffs[BOM.SpellIdtoConfig[spellId]] = {
-            ["duration"]       = duration,
-            ["expirationTime"] = expirationTime,
-            ["source"]         = source,
-            ["isSingle"]       = BOM.SpellIdIsSingle[spellId],
-          }
-        end
-      end
-
-    until (not name)
-  end -- if is not dead
-end
-
 ---Retrieve a table with party members
----@return table<Member>, Member
-local function bom_get_party_members()
+---@return table<Member>, Member A pair of Party and Player
+local function bomGetPartyMembers()
   -- and buffs
   local party
   local player_member --- @type Member
@@ -735,15 +673,17 @@ local function bom_get_party_members()
           and bom_party_cache ~= nil
           and bom_player_member_cache ~= nil then
 
-    if #bom_party_cache == bom_count_members() + (BOM.SaveTargetName and 1 or 0) then
+    if #bom_party_cache == bomGetMembersCount() + (BOM.SaveTargetName and 1 or 0) then
       local ok = true
       for i, member in ipairs(bom_party_cache) do
         local name = (UnitFullName(member.unitId))
+
         if name ~= member.name then
           ok = false
           break
         end
       end
+
       if ok then
         party = bom_party_cache
         player_member = bom_player_member_cache
@@ -754,9 +694,9 @@ local function bom_get_party_members()
   -- read party data
   if party == nil or player_member == nil then
     if IsInRaid() then
-      party, player_member = bom_get_40man_raid_members(player_member)
+      party, player_member = bomGet40manRaidMembers(player_member)
     else
-      party, player_member = bom_get_5man_members(player_member)
+      party, player_member = bomGet5manPartyMembers(player_member)
     end
 
     if BOM.SharedState.BuffTarget
@@ -791,7 +731,7 @@ local function bom_get_party_members()
       end
     end
 
-    BOM.ForceUpdate = true -- always read all buffs on new party!
+    BOM.SetForceUpdate("JoinedParty") -- always read all buffs on new party!
   end
 
   BOM.PartyUpdateNeeded = false
@@ -804,6 +744,7 @@ local function bom_get_party_members()
     BOM.ClearSkip()
   end
 
+  -- For every party member which is in same zone, not a ghost or is a target
   for i, member in ipairs(party) do
     member.isSameZone = (C_Map.GetBestMapForUnit(member.unitId) == player_zone)
             or member.isGhost
@@ -815,11 +756,12 @@ local function bom_get_party_members()
       member.hasResurrection = false
       member.distance = BOM.Tool.UnitDistanceSquared(member.unitId)
     else
-      member.hasResurrection = UnitHasIncomingResurrection(member.unitId) or member.hasResurrection
+      member.hasResurrection = UnitHasIncomingResurrection(member.unitId)
+              or member.hasResurrection
     end
 
     if BOM.ForceUpdate then
-      bom_get_party_members_force_update(member, player_member)
+      member:ForceUpdateBuffs(player_member)
     end -- if force update
   end -- for all in party
 
@@ -878,11 +820,11 @@ local function bom_get_party_members()
   end
 
   if OldMainHandBuff ~= player_member.MainHandBuff then
-    BOM.ForceUpdate = true
+    BOM.SetForceUpdate("MainHandBuff Changed")
   end
 
   if OldOffHandBuff ~= player_member.OffHandBuff then
-    BOM.ForceUpdate = true
+    BOM.SetForceUpdate("OffhandBuffChanged")
   end
 
   BOM.DeclineHasResurrection = false
@@ -1163,11 +1105,7 @@ local function bom_update_spell_targets(party, spell, player_member, someone_is_
   return someone_is_dead
 end
 
----Updates the BOM macro
----@param member table - next target to buff
----@param spellId number - spell to cast
----@param command string - bag command
-function BOM.UpdateMacro(member, spellId, command)
+local function bom_recreate_macro()
   if (GetMacroInfo(BOM.MACRO_NAME)) == nil then
     local perAccount, perChar = GetNumMacros()
     local isChar
@@ -1181,10 +1119,25 @@ function BOM.UpdateMacro(member, spellId, command)
 
     CreateMacro(BOM.MACRO_NAME, BOM.MACRO_ICON, "", isChar)
   end
+end
+
+--- Does same as call to BOM.UpdateMacro with command and when member/spellid are nil
+function BOM.ClearMacro()
+  bom_recreate_macro()
+  local macroText = "#showtooltip\n/bom update\n"
+  icon = BOM.MACRO_ICON_DISABLED
+  EditMacro(BOM.MACRO_NAME, nil, icon, macroText)
+end
+
+---Updates the BOM macro
+---@param member table - next target to buff
+---@param spellId number - spell to cast
+---@param command string - bag command
+function BOM.UpdateMacro(member, spellId, command)
+  bom_recreate_macro()
 
   local macroText, icon
   if member and spellId then
-
     --Downgrade-Check
     local spell = BOM.ConfigToSpell[spellId]
     local rank = ""
@@ -1469,7 +1422,7 @@ local function bom_catch_a_spell(cost, id, link, member, spell)
 end
 
 ---Cleares the spell from `cast` global
-local function bom_clear_next_cast_spell()
+local function bomClearNextCastSpell()
   next_cast_spell.manaCost = -1
   next_cast_spell.SpellId = nil
   next_cast_spell.Member = nil
@@ -1517,7 +1470,7 @@ end
 
 ---@param party table<Member> - the party
 ---@param player_member Member - the player
-local function bom_force_update(party, player_member)
+local function bomForceUpdate(party, player_member)
   --reset tracking
   BOM.ForceTracking = nil
 
@@ -1612,6 +1565,7 @@ local function bom_force_update(party, player_member)
   -- who needs a buff!
   -- for each spell update spell potential targets
   local someone_is_dead = false -- the flag that buffing cannot continue while someone is dead
+
   for i, spell in ipairs(BOM.SelectedSpells) do
     someone_is_dead = bom_update_spell_targets(party, spell, player_member, someone_is_dead)
   end
@@ -1620,7 +1574,7 @@ local function bom_force_update(party, player_member)
   return someone_is_dead
 end
 
-local function bom_cancel_buffs(player_member)
+local function bomCancelBuffs(player_member)
   for i, spell in ipairs(BOM.CancelBuffs) do
     if BOM.CurrentProfile.CancelBuff[spell.ConfigID].Enable
             and not spell.OnlyCombat
@@ -1636,17 +1590,17 @@ local function bom_cancel_buffs(player_member)
 end
 
 ---Whisper to the spell caster when the buff expired on yourself
-local function bom_whisper_expired(spell)
+local function bomWhisperExpired(spell)
   if spell.wasPlayerActiv and not spell.playerActiv then
     spell.wasPlayerActiv = false
 
     local name = UnitName(spell.buffSource or "")
 
     if name then
-      BOM.Print(string.format(L.MsgSpellExpired, spell.single),
-              "WHISPER",
-              nil,
-              name)
+      local msg = string.format(L.MsgSpellExpired, spell.single)
+      SendChatMessage(msg, "WHISPER", nil, name)
+
+      BOM.Print(msg, "WHISPER", nil, name)
     end
   end
 end
@@ -1655,7 +1609,7 @@ end
 ---@param spell SpellDef - spell to cast
 ---@param player_member table - player
 ---@param in_range boolean - spell target is in range
-local function bom_add_blessing(spell, player_member, in_range)
+local function bomAddBlessing(spell, player_member, in_range)
   local ok, bag, slot, count
   if spell.reagentRequired then
     ok, bag, slot, count = BOM.HasItem(spell.reagentRequired, true)
@@ -1754,7 +1708,7 @@ end
 ---@param party table - the party
 ---@param player_member table - player
 ---@param in_range boolean - spell target is in range
-local function bom_add_buff(spell, party, player_member, in_range)
+local function bomAddBuff(spell, party, player_member, in_range)
   local ok, bag, slot, count
 
   if spell.reagentRequired then
@@ -1848,7 +1802,7 @@ end
 ---@param player_member table - the player
 ---@param in_range boolean - value for range check
 ---@return table (bag_title string, bag_command string)
-local function bom_add_resurrection(spell, player_member, in_range)
+local function bomAddResurrection(spell, player_member, in_range)
   local clearskip = true
 
   for memberIndex, member in ipairs(spell.NeedMember) do
@@ -1907,7 +1861,7 @@ end
 ---Adds a display text for a self buff or tracking or seal/weapon self-enchant
 ---@param spell SpellDef - the spell to cast
 ---@param player_member table - the player
-local function bom_add_self_buff(spell, player_member)
+local function bomAddSelfbuff(spell, player_member)
   if (not spell.requiresOutdoors or IsOutdoors())
           and not tContains(spell.SkipList, player_member.name) then
     -- Text: Target [Spell Name]
@@ -1931,7 +1885,7 @@ end
 ---@param bag_title string - if not empty, is item name from the bag
 ---@param bag_command string - console command to use item from the bag
 ---@return table (bag_title string, bag_command string)
-local function bom_add_consumable_self_buff(spell, player_member, bag_title, bag_command)
+local function bomAddConsumableSelfbuff(spell, player_member, bag_title, bag_command)
   local ok, bag, slot, count = BOM.HasItem(spell.items, true)
   count = count or 0
 
@@ -1971,8 +1925,8 @@ end
 ---@param cast_button_title string - if not empty, is item name from the bag
 ---@param macro_command string - console command to use item from the bag
 ---@return string, string cast button title and macro command
-local function bom_add_weapon_consumable_buff(spell, player_member,
-                                              cast_button_title, macro_command)
+local function bomAddConsumableWeaponBuff(spell, player_member,
+                                          cast_button_title, macro_command)
   -- count - reagent count remaining for the spell
   local have_item, bag, slot, count = BOM.HasItem(spell.items, true)
   count = count or 0
@@ -2032,7 +1986,7 @@ local function bom_add_weapon_consumable_buff(spell, player_member,
               player_member.distance,
               true)
     else
-      BOM.ForceUpdate = true -- try rescan?
+      BOM.SetForceUpdate("WeaponConsumableBuff display text") -- try rescan?
     end
   end
 
@@ -2045,8 +1999,8 @@ end
 ---@param cast_button_title string - if not empty, is item name from the bag
 ---@param macro_command string - console command to use item from the bag
 ---@return string, string cast button title and macro command
-local function bom_add_weapon_enchant_spell(spell, player_member,
-                                            cast_button_title, macro_command)
+local function bomAddWeaponEnchant(spell, player_member,
+                                   cast_button_title, macro_command)
   local block_offhand_enchant = false -- set to true to block temporarily
 
   local _, self_class, _ = UnitClass("player")
@@ -2099,7 +2053,7 @@ end
 ---Set text and enable the cast button (or disable)
 ---@param t string - text for the cast button
 ---@param enable boolean - whether to enable the button or not
-local function bom_cast_button(t, enable)
+local function bomCastButton(t, enable)
   -- not really a necessary check but for safety
   if InCombatLockdown()
           or BomC_ListTab_Button == nil
@@ -2108,6 +2062,7 @@ local function bom_cast_button(t, enable)
   end
 
   BomC_ListTab_Button:SetText(t)
+
   if enable then
     BomC_ListTab_Button:Enable()
   else
@@ -2115,24 +2070,24 @@ local function bom_cast_button(t, enable)
   end
 end
 
-local function bom_update_scan_2()
-  local party, player_member = bom_get_party_members()
+local function bomUpdateScan_2()
+  local party, player_member = bomGetPartyMembers()
   local someone_is_dead
 
   if BOM.ForceUpdate then
-    someone_is_dead = bom_force_update(party, player_member)
+    someone_is_dead = bomForceUpdate(party, player_member)
   else
     someone_is_dead = bom_save_someone_is_dead
   end
 
   -- cancel buffs
-  bom_cancel_buffs(player_member)
+  bomCancelBuffs(player_member)
 
   -- fill list and find cast
   player_mana = UnitPower("player", 0) or 0 --mana
   BOM.ManaLimit = UnitPowerMax("player", 0) or 0
 
-  bom_clear_next_cast_spell()
+  bomClearNextCastSpell()
 
   local macro_command ---@type string
   local cast_button_title ---@type string
@@ -2145,7 +2100,7 @@ local function bom_update_scan_2()
     local profile_spell = BOM.GetProfileSpell(spell.ConfigID)
 
     if spell.isInfo and profile_spell.Whisper then
-      bom_whisper_expired(spell)
+      bomWhisperExpired(spell)
     end
 
     -- if spell is enabled and we're in the correct shapeshift form
@@ -2170,16 +2125,16 @@ local function bom_update_scan_2()
       if spell.type == "weapon" then
         if #spell.NeedMember > 0 then
           if spell.isConsumable then
-            cast_button_title, macro_command = bom_add_weapon_consumable_buff(
+            cast_button_title, macro_command = bomAddConsumableWeaponBuff(
                     spell, player_member, cast_button_title, macro_command)
           else
-            cast_button_title, macro_command = bom_add_weapon_enchant_spell(spell, player_member)
+            cast_button_title, macro_command = bomAddWeaponEnchant(spell, player_member)
           end
         end
 
       elseif spell.isConsumable then
         if #spell.NeedMember > 0 then
-          cast_button_title, macro_command = bom_add_consumable_self_buff(
+          cast_button_title, macro_command = bomAddConsumableSelfbuff(
                   spell, player_member, cast_button_title, macro_command)
         end
 
@@ -2216,17 +2171,17 @@ local function bom_update_scan_2()
           -- if spell is shapeshift, and is already active, skip it
         elseif #spell.NeedMember > 0 then
           -- self buffs are not pvp-guarded
-          bom_add_self_buff(spell, player_member)
+          bomAddSelfbuff(spell, player_member)
         end
 
       elseif spell.type == "resurrection" then
-        in_range = bom_add_resurrection(spell, player_member, in_range)
+        in_range = bomAddResurrection(spell, player_member, in_range)
 
       elseif spell.isBlessing then
-        in_range = bom_add_blessing(spell, player_member, in_range)
+        in_range = bomAddBlessing(spell, player_member, in_range)
 
       else
-        in_range = bom_add_buff(spell, party, player_member, in_range)
+        in_range = bomAddBuff(spell, party, player_member, in_range)
       end
     end
   end -- for all selected spells
@@ -2333,12 +2288,12 @@ local function bom_update_scan_2()
 
   if BOM.PlayerCasting == "cast" then
     --Print player is busy (casting normal spell)
-    bom_cast_button(L.MsgBusy, false)
+    bomCastButton(L.MsgBusy, false)
     BOM.UpdateMacro()
 
   elseif BOM.PlayerCasting == "channel" then
     --Print player is busy (casting channeled spell)
-    bom_cast_button(L.MsgBusyChanneling, false)
+    bomCastButton(L.MsgBusyChanneling, false)
     BOM.UpdateMacro()
 
   elseif next_cast_spell.Member and next_cast_spell.SpellId then
@@ -2348,7 +2303,7 @@ local function bom_update_scan_2()
     --                next_cast_spell.Link,
     --                next_cast_spell.Member.link),
     --        true)
-    bom_cast_button(next_cast_spell.Link, true)
+    bomCastButton(next_cast_spell.Link, true)
 
     BOM.UpdateMacro(next_cast_spell.Member, next_cast_spell.SpellId)
 
@@ -2367,7 +2322,7 @@ local function bom_update_scan_2()
     if #bom_cast_messages == 0 then
       --If don't have any strings to display, and nothing to do -
       --Clear the cast button
-      bom_cast_button(L.MsgEmpty, true)
+      bomCastButton(L.MsgEmpty, true)
 
       for spellIndex, spell in ipairs(BOM.SelectedSpells) do
         if #spell.SkipList > 0 then
@@ -2377,12 +2332,12 @@ local function bom_update_scan_2()
 
     else
       if someone_is_dead and BOM.SharedState.DeathBlock then
-        bom_cast_button(L.MsgSomebodyDead, false)
+        bomCastButton(L.MsgSomebodyDead, false)
       else
         if in_range then
-          bom_cast_button(ERR_OUT_OF_MANA, false)
+          bomCastButton(ERR_OUT_OF_MANA, false)
         else
-          bom_cast_button(ERR_SPELL_OUT_OF_RANGE, false)
+          bomCastButton(ERR_SPELL_OUT_OF_RANGE, false)
           local skipreset = false
 
           for spellIndex, spell in ipairs(BOM.SelectedSpells) do
@@ -2394,24 +2349,25 @@ local function bom_update_scan_2()
 
           if skipreset then
             BOM.FastUpdateTimer()
-            BOM.ForceUpdate = true
+            BOM.SetForceUpdate("SkipReset")
           end
         end -- if inrange
       end -- if somebodydeath and deathblock
     end -- if #display == 0
 
     if cast_button_title then
-      bom_cast_button(cast_button_title, true)
+      bomCastButton(cast_button_title, true)
     end
 
     BOM.UpdateMacro(nil, nil, macro_command)
   end -- if not player casting
 
-end -- end function bom_update_scan_2()
+end -- end function bomUpdateScan_2()
 
 ---Scan the available spells and group members to find who needs the rebuff/res
 ---and what would be their priority?
-function BOM.UpdateScan()
+---@param from string Debug value to trace the caller of this function
+function BOM.UpdateScan(from)
   if BOM.SelectedSpells == nil then
     return
   end
@@ -2427,14 +2383,15 @@ function BOM.UpdateScan()
   -- Cancel buff tasks if is in a resting area, and option to scan is not set
   if not BOM.SharedState.ScanInRestArea and IsResting() then
     BOM.AutoClose()
-    bom_cast_button(L.MsgIsResting, false)
+    BOM.ClearMacro()
+    bomCastButton(L.MsgIsResting, false)
     return
   end
 
   -- Cancel buff tasks if is in stealth, and option to scan is not set
   if not BOM.SharedState.ScanInStealth and IsStealthed() then
     BOM.AutoClose()
-    bom_cast_button(L.MsgIsStealthed, false)
+    bomCastButton(L.MsgIsStealthed, false)
     return
   end
 
@@ -2442,7 +2399,7 @@ function BOM.UpdateScan()
   if InCombatLockdown() then
     BOM.ForceUpdate = false
     BOM.CheckForError = false
-    bom_cast_button(L.MsgCombat, true)
+    bomCastButton(L.MsgCombat, true)
     return
   end
 
@@ -2450,10 +2407,14 @@ function BOM.UpdateScan()
     BOM.ForceUpdate = false
     BOM.CheckForError = false
     BOM.UpdateMacro()
-    bom_cast_button(L.MsgDead, false)
+    bomCastButton(L.MsgDead, false)
     BOM.AutoClose()
     return
   end
+
+  --if from ~= nil then
+  --  BOM.Dbg("Spell scan from " .. from)
+  --end
 
   --Choose Profile
   local is_bom_disabled, auto_profile = bom_choose_profile()
@@ -2465,20 +2426,20 @@ function BOM.UpdateScan()
             BOM.FormatTexture(BOM.MACRO_ICON_FULLPATH)
                     .. " " .. BOM.TOC_TITLE .. " - "
                     .. L["profile_" .. auto_profile])
-    BOM.ForceUpdate = true
+    BOM.SetForceUpdate("ProfileChanged")
   end
 
   if is_bom_disabled then
     BOM.CheckForError = false
     BOM.ForceUpdate = false
     BOM.UpdateMacro()
-    bom_cast_button(L.MsgDisabled, false)
+    bomCastButton(L.MsgDisabled, false)
     BOM.AutoClose()
     return
   end
 
   -- All pre-checks passed
-  bom_update_scan_2()
+  bomUpdateScan_2()
 end -- end function UpdateScan()
 
 
@@ -2490,7 +2451,7 @@ function BOM.AddMemberToSkipList()
           and BOM.CastFailedSpellTarget then
     tinsert(BOM.CastFailedSpell.SkipList, BOM.CastFailedSpellTarget.name)
     BOM.FastUpdateTimer()
-    BOM.ForceUpdate = true
+    BOM.SetForceUpdate("SkipListMemberAdded")
   end
 end
 
@@ -2506,7 +2467,7 @@ function BOM.DownGrade()
       then
         BOM.SharedState.SpellGreatherEqualThan[BOM.CastFailedSpellId] = level
         BOM.FastUpdateTimer()
-        BOM.ForceUpdate = true
+        BOM.SetForceUpdate("Downgrade")
         BOM.Print(string.format(L.MsgDownGrade,
                 BOM.CastFailedSpell.single,
                 BOM.CastFailedSpellTarget.name))

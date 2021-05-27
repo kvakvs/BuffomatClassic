@@ -1,5 +1,9 @@
 # Changelog
 
+## Buffomat Classic and TBC 2021.5.12
+
+- BUG: Swapped Sunfruit and Sunfruit Juice (wrong class limits)
+
 ## Buffomat Classic and TBC 2021.5.10
 
 - Renamed option: Scan in rest areas (off by default), before: disable in rest

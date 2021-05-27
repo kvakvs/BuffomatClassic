@@ -803,10 +803,8 @@ local function bom_setup_phys_dps_buffs(spells, enchants)
           { item          = 20452, isConsumable = true, default = false, onlyUsableFor = BOM_PHYSICAL_CLASSES,
             consumableEra = BOM.CLASSIC_ERA },
           { isTBC = false }) -- hide in TBC
-  BOM.Class.SpellDef:scan_spell(spells, 18141, --Blessed Sunfruit Juice +Strength
-          { item          = 13813, isConsumable = true, default = false, onlyUsableFor = BOM_MELEE_CLASSES,
-            consumableEra = BOM.CLASSIC_ERA },
-          { isTBC = false }) -- hide in TBC
+  BOM.Class.SpellDef:classic_consumable(spells, 18125, 13810, --Blessed Sunfruit +STR
+          { playerClass = BOM_MELEE_CLASSES })
 end
 
 ---ITEMS, applicable to most of the classes, self buffs, containers to open etc
@@ -857,8 +855,10 @@ local function bom_setup_caster_buffs(spells, enchants)
           { playerClass = BOM_MANA_CLASSES })
   BOM.Class.SpellDef:classic_consumable(spells, 19710, 12218, --Monster Omelette
           { playerClass = BOM_MANA_CLASSES })
-  BOM.Class.SpellDef:classic_consumable(spells, 18125, 13810, --Blessed Sunfruit +Spirit
-          { playerClass = BOM_MANA_CLASSES })
+  BOM.Class.SpellDef:scan_spell(spells, 18141, --Blessed Sunfruit Juice +10 SPIRIT
+          { item          = 13813, isConsumable = true, default = false, onlyUsableFor = BOM_MANA_CLASSES,
+            consumableEra = BOM.CLASSIC_ERA },
+          { isTBC = false }) -- hide in TBC
 
   BOM.Class.SpellDef:scan_spell(spells, 28017, --Superior Wizard Oil +42 SPELL
           { item = 22522, items = { 22522 }, isConsumable = true,
