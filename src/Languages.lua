@@ -160,9 +160,26 @@ local function bomLanguage_English()
     profile_battleground          = "Battleground",
     profile_auto                  = "Automatic",
 
-    AboutInfo                     = "Stamina! Int! Spirit! - Does that sound familiar? Buff'o'mat scan the party/raid-member for missing buffs and with a click it is casted. When three or more members are missing one buff the group-version is used. It also remembers you to activate a tracking like 'Find Herbs'.|nAlso it will help you to resurrect players by choosing paladins, priests and shamans first. ",
+    AboutInfo                     = "Stamina! Int! Spirit! - Does that sound familiar? Buffomat scans "
+            .. "the party/raid-member for missing buffs and with a click it is casted. When three "
+            .. "or more members are missing one buff the group-version is used. It also activates "
+            .. "tracking abilities like 'Find Herbs'.|nAlso it will help you to resurrect players by "
+            .. "preferring paladins, priests and shamans over other classes. ",
 
-    AboutUsage                    = "You need a free macro-slot to use this addon. The main-window has two tabs 'Buff' and 'Spells'. Under 'Buff' you find all missing buffs and a cast button.Under 'Spells' you can configurate which spells should be monitored, if it should use the group version. Select if it should only cast an you or on all party members. Choose which buff should be active on which class. You can also ignore complete groups (for example in raid, when you should only cast int on group 7&8). You can also select here, that one buff should be active on the current target. For example as druid click on the main tank and in the 'Thorns'-section on the '-' (last symbol) - it will changed to a crosshair and now buff'o'mat remember you to keep the buff on the main tank.You have two options to Cast a buff from the missing-buff-list. The spell-button in the window or the Buff'o'mat-macro. You find it with the 'M'-Button in the 'titel bar' of the main window.|nIMPORTANT: Buff'o'mat works only out of combat because Blizzard don't allow to change macros during combat. Additional you can't open or close the main window during combat!",
+    AboutUsage                    = "You need a free macro-slot to use this addon. The main-window has "
+            .. "two tabs 'Buff' and 'Spells'. Under 'Buff' you find all missing buffs and a cast button. "
+            .. "Under 'Spells' you can choose which spells should be monitored, and whether the group "
+            .. "version should be cast. Select if it should only cast an you or on all party members. "
+            .. "Choose which buff should be active on which class. You can also ignore entire groups "
+            .. "(for example in raid, when you should only cast int on group 7&8). You can also "
+            .. "select here, that one buff should be active on the current target. For example as "
+            .. "druid click on the main tank and in the 'Thorns'-section on the '-' (last symbol) - "
+            .. "it will changed to a crosshair and now Buffomat remind you to rebuff the main tank. "
+            .. "You have two options to Cast a buff from the missing-buff-list. The spell-button in "
+            .. "the window or the Buff'o'mat-macro. You find it with the 'M'-Button in the 'titel bar' "
+            .. "of the main window.|nIMPORTANT: Buff'o'mat works only out of combat because Blizzard "
+            .. "doesn't allow to change macros during combat. "
+            .. "Additionally you can't open or close the main window during combat!",
 
     AboutSlashCommand             = "", --<value> can be true, 1, enable, false, 0, disable. If <value> is omitted, the current status switches.",
 
@@ -177,9 +194,26 @@ end
 
 local function bomLanguage_Deutsch()
   return {
-    AboutInfo                     = "Ausdauer! Int! Wille! - klingt das bekannt? Buff'o'mat überprüft alle Gruppen/Raid-Mitglieder auf fehlende Buffs und ermöglicht diese dann mit einen klick zu verteilen. Wenn drei oder mehr den gleichen Buff brauchen, wird die Gruppenversion benutzt. Es erinnert dich auch die Suche wie Kräutersuche wieder zu aktivieren.|nAuch beim Wiederbeleben wird unterstützt, indem Paladine, Priester und Schamanen bevorzugt werden.",
+    AboutInfo                     = "Ausdauer! Int! Wille! - klingt das bekannt? Buffomat überprüft alle "
+            .. "Gruppen/Raid-Mitglieder auf fehlende Buffs und ermöglicht diese dann mit einen klick zu "
+            .. "verteilen. Wenn drei oder mehr den gleichen Buff brauchen, wird die Gruppenversion benutzt. "
+            .. "Es erinnert dich auch die Suche wie Kräutersuche wieder zu aktivieren.|nAuch beim "
+            .. "Wiederbeleben wird unterstützt, indem Paladine, Priester und Schamanen bevorzugt werden.",
     AboutSlashCommand             = "",
-    AboutUsage                    = "Es wird ein freier Makro-Platz benötigt. Das Hauptfenster hat zwei Reiter 'Buff' und 'Zauber'. Unter 'Buff' findet man die fehlenden buffs und ein 'Zaubern'-Button.|nUnter 'Zauber' findet man Einstellungen z.B.: Welche Zauber überwacht werden sollen, ob die Gruppen-Varianten erlaubt sind, ob der Zauber nur auf den Spieler oder alle erfolgen soll, welche Klassen diesen Zauber bekommen sollen. Zudem lassen sich die Gruppen einschränken, bspw. im Raid, wenn man nur Gruppe 7&8 mit Int buffen soll. Auch kann man hier Einstellen, dass das aktuelle Ziel immer einen bestimmten Buff bekommen soll. Bspw. kann ein Druide den Haupttank auswählen und in der Zeile von 'Dornen' auf das '-' klicken. Es sollte sich dann in ein Zielkreuz änden. Von nun an wird immer Dornen auf den Tank aufrecht gehalten.|nMan hat zwei Möglichkeiten, einen Buff zu zaubern: Einmal der 'Zaubern'-Button in Hauptfenster oder das Buff'o'mat-Makro. Man findet es unter dem 'M'-Button in der Titelzeile des Fensters.|nACHTUNG: Aufgrund von Einschränkungen von Blizzard funktioniert Buff'o'mat nur außerhalb des Kampfes. Es kann auch bspw. das Hauptfenster nur außerhalb geöffnet und geschlossen werden!",
+    AboutUsage                    = "Es wird ein freier Makro-Platz benötigt. Das Hauptfenster hat zwei "
+            .. "Reiter 'Buff' und 'Zauber'. Unter 'Buff' findet man die fehlenden buffs und ein "
+            .. "'Zaubern'-Button.|nUnter 'Zauber' findet man Einstellungen z.B.: Welche Zauber überwacht "
+            .. "werden sollen, ob die Gruppen-Varianten erlaubt sind, ob der Zauber nur auf den Spieler "
+            .. "oder alle erfolgen soll, welche Klassen diesen Zauber bekommen sollen. Zudem lassen "
+            .. "sich die Gruppen einschränken, bspw. im Raid, wenn man nur Gruppe 7&8 mit Int "
+            .. "buffen soll. Auch kann man hier Einstellen, dass das aktuelle Ziel immer einen "
+            .. "bestimmten Buff bekommen soll. Bspw. kann ein Druide den Haupttank auswählen und in "
+            .. "der Zeile von 'Dornen' auf das '-' klicken. Es sollte sich dann in ein Zielkreuz "
+            .. "änden. Von nun an wird immer Dornen auf den Tank aufrecht gehalten.|nMan hat zwei "
+            .. "Möglichkeiten, einen Buff zu zaubern: Einmal der 'Zaubern'-Button in Hauptfenster oder "
+            .. "das Buff'o'mat-Makro. Man findet es unter dem 'M'-Button in der Titelzeile des Fensters.|n"
+            .. "ACHTUNG: Aufgrund von Einschränkungen von Blizzard funktioniert Buffomat nur außerhalb des "
+            .. "Kampfes. Es kann auch bspw. das Hauptfenster nur außerhalb geöffnet und geschlossen werden!",
     BtnBuffs                      = "Verbrauchbares",
     BtnCancel                     = "Abbruch",
     BtnOpen                       = "Öffnen",
@@ -346,9 +380,29 @@ local function bomLanguage_Russian()
   return {
     CHAT_MSG_PREFIX               = "Бафомёт: ", --префикс в чате
     Buffomat                      = "Бафомёт", --шапка окна аддона
-    AboutInfo                     = "Выносливость! Интеллект! Дух! - Это звучит знакомо? Бафомёт просканирует участников рейда/группы на отсутствие положительных эффектов и в одно мгновение примените их. Когда у троих или более участников отсутствует эффект, то будет использовано одно заклинание для всей группы. Он также запоминает активацию отслеживания для 'Поиска травы'.|nОн также поможет вам воскресить игроков, выбрав сначала паладинов, священников и шаманов. ",
-    AboutSlashCommand             = "На данный момент это должна быть пустая строка!",
-    AboutUsage                    = "Вам нужен свободный слот макроса, чтобы использовать это дополнение. Главное окно имеет две вкладки 'Эффекты' и 'Заклинания'. В разделе 'Эффектов' вы найдете все недостающие эффекты и кнопку применить.В разделе 'Заклинания' вы можете настроить, какие заклинания следует контролировать или если он должен использовать групповую версию. Выберите, если он должен использовать только на вас или для всех участников группы. Выберите, какой эффект должен быть активен, для какого класса. Вы также можете игнорировать целые группы (например, в рейде, когда вы должны использовать только инт в группе 7 и 8). Вы также можете выбрать здесь, что один эффект должен быть активен на текущей цели. Например, как друид, нажмите на основного танка и выберете 'Шипы' - или другой '-' (последний символ) - оно изменится на перекрестие, и теперь buff'o'mat помнит, что вы держите эффект на основном танке.У вас есть два варианта, чтобы применить эффект из списка пропущенных эффектов. Кнопка с заклинанием в окне или макрос Buff'o'mat. Вы найдете его с помощью кнопки 'M' в «строке заголовка» главного окна.|nВАЖНо: Buff'o'mat работает только вне боя, потому что Blizzard не позволяет менять макросы во время боя. Кроме того, вы не можете открыть или закрыть главное окно во время боя!",
+    AboutInfo                     = "Выносливость! Интеллект! Дух! - Это звучит знакомо? "
+            .. "Бафомёт просканирует участников рейда/группы на отсутствие положительных эффектов "
+            .. "и в одно мгновение примените их. Когда у троих или более участников отсутствует эффект, "
+            .. "то будет использовано одно заклинание для всей группы. Он также запоминает активацию "
+            .. "отслеживания для 'Поиска травы'.|nОн также поможет вам воскресить игроков, выбрав "
+            .. "сначала паладинов, священников и шаманов. ",
+    AboutSlashCommand             = "На данный момент это должна быть команда без параметров!",
+    AboutUsage                    = "Вам нужен свободный слот макроса, чтобы использовать это дополнение. "
+            .. "Главное окно имеет две вкладки 'Эффекты' и 'Заклинания'. В разделе 'Эффектов' вы "
+            .. "найдете все недостающие эффекты и кнопку применить.В разделе 'Заклинания' вы можете "
+            .. "настроить, какие заклинания следует контролировать или если он должен использовать "
+            .. "групповую версию. Выберите, если он должен использовать только на вас или для всех "
+            .. "участников группы. Выберите, какой эффект должен быть активен, для какого класса. "
+            .. "Вы также можете игнорировать целые группы (например, в рейде, когда вы должны использовать "
+            .. "только инт в группе 7 и 8). Вы также можете выбрать здесь, что один эффект должен "
+            .. "быть активен на текущей цели. Например, как друид, нажмите на основного танка и "
+            .. "выберете 'Шипы' - или другой '-' (последний символ) - оно изменится на перекрестие, "
+            .. "и теперь Бафомёт помнит, что вы держите эффект на основном танке. У вас есть два "
+            .. "варианта, чтобы применить эффект из списка пропущенных эффектов. Кнопка с "
+            .. "заклинанием в окне или макрос Buff'o'mat. Вы найдете его с помощью кнопки 'Macro' "
+            .. "в «строке заголовка» главного окна.|nВАЖНо: Бафомёт работает только вне боя, потому "
+            .. "что игра не позволяет менять макросы во время боя. Кроме того, вы не можете открыть "
+            .. "или закрыть главное окно во время боя!",
     BtnCancel                     = "Закрыть",
     BtnOpen                       = "Открыть",
     BtnSettings                   = "Настройки",
@@ -551,15 +605,15 @@ function BOM.SetupTranslations()
   if currentLang == "zhCN" then
     BOM.locales.zhCN = bomLanguage_Chinese()
   end
-end
 
-BOM.L = BOM.locales[GetLocale()] or {}
-setmetatable(BOM.L, {
-  __index = BOM.locales["enEN"]
-})
-BOM.L.AboutCredits = "wellcat for the Chinese translation|n" ..
-        "OlivBEL for the french translation|n" ..
-        "Arrogant_Dreamer & kvakvs for the russian translation|n"
+  BOM.L = BOM.locales[GetLocale()] or {}
+  setmetatable(BOM.L, {
+    __index = BOM.locales["enEN"]
+  })
+  BOM.L.AboutCredits = "wellcat for the Chinese translation|n" ..
+          "OlivBEL for the french translation|n" ..
+          "Arrogant_Dreamer & kvakvs for the russian translation|n"
+end
 
 function BOM.LocalizationInit()
   if BomSharedState and BomSharedState.CustomLocales then
