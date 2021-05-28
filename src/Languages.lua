@@ -8,8 +8,8 @@ local L = setmetatable({}, { __index = function(t, k)
   end
 end })
 
-BOM.locales = {
-  enEN = { --EN is Master/Fallback
+local function bomLanguage_English()
+  return {
     CHAT_MSG_PREFIX               = "Buffomat: ",
     Buffomat                      = "Buffomat", -- addon title in the main window
     ResetWatchGroups              = "resetting buff groups to 1-8",
@@ -172,9 +172,11 @@ BOM.locales = {
     TooltipCastButton             = "Cast the spell from the list.|nNot available in combat.|nCan also be activated via the macro (in the top row)|nor bind a shortcut key in Key Bindings => Other",
 
     SpellLabel_TrackHumanoids     = "Cat only - Overrides track herbs and ore",
-  },
+  }
+end
 
-  deDE = {
+local function bomLanguage_Deutsch()
+  return {
     AboutInfo                     = "Ausdauer! Int! Wille! - klingt das bekannt? Buff'o'mat überprüft alle Gruppen/Raid-Mitglieder auf fehlende Buffs und ermöglicht diese dann mit einen klick zu verteilen. Wenn drei oder mehr den gleichen Buff brauchen, wird die Gruppenversion benutzt. Es erinnert dich auch die Suche wie Kräutersuche wieder zu aktivieren.|nAuch beim Wiederbeleben wird unterstützt, indem Paladine, Priester und Schamanen bevorzugt werden.",
     AboutSlashCommand             = "",
     AboutUsage                    = "Es wird ein freier Makro-Platz benötigt. Das Hauptfenster hat zwei Reiter 'Buff' und 'Zauber'. Unter 'Buff' findet man die fehlenden buffs und ein 'Zaubern'-Button.|nUnter 'Zauber' findet man Einstellungen z.B.: Welche Zauber überwacht werden sollen, ob die Gruppen-Varianten erlaubt sind, ob der Zauber nur auf den Spieler oder alle erfolgen soll, welche Klassen diesen Zauber bekommen sollen. Zudem lassen sich die Gruppen einschränken, bspw. im Raid, wenn man nur Gruppe 7&8 mit Int buffen soll. Auch kann man hier Einstellen, dass das aktuelle Ziel immer einen bestimmten Buff bekommen soll. Bspw. kann ein Druide den Haupttank auswählen und in der Zeile von 'Dornen' auf das '-' klicken. Es sollte sich dann in ein Zielkreuz änden. Von nun an wird immer Dornen auf den Tank aufrecht gehalten.|nMan hat zwei Möglichkeiten, einen Buff zu zaubern: Einmal der 'Zaubern'-Button in Hauptfenster oder das Buff'o'mat-Makro. Man findet es unter dem 'M'-Button in der Titelzeile des Fensters.|nACHTUNG: Aufgrund von Einschränkungen von Blizzard funktioniert Buff'o'mat nur außerhalb des Kampfes. Es kann auch bspw. das Hauptfenster nur außerhalb geöffnet und geschlossen werden!",
@@ -271,9 +273,11 @@ BOM.locales = {
     --split into _Self and _Party ["TooltipSelfCastCheckbox"] = "Wirke auf Gruppe/Raid oder nur auf sich selbst",
     TooltipForceCastOnTarget      = "Buff dauerhaft auf Ziel halten",
     TooltipWhisperWhenExpired     = "Quelle anflüstern, wenn abgelaufen."
-  },
+  }
+end
 
-  frFR = {
+local function bomLanguage_French()
+  return {
     FORMAT_BUFF_SINGLE            = "%s %s",
     FORMAT_BUFF_SELF              = "%s %s sur toi-même",
     FORMAT_BUFF_GROUP             = "Groupe %s %s",
@@ -335,9 +339,11 @@ BOM.locales = {
     --AboutUsage="<dummy usage>",
     AboutSlashCommand             = "<valeur> peut être true, 1, enable, false, 0, disable. Si <valeur> est omis, la valeur actuelle s'inverse.",
     --AboutCredits="wellcat pour la traduction Chinoise",
-  },
+  }
+end
 
-  ruRU = {
+local function bomLanguage_Russian()
+  return {
     CHAT_MSG_PREFIX               = "Бафомёт: ", --префикс в чате
     Buffomat                      = "Бафомёт", --шапка окна аддона
     AboutInfo                     = "Выносливость! Интеллект! Дух! - Это звучит знакомо? Бафомёт просканирует участников рейда/группы на отсутствие положительных эффектов и в одно мгновение примените их. Когда у троих или более участников отсутствует эффект, то будет использовано одно заклинание для всей группы. Он также запоминает активацию отслеживания для 'Поиска травы'.|nОн также поможет вам воскресить игроков, выбрав сначала паладинов, священников и шаманов. ",
@@ -444,9 +450,11 @@ BOM.locales = {
     TooltipSettingsButton         = "Открыть меню быстрых настроек и профайлов",
     TooltipCloseButton            = "Скрыть окно Бафомёта, введите /bom или нажмите кнопку на мини-карте",
     TooltipCastButton             = "Скастовать заклинание из списка.|nКнопка становится недоступной в бою.|nТакже можно использовать макро (вытащите кнопку Макро сверху на панель заклинаний)|nили привязать клавишу в Настройках - Прочие",
-  },
+  }
+end
 
-  zhCN = {
+local function bomLanguage_Chinese()
+  return {
     AboutInfo                     = "Buff'o'mat将扫描团队成员是否丢失Buff，然后单击它就能施放和补充。当三个或更多成员丢失同一个buff时，会使用大buff。插件的另一个功能是你死后提醒你再次施放“寻找草药”或“寻找矿物。插件同样可以用于复活技能。当你点击宏时，它将复活你身边的人-优先级最高为萨满，圣骑士和牧师 ",
     --[[Translation missing --]]
     --[[ ["AboutSlashCommand"] = "",--]]
@@ -521,9 +529,29 @@ BOM.locales = {
     TooltipSelectTarget           = "选择一个团队/小队成员,启用这个选项",
     TooltipSelfCastCheckbox       = "施放给小队/团队,或仅自己",
     TooltipForceCastOnTarget      = "对当前目标强制施法"
-  },
+  }
+end
 
-}
+function BOM.SetupTranslations()
+  -- Always add english and add one language that is supported and is current
+  BOM.locales = {
+    enEN = bomLanguage_English(),
+  }
+
+  local currentLang = GetLocale()
+  if currentLang == "deDE" then
+    BOM.locales.deDE = bomLanguage_Deutsch()
+  end
+  if currentLang == "frFR" then
+    BOM.locales.frFR = bomLanguage_French()
+  end
+  if currentLang == "ruRU" then
+    BOM.locales.ruRU = bomLanguage_Russian()
+  end
+  if currentLang == "zhCN" then
+    BOM.locales.zhCN = bomLanguage_Chinese()
+  end
+end
 
 BOM.L = BOM.locales[GetLocale()] or {}
 setmetatable(BOM.L, {

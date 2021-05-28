@@ -31,6 +31,8 @@ BOM.Class = BOM.Class or {}
 ---@field SlowerHardware boolean Less frequent updates
 ---
 ---@field Cache table<number, table> Caches responses from GetItemInfo() and GetSpellInfo()
+
+---@type State
 BOM.Class.Profile = {}
 BOM.Class.Profile.__index = BOM.Class.Profile
 

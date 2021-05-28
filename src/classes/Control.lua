@@ -9,6 +9,8 @@ BOM.Class = BOM.Class or {}
 ---@field arg1 any
 ---@field arg2 any
 ---@field MenuDepth number
+
+---@type GPIMenuItem
 BOM.Class.GPIMenuItem = {}
 BOM.Class.GPIMenuItem.__index = BOM.Class.GPIMenuItem
 
@@ -19,6 +21,8 @@ BOM.Class.GPIMenuItem.__index = BOM.Class.GPIMenuItem
 ---@field visible boolean|nil
 ---@field lock boolean|nil
 ---@field lockDistance boolean|nil
+
+---@type GPIMinimapButtonConfigData
 BOM.Class.GPIMinimapButtonConfigData = {}
 BOM.Class.GPIMinimapButtonConfigData.__index = BOM.Class.GPIMinimapButtonConfigData
 
@@ -30,6 +34,8 @@ BOM.Class.GPIMinimapButtonConfigData.__index = BOM.Class.GPIMinimapButtonConfigD
 ---@field db GPIMinimapButtonConfigData Config database which will persist between addon reloads
 ---@field Tooltip string
 ---@field onClick function
+
+---@type GPIMinimapButton
 BOM.Class.GPIMinimapButton = {}
 BOM.Class.GPIMinimapButton.__index = BOM.Class.GPIMinimapButton
 
@@ -55,6 +61,8 @@ BOM.Class.GPIMinimapButton.__index = BOM.Class.GPIMinimapButton
 ---@field GPI_DoStop boolean
 ---@field GPI_SIZETYPE string
 ---@field Lib_GPI_MinimapButton GPIMinimapButton Stores extra values for minimap button control
+
+---@type Control
 BOM.Class.Control = {}
 BOM.Class.Control.__index = BOM.Class.Control
 

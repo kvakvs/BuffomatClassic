@@ -10,6 +10,8 @@ BOM.Class = BOM.Class or {}
 ---@field group State
 ---@field raid State
 ---@field battleground State
+
+---@type CharacterState
 BOM.Class.CharacterState = {}
 BOM.Class.CharacterState.__index = BOM.Class.CharacterState
 

@@ -8,6 +8,8 @@ BOM.Class = BOM.Class or {}
 ---@field expirationTime number
 ---@field source string Unit/player who gave this buff
 ---@field isSingle boolean
+
+---@type Buff
 BOM.Class.Buff = {}
 BOM.Class.Buff.__index = BOM.Class.Buff
 

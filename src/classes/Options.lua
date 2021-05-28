@@ -23,6 +23,8 @@ BOM.Class = BOM.Class or {}
 ---@field RightSide Control
 ---@field scale number Options GUI scale
 ---@field Vars table<string, table<string, any>>
+
+---@type Options
 BOM.Class.Options = {}
 BOM.Class.Options.__index = BOM.Class.Options
 

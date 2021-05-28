@@ -70,6 +70,8 @@ BOM.Class = BOM.Class or {}
 ---@field playerActiv boolean
 ---@field wasPlayerActiv boolean
 ---@field buffSource string Unit/player who gave this buff
+
+---@type SpellDef
 BOM.Class.SpellDef = {}
 BOM.Class.SpellDef.__index = BOM.Class.SpellDef
 
@@ -254,6 +256,11 @@ function BOM.Class.SpellDef.HasClasses(self)
           or self.type == "tracking"
           or self.type == "aura"
           or self.isInfo)
+end
+
+---@param class_name string
+function BOM.Class.SpellDef:IncrementNeedGroupBuff(class_name)
+  self.NeedGroup[class_name] = (self.NeedGroup[class_name] or 0) + 1
 end
 
 ---@param spell_id number

@@ -592,6 +592,7 @@ end
 ---Called from event handler on Addon Loaded event
 ---Execution start here
 function BOM.Init()
+  BOM.SetupTranslations()
   BOM.SetupSpells()
   BOM.SetupCancelBuffs()
   BOM.SetupItemCache()

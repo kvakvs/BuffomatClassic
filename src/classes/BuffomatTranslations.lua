@@ -8,6 +8,8 @@ BOM.Class = BOM.Class or {}
 ---@field frFR table<string, string>
 ---@field ruRU table<string, string>
 ---@field zhCN table<string, string>
+
+---@type BuffomatTranslations
 BOM.Class.BuffomatTranslations = {}
 BOM.Class.BuffomatTranslations.__index = BOM.Class.BuffomatTranslations
 
