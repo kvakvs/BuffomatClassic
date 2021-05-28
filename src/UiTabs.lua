@@ -20,7 +20,7 @@ BOM.SpellSettingsFrames = SpellSettingsFrames -- group settings buttons after th
 ---@param row_builder RowBuilder The structure used for building button rows
 ---@param is_horde boolean Whether we are the horde
 ---@param spell SpellDef The spell currently being displayed
-local function add_row_of_class_buttons(row_builder, is_horde, spell)
+local function bomAddClassesRow(row_builder, is_horde, spell)
   if spell.frames.SelfCast == nil then
     spell.frames.SelfCast = BOM.CreateMyButton(
             BomC_SpellTab_Scroll_Child,
@@ -148,7 +148,7 @@ end
 ---@param spell SpellDef - The spell to be canceled
 ---@param row_builder RowBuilder The structure used for building button rows
 ---@return {dy, prev_control}
-local function add_spell_cancel_buttons(spell, row_builder)
+local function bomAddSpellCancelRow(spell, row_builder)
   spell.frames = spell.frames or {}
 
   if spell.frames.info == nil then
@@ -204,7 +204,7 @@ local function add_spell_cancel_buttons(spell, row_builder)
 end
 
 ---@param row_builder RowBuilder The structure used for building button rows
-local function fill_last_section(row_builder)
+local function bomFillBottomSection(row_builder)
   -------------------------
   -- Add settings frame with icon, icon is not clickable
   -------------------------
@@ -359,7 +359,7 @@ end
 ---@param spell SpellDef Spell we're adding now
 ---@param row_builder RowBuilder The structure used for building button rows
 ---@param self_class string Character class
-local function bom_create_tab_row(row_builder, is_horde, spell, self_class)
+local function bomCreateTabRow(row_builder, is_horde, spell, self_class)
   spell.frames = spell.frames or {}
 
   --------------------------------
@@ -444,7 +444,7 @@ local function bom_create_tab_row(row_builder, is_horde, spell, self_class)
 
   if spell:HasClasses() then
     -- Create checkboxes one per class
-    add_row_of_class_buttons(row_builder, is_horde, spell)
+    bomAddClassesRow(row_builder, is_horde, spell)
   end
 
   if (spell.type == "tracking"
@@ -586,7 +586,7 @@ end
 
 ---Filter all known spells through current player spellbook.
 ---Called below from BOM.UpdateSpellsTab()
-local function create_tab(is_horde)
+local function bomCreateTab(is_horde)
   local row_builder = BOM.Class.RowBuilder:new()
 
   local _, self_class, _ = UnitClass("player")
@@ -596,7 +596,7 @@ local function create_tab(is_horde)
             and not tContains(spell.onlyUsableFor, self_class) then
       -- skip
     else
-      bom_create_tab_row(row_builder, is_horde, spell, self_class)
+      bomCreateTabRow(row_builder, is_horde, spell, self_class)
     end
   end
 
@@ -609,13 +609,13 @@ local function create_tab(is_horde)
   for i, spell in ipairs(BOM.CancelBuffs) do
     row_builder.dx = 2
 
-    add_spell_cancel_buttons(spell, row_builder)
+    bomAddSpellCancelRow(spell, row_builder)
 
     row_builder.dy = 2
   end
 
   if row_builder.prev_control then
-    fill_last_section(row_builder)
+    bomFillBottomSection(row_builder)
   end
 end
 
@@ -623,7 +623,7 @@ end
 ---@param prefix string - if table is not empty, will prefix tooltip with this string
 ---@param empty_text string - if table is empty, use this text
 ---@param name_table table - keys from table are formatted comma-separated
-local function bom_targets_tooltip(prefix, empty_text, name_table)
+local function bomGetTargetsTooltipText(prefix, empty_text, name_table)
   local text = ""
   for name, value in pairs(name_table) do
     if value then
@@ -641,16 +641,16 @@ local function bom_targets_tooltip(prefix, empty_text, name_table)
   end
 end
 
-local function bom_tooltip_force_targets(spell)
-  return bom_targets_tooltip(
+local function bomForceTargetsTooltipText(spell)
+  return bomGetTargetsTooltipText(
         L.FormatAllForceCastTargets,
         L.FormatForceCastNone,
         spell.ForcedTarget or {})
 end
 
 ---@param spell SpellDef
-local function bom_update_forcecast_tooltip(button, spell)
-  local tooltip_force_targets = bom_tooltip_force_targets(spell)
+local function bomUpdateForcecastTooltip(button, spell)
+  local tooltip_force_targets = bomForceTargetsTooltipText(spell)
   BOM.Tool.TooltipText(
           button,
           L.TooltipForceCastOnTarget .. "|n"
@@ -658,16 +658,16 @@ local function bom_update_forcecast_tooltip(button, spell)
                   .. tooltip_force_targets)
 end
 
-local function bom_tooltip_exclude_targets(spell)
-  return bom_targets_tooltip(
+local function bomExcludeTargetsTooltip(spell)
+  return bomGetTargetsTooltipText(
           L.FormatAllExcludeTargets,
           L.FormatExcludeNone,
           spell.ExcludedTarget or {})
 end
 
 ---@param spell SpellDef
-local function bom_update_exclude_tooltip(button, spell)
-  local tooltip_exclude_targets = bom_tooltip_exclude_targets(spell)
+local function bomUpdateExcludeTargetsTooltip(button, spell)
+  local tooltip_exclude_targets = bomExcludeTargetsTooltip(spell)
   BOM.Tool.TooltipText(
           button,
           L.TooltipExcludeTarget .. "|n"
@@ -676,7 +676,7 @@ local function bom_update_exclude_tooltip(button, spell)
 end
 
 ---@param spell SpellDef
-local function update_selected_spell(spell)
+local function bomUpdateSelectedSpell(spell)
   -- the pointer to spell in current BOM profile
   ---@type SpellDef
   local profile_spell = BOM.CurrentProfile.Spell[spell.ConfigID]
@@ -714,7 +714,7 @@ local function update_selected_spell(spell)
     if BOM.lastTarget ~= nil then
       -------------------------
       force_cast_button:Enable()
-      bom_update_forcecast_tooltip(force_cast_button, profile_spell)
+      bomUpdateForcecastTooltip(force_cast_button, profile_spell)
 
       local spell_force = profile_spell.ForcedTarget
       local last_target = BOM.lastTarget
@@ -729,11 +729,11 @@ local function update_selected_spell(spell)
                   .. L.MessageClearedForced .. ": " .. last_target)
           spell_force[last_target] = nil
         end
-        bom_update_forcecast_tooltip(self, profile_spell)
+        bomUpdateForcecastTooltip(self, profile_spell)
       end)
       -------------------------
       exclude_button:Enable()
-      bom_update_exclude_tooltip(exclude_button, profile_spell)
+      bomUpdateExcludeTargetsTooltip(exclude_button, profile_spell)
 
       local spell_exclude = profile_spell.ExcludedTarget
       last_target = BOM.lastTarget
@@ -748,7 +748,7 @@ local function update_selected_spell(spell)
                   .. L.MessageClearedExcluded .. ": " .. last_target)
           spell_exclude[last_target] = nil
         end
-        bom_update_exclude_tooltip(self, profile_spell)
+        bomUpdateExcludeTargetsTooltip(self, profile_spell)
       end)
 
     else
@@ -757,14 +757,14 @@ local function update_selected_spell(spell)
       BOM.Tool.TooltipText(
               force_cast_button,
               L.TooltipForceCastOnTarget .. "|n" .. L.TooltipSelectTarget
-                      .. bom_tooltip_force_targets(profile_spell))
+                      .. bomForceTargetsTooltipText(profile_spell))
       --force_cast_button:SetVariable()
       ---------------------------------
       exclude_button:Disable()
       BOM.Tool.TooltipText(
               exclude_button,
               L.TooltipExcludeTarget .. "|n" .. L.TooltipSelectTarget
-                      .. bom_tooltip_exclude_targets(profile_spell))
+                      .. bomExcludeTargetsTooltip(profile_spell))
       --exclude_button:SetVariable()
     end
   end -- end if has classes
@@ -809,7 +809,7 @@ function BOM.UpdateSpellsTab()
     BOM.MyButtonHideAll()
 
     local is_horde = (UnitFactionGroup("player")) == "Horde"
-    create_tab(is_horde)
+    bomCreateTab(is_horde)
 
     BOM.SpellTabsCreatedFlag = true
   end
@@ -821,7 +821,7 @@ function BOM.UpdateSpellsTab()
             and not tContains(spell.onlyUsableFor, self_class_name) then
       -- skip
     else
-      update_selected_spell(spell)
+      bomUpdateSelectedSpell(spell)
     end
   end
 

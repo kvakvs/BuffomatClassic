@@ -1356,7 +1356,7 @@ local player_mana
 ---@param link string
 ---@param member Member
 ---@return boolean True if spell cast is prevented by PvP guard, false if spell can be casted
-local function bom_prevent_pvp_poisoning(link, member)
+local function bomPreventPvpTagging(link, member)
   if BOM.SharedState.PreventPVPTag then
     -- TODO: Move Player PVP check and instance check outside
     local _in_instance, instance_type = IsInInstance()
@@ -1378,7 +1378,7 @@ end
 ---@param link string Spell link for a picture
 ---@param member Member player to benefit from the spell
 ---@param spell SpellDef the spell to be added
-local function bom_catch_a_spell(cost, id, link, member, spell)
+local function bomQueueSpell(cost, id, link, member, spell)
   if cost > player_mana then
     return -- ouch
   end
@@ -1432,7 +1432,7 @@ end
 ---Based on profile settings and current PVE or PVP instance choose the mode
 ---of operation
 ---@return boolean, string
-local function bom_choose_profile()
+local function bomChooseProfile()
   local in_instance, instance_type = IsInInstance()
   local is_bom_disabled
   local auto_profile = "solo"
@@ -1651,7 +1651,7 @@ local function bomAddBlessing(spell, player_member, in_range)
                   "!" .. groupIndex)
           in_range = true
 
-          bom_catch_a_spell(spell.groupMana, spell.groupId, spell.groupLink, class_in_range, spell)
+          bomQueueSpell(spell.groupMana, spell.groupId, spell.groupLink, class_in_range, spell)
         else
           -- Group buff (just text)
           -- Text: Group 5 [Spell Name] x Reagents
@@ -1685,7 +1685,7 @@ local function bomAddBlessing(spell, player_member, in_range)
 
       local test_in_range = IsSpellInRange(spell.single, member.unitId) == 1
               and not tContains(spell.SkipList, member.name)
-      if bom_prevent_pvp_poisoning(spell.singleLink, member) then
+      if bomPreventPvpTagging(spell.singleLink, member) then
         -- Nothing, prevent poison function has already added the text
       elseif test_in_range then
         -- Single buff on group member
@@ -1695,7 +1695,7 @@ local function bomAddBlessing(spell, player_member, in_range)
 
         in_range = true
 
-        bom_catch_a_spell(spell.singleMana, spell.singleId, spell.singleLink, member, spell)
+        bomQueueSpell(spell.singleMana, spell.singleId, spell.singleLink, member, spell)
       else
         -- Single buff on group member (inactive just text)
         -- Text: Target "SpellName"
@@ -1746,7 +1746,7 @@ local function bomAddBuff(spell, party, player_member, in_range)
                   "!" .. group_index)
           in_range = true
 
-          bom_catch_a_spell(spell.groupMana, spell.groupId, spell.groupLink, Group, spell)
+          bomQueueSpell(spell.groupMana, spell.groupId, spell.groupLink, Group, spell)
         else
           -- Text: Group 5 [Spell Name]
           bom_display_text(string.format(L["FORMAT_BUFF_GROUP"], group_index, spell.group .. count),
@@ -1780,14 +1780,14 @@ local function bomAddBuff(spell, party, player_member, in_range)
       local is_in_range = (IsSpellInRange(spell.single, member.unitId) == 1)
               and not tContains(spell.SkipList, member.name)
 
-      if bom_prevent_pvp_poisoning(spell.singleLink, member) then
+      if bomPreventPvpTagging(spell.singleLink, member) then
         -- Nothing, prevent poison function has already added the text
       elseif is_in_range then
         -- Text: Target [Spell Name]
         bom_display_text(string.format(L["FORMAT_BUFF_SINGLE"], add .. member.link, spell.singleLink),
                 member.name)
         in_range = true
-        bom_catch_a_spell(spell.singleMana, spell.singleId, spell.singleLink, member, spell)
+        bomQueueSpell(spell.singleMana, spell.singleId, spell.singleLink, member, spell)
       else
         -- Text: Target "SpellName"
         bom_display_text(string.format(L["FORMAT_BUFF_SINGLE"],
@@ -1853,7 +1853,7 @@ local function bomAddResurrection(spell, player_member, in_range)
       -- Should we try and resurrect ghosts when their corpse is not targetable?
       if is_in_range or (BOM.SharedState.ResGhost and member.isGhost) then
         -- Prevent resurrecting PvP players in the world?
-        bom_catch_a_spell(spell.singleMana, spell.singleId, spell.singleLink, member, spell)
+        bomQueueSpell(spell.singleMana, spell.singleId, spell.singleLink, member, spell)
       end
     end
   end
@@ -1873,7 +1873,7 @@ local function bomAddSelfbuff(spell, player_member)
             player_member.name)
     --inRange = true
 
-    bom_catch_a_spell(spell.singleMana, spell.singleId, spell.singleLink,
+    bomQueueSpell(spell.singleMana, spell.singleId, spell.singleLink,
             player_member, spell)
   else
     -- Text: Target "SpellName"
@@ -2030,7 +2030,7 @@ local function bomAddWeaponEnchant(spell, player_member,
     -- Text: [Spell Name] (Main hand)
     bom_display_text(spell.singleLink .. " (" .. L.TooltipMainHand .. ") ",
             player_member.distance, true)
-    bom_catch_a_spell(spell.singleMana, spell.singleId, spell.singleLink,
+    bomQueueSpell(spell.singleMana, spell.singleId, spell.singleLink,
             player_member, spell)
   end
 
@@ -2045,7 +2045,7 @@ local function bomAddWeaponEnchant(spell, player_member,
       -- Text: [Spell Name] (Off-hand)
       bom_display_text(spell.singleLink .. " (" .. L.TooltipOffHand .. ") ",
               player_member.distance, true)
-      bom_catch_a_spell(spell.singleMana, spell.singleId, spell.singleLink,
+      bomQueueSpell(spell.singleMana, spell.singleId, spell.singleLink,
               player_member, spell)
     end
   end
@@ -2198,14 +2198,14 @@ local function bomUpdateScan_2()
 
     if BOM.SharedState.ArgentumDawn then
       -- settings to remind to remove AD trinket != instance compatible with AD Commission
-      if player_member.hasArgentumDawn ~= tContains(BOM.ArgentumDawn.dungeon, instanceID) then
+      if player_member.hasArgentumDawn ~= tContains(BOM.ArgentumDawn.zoneId, instanceID) then
         -- Text: [Argent Dawn Commission]
         bom_display_text(BOM.ArgentumDawn.Link, player_member.distance, true)
       end
     end
 
     if BOM.SharedState.Carrot then
-      if player_member.hasCarrot and not tContains(BOM.Carrot.dungeon, instanceID) then
+      if player_member.hasCarrot and not tContains(BOM.Carrot.zoneId, instanceID) then
         -- Text: [Carrot on a Stick]
         bom_display_text(BOM.Carrot.Link, player_member.distance, true)
       end
@@ -2420,7 +2420,7 @@ function BOM.UpdateScan(from)
   --end
 
   --Choose Profile
-  local is_bom_disabled, auto_profile = bom_choose_profile()
+  local is_bom_disabled, auto_profile = bomChooseProfile()
 
   if BOM.CurrentProfile ~= BOM.CharacterState[auto_profile] then
     BOM.CurrentProfile = BOM.CharacterState[auto_profile]

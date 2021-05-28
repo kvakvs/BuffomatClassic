@@ -276,9 +276,11 @@ local function bom_setup_shaman_spells(spells, enchants)
                              25479, 25485 } }, -- TBC: Ranks 8-9
           { playerClass = "SHAMAN" },
           { "shamanEnchant" })
+  -- Note: in TBC all enchantIds for rockbiter have changed
   enchants[16316] = { 1, 6, 29, 503, 504, 683, 1663, 1664, -- Rockbiter, also 504 some special +80 Rockbiter?
                       3040, -- rockbiter 7
-                      2632, 2633} -- TBC: Rockbiter 8-9
+                      3023, 3026, 3028, 3031, 3034, 3037, 3040, -- TBC: Rockbiter 1-7
+                      2632, 2633 } -- TBC: Rockbiter 8-9
 
   BOM.Class.SpellDef:scan_spell(spells, 16362, --Windfury Weapon
           { type         = "weapon", isOwn = true, isConsumable = false,
@@ -951,23 +953,23 @@ local function bom_setup_food(spells, enchants)
   --BOM.Class.SpellDef:tbc_consumable(spells, 35272, { 27660, 31672, 33026 }) --Well Fed +20 STA +20 SPI
 
   BOM.Class.SpellDef:tbc_consumable(spells, 33261, { 27659, 30358, 27664 }, --Well Fed +20 AGI +20 SPI
-          {playerClass = BOM_PHYSICAL_CLASSES}, L.TooltipSimilarFoods)
+          { playerClass = BOM_PHYSICAL_CLASSES }, L.TooltipSimilarFoods)
   BOM.Class.SpellDef:tbc_consumable(spells, 43764, 33872, --Spicy Hot Talbuk: Well Fed +20 HITRATING +20 SPI
-          {playerClass = BOM_PHYSICAL_CLASSES})
+          { playerClass = BOM_PHYSICAL_CLASSES })
   BOM.Class.SpellDef:tbc_consumable(spells, 33256, { 27658, 30359 }, -- Well Fed +20 STR +20 SPI
-          {playerClass = BOM_MELEE_CLASSES}, L.TooltipSimilarFoods)
+          { playerClass = BOM_MELEE_CLASSES }, L.TooltipSimilarFoods)
   BOM.Class.SpellDef:tbc_consumable(spells, 33259, 27655) --Ravager Dog: Well Fed +40 AP +20 SPI
   BOM.Class.SpellDef:tbc_consumable(spells, 41030, 32721, --Skyguard Rations: Well Fed +15 STA +15 SPI
-          {playerClass = BOM_MANA_CLASSES})
+          { playerClass = BOM_MANA_CLASSES })
   BOM.Class.SpellDef:tbc_consumable(spells, 46899, 35563, --Charred Bear Kabobs +24 AP
-          {playerClass = BOM_PHYSICAL_CLASSES})
+          { playerClass = BOM_PHYSICAL_CLASSES })
   BOM.Class.SpellDef:tbc_consumable(spells, 33263, { 27657, 31673, 27665, 30361 }, --Well Fed +23 SPELL +20 SPI
-          {playerClass = BOM_MANA_CLASSES},
+          { playerClass = BOM_MANA_CLASSES },
           L.TooltipSimilarFoods)
   BOM.Class.SpellDef:tbc_consumable(spells, 33265, 27663, --Blackened Sporefish: Well Fed +8 MP5 +20 STA
-          {playerClass = BOM_MANA_CLASSES})
+          { playerClass = BOM_MANA_CLASSES })
   BOM.Class.SpellDef:tbc_consumable(spells, 33268, { 27666, 30357 }, --Golden Fish Sticks: Well Fed +44 HEAL +20 SPI
-          {playerClass = BOM_MANA_CLASSES},
+          { playerClass = BOM_MANA_CLASSES },
           L.TooltipSimilarFoods)
 end
 
@@ -1140,12 +1142,19 @@ function BOM.SetupItemCache()
 end
 
 BOM.ArgentumDawn = {
-  spell   = 17670,
-  dungeon = { 329, 289, 533, 535 }, --Stratholme/scholomance; Naxxramas LK 10/25
+  spell  = 17670,
+  zoneId = { 329, 289, 533, 535 }, --Stratholme/scholomance; Naxxramas LK 10/25
 }
+-- TODO: TBC Riding Crop trinket
 BOM.Carrot = {
   spell   = 13587,
-  dungeon = { 0, 1 }, --Allow Carrot in Eastern Kingdoms, Kalimdor
+  --Allow Carrot in:
+  zoneId = { 0, 1, 530, -- Eastern Kingdoms, Kalimdor, Outland
+              30, -- Alterac Valley
+              529, -- Arathi Basin,
+              489, -- Warsong Gulch
+              566, 968, -- Eye of the Storm
+              1672, 1505, 572 }, -- Blade's Edge Arena, Nagrand Arena, Ruins of Lordaeron
 }
 
 BOM.BuffExchangeId = { -- comine-spell-ids to new one
