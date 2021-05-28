@@ -6,7 +6,7 @@ BOM.Class = BOM.Class or {}
 ---@field singleId number Spell id also serving as key
 ---@field duration number
 ---@field expirationTime number
----@field source string
+---@field source string Unit/player who gave this buff
 ---@field isSingle boolean
 BOM.Class.Buff = {}
 BOM.Class.Buff.__index = BOM.Class.Buff

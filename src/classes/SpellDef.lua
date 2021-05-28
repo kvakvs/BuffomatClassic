@@ -60,13 +60,16 @@ BOM.Class = BOM.Class or {}
 ---@field ForcedTarget table<string> List of extra targets to buff
 ---@field frames table<string, Control> Dynamic list of controls associated with this spell
 ---@field NeedGroup table List of group members who might need group version of this buff
----@field NeedMember table<Member> List of group members who might need this buff
+---@field NeedMember table<number, Member> List of group members who might need this buff
 ---@field SelfCast boolean
 ---@field SkipList table If spell cast failed, contains recently failed targets
 ---@field trackingIconId number Numeric id for the tracking texture icon
 ---@field trackingSpellName string For tracking spells, contains string name for the spell
 ---@field shapeshiftFormId number Check this shapeshift form to know whether spell is already casted
 ---@field optionText string Used to create sections in spell list in the options page
+---@field playerActiv boolean
+---@field wasPlayerActiv boolean
+---@field buffSource string Unit/player who gave this buff
 BOM.Class.SpellDef = {}
 BOM.Class.SpellDef.__index = BOM.Class.SpellDef
 

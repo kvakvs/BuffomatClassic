@@ -510,15 +510,7 @@ local function bom_get_member(unitid, NameGroup, NameRole)
   MemberCache[unitid] = MemberCache[unitid] or BOM.Class.Member:new({})
 
   local member = MemberCache[unitid]
-  member.distance = 100000
-  member.unitId = unitid
-  member.name = name
-  member.group = group
-  member.hasResurrection = member.hasResurrection or false
-  member.class = class
-  member.link = link
-  member.isTank = isTank
-  member.buffs = member.buffs or {}
+  member:Construct(unitid, name, group, class, link, isTank)
 
   return member
 end
@@ -662,7 +654,7 @@ local function bomGet40manRaidMembers(player_member)
 end
 
 ---Retrieve a table with party members
----@return table<Member>, Member A pair of Party and Player
+---@return table<number, Member>, Member A pair of Party and Player
 local function bomGetPartyMembers()
   -- and buffs
   local party
@@ -871,7 +863,7 @@ end
 
 ---Check for party, spell and player, which targets that spell goes onto
 ---Update spell.NeedMember, spell.NeedGroup and spell.DeathGroup
----@param party table<Member> - the party
+---@param party table<number, Member> - the party
 ---@param spell SpellDef - the spell to update
 ---@param player_member Member - the player
 ---@param someone_is_dead boolean - the flag that buffing cannot continue while someone is dead
@@ -880,6 +872,8 @@ local function bom_update_spell_targets(party, spell, player_member, someone_is_
   spell.NeedMember = spell.NeedMember or {}
   spell.NeedGroup = spell.NeedGroup or {}
   spell.DeathGroup = spell.DeathGroup or {}
+
+  local player_buff = player_member.buffs[spell.ConfigID]
 
   wipe(spell.NeedGroup)
   wipe(spell.NeedMember)
@@ -897,7 +891,7 @@ local function bom_update_spell_targets(party, spell, player_member, someone_is_
     end
 
   elseif spell.isConsumable then
-    if not player_member.buffs[spell.ConfigID] then
+    if not player_buff then
       tinsert(spell.NeedMember, player_member)
     end
 
@@ -905,15 +899,18 @@ local function bom_update_spell_targets(party, spell, player_member, someone_is_
     spell.playerActiv = false
 
     for i, member in ipairs(party) do
-      if member.buffs[spell.ConfigID] then
+      local member_buff = member.buffs[spell.ConfigID]
+
+      if member_buff then
         tinsert(spell.NeedMember, member)
+
         if member.isPlayer then
           spell.playerActiv = true
           spell.wasPlayerActiv = true
-          spell.buffSource = member.buffs[spell.ConfigID].source
+          spell.buffSource = member_buff.source
         end
 
-        if UnitIsUnit("player", member.buffs[spell.ConfigID].source or "") then
+        if UnitIsUnit("player", member_buff.source or "") then
           BOM.ItemListTarget[spell.ConfigID] = member.name
         end
 
@@ -925,8 +922,8 @@ local function bom_update_spell_targets(party, spell, player_member, someone_is_
         if IsSpellKnown(spell.singleId) and not (BOM.HasItem(spell.lockIfHaveItem)) then
           tinsert(spell.NeedMember, player_member)
         end
-      elseif not (player_member.buffs[spell.ConfigID]
-              and BOM.TimeCheck(player_member.buffs[spell.ConfigID].expirationTime, player_member.buffs[spell.ConfigID].duration))
+      elseif not (player_buff
+              and BOM.TimeCheck(player_buff.expirationTime, player_buff.duration))
       then
         tinsert(spell.NeedMember, player_member)
       end
@@ -1005,6 +1002,7 @@ local function bom_update_spell_targets(party, spell, player_member, someone_is_
               and member.isConnected
               and (not BOM.SharedState.SameZone or member.isSameZone) then
         local found = false
+        local member_buff = member.buffs[spell.ConfigID]
 
         if member.isDead then
           if member.group ~= 9 and member.class ~= "pet" then
@@ -1012,8 +1010,8 @@ local function bom_update_spell_targets(party, spell, player_member, someone_is_
             spell.DeathGroup[member.class] = true
           end
 
-        elseif member.buffs[spell.ConfigID] then
-          found = BOM.TimeCheck(member.buffs[spell.ConfigID].expirationTime, member.buffs[spell.ConfigID].duration)
+        elseif member_buff then
+          found = BOM.TimeCheck(member_buff.expirationTime, member_buff.duration)
         end
 
         if not found then
@@ -1023,8 +1021,8 @@ local function bom_update_spell_targets(party, spell, player_member, someone_is_
           end
         elseif not notGroup
                 and BOM.SharedState.ReplaceSingle
-                and member.buffs[spell.ConfigID]
-                and member.buffs[spell.ConfigID].isSingle then
+                and member_buff
+                and member_buff.isSingle then
           spell.NeedGroup[member.class] = (spell.NeedGroup[member.class] or 0) + 1
         end
 
@@ -1063,21 +1061,22 @@ local function bom_update_spell_targets(party, spell, player_member, someone_is_
               and member.isConnected
               and (not BOM.SharedState.SameZone or member.isSameZone) then
         local found = false
+        local member_buff = member.buffs[spell.ConfigID]
 
         if member.isDead then
           someone_is_dead = true
           spell.DeathGroup[member.group] = true
 
-        elseif member.buffs[spell.ConfigID] then
-          found = BOM.TimeCheck(member.buffs[spell.ConfigID].expirationTime, member.buffs[spell.ConfigID].duration)
+        elseif member_buff then
+          found = BOM.TimeCheck(member_buff.expirationTime, member_buff.duration)
         end
 
         if not found then
           tinsert(spell.NeedMember, member)
           spell.NeedGroup[member.group] = (spell.NeedGroup[member.group] or 0) + 1
         elseif BOM.SharedState.ReplaceSingle
-                and member.buffs[spell.ConfigID]
-                and member.buffs[spell.ConfigID].isSingle
+                and member_buff
+                and member_buff.isSingle
         then
           spell.NeedGroup[member.group] = (spell.NeedGroup[member.group] or 0) + 1
         end
@@ -1468,7 +1467,7 @@ local function bom_choose_profile()
   return is_bom_disabled, auto_profile
 end
 
----@param party table<Member> - the party
+---@param party table<number, Member> - the party
 ---@param player_member Member - the player
 local function bomForceUpdate(party, player_member)
   --reset tracking
@@ -1508,19 +1507,21 @@ local function bomForceUpdate(party, player_member)
   BOM.ActivSeal = nil
 
   for i, spell in ipairs(BOM.SelectedSpells) do
-    if player_member.buffs[spell.ConfigID] then
+    local player_buff = player_member.buffs[spell.ConfigID]
+
+    if player_buff then
       if spell.type == "aura" then
         if (BOM.ActivAura == nil and BOM.LastAura == spell.ConfigID)
-                or UnitIsUnit(player_member.buffs[spell.ConfigID].source, "player")
+                or UnitIsUnit(player_buff.source, "player")
         then
-          if BOM.TimeCheck(player_member.buffs[spell.ConfigID].expirationTime, player_member.buffs[spell.ConfigID].duration) then
+          if BOM.TimeCheck(player_buff.expirationTime, player_buff.duration) then
             BOM.ActivAura = spell.ConfigID
           end
         end
 
       elseif spell.type == "seal" then
-        if UnitIsUnit(player_member.buffs[spell.ConfigID].source, "player") then
-          if BOM.TimeCheck(player_member.buffs[spell.ConfigID].expirationTime, player_member.buffs[spell.ConfigID].duration) then
+        if UnitIsUnit(player_buff.source, "player") then
+          if BOM.TimeCheck(player_buff.expirationTime, player_buff.duration) then
             BOM.ActivSeal = spell.ConfigID
           end
         end
@@ -1579,10 +1580,12 @@ local function bomCancelBuffs(player_member)
     if BOM.CurrentProfile.CancelBuff[spell.ConfigID].Enable
             and not spell.OnlyCombat
     then
-      if player_member.buffs[spell.ConfigID] then
-        BOM.Print(string.format(
-                L.MsgCancelBuff, spell.singleLink or spell.single,
-                UnitName(player_member.buffs[spell.ConfigID].source or "") or ""))
+      local player_buff = player_member.buffs[spell.ConfigID]
+
+      if player_buff then
+        BOM.Print(string.format(L.MsgCancelBuff,
+                spell.singleLink or spell.single,
+                UnitName(player_buff.source or "") or ""))
         BOM.CancelBuff(spell.singleFamily)
       end
     end

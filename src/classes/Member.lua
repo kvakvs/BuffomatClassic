@@ -3,6 +3,7 @@ local TOCNAME, BOM = ...
 BOM.Class = BOM.Class or {}
 
 ---@class Member
+---@field buffs table<number, Buff> Buffs on player keyed by spell id, only buffs supported by Buffomat are stored
 ---@field class string
 ---@field distance number
 ---@field group number Raid group number (9 if temporary moved out of the raid by BOM)
@@ -15,13 +16,13 @@ BOM.Class = BOM.Class or {}
 ---@field isPlayer boolean Is this a player
 ---@field isTank boolean Is this member marked as tank
 ---@field link string
+---@field MainHandBuff number|nil Temporary enchant on main hand
 ---@field name string
 ---@field NeedBuff boolean
----@field unitId number
----
----@field MainHandBuff number|nil Temporary enchant on main hand
 ---@field OffHandBuff number|nil Temporary enchant on off-hand
----@field buffs table<number, Buff> Buffs on player keyed by spell id
+---@field unitId number
+
+---@type Member
 BOM.Class.Member = {}
 BOM.Class.Member.__index = BOM.Class.Member
 
@@ -34,8 +35,8 @@ function BOM.Class.Member:new(fields)
 end
 
 ---Force updates buffs for one party member
----@param self Member
 ---@param player_member Member
+---@param self Member
 function BOM.Class.Member:ForceUpdateBuffs(player_member)
 
   self.isPlayer = (self == player_member)
@@ -83,15 +84,35 @@ function BOM.Class.Member:ForceUpdateBuffs(player_member)
         end
 
         if tContains(BOM.AllSpellIds, spellId) then
-          self.buffs[BOM.SpellIdtoConfig[spellId]] = {
-            ["duration"]       = duration,
-            ["expirationTime"] = expirationTime,
-            ["source"]         = source,
-            ["isSingle"]       = BOM.SpellIdIsSingle[spellId],
-          }
+          local configKey = BOM.SpellIdtoConfig[spellId]
+
+          self.buffs[configKey] = BOM.Class.Buff:new(
+                  spellId,
+                  duration,
+                  expirationTime,
+                  source,
+                  BOM.SpellIdIsSingle[spellId])
         end
       end
 
     until (not name)
   end -- if is not dead
+end
+
+---@param unitid string
+---@param name string
+---@param group number
+---@param class string
+---@param link string
+---@param isTank boolean
+function BOM.Class.Member:Construct(unitid, name, group, class, link, isTank)
+  self.distance = 100000
+  self.unitId = unitid
+  self.name = name
+  self.group = group
+  self.hasResurrection = self.hasResurrection or false
+  self.class = class
+  self.link = link
+  self.isTank = isTank
+  self.buffs = self.buffs or {}
 end
