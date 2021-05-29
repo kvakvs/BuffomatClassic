@@ -643,9 +643,9 @@ end
 
 local function bomForceTargetsTooltipText(spell)
   return bomGetTargetsTooltipText(
-        L.FormatAllForceCastTargets,
-        L.FormatForceCastNone,
-        spell.ForcedTarget or {})
+          L.FormatAllForceCastTargets,
+          L.FormatForceCastNone,
+          spell.ForcedTarget or {})
 end
 
 ---@param spell SpellDef
@@ -795,7 +795,7 @@ end
 ---UpdateTab - update spells in one of the spell tabs
 ---BOM.SelectedSpells: table - Spells which were selected for display in Scan function, their
 ---state will be displayed in a spell tab
-function BOM.UpdateSpellsTab()
+local function bomUpdateSpellsTab()
   -- InCombat Protection is checked by the caller (Update***Tab)
   if BOM.SelectedSpells == nil then
     return
@@ -831,4 +831,11 @@ function BOM.UpdateSpellsTab()
 
   --Create small toggle button to the right of [Cast <spell>] button
   BOM.CreateSingleBuffButton(BomC_ListTab) --maybe not created yet?
+end
+
+---@param from string Caller of this function, for debug purposes
+function BOM.UpdateSpellsTab(from)
+  BOM.Tool.Profile("SpellTab " .. from, function()
+    bomUpdateSpellsTab()
+  end)
 end

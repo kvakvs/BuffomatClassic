@@ -1481,18 +1481,18 @@ local function bomForceUpdate(party, player_member)
           if GetShapeshiftFormID() == spell.needForm
                   and BOM.ForceTracking ~= spell.trackingIconId then
             BOM.ForceTracking = spell.trackingIconId
-            BOM.UpdateSpellsTab()
+            BOM.UpdateSpellsTab("ForceUp1")
           end
         elseif bom_is_tracking_active(spell)
                 and BOM.CharacterState.LastTracking ~= spell.trackingIconId then
           BOM.CharacterState.LastTracking = spell.trackingIconId
-          BOM.UpdateSpellsTab()
+          BOM.UpdateSpellsTab("ForceUp2")
         end
       else
         if BOM.CharacterState.LastTracking == spell.trackingIconId
                 and BOM.CharacterState.LastTracking ~= nil then
           BOM.CharacterState.LastTracking = nil
-          BOM.UpdateSpellsTab()
+          BOM.UpdateSpellsTab("ForceUp3")
         end
       end -- if spell.enable
     end -- if tracking
@@ -1536,13 +1536,13 @@ local function bomForceUpdate(party, player_member)
         if BOM.ActivAura == spell.ConfigID
                 and BOM.CurrentProfile.LastAura ~= spell.ConfigID then
           BOM.CurrentProfile.LastAura = spell.ConfigID
-          BOM.UpdateSpellsTab()
+          BOM.UpdateSpellsTab("ForceUp4")
         end
       else
         if BOM.CurrentProfile.LastAura == spell.ConfigID
                 and BOM.CurrentProfile.LastAura ~= nil then
           BOM.CurrentProfile.LastAura = nil
-          BOM.UpdateSpellsTab()
+          BOM.UpdateSpellsTab("ForceUp5")
         end
       end -- if currentprofile.spell.enable
 
@@ -1551,13 +1551,13 @@ local function bomForceUpdate(party, player_member)
         if BOM.ActivSeal == spell.ConfigID
                 and BOM.CurrentProfile.LastSeal ~= spell.ConfigID then
           BOM.CurrentProfile.LastSeal = spell.ConfigID
-          BOM.UpdateSpellsTab()
+          BOM.UpdateSpellsTab("ForceUp6")
         end
       else
         if BOM.CurrentProfile.LastSeal == spell.ConfigID
                 and BOM.CurrentProfile.LastSeal ~= nil then
           BOM.CurrentProfile.LastSeal = nil
-          BOM.UpdateSpellsTab()
+          BOM.UpdateSpellsTab("ForceUp7")
         end
       end -- if currentprofile.spell.enable
     end -- if is aura
@@ -2367,10 +2367,7 @@ local function bomUpdateScan_2()
 
 end -- end function bomUpdateScan_2()
 
----Scan the available spells and group members to find who needs the rebuff/res
----and what would be their priority?
----@param from string Debug value to trace the caller of this function
-function BOM.UpdateScan(from)
+local function bomUpdateScan_1(from)
   if BOM.SelectedSpells == nil then
     return
   end
@@ -2424,7 +2421,7 @@ function BOM.UpdateScan(from)
 
   if BOM.CurrentProfile ~= BOM.CharacterState[auto_profile] then
     BOM.CurrentProfile = BOM.CharacterState[auto_profile]
-    BOM.UpdateSpellsTab()
+    BOM.UpdateSpellsTab("UpdateScan1")
     BomC_MainWindow_Title:SetText(
             BOM.FormatTexture(BOM.MACRO_ICON_FULLPATH)
                     .. " " .. BOM.TOC_TITLE .. " - "
@@ -2445,6 +2442,14 @@ function BOM.UpdateScan(from)
   bomUpdateScan_2()
 end -- end function UpdateScan()
 
+---Scan the available spells and group members to find who needs the rebuff/res
+---and what would be their priority?
+---@param from string Debug value to trace the caller of this function
+function BOM.UpdateScan(from)
+  BOM.Tool.Profile("UpdScan " .. from, function()
+    bomUpdateScan_1(from)
+  end)
+end
 
 ---If a spell cast failed, the member is temporarily added to skip list, to
 ---continue casting buffs on other members

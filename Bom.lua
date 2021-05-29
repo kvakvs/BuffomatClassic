@@ -81,7 +81,7 @@ end
 ---Print a text with "BomDebug: " prefix in the game chat window
 ---@param t string
 function BOM.Dbg(t)
-  DEFAULT_CHAT_FRAME:AddMessage(tostring(GetTime()) .. " " .. BOM.Color("883030", L.CHAT_MSG_PREFIX) .. t)
+  DEFAULT_CHAT_FRAME:AddMessage(tostring(GetTime()) .. " " .. BOM.Color("883030", "BOM") .. t)
 end
 
 function BOM.Color(hex, text)
@@ -236,7 +236,7 @@ end
 function BOM.OptionsUpdate()
   BOM.SetForceUpdate("OptionsUpdate")
   BOM.UpdateScan("OptionsUpdate")
-  BOM.UpdateSpellsTab()
+  BOM.UpdateSpellsTab("OptonsUpdate")
   BOM.MyButtonUpdateAll()
   BOM.MinimapButton.UpdatePosition()
   BOM.Options.DoCancel()
@@ -431,7 +431,7 @@ function BOM.OptionsInsertSpells()
     end
   end
 
-  BOM.UpdateSpellsTab()
+  BOM.UpdateSpellsTab("OptionsInsertSpells")
   BOM.SetForceUpdate("OptionsInsertSpells")
   BOM.UpdateScan("OptionsInsertSpells")
 end
@@ -887,11 +887,11 @@ local function Event_PLAYER_TARGET_CHANGED()
   if not InCombatLockdown() then
     if UnitInParty("target") or UnitInRaid("target") or UnitIsUnit("target", "player") then
       BOM.lastTarget = (UnitFullName("target"))
-      BOM.UpdateSpellsTab()
+      BOM.UpdateSpellsTab("PL_TAR_CHANGED1")
 
     elseif BOM.lastTarget then
       BOM.lastTarget = nil
-      BOM.UpdateSpellsTab()
+      BOM.UpdateSpellsTab("PL_TAR_CHANGED2")
     end
   else
     BOM.lastTarget = nil

@@ -31,6 +31,7 @@ local CLASS_TAG = "member"
 function BOM.Class.Member:new(fields)
   fields = fields or {}
   setmetatable(fields, BOM.Class.Member)
+  fields.t = CLASS_TAG
   return fields
 end
 

@@ -1012,3 +1012,16 @@ function Tool.TooltipLink(control, link)
     GameTooltip:Hide()
   end)
 end
+
+---@param text string
+---@param fn function
+function Tool.Profile(text, fn)
+  local t_start = debugprofilestop()
+  local result = fn()
+  local t_end = debugprofilestop()
+
+  local duration = t_end - t_start
+  BOM.Dbg(text .. ": " .. tostring(duration))
+
+  return result
+end
