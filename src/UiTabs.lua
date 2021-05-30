@@ -13,6 +13,21 @@ local L = setmetatable(
           end
         })
 
+local function bomDoBlessingOnClick(self)
+  local saved = self._privat_DB[self._privat_Var]
+
+  for i, spell in ipairs(BOM.SelectedSpells) do
+    if spell.isBlessing then
+      -- TODO: use spell instead of BOM.CurrentProfile.Spell[]
+      BOM.CurrentProfile.Spell[spell.ConfigID].Class[self._privat_Var] = false
+    end
+  end
+  self._privat_DB[self._privat_Var] = saved
+
+  BOM.MyButtonUpdateAll()
+  BOM.OptionsUpdate()
+end
+
 local SpellSettingsFrames = {}
 BOM.SpellSettingsFrames = SpellSettingsFrames -- group settings buttons after the spell list
 
@@ -56,7 +71,7 @@ local function bomAddClassesRow(row_builder, is_horde, spell)
 
     spell.frames[class]:SetPoint("TOPLEFT", row_builder.prev_control, "TOPRIGHT", row_builder.dx, 0)
     spell.frames[class]:SetVariable(profile_spell.Class, class)
-    spell.frames[class]:SetOnClick(BOM.DoBlessingOnClick)
+    spell.frames[class]:SetOnClick(bomDoBlessingOnClick)
 
     BOM.Tool.TooltipText(
             spell.frames[class],
@@ -84,7 +99,7 @@ local function bomAddClassesRow(row_builder, is_horde, spell)
 
   spell.frames["tank"]:SetPoint("TOPLEFT", row_builder.prev_control, "TOPRIGHT", row_builder.dx, 0)
   spell.frames["tank"]:SetVariable(profile_spell.Class, "tank")
-  spell.frames["tank"]:SetOnClick(BOM.DoBlessingOnClick)
+  spell.frames["tank"]:SetOnClick(bomDoBlessingOnClick)
   BOM.Tool.TooltipText(spell.frames["tank"], BOM.FormatTexture(BOM.ICON_TANK) .. " - " .. L.TooltipCastOnTank)
 
   row_builder.prev_control = spell.frames["tank"]
@@ -101,7 +116,7 @@ local function bomAddClassesRow(row_builder, is_horde, spell)
 
   spell.frames["pet"]:SetPoint("TOPLEFT", row_builder.prev_control, "TOPRIGHT", row_builder.dx, 0)
   spell.frames["pet"]:SetVariable(profile_spell.Class, "pet")
-  spell.frames["pet"]:SetOnClick(BOM.DoBlessingOnClick)
+  spell.frames["pet"]:SetOnClick(bomDoBlessingOnClick)
   BOM.Tool.TooltipText(spell.frames["pet"], BOM.FormatTexture(BOM.ICON_PET) .. " - " .. L.TooltipCastOnPet)
   row_builder.prev_control = spell.frames["pet"]
 
@@ -835,7 +850,7 @@ end
 
 ---@param from string Caller of this function, for debug purposes
 function BOM.UpdateSpellsTab(from)
-  BOM.Tool.Profile("SpellTab " .. from, function()
+  --BOM.Tool.Profile("SpellTab " .. from, function()
     bomUpdateSpellsTab()
-  end)
+  --end)
 end

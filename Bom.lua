@@ -919,6 +919,32 @@ local function Event_PLAYER_TARGET_CHANGED()
 
 end
 
+local function bomDownGrade()
+  if BOM.CastFailedSpell
+          and BOM.CastFailedSpell.SkipList
+          and BOM.CastFailedSpellTarget then
+    local level = UnitLevel(BOM.CastFailedSpellTarget.unitId)
+
+    if level ~= nil and level > -1 then
+      if BOM.SharedState.SpellGreatherEqualThan[BOM.CastFailedSpellId] == nil
+              or BOM.SharedState.SpellGreatherEqualThan[BOM.CastFailedSpellId] < level
+      then
+        BOM.SharedState.SpellGreatherEqualThan[BOM.CastFailedSpellId] = level
+        BOM.FastUpdateTimer()
+        BOM.SetForceUpdate("Downgrade")
+        BOM.Print(string.format(L.MsgDownGrade,
+                BOM.CastFailedSpell.single,
+                BOM.CastFailedSpellTarget.name))
+
+      elseif BOM.SharedState.SpellGreatherEqualThan[BOM.CastFailedSpellId] >= level then
+        BOM.AddMemberToSkipList()
+      end
+    else
+      BOM.AddMemberToSkipList()
+    end
+  end
+end
+
 ---Event_UI_ERROR_MESSAGE
 ---Will stand if sitting, will dismount if mounted, will cancel shapeshift, if
 ---shapeshifted while trying to cast a spell and that produces an error message.
@@ -943,7 +969,7 @@ local function Event_UI_ERROR_MESSAGE(errorType, message)
   elseif not InCombatLockdown() then
     if BOM.CheckForError then
       if message == SPELL_FAILED_LOWLEVEL then
-        BOM.DownGrade()
+        bomDownGrade()
       else
         BOM.AddMemberToSkipList()
       end
@@ -1370,54 +1396,6 @@ function BOM.ShowSpellSettings()
   BOM.ShowWindow(2)
 end
 
-function BOM.DoBlessingOnClick(self)
-  local saved = self._privat_DB[self._privat_Var]
-
-  for i, spell in ipairs(BOM.SelectedSpells) do
-    if spell.isBlessing then
-      -- TODO: use spell instead of BOM.CurrentProfile.Spell[]
-      BOM.CurrentProfile.Spell[spell.ConfigID].Class[self._privat_Var] = false
-    end
-  end
-  self._privat_DB[self._privat_Var] = saved
-
-  BOM.MyButtonUpdateAll()
-  BOM.OptionsUpdate()
-end
-
 function BOM.MyButtonOnClick(self)
   BOM.OptionsUpdate()
 end
-
--- Convert a lua table into a lua syntactically correct string
---local function table_to_string(tbl)
---  if type(tbl) ~= "table" then
---    return tostring(tbl)
---  end
---
---  local result = "{"
---  for k, v in pairs(tbl) do
---    -- Check the key type (ignore any numerical keys - assume its an array)
---    if type(k) == "string" then
---      result = result .. "[\"" .. k .. "\"]" .. "="
---    end
---
---    -- Check the value type
---    if type(v) == "table" then
---      result = result .. table_to_string(v)
---      --elseif type(v) == "boolean" then
---      --  result = result..tostring(v)
---      --else
---      --  result = result.."\""..v.."\""
---    else
---      result = result .. tostring(v)
---    end
---    result = result .. ", "
---  end
---  -- Remove leading commas from the result
---  if result ~= "" then
---    result = result:sub(1, result:len() - 1)
---  end
---  return result .. "}"
---end
---BOM.DbgTableToString = table_to_string
