@@ -3,6 +3,9 @@
 ## Buffomat Classic and TBC 2021.5.12
 
 - BUG: Swapped Sunfruit and Sunfruit Juice (wrong class limits)
+- Less aggressive Buffomat window show behaviour, it will not show if there are
+  tasks which cannot be completed (like players unbuffed but out of range)
+- Massive code refactoring
 
 ## Buffomat Classic and TBC 2021.5.10
 

@@ -1712,32 +1712,109 @@ local function bomCastButton(t, enable)
   end
 end
 
-local function bomUpdateScan_2()
-  local party, player_member = BOM.GetPartyMembers()
-  local someone_is_dead
+---Check if player has rep items equipped where they should not have them
+---@param player_member Member
+local function bomCheckReputationItems(player_member)
+  local name, instanceType, difficultyID, difficultyName, maxPlayers
+  , dynamicDifficulty, isDynamic, instanceID, instanceGroupSize
+  , LfgDungeonID = GetInstanceInfo()
 
-  if BOM.ForceUpdate then
-    someone_is_dead = bomForceUpdate(party, player_member)
-  else
-    someone_is_dead = bom_save_someone_is_dead
+  if BOM.SharedState.ArgentumDawn then
+    -- settings to remind to remove AD trinket != instance compatible with AD Commission
+    if player_member.hasArgentumDawn ~= tContains(BOM.ArgentumDawn.zoneId, instanceID) then
+      -- Text: [Argent Dawn Commission]
+      bomTasklistAddText(BOM.ArgentumDawn.Link, player_member.distance, true)
+    end
   end
 
-  -- cancel buffs
-  bomCancelBuffs(player_member)
+  if BOM.SharedState.Carrot then
+    if player_member.hasCarrot and not tContains(BOM.Carrot.zoneId, instanceID) then
+      -- Text: [Carrot on a Stick]
+      bomTasklistAddText(BOM.Carrot.Link, player_member.distance, true)
+    end
+  end
+end
 
-  -- fill list and find cast
-  bom_current_player_mana = UnitPower("player", 0) or 0 --mana
-  BOM.ManaLimit = UnitPowerMax("player", 0) or 0
+---Check player weapons and report if they have the "Warn about missing enchants" option enabled
+---@param player_member Member
+local function bomCheckMissingWeaponEnchantments(player_member)
+  -- enchantment on weapons
+  local hasMainHandEnchant, mainHandExpiration, mainHandCharges, mainHandEnchantID
+  , hasOffHandEnchant, offHandExpiration, offHandCharges
+  , offHandEnchantId = GetWeaponEnchantInfo()
 
-  bomClearNextCastSpell()
+  if BOM.SharedState.MainHand and not hasMainHandEnchant then
+    local link = GetInventoryItemLink("player", GetInventorySlotInfo("MainHandSlot"))
 
-  local macro_command ---@type string
-  local cast_button_title ---@type string
-  local in_range = false
+    if link then
+      -- Text: [Consumable Enchant Link]
+      bomTasklistAddText(link, player_member.distance, true)
+    end
+  end
 
-  BOM.ScanModifier = false
+  if BOM.SharedState.SecondaryHand and not hasOffHandEnchant then
+    local link = GetInventoryItemLink("player", GetInventorySlotInfo("SECONDARYHANDSLOT"))
 
-  --<<---------------------------
+    if link then
+      bomTasklistAddText(link, player_member.distance, true)
+    end
+  end
+end
+
+---@param player_member Member
+local function bomCheckItemsAndContainers(player_member, cast_button_title, macro_command)
+  --itemcheck
+  local item_list = BOM.GetItemList() ---@type table<number, GetContainerItemInfoResult>
+
+  for i, item in ipairs(item_list) do
+    local ok = false
+    local target
+
+    if item.CD then
+      if (item.CD[1] or 0) ~= 0 then
+        local ti = item.CD[1] + item.CD[2] - GetTime() + 1
+        if ti < BOM.MinTimer then
+          BOM.MinTimer = ti
+        end
+      elseif item.Link then
+        ok = true
+
+        if BOM.ItemListSpell[item.ID] then
+          if BOM.ItemListTarget[BOM.ItemListSpell[item.ID]] then
+            target = BOM.ItemListTarget[BOM.ItemListSpell[item.ID]]
+          end
+        end
+
+      end
+    elseif item.Lootable then
+      ok = true
+    end
+
+    if ok then
+      cast_button_title = BOM.FormatTexture(item.Texture)
+              .. item.Link
+              .. (target and (" @" .. target) or "")
+      macro_command = (target and ("/target " .. target .. "/n") or "")
+              .. "/use " .. item.Bag .. " " .. item.Slot
+      -- Text: [Icon] [Item Link] @Target
+      bomTasklistAddText(cast_button_title, player_member.distance, true)
+
+      if BOM.SharedState.DontUseConsumables and not IsModifierKeyDown() then
+        macro_command = nil
+        cast_button_title = nil
+      end
+      BOM.ScanModifier = BOM.SharedState.DontUseConsumables
+    end
+  end
+end
+
+---@param player_member Member
+---@param party table<number, Member>
+---@param in_range boolean
+---@param cast_button_title string
+---@param macro_command string
+---@return boolean, string, string {in_range, cast_button_title, macro_command}
+local function bomScanSelectedSpells(player_member, party, in_range, cast_button_title, macro_command)
   for _, spell in ipairs(BOM.SelectedSpells) do
     local profile_spell = BOM.GetProfileSpell(spell.ConfigID)
 
@@ -1826,105 +1903,51 @@ local function bomUpdateScan_2()
         in_range = bomAddBuff(spell, party, player_member, in_range)
       end
     end
-  end -- for all selected spells
-  -->>--------------------------
-
-  -- check argent dawn
-  do
-    local name, instanceType, difficultyID, difficultyName, maxPlayers
-    , dynamicDifficulty, isDynamic, instanceID, instanceGroupSize
-    , LfgDungeonID = GetInstanceInfo()
-
-    if BOM.SharedState.ArgentumDawn then
-      -- settings to remind to remove AD trinket != instance compatible with AD Commission
-      if player_member.hasArgentumDawn ~= tContains(BOM.ArgentumDawn.zoneId, instanceID) then
-        -- Text: [Argent Dawn Commission]
-        bomTasklistAddText(BOM.ArgentumDawn.Link, player_member.distance, true)
-      end
-    end
-
-    if BOM.SharedState.Carrot then
-      if player_member.hasCarrot and not tContains(BOM.Carrot.zoneId, instanceID) then
-        -- Text: [Carrot on a Stick]
-        bomTasklistAddText(BOM.Carrot.Link, player_member.distance, true)
-      end
-    end
   end
 
-  -- enchantment on weapons
-  local hasMainHandEnchant, mainHandExpiration, mainHandCharges, mainHandEnchantID
-  , hasOffHandEnchant, offHandExpiration, offHandCharges
-  , offHandEnchantId = GetWeaponEnchantInfo()
+  return in_range, cast_button_title, macro_command
+end
 
-  if BOM.SharedState.MainHand and not hasMainHandEnchant then
-    local link = GetInventoryItemLink("player", GetInventorySlotInfo("MainHandSlot"))
+local function bomUpdateScan_Scan()
+  local party, player_member = BOM.GetPartyMembers()
 
-    if link then
-      -- Text: [Consumable Enchant Link]
-      bomTasklistAddText(link, player_member.distance, true)
-    end
+  local someone_is_dead = bom_save_someone_is_dead
+  if BOM.ForceUpdate then
+    someone_is_dead = bomForceUpdate(party, player_member)
   end
 
-  if BOM.SharedState.SecondaryHand and not hasOffHandEnchant then
-    local link = GetInventoryItemLink("player", GetInventorySlotInfo("SECONDARYHANDSLOT"))
+  -- cancel buffs
+  bomCancelBuffs(player_member)
 
-    if link then
-      bomTasklistAddText(link, player_member.distance, true)
-    end
-  end
+  -- fill list and find cast
+  bom_current_player_mana = UnitPower("player", 0) or 0 --mana
+  BOM.ManaLimit = UnitPowerMax("player", 0) or 0
 
-  --itemcheck
-  local ItemList = BOM.GetItemList()
+  bomClearNextCastSpell()
 
-  for i, item in ipairs(ItemList) do
-    local ok = false
-    local target
+  local macro_command ---@type string
+  local cast_button_title ---@type string
+  local in_range = false
 
-    if item.CD then
-      if (item.CD[1] or 0) ~= 0 then
-        local ti = item.CD[1] + item.CD[2] - GetTime() + 1
-        if ti < BOM.MinTimer then
-          BOM.MinTimer = ti
-        end
-      elseif item.Link then
-        ok = true
+  BOM.ScanModifier = false
 
-        if BOM.ItemListSpell[item.ID] then
-          if BOM.ItemListTarget[BOM.ItemListSpell[item.ID]] then
-            target = BOM.ItemListTarget[BOM.ItemListSpell[item.ID]]
-          end
-        end
+  in_range, cast_button_title, macro_command = bomScanSelectedSpells(
+          player_member, party, in_range, cast_button_title, macro_command)
 
-      end
-    elseif item.Lootable then
-      ok = true
-    end
+  bomCheckReputationItems(player_member)
+  bomCheckMissingWeaponEnchantments(player_member) -- if option to warn is enabled
 
-    if ok then
-      cast_button_title = BOM.FormatTexture(item.Texture)
-              .. item.Link
-              .. (target and (" @" .. target) or "")
-      macro_command = (target and ("/target " .. target .. "/n") or "")
-              .. "/use " .. item.Bag .. " " .. item.Slot
-      -- Text: [Icon] [Item Link] @Target
-      bomTasklistAddText(cast_button_title, player_member.distance, true)
+    cast_button_title, macro_command = bomCheckItemsAndContainers(
+          player_member, cast_button_title, macro_command)
 
-      if BOM.SharedState.DontUseConsumables and not IsModifierKeyDown() then
-        macro_command = nil
-        cast_button_title = nil
-      end
-      BOM.ScanModifier = BOM.SharedState.DontUseConsumables
-    end
-  end
-
-  if #bom_cast_messages > 0
-          or #bom_info_messages > 0 then
+  -- Open Buffomat if any cast tasks were added to the task list
+  if #bom_cast_messages > 0 then -- or #bom_info_messages > 0
     BOM.AutoOpen()
   else
     BOM.AutoClose()
   end
 
-  bomTasklistDisplay()
+  bomTasklistDisplay() -- Show all tasks and comments
 
   BOM.ForceUpdate = false
 
@@ -1940,13 +1963,7 @@ local function bomUpdateScan_2()
 
   elseif next_cast_spell.Member and next_cast_spell.SpellId then
     --Next cast is already defined - update the button text
-    --bom_cast_button(
-    --        string.format(L["MsgNextCast"],
-    --                next_cast_spell.Link,
-    --                next_cast_spell.Member.link),
-    --        true)
     bomCastButton(next_cast_spell.Link, true)
-
     bomUpdateMacro(next_cast_spell.Member, next_cast_spell.SpellId)
 
     local cdtest = GetSpellCooldown(next_cast_spell.SpellId) or 0
@@ -1964,7 +1981,7 @@ local function bomUpdateScan_2()
     if #bom_cast_messages == 0 then
       --If don't have any strings to display, and nothing to do -
       --Clear the cast button
-      bomCastButton(L.MsgEmpty, true)
+      bomCastButton(L.MsgNothingToDo, true)
 
       for spellIndex, spell in ipairs(BOM.SelectedSpells) do
         if #spell.SkipList > 0 then
@@ -2004,9 +2021,9 @@ local function bomUpdateScan_2()
     bomUpdateMacro(nil, nil, macro_command)
   end -- if not player casting
 
-end -- end function bomUpdateScan_2()
+end -- end function bomUpdateScan_Scan()
 
-local function bomUpdateScan_1(from)
+local function bomUpdateScan_PreCheck(from)
   if BOM.SelectedSpells == nil then
     return
   end
@@ -2019,6 +2036,7 @@ local function bomUpdateScan_1(from)
   bomTasklistClear()
   BOM.RepeatUpdate = false
 
+  -- Check whether BOM is disabled due to some option and a matching condition
   local is_bom_active, why_disabled = bomIsActive()
   if not is_bom_active then
     BOM.ForceUpdate = false
@@ -2042,25 +2060,16 @@ local function bomUpdateScan_1(from)
     BOM.SetForceUpdate("ProfileChanged")
   end
 
-  if is_bom_disabled then
-    BOM.CheckForError = false
-    BOM.ForceUpdate = false
-    bomUpdateMacro()
-    bomCastButton(L.MsgDisabled, false)
-    BOM.AutoClose()
-    return
-  end
-
   -- All pre-checks passed
-  bomUpdateScan_2()
-end -- end function UpdateScan()
+  bomUpdateScan_Scan()
+end -- end function bomUpdateScan_PreCheck()
 
 ---Scan the available spells and group members to find who needs the rebuff/res
 ---and what would be their priority?
 ---@param from string Debug value to trace the caller of this function
 function BOM.UpdateScan(from)
   --BOM.Tool.Profile("UpdScan " .. from, function()
-  bomUpdateScan_1(from)
+  bomUpdateScan_PreCheck(from)
   --end)
 end
 
