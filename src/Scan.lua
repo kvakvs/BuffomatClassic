@@ -1036,12 +1036,56 @@ local function bomClearNextCastSpell()
   next_cast_spell.Link = nil
 end
 
+---Run checks to see if BOM should not be scanning buffs
+---@return boolean, string {Active, WhyNotActive: string}
+local function bomIsActive()
+  local in_instance, instance_type = IsInInstance()
+
+  -- Cancel buff tasks if in combat (ALWAYS FIRST CHECK)
+  if InCombatLockdown() then
+    return false, L.InactiveReason_InCombat
+  end
+
+  if UnitIsDeadOrGhost("player") then
+    return false, L.InactiveReason_PlayerDead
+  end
+
+  if instance_type == "pvp" or instance_type == "arena" then
+    if not BOM.SharedState.InPVP then
+      return false, L.InactiveReason_PvpZone
+    end
+
+  elseif instance_type == "party"
+          or instance_type == "raid"
+          or instance_type == "scenario"
+  then
+    if not BOM.SharedState.InInstance then
+      return false, L.InactiveReason_Instance
+    end
+  else
+    if not BOM.SharedState.InWorld then
+      return false, L.InactiveReason_OpenWorld
+    end
+  end
+
+  -- Cancel buff tasks if is in a resting area, and option to scan is not set
+  if not BOM.SharedState.ScanInRestArea and IsResting() then
+    return false, L.InactiveReason_RestArea
+  end
+
+  -- Cancel buff tasks if is in stealth, and option to scan is not set
+  if not BOM.SharedState.ScanInStealth and IsStealthed() then
+    return false, L.InactiveReason_IsStealthed
+  end
+
+  return true, nil
+end
+
 ---Based on profile settings and current PVE or PVP instance choose the mode
 ---of operation
----@return boolean, string {BOM is Disabled, Profile Name}
+---@return string
 local function bomChooseProfile()
   local in_instance, instance_type = IsInInstance()
-  local is_bom_disabled
   local auto_profile = "solo"
 
   if IsInRaid() then
@@ -1051,28 +1095,15 @@ local function bomChooseProfile()
   end
 
   -- TODO: Refactor isDisabled into a function, also return reason why is disabled
-  if instance_type == "pvp" or instance_type == "arena" then
-    is_bom_disabled = not BOM.SharedState.InPVP
-    auto_profile = "battleground"
-
-  elseif instance_type == "party"
-          or instance_type == "raid"
-          or instance_type == "scenario"
-  then
-    is_bom_disabled = not BOM.SharedState.InInstance
-  else
-    is_bom_disabled = not BOM.SharedState.InWorld
-  end
-
   if BOM.ForceProfile then
     auto_profile = BOM.ForceProfile
-  end
-
-  if not BOM.CharacterState.UseProfiles then
+  elseif not BOM.CharacterState.UseProfiles then
     auto_profile = "solo"
+  elseif instance_type == "pvp" or instance_type == "arena" then
+    auto_profile = "battleground"
   end
 
-  return is_bom_disabled, auto_profile
+  return auto_profile
 end
 
 ---@param party table<number, Member> - the party
@@ -1943,7 +1974,7 @@ local function bomUpdateScan_2()
 
     else
       if someone_is_dead and BOM.SharedState.DeathBlock then
-        bomCastButton(L.MsgSomebodyDead, false)
+        bomCastButton(L.InactiveReason_DeadMember, false)
       else
         if in_range then
           bomCastButton(ERR_OUT_OF_MANA, false)
@@ -1988,44 +2019,18 @@ local function bomUpdateScan_1(from)
   bomTasklistClear()
   BOM.RepeatUpdate = false
 
-  -- Cancel buff tasks if is in a resting area, and option to scan is not set
-  if not BOM.SharedState.ScanInRestArea and IsResting() then
+  local is_bom_active, why_disabled = bomIsActive()
+  if not is_bom_active then
+    BOM.ForceUpdate = false
+    BOM.CheckForError = false
     BOM.AutoClose()
     bomClearMacro()
-    bomCastButton(L.MsgIsResting, false)
+    bomCastButton(why_disabled, false)
     return
   end
-
-  -- Cancel buff tasks if is in stealth, and option to scan is not set
-  if not BOM.SharedState.ScanInStealth and IsStealthed() then
-    BOM.AutoClose()
-    bomCastButton(L.MsgIsStealthed, false)
-    return
-  end
-
-  -- Cancel buff tasks if in combat
-  if InCombatLockdown() then
-    BOM.ForceUpdate = false
-    BOM.CheckForError = false
-    bomCastButton(L.MsgCombat, true)
-    return
-  end
-
-  if UnitIsDeadOrGhost("player") then
-    BOM.ForceUpdate = false
-    BOM.CheckForError = false
-    bomUpdateMacro()
-    bomCastButton(L.MsgDead, false)
-    BOM.AutoClose()
-    return
-  end
-
-  --if from ~= nil then
-  --  BOM.Dbg("Spell scan from " .. from)
-  --end
 
   --Choose Profile
-  local is_bom_disabled, auto_profile = bomChooseProfile()
+  local auto_profile = bomChooseProfile()
 
   if BOM.CurrentProfile ~= BOM.CharacterState[auto_profile] then
     BOM.CurrentProfile = BOM.CharacterState[auto_profile]

@@ -1000,6 +1000,12 @@ local function Event_PLAYER_LEVEL_UP(level)
   --BOM.UpdateScan()
 end
 
+---Events which might change active state of Buffomat (like rested status change,
+---or zone change, etc)
+local function Event_RequestForceUpdate()
+  BOM.ForceUpdate = true
+end
+
 -- Update timers for Buffomat checking spells and buffs
 -- See option: BOM.SharedState.SlowerHardware
 local bom_last_update_timestamp = 0
@@ -1180,7 +1186,11 @@ end
 ---OnLoad is called when XML frame for the main window is loaded into existence
 ---BOM.Init() will also be called when the addon is loaded (earlier than this)
 function BOM.OnLoad()
-  BOM.RegisterEvent("PLAYER_LEVEL_UP", Event_PLAYER_LEVEL_UP)
+  --BOM.RegisterEvent("PLAYER_LEVEL_UP", Event_PLAYER_LEVEL_UP)
+
+  -- Events which might change active state of Buffomat
+  BOM.RegisterEvent("ZONE_CHANGED", Event_RequestForceUpdate)
+  BOM.RegisterEvent("PLAYER_UPDATE_RESTING", Event_RequestForceUpdate)
 
   BOM.RegisterEvent("TAXIMAP_OPENED", Event_TAXIMAP_OPENED)
   BOM.RegisterEvent("ADDON_LOADED", Event_ADDON_LOADED)
@@ -1251,7 +1261,7 @@ function BOM.ShowWindow(tab)
     end
     BOM.Tool.SelectTab(BomC_MainWindow, tab or 1)
   else
-    BOM.Print(L.MsgShowWindowInCombat)
+    BOM.Print(L.ActionInCombatError)
   end
 end
 
