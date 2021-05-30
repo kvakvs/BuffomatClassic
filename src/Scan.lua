@@ -958,7 +958,7 @@ end
 local next_cast_spell = {}
 
 ---@type number
-local player_mana
+local bom_current_player_mana
 
 ---@param link string
 ---@param member Member
@@ -986,7 +986,7 @@ end
 ---@param member Member player to benefit from the spell
 ---@param spell SpellDef the spell to be added
 local function bomQueueSpell(cost, id, link, member, spell)
-  if cost > player_mana then
+  if cost > bom_current_player_mana then
     return -- ouch
   end
 
@@ -1038,7 +1038,7 @@ end
 
 ---Based on profile settings and current PVE or PVP instance choose the mode
 ---of operation
----@return boolean, string
+---@return boolean, string {BOM is Disabled, Profile Name}
 local function bomChooseProfile()
   local in_instance, instance_type = IsInInstance()
   local is_bom_disabled
@@ -1050,6 +1050,7 @@ local function bomChooseProfile()
     auto_profile = "group"
   end
 
+  -- TODO: Refactor isDisabled into a function, also return reason why is disabled
   if instance_type == "pvp" or instance_type == "arena" then
     is_bom_disabled = not BOM.SharedState.InPVP
     auto_profile = "battleground"
@@ -1694,7 +1695,7 @@ local function bomUpdateScan_2()
   bomCancelBuffs(player_member)
 
   -- fill list and find cast
-  player_mana = UnitPower("player", 0) or 0 --mana
+  bom_current_player_mana = UnitPower("player", 0) or 0 --mana
   BOM.ManaLimit = UnitPowerMax("player", 0) or 0
 
   bomClearNextCastSpell()
@@ -1721,13 +1722,13 @@ local function bomUpdateScan_2()
               and not spell.isConsumable
       then
         if spell.singleMana < BOM.ManaLimit
-                and spell.singleMana > player_mana then
+                and spell.singleMana > bom_current_player_mana then
           BOM.ManaLimit = spell.singleMana
         end
 
         if spell.groupMana
                 and spell.groupMana < BOM.ManaLimit
-                and spell.groupMana > player_mana then
+                and spell.groupMana > bom_current_player_mana then
           BOM.ManaLimit = spell.groupMana
         end
       end

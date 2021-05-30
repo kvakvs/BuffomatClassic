@@ -12,7 +12,7 @@ local L = setmetatable(
           end
         })
 
--- global, visible from XML files and from script console and chat commands
+---global, visible from XML files and from script console and chat commands
 ---@type BuffomatAddon
 BUFFOMAT_ADDON = BOM
 
@@ -139,7 +139,7 @@ local function bom_make_popup_menu_settings_row(db, var)
   return L["Cbox" .. var], false, db, var
 end
 
-function BOM.Popup(self, minimap)
+local function bomPopup(self, minimap)
   local name = (self:GetName() or "nil") .. (minimap and "Minimap" or "Normal")
 
   if not BOM.PopupDynamic:Wipe(name) then
@@ -179,6 +179,7 @@ function BOM.Popup(self, minimap)
     end
   end
 
+  local inBuffGroup -- unused? nil?
   if inBuffGroup then
     BOM.PopupDynamic:SubMenu()
   end
@@ -213,7 +214,7 @@ function BOM.BtnClose()
 end
 
 function BOM.BtnSettings(self)
-  BOM.Popup(self)
+  bomPopup(self)
 end
 
 function BOM.BtnMacro()
@@ -563,7 +564,7 @@ local function bom_init_ui()
             if button == "LeftButton" then
               BOM.ToggleWindow()
             else
-              BOM.Popup(self.button, true)
+              bomPopup(self.button, true)
             end
           end,
           BOM.TOC_TITLE)
@@ -752,7 +753,7 @@ local function Event_ADDON_LOADED(arg1)
             if button == "LeftButton" then
               BOM.ToggleWindow()
             else
-              BOM.Popup(self, true)
+              bomPopup(self, true)
             end
           end)
 end
