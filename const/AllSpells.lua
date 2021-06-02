@@ -322,6 +322,9 @@ local function bom_setup_warlock_spells(spells, enchants)
   BOM.Class.SpellDef:scan_spell(spells, 28610, -- Shadow Ward / Schattenzauberschutz
           { isOwn = true, default = false, singleFamily = { 6229, 11739, 11740, 28610 } },
           { playerClass = "WARLOCK" })
+  BOM.Class.SpellDef:scan_spell(spells, 28176, -- TBC: Fel Armor
+          { isOwn = true, default = false, singleFamily = { 28176, 28189 } }, -- TBC: Rank 1-2
+          { isTBC = true, playerClass = "WARLOCK" })
   BOM.Class.SpellDef:scan_spell(spells, 11735, -- Demon Armor
           { isOwn = true, default = false, singleFamily = { 706, 1086, 11733, 11734, 11735, -- Rank 5
                                                             27260 } }, -- TBC: Rank 6
@@ -1147,14 +1150,14 @@ BOM.ArgentumDawn = {
 }
 -- TODO: TBC Riding Crop trinket
 BOM.Carrot = {
-  spell   = 13587,
+  spell  = 13587,
   --Allow Carrot in:
   zoneId = { 0, 1, 530, -- Eastern Kingdoms, Kalimdor, Outland
-              30, -- Alterac Valley
-              529, -- Arathi Basin,
-              489, -- Warsong Gulch
-              566, 968, -- Eye of the Storm
-              1672, 1505, 572 }, -- Blade's Edge Arena, Nagrand Arena, Ruins of Lordaeron
+             30, -- Alterac Valley
+             529, -- Arathi Basin,
+             489, -- Warsong Gulch
+             566, 968, -- Eye of the Storm
+             1672, 1505, 572 }, -- Blade's Edge Arena, Nagrand Arena, Ruins of Lordaeron
 }
 
 BOM.BuffExchangeId = { -- comine-spell-ids to new one

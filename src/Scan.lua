@@ -1106,9 +1106,8 @@ local function bomChooseProfile()
   return auto_profile
 end
 
----@param party table<number, Member> - the party
----@param player_member Member - the player
-local function bomForceUpdate(party, player_member)
+---Activate tracking spells
+local function bomActivateSelectedTracking()
   --reset tracking
   BOM.ForceTracking = nil
 
@@ -1140,11 +1139,15 @@ local function bomForceUpdate(party, player_member)
   if BOM.ForceTracking == nil then
     BOM.ForceTracking = BOM.CharacterState.LastTracking
   end
+end
 
+---@param player_member Member
+local function bomGetActiveAuraAndSeal(player_member)
   --find activ aura / seal
   BOM.ActivAura = nil
   BOM.ActivSeal = nil
 
+  ---@param spell SpellDef
   for i, spell in ipairs(BOM.SelectedSpells) do
     local player_buff = player_member.buffs[spell.ConfigID]
 
@@ -1167,8 +1170,11 @@ local function bomForceUpdate(party, player_member)
       end -- if is aura
     end -- if player.buffs[config.id]
   end -- for all spells
+end
 
+local function bomCheckChangesAndUpdateSpelltab()
   --reset aura/seal
+  ---@param spell SpellDef
   for i, spell in ipairs(BOM.SelectedSpells) do
     if spell.type == "aura" then
       if BOM.IsSpellEnabled(spell.ConfigID) then
@@ -1201,11 +1207,25 @@ local function bomForceUpdate(party, player_member)
       end -- if currentprofile.spell.enable
     end -- if is aura
   end
+end
+
+---@param party table<number, Member> - the party
+---@param player_member Member - the player
+local function bomForceUpdate(party, player_member)
+  bomActivateSelectedTracking()
+
+  -- Get the running aura and the running seal
+  bomGetActiveAuraAndSeal(player_member)
+
+  -- Check changes to auras and seals and update the spell tab
+  bomCheckChangesAndUpdateSpelltab()
 
   -- who needs a buff!
   -- for each spell update spell potential targets
   local someone_is_dead = false -- the flag that buffing cannot continue while someone is dead
 
+  -- For each selected spell check the targets
+  ---@param spell SpellDef
   for i, spell in ipairs(BOM.SelectedSpells) do
     someone_is_dead = bomUpdateSpellTargets(party, spell, player_member, someone_is_dead)
   end

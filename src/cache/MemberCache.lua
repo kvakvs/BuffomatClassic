@@ -9,8 +9,7 @@ local bom_member_cache = {}
 ---@param name_group string
 ---@param name_role string MAINTANK?
 function BOM.GetMember(unitid, name_group, name_role)
-  local name = (UnitFullName(unitid))
-
+  local name = UnitFullName(unitid)
   if name == nil then
     return nil
   end
@@ -46,10 +45,11 @@ end
 ---@type Member
 local bom_player_member_cache --Copy of player info dict
 
----@type table<table>
-local bom_party_cache --Copy of party members, a dict of dicts
+---@type table<number, Member>
+local bom_party_cache --Copy of party members, a dict of Member's
 
-local function bomGetMembersCount()
+---@return number Party size including pets
+local function bomGetPartySize()
   local countTo
   local prefix
   local count
@@ -160,7 +160,7 @@ local function bomGet40manRaidMembers(player_member)
 end
 
 ---Retrieve a table with party members
----@return table<number, Member>, Member A pair of Party and Player
+---@return table<number, Member>, Member {Party, Player}
 function BOM.GetPartyMembers()
   -- and buffs
   local party
@@ -171,7 +171,7 @@ function BOM.GetPartyMembers()
           and bom_party_cache ~= nil
           and bom_player_member_cache ~= nil then
 
-    if #bom_party_cache == bomGetMembersCount() + (BOM.SaveTargetName and 1 or 0) then
+    if #bom_party_cache == bomGetPartySize() + (BOM.SaveTargetName and 1 or 0) then
       local ok = true
       for i, member in ipairs(bom_party_cache) do
         local name = (UnitFullName(member.unitId))
