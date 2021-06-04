@@ -1,10 +1,12 @@
 # Changelog
 
-## Buffomat Classic and TBC 2021.5.12
+## Buffomat Classic and TBC 2021.5.12-DEBUG
 
+- Fel Armor rank 1 and 2 added for warlocks
 - BUG: Swapped Sunfruit and Sunfruit Juice (wrong class limits)
 - Less aggressive Buffomat window show behaviour, it will not show if there are
   tasks which cannot be completed (like players unbuffed but out of range)
+- Rockbiter ranks were all changed for TBC, added new ranks too
 - Massive code refactoring
 
 ## Buffomat Classic and TBC 2021.5.10
