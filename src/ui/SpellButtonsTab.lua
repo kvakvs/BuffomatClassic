@@ -13,6 +13,21 @@ local L = setmetatable(
           end
         })
 
+local function bomDoBlessingOnClick(self)
+  local saved = self._privat_DB[self._privat_Var]
+
+  for i, spell in ipairs(BOM.SelectedSpells) do
+    if spell.isBlessing then
+      -- TODO: use spell instead of BOM.CurrentProfile.Spell[]
+      BOM.CurrentProfile.Spell[spell.ConfigID].Class[self._privat_Var] = false
+    end
+  end
+  self._privat_DB[self._privat_Var] = saved
+
+  BOM.MyButtonUpdateAll()
+  BOM.OptionsUpdate()
+end
+
 local SpellSettingsFrames = {}
 BOM.SpellSettingsFrames = SpellSettingsFrames -- group settings buttons after the spell list
 
@@ -20,7 +35,7 @@ BOM.SpellSettingsFrames = SpellSettingsFrames -- group settings buttons after th
 ---@param row_builder RowBuilder The structure used for building button rows
 ---@param is_horde boolean Whether we are the horde
 ---@param spell SpellDef The spell currently being displayed
-local function add_row_of_class_buttons(row_builder, is_horde, spell)
+local function bomAddClassesRow(row_builder, is_horde, spell)
   if spell.frames.SelfCast == nil then
     spell.frames.SelfCast = BOM.CreateMyButton(
             BomC_SpellTab_Scroll_Child,
@@ -28,8 +43,10 @@ local function add_row_of_class_buttons(row_builder, is_horde, spell)
             BOM.ICON_SELF_CAST_OFF)
   end
 
+  local profile_spell = BOM.GetProfileSpell(spell.ConfigID)
+
   spell.frames.SelfCast:SetPoint("TOPLEFT", row_builder.prev_control, "TOPRIGHT", row_builder.dx, 0)
-  spell.frames.SelfCast:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID], "SelfCast")
+  spell.frames.SelfCast:SetVariable(profile_spell, "SelfCast")
   spell.frames.SelfCast:SetOnClick(BOM.MyButtonOnClick)
   BOM.Tool.TooltipText(
           spell.frames.SelfCast,
@@ -53,8 +70,8 @@ local function add_row_of_class_buttons(row_builder, is_horde, spell)
     end
 
     spell.frames[class]:SetPoint("TOPLEFT", row_builder.prev_control, "TOPRIGHT", row_builder.dx, 0)
-    spell.frames[class]:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID].Class, class)
-    spell.frames[class]:SetOnClick(BOM.DoBlessingOnClick)
+    spell.frames[class]:SetVariable(profile_spell.Class, class)
+    spell.frames[class]:SetOnClick(bomDoBlessingOnClick)
 
     BOM.Tool.TooltipText(
             spell.frames[class],
@@ -81,8 +98,8 @@ local function add_row_of_class_buttons(row_builder, is_horde, spell)
   end
 
   spell.frames["tank"]:SetPoint("TOPLEFT", row_builder.prev_control, "TOPRIGHT", row_builder.dx, 0)
-  spell.frames["tank"]:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID].Class, "tank")
-  spell.frames["tank"]:SetOnClick(BOM.DoBlessingOnClick)
+  spell.frames["tank"]:SetVariable(profile_spell.Class, "tank")
+  spell.frames["tank"]:SetOnClick(bomDoBlessingOnClick)
   BOM.Tool.TooltipText(spell.frames["tank"], BOM.FormatTexture(BOM.ICON_TANK) .. " - " .. L.TooltipCastOnTank)
 
   row_builder.prev_control = spell.frames["tank"]
@@ -98,8 +115,8 @@ local function add_row_of_class_buttons(row_builder, is_horde, spell)
   end
 
   spell.frames["pet"]:SetPoint("TOPLEFT", row_builder.prev_control, "TOPRIGHT", row_builder.dx, 0)
-  spell.frames["pet"]:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID].Class, "pet")
-  spell.frames["pet"]:SetOnClick(BOM.DoBlessingOnClick)
+  spell.frames["pet"]:SetVariable(profile_spell.Class, "pet")
+  spell.frames["pet"]:SetOnClick(bomDoBlessingOnClick)
   BOM.Tool.TooltipText(spell.frames["pet"], BOM.FormatTexture(BOM.ICON_PET) .. " - " .. L.TooltipCastOnPet)
   row_builder.prev_control = spell.frames["pet"]
 
@@ -146,7 +163,7 @@ end
 ---@param spell SpellDef - The spell to be canceled
 ---@param row_builder RowBuilder The structure used for building button rows
 ---@return {dy, prev_control}
-local function add_spell_cancel_buttons(spell, row_builder)
+local function bomAddSpellCancelRow(spell, row_builder)
   spell.frames = spell.frames or {}
 
   if spell.frames.info == nil then
@@ -202,7 +219,7 @@ local function add_spell_cancel_buttons(spell, row_builder)
 end
 
 ---@param row_builder RowBuilder The structure used for building button rows
-local function fill_last_section(row_builder)
+local function bomFillBottomSection(row_builder)
   -------------------------
   -- Add settings frame with icon, icon is not clickable
   -------------------------
@@ -357,7 +374,7 @@ end
 ---@param spell SpellDef Spell we're adding now
 ---@param row_builder RowBuilder The structure used for building button rows
 ---@param self_class string Character class
-local function bom_create_tab_row(row_builder, is_horde, spell, self_class)
+local function bomCreateTabRow(row_builder, is_horde, spell, self_class)
   spell.frames = spell.frames or {}
 
   --------------------------------
@@ -430,8 +447,10 @@ local function bom_create_tab_row(row_builder, is_horde, spell, self_class)
             BOM.ICON_OPT_DISABLED)
   end
 
+  local profile_spell = BOM.GetProfileSpell(spell.ConfigID)
+
   spell.frames.Enable:SetPoint("TOPLEFT", row_builder.prev_control, "TOPRIGHT", row_builder.dx, 0)
-  spell.frames.Enable:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID], "Enable")
+  spell.frames.Enable:SetVariable(profile_spell, "Enable")
   spell.frames.Enable:SetOnClick(BOM.MyButtonOnClick)
   BOM.Tool.Tooltip(spell.frames.Enable, "TooltipEnableSpell")
 
@@ -440,7 +459,7 @@ local function bom_create_tab_row(row_builder, is_horde, spell, self_class)
 
   if spell:HasClasses() then
     -- Create checkboxes one per class
-    add_row_of_class_buttons(row_builder, is_horde, spell)
+    bomAddClassesRow(row_builder, is_horde, spell)
   end
 
   if (spell.type == "tracking"
@@ -470,7 +489,7 @@ local function bom_create_tab_row(row_builder, is_horde, spell, self_class)
     end
 
     spell.frames.Whisper:SetPoint("TOPLEFT", row_builder.prev_control, "TOPRIGHT", row_builder.dx, 0)
-    spell.frames.Whisper:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID], "Whisper")
+    spell.frames.Whisper:SetVariable(profile_spell, "Whisper")
     spell.frames.Whisper:SetOnClick(BOM.MyButtonOnClick)
     BOM.Tool.Tooltip(spell.frames.Whisper, "TooltipWhisperWhenExpired")
 
@@ -489,7 +508,7 @@ local function bom_create_tab_row(row_builder, is_horde, spell, self_class)
     end
 
     spell.frames.MainHand:SetPoint("TOPLEFT", row_builder.prev_control, "TOPRIGHT", row_builder.dx, 0)
-    spell.frames.MainHand:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID], "MainHandEnable")
+    spell.frames.MainHand:SetVariable(profile_spell, "MainHandEnable")
     spell.frames.MainHand:SetOnClick(BOM.MyButtonOnClick)
     BOM.Tool.Tooltip(spell.frames.MainHand, "TooltipMainHand")
 
@@ -506,7 +525,7 @@ local function bom_create_tab_row(row_builder, is_horde, spell, self_class)
     end
 
     spell.frames.OffHand:SetPoint("TOPLEFT", row_builder.prev_control, "TOPRIGHT", row_builder.dx, 0)
-    spell.frames.OffHand:SetVariable(BOM.CurrentProfile.Spell[spell.ConfigID], "OffHandEnable")
+    spell.frames.OffHand:SetVariable(profile_spell, "OffHandEnable")
     spell.frames.OffHand:SetOnClick(BOM.MyButtonOnClick)
     BOM.Tool.Tooltip(spell.frames.OffHand, "TooltipOffHand")
 
@@ -519,12 +538,15 @@ local function bom_create_tab_row(row_builder, is_horde, spell, self_class)
             nil, "OVERLAY", "GameFontNormalSmall")
   end
 
+  -- Calculate label to the right of the spell config buttons,
+  -- spell name and extra text label
+  local label = spell.single or "-"
   if spell.type == "weapon" then
-    spell.frames.buff:SetText((spell.single or "-")
-            .. " (" .. L.TooltipIncludesAllRanks .. ")")
-  else
-    spell.frames.buff:SetText(spell.single or "-")
+    label = label .. ": " .. BOM.Color("bbbbee", L.TooltipIncludesAllRanks)
+  elseif spell.extraText then
+    label = label .. ": " .. BOM.Color("bbbbee", spell.extraText)
   end
+  spell.frames.buff:SetText(label)
 
   spell.frames.buff:SetPoint("TOPLEFT", row_builder.prev_control, "TOPRIGHT", 7, -1)
 
@@ -579,7 +601,7 @@ end
 
 ---Filter all known spells through current player spellbook.
 ---Called below from BOM.UpdateSpellsTab()
-local function create_tab(is_horde)
+local function bomCreateTab(is_horde)
   local row_builder = BOM.Class.RowBuilder:new()
 
   local _, self_class, _ = UnitClass("player")
@@ -589,7 +611,7 @@ local function create_tab(is_horde)
             and not tContains(spell.onlyUsableFor, self_class) then
       -- skip
     else
-      bom_create_tab_row(row_builder, is_horde, spell, self_class)
+      bomCreateTabRow(row_builder, is_horde, spell, self_class)
     end
   end
 
@@ -602,13 +624,13 @@ local function create_tab(is_horde)
   for i, spell in ipairs(BOM.CancelBuffs) do
     row_builder.dx = 2
 
-    add_spell_cancel_buttons(spell, row_builder)
+    bomAddSpellCancelRow(spell, row_builder)
 
     row_builder.dy = 2
   end
 
   if row_builder.prev_control then
-    fill_last_section(row_builder)
+    bomFillBottomSection(row_builder)
   end
 end
 
@@ -616,7 +638,7 @@ end
 ---@param prefix string - if table is not empty, will prefix tooltip with this string
 ---@param empty_text string - if table is empty, use this text
 ---@param name_table table - keys from table are formatted comma-separated
-local function bom_targets_tooltip(prefix, empty_text, name_table)
+local function bomGetTargetsTooltipText(prefix, empty_text, name_table)
   local text = ""
   for name, value in pairs(name_table) do
     if value then
@@ -634,16 +656,16 @@ local function bom_targets_tooltip(prefix, empty_text, name_table)
   end
 end
 
-local function bom_tooltip_force_targets(spell)
-  return bom_targets_tooltip(
-        L.FormatAllForceCastTargets,
-        L.FormatForceCastNone,
-        spell.ForcedTarget or {})
+local function bomForceTargetsTooltipText(spell)
+  return bomGetTargetsTooltipText(
+          L.FormatAllForceCastTargets,
+          L.FormatForceCastNone,
+          spell.ForcedTarget or {})
 end
 
 ---@param spell SpellDef
-local function bom_update_forcecast_tooltip(button, spell)
-  local tooltip_force_targets = bom_tooltip_force_targets(spell)
+local function bomUpdateForcecastTooltip(button, spell)
+  local tooltip_force_targets = bomForceTargetsTooltipText(spell)
   BOM.Tool.TooltipText(
           button,
           L.TooltipForceCastOnTarget .. "|n"
@@ -651,16 +673,16 @@ local function bom_update_forcecast_tooltip(button, spell)
                   .. tooltip_force_targets)
 end
 
-local function bom_tooltip_exclude_targets(spell)
-  return bom_targets_tooltip(
+local function bomExcludeTargetsTooltip(spell)
+  return bomGetTargetsTooltipText(
           L.FormatAllExcludeTargets,
           L.FormatExcludeNone,
           spell.ExcludedTarget or {})
 end
 
 ---@param spell SpellDef
-local function bom_update_exclude_tooltip(button, spell)
-  local tooltip_exclude_targets = bom_tooltip_exclude_targets(spell)
+local function bomUpdateExcludeTargetsTooltip(button, spell)
+  local tooltip_exclude_targets = bomExcludeTargetsTooltip(spell)
   BOM.Tool.TooltipText(
           button,
           L.TooltipExcludeTarget .. "|n"
@@ -669,7 +691,7 @@ local function bom_update_exclude_tooltip(button, spell)
 end
 
 ---@param spell SpellDef
-local function update_selected_spell(spell)
+local function bomUpdateSelectedSpell(spell)
   -- the pointer to spell in current BOM profile
   ---@type SpellDef
   local profile_spell = BOM.CurrentProfile.Spell[spell.ConfigID]
@@ -707,7 +729,7 @@ local function update_selected_spell(spell)
     if BOM.lastTarget ~= nil then
       -------------------------
       force_cast_button:Enable()
-      bom_update_forcecast_tooltip(force_cast_button, profile_spell)
+      bomUpdateForcecastTooltip(force_cast_button, profile_spell)
 
       local spell_force = profile_spell.ForcedTarget
       local last_target = BOM.lastTarget
@@ -722,11 +744,11 @@ local function update_selected_spell(spell)
                   .. L.MessageClearedForced .. ": " .. last_target)
           spell_force[last_target] = nil
         end
-        bom_update_forcecast_tooltip(self, profile_spell)
+        bomUpdateForcecastTooltip(self, profile_spell)
       end)
       -------------------------
       exclude_button:Enable()
-      bom_update_exclude_tooltip(exclude_button, profile_spell)
+      bomUpdateExcludeTargetsTooltip(exclude_button, profile_spell)
 
       local spell_exclude = profile_spell.ExcludedTarget
       last_target = BOM.lastTarget
@@ -741,7 +763,7 @@ local function update_selected_spell(spell)
                   .. L.MessageClearedExcluded .. ": " .. last_target)
           spell_exclude[last_target] = nil
         end
-        bom_update_exclude_tooltip(self, profile_spell)
+        bomUpdateExcludeTargetsTooltip(self, profile_spell)
       end)
 
     else
@@ -750,14 +772,14 @@ local function update_selected_spell(spell)
       BOM.Tool.TooltipText(
               force_cast_button,
               L.TooltipForceCastOnTarget .. "|n" .. L.TooltipSelectTarget
-                      .. bom_tooltip_force_targets(profile_spell))
+                      .. bomForceTargetsTooltipText(profile_spell))
       --force_cast_button:SetVariable()
       ---------------------------------
       exclude_button:Disable()
       BOM.Tool.TooltipText(
               exclude_button,
               L.TooltipExcludeTarget .. "|n" .. L.TooltipSelectTarget
-                      .. bom_tooltip_exclude_targets(profile_spell))
+                      .. bomExcludeTargetsTooltip(profile_spell))
       --exclude_button:SetVariable()
     end
   end -- end if has classes
@@ -788,7 +810,7 @@ end
 ---UpdateTab - update spells in one of the spell tabs
 ---BOM.SelectedSpells: table - Spells which were selected for display in Scan function, their
 ---state will be displayed in a spell tab
-function BOM.UpdateSpellsTab()
+local function bomUpdateSpellsTab()
   -- InCombat Protection is checked by the caller (Update***Tab)
   if BOM.SelectedSpells == nil then
     return
@@ -802,7 +824,7 @@ function BOM.UpdateSpellsTab()
     BOM.MyButtonHideAll()
 
     local is_horde = (UnitFactionGroup("player")) == "Horde"
-    create_tab(is_horde)
+    bomCreateTab(is_horde)
 
     BOM.SpellTabsCreatedFlag = true
   end
@@ -814,7 +836,7 @@ function BOM.UpdateSpellsTab()
             and not tContains(spell.onlyUsableFor, self_class_name) then
       -- skip
     else
-      update_selected_spell(spell)
+      bomUpdateSelectedSpell(spell)
     end
   end
 
@@ -824,4 +846,11 @@ function BOM.UpdateSpellsTab()
 
   --Create small toggle button to the right of [Cast <spell>] button
   BOM.CreateSingleBuffButton(BomC_ListTab) --maybe not created yet?
+end
+
+---@param from string Caller of this function, for debug purposes
+function BOM.UpdateSpellsTab(from)
+  --BOM.Tool.Profile("SpellTab " .. from, function()
+    bomUpdateSpellsTab()
+  --end)
 end

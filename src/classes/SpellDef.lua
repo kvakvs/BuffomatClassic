@@ -18,6 +18,7 @@ BOM.Class = BOM.Class or {}
 ---@field consumableEra string One of constants BOM.CLASSIC_ERA or BOM.TBC_ERA which will affect buff visibility based on used choice
 ---
 --- Selected spell casting and display on the cast button
+---@field extraText string Added to the right of spell name in the spells config
 ---@field singleLink string Printable link for single buff
 ---@field groupLink string Printable link for group buff
 ---@field single string Name of single buff spell (from GetSpellInfo())
@@ -59,13 +60,18 @@ BOM.Class = BOM.Class or {}
 ---@field ForcedTarget table<string> List of extra targets to buff
 ---@field frames table<string, Control> Dynamic list of controls associated with this spell
 ---@field NeedGroup table List of group members who might need group version of this buff
----@field NeedMember table<Member> List of group members who might need this buff
+---@field NeedMember table<number, Member> List of group members who might need this buff
 ---@field SelfCast boolean
 ---@field SkipList table If spell cast failed, contains recently failed targets
 ---@field trackingIconId number Numeric id for the tracking texture icon
 ---@field trackingSpellName string For tracking spells, contains string name for the spell
 ---@field shapeshiftFormId number Check this shapeshift form to know whether spell is already casted
 ---@field optionText string Used to create sections in spell list in the options page
+---@field playerActiv boolean
+---@field wasPlayerActiv boolean
+---@field buffSource string Unit/player who gave this buff
+
+---@type SpellDef
 BOM.Class.SpellDef = {}
 BOM.Class.SpellDef.__index = BOM.Class.SpellDef
 
@@ -92,7 +98,9 @@ end
 ---@param dst table<SpellDef>
 ---@param single_id number
 ---@param item_id number|table<number> Item or multiple items giving this buff
-function BOM.Class.SpellDef:tbc_consumable(dst, single_id, item_id, limitations)
+---@param limitations table Add extra conditions, if not nil
+---@param extraText string Add extra text to the right if not nil
+function BOM.Class.SpellDef:tbc_consumable(dst, single_id, item_id, limitations, extraText)
   if not BOM.TBC then
     return
   end
@@ -109,16 +117,24 @@ function BOM.Class.SpellDef:tbc_consumable(dst, single_id, item_id, limitations)
     fields.item = item_id
   end
 
+  if extraText then
+    fields.extraText = extraText
+  end
+
   BOM.Class.SpellDef:scan_spell(dst, single_id, fields, limitations)
 end
 
 ---@param dst table<SpellDef>
 ---@param single_id number
 ---@param item_id number
-function BOM.Class.SpellDef:classic_consumable(dst, single_id, item_id, limitations)
-  BOM.Class.SpellDef:scan_spell(dst, single_id,
-          { item = item_id, isConsumable = true, default = false, consumableEra = BOM.CLASSIC_ERA },
-          limitations)
+---@param limitations table Add extra conditions, if not nil
+---@param extraText string Add extra text to the right if not nil
+function BOM.Class.SpellDef:classic_consumable(dst, single_id, item_id, limitations, extraText)
+  local fields = { item = item_id, isConsumable = true, default = false, consumableEra = BOM.CLASSIC_ERA }
+  if extraText then
+    fields.extraText = extraText
+  end
+  BOM.Class.SpellDef:scan_spell(dst, single_id, fields, limitations)
 end
 
 local _, bom_player_class, _ = UnitClass("player")
@@ -240,4 +256,38 @@ function BOM.Class.SpellDef.HasClasses(self)
           or self.type == "tracking"
           or self.type == "aura"
           or self.isInfo)
+end
+
+---@param class_name string
+function BOM.Class.SpellDef:IncrementNeedGroupBuff(class_name)
+  self.NeedGroup[class_name] = (self.NeedGroup[class_name] or 0) + 1
+end
+
+---@param spell_id number
+---@param profile_name string|nil
+function BOM.GetProfileSpell(spell_id, profile_name)
+  local spell
+  if profile_name == nil then
+    spell = BOM.CurrentProfile.Spell[spell_id]
+  else
+    local profile = BOM.CharacterState[profile_name]
+    if profile == nil then
+      return nil
+    end
+    spell = profile.Spell[spell_id]
+  end
+
+  return spell
+end
+
+---Returns true whether spell is enabled by the player (has checkbox)
+---@param spell_id number
+---@return boolean
+---@param profile_name string|nil
+function BOM.IsSpellEnabled(spell_id, profile_name)
+  local spell = BOM.GetProfileSpell(spell_id, profile_name)
+  if spell == nil then
+    return false
+  end
+  return spell.Enable
 end

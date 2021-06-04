@@ -21,7 +21,8 @@ local L = setmetatable(
 ---@field ClassColor table<string, table> Localized class colors
 ---@field NameToClass table<string, string> Reverse class name lookup
 ---@field _EditBox Control
-BOM.Tool = BOM.Tool or {}
+
+BOM.Tool = BOM.Tool or {} ---@type BuffomatTool
 local Tool = BOM.Tool ---@type BuffomatTool
 
 --Tool.IconClassTexture = "Interface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES"
@@ -75,7 +76,8 @@ for eng, name in pairs(LOCALIZED_CLASS_NAMES_FEMALE) do
   Tool.NameToClass[name] = eng
 end
 
-local _tableAccents = {
+---Converts accented letters to ASCII equivalent for sorting
+local bom_special_letter_to_ascii = {
   ["�"] = "A", ["�"] = "A", ["�"] = "A", ["�"] = "A", ["�"] = "Ae", ["�"] = "A",
   ["�"] = "AE", ["�"] = "C", ["�"] = "E", ["�"] = "E", ["�"] = "E", ["�"] = "E",
   ["�"] = "I", ["�"] = "I", ["�"] = "I", ["�"] = "I", ["�"] = "D", ["�"] = "N",
@@ -273,10 +275,12 @@ function Tool.UnitDistanceSquared(uId)
   --    * Martin Verges (Nitram @ EU-Azshara) (DBM-GUI)
 
   local range
+
   if UnitIsUnit(uId, "player") then
     range = 0
   else
     local distanceSquared, checkedDistance = UnitDistanceSquared(uId)
+
     if checkedDistance then
       range = distanceSquared
     elseif C_Map.GetBestMapForUnit(uId) ~= C_Map.GetBestMapForUnit("player") then
@@ -314,6 +318,7 @@ end
 function Tool.iMerge(t1, ...)
   for index = 1, select("#", ...) do
     local var = select(index, ...)
+
     if type(var) == "table" then
       for i, v in ipairs(var) do
         if tContains(t1, v) == false then
@@ -330,29 +335,33 @@ end
 ---@param str string
 ---@return string
 function Tool.stripChars(str)
-  return string.gsub(str, "[%z\1-\127\194-\244][\128-\191]*", _tableAccents)
+  return string.gsub(str, "[%z\1-\127\194-\244][\128-\191]*", bom_special_letter_to_ascii)
 end
 
 ---@param pattern string
 ---@param maximize boolean
 function Tool.CreatePattern(pattern, maximize)
   pattern = string.gsub(pattern, "[%(%)%-%+%[%]]", "%%%1")
+
   if not maximize then
     pattern = string.gsub(pattern, "%%s", "(.-)")
   else
     pattern = string.gsub(pattern, "%%s", "(.+)")
   end
+
   pattern = string.gsub(pattern, "%%d", "%(%%d-%)")
+
   if not maximize then
     pattern = string.gsub(pattern, "%%%d%$s", "(.-)")
   else
     pattern = string.gsub(pattern, "%%%d%$s", "(.+)")
   end
+
   pattern = string.gsub(pattern, "%%%d$d", "%(%%d-%)")
   --pattern = string.gsub(pattern, "%[", "%|H%(%.%-%)%[")
   --pattern = string.gsub(pattern, "%]", "%]%|h")
-  return pattern
 
+  return pattern
 end
 
 function Tool.Combine(t, sep, first, last)
@@ -374,12 +383,15 @@ function Tool.iSplit(inputstr, sep)
   if sep == nil then
     sep = "%s"
   end
+
   local t = {}
+
   for str in string.gmatch(inputstr, "([^" .. sep .. "]+)") do
     if tContains(t, str) == false then
       table.insert(t, tonumber(str))
     end
   end
+
   return t
 end
 
@@ -387,12 +399,15 @@ function Tool.Split(inputstr, sep)
   if sep == nil then
     sep = "%s"
   end
+
   local t = {}
+
   for str in string.gmatch(inputstr, "([^" .. sep .. "]+)") do
     if tContains(t, str) == false then
       table.insert(t, str)
     end
   end
+
   return t
 end
 
@@ -402,6 +417,7 @@ local ResizeCursor ---@type Control
 
 local SizingStop = function(self, button)
   self:GetParent():StopMovingOrSizing()
+
   if self.GPI_DoStop then
     self.GPI_DoStop(self:GetParent())
   end
@@ -469,7 +485,7 @@ function Tool.EnableSize(frame, border, OnStart, OnStop)
   frame:EnableMouse(true)
   frame:SetResizable(true)
 
-  path = "Interface\\AddOns\\" .. TOCNAME .. "\\Resize\\"
+  --path = "Interface\\AddOns\\" .. TOCNAME .. "\\Resize\\"
 
   CreateSizeBorder(frame, "BOTTOM", "BOTTOMLEFT", border, border, "BOTTOMRIGHT", -border, 0, "Interface\\CURSOR\\UI-Cursor-SizeLeft", 45, OnStart, OnStop)
   CreateSizeBorder(frame, "TOP", "TOPLEFT", border, 0, "TOPRIGHT", -border, -border, "Interface\\CURSOR\\UI-Cursor-SizeLeft", 45, OnStart, OnStop)
@@ -505,7 +521,9 @@ local function PopupAddItem(self, text, disabled, value, arg1, arg2)
   if not self._Frame._GPIPRIVAT_Items[c] then
     self._Frame._GPIPRIVAT_Items[c] = {}
   end
+
   local t = self._Frame._GPIPRIVAT_Items[c] ---@type GPIMenuItem
+
   t.text = text or ""
   t.disabled = disabled or false
   t.value = value
@@ -529,12 +547,14 @@ local PopupLastWipeName
 local function PopupWipe(self, WipeName)
   self._Frame._GPIPRIVAT_Items.count = 0
   PopupDepth = nil
+
   if UIDROPDOWNMENU_OPEN_MENU == self._Frame then
     ToggleDropDownMenu(nil, nil, self._Frame, self._where, self._x, self._y)
     if WipeName == PopupLastWipeName then
       return false
     end
   end
+
   PopupLastWipeName = WipeName
   return true
 end
@@ -543,6 +563,7 @@ local function PopupCreate(frame, level, menuList)
   if level == nil then
     return
   end
+
   local info = UIDropDownMenu_CreateInfo()
 
   for i = 1, frame._GPIPRIVAT_Items.count do
@@ -612,13 +633,15 @@ end
 
 -- TAB
 
-local function bom_select_tab(self)
+local function bomSelectTab(self)
   if not self._gpi_combatlock or not InCombatLockdown() then
     local parent = self:GetParent()
     PanelTemplates_SetTab(parent, self:GetID())
+
     for i = 1, parent.numTabs do
       parent.Tabs[i].content:Hide()
     end
+
     self.content:Show()
 
     if parent.Tabs[self:GetID()].OnSelect then
@@ -649,7 +672,7 @@ end
 
 function Tool.SelectTab(frame, id)
   if id and frame.Tabs and frame.Tabs[id] then
-    bom_select_tab(frame.Tabs[id])
+    bomSelectTab(frame.Tabs[id])
   end
 end
 
@@ -698,7 +721,7 @@ function Tool.AddTab(frame, name, tabFrame, combatlockdown)
           "CharacterFrameTabButtonTemplate")
   frame.Tabs[frame.numTabs]:SetID(frame.numTabs)
   frame.Tabs[frame.numTabs]:SetText(name)
-  frame.Tabs[frame.numTabs]:SetScript("OnClick", bom_select_tab)
+  frame.Tabs[frame.numTabs]:SetScript("OnClick", bomSelectTab)
   frame.Tabs[frame.numTabs]._gpi_combatlock = combatlockdown
   frame.Tabs[frame.numTabs].content = tabFrame
   tabFrame:Hide()
@@ -709,8 +732,8 @@ function Tool.AddTab(frame, name, tabFrame, combatlockdown)
     frame.Tabs[frame.numTabs]:SetPoint("TOPLEFT", frame.Tabs[frame.numTabs - 1], "TOPRIGHT", -14, 0)
   end
 
-  bom_select_tab(frame.Tabs[frame.numTabs])
-  bom_select_tab(frame.Tabs[1])
+  bomSelectTab(frame.Tabs[frame.numTabs])
+  bomSelectTab(frame.Tabs[1])
   return frame.numTabs
 end
 
@@ -1007,4 +1030,17 @@ function Tool.TooltipLink(control, link)
   control:SetScript("OnLeave", function()
     GameTooltip:Hide()
   end)
+end
+
+---@param text string
+---@param fn function
+function Tool.Profile(text, fn)
+  local t_start = debugprofilestop()
+  local result = fn()
+  local t_end = debugprofilestop()
+
+  local duration = t_end - t_start
+  BOM.Dbg(text .. ": " .. tostring(duration))
+
+  return result
 end

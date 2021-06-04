@@ -141,6 +141,8 @@ BOM.Class = BOM.Class or {}
 ---
 ---@field SpellId table<string, table<string, number>> Map of spell name to id
 ---@field ItemId table<string, table<string, number>> Map of item name to id
+
+---@type BuffomatAddon
 BOM.Class.BuffomatAddon = {}
 BOM.Class.BuffomatAddon.__index = BOM.Class.BuffomatAddon
 

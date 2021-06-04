@@ -3,6 +3,8 @@ BOM.Class = BOM.Class or {}
 
 ---@class RowBuilder
 ---@field section string
+
+---@type RowBuilder
 BOM.Class.RowBuilder = {}
 BOM.Class.RowBuilder.__index = BOM.Class.RowBuilder
 

@@ -1,5 +1,26 @@
 # Changelog
 
+## Buffomat Classic and TBC 2021.5.12-DEBUG
+
+- Fel Armor rank 1 and 2 added for warlocks
+- BUG: Swapped Sunfruit and Sunfruit Juice (wrong class limits)
+- Less aggressive Buffomat window show behaviour, it will not show if there are
+  tasks which cannot be completed (like players unbuffed but out of range)
+- Rockbiter ranks were all changed for TBC, added new ranks too
+- Massive code refactoring
+
+## Buffomat Classic and TBC 2021.5.10
+
+- Renamed option: Scan in rest areas (off by default), before: disable in rest
+  areas (on by default)
+- New option: Scan in stealth (off by default)
+- New classic consumable: Crystal Force +30 SPI
+- Some TBC food has new limitations for mana classes only or for physical/melee
+  classes only, to reduce the clutter
+- Known problem: Tracking is checked periodically and is casted without the need
+  to press a button: this sometimes can produce error message "Ability is not
+  ready yet"
+
 ## Buffomat Classic and TBC 2021.5.8
 
 - Key binding: show/hide Buffomat window, does same as /bom, which you can also

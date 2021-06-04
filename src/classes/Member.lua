@@ -3,6 +3,7 @@ local TOCNAME, BOM = ...
 BOM.Class = BOM.Class or {}
 
 ---@class Member
+---@field buffs table<number, Buff> Buffs on player keyed by spell id, only buffs supported by Buffomat are stored
 ---@field class string
 ---@field distance number
 ---@field group number Raid group number (9 if temporary moved out of the raid by BOM)
@@ -15,14 +16,104 @@ BOM.Class = BOM.Class or {}
 ---@field isPlayer boolean Is this a player
 ---@field isTank boolean Is this member marked as tank
 ---@field link string
+---@field MainHandBuff number|nil Temporary enchant on main hand
 ---@field name string
 ---@field NeedBuff boolean
----@field unitId number
----
----@field MainHandBuff number|nil Temporary enchant on main hand
 ---@field OffHandBuff number|nil Temporary enchant on off-hand
----@field buffs table<number, Buff> Buffs on player keyed by spell id
+---@field unitId number
+
+---@type Member
 BOM.Class.Member = {}
 BOM.Class.Member.__index = BOM.Class.Member
 
 local CLASS_TAG = "member"
+
+function BOM.Class.Member:new(fields)
+  fields = fields or {}
+  setmetatable(fields, BOM.Class.Member)
+  fields.t = CLASS_TAG
+  return fields
+end
+
+---Force updates buffs for one party member
+---@param player_member Member
+---@param self Member
+function BOM.Class.Member:ForceUpdateBuffs(player_member)
+
+  self.isPlayer = (self == player_member)
+  self.isDead = UnitIsDeadOrGhost(self.unitId) and not UnitIsFeignDeath(self.unitId)
+  self.isGhost = UnitIsGhost(self.unitId)
+  self.isConnected = UnitIsConnected(self.unitId)
+
+  self.NeedBuff = true
+
+  wipe(self.buffs)
+
+  BOM.SomeBodyGhost = BOM.SomeBodyGhost or self.isGhost
+
+  if self.isDead then
+    BOM.PlayerBuffs[self.name] = nil
+  else
+    self.hasArgentumDawn = false
+    self.hasCarrot = false
+
+    local buffIndex = 0
+
+    repeat
+      buffIndex = buffIndex + 1
+
+      local name, icon, count, debuffType, duration, expirationTime, source, isStealable
+      , nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, castByPlayer
+      , nameplateShowAll, timeMod = BOM.UnitAura(self.unitId, buffIndex, "HELPFUL")
+
+      spellId = BOM.SpellToSpell[spellId] or spellId
+
+      if spellId then
+        -- Skip members who have a buff on the global ignore list - example phaseshifted imps
+        if tContains(BOM.BuffIgnoreAll, spellId) then
+          wipe(self.buffs)
+          self.NeedBuff = false
+          break
+        end
+
+        if spellId == BOM.ArgentumDawn.spell then
+          self.hasArgentumDawn = true
+        end
+
+        if spellId == BOM.Carrot.spell then
+          self.hasCarrot = true
+        end
+
+        if tContains(BOM.AllSpellIds, spellId) then
+          local configKey = BOM.SpellIdtoConfig[spellId]
+
+          self.buffs[configKey] = BOM.Class.Buff:new(
+                  spellId,
+                  duration,
+                  expirationTime,
+                  source,
+                  BOM.SpellIdIsSingle[spellId])
+        end
+      end
+
+    until (not name)
+  end -- if is not dead
+end
+
+---@param unitid string
+---@param name string
+---@param group number
+---@param class string
+---@param link string
+---@param isTank boolean
+function BOM.Class.Member:Construct(unitid, name, group, class, link, isTank)
+  self.distance = 100000
+  self.unitId = unitid
+  self.name = name
+  self.group = group
+  self.hasResurrection = self.hasResurrection or false
+  self.class = class
+  self.link = link
+  self.isTank = isTank
+  self.buffs = self.buffs or {}
+end

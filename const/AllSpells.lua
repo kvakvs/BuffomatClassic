@@ -1,5 +1,16 @@
 ---@type BuffomatAddon
 local TOCNAME, BOM = ...
+local L = setmetatable(
+        {},
+        {
+          __index = function(_t, k)
+            if BOM.L and BOM.L[k] then
+              return BOM.L[k]
+            else
+              return "[" .. k .. "]"
+            end
+          end
+        })
 
 local BOM_ALL_CLASSES = { "WARRIOR", "MAGE", "ROGUE", "DRUID", "HUNTER", "PRIEST", "WARLOCK",
                           "SHAMAN", "PALADIN" }
@@ -7,11 +18,11 @@ local BOM_NO_CLASS = { }
 
 ---Classes which have a resurrection ability
 local BOM_RESURRECT_CLASSES = { "SHAMAN", "PRIEST", "PALADIN" }
-BOM.RESURRECT_CLASS = BOM_RESURRECT_CLASSES --used in SpellScan.lua
+BOM.RESURRECT_CLASS = BOM_RESURRECT_CLASSES --used in Scan.lua
 
 ---Classes which have mana bar
 local BOM_MANA_CLASSES = { "HUNTER", "WARLOCK", "MAGE", "DRUID", "SHAMAN", "PRIEST", "PALADIN" }
-BOM.MANA_CLASSES = BOM_MANA_CLASSES --used in SpellScan.lua
+BOM.MANA_CLASSES = BOM_MANA_CLASSES --used in Scan.lua
 
 BOM.CLASSIC_ERA = "Classic"
 BOM.TBC_ERA = "TBC"
@@ -144,8 +155,10 @@ local function bom_setup_druid_spells(spells, enchants)
           { isOwn = true, default = true, default = false, singleId = 33891, shapeshiftFormId = 2 },
           { isTBC = true, playerClass = "DRUID" })
 
-  BOM.Class.SpellDef:scan_spell(spells, 5225, -- Track Humanoids (Cat Form)
-          { type = "tracking", needForm = CAT_FORM, default = true },
+  -- Special code: This will disable herbalism and mining tracking in Cat Form
+  BOM.Class.SpellDef:scan_spell(spells, BOM.SpellId.Druid.TrackHumanoids, -- Track Humanoids (Cat Form)
+          { type      = "tracking", needForm = CAT_FORM, default = true,
+            extraText = L.SpellLabel_TrackHumanoids },
           { playerClass = "DRUID" })
 end
 
@@ -263,7 +276,10 @@ local function bom_setup_shaman_spells(spells, enchants)
                              25479, 25485 } }, -- TBC: Ranks 8-9
           { playerClass = "SHAMAN" },
           { "shamanEnchant" })
-  enchants[16316] = { 1, 6, 29, 503, 683, 1663, 1664, -- Rockbiter
+  -- Note: in TBC all enchantIds for rockbiter have changed
+  enchants[16316] = { 1, 6, 29, 503, 504, 683, 1663, 1664, -- Rockbiter, also 504 some special +80 Rockbiter?
+                      3040, -- rockbiter 7
+                      3023, 3026, 3028, 3031, 3034, 3037, 3040, -- TBC: Rockbiter 1-7
                       2632, 2633 } -- TBC: Rockbiter 8-9
 
   BOM.Class.SpellDef:scan_spell(spells, 16362, --Windfury Weapon
@@ -306,6 +322,9 @@ local function bom_setup_warlock_spells(spells, enchants)
   BOM.Class.SpellDef:scan_spell(spells, 28610, -- Shadow Ward / Schattenzauberschutz
           { isOwn = true, default = false, singleFamily = { 6229, 11739, 11740, 28610 } },
           { playerClass = "WARLOCK" })
+  BOM.Class.SpellDef:scan_spell(spells, 28176, -- TBC: Fel Armor
+          { isOwn = true, default = false, singleFamily = { 28176, 28189 } }, -- TBC: Rank 1-2
+          { isTBC = true, playerClass = "WARLOCK" })
   BOM.Class.SpellDef:scan_spell(spells, 11735, -- Demon Armor
           { isOwn = true, default = false, singleFamily = { 706, 1086, 11733, 11734, 11735, -- Rank 5
                                                             27260 } }, -- TBC: Rank 6
@@ -644,9 +663,9 @@ end
 ---@param spells table<string, SpellDef>
 ---@param enchants table<string, table<number>>
 local function bom_setup_tracking_spells(spells, enchants)
-  tinsert(spells, BOM.Class.SpellDef:new(2383, -- Find Herbs / kräuter
+  tinsert(spells, BOM.Class.SpellDef:new(BOM.SpellId.FindHerbs, -- Find Herbs / kräuter
           { type = "tracking", default = true }))
-  tinsert(spells, BOM.Class.SpellDef:new(2580, -- Find Minerals / erz
+  tinsert(spells, BOM.Class.SpellDef:new(BOM.SpellId.FindMinerals, -- Find Minerals / erz
           { type = "tracking", default = true }))
   tinsert(spells, BOM.Class.SpellDef:new(2481, -- Find Treasure / Schatzsuche / Zwerge
           { type = "tracking", default = true }))
@@ -789,10 +808,8 @@ local function bom_setup_phys_dps_buffs(spells, enchants)
           { item          = 20452, isConsumable = true, default = false, onlyUsableFor = BOM_PHYSICAL_CLASSES,
             consumableEra = BOM.CLASSIC_ERA },
           { isTBC = false }) -- hide in TBC
-  BOM.Class.SpellDef:scan_spell(spells, 18141, --Blessed Sunfruit Juice +Strength
-          { item          = 13813, isConsumable = true, default = false, onlyUsableFor = BOM_MELEE_CLASSES,
-            consumableEra = BOM.CLASSIC_ERA },
-          { isTBC = false }) -- hide in TBC
+  BOM.Class.SpellDef:classic_consumable(spells, 18125, 13810, --Blessed Sunfruit +STR
+          { playerClass = BOM_MELEE_CLASSES })
 end
 
 ---ITEMS, applicable to most of the classes, self buffs, containers to open etc
@@ -843,8 +860,10 @@ local function bom_setup_caster_buffs(spells, enchants)
           { playerClass = BOM_MANA_CLASSES })
   BOM.Class.SpellDef:classic_consumable(spells, 19710, 12218, --Monster Omelette
           { playerClass = BOM_MANA_CLASSES })
-  BOM.Class.SpellDef:classic_consumable(spells, 18125, 13810, --Blessed Sunfruit +Spirit
-          { playerClass = BOM_MANA_CLASSES })
+  BOM.Class.SpellDef:scan_spell(spells, 18141, --Blessed Sunfruit Juice +10 SPIRIT
+          { item          = 13813, isConsumable = true, default = false, onlyUsableFor = BOM_MANA_CLASSES,
+            consumableEra = BOM.CLASSIC_ERA },
+          { isTBC = false }) -- hide in TBC
 
   BOM.Class.SpellDef:scan_spell(spells, 28017, --Superior Wizard Oil +42 SPELL
           { item = 22522, items = { 22522 }, isConsumable = true,
@@ -922,26 +941,39 @@ end
 ---@param enchants table<string, table<number>>
 local function bom_setup_item_spells(spells, enchants)
   BOM.Class.SpellDef:classic_consumable(spells, 15233, 11564) --Crystal Ward
-  BOM.Class.SpellDef:classic_consumable(spells, 15279, 11567) --Crystal Spire
+  BOM.Class.SpellDef:classic_consumable(spells, 15279, 11567) --Crystal Spire +12 THORNS
+  BOM.Class.SpellDef:classic_consumable(spells, 15231, 11563) --Crystal Force +30 SPI
 end
 
 ---@param spells table<string, SpellDef>
 ---@param enchants table<string, table<number>>
 local function bom_setup_food(spells, enchants)
-  BOM.Class.SpellDef:tbc_consumable(spells, 33257, { 33052, 27667 }) --Well Fed +30 STA +20 SPI
+  BOM.Class.SpellDef:tbc_consumable(spells, 33257, { 33052, 27667 }, --Well Fed +30 STA +20 SPI
+          nil, L.TooltipSimilarFoods)
 
-  BOM.Class.SpellDef:tbc_consumable(spells, 35254, { 27651, 30155, 27662, 33025 }) --Well Fed +20 STA +20 SPI
+  BOM.Class.SpellDef:tbc_consumable(spells, 35254, { 27651, 30155, 27662, 33025 }, --Well Fed +20 STA +20 SPI
+          nil, L.TooltipSimilarFoods)
   --BOM.Class.SpellDef:tbc_consumable(spells, 35272, { 27660, 31672, 33026 }) --Well Fed +20 STA +20 SPI
 
-  BOM.Class.SpellDef:tbc_consumable(spells, 33261, { 27659, 30358, 27664 }) --Well Fed +20 AGI +20 SPI
-  BOM.Class.SpellDef:tbc_consumable(spells, 43764, 33872) --Spicy Hot Talbuk: Well Fed +20 HITRATING +20 SPI
-  BOM.Class.SpellDef:tbc_consumable(spells, 33256, { 27658, 30359 }) -- Well Fed +20 STR +20 SPI
+  BOM.Class.SpellDef:tbc_consumable(spells, 33261, { 27659, 30358, 27664 }, --Well Fed +20 AGI +20 SPI
+          { playerClass = BOM_PHYSICAL_CLASSES }, L.TooltipSimilarFoods)
+  BOM.Class.SpellDef:tbc_consumable(spells, 43764, 33872, --Spicy Hot Talbuk: Well Fed +20 HITRATING +20 SPI
+          { playerClass = BOM_PHYSICAL_CLASSES })
+  BOM.Class.SpellDef:tbc_consumable(spells, 33256, { 27658, 30359 }, -- Well Fed +20 STR +20 SPI
+          { playerClass = BOM_MELEE_CLASSES }, L.TooltipSimilarFoods)
   BOM.Class.SpellDef:tbc_consumable(spells, 33259, 27655) --Ravager Dog: Well Fed +40 AP +20 SPI
-  BOM.Class.SpellDef:tbc_consumable(spells, 41030, 32721) --Skyguard Rations: Well Fed +15 STA +15 SPI
-  BOM.Class.SpellDef:tbc_consumable(spells, 46899, 35563) --Charred Bear Kabobs +24 AP
-  BOM.Class.SpellDef:tbc_consumable(spells, 33263, { 27657, 31673, 27665, 30361 }) --Well Fed +23 SPELL +20 SPI
-  BOM.Class.SpellDef:tbc_consumable(spells, 33265, 27663) --Blackened Sporefish: Well Fed +8 MP5 +20 STA
-  BOM.Class.SpellDef:tbc_consumable(spells, 33268, { 27666, 30357 }) --Golden Fish Sticks: Well Fed +44 HEAL +20 SPI
+  BOM.Class.SpellDef:tbc_consumable(spells, 41030, 32721, --Skyguard Rations: Well Fed +15 STA +15 SPI
+          { playerClass = BOM_MANA_CLASSES })
+  BOM.Class.SpellDef:tbc_consumable(spells, 46899, 35563, --Charred Bear Kabobs +24 AP
+          { playerClass = BOM_PHYSICAL_CLASSES })
+  BOM.Class.SpellDef:tbc_consumable(spells, 33263, { 27657, 31673, 27665, 30361 }, --Well Fed +23 SPELL +20 SPI
+          { playerClass = BOM_MANA_CLASSES },
+          L.TooltipSimilarFoods)
+  BOM.Class.SpellDef:tbc_consumable(spells, 33265, 27663, --Blackened Sporefish: Well Fed +8 MP5 +20 STA
+          { playerClass = BOM_MANA_CLASSES })
+  BOM.Class.SpellDef:tbc_consumable(spells, 33268, { 27666, 30357 }, --Golden Fish Sticks: Well Fed +44 HEAL +20 SPI
+          { playerClass = BOM_MANA_CLASSES },
+          L.TooltipSimilarFoods)
 end
 
 ---@param spells table<string, SpellDef>
@@ -1030,11 +1062,6 @@ function BOM.SetupItemCache()
   ---@param id number Item ID
   local function make_item(id, name, color, icon)
     local link = "|cff" .. color .. "|Hitem:" .. tostring(id) .. "::::::::1:::::::|h[" .. name .. "]|h|r"
-    --tinsert(s, {
-    --  name, -- [1]
-    --  link, -- [2]
-    --  x, -- [3]
-    --})
     tinsert(s, { itemName = name,
                  itemLink = link,
                  itemIcon = icon })
@@ -1102,8 +1129,12 @@ function BOM.SetupItemCache()
   make_item(13928, "Grilled Squid", W, 133899)
   make_item(13456, "Greater Frost Protection Potion", W, 134800)
   make_item(13452, "Elixir of the Mongoose", W, 134812)
+
+  -- Ungoro Crystal items
   make_item(11564, "Crystal Ward", W, 134129)
   make_item(11567, "Crystal Spire", W, 134134)
+  make_item(11563, "Crystal Force", W, 134088)
+
   make_item(20748, "Brilliant Mana Oil", W, 134722)
   make_item(13458, "Greater Nature Protection Potion", W, 134802)
   make_item(9206, "Elixir of Giants", W, 134841)
@@ -1114,12 +1145,19 @@ function BOM.SetupItemCache()
 end
 
 BOM.ArgentumDawn = {
-  spell   = 17670,
-  dungeon = { 329, 289, 533, 535 }, --Stratholme/scholomance; Naxxramas LK 10/25
+  spell  = 17670,
+  zoneId = { 329, 289, 533, 535 }, --Stratholme/scholomance; Naxxramas LK 10/25
 }
+-- TODO: TBC Riding Crop trinket
 BOM.Carrot = {
-  spell   = 13587,
-  dungeon = { 0, 1 }, --Allow Carrot in Eastern Kingdoms, Kalimdor
+  spell  = 13587,
+  --Allow Carrot in:
+  zoneId = { 0, 1, 530, -- Eastern Kingdoms, Kalimdor, Outland
+             30, -- Alterac Valley
+             529, -- Arathi Basin,
+             489, -- Warsong Gulch
+             566, 968, -- Eye of the Storm
+             1672, 1505, 572 }, -- Blade's Edge Arena, Nagrand Arena, Ruins of Lordaeron
 }
 
 BOM.BuffExchangeId = { -- comine-spell-ids to new one

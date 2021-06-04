@@ -26,19 +26,24 @@ src/classes/SpellDef.lua
 src/classes/State.lua
 src/classes/CharacterState.lua
 
-src/UiButton.lua
-src/Cache.lua
-src/Options.lua
-src/MinimapButton.lua
+src/cache/GetItemCache.lua
+src/cache/GetSpellCache.lua
+src/cache/GetItemListCache.lua
+src/cache/MemberCache.lua
+
+src/ui/UiButton.lua
+src/ui/Options.lua
+src/ui/MinimapButton.lua
+src/ui/SpellButtonsTab.lua
+src/ui/MyButton.lua
+
 src/Toolbox.lua
 src/Languages.lua
 src/Toolbox.lua
-src/SpellScan.lua
-src/UiTabs.lua
-src/MyButton.lua
+src/Scan.lua
+src/Bom.lua
 
-Bom.lua
-Bom.xml
+src/ui/Bom.xml
 
 #
 # Do not edit - this file is generated from TOC_TEMPLATE.TOC

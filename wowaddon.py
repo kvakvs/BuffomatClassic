@@ -10,7 +10,7 @@ import subprocess
 import sys
 import zipfile
 
-VERSION = '2021.5.9'  # year.month.build_num
+VERSION = '2021.5.12-DEBUG'  # year.month.build_num
 
 UI_VERSION_CLASSIC = '11307'  # patch 1.13.7
 BOM_NAME_CLASSIC = 'BuffomatClassic'  # Directory and zip name
@@ -21,7 +21,7 @@ BOM_NAME_CLASSIC_TBC = 'BuffomatClassicTBC'  # Directory and zip name
 BOM_TITLE_CLASSIC_TBC = "Buffomat Classic TBC"  # Title field in TOC
 
 COPY_DIRS = ['src', 'const']
-COPY_FILES = ['Bindings.xml', 'Bom.lua', 'Bom.xml', 'CHANGELOG.md',
+COPY_FILES = ['Bindings.xml', 'CHANGELOG.md',
               'LICENSE.txt', 'README.md', 'README.Deutsch.txt']
 
 

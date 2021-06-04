@@ -12,13 +12,14 @@ local L = setmetatable(
           end
         })
 
--- global, visible from XML files and from script console and chat commands
+---global, visible from XML files and from script console and chat commands
 ---@type BuffomatAddon
 BUFFOMAT_ADDON = BOM
 
 BOM.BehaviourSettings = {
   { "AutoOpen", true },
-  { "DisableInRestArea", true },
+  { "ScanInRestArea", false },
+  { "ScanInStealth", false },
   { "InWorld", true },
   { "InPVP", true },
   { "InInstance", true },
@@ -74,7 +75,17 @@ BOM.TBC = bom_is_tbc()
 ---Print a text with "Buffomat: " prefix in the game chat window
 ---@param t string
 function BOM.Print(t)
-  DEFAULT_CHAT_FRAME:AddMessage("|c80808080" .. L.CHAT_MSG_PREFIX .. "|r" .. t)
+  DEFAULT_CHAT_FRAME:AddMessage(BOM.Color("808080", L.CHAT_MSG_PREFIX) .. t)
+end
+
+---Print a text with "BomDebug: " prefix in the game chat window
+---@param t string
+function BOM.Dbg(t)
+  DEFAULT_CHAT_FRAME:AddMessage(tostring(GetTime()) .. " " .. BOM.Color("883030", "BOM") .. t)
+end
+
+function BOM.Color(hex, text)
+  return "|cff" .. hex .. text .. "|r"
 end
 
 ---Creates a string which will display a picture in a FontString
@@ -128,7 +139,7 @@ local function bom_make_popup_menu_settings_row(db, var)
   return L["Cbox" .. var], false, db, var
 end
 
-function BOM.Popup(self, minimap)
+local function bomPopup(self, minimap)
   local name = (self:GetName() or "nil") .. (minimap and "Minimap" or "Normal")
 
   if not BOM.PopupDynamic:Wipe(name) then
@@ -163,11 +174,12 @@ function BOM.Popup(self, minimap)
     if not spell.isConsumable then
       BOM.PopupDynamic:AddItem(spell.singleLink or spell.single,
               "keep",
-              BOM.CurrentProfile.Spell[spell.ConfigID],
+              BOM.GetProfileSpell(spell.ConfigID),
               "Enable")
     end
   end
 
+  local inBuffGroup -- unused? nil?
   if inBuffGroup then
     BOM.PopupDynamic:SubMenu()
   end
@@ -202,7 +214,7 @@ function BOM.BtnClose()
 end
 
 function BOM.BtnSettings(self)
-  BOM.Popup(self)
+  bomPopup(self)
 end
 
 function BOM.BtnMacro()
@@ -214,11 +226,18 @@ function BOM.ScrollMessage(self, delta)
   self:ResetAllFadeTimes()
 end
 
+function BOM.SetForceUpdate(reason)
+  --if reason ~= nil then
+  --  BOM.Dbg("Set force update: " .. reason)
+  --end
+  BOM.ForceUpdate = true
+end
+
 -- Something changed (buff gained possibly?) update all spells and spell tabs
 function BOM.OptionsUpdate()
-  BOM.ForceUpdate = true
-  BOM.UpdateScan()
-  BOM.UpdateSpellsTab()
+  BOM.SetForceUpdate("OptionsUpdate")
+  BOM.UpdateScan("OptionsUpdate")
+  BOM.UpdateSpellsTab("OptonsUpdate")
   BOM.MyButtonUpdateAll()
   BOM.MinimapButton.UpdatePosition()
   BOM.Options.DoCancel()
@@ -413,9 +432,9 @@ function BOM.OptionsInsertSpells()
     end
   end
 
-  BOM.UpdateSpellsTab()
-  BOM.ForceUpdate = true
-  BOM.UpdateScan()
+  BOM.UpdateSpellsTab("OptionsInsertSpells")
+  BOM.SetForceUpdate("OptionsInsertSpells")
+  BOM.UpdateScan("OptionsInsertSpells")
 end
 
 ---ChooseProfile
@@ -436,8 +455,8 @@ function BOM.ChooseProfile (profile)
 
   BOM.ClearSkip()
   BOM.PopupDynamic:Wipe()
-  BOM.ForceUpdate = true
-  BOM.UpdateScan()
+  BOM.SetForceUpdate("ChooseProfile")
+  BOM.UpdateScan("ChooseProfile")
 end
 
 ---When BomCharacterState.WatchGroup has changed, update the buff tab text to show what's
@@ -545,7 +564,7 @@ local function bom_init_ui()
             if button == "LeftButton" then
               BOM.ToggleWindow()
             else
-              BOM.Popup(self.button, true)
+              bomPopup(self.button, true)
             end
           end,
           BOM.TOC_TITLE)
@@ -574,6 +593,7 @@ end
 ---Called from event handler on Addon Loaded event
 ---Execution start here
 function BOM.Init()
+  BOM.SetupTranslations()
   BOM.SetupSpells()
   BOM.SetupCancelBuffs()
   BOM.SetupItemCache()
@@ -682,8 +702,8 @@ function BOM.Init()
     { "spellbook", L["SlashSpellBook"], BOM.GetSpells },
     { "update", L["SlashUpdate"],
       function()
-        BOM.ForceUpdate = true
-        BOM.UpdateScan()
+        BOM.SetForceUpdate()
+        BOM.UpdateScan("Macro /bom update")
       end },
     { "updatespellstab", "", BOM.UpdateSpellsTab },
     { "close", L["SlashClose"], BOM.HideWindow },
@@ -733,26 +753,29 @@ local function Event_ADDON_LOADED(arg1)
             if button == "LeftButton" then
               BOM.ToggleWindow()
             else
-              BOM.Popup(self, true)
+              bomPopup(self, true)
             end
           end)
 end
 
-local function Event_UNIT_POWER_UPDATE(arg1, arg2)
+local function Event_UNIT_POWER_UPDATE(unitTarget, powerType)
   --UNIT_POWER_UPDATE: "unitTarget", "powerType"
-  if arg2 == "MANA" and UnitIsUnit(arg1, "player") then
-    if (BOM.PlayerManaMax or 0) <= (UnitPower("player", 0) or 0) then
-      BOM.ForceUpdate = true
+  if powerType == "MANA" and UnitIsUnit(unitTarget, "player") then
+    local max_mana = BOM.PlayerManaMax or 0
+    local actual_mana = UnitPower("player", 0) or 0
+
+    if max_mana <= actual_mana then
+      BOM.SetForceUpdate(nil)
     end
   end
 end
 
 local function Event_GenericUpdate()
-  BOM.ForceUpdate = true
+  BOM.SetForceUpdate()
 end
 
 local function Event_Bag()
-  BOM.ForceUpdate = true
+  BOM.SetForceUpdate()
   BOM.WipeCachedItems = true
 
   if BOM.CachedHasItems then
@@ -762,7 +785,7 @@ end
 
 local function Event_SpellsChanged()
   BOM.GetSpells()
-  BOM.ForceUpdate = true
+  BOM.SetForceUpdate("Evt Spells Changed")
   BOM.SpellTabsCreatedFlag = false
   BOM.OptionsInsertSpells()
 end
@@ -771,7 +794,7 @@ local bom_in_party = IsInRaid() or IsInGroup()
 
 local function Event_PartyChanged()
   BOM.PartyUpdateNeeded = true
-  BOM.ForceUpdate = true
+  BOM.SetForceUpdate("Evt Party Changed")
 
   -- if in_party changed from true to false, clear the watch groups
   local in_party = IsInRaid() or IsInGroup()
@@ -786,21 +809,21 @@ end
 local function Event_UNIT_SPELLCAST_errors(unit)
   if UnitIsUnit(unit, "player") then
     BOM.CheckForError = false
-    BOM.ForceUpdate = true
+    BOM.SetForceUpdate()
   end
 end
 
 local function Event_UNIT_SPELLCAST_START(unit)
   if UnitIsUnit(unit, "player") and not BOM.PlayerCasting then
     BOM.PlayerCasting = "cast"
-    BOM.ForceUpdate = true
+    BOM.SetForceUpdate()
   end
 end
 
 local function Event_UNIT_SPELLCAST_STOP(unit)
   if UnitIsUnit(unit, "player") and BOM.PlayerCasting then
     BOM.PlayerCasting = nil
-    BOM.ForceUpdate = true
+    BOM.SetForceUpdate()
     BOM.CheckForError = false
   end
 end
@@ -808,14 +831,14 @@ end
 local function Event_UNIT_SPELLCHANNEL_START(unit)
   if UnitIsUnit(unit, "player") and not BOM.PlayerCasting then
     BOM.PlayerCasting = "channel"
-    BOM.ForceUpdate = true
+    BOM.SetForceUpdate()
   end
 end
 
 local function Event_UNIT_SPELLCHANNEL_STOP(unit)
   if UnitIsUnit(unit, "player") and BOM.PlayerCasting then
     BOM.PlayerCasting = nil
-    BOM.ForceUpdate = true
+    BOM.SetForceUpdate()
     BOM.CheckForError = false
   end
 end
@@ -830,7 +853,7 @@ end
 
 ---On combat start will close the UI window and disable the UI. Will cancel the cancelable buffs.
 local function Event_CombatStart()
-  BOM.ForceUpdate = true
+  BOM.SetForceUpdate("Evt Combat Start")
   BOM.DeclineHasResurrection = true
   BOM.AutoClose()
   if not InCombatLockdown() then
@@ -842,7 +865,7 @@ end
 
 local function Event_CombatStop()
   BOM.ClearSkip()
-  BOM.ForceUpdate = true
+  BOM.SetForceUpdate("Evt Combat Stop")
   BOM.DeclineHasResurrection = true
   BOM.AllowAutOpen()
 end
@@ -856,7 +879,7 @@ end
 
 local function Event_LoadingStop()
   BOM.LoadingScreenTimeOut = GetTime() + BOM.LOADING_SCREEN_TIMEOUT
-  BOM.ForceUpdate = true
+  BOM.SetForceUpdate("Evt Loading Stop")
 end
 
 ---Event_PLAYER_TARGET_CHANGED
@@ -865,11 +888,11 @@ local function Event_PLAYER_TARGET_CHANGED()
   if not InCombatLockdown() then
     if UnitInParty("target") or UnitInRaid("target") or UnitIsUnit("target", "player") then
       BOM.lastTarget = (UnitFullName("target"))
-      BOM.UpdateSpellsTab()
+      BOM.UpdateSpellsTab("PL_TAR_CHANGED1")
 
     elseif BOM.lastTarget then
       BOM.lastTarget = nil
-      BOM.UpdateSpellsTab()
+      BOM.UpdateSpellsTab("PL_TAR_CHANGED2")
     end
   else
     BOM.lastTarget = nil
@@ -891,10 +914,36 @@ local function Event_PLAYER_TARGET_CHANGED()
 
   if newName ~= BOM.SaveTargetName then
     BOM.SaveTargetName = newName
-    BOM.ForceUpdate = true
-    BOM.UpdateScan()
+    BOM.SetForceUpdate("PlayerTargetChanged")
+    BOM.UpdateScan("PlayerTargetChanged")
   end
 
+end
+
+local function bomDownGrade()
+  if BOM.CastFailedSpell
+          and BOM.CastFailedSpell.SkipList
+          and BOM.CastFailedSpellTarget then
+    local level = UnitLevel(BOM.CastFailedSpellTarget.unitId)
+
+    if level ~= nil and level > -1 then
+      if BOM.SharedState.SpellGreatherEqualThan[BOM.CastFailedSpellId] == nil
+              or BOM.SharedState.SpellGreatherEqualThan[BOM.CastFailedSpellId] < level
+      then
+        BOM.SharedState.SpellGreatherEqualThan[BOM.CastFailedSpellId] = level
+        BOM.FastUpdateTimer()
+        BOM.SetForceUpdate("Downgrade")
+        BOM.Print(string.format(L.MsgDownGrade,
+                BOM.CastFailedSpell.single,
+                BOM.CastFailedSpellTarget.name))
+
+      elseif BOM.SharedState.SpellGreatherEqualThan[BOM.CastFailedSpellId] >= level then
+        BOM.AddMemberToSkipList()
+      end
+    else
+      BOM.AddMemberToSkipList()
+    end
+  end
 end
 
 ---Event_UI_ERROR_MESSAGE
@@ -921,7 +970,7 @@ local function Event_UI_ERROR_MESSAGE(errorType, message)
   elseif not InCombatLockdown() then
     if BOM.CheckForError then
       if message == SPELL_FAILED_LOWLEVEL then
-        BOM.DownGrade()
+        bomDownGrade()
       else
         BOM.AddMemberToSkipList()
       end
@@ -949,6 +998,12 @@ local function Event_PLAYER_LEVEL_UP(level)
   --BOM.SetupSpells()
   --BOM.ForceUpdate = true
   --BOM.UpdateScan()
+end
+
+---Events which might change active state of Buffomat (like rested status change,
+---or zone change, etc)
+local function Event_RequestForceUpdate()
+  BOM.ForceUpdate = true
 end
 
 -- Update timers for Buffomat checking spells and buffs
@@ -980,20 +1035,20 @@ function BOM.UpdateTimer()
 
   if BOM.MinTimer and BOM.MinTimer < GetTime() then
     --print("MINTIMER!")
-    BOM.ForceUpdate = true
+    BOM.SetForceUpdate("MinTimer")
   end
 
   if BOM.CheckCoolDown then
     local cdtest = GetSpellCooldown(BOM.CheckCoolDown)
     if cdtest == 0 then
       BOM.CheckCoolDown = nil
-      BOM.ForceUpdate = true
+      BOM.SetForceUpdate("CheckCooldown")
     end
   end
 
   if BOM.ScanModifier and bom_last_modifier ~= IsModifierKeyDown() then
     bom_last_modifier = IsModifierKeyDown()
-    BOM.ForceUpdate = true
+    BOM.SetForceUpdate("ModifierKeyDown")
   end
 
   --
@@ -1013,8 +1068,10 @@ function BOM.UpdateTimer()
     bom_last_update_timestamp = GetTime()
     bom_fps_check = debugprofilestop()
 
-    BOM.UpdateScan()
+    BOM.UpdateScan("Timer")
 
+    -- If updatescan call above took longer than 6 ms, and repeated update, then
+    -- bump the slow alarm counter, once it reaches 6 we consider throttling
     if (debugprofilestop() - bom_fps_check) > 6 and BOM.RepeatUpdate then
       bom_slow_count = bom_slow_count + 1
 
@@ -1035,7 +1092,8 @@ end
 
 BOM.PlayerBuffs = {}
 
----UnitAura
+---Handles UnitAura WOW API call.
+---For spells that are tracked by Buffomat the data is also stored in BOM.PlayerBuffs
 ---@param unitId string
 ---@param buffIndex number Index of buff/debuff slot starts 1 max 40?
 ---@param filter string Filter string like "HELPFUL", "PLAYER", "RAID"... etc
@@ -1057,8 +1115,10 @@ function BOM.UnitAura(unitId, buffIndex, filter)
 
       if duration > 0 and (expirationTime == nil or expirationTime == 0) then
         local destName = (UnitFullName(unitId))
+
         if BOM.PlayerBuffs[destName] and BOM.PlayerBuffs[destName][name] then
           expirationTime = BOM.PlayerBuffs[destName][name] + duration
+
           if expirationTime <= GetTime() then
             BOM.PlayerBuffs[destName][name] = GetTime()
             expirationTime = GetTime() + duration
@@ -1091,7 +1151,7 @@ local function Event_COMBAT_LOG_EVENT_UNFILTERED()
       --BOM.PlayerBuffs[destName]=nil -- problem with hunters and fake-deaths!
       --additional check in bom_get_party_members
       --print("dead",destName)
-      BOM.ForceUpdate = true
+      BOM.SetForceUpdate("Evt UNIT_DIED")
 
     elseif BOM.SharedState.Duration[spellName] then
       if bit.band(sourceFlags, COMBATLOG_OBJECT_AFFILIATION_MINE) > 0 then
@@ -1126,7 +1186,11 @@ end
 ---OnLoad is called when XML frame for the main window is loaded into existence
 ---BOM.Init() will also be called when the addon is loaded (earlier than this)
 function BOM.OnLoad()
-  BOM.RegisterEvent("PLAYER_LEVEL_UP", Event_PLAYER_LEVEL_UP)
+  --BOM.RegisterEvent("PLAYER_LEVEL_UP", Event_PLAYER_LEVEL_UP)
+
+  -- Events which might change active state of Buffomat
+  BOM.RegisterEvent("ZONE_CHANGED", Event_RequestForceUpdate)
+  BOM.RegisterEvent("PLAYER_UPDATE_RESTING", Event_RequestForceUpdate)
 
   BOM.RegisterEvent("TAXIMAP_OPENED", Event_TAXIMAP_OPENED)
   BOM.RegisterEvent("ADDON_LOADED", Event_ADDON_LOADED)
@@ -1181,8 +1245,8 @@ function BOM.HideWindow()
     if BOM.WindowVisible() then
       BomC_MainWindow:Hide()
       autoHelper = "KeepClose"
-      BOM.ForceUpdate = true
-      BOM.UpdateScan()
+      BOM.SetForceUpdate("HideWindow")
+      BOM.UpdateScan("HideWindow")
     end
   end
 end
@@ -1197,7 +1261,7 @@ function BOM.ShowWindow(tab)
     end
     BOM.Tool.SelectTab(BomC_MainWindow, tab or 1)
   else
-    BOM.Print(L.MsgShowWindowInCombat)
+    BOM.Print(L.ActionInCombatError)
   end
 end
 
@@ -1209,8 +1273,8 @@ function BOM.ToggleWindow()
   if BomC_MainWindow:IsVisible() then
     BOM.HideWindow()
   else
-    BOM.ForceUpdate = true
-    BOM.UpdateScan()
+    BOM.SetForceUpdate("ToggleWindow")
+    BOM.UpdateScan("ToggleWindow")
     BOM.ShowWindow()
   end
 end
@@ -1343,53 +1407,6 @@ function BOM.ShowSpellSettings()
   BOM.ShowWindow(2)
 end
 
-function BOM.DoBlessingOnClick(self)
-  local saved = self._privat_DB[self._privat_Var]
-
-  for i, spell in ipairs(BOM.SelectedSpells) do
-    if spell.isBlessing then
-      BOM.CurrentProfile.Spell[spell.ConfigID].Class[self._privat_Var] = false
-    end
-  end
-  self._privat_DB[self._privat_Var] = saved
-
-  BOM.MyButtonUpdateAll()
-  BOM.OptionsUpdate()
-end
-
 function BOM.MyButtonOnClick(self)
   BOM.OptionsUpdate()
 end
-
--- Convert a lua table into a lua syntactically correct string
---local function table_to_string(tbl)
---  if type(tbl) ~= "table" then
---    return tostring(tbl)
---  end
---
---  local result = "{"
---  for k, v in pairs(tbl) do
---    -- Check the key type (ignore any numerical keys - assume its an array)
---    if type(k) == "string" then
---      result = result .. "[\"" .. k .. "\"]" .. "="
---    end
---
---    -- Check the value type
---    if type(v) == "table" then
---      result = result .. table_to_string(v)
---      --elseif type(v) == "boolean" then
---      --  result = result..tostring(v)
---      --else
---      --  result = result.."\""..v.."\""
---    else
---      result = result .. tostring(v)
---    end
---    result = result .. ", "
---  end
---  -- Remove leading commas from the result
---  if result ~= "" then
---    result = result:sub(1, result:len() - 1)
---  end
---  return result .. "}"
---end
---BOM.DbgTableToString = table_to_string
