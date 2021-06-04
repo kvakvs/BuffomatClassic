@@ -1,10 +1,11 @@
 # Changelog
 
-## Buffomat Classic and TBC 2021.6.1
+## Buffomat Classic and TBC 2021.6.1-2
 
 - Fix for script error when combat is restarted due to Mind Control ending
 - Fix for open containers feature; New message why contaners won't open because
   player must hold a modifier key - disable in the options.
+- Added Soul Link for Demonology Warlocks
 
 ## Buffomat Classic and TBC 2021.5.12-DEBUG
 

@@ -336,8 +336,9 @@ local function bom_setup_warlock_spells(spells, enchants)
           { playerClass = "WARLOCK", maxLevel = 20 })
 
   BOM.Class.SpellDef:scan_spell(spells, 18788, -- Demonic Sacrifice
-          { isOwn = true, default = true },
-          { playerClass = "WARLOCK" })
+          { isOwn = true, default = true }, { playerClass = "WARLOCK" })
+  BOM.Class.SpellDef:scan_spell(spells, 25228, -- TBC: Soul Link, talent spell 19028
+          { isOwn = true, default = true }, { playerClass = "WARLOCK" })
   BOM.Class.SpellDef:scan_spell(spells, 17953, -- Firestone
           { isOwn          = true, default = false,
             lockIfHaveItem = { 1254, 13699, 13700, 13701,
