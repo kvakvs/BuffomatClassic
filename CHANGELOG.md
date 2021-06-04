@@ -1,5 +1,11 @@
 # Changelog
 
+## Buffomat Classic and TBC 2021.6.1
+
+- Fix for script error when combat is restarted due to Mind Control ending
+- Fix for open containers feature; New message why contaners won't open because
+  player must hold a modifier key - disable in the options.
+
 ## Buffomat Classic and TBC 2021.5.12-DEBUG
 
 - Fel Armor rank 1 and 2 added for warlocks

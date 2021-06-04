@@ -759,6 +759,9 @@ end
 
 --- Does same as call to BOM.UpdateMacro with command and when member/spellid are nil
 local function bomClearMacro()
+  if InCombatLockdown() then
+    return
+  end
   bomRecreateMacro()
   local macroText = "#showtooltip\n/bom update\n"
   icon = BOM.MACRO_ICON_DISABLED
@@ -1782,6 +1785,9 @@ local function bomCheckMissingWeaponEnchantments(player_member)
 end
 
 ---@param player_member Member
+---@param cast_button_title string
+---@param macro_command string
+---@return string, string {cast_button_title, macro_command}
 local function bomCheckItemsAndContainers(player_member, cast_button_title, macro_command)
   --itemcheck
   local item_list = BOM.GetItemList() ---@type table<number, GetContainerItemInfoResult>
@@ -1811,9 +1817,15 @@ local function bomCheckItemsAndContainers(player_member, cast_button_title, macr
     end
 
     if ok then
+      local extra_msg = "" -- tell user they need to hold Alt or something
+      if BOM.SharedState.DontUseConsumables and not IsModifierKeyDown() then
+        extra_msg = L.MsgHoldModifierKey
+      end
+
       cast_button_title = BOM.FormatTexture(item.Texture)
               .. item.Link
               .. (target and (" @" .. target) or "")
+              .. " (" .. L.MsgOpenContainer .. ") " .. extra_msg
       macro_command = (target and ("/target " .. target .. "/n") or "")
               .. "/use " .. item.Bag .. " " .. item.Slot
       -- Text: [Icon] [Item Link] @Target
@@ -1826,6 +1838,8 @@ local function bomCheckItemsAndContainers(player_member, cast_button_title, macr
       BOM.ScanModifier = BOM.SharedState.DontUseConsumables
     end
   end
+
+  return cast_button_title, macro_command
 end
 
 ---@param player_member Member
@@ -1957,11 +1971,12 @@ local function bomUpdateScan_Scan()
   bomCheckReputationItems(player_member)
   bomCheckMissingWeaponEnchantments(player_member) -- if option to warn is enabled
 
-    cast_button_title, macro_command = bomCheckItemsAndContainers(
+  cast_button_title, macro_command = bomCheckItemsAndContainers(
           player_member, cast_button_title, macro_command)
 
   -- Open Buffomat if any cast tasks were added to the task list
-  if #bom_cast_messages > 0 then -- or #bom_info_messages > 0
+  if #bom_cast_messages > 0 then
+    -- or #bom_info_messages > 0
     BOM.AutoOpen()
   else
     BOM.AutoClose()

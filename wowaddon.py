@@ -10,7 +10,7 @@ import subprocess
 import sys
 import zipfile
 
-VERSION = '2021.5.12-DEBUG'  # year.month.build_num
+VERSION = '2021.6.1'  # year.month.build_num
 
 UI_VERSION_CLASSIC = '11307'  # patch 1.13.7
 BOM_NAME_CLASSIC = 'BuffomatClassic'  # Directory and zip name
