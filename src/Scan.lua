@@ -1576,9 +1576,11 @@ local function bomAddConsumableSelfbuff(spell, player_member, bag_title, bag_com
     BOM.ScanModifier = BOM.SharedState.DontUseConsumables
   else
     -- Text: [Icon] "ConsumableName" x Count
-    bomTasklistAddText(spell.single .. "x" .. count,
-            player_member.distance,
-            true)
+    if spell.single then -- safety, can crash on load
+      bomTasklistAddText(spell.single .. "x" .. count,
+              player_member.distance,
+              true)
+    end
   end
 
   return bag_title, bag_command
@@ -1975,11 +1977,10 @@ local function bomUpdateScan_Scan()
           player_member, cast_button_title, macro_command)
 
   -- Open Buffomat if any cast tasks were added to the task list
-  if #bom_cast_messages > 0 then
-    -- or #bom_info_messages > 0
-    BOM.AutoOpen()
-  else
-    BOM.AutoClose()
+  if #bom_cast_messages > 0
+     or #bom_info_messages > 0
+  then BOM.AutoOpen()
+  else BOM.AutoClose()
   end
 
   bomTasklistDisplay() -- Show all tasks and comments

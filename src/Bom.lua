@@ -734,12 +734,9 @@ function BOM.Init()
   _G["BINDING_NAME_MACRO Buffomat Classic"] = L["ButtonCastBuff"]
   _G["BINDING_NAME_BUFFOMAT_WINDOW"] = L["ButtonBuffomatWindow"]
 
-  ----Create small toggle button to the right of [Cast <spell>] button
-  --BOM.CreateSingleBuffButton(BomC_ListTab) --maybe not created yet?
-
-  print("|cFFFF1C1C Loaded: " .. GetAddOnMetadata(TOCNAME, "Title") .. " "
-          .. GetAddOnMetadata(TOCNAME, "Version")
-          .. " by " .. GetAddOnMetadata(TOCNAME, "Author"))
+  --print("|cFFFF1C1C Loaded: " .. GetAddOnMetadata(TOCNAME, "Title") .. " "
+  --        .. GetAddOnMetadata(TOCNAME, "Version")
+  --        .. " by " .. GetAddOnMetadata(TOCNAME, "Author"))
 end
 
 local function Event_ADDON_LOADED(arg1)
