@@ -893,34 +893,36 @@ local function bomGetClassInRange(spell_name, party, class, spell)
   return ret
 end
 
----@type table<number, table> - pairs of [1]=text, [2]=distance - list of all strings to be displayed
+---@type table<number, Task> - pairs of [1]=text, [2]=distance - list of all strings to be displayed
 local bom_messages_cache = {}
 
----@type table<string> - list of text strings to be displayed (spell and target)
+---@type table<number, Task> - list of text strings to be displayed (spell and target)
 local bom_cast_messages = {}
 
----@type table<string> - list of info strings to be displayed (yellow)
+---@type table<number, Task> - list of info strings to be displayed (yellow)
 local bom_info_messages = {}
 
 ---@type number - index to insert another line
 local bom_insert_index
 
 ---Adds a text line to display in the message frame. The line is stored in DisplayCache
----@param text string Text to display
----@param distance number Distance
+---@param action_text string|nil Text to display (target of the action)
+---@param extra_text string Text to display (extra comment)
+---@param target Member Distance to the party member, or group (if string)
 ---@param is_info boolean Whether the text is info text or a cast
-local function bomTasklistAddText(text, distance, is_info)
+---@param prio number|nil Priority, a constant from BOM.TaskPriority
+local function bomTasklistAddText(action_text, extra_text, target, is_info, prio)
+  local new_task = BOM.Class.Task:new(action_text, extra_text, target, prio)
+
   bom_insert_index = bom_insert_index + 1
-  bom_messages_cache[bom_insert_index] = bom_messages_cache[bom_insert_index] or {}
-  bom_messages_cache[bom_insert_index][1] = text
-  bom_messages_cache[bom_insert_index][2] = distance
+  bom_messages_cache[bom_insert_index] = new_task
 
   if is_info then
     -- this will be displayed nicely without an action to take
-    tinsert(bom_info_messages, bom_messages_cache[bom_insert_index])
+    tinsert(bom_info_messages, new_task)
   else
     -- this will be casted
-    tinsert(bom_cast_messages, bom_messages_cache[bom_insert_index])
+    tinsert(bom_cast_messages, new_task)
   end
 end
 
@@ -935,20 +937,38 @@ end
 ---Unload the contents of DisplayInfo cache into BomC_ListTab_MessageFrame
 ---The messages (tasks) are sorted
 local function bomTasklistDisplay()
-  table.sort(bom_cast_messages, function(a, b)
-    return a[2] > b[2] or (a[2] == b[2] and a[1] > b[1])
-  end)
+  --table.sort(bom_cast_messages, function(a, b)
+  --  return a[2] > b[2] or (a[2] == b[2] and a[1] > b[1])
+  --end)
+  table.sort(bom_cast_messages,
+          function(a, b)
+            if not a or not b then
+              return false -- can b be nil?
+            end
+            return a.distance > b.distance or
+                    a.priority > b.priority
+                    or a.action_text > b.action_text
+          end)
 
+  --table.sort(bom_info_messages, function(a, b)
+  --  return a[1] > b[1]
+  --end)
   table.sort(bom_info_messages, function(a, b)
-    return a[1] > b[1]
+    -- Sort by by priority then by action text
+    return a.priority > b.priority
+            or a.action_text > b.action_text
   end)
 
-  for i, txt in ipairs(bom_info_messages) do
-    BomC_ListTab_MessageFrame:AddMessage(txt[1])
+  for i, task in ipairs(bom_info_messages) do
+    BomC_ListTab_MessageFrame:AddMessage(task:FormatInfoText())
   end
 
-  for i, txt in ipairs(bom_cast_messages) do
-    BomC_ListTab_MessageFrame:AddMessage(txt[1])
+  for i, task in ipairs(bom_cast_messages) do
+    if task.distance < 43 then
+      BomC_ListTab_MessageFrame:AddMessage(task:FormatText())
+    else
+      BomC_ListTab_MessageFrame:AddMessage(task:FormatText() .. " RANGE")
+    end
   end
 end
 
@@ -975,7 +995,10 @@ local function bomPreventPvpTagging(link, member)
             and UnitIsPVP(member.name) then
       local t = link .. " - " .. L.PreventPVPTagBlocked
       -- Text: [Spell Name] Player is PvP
-      bomTasklistAddText(t, member.distance, true)
+      bomTasklistAddText(t,
+              "Prevent PvP",
+              member,
+              true)
       return true
     end
   end
@@ -1270,6 +1293,38 @@ local function bomWhisperExpired(spell)
   end
 end
 
+---@param spell SpellDef
+---@param groupIndex number
+---@param classColorize boolean
+---@return string
+local function bomFormatGroupBuffText(groupIndex, spell, classColorize)
+  if classColorize then
+    return string.format(L["FORMAT_BUFF_GROUP"],
+            "|c" .. RAID_CLASS_COLORS[groupIndex].colorStr .. BOM.Tool.ClassName[groupIndex] .. "|r",
+            spell.groupLink or spell.group or "?")
+  end
+
+  return string.format(L["FORMAT_BUFF_GROUP"],
+          BOM.Tool.ClassName[groupIndex] or "?",
+          spell.groupLink or spell.group or "?")
+end
+
+---@param prefix string Icon or some sort of string to prepend
+---@param member Member
+---@param spell SpellDef
+---@return string
+local function bomFormatSingleBuffText(prefix, member, spell)
+  return string.format(L["FORMAT_BUFF_SINGLE"],
+          (prefix or "") .. member.link,
+          (spell.singleLink or spell.single))
+end
+
+---@return string
+local function bomFormatItemBuffText(bag, slot, count)
+  local texture, _, _, _, _, _, item_link, _, _, _ = GetContainerItemInfo(bag, slot)
+  return BOM.FormatTexture(texture) .. item_link .. "x" .. count
+end
+
 ---Add a paladin blessing
 ---@param spell SpellDef - spell to cast
 ---@param player_member table - player
@@ -1306,20 +1361,21 @@ local function bomAddBlessing(spell, player_member, in_range)
           -- Group buff
           -- Text: Group 5 [Spell Name] x Reagents
           bomTasklistAddText(
-                  string.format(L["FORMAT_BUFF_GROUP"],
-                          "|c" .. RAID_CLASS_COLORS[groupIndex].colorStr .. BOM.Tool.ClassName[groupIndex] .. "|r",
-                          (spell.groupLink or spell.group))
-                          .. count,
-                  "!" .. groupIndex)
+                  bomFormatGroupBuffText(groupIndex, spell, true) .. count,
+                  "Bless group",
+                  BOM.Class.Group:new(groupIndex),
+                  false)
           in_range = true
 
           bomQueueSpell(spell.groupMana, spell.groupId, spell.groupLink, class_in_range, spell)
         else
           -- Group buff (just text)
           -- Text: Group 5 [Spell Name] x Reagents
-          bomTasklistAddText(string.format(L["FORMAT_BUFF_GROUP"],
-                  BOM.Tool.ClassName[groupIndex], spell.group .. count),
-                  "!" .. groupIndex)
+          bomTasklistAddText(
+                  bomFormatGroupBuffText(groupIndex, spell, false) .. count,
+                  "Bless group",
+                  BOM.Class.Group:new(groupIndex),
+                  true)
         end
       end -- if needgroup >= minblessing
     end -- for all classes
@@ -1352,17 +1408,22 @@ local function bomAddBlessing(spell, player_member, in_range)
       elseif test_in_range then
         -- Single buff on group member
         -- Text: Target [Spell Name]
-        bomTasklistAddText(string.format(L["FORMAT_BUFF_SINGLE"], add .. member.link, spell.singleLink),
-                member.name)
-
+        bomTasklistAddText(
+                bomFormatSingleBuffText(add, member, spell),
+                "Bless",
+                member,
+                false)
         in_range = true
 
         bomQueueSpell(spell.singleMana, spell.singleId, spell.singleLink, member, spell)
       else
         -- Single buff on group member (inactive just text)
         -- Text: Target "SpellName"
-        bomTasklistAddText(string.format(L["FORMAT_BUFF_SINGLE"], add .. member.name, spell.single),
-                member.name)
+        bomTasklistAddText(
+                bomFormatSingleBuffText(add, member, spell),
+                "Bless",
+                member,
+                true)
       end -- if in range
     end -- if not dead
   end -- for all NeedMember
@@ -1403,16 +1464,21 @@ local function bomAddBuff(spell, party, player_member, in_range)
                 and (not spell.DeathGroup[group_index] or not BOM.SharedState.DeathBlock)
         then
           -- Text: Group 5 [Spell Name]
-          bomTasklistAddText(string.format(L["FORMAT_BUFF_GROUP"], group_index,
-                  (spell.groupLink or spell.group) .. count),
-                  "!" .. group_index)
+          bomTasklistAddText(
+                  bomFormatGroupBuffText(group_index, spell, false) .. count,
+                  "Buff group",
+                  BOM.Class.Group:new(group_index),
+                  false)
           in_range = true
 
           bomQueueSpell(spell.groupMana, spell.groupId, spell.groupLink, Group, spell)
         else
           -- Text: Group 5 [Spell Name]
-          bomTasklistAddText(string.format(L["FORMAT_BUFF_GROUP"], group_index, spell.group .. count),
-                  "!" .. group_index)
+          bomTasklistAddText(
+                  bomFormatGroupBuffText(group_index, spell, false) .. count,
+                  "Buff group",
+                  BOM.Class.Group:new(group_index),
+                  false)
         end -- if group not nil
       end
     end -- for all 8 groups
@@ -1446,15 +1512,19 @@ local function bomAddBuff(spell, party, player_member, in_range)
         -- Nothing, prevent poison function has already added the text
       elseif is_in_range then
         -- Text: Target [Spell Name]
-        bomTasklistAddText(string.format(L["FORMAT_BUFF_SINGLE"], add .. member.link, spell.singleLink),
-                member.name)
+        bomTasklistAddText(
+                bomFormatSingleBuffText(add, member, spell),
+                "Buff",
+                member,
+                false)
         in_range = true
         bomQueueSpell(spell.singleMana, spell.singleId, spell.singleLink, member, spell)
       else
         -- Text: Target "SpellName"
-        bomTasklistAddText(string.format(L["FORMAT_BUFF_SINGLE"],
-                add .. member.name, spell.single),
-                member.name)
+        bomTasklistAddText(bomFormatSingleBuffText(add, member, spell),
+                "Buff",
+                member,
+                false)
       end
     end
   end -- for all spell.needmember
@@ -1503,12 +1573,20 @@ local function bomAddResurrection(spell, player_member, in_range)
       if is_in_range then
         in_range = true
         -- Text: Target [Spell Name]
-        bomTasklistAddText(string.format(L["FORMAT_BUFF_SINGLE"], member.link, spell.singleLink),
-                member.name)
+        bomTasklistAddText(
+                bomFormatSingleBuffText(add, member, spell),
+                "Resurrect",
+                member,
+                false,
+                BOM.TaskPriority.Resurrection)
       else
         -- Text: Target "SpellName"
-        bomTasklistAddText(string.format(L["FORMAT_BUFF_SINGLE"], member.name, spell.single),
-                member.name)
+        bomTasklistAddText(
+                bomFormatSingleBuffText(add, member, spell),
+                "Resurrect",
+                member,
+                false,
+                BOM.TaskPriority.Resurrection)
       end
 
       -- If in range, we can res?
@@ -1531,16 +1609,21 @@ local function bomAddSelfbuff(spell, player_member)
           and not tContains(spell.SkipList, player_member.name) then
     -- Text: Target [Spell Name]
     bomTasklistAddText(
-            string.format(L["FORMAT_BUFF_SINGLE"], player_member.link, spell.singleLink),
-            player_member.name)
+            bomFormatSingleBuffText("", player_member, spell),
+            "Self buff",
+            player_member,
+            false)
     --inRange = true
 
     bomQueueSpell(spell.singleMana, spell.singleId, spell.singleLink,
             player_member, spell)
   else
     -- Text: Target "SpellName"
-    bomTasklistAddText(string.format(L["FORMAT_BUFF_SINGLE"], player_member.name, spell.single),
-            player_member.name)
+    bomTasklistAddText(
+            bomFormatSingleBuffText("", player_member, spell),
+            "Self buff",
+            player_member,
+            false)
   end
 end
 
@@ -1555,31 +1638,35 @@ local function bomAddConsumableSelfbuff(spell, player_member, bag_title, bag_com
   count = count or 0
 
   if ok then
-    local texture, _, _, _, _, _, item_link, _, _, _ = GetContainerItemInfo(bag, slot)
-
     if BOM.SharedState.DontUseConsumables
             and not IsModifierKeyDown() then
       -- Text: [Icon] [Consumable Name] x Count
       bomTasklistAddText(
-              BOM.FormatTexture(texture)
-                      .. item_link .. "x" .. count,
-              player_member.distance,
+              bomFormatItemBuffText(bag, slot, count),
+              "Hold Shift, Alt or Ctrl",
+              player_member,
               true)
     else
-      bag_title = BOM.FormatTexture(texture) .. item_link .. "x" .. count
       bag_command = "/use " .. bag .. " " .. slot
 
       -- Text: [Icon] [Consumable Name] x Count
-      bomTasklistAddText(bag_title, player_member.distance, true)
+      bomTasklistAddText(
+              bomFormatItemBuffText(bag, slot, count),
+              "Consumable",
+              player_member,
+              false)
     end
 
     BOM.ScanModifier = BOM.SharedState.DontUseConsumables
   else
-    -- Text: [Icon] "ConsumableName" x Count
-    if spell.single then -- safety, can crash on load
-      bomTasklistAddText(spell.single .. "x" .. count,
-              player_member.distance,
-              true)
+    -- Text: "ConsumableName" x Count
+    if spell.single then
+      -- safety, can crash on load
+      bomTasklistAddText(
+              spell.single .. "x" .. count,
+              player_member,
+              true,
+              false)
     end
   end
 
@@ -1606,41 +1693,53 @@ local function bomAddConsumableWeaponBuff(spell, player_member,
     if profile_spell.OffHandEnable
             and player_member.OffHandBuff == nil then
       local function offhand_message()
-        return BOM.FormatTexture(texture)
-                .. item_link .. "x" .. count
-                .. " (" .. L.TooltipOffHand .. ")"
+        return BOM.FormatTexture(texture) .. item_link .. "x" .. count
       end
 
       if BOM.SharedState.DontUseConsumables
               and not IsModifierKeyDown() then
         -- Text: [Icon] [Consumable Name] x Count (Off-hand)
-        bomTasklistAddText(offhand_message(), player_member.distance, true)
+        bomTasklistAddText(
+                offhand_message(),
+                "(" .. L.TooltipOffHand .. ") ",
+                player_member,
+                true)
       else
         -- Text: [Icon] [Consumable Name] x Count (Off-hand)
         cast_button_title = offhand_message()
         macro_command = "/use " .. bag .. " " .. slot
                 .. "\n/use 17" -- offhand
-        bomTasklistAddText(cast_button_title, player_member.distance, true)
+        bomTasklistAddText(
+                cast_button_title,
+                "(" .. L.TooltipOffHand .. ") ",
+                player_member,
+                true)
       end
     end
 
     if profile_spell.MainHandEnable
             and player_member.MainHandBuff == nil then
       local function mainhand_message()
-        return BOM.FormatTexture(texture)
-                .. item_link .. "x" .. count
-                .. " (" .. L.TooltipMainHand .. ")"
+        return BOM.FormatTexture(texture) .. item_link .. "x" .. count
       end
 
       if BOM.SharedState.DontUseConsumables
               and not IsModifierKeyDown() then
         -- Text: [Icon] [Consumable Name] x Count (Main hand)
-        bomTasklistAddText(mainhand_message(), player_member.distance, true)
+        bomTasklistAddText(
+                mainhand_message(),
+                "(" .. L.TooltipMainHand .. ") ",
+                player_member,
+                true)
       else
         -- Text: [Icon] [Consumable Name] x Count (Main hand)
         cast_button_title = mainhand_message()
         macro_command = "/use " .. bag .. " " .. slot .. "\n/use 16" -- mainhand
-        bomTasklistAddText(cast_button_title, player_member.distance, true)
+        bomTasklistAddText(
+                cast_button_title,
+                "(" .. L.TooltipMainHand .. ") ",
+                player_member,
+                true)
       end
     end
     BOM.ScanModifier = BOM.SharedState.DontUseConsumables
@@ -1649,8 +1748,10 @@ local function bomAddConsumableWeaponBuff(spell, player_member,
     -- Text: [Icon] [Consumable Name] x Count
     if spell.single then
       -- spell.single can be nil on addon load
-      bomTasklistAddText(spell.single .. "x" .. count,
-              player_member.distance,
+      bomTasklistAddText(
+              spell.single .. "x" .. count,
+              "Missing consumable",
+              player_member,
               true)
     else
       BOM.SetForceUpdate("WeaponConsumableBuff display text") -- try rescan?
@@ -1692,8 +1793,11 @@ local function bomAddWeaponEnchant(spell, player_member,
   if profile_spell.MainHandEnable
           and player_member.MainHandBuff == nil then
     -- Text: [Spell Name] (Main hand)
-    bomTasklistAddText(spell.singleLink .. " (" .. L.TooltipMainHand .. ") ",
-            player_member.distance, true)
+    bomTasklistAddText(
+            spell.singleLink,
+            "(" .. L.TooltipOffHand .. ")",
+            player_member,
+            true)
     bomQueueSpell(spell.singleMana, spell.singleId, spell.singleLink,
             player_member, spell)
   end
@@ -1701,14 +1805,18 @@ local function bomAddWeaponEnchant(spell, player_member,
   if profile_spell.OffHandEnable
           and player_member.OffHandBuff == nil then
     if block_offhand_enchant then
-      local t = spell.singleLink .. " (" .. L.TooltipOffHand .. ") "
-              .. L.ShamanEnchantBlocked
       -- Text: [Spell Name] (Off-hand) Blocked waiting
-      bomTasklistAddText(t, player_member.distance, true)
+      bomTasklistAddText(spell.singleLink,
+              "(" .. L.TooltipOffHand .. ") " .. L.ShamanEnchantBlocked,
+              player_member,
+              true)
     else
       -- Text: [Spell Name] (Off-hand)
-      bomTasklistAddText(spell.singleLink .. " (" .. L.TooltipOffHand .. ") ",
-              player_member.distance, true)
+      bomTasklistAddText(
+              spell.singleLink,
+              "(" .. L.TooltipOffHand .. ")",
+              player_member,
+              true)
       bomQueueSpell(spell.singleMana, spell.singleId, spell.singleLink,
               player_member, spell)
     end
@@ -1748,14 +1856,22 @@ local function bomCheckReputationItems(player_member)
     -- settings to remind to remove AD trinket != instance compatible with AD Commission
     if player_member.hasArgentumDawn ~= tContains(BOM.ArgentumDawn.zoneId, instanceID) then
       -- Text: [Argent Dawn Commission]
-      bomTasklistAddText(BOM.ArgentumDawn.Link, player_member.distance, true)
+      bomTasklistAddText(
+              BOM.ArgentumDawn.Link,
+              "Reminder",
+              player_member,
+              true)
     end
   end
 
   if BOM.SharedState.Carrot then
     if player_member.hasCarrot and not tContains(BOM.Carrot.zoneId, instanceID) then
       -- Text: [Carrot on a Stick]
-      bomTasklistAddText(BOM.Carrot.Link, player_member.distance, true)
+      bomTasklistAddText(
+              BOM.Carrot.Link,
+              "Reminder",
+              player_member,
+              true)
     end
   end
 end
@@ -1773,7 +1889,11 @@ local function bomCheckMissingWeaponEnchantments(player_member)
 
     if link then
       -- Text: [Consumable Enchant Link]
-      bomTasklistAddText(link, player_member.distance, true)
+      bomTasklistAddText(
+              link,
+              "Missing main hand temporary enchant",
+              player_member,
+              true)
     end
   end
 
@@ -1781,7 +1901,11 @@ local function bomCheckMissingWeaponEnchantments(player_member)
     local link = GetInventoryItemLink("player", GetInventorySlotInfo("SECONDARYHANDSLOT"))
 
     if link then
-      bomTasklistAddText(link, player_member.distance, true)
+      bomTasklistAddText(
+              link,
+              "Missing off-hand temporary enchant",
+              player_member,
+              true)
     end
   end
 end
@@ -1824,14 +1948,17 @@ local function bomCheckItemsAndContainers(player_member, cast_button_title, macr
         extra_msg = L.MsgHoldModifierKey
       end
 
+      macro_command = (target and ("/target " .. target .. "/n") or "")
+              .. "/use " .. item.Bag .. " " .. item.Slot
       cast_button_title = BOM.FormatTexture(item.Texture)
               .. item.Link
               .. (target and (" @" .. target) or "")
-              .. " (" .. L.MsgOpenContainer .. ") " .. extra_msg
-      macro_command = (target and ("/target " .. target .. "/n") or "")
-              .. "/use " .. item.Bag .. " " .. item.Slot
       -- Text: [Icon] [Item Link] @Target
-      bomTasklistAddText(cast_button_title, player_member.distance, true)
+      bomTasklistAddText(
+              cast_button_title,
+              "(" .. L.MsgOpenContainer .. ") " .. extra_msg,
+              player_member,
+              true)
 
       if BOM.SharedState.DontUseConsumables and not IsModifierKeyDown() then
         macro_command = nil
@@ -1898,8 +2025,9 @@ local function bomScanSelectedSpells(player_member, party, in_range, cast_button
           for memberIndex, member in ipairs(spell.NeedMember) do
             -- Text: [Player Link] [Spell Link]
             bomTasklistAddText(
-                    string.format(L["FORMAT_BUFF_SINGLE"], member.link, spell.singleLink),
-                    member.distance,
+                    bomFormatSingleBuffText("", member, spell),
+                    "Info",
+                    member,
                     true)
           end
         end
@@ -1912,8 +2040,10 @@ local function bomScanSelectedSpells(player_member, party, in_range, cast_button
           else
             -- Text: "Player" "Spell Name"
             bomTasklistAddText(
-                    string.format(L["FORMAT_BUFF_SINGLE"], player_member.name, spell.single),
-                    player_member.name)
+                    bomFormatSingleBuffText("", member, spell),
+                    "Tracking",
+                    player_member,
+                    false)
           end
         end
 
@@ -1978,9 +2108,11 @@ local function bomUpdateScan_Scan()
 
   -- Open Buffomat if any cast tasks were added to the task list
   if #bom_cast_messages > 0
-     or #bom_info_messages > 0
-  then BOM.AutoOpen()
-  else BOM.AutoClose()
+          or #bom_info_messages > 0
+  then
+    BOM.AutoOpen()
+  else
+    BOM.AutoClose()
   end
 
   bomTasklistDisplay() -- Show all tasks and comments

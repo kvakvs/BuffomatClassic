@@ -1,5 +1,10 @@
 # Changelog
 
+## Buffomat Classic and TBC 2021.6.3
+
+- Reverted change: Hiding window if no cast messages were added by the scan
+- Removed addon start message
+
 ## Buffomat Classic and TBC 2021.6.1-2
 
 - Fix for script error when combat is restarted due to Mind Control ending

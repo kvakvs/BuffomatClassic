@@ -26,12 +26,12 @@ BOM.Class = BOM.Class or {}
 BOM.Class.Member = {}
 BOM.Class.Member.__index = BOM.Class.Member
 
-local CLASS_TAG = "member"
+local M_CLASS_TAG = "member"
 
 function BOM.Class.Member:new(fields)
   fields = fields or {}
   setmetatable(fields, BOM.Class.Member)
-  fields.t = CLASS_TAG
+  fields.t = M_CLASS_TAG
   return fields
 end
 
@@ -116,4 +116,8 @@ function BOM.Class.Member:Construct(unitid, name, group, class, link, isTank)
   self.link = link
   self.isTank = isTank
   self.buffs = self.buffs or {}
+end
+
+function BOM.Class.Member.GetDistance(self)
+  return self.distance
 end

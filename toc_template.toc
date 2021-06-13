@@ -25,6 +25,8 @@ src/classes/RowBuilder.lua
 src/classes/SpellDef.lua
 src/classes/State.lua
 src/classes/CharacterState.lua
+src/classes/Task.lua
+src/classes/Group.lua
 
 src/cache/GetItemCache.lua
 src/cache/GetSpellCache.lua
@@ -40,7 +42,7 @@ src/ui/MyButton.lua
 src/Toolbox.lua
 src/Languages.lua
 src/Toolbox.lua
-src/Scan.lua
+src/TaskList.lua
 src/Bom.lua
 
 src/ui/Bom.xml
