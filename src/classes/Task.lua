@@ -32,7 +32,7 @@ function BOM.Class.Task:new(action_text, extra_text, target, priority)
     t           = CLASS_TAG,
     action_text = action_text or "",
     extra_text  = extra_text or "",
-    member      = target,
+    target      = target,
     distance    = distance, -- scan member distance or nearest party member
     priority    = priority or BOM.TaskPriority.Default
   }

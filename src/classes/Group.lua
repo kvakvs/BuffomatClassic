@@ -37,7 +37,7 @@ function BOM.Class.Group.GetDistance(self)
     -- Search for nearest of 4 party members, who is not myself
     for groupIndex = 1, 4 do
       local member = BOM.GetMember("party" .. groupIndex)
-      if member and member.distance < nearest_dist then
+      if member and not member.isDead and member.distance < nearest_dist then
         nearest_dist = member.distance
         nearest = member
       end

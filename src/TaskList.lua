@@ -893,8 +893,8 @@ local function bomGetClassInRange(spell_name, party, class, spell)
   return ret
 end
 
----@type table<number, Task> - pairs of [1]=text, [2]=distance - list of all strings to be displayed
-local bom_messages_cache = {}
+-- -@type table<number, Task> - pairs of [1]=text, [2]=distance - list of all strings to be displayed
+--local bom_messages_cache = {}
 
 ---@type table<number, Task> - list of text strings to be displayed (spell and target)
 local bom_cast_messages = {}
@@ -902,8 +902,8 @@ local bom_cast_messages = {}
 ---@type table<number, Task> - list of info strings to be displayed (yellow)
 local bom_info_messages = {}
 
----@type number - index to insert another line
-local bom_insert_index
+-- -@type number - index to insert another line
+--local bom_insert_index
 
 ---Adds a text line to display in the message frame. The line is stored in DisplayCache
 ---@param action_text string|nil Text to display (target of the action)
@@ -914,8 +914,8 @@ local bom_insert_index
 local function bomTasklistAddText(action_text, extra_text, target, is_info, prio)
   local new_task = BOM.Class.Task:new(action_text, extra_text, target, prio)
 
-  bom_insert_index = bom_insert_index + 1
-  bom_messages_cache[bom_insert_index] = new_task
+  -- bom_insert_index = bom_insert_index + 1
+  -- bom_messages_cache[bom_insert_index] = new_task
 
   if is_info then
     -- this will be displayed nicely without an action to take
@@ -929,9 +929,23 @@ end
 ---Clear the cached text, and clear the message frame
 local function bomTasklistClear()
   BomC_ListTab_MessageFrame:Clear()
-  bom_insert_index = 0
+  --bom_insert_index = 0
   wipe(bom_cast_messages)
   wipe(bom_info_messages)
+end
+
+---@param a Group|Member
+---@param b Group|Member
+local function bomCompareGroupsOrMembers(a, b)
+  --if not a then
+  --  return false -- can a be nil?
+  --end
+  --if not b then
+  --  return true -- can b be nil?
+  --end
+  return a.distance > b.distance or
+          a.priority > b.priority
+          or a.action_text > b.action_text
 end
 
 ---Unload the contents of DisplayInfo cache into BomC_ListTab_MessageFrame
@@ -940,15 +954,16 @@ local function bomTasklistDisplay()
   --table.sort(bom_cast_messages, function(a, b)
   --  return a[2] > b[2] or (a[2] == b[2] and a[1] > b[1])
   --end)
-  table.sort(bom_cast_messages,
-          function(a, b)
-            if not a or not b then
-              return false -- can b be nil?
-            end
-            return a.distance > b.distance or
-                    a.priority > b.priority
-                    or a.action_text > b.action_text
-          end)
+
+  -- update distances if the players have moved
+  for i, task in ipairs(bom_cast_messages) do
+    -- Refresh member if the member struct has changed
+    task.target = BOM.Cache.GetPartyMembers(task.target.name)
+    -- Refresh the copy of distance value
+    task.distance = task.target:GetDistance()
+  end
+
+  table.sort(bom_cast_messages, bomCompareGroupsOrMembers)
 
   --table.sort(bom_info_messages, function(a, b)
   --  return a[1] > b[1]
@@ -964,11 +979,7 @@ local function bomTasklistDisplay()
   end
 
   for i, task in ipairs(bom_cast_messages) do
-    if task.distance < 43 then
-      BomC_ListTab_MessageFrame:AddMessage(task:FormatText())
-    else
-      BomC_ListTab_MessageFrame:AddMessage(task:FormatText() .. " RANGE")
-    end
+    BomC_ListTab_MessageFrame:AddMessage(task:FormatText())
   end
 end
 
