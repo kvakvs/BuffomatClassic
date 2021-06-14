@@ -1321,6 +1321,7 @@ function BOM.ResetWindow()
   BomC_MainWindow:SetHeight(200)
   BOM.SaveWindowPosition()
   BOM.ShowWindow(1)
+  BOM.Print("Window position is reset.")
 end
 
 local function perform_who_request(name)

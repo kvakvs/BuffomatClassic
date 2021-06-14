@@ -937,12 +937,12 @@ end
 ---@param a Group|Member
 ---@param b Group|Member
 local function bomCompareGroupsOrMembers(a, b)
-  --if not a then
-  --  return false -- can a be nil?
-  --end
-  --if not b then
-  --  return true -- can b be nil?
-  --end
+  if not b then
+    return false -- can b be nil?
+  end
+  if not a then
+    return true -- can a be nil?
+  end
   return a.distance > b.distance or
           a.priority > b.priority
           or a.action_text > b.action_text
@@ -957,10 +957,18 @@ local function bomTasklistDisplay()
 
   -- update distances if the players have moved
   for i, task in ipairs(bom_cast_messages) do
-    -- Refresh member if the member struct has changed
-    task.target = BOM.Cache.GetPartyMembers(task.target.name)
+    -- Refresh Member target, if the cache contents have changed.
+    -- Do not refresh, if its a Group.
+    --if task.t == "member" then
+    --  task.target = BOM.Cache.GetMember(task.target.name, task.target.group)
+    --end
     -- Refresh the copy of distance value
-    task.distance = task.target:GetDistance()
+    --task.distance = task.target:GetDistance()
+
+    -- Refresh the copy of distance value
+    if task.t == "member" then
+      task.distance = BOM.Tool.UnitDistanceSquared(task.target)
+    end
   end
 
   table.sort(bom_cast_messages, bomCompareGroupsOrMembers)
@@ -979,7 +987,15 @@ local function bomTasklistDisplay()
   end
 
   for i, task in ipairs(bom_cast_messages) do
-    BomC_ListTab_MessageFrame:AddMessage(task:FormatText())
+    if task.distance > 43 then
+      BomC_ListTab_MessageFrame:AddMessage("RANGE " .. task:FormatInfoText())
+    end
+  end
+
+  for i, task in ipairs(bom_cast_messages) do
+    if task.distance <= 43 then
+      BomC_ListTab_MessageFrame:AddMessage(task:FormatText())
+    end
   end
 end
 

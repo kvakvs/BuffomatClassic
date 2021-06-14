@@ -179,7 +179,7 @@
   </Frame>
 
   <Frame name="BomC_MainWindow" parent="UIParent" hidden="true"
-         enableMouse="true" frameStrata="LOW" clampedToScreen="true"
+         enableMouse="true" frameStrata="MEDIUM" clampedToScreen="false"
          inherits="BomC_BackdropTemplate">
     <Size>
       <AbsDimension x="256" y="170"/>
