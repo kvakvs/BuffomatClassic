@@ -16,6 +16,7 @@ local function bomLanguage_English()
     FORMAT_BUFF_SINGLE            = "%s %s",
     FORMAT_BUFF_SELF              = "%s %s on self",
     FORMAT_BUFF_GROUP             = "Group %s %s",
+    FORMAT_GROUP_NUM              = "G%s",
     MsgNextCast                   = "%s @ %s",
     --MsgNoSpell="Out of Range or Mana",
     MsgBusy                       = "Busy / Casting",

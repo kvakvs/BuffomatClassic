@@ -597,6 +597,7 @@ function BOM.Init()
   BOM.SetupSpells()
   BOM.SetupCancelBuffs()
   BOM.SetupItemCache()
+  BOM.SetupTasklist()
 
   function SetDefault(db, var, init)
     if db[var] == nil then

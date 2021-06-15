@@ -3,7 +3,7 @@ local TOCNAME, BOM = ...
 BOM.Class = BOM.Class or {}
 
 ---@class Group
----@field groupNum number
+---@field groupIndex number
 
 ---@type Group
 BOM.Class.Group = {}
@@ -16,7 +16,7 @@ function BOM.Class.Group:new(groupNum)
   setmetatable(fields, BOM.Class.Group)
 
   fields.t = G_CLASS_TAG
-  fields.groupNum = groupNum
+  fields.groupIndex = groupNum
 
   return fields
 end
@@ -49,4 +49,8 @@ function BOM.Class.Group.GetDistance(self)
   else
     return 100000
   end
+end
+
+function BOM.Class.Group.GetText(self)
+  return string.format(BOM.L.FORMAT_GROUP_NUM, self.groupIndex)
 end

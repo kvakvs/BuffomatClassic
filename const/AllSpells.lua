@@ -18,11 +18,11 @@ local BOM_NO_CLASS = { }
 
 ---Classes which have a resurrection ability
 local BOM_RESURRECT_CLASSES = { "SHAMAN", "PRIEST", "PALADIN" }
-BOM.RESURRECT_CLASS = BOM_RESURRECT_CLASSES --used in TaskList.lua
+BOM.RESURRECT_CLASS = BOM_RESURRECT_CLASSES --used in TaskScan.lua
 
 ---Classes which have mana bar
 local BOM_MANA_CLASSES = { "HUNTER", "WARLOCK", "MAGE", "DRUID", "SHAMAN", "PRIEST", "PALADIN" }
-BOM.MANA_CLASSES = BOM_MANA_CLASSES --used in TaskList.lua
+BOM.MANA_CLASSES = BOM_MANA_CLASSES --used in TaskScan.lua
 
 BOM.CLASSIC_ERA = "Classic"
 BOM.TBC_ERA = "TBC"

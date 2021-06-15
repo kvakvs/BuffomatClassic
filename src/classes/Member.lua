@@ -121,3 +121,7 @@ end
 function BOM.Class.Member.GetDistance(self)
   return self.distance
 end
+
+function BOM.Class.Member.GetText(self)
+  return self.link or self.name
+end
