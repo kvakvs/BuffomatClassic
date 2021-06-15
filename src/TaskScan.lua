@@ -920,12 +920,8 @@ local function bomPreventPvpTagging(link, member)
     if instance_type == "none"
             and not UnitIsPVP("player")
             and UnitIsPVP(member.name) then
-      local t = link .. " - " .. L.PreventPVPTagBlocked
       -- Text: [Spell Name] Player is PvP
-      tasklist:Add(t,
-              "Prevent PvP",
-              member,
-              true)
+      tasklist:Add(link, L.PreventPVPTagBlocked, member, true)
       return true
     end
   end
@@ -1290,7 +1286,7 @@ local function bomAddBlessing(spell, player_member, in_range)
           tasklist:Add(
                   bomFormatGroupBuffText(groupIndex, spell, true) .. count,
                   "Bless group",
-                  BOM.Class.Group:new(groupIndex),
+                  BOM.Class.GroupBuffTarget:new(groupIndex),
                   false)
           in_range = true
 
@@ -1301,7 +1297,7 @@ local function bomAddBlessing(spell, player_member, in_range)
           tasklist:Add(
                   bomFormatGroupBuffText(groupIndex, spell, false) .. count,
                   "Bless group",
-                  BOM.Class.Group:new(groupIndex),
+                  BOM.Class.GroupBuffTarget:new(groupIndex),
                   true)
         end
       end -- if needgroup >= minblessing
@@ -1336,9 +1332,9 @@ local function bomAddBlessing(spell, player_member, in_range)
         -- Single buff on group member
         -- Text: Target [Spell Name]
         tasklist:Add(
-                bomFormatSingleBuffText(add, member, spell),
+                spell.singleLink or spell.single,
                 "Bless",
-                member,
+                BOM.Class.MemberBuffTarget:fromMember(member),
                 false)
         in_range = true
 
@@ -1347,9 +1343,9 @@ local function bomAddBlessing(spell, player_member, in_range)
         -- Single buff on group member (inactive just text)
         -- Text: Target "SpellName"
         tasklist:Add(
-                bomFormatSingleBuffText(add, member, spell),
+                spell.singleLink or spell.single,
                 "Bless",
-                member,
+                BOM.Class.MemberBuffTarget:fromMember(member),
                 true)
       end -- if in range
     end -- if not dead
@@ -1393,8 +1389,8 @@ local function bomAddBuff(spell, party, player_member, in_range)
           -- Text: Group 5 [Spell Name]
           tasklist:Add(
                   bomFormatGroupBuffText(group_index, spell, false) .. count,
-                  "Buff group",
-                  BOM.Class.Group:new(group_index),
+                  L.BUFF_CLASS_GROUPBUFF,
+                  BOM.Class.GroupBuffTarget:new(group_index),
                   false)
           in_range = true
 
@@ -1403,8 +1399,8 @@ local function bomAddBuff(spell, party, player_member, in_range)
           -- Text: Group 5 [Spell Name]
           tasklist:Add(
                   bomFormatGroupBuffText(group_index, spell, false) .. count,
-                  "Buff group",
-                  BOM.Class.Group:new(group_index),
+                  L.BUFF_CLASS_GROUPBUFF,
+                  BOM.Class.GroupBuffTarget:new(group_index),
                   false)
         end -- if group not nil
       end
@@ -1440,17 +1436,18 @@ local function bomAddBuff(spell, party, player_member, in_range)
       elseif is_in_range then
         -- Text: Target [Spell Name]
         tasklist:Add(
-                bomFormatSingleBuffText(add, member, spell),
-                "Buff",
-                member,
+                spell.singleLink or spell.single,
+                L.BUFF_CLASS_REGULAR,
+                BOM.Class.MemberBuffTarget:fromMember(member),
                 false)
         in_range = true
         bomQueueSpell(spell.singleMana, spell.singleId, spell.singleLink, member, spell)
       else
         -- Text: Target "SpellName"
-        tasklist:Add(bomFormatSingleBuffText(add, member, spell),
-                "Buff",
-                member,
+        tasklist:Add(
+                spell.singleLink or spell.single,
+                L.BUFF_CLASS_REGULAR,
+                BOM.Class.MemberBuffTarget:fromMember(member),
                 false)
       end
     end
@@ -1501,17 +1498,17 @@ local function bomAddResurrection(spell, player_member, in_range)
         in_range = true
         -- Text: Target [Spell Name]
         tasklist:Add(
-                bomFormatSingleBuffText(add, member, spell),
-                "Resurrect",
-                member,
+                spell.singleLink or spell.single,
+                L.TASK_CLASS_RESURRECT,
+                BOM.Class.MemberBuffTarget:fromMember(member),
                 false,
                 BOM.TaskPriority.Resurrection)
       else
         -- Text: Target "SpellName"
         tasklist:Add(
-                bomFormatSingleBuffText(add, member, spell),
-                "Resurrect",
-                member,
+                spell.singleLink or spell.single,
+                L.TASK_CLASS_RESURRECT,
+                BOM.Class.MemberBuffTarget:fromMember(member),
                 false,
                 BOM.TaskPriority.Resurrection)
       end
@@ -1530,37 +1527,37 @@ end
 
 ---Adds a display text for a self buff or tracking or seal/weapon self-enchant
 ---@param spell SpellDef - the spell to cast
----@param player_member table - the player
-local function bomAddSelfbuff(spell, player_member)
+---@param playerMember table - the player
+local function bomAddSelfbuff(spell, playerMember)
   if (not spell.requiresOutdoors or IsOutdoors())
-          and not tContains(spell.SkipList, player_member.name) then
+          and not tContains(spell.SkipList, playerMember.name) then
     -- Text: Target [Spell Name]
     tasklist:Add(
-            bomFormatSingleBuffText("", player_member, spell),
-            "Self buff",
-            player_member,
+            spell.singleLink or spell.single,
+            L.BUFF_CLASS_SELF_ONLY,
+            BOM.Class.MemberBuffTarget:fromSelf(playerMember),
             false)
     --inRange = true
 
     bomQueueSpell(spell.singleMana, spell.singleId, spell.singleLink,
-            player_member, spell)
+            playerMember, spell)
   else
     -- Text: Target "SpellName"
     tasklist:Add(
-            bomFormatSingleBuffText("", player_member, spell),
-            "Self buff",
-            player_member,
+            spell.singleLink or spell.single,
+            L.BUFF_CLASS_SELF_ONLY,
+            BOM.Class.MemberBuffTarget:fromSelf(playerMember),
             false)
   end
 end
 
 ---Adds a display text for a weapon buff
 ---@param spell SpellDef - the spell to cast
----@param player_member table - the player
+---@param playerMember table - the player
 ---@param bag_title string - if not empty, is item name from the bag
 ---@param bag_command string - console command to use item from the bag
 ---@return table (bag_title string, bag_command string)
-local function bomAddConsumableSelfbuff(spell, player_member, bag_title, bag_command)
+local function bomAddConsumableSelfbuff(spell, playerMember, bag_title, bag_command)
   local ok, bag, slot, count = bomHasItem(spell.items, true)
   count = count or 0
 
@@ -1570,8 +1567,8 @@ local function bomAddConsumableSelfbuff(spell, player_member, bag_title, bag_com
       -- Text: [Icon] [Consumable Name] x Count
       tasklist:Add(
               bomFormatItemBuffText(bag, slot, count),
-              "Hold Shift, Alt or Ctrl",
-              player_member,
+              L.BUFF_CONSUMABLE_REMINDER,
+              BOM.Class.MemberBuffTarget:fromSelf(playerMember),
               true)
     else
       bag_command = "/use " .. bag .. " " .. slot
@@ -1579,8 +1576,8 @@ local function bomAddConsumableSelfbuff(spell, player_member, bag_title, bag_com
       -- Text: [Icon] [Consumable Name] x Count
       tasklist:Add(
               bomFormatItemBuffText(bag, slot, count),
-              "Consumable",
-              player_member,
+              L.BUFF_CLASS_CONSUMABLE,
+              BOM.Class.MemberBuffTarget:fromSelf(playerMember),
               false)
     end
 
@@ -1591,9 +1588,9 @@ local function bomAddConsumableSelfbuff(spell, player_member, bag_title, bag_com
       -- safety, can crash on load
       tasklist:Add(
               spell.single .. "x" .. count,
-              player_member,
-              true,
-              false)
+              L.BUFF_CLASS_CONSUMABLE,
+              BOM.Class.MemberBuffTarget:fromSelf(playerMember),
+              true)
     end
   end
 
@@ -1602,11 +1599,11 @@ end
 
 ---Adds a display text for a weapon buff created by a consumable item
 ---@param spell SpellDef - the spell to cast
----@param player_member table - the player
+---@param playerMember table - the player
 ---@param cast_button_title string - if not empty, is item name from the bag
 ---@param macro_command string - console command to use item from the bag
 ---@return string, string cast button title and macro command
-local function bomAddConsumableWeaponBuff(spell, player_member,
+local function bomAddConsumableWeaponBuff(spell, playerMember,
                                           cast_button_title, macro_command)
   -- count - reagent count remaining for the spell
   local have_item, bag, slot, count = bomHasItem(spell.items, true)
@@ -1618,7 +1615,7 @@ local function bomAddConsumableWeaponBuff(spell, player_member,
     local profile_spell = BOM.GetProfileSpell(spell.ConfigID)
 
     if profile_spell.OffHandEnable
-            and player_member.OffHandBuff == nil then
+            and playerMember.OffHandBuff == nil then
       local function offhand_message()
         return BOM.FormatTexture(texture) .. item_link .. "x" .. count
       end
@@ -1629,7 +1626,7 @@ local function bomAddConsumableWeaponBuff(spell, player_member,
         tasklist:Add(
                 offhand_message(),
                 "(" .. L.TooltipOffHand .. ") ",
-                player_member,
+                BOM.Class.MemberBuffTarget:fromSelf(playerMember),
                 true)
       else
         -- Text: [Icon] [Consumable Name] x Count (Off-hand)
@@ -1639,13 +1636,13 @@ local function bomAddConsumableWeaponBuff(spell, player_member,
         tasklist:Add(
                 cast_button_title,
                 "(" .. L.TooltipOffHand .. ") ",
-                player_member,
+                BOM.Class.MemberBuffTarget:fromSelf(playerMember),
                 true)
       end
     end
 
     if profile_spell.MainHandEnable
-            and player_member.MainHandBuff == nil then
+            and playerMember.MainHandBuff == nil then
       local function mainhand_message()
         return BOM.FormatTexture(texture) .. item_link .. "x" .. count
       end
@@ -1656,7 +1653,7 @@ local function bomAddConsumableWeaponBuff(spell, player_member,
         tasklist:Add(
                 mainhand_message(),
                 "(" .. L.TooltipMainHand .. ") ",
-                player_member,
+                BOM.Class.MemberBuffTarget:fromSelf(playerMember),
                 true)
       else
         -- Text: [Icon] [Consumable Name] x Count (Main hand)
@@ -1665,7 +1662,7 @@ local function bomAddConsumableWeaponBuff(spell, player_member,
         tasklist:Add(
                 cast_button_title,
                 "(" .. L.TooltipMainHand .. ") ",
-                player_member,
+                BOM.Class.MemberBuffTarget:fromSelf(playerMember),
                 true)
       end
     end
@@ -1677,8 +1674,8 @@ local function bomAddConsumableWeaponBuff(spell, player_member,
       -- spell.single can be nil on addon load
       tasklist:Add(
               spell.single .. "x" .. count,
-              "Missing consumable",
-              player_member,
+              L.TASK_CLASS_MISSING_CONSUM,
+              BOM.Class.MemberBuffTarget:fromSelf(playerMember),
               true)
     else
       BOM.SetForceUpdate("WeaponConsumableBuff display text") -- try rescan?
@@ -1690,11 +1687,11 @@ end
 
 ---Adds a display text for a weapon buff created by a spell (shamans and paladins)
 ---@param spell SpellDef - the spell to cast
----@param player_member Member - the player
+---@param playerMember Member - the player
 ---@param cast_button_title string - if not empty, is item name from the bag
 ---@param macro_command string - console command to use item from the bag
 ---@return string, string cast button title and macro command
-local function bomAddWeaponEnchant(spell, player_member,
+local function bomAddWeaponEnchant(spell, playerMember,
                                    cast_button_title, macro_command)
   local block_offhand_enchant = false -- set to true to block temporarily
 
@@ -1718,34 +1715,35 @@ local function bomAddWeaponEnchant(spell, player_member,
   local profile_spell = BOM.GetProfileSpell(spell.ConfigID)
 
   if profile_spell.MainHandEnable
-          and player_member.MainHandBuff == nil then
+          and playerMember.MainHandBuff == nil then
     -- Text: [Spell Name] (Main hand)
     tasklist:Add(
             spell.singleLink,
             "(" .. L.TooltipOffHand .. ")",
-            player_member,
+            BOM.Class.MemberBuffTarget:fromSelf(playerMember),
             true)
     bomQueueSpell(spell.singleMana, spell.singleId, spell.singleLink,
-            player_member, spell)
+            playerMember, spell)
   end
 
   if profile_spell.OffHandEnable
-          and player_member.OffHandBuff == nil then
+          and playerMember.OffHandBuff == nil then
     if block_offhand_enchant then
       -- Text: [Spell Name] (Off-hand) Blocked waiting
-      tasklist:Add(spell.singleLink,
+      tasklist:Add(
+              spell.singleLink,
               "(" .. L.TooltipOffHand .. ") " .. L.ShamanEnchantBlocked,
-              player_member,
+              BOM.Class.MemberBuffTarget:fromSelf(playerMember),
               true)
     else
       -- Text: [Spell Name] (Off-hand)
       tasklist:Add(
               spell.singleLink,
               "(" .. L.TooltipOffHand .. ")",
-              player_member,
+              BOM.Class.MemberBuffTarget:fromSelf(playerMember),
               true)
       bomQueueSpell(spell.singleMana, spell.singleId, spell.singleLink,
-              player_member, spell)
+              playerMember, spell)
     end
   end
 
@@ -1773,31 +1771,31 @@ local function bomCastButton(t, enable)
 end
 
 ---Check if player has rep items equipped where they should not have them
----@param player_member Member
-local function bomCheckReputationItems(player_member)
+---@param playerMember Member
+local function bomCheckReputationItems(playerMember)
   local name, instanceType, difficultyID, difficultyName, maxPlayers
   , dynamicDifficulty, isDynamic, instanceID, instanceGroupSize
   , LfgDungeonID = GetInstanceInfo()
 
   if BOM.SharedState.ArgentumDawn then
     -- settings to remind to remove AD trinket != instance compatible with AD Commission
-    if player_member.hasArgentumDawn ~= tContains(BOM.ArgentumDawn.zoneId, instanceID) then
+    if playerMember.hasArgentumDawn ~= tContains(BOM.ArgentumDawn.zoneId, instanceID) then
       -- Text: [Argent Dawn Commission]
       tasklist:Add(
               BOM.ArgentumDawn.Link,
-              "Reminder",
-              player_member,
+              L.TASK_CLASS_REMINDER,
+              BOM.Class.MemberBuffTarget:fromSelf(playerMember),
               true)
     end
   end
 
   if BOM.SharedState.Carrot then
-    if player_member.hasCarrot and not tContains(BOM.Carrot.zoneId, instanceID) then
+    if playerMember.hasCarrot and not tContains(BOM.Carrot.zoneId, instanceID) then
       -- Text: [Carrot on a Stick]
       tasklist:Add(
               BOM.Carrot.Link,
-              "Reminder",
-              player_member,
+              L.TASK_CLASS_REMINDER,
+              BOM.Class.MemberBuffTarget:fromSelf(playerMember),
               true)
     end
   end
@@ -1837,11 +1835,11 @@ local function bomCheckMissingWeaponEnchantments(player_member)
   end
 end
 
----@param player_member Member
+---@param playerMember Member
 ---@param cast_button_title string
 ---@param macro_command string
 ---@return string, string {cast_button_title, macro_command}
-local function bomCheckItemsAndContainers(player_member, cast_button_title, macro_command)
+local function bomCheckItemsAndContainers(playerMember, cast_button_title, macro_command)
   --itemcheck
   local item_list = BOM.GetItemList() ---@type table<number, GetContainerItemInfoResult>
 
@@ -1872,7 +1870,7 @@ local function bomCheckItemsAndContainers(player_member, cast_button_title, macr
     if ok then
       local extra_msg = "" -- tell user they need to hold Alt or something
       if BOM.SharedState.DontUseConsumables and not IsModifierKeyDown() then
-        extra_msg = L.MsgHoldModifierKey
+        extra_msg = L.BUFF_CONSUMABLE_REMINDER
       end
 
       macro_command = (target and ("/target " .. target .. "/n") or "")
@@ -1884,7 +1882,7 @@ local function bomCheckItemsAndContainers(player_member, cast_button_title, macr
       tasklist:Add(
               cast_button_title,
               "(" .. L.MsgOpenContainer .. ") " .. extra_msg,
-              player_member,
+              BOM.Class.MemberBuffTarget:fromSelf(playerMember),
               true)
 
       if BOM.SharedState.DontUseConsumables and not IsModifierKeyDown() then
@@ -1898,13 +1896,13 @@ local function bomCheckItemsAndContainers(player_member, cast_button_title, macr
   return cast_button_title, macro_command
 end
 
----@param player_member Member
+---@param playerMember Member
 ---@param party table<number, Member>
 ---@param in_range boolean
 ---@param cast_button_title string
 ---@param macro_command string
 ---@return boolean, string, string {in_range, cast_button_title, macro_command}
-local function bomScanSelectedSpells(player_member, party, in_range, cast_button_title, macro_command)
+local function bomScanSelectedSpells(playerMember, party, in_range, cast_button_title, macro_command)
   for _, spell in ipairs(BOM.SelectedSpells) do
     local profile_spell = BOM.GetProfileSpell(spell.ConfigID)
 
@@ -1935,16 +1933,16 @@ local function bomScanSelectedSpells(player_member, party, in_range, cast_button
         if #spell.NeedMember > 0 then
           if spell.isConsumable then
             cast_button_title, macro_command = bomAddConsumableWeaponBuff(
-                    spell, player_member, cast_button_title, macro_command)
+                    spell, playerMember, cast_button_title, macro_command)
           else
-            cast_button_title, macro_command = bomAddWeaponEnchant(spell, player_member)
+            cast_button_title, macro_command = bomAddWeaponEnchant(spell, playerMember)
           end
         end
 
       elseif spell.isConsumable then
         if #spell.NeedMember > 0 then
           cast_button_title, macro_command = bomAddConsumableSelfbuff(
-                  spell, player_member, cast_button_title, macro_command)
+                  spell, playerMember, cast_button_title, macro_command)
         end
 
       elseif spell.isInfo then
@@ -1952,9 +1950,9 @@ local function bomScanSelectedSpells(player_member, party, in_range, cast_button
           for memberIndex, member in ipairs(spell.NeedMember) do
             -- Text: [Player Link] [Spell Link]
             tasklist:Add(
-                    bomFormatSingleBuffText("", member, spell),
+                    spell.singleLink or spell.single,
                     "Info",
-                    member,
+                    BOM.Class.MemberBuffTarget:fromMember(member),
                     true)
           end
         end
@@ -1967,9 +1965,9 @@ local function bomScanSelectedSpells(player_member, party, in_range, cast_button
           else
             -- Text: "Player" "Spell Name"
             tasklist:Add(
-                    bomFormatSingleBuffText("", member, spell),
-                    "Tracking",
-                    player_member,
+                    spell.singleLink or spell.single,
+                    L.BUFF_CLASS_TRACKING,
+                    BOM.Class.MemberBuffTarget:fromSelf(playerMember),
                     false)
           end
         end
@@ -1983,17 +1981,17 @@ local function bomScanSelectedSpells(player_member, party, in_range, cast_button
           -- if spell is shapeshift, and is already active, skip it
         elseif #spell.NeedMember > 0 then
           -- self buffs are not pvp-guarded
-          bomAddSelfbuff(spell, player_member)
+          bomAddSelfbuff(spell, playerMember)
         end
 
       elseif spell.type == "resurrection" then
-        in_range = bomAddResurrection(spell, player_member, in_range)
+        in_range = bomAddResurrection(spell, playerMember, in_range)
 
       elseif spell.isBlessing then
-        in_range = bomAddBlessing(spell, player_member, in_range)
+        in_range = bomAddBlessing(spell, playerMember, in_range)
 
       else
-        in_range = bomAddBuff(spell, party, player_member, in_range)
+        in_range = bomAddBuff(spell, party, playerMember, in_range)
       end
     end
   end
@@ -2025,7 +2023,8 @@ local function bomUpdateScan_Scan()
   BOM.ScanModifier = false
 
   in_range, cast_button_title, macro_command = bomScanSelectedSpells(
-          player_member, party, in_range, cast_button_title, macro_command)
+          player_member, party, in_range,
+          cast_button_title, macro_command)
 
   bomCheckReputationItems(player_member)
   bomCheckMissingWeaponEnchantments(player_member) -- if option to warn is enabled

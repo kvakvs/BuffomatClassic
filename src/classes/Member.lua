@@ -20,7 +20,7 @@ BOM.Class = BOM.Class or {}
 ---@field name string
 ---@field NeedBuff boolean
 ---@field OffHandBuff number|nil Temporary enchant on off-hand
----@field unitId number
+---@field unitId string
 
 ---@type Member
 BOM.Class.Member = {}

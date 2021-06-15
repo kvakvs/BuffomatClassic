@@ -10,6 +10,17 @@ end })
 
 local function bomLanguage_English()
   return {
+    SELF                          = "You", -- use instead of name when buffing self
+    BUFF_CLASS_SELF_ONLY          = "Self-buff",
+    BUFF_CLASS_REGULAR            = "Buff",
+    BUFF_CLASS_GROUPBUFF          = "Group buff",
+    BUFF_CLASS_TRACKING           = "Tracking",
+    TASK_CLASS_REMINDER           = "Reminder",
+    TASK_CLASS_RESURRECT          = "Resurrect",
+    TASK_CLASS_MISSING_CONSUM     = "Missing consumable",
+    BUFF_CLASS_CONSUMABLE         = "Consumable",
+    BUFF_CONSUMABLE_REMINDER      = "Hold Shift/Ctrl or Alt",
+
     CHAT_MSG_PREFIX               = "Buffomat: ",
     Buffomat                      = "Buffomat", -- addon title in the main window
     ResetWatchGroups              = "resetting buff groups to 1-8",
@@ -28,7 +39,6 @@ local function bomLanguage_English()
     MsgSpellExpired               = "%s expired.",
     ActionInCombatError           = "Can't show/hide window in combat",
     MsgOpenContainer              = "Use or open",
-    MsgHoldModifierKey            = "Must hold Shift/Ctrl or Alt",
 
     InactiveReason_PlayerDead     = "You are dead",
     InactiveReason_InCombat       = "You are in combat",

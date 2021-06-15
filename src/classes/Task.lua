@@ -23,7 +23,7 @@ local CLASS_TAG = "task_item"
 
 ---Creates a new TaskListItem
 ---@param priority number|nil Sorting priority to display
----@param target Member|Group Unit to calculate distance to or boolean true
+---@param target Member|GroupBuffTarget Unit to calculate distance to or boolean true
 ---@param action_text string
 ---@param extra_text string
 function BOM.Class.Task:new(action_text, extra_text, target, priority)
@@ -41,15 +41,15 @@ function BOM.Class.Task:new(action_text, extra_text, target, priority)
 end
 
 function BOM.Class.Task.FormatText(self)
-  --if self.extra_text then
-  return self.action_text .. " " .. BOM.Color("777777", self.extra_text)
-  --end
-  --return self.action_text
+  return string.format("%s %s %s",
+          self.target:GetText(),
+          self.action_text,
+          BOM.Color("777777", self.extra_text))
 end
 
 function BOM.Class.Task.FormatInfoText(self)
-  --if self.extra_text then
-  return self.action_text .. " " .. BOM.Color("bbaa22", self.extra_text)
-  --end
-  --return self.action_text
+  return string.format("%s %s %s",
+          self.target:GetText(),
+          self.action_text,
+          BOM.Color("bbaa22", self.extra_text))
 end

@@ -26,7 +26,8 @@ src/classes/SpellDef.lua
 src/classes/State.lua
 src/classes/CharacterState.lua
 src/classes/Task.lua
-src/classes/Group.lua
+src/classes/MemberBuffTarget.lua
+src/classes/GroupBuffTarget.lua
 src/classes/TaskList.lua
 
 src/cache/GetItemCache.lua

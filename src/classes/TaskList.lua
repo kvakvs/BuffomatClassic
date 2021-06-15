@@ -47,8 +47,8 @@ function BOM.Class.TaskList.Clear(self)
   wipe(self.comments)
 end
 
----@param a Group|Member
----@param b Group|Member
+---@param a GroupBuffTarget|Member
+---@param b GroupBuffTarget|Member
 local function bomCompareGroupsOrMembers(a, b)
   if not b then
     return false -- can b be nil?

@@ -2,18 +2,18 @@
 local TOCNAME, BOM = ...
 BOM.Class = BOM.Class or {}
 
----@class Group
+---@class GroupBuffTarget
 ---@field groupIndex number
 
----@type Group
-BOM.Class.Group = {}
-BOM.Class.Group.__index = BOM.Class.Group
+---@type GroupBuffTarget
+BOM.Class.GroupBuffTarget = {}
+BOM.Class.GroupBuffTarget.__index = BOM.Class.GroupBuffTarget
 
-local G_CLASS_TAG = "group"
+local G_CLASS_TAG = "groupBuffTarget"
 
-function BOM.Class.Group:new(groupNum)
+function BOM.Class.GroupBuffTarget:new(groupNum)
   local fields = {}
-  setmetatable(fields, BOM.Class.Group)
+  setmetatable(fields, BOM.Class.GroupBuffTarget)
 
   fields.t = G_CLASS_TAG
   fields.groupIndex = groupNum
@@ -21,8 +21,8 @@ function BOM.Class.Group:new(groupNum)
   return fields
 end
 
-function BOM.Class.Group.GetDistance(self)
-  local nearest = nil
+function BOM.Class.GroupBuffTarget.GetDistance(self)
+  local nearest
   local nearest_dist = 100000
 
   if IsInRaid() then
@@ -37,7 +37,9 @@ function BOM.Class.Group.GetDistance(self)
     -- Search for nearest of 4 party members, who is not myself
     for groupIndex = 1, 4 do
       local member = BOM.GetMember("party" .. groupIndex)
-      if member and not member.isDead and member.distance < nearest_dist then
+      local member_distance = BOM.Tool.UnitDistanceSquared(member.unitId)
+
+      if member and not member.isDead and member_distance < nearest_dist then
         nearest_dist = member.distance
         nearest = member
       end
@@ -51,6 +53,6 @@ function BOM.Class.Group.GetDistance(self)
   end
 end
 
-function BOM.Class.Group.GetText(self)
+function BOM.Class.GroupBuffTarget.GetText(self)
   return string.format(BOM.L.FORMAT_GROUP_NUM, self.groupIndex)
 end
