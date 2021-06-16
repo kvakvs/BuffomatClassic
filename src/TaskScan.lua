@@ -1558,7 +1558,7 @@ local function bomAddSelfbuff(spell, playerMember)
           and not tContains(spell.SkipList, playerMember.name) then
     -- Text: Target [Spell Name]
     tasklist:AddWithPrefix(
-            L.BUFF_CLASS_REGULAR,
+            L.TASK_CAST,
             spell.singleLink or spell.single,
             spell.single,
             L.BUFF_CLASS_SELF_ONLY,
@@ -1571,7 +1571,7 @@ local function bomAddSelfbuff(spell, playerMember)
   else
     -- Text: Target "SpellName"
     tasklist:AddWithPrefix(
-            L.BUFF_CLASS_REGULAR,
+            L.TASK_CAST,
             spell.singleLink or spell.single,
             spell.single,
             L.BUFF_CLASS_SELF_ONLY,
@@ -1820,28 +1820,41 @@ local function bomCheckReputationItems(playerMember)
   , dynamicDifficulty, isDynamic, instanceID, instanceGroupSize
   , LfgDungeonID = GetInstanceInfo()
 
+  local itemTrinket1, _ = GetInventoryItemID("player", 13)
+  local itemTrinket2, _ = GetInventoryItemID("player", 14)
+
   if BOM.SharedState.ArgentumDawn then
     -- settings to remind to remove AD trinket != instance compatible with AD Commission
-    if playerMember.hasArgentumDawn ~= tContains(BOM.ArgentumDawn.zoneId, instanceID) then
+    --if playerMember.hasArgentumDawn ~= tContains(BOM.ArgentumDawn.zoneId, instanceID) then
+    local hasArgentumDawn = tContains(BOM.ArgentumDawn.itemIds, itemTrinket1) or
+            tContains(BOM.ArgentumDawn.itemIds, itemTrinket2)
+    if hasArgentumDawn ~= tContains(BOM.ArgentumDawn.zoneId, instanceID) then
       -- Text: [Argent Dawn Commission]
-      tasklist:Add(
-              BOM.ArgentumDawn.Link,
-              nil,
-              L.TASK_CLASS_REMINDER,
-              BOM.Class.MemberBuffTarget:fromSelf(playerMember),
-              true)
+      tasklist:Comment(L.TASK_UNEQUIP .. " " .. L.AD_REPUTATION_REMINDER)
+      --tasklist:AddWithPrefix(
+      --        L.TASK_UNEQUIP,
+      --        L.AD_REPUTATION_REMINDER,
+      --        nil,
+      --        nil,
+      --        BOM.Class.MemberBuffTarget:fromSelf(playerMember),
+      --        true)
     end
   end
 
   if BOM.SharedState.Carrot then
-    if playerMember.hasCarrot and not tContains(BOM.Carrot.zoneId, instanceID) then
+    --if playerMember.hasCarrot and not tContains(BOM.Carrot.zoneId, instanceID) then
+    local hasCarrot = tContains(BOM.Carrot.itemIds, itemTrinket1) or
+            tContains(BOM.Carrot.itemIds, itemTrinket2)
+    if hasCarrot and not tContains(BOM.Carrot.zoneId, instanceID) then
       -- Text: [Carrot on a Stick]
-      tasklist:Add(
-              BOM.Carrot.Link,
-              nil,
-              L.TASK_CLASS_REMINDER,
-              BOM.Class.MemberBuffTarget:fromSelf(playerMember),
-              true)
+      tasklist:Comment(L.TASK_UNEQUIP .. " " .. L.RIDING_SPEED_REMINDER)
+      --tasklist:AddWithPrefix(
+      --        L.TASK_UNEQUIP,
+      --        L.RIDING_SPEED_REMINDER,
+      --        nil,
+      --        nil,
+      --        BOM.Class.MemberBuffTarget:fromSelf(playerMember),
+      --        true)
     end
   end
 end

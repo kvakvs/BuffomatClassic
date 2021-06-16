@@ -1146,19 +1146,45 @@ function BOM.SetupItemCache()
 end
 
 BOM.ArgentumDawn = {
-  spell  = 17670,
-  zoneId = { 329, 289, 533, 535 }, --Stratholme/scholomance; Naxxramas LK 10/25
+  itemIds = {
+    12846, -- Simple AD trinket
+    13209, -- Seal of the Dawn +81 AP
+    19812, -- Rune of the Dawn +48 SPELL
+    23206, -- Mark of the Chamption +150 AP
+    23207, -- Mark of the Chamption +85 SPELL
+  },
+  --spells = {
+  --  17670, -- Simple AD trinket
+  --  23930, -- Seal of the Dawn +81 AP
+  --  24198, -- Rune of the Dawn +48 SPELL
+  --  29112, -- Mark of the Chamption +150 AP
+  --  29113, -- Mark of the Chamption +85 SPELL
+  --},
+  zoneId  = {
+    329, 289, 533, 535, --Stratholme/scholomance; Naxxramas LK 10/25
+    558, -- TBC: Auchenai
+    532, -- TBC: Karazhan
+  },
 }
--- TODO: TBC Riding Crop trinket
+
 BOM.Carrot = {
-  spell  = 13587,
-  --Allow Carrot in:
-  zoneId = { 0, 1, 530, -- Eastern Kingdoms, Kalimdor, Outland
-             30, -- Alterac Valley
-             529, -- Arathi Basin,
-             489, -- Warsong Gulch
-             566, 968, -- Eye of the Storm
-             1672, 1505, 572 }, -- Blade's Edge Arena, Nagrand Arena, Ruins of Lordaeron
+  itemIds = {
+    11122, -- Classic: Item [Carrot on a Stick]
+    25653, -- TBC: Item [Riding Crop]
+    32481, -- TBC: Item [Charm of Swift Flight]
+  },
+  --spells  = {
+  --  13587, -- Classic: Carrot on a Stick
+  --  48776, -- TBC: Riding Crop +10%
+  --  48403, -- TBC: Druid "Charm of Swift Flight" +10%
+  --},
+  --Allow Riding Speed trinkets in:
+  zoneId  = { 0, 1, 530, -- Eastern Kingdoms, Kalimdor, Outland
+              30, -- Alterac Valley
+              529, -- Arathi Basin,
+              489, -- Warsong Gulch
+              566, 968, -- TBC: Eye of the Storm
+              1672, 1505, 572 }, -- TBC: Blade's Edge Arena, Nagrand Arena, Ruins of Lordaeron
 }
 
 BOM.BuffExchangeId = { -- comine-spell-ids to new one

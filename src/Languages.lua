@@ -22,9 +22,13 @@ local function bomLanguage_English()
     BUFF_CONSUMABLE_REMINDER      = "Hold Shift/Ctrl or Alt",
     TASK_BLESS_GROUP              = "Bless Group",
     TASK_BLESS                    = "Bless",
+    TASK_CAST                     = "Cast",
     TASK_USE                      = "Use",
     TASK_ACTIVATE                 = "Activate",
+    TASK_UNEQUIP                  = "Unequip",
     ERR_RANGE                     = "Range",
+    AD_REPUTATION_REMINDER        = "Argent Dawn trinket",
+    RIDING_SPEED_REMINDER         = "Riding/Flight Speed trinket",
 
     CHAT_MSG_PREFIX               = "Buffomat: ",
     Buffomat                      = "Buffomat", -- addon title in the main window
@@ -67,8 +71,8 @@ local function bomLanguage_English()
     CboxSameZone                  = "Watch only when in same zone",
     CboxResGhost                  = "Attempt to resurrect ghosts",
     CboxReplaceSingle             = "Replace single buff with group buffs",
-    CboxArgentumDawn              = "Remember to (un)equip Argent Dawn Commission",
-    CboxCarrot                    = "Remember to unequip Carrot on a Stick",
+    CboxArgentumDawn              = "Remind to unequip Argent Dawn trinket",
+    CboxCarrot                    = "Remind to unequip Riding/Flight trinkets",
 
     CboxScanInStealth             = "Scan buffs in stealth",
     CboxScanInRestArea            = "Scan buffs in rest areas (city and inn)",

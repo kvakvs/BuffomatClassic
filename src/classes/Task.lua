@@ -9,6 +9,7 @@ BOM.Class = BOM.Class or {}
 --- @field action_link string The message to display if active: spell link with icon
 --- @field extra_text string The extra message to display after the spell
 --- @field priority number Sorting for display purposes
+--- @field isInfo boolean Reports something to the user but no target or action
 
 BOM.TaskPriority = {
   Resurrection = 1,
@@ -31,7 +32,7 @@ local CLASS_TAG = "task_item"
 ---@param prefix_text string
 ---@param extra_text string
 function BOM.Class.Task:new(prefix_text, action_link, action_text, extra_text,
-                            target, priority)
+                            target, isInfo, priority)
   local distance = target:GetDistance()
   local fields = {
     t           = CLASS_TAG,
@@ -41,7 +42,8 @@ function BOM.Class.Task:new(prefix_text, action_link, action_text, extra_text,
     extra_text  = extra_text or "",
     target      = target,
     distance    = distance, -- scan member distance or nearest party member
-    priority    = priority or BOM.TaskPriority.Default
+    priority    = priority or BOM.TaskPriority.Default,
+    isInfo      = isInfo,
   }
   setmetatable(fields, BOM.Class.Task)
   return fields
@@ -51,16 +53,24 @@ local bomGRAY = "777777"
 local bomRED = "cc4444"
 
 function BOM.Class.Task.FormatText(self)
-  return string.format("%s %s %s %s",
-          self.target:GetText(),
+  local target = self.target:GetText() .. " "
+  if self.isInfo then
+    target = ""
+  end
+  return string.format("%s%s %s %s",
+          target,
           BOM.Color(bomGRAY, self.prefix_text),
           self.action_link,
           BOM.Color(bomGRAY, self.extra_text))
 end
 
 function BOM.Class.Task.FormatTextInactive(self, reason)
-  return string.format("%s %s %s",
+  local target = self.target:GetText() .. " "
+  if self.isInfo then
+    target = ""
+  end
+  return string.format("%s%s %s",
           BOM.Color(bomRED, reason),
-          self.target:GetText(),
+          target,
           self.action_text)
 end

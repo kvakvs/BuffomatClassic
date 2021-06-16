@@ -34,7 +34,7 @@ function BOM.Class.TaskList.Add(self, action_link, action_text, extra_text,
                                 target, is_info, prio)
   local new_task = BOM.Class.Task:new("",
           action_link, action_text,
-          extra_text, target, prio)
+          extra_text, target, is_info, prio)
   tinsert(self.tasks, new_task)
 end
 
@@ -49,9 +49,9 @@ end
 ---@param prio number|nil Priority, a constant from BOM.TaskPriority
 function BOM.Class.TaskList.AddWithPrefix(self, prefix_text,
                                           action_link, action_text, extra_text,
-                                          target, _is_info, prio)
+                                          target, is_info, prio)
   local new_task = BOM.Class.Task:new(prefix_text,
-          action_link, action_text, extra_text, target, prio)
+          action_link, action_text, extra_text, target, is_info, prio)
   tinsert(self.tasks, new_task)
 end
 

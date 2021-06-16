@@ -76,13 +76,13 @@ function BOM.Class.Member:ForceUpdateBuffs(player_member)
           break
         end
 
-        if spellId == BOM.ArgentumDawn.spell then
-          self.hasArgentumDawn = true
-        end
+        --if tContains(BOM.ArgentumDawn.spells, spellId) then
+        --  self.hasArgentumDawn = true
+        --end
 
-        if spellId == BOM.Carrot.spell then
-          self.hasCarrot = true
-        end
+        --if tContains(BOM.Carrot.spells, spellId) then
+        --  self.hasCarrot = true
+        --end
 
         if tContains(BOM.AllSpellIds, spellId) then
           local configKey = BOM.SpellIdtoConfig[spellId]
