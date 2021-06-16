@@ -1232,20 +1232,23 @@ local function bomFormatGroupBuffText(groupIndex, spell, classColorize)
           spell.groupLink or spell.group or "?")
 end
 
----@param prefix string Icon or some sort of string to prepend
----@param member Member
----@param spell SpellDef
----@return string
-local function bomFormatSingleBuffText(prefix, member, spell)
-  return string.format(L.FORMAT_BUFF_SINGLE,
-          (prefix or "") .. member:GetText(),
-          (spell.singleLink or spell.single))
-end
+-- ---@param prefix string Icon or some sort of string to prepend
+-- ---@param member Member
+-- ---@param spell SpellDef
+-- ---@return string
+--local function bomFormatSingleBuffText(prefix, member, spell)
+--  return string.format(L.FORMAT_BUFF_SINGLE,
+--          (prefix or "") .. member:GetText(),
+--          (spell.singleLink or spell.single))
+--end
 
 ---@return string
 local function bomFormatItemBuffText(bag, slot, count)
   local texture, _, _, _, _, _, item_link, _, _, _ = GetContainerItemInfo(bag, slot)
-  return BOM.FormatTexture(texture) .. item_link .. "x" .. count
+  return string.format(" %s %s x%d",
+          BOM.FormatTexture(texture),
+          item_link,
+          count)
 end
 
 ---Add a paladin blessing
@@ -1283,9 +1286,10 @@ local function bomAddBlessing(spell, player_member, in_range)
         then
           -- Group buff
           -- Text: Group 5 [Spell Name] x Reagents
-          tasklist:Add(
+          tasklist:AddWithPrefix(
+                  L.TASK_BLESS_GROUP,
                   bomFormatGroupBuffText(groupIndex, spell, true) .. count,
-                  "Bless group",
+                  "",
                   BOM.Class.GroupBuffTarget:new(groupIndex),
                   false)
           in_range = true
@@ -1294,9 +1298,10 @@ local function bomAddBlessing(spell, player_member, in_range)
         else
           -- Group buff (just text)
           -- Text: Group 5 [Spell Name] x Reagents
-          tasklist:Add(
+          tasklist:AddWithPrefix(
+                  L.TASK_BLESS_GROUP,
                   bomFormatGroupBuffText(groupIndex, spell, false) .. count,
-                  "Bless group",
+                  "",
                   BOM.Class.GroupBuffTarget:new(groupIndex),
                   true)
         end
@@ -1331,9 +1336,10 @@ local function bomAddBlessing(spell, player_member, in_range)
       elseif test_in_range then
         -- Single buff on group member
         -- Text: Target [Spell Name]
-        tasklist:Add(
+        tasklist:AddWithPrefix(
+                L.TASK_BLESS,
                 spell.singleLink or spell.single,
-                "Bless",
+                "",
                 BOM.Class.MemberBuffTarget:fromMember(member),
                 false)
         in_range = true
@@ -1343,8 +1349,9 @@ local function bomAddBlessing(spell, player_member, in_range)
         -- Single buff on group member (inactive just text)
         -- Text: Target "SpellName"
         tasklist:Add(
+                L.TASK_BLESS,
                 spell.singleLink or spell.single,
-                "Bless",
+                "",
                 BOM.Class.MemberBuffTarget:fromMember(member),
                 true)
       end -- if in range
@@ -1387,9 +1394,10 @@ local function bomAddBuff(spell, party, player_member, in_range)
                 and (not spell.DeathGroup[group_index] or not BOM.SharedState.DeathBlock)
         then
           -- Text: Group 5 [Spell Name]
-          tasklist:Add(
-                  bomFormatGroupBuffText(group_index, spell, false) .. count,
+          tasklist:AddWithPrefix(
                   L.BUFF_CLASS_GROUPBUFF,
+                  bomFormatGroupBuffText(group_index, spell, false) .. count,
+                  "",
                   BOM.Class.GroupBuffTarget:new(group_index),
                   false)
           in_range = true
@@ -1397,9 +1405,10 @@ local function bomAddBuff(spell, party, player_member, in_range)
           bomQueueSpell(spell.groupMana, spell.groupId, spell.groupLink, Group, spell)
         else
           -- Text: Group 5 [Spell Name]
-          tasklist:Add(
-                  bomFormatGroupBuffText(group_index, spell, false) .. count,
+          tasklist:AddWithPrefix(
                   L.BUFF_CLASS_GROUPBUFF,
+                  bomFormatGroupBuffText(group_index, spell, false) .. count,
+                  "",
                   BOM.Class.GroupBuffTarget:new(group_index),
                   false)
         end -- if group not nil
@@ -1435,18 +1444,20 @@ local function bomAddBuff(spell, party, player_member, in_range)
         -- Nothing, prevent poison function has already added the text
       elseif is_in_range then
         -- Text: Target [Spell Name]
-        tasklist:Add(
-                spell.singleLink or spell.single,
+        tasklist:AddWithPrefix(
                 L.BUFF_CLASS_REGULAR,
+                spell.singleLink or spell.single,
+                "",
                 BOM.Class.MemberBuffTarget:fromMember(member),
                 false)
         in_range = true
         bomQueueSpell(spell.singleMana, spell.singleId, spell.singleLink, member, spell)
       else
         -- Text: Target "SpellName"
-        tasklist:Add(
-                spell.singleLink or spell.single,
+        tasklist:AddWithPrefix(
                 L.BUFF_CLASS_REGULAR,
+                spell.singleLink or spell.single,
+                "",
                 BOM.Class.MemberBuffTarget:fromMember(member),
                 false)
       end
@@ -1497,17 +1508,19 @@ local function bomAddResurrection(spell, player_member, in_range)
       if is_in_range then
         in_range = true
         -- Text: Target [Spell Name]
-        tasklist:Add(
-                spell.singleLink or spell.single,
+        tasklist:AddWithPrefix(
                 L.TASK_CLASS_RESURRECT,
+                spell.singleLink or spell.single,
+                "",
                 BOM.Class.MemberBuffTarget:fromMember(member),
                 false,
                 BOM.TaskPriority.Resurrection)
       else
         -- Text: Target "SpellName"
-        tasklist:Add(
-                spell.singleLink or spell.single,
+        tasklist:AddWithPrefix(
                 L.TASK_CLASS_RESURRECT,
+                spell.singleLink or spell.single,
+                "",
                 BOM.Class.MemberBuffTarget:fromMember(member),
                 false,
                 BOM.TaskPriority.Resurrection)
@@ -1532,7 +1545,8 @@ local function bomAddSelfbuff(spell, playerMember)
   if (not spell.requiresOutdoors or IsOutdoors())
           and not tContains(spell.SkipList, playerMember.name) then
     -- Text: Target [Spell Name]
-    tasklist:Add(
+    tasklist:AddWithPrefix(
+            L.BUFF_CLASS_REGULAR,
             spell.singleLink or spell.single,
             L.BUFF_CLASS_SELF_ONLY,
             BOM.Class.MemberBuffTarget:fromSelf(playerMember),
@@ -1543,7 +1557,8 @@ local function bomAddSelfbuff(spell, playerMember)
             playerMember, spell)
   else
     -- Text: Target "SpellName"
-    tasklist:Add(
+    tasklist:AddWithPrefix(
+            L.BUFF_CLASS_REGULAR,
             spell.singleLink or spell.single,
             L.BUFF_CLASS_SELF_ONLY,
             BOM.Class.MemberBuffTarget:fromSelf(playerMember),
@@ -1565,7 +1580,8 @@ local function bomAddConsumableSelfbuff(spell, playerMember, bag_title, bag_comm
     if BOM.SharedState.DontUseConsumables
             and not IsModifierKeyDown() then
       -- Text: [Icon] [Consumable Name] x Count
-      tasklist:Add(
+      tasklist:AddWithPrefix(
+              L.TASK_USE,
               bomFormatItemBuffText(bag, slot, count),
               L.BUFF_CONSUMABLE_REMINDER,
               BOM.Class.MemberBuffTarget:fromSelf(playerMember),
@@ -1574,9 +1590,10 @@ local function bomAddConsumableSelfbuff(spell, playerMember, bag_title, bag_comm
       bag_command = "/use " .. bag .. " " .. slot
 
       -- Text: [Icon] [Consumable Name] x Count
-      tasklist:Add(
+      tasklist:AddWithPrefix(
+              L.TASK_USE,
               bomFormatItemBuffText(bag, slot, count),
-              L.BUFF_CLASS_CONSUMABLE,
+              "",
               BOM.Class.MemberBuffTarget:fromSelf(playerMember),
               false)
     end
@@ -1586,9 +1603,10 @@ local function bomAddConsumableSelfbuff(spell, playerMember, bag_title, bag_comm
     -- Text: "ConsumableName" x Count
     if spell.single then
       -- safety, can crash on load
-      tasklist:Add(
+      tasklist:AddWithPrefix(
+              L.TASK_USE,
               spell.single .. "x" .. count,
-              L.BUFF_CLASS_CONSUMABLE,
+              "",
               BOM.Class.MemberBuffTarget:fromSelf(playerMember),
               true)
     end
@@ -1964,7 +1982,8 @@ local function bomScanSelectedSpells(playerMember, party, in_range, cast_button_
             bomSetTracking(spell, true)
           else
             -- Text: "Player" "Spell Name"
-            tasklist:Add(
+            tasklist:AddWithPrefix(
+                    L.TASK_ACTIVATE,
                     spell.singleLink or spell.single,
                     L.BUFF_CLASS_TRACKING,
                     BOM.Class.MemberBuffTarget:fromSelf(playerMember),

@@ -13,13 +13,17 @@ local function bomLanguage_English()
     SELF                          = "You", -- use instead of name when buffing self
     BUFF_CLASS_SELF_ONLY          = "Self-buff",
     BUFF_CLASS_REGULAR            = "Buff",
-    BUFF_CLASS_GROUPBUFF          = "Group buff",
+    BUFF_CLASS_GROUPBUFF          = "Buff group",
     BUFF_CLASS_TRACKING           = "Tracking",
     TASK_CLASS_REMINDER           = "Reminder",
     TASK_CLASS_RESURRECT          = "Resurrect",
     TASK_CLASS_MISSING_CONSUM     = "Missing consumable",
     BUFF_CLASS_CONSUMABLE         = "Consumable",
     BUFF_CONSUMABLE_REMINDER      = "Hold Shift/Ctrl or Alt",
+    TASK_BLESS_GROUP              = "Bless Group",
+    TASK_BLESS                    = "Bless",
+    TASK_USE                      = "Use",
+    TASK_ACTIVATE                 = "Activate",
 
     CHAT_MSG_PREFIX               = "Buffomat: ",
     Buffomat                      = "Buffomat", -- addon title in the main window

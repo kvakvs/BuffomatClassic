@@ -30,7 +30,20 @@ end
 ---@param is_info boolean Whether the text is info text or a cast
 ---@param prio number|nil Priority, a constant from BOM.TaskPriority
 function BOM.Class.TaskList.Add(self, action_text, extra_text, target, is_info, prio)
-  local new_task = BOM.Class.Task:new(action_text, extra_text, target, prio)
+  local new_task = BOM.Class.Task:new("", action_text, extra_text, target, prio)
+  tinsert(self.tasks, new_task)
+end
+
+---Adds a text line to display in the message frame. The line is stored in DisplayCache
+---@param self TaskList
+---@param action_text string|nil Text to display (target of the action)
+---@param prefix_text string Text to display before spell (a verb?)
+---@param extra_text string Text to display (extra comment)
+---@param target Member Distance to the party member, or group (if string)
+---@param is_info boolean Whether the text is info text or a cast
+---@param prio number|nil Priority, a constant from BOM.TaskPriority
+function BOM.Class.TaskList.AddWithPrefix(self, prefix_text, action_text, extra_text, target, is_info, prio)
+  local new_task = BOM.Class.Task:new(prefix_text, action_text, extra_text, target, prio)
   tinsert(self.tasks, new_task)
 end
 
@@ -102,7 +115,7 @@ function BOM.Class.TaskList.Display(self)
 
   for i, task in ipairs(self.tasks) do
     if task.distance > 43 then
-      BomC_ListTab_MessageFrame:AddMessage("RANGE " .. task:FormatInfoText())
+      BomC_ListTab_MessageFrame:AddMessage("RANGE " .. task:FormatText())
     end
   end
 
