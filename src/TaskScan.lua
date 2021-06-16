@@ -2063,7 +2063,17 @@ local function bomUpdateScan_Scan()
 
   BOM.ForceUpdate = false
 
-  if BOM.PlayerCasting == "cast" then
+  local flying = false -- prevent dismount in flight, OUCH!
+  if BOM.TBC then
+    flying = IsFlying() and not BOM.SharedState.AutoDismountFlying
+  end
+
+  if flying then
+    --Print player is flying, do not dismount, OUCH!
+    bomCastButton(L.MsgFlying, false)
+    bomUpdateMacro()
+
+  elseif BOM.PlayerCasting == "cast" then
     --Print player is busy (casting normal spell)
     bomCastButton(L.MsgBusy, false)
     bomUpdateMacro()

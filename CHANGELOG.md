@@ -1,5 +1,11 @@
 # Changelog
 
+## Buffomat Classic and TBC 2021.6.4
+
+- Changed task list behaviour, code cleanup
+- Changed task wording, important data goes first 
+- TBC: Prevent dismount in flight when attempting to cast, OUCH!
+
 ## Buffomat Classic and TBC 2021.6.3
 
 - Reverted change: Hiding window if no cast messages were added by the scan

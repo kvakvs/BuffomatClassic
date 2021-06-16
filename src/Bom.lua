@@ -35,6 +35,7 @@ BOM.BehaviourSettings = {
   { "SecondaryHand", false },
   { "UseRank", true },
   { "AutoDismount", true },
+  { "AutoDismountFlying", false },
   { "AutoStand", true },
   { "AutoDisTravel", true },
   { "BuffTarget", false },
@@ -957,9 +958,15 @@ local function Event_UI_ERROR_MESSAGE(errorType, message)
     end
 
   elseif tContains(ERR_IS_MOUNTED, message) then
-    if BOM.SharedState.AutoDismount then
-      UIErrorsFrame:Clear()
-      Dismount()
+    local flying = false -- prevent dismount in flight, OUCH!
+    if BOM.TBC then
+      flying = IsFlying() and not BOM.SharedState.AutoDismountFlying
+    end
+    if not flying then
+      if BOM.SharedState.AutoDismount then
+        UIErrorsFrame:Clear()
+        Dismount()
+      end
     end
 
   elseif BOM.SharedState.AutoDisTravel and tContains(ERR_IS_SHAPESHIFT, message) and BOM.CancelShapeShift() then
