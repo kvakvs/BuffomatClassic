@@ -910,10 +910,11 @@ local next_cast_spell = {}
 ---@type number
 local bom_current_player_mana
 
----@param link string
+---@param link string Clickable spell link with icon
+---@param inactiveText string Spell name as text
 ---@param member Member
 ---@return boolean True if spell cast is prevented by PvP guard, false if spell can be casted
-local function bomPreventPvpTagging(link, member)
+local function bomPreventPvpTagging(link, inactiveText, member)
   if BOM.SharedState.PreventPVPTag then
     -- TODO: Move Player PVP check and instance check outside
     local _in_instance, instance_type = IsInInstance()
@@ -921,7 +922,8 @@ local function bomPreventPvpTagging(link, member)
             and not UnitIsPVP("player")
             and UnitIsPVP(member.name) then
       -- Text: [Spell Name] Player is PvP
-      tasklist:Add(link, L.PreventPVPTagBlocked, member, true)
+      tasklist:Add(link, inactiveText,
+              L.PreventPVPTagBlocked, member, true)
       return true
     end
   end
@@ -1289,6 +1291,7 @@ local function bomAddBlessing(spell, player_member, in_range)
           tasklist:AddWithPrefix(
                   L.TASK_BLESS_GROUP,
                   bomFormatGroupBuffText(groupIndex, spell, true) .. count,
+                  spell.single,
                   "",
                   BOM.Class.GroupBuffTarget:new(groupIndex),
                   false)
@@ -1301,6 +1304,7 @@ local function bomAddBlessing(spell, player_member, in_range)
           tasklist:AddWithPrefix(
                   L.TASK_BLESS_GROUP,
                   bomFormatGroupBuffText(groupIndex, spell, false) .. count,
+                  spell.single,
                   "",
                   BOM.Class.GroupBuffTarget:new(groupIndex),
                   true)
@@ -1331,7 +1335,7 @@ local function bomAddBlessing(spell, player_member, in_range)
 
       local test_in_range = IsSpellInRange(spell.single, member.unitId) == 1
               and not tContains(spell.SkipList, member.name)
-      if bomPreventPvpTagging(spell.singleLink, member) then
+      if bomPreventPvpTagging(spell.singleLink, spell.single, member) then
         -- Nothing, prevent poison function has already added the text
       elseif test_in_range then
         -- Single buff on group member
@@ -1339,6 +1343,7 @@ local function bomAddBlessing(spell, player_member, in_range)
         tasklist:AddWithPrefix(
                 L.TASK_BLESS,
                 spell.singleLink or spell.single,
+                spell.single,
                 "",
                 BOM.Class.MemberBuffTarget:fromMember(member),
                 false)
@@ -1348,9 +1353,10 @@ local function bomAddBlessing(spell, player_member, in_range)
       else
         -- Single buff on group member (inactive just text)
         -- Text: Target "SpellName"
-        tasklist:Add(
+        tasklist:AddWithPrefix(
                 L.TASK_BLESS,
                 spell.singleLink or spell.single,
+                spell.single,
                 "",
                 BOM.Class.MemberBuffTarget:fromMember(member),
                 true)
@@ -1397,6 +1403,7 @@ local function bomAddBuff(spell, party, player_member, in_range)
           tasklist:AddWithPrefix(
                   L.BUFF_CLASS_GROUPBUFF,
                   bomFormatGroupBuffText(group_index, spell, false) .. count,
+                  spell.single,
                   "",
                   BOM.Class.GroupBuffTarget:new(group_index),
                   false)
@@ -1408,6 +1415,7 @@ local function bomAddBuff(spell, party, player_member, in_range)
           tasklist:AddWithPrefix(
                   L.BUFF_CLASS_GROUPBUFF,
                   bomFormatGroupBuffText(group_index, spell, false) .. count,
+                  spell.single,
                   "",
                   BOM.Class.GroupBuffTarget:new(group_index),
                   false)
@@ -1440,13 +1448,14 @@ local function bomAddBuff(spell, party, player_member, in_range)
       local is_in_range = (IsSpellInRange(spell.single, member.unitId) == 1)
               and not tContains(spell.SkipList, member.name)
 
-      if bomPreventPvpTagging(spell.singleLink, member) then
+      if bomPreventPvpTagging(spell.singleLink, spell.single, member) then
         -- Nothing, prevent poison function has already added the text
       elseif is_in_range then
         -- Text: Target [Spell Name]
         tasklist:AddWithPrefix(
                 L.BUFF_CLASS_REGULAR,
                 spell.singleLink or spell.single,
+                spell.single,
                 "",
                 BOM.Class.MemberBuffTarget:fromMember(member),
                 false)
@@ -1457,6 +1466,7 @@ local function bomAddBuff(spell, party, player_member, in_range)
         tasklist:AddWithPrefix(
                 L.BUFF_CLASS_REGULAR,
                 spell.singleLink or spell.single,
+                spell.single,
                 "",
                 BOM.Class.MemberBuffTarget:fromMember(member),
                 false)
@@ -1511,6 +1521,7 @@ local function bomAddResurrection(spell, player_member, in_range)
         tasklist:AddWithPrefix(
                 L.TASK_CLASS_RESURRECT,
                 spell.singleLink or spell.single,
+                spell.single,
                 "",
                 BOM.Class.MemberBuffTarget:fromMember(member),
                 false,
@@ -1520,6 +1531,7 @@ local function bomAddResurrection(spell, player_member, in_range)
         tasklist:AddWithPrefix(
                 L.TASK_CLASS_RESURRECT,
                 spell.singleLink or spell.single,
+                spell.single,
                 "",
                 BOM.Class.MemberBuffTarget:fromMember(member),
                 false,
@@ -1548,6 +1560,7 @@ local function bomAddSelfbuff(spell, playerMember)
     tasklist:AddWithPrefix(
             L.BUFF_CLASS_REGULAR,
             spell.singleLink or spell.single,
+            spell.single,
             L.BUFF_CLASS_SELF_ONLY,
             BOM.Class.MemberBuffTarget:fromSelf(playerMember),
             false)
@@ -1560,6 +1573,7 @@ local function bomAddSelfbuff(spell, playerMember)
     tasklist:AddWithPrefix(
             L.BUFF_CLASS_REGULAR,
             spell.singleLink or spell.single,
+            spell.single,
             L.BUFF_CLASS_SELF_ONLY,
             BOM.Class.MemberBuffTarget:fromSelf(playerMember),
             false)
@@ -1583,6 +1597,7 @@ local function bomAddConsumableSelfbuff(spell, playerMember, bag_title, bag_comm
       tasklist:AddWithPrefix(
               L.TASK_USE,
               bomFormatItemBuffText(bag, slot, count),
+              nil,
               L.BUFF_CONSUMABLE_REMINDER,
               BOM.Class.MemberBuffTarget:fromSelf(playerMember),
               true)
@@ -1593,6 +1608,7 @@ local function bomAddConsumableSelfbuff(spell, playerMember, bag_title, bag_comm
       tasklist:AddWithPrefix(
               L.TASK_USE,
               bomFormatItemBuffText(bag, slot, count),
+              nil,
               "",
               BOM.Class.MemberBuffTarget:fromSelf(playerMember),
               false)
@@ -1606,6 +1622,7 @@ local function bomAddConsumableSelfbuff(spell, playerMember, bag_title, bag_comm
       tasklist:AddWithPrefix(
               L.TASK_USE,
               spell.single .. "x" .. count,
+              nil,
               "",
               BOM.Class.MemberBuffTarget:fromSelf(playerMember),
               true)
@@ -1643,6 +1660,7 @@ local function bomAddConsumableWeaponBuff(spell, playerMember,
         -- Text: [Icon] [Consumable Name] x Count (Off-hand)
         tasklist:Add(
                 offhand_message(),
+                nil,
                 "(" .. L.TooltipOffHand .. ") ",
                 BOM.Class.MemberBuffTarget:fromSelf(playerMember),
                 true)
@@ -1653,6 +1671,7 @@ local function bomAddConsumableWeaponBuff(spell, playerMember,
                 .. "\n/use 17" -- offhand
         tasklist:Add(
                 cast_button_title,
+                nil,
                 "(" .. L.TooltipOffHand .. ") ",
                 BOM.Class.MemberBuffTarget:fromSelf(playerMember),
                 true)
@@ -1670,6 +1689,7 @@ local function bomAddConsumableWeaponBuff(spell, playerMember,
         -- Text: [Icon] [Consumable Name] x Count (Main hand)
         tasklist:Add(
                 mainhand_message(),
+                nil,
                 "(" .. L.TooltipMainHand .. ") ",
                 BOM.Class.MemberBuffTarget:fromSelf(playerMember),
                 true)
@@ -1679,6 +1699,7 @@ local function bomAddConsumableWeaponBuff(spell, playerMember,
         macro_command = "/use " .. bag .. " " .. slot .. "\n/use 16" -- mainhand
         tasklist:Add(
                 cast_button_title,
+                nil,
                 "(" .. L.TooltipMainHand .. ") ",
                 BOM.Class.MemberBuffTarget:fromSelf(playerMember),
                 true)
@@ -1692,6 +1713,7 @@ local function bomAddConsumableWeaponBuff(spell, playerMember,
       -- spell.single can be nil on addon load
       tasklist:Add(
               spell.single .. "x" .. count,
+              nil,
               L.TASK_CLASS_MISSING_CONSUM,
               BOM.Class.MemberBuffTarget:fromSelf(playerMember),
               true)
@@ -1737,6 +1759,7 @@ local function bomAddWeaponEnchant(spell, playerMember,
     -- Text: [Spell Name] (Main hand)
     tasklist:Add(
             spell.singleLink,
+            spell.single,
             "(" .. L.TooltipOffHand .. ")",
             BOM.Class.MemberBuffTarget:fromSelf(playerMember),
             true)
@@ -1750,6 +1773,7 @@ local function bomAddWeaponEnchant(spell, playerMember,
       -- Text: [Spell Name] (Off-hand) Blocked waiting
       tasklist:Add(
               spell.singleLink,
+              spell.single,
               "(" .. L.TooltipOffHand .. ") " .. L.ShamanEnchantBlocked,
               BOM.Class.MemberBuffTarget:fromSelf(playerMember),
               true)
@@ -1757,6 +1781,7 @@ local function bomAddWeaponEnchant(spell, playerMember,
       -- Text: [Spell Name] (Off-hand)
       tasklist:Add(
               spell.singleLink,
+              spell.single,
               "(" .. L.TooltipOffHand .. ")",
               BOM.Class.MemberBuffTarget:fromSelf(playerMember),
               true)
@@ -1801,6 +1826,7 @@ local function bomCheckReputationItems(playerMember)
       -- Text: [Argent Dawn Commission]
       tasklist:Add(
               BOM.ArgentumDawn.Link,
+              nil,
               L.TASK_CLASS_REMINDER,
               BOM.Class.MemberBuffTarget:fromSelf(playerMember),
               true)
@@ -1812,6 +1838,7 @@ local function bomCheckReputationItems(playerMember)
       -- Text: [Carrot on a Stick]
       tasklist:Add(
               BOM.Carrot.Link,
+              nil,
               L.TASK_CLASS_REMINDER,
               BOM.Class.MemberBuffTarget:fromSelf(playerMember),
               true)
@@ -1899,6 +1926,7 @@ local function bomCheckItemsAndContainers(playerMember, cast_button_title, macro
       -- Text: [Icon] [Item Link] @Target
       tasklist:Add(
               cast_button_title,
+              nil,
               "(" .. L.MsgOpenContainer .. ") " .. extra_msg,
               BOM.Class.MemberBuffTarget:fromSelf(playerMember),
               true)
@@ -1969,6 +1997,7 @@ local function bomScanSelectedSpells(playerMember, party, in_range, cast_button_
             -- Text: [Player Link] [Spell Link]
             tasklist:Add(
                     spell.singleLink or spell.single,
+                    spell.single,
                     "Info",
                     BOM.Class.MemberBuffTarget:fromMember(member),
                     true)
@@ -1985,6 +2014,7 @@ local function bomScanSelectedSpells(playerMember, party, in_range, cast_button_
             tasklist:AddWithPrefix(
                     L.TASK_ACTIVATE,
                     spell.singleLink or spell.single,
+                    spell.single,
                     L.BUFF_CLASS_TRACKING,
                     BOM.Class.MemberBuffTarget:fromSelf(playerMember),
                     false)

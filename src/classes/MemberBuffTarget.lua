@@ -37,7 +37,10 @@ function BOM.Class.MemberBuffTarget.GetDistance(self)
   if self.unitName == "player" then
     return 0
   end
+
   return BOM.Tool.UnitDistanceSquared(self.unitName)
+  --local result = BOM.Tool.UnitDistanceSquared(self.unitName)
+  --return result
 end
 
 function BOM.Class.MemberBuffTarget.GetText(self)

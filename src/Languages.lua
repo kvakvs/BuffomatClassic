@@ -24,6 +24,7 @@ local function bomLanguage_English()
     TASK_BLESS                    = "Bless",
     TASK_USE                      = "Use",
     TASK_ACTIVATE                 = "Activate",
+    ERR_RANGE                     = "Range",
 
     CHAT_MSG_PREFIX               = "Buffomat: ",
     Buffomat                      = "Buffomat", -- addon title in the main window
