@@ -10,7 +10,7 @@ end })
 
 local function bomLanguage_English()
   return {
-    SELF                          = "You", -- use instead of name when buffing self
+    SELF                          = "Self", -- use instead of name when buffing self
     BUFF_CLASS_SELF_ONLY          = "Self-buff",
     BUFF_CLASS_REGULAR            = "Buff",
     BUFF_CLASS_GROUPBUFF          = "Buff group",
@@ -40,6 +40,7 @@ local function bomLanguage_English()
     MsgNextCast                   = "%s @ %s",
     --MsgNoSpell="Out of Range or Mana",
     MsgFlying                     = "Flying auto-dismount disabled",
+    MsgOnTaxi                     = "No buffing on taxi",
     MsgBusy                       = "Busy / Casting",
     MsgBusyChanneling             = "Busy / Channeling",
     MsgNothingToDo                = "Nothing to do",

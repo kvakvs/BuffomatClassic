@@ -63,6 +63,7 @@ end
 ---Clear the cached text, and clear the message frame
 ---@param self TaskList
 function BOM.Class.TaskList.Clear(self)
+  BomC_ListTab_MessageFrame:Clear()
   wipe(self.tasks)
   wipe(self.comments)
 end
@@ -72,9 +73,9 @@ end
 local function bomCompareGroupsOrMembers(a, b)
   if not b then return false end
   if not a then return true end
-  return a.distance < b.distance or
-          a.priority < b.priority or
-          a.action_text < b.action_text
+  return a.distance < b.distance -- or
+          --a.priority < b.priority or
+          --a.action_text < b.action_text
 end
 
 ---Unload the contents of DisplayInfo cache into BomC_ListTab_MessageFrame

@@ -37,11 +37,13 @@ function BOM.Class.GroupBuffTarget.GetDistance(self)
     -- Search for nearest of 4 party members, who is not myself
     for groupIndex = 1, 4 do
       local member = BOM.GetMember("party" .. groupIndex)
-      local member_distance = BOM.Tool.UnitDistanceSquared(member.unitId)
+      if member then
+        local member_distance = BOM.Tool.UnitDistanceSquared(member.unitId)
 
-      if member and not member.isDead and member_distance < nearest_dist then
-        nearest_dist = member.distance
-        nearest = member
+        if not member.isDead and member_distance < nearest_dist then
+          nearest_dist = member.distance
+          nearest = member
+        end
       end
     end -- for party members
   end

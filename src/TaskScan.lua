@@ -2106,17 +2106,7 @@ local function bomUpdateScan_Scan()
 
   BOM.ForceUpdate = false
 
-  local flying = false -- prevent dismount in flight, OUCH!
-  if BOM.TBC then
-    flying = IsFlying() and not BOM.SharedState.AutoDismountFlying
-  end
-
-  if flying then
-    --Print player is flying, do not dismount, OUCH!
-    bomCastButton(L.MsgFlying, false)
-    bomUpdateMacro()
-
-  elseif BOM.PlayerCasting == "cast" then
+  if BOM.PlayerCasting == "cast" then
     --Print player is busy (casting normal spell)
     bomCastButton(L.MsgBusy, false)
     bomUpdateMacro()
@@ -2209,6 +2199,26 @@ local function bomUpdateScan_PreCheck(from)
     BOM.AutoClose()
     bomClearMacro()
     bomCastButton(why_disabled, false)
+    return
+  end
+
+  local flying = false -- prevent dismount in flight, OUCH!
+  if BOM.TBC then
+    flying = IsFlying() and not BOM.SharedState.AutoDismountFlying
+  end
+
+  if flying then
+    --Print player is flying, do not dismount, OUCH!
+    bomCastButton(L.MsgFlying, false)
+    bomUpdateMacro()
+    tasklist:Clear()
+    return
+
+  elseif UnitOnTaxi("player") then
+    --Print player is on taxi
+    bomCastButton(L.MsgOnTaxi, false)
+    bomUpdateMacro()
+    tasklist:Clear()
     return
   end
 

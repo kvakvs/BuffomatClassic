@@ -49,8 +49,9 @@ function BOM.Class.Task:new(prefix_text, action_link, action_text, extra_text,
   return fields
 end
 
-local bomGRAY = "777777"
-local bomRED = "cc4444"
+local bomGray = "777777"
+local bomRed = "cc4444"
+local bomBleakRed = "bb5555"
 
 function BOM.Class.Task.FormatText(self)
   local target = self.target:GetText() .. " "
@@ -59,9 +60,9 @@ function BOM.Class.Task.FormatText(self)
   end
   return string.format("%s%s %s %s",
           target,
-          BOM.Color(bomGRAY, self.prefix_text),
+          BOM.Color(bomGray, self.prefix_text),
           self.action_link,
-          BOM.Color(bomGRAY, self.extra_text))
+          BOM.Color(bomGray, self.extra_text))
 end
 
 function BOM.Class.Task.FormatTextInactive(self, reason)
@@ -69,8 +70,8 @@ function BOM.Class.Task.FormatTextInactive(self, reason)
   if self.isInfo then
     target = ""
   end
-  return string.format("%s%s %s",
-          BOM.Color(bomRED, reason),
+  return string.format("%s %s %s",
+          BOM.Color(bomRed, reason),
           target,
-          self.action_text)
+          BOM.Color(bomBleakRed, self.action_text))
 end

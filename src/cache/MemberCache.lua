@@ -6,16 +6,22 @@ local bom_member_cache = {}
 
 ---@return Member
 ---@param unitid string
----@param name_group string
----@param name_role string MAINTANK?
-function BOM.GetMember(unitid, name_group, name_role)
+---@param nameGroup string|number
+---@param nameRole string MAINTANK?
+function BOM.GetMember(unitid, nameGroup, nameRole)
   local name = UnitFullName(unitid)
   if name == nil then
     return nil
   end
 
-  local group = name_group and name_group[name] or 1
-  local isTank = name_role and (name_role[name] == "MAINTANK") or false
+  local group;
+  if type(nameGroup) == "number" then
+    group = nameGroup
+  else
+    group = nameGroup and nameGroup[name] or 1
+  end
+  
+  local isTank = nameRole and (nameRole[name] == "MAINTANK") or false
 
   local guid = UnitGUID(unitid)
   local _, class, link
