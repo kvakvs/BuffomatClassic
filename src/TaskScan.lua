@@ -1218,21 +1218,21 @@ local function bomWhisperExpired(spell)
   end
 end
 
----@param spell SpellDef
----@param groupIndex number
----@param classColorize boolean
----@return string
-local function bomFormatGroupBuffText(groupIndex, spell, classColorize)
-  if classColorize then
-    return string.format(L["FORMAT_BUFF_GROUP"],
-            "|c" .. RAID_CLASS_COLORS[groupIndex].colorStr .. BOM.Tool.ClassName[groupIndex] .. "|r",
-            spell.groupLink or spell.group or "?")
-  end
-
-  return string.format(L.FORMAT_BUFF_GROUP,
-          BOM.Tool.ClassName[groupIndex] or "?",
-          spell.groupLink or spell.group or "?")
-end
+-----@param spell SpellDef
+-----@param groupIndex number
+-----@param classColorize boolean
+-----@return string
+--local function bomFormatGroupBuffText(groupIndex, spell, classColorize)
+--  if classColorize then
+--    return string.format(L.FORMAT_BUFF_GROUP,
+--            "|c" .. RAID_CLASS_COLORS[groupIndex].colorStr .. BOM.Tool.ClassName[groupIndex] .. "|r",
+--            spell.groupLink or spell.group or "")
+--  end
+--
+--  return string.format(L.FORMAT_BUFF_GROUP,
+--          BOM.Tool.ClassName[groupIndex] or "?",
+--          spell.groupLink or spell.group or "")
+--end
 
 -- ---@param prefix string Icon or some sort of string to prepend
 -- ---@param member Member
@@ -1290,7 +1290,7 @@ local function bomAddBlessing(spell, player_member, in_range)
           -- Text: Group 5 [Spell Name] x Reagents
           tasklist:AddWithPrefix(
                   L.TASK_BLESS_GROUP,
-                  bomFormatGroupBuffText(groupIndex, spell, true) .. count,
+                  spell.groupLink or spell.group,
                   spell.single,
                   "",
                   BOM.Class.GroupBuffTarget:new(groupIndex),
@@ -1303,7 +1303,7 @@ local function bomAddBlessing(spell, player_member, in_range)
           -- Text: Group 5 [Spell Name] x Reagents
           tasklist:AddWithPrefix(
                   L.TASK_BLESS_GROUP,
-                  bomFormatGroupBuffText(groupIndex, spell, false) .. count,
+                  spell.groupLink or spell.group,
                   spell.single,
                   "",
                   BOM.Class.GroupBuffTarget:new(groupIndex),
@@ -1828,33 +1828,18 @@ local function bomCheckReputationItems(playerMember)
     --if playerMember.hasArgentumDawn ~= tContains(BOM.ArgentumDawn.zoneId, instanceID) then
     local hasArgentumDawn = tContains(BOM.ArgentumDawn.itemIds, itemTrinket1) or
             tContains(BOM.ArgentumDawn.itemIds, itemTrinket2)
-    if hasArgentumDawn ~= tContains(BOM.ArgentumDawn.zoneId, instanceID) then
-      -- Text: [Argent Dawn Commission]
+    if hasArgentumDawn and not tContains(BOM.ArgentumDawn.zoneId, instanceID) then
+      -- Text: Unequip [Argent Dawn Commission]
       tasklist:Comment(L.TASK_UNEQUIP .. " " .. L.AD_REPUTATION_REMINDER)
-      --tasklist:AddWithPrefix(
-      --        L.TASK_UNEQUIP,
-      --        L.AD_REPUTATION_REMINDER,
-      --        nil,
-      --        nil,
-      --        BOM.Class.MemberBuffTarget:fromSelf(playerMember),
-      --        true)
     end
   end
 
   if BOM.SharedState.Carrot then
-    --if playerMember.hasCarrot and not tContains(BOM.Carrot.zoneId, instanceID) then
     local hasCarrot = tContains(BOM.Carrot.itemIds, itemTrinket1) or
             tContains(BOM.Carrot.itemIds, itemTrinket2)
     if hasCarrot and not tContains(BOM.Carrot.zoneId, instanceID) then
-      -- Text: [Carrot on a Stick]
+      -- Text: Unequip [Carrot on a Stick]
       tasklist:Comment(L.TASK_UNEQUIP .. " " .. L.RIDING_SPEED_REMINDER)
-      --tasklist:AddWithPrefix(
-      --        L.TASK_UNEQUIP,
-      --        L.RIDING_SPEED_REMINDER,
-      --        nil,
-      --        nil,
-      --        BOM.Class.MemberBuffTarget:fromSelf(playerMember),
-      --        true)
     end
   end
 end

@@ -269,6 +269,8 @@ function Tool.GetRaidIcon(name)
   return ICON_TAG_LIST[x] and Tool.RaidIcon[ICON_TAG_LIST[x]] or name
 end
 
+local TOO_FAR = 1000000
+
 function Tool.UnitDistanceSquared(uId)
   --partly copied from DBM
   --    * Paul Emmerich (Tandanu @ EU-Aegwynn) (DBM-Core)
@@ -284,7 +286,7 @@ function Tool.UnitDistanceSquared(uId)
     if checkedDistance then
       range = distanceSquared
     elseif C_Map.GetBestMapForUnit(uId) ~= C_Map.GetBestMapForUnit("player") then
-      range = 1000000
+      range = TOO_FAR
     elseif IsItemInRange(8149, uId) then
       range = 64 -- 8 --Voodoo Charm
     elseif CheckInteractDistance(uId, 3) then

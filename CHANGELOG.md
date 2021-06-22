@@ -2,14 +2,17 @@
 
 ## Buffomat Classic and TBC 2021.6.4
 
-- Changed task list behaviour, code cleanup
-- Changed task wording, important data goes first
-- TBC: Prevent dismount in flight when attempting to cast, OUCH!
-- Reminder to unequip carrot now works for riding crop and (not in the game yet)
-  druid flight speed trinket
-- Fixed reminders to unequip AD trinket, added new Naxx trinket versions, added
-  new zones: Auchenai and Karazhan to the list of places
-  where undead can be found.
+- Changed task wording in the task list and how tasks are sorted and displayed
+- Distance calculations code improved, out of range tasks are shown in red
+- Group distance calculations code improved
+- Do not scan buffs while on a taxi flight
+- TBC: Prevent dismount in flight when attempting to cast, OUCH! There is an
+  option to enable this behaviour like before.
+- TBC: Reminder to unequip carrot now works for riding crop and (not in the game
+  yet) druid flight speed trinket.
+- TBC: Fixed reminders to unequip AD trinket, added new Naxx trinket versions,
+  added new zones: Auchenai and Karazhan to the list of places where undead can
+  be found.
 
 ## Buffomat Classic and TBC 2021.6.3
 

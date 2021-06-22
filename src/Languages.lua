@@ -39,7 +39,7 @@ local function bomLanguage_English()
     FORMAT_GROUP_NUM              = "G%s",
     MsgNextCast                   = "%s @ %s",
     --MsgNoSpell="Out of Range or Mana",
-    MsgFlying                     = "Flying auto-dismount disabled",
+    MsgFlying                     = "Flying; Dismount disabled",
     MsgOnTaxi                     = "No buffing on taxi",
     MsgBusy                       = "Busy / Casting",
     MsgBusyChanneling             = "Busy / Channeling",
