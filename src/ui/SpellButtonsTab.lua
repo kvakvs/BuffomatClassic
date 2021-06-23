@@ -604,14 +604,14 @@ end
 local function bomCreateTab(is_horde)
   local row_builder = BOM.Class.RowBuilder:new()
 
-  local _, self_class, _ = UnitClass("player")
+  local _, selfClass, _ = UnitClass("player")
 
   for i, spell in ipairs(BOM.SelectedSpells) do
     if type(spell.onlyUsableFor) == "table"
-            and not tContains(spell.onlyUsableFor, self_class) then
+            and not tContains(spell.onlyUsableFor, selfClass) then
       -- skip
     else
-      bomCreateTabRow(row_builder, is_horde, spell, self_class)
+      bomCreateTabRow(row_builder, is_horde, spell, selfClass)
     end
   end
 

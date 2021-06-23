@@ -16,6 +16,7 @@ BOM.Class = BOM.Class or {}
 ---@field minLevel number If not nil, will hide spell when below this level
 ---@field maxLevel number If not nil, will hide spell when above this level
 ---@field consumableEra string One of constants BOM.CLASSIC_ERA or BOM.TBC_ERA which will affect buff visibility based on used choice
+---@field tbcHunterPetBuff boolean True for TBC hunter pet consumable which places aura on the hunter pet
 ---
 --- Selected spell casting and display on the cast button
 ---@field extraText string Added to the right of spell name in the spells config
@@ -100,15 +101,17 @@ end
 ---@param item_id number|table<number> Item or multiple items giving this buff
 ---@param limitations table Add extra conditions, if not nil
 ---@param extraText string Add extra text to the right if not nil
-function BOM.Class.SpellDef:tbc_consumable(dst, single_id, item_id, limitations, extraText)
+---@return SpellDef
+function BOM.Class.SpellDef:tbc_consumable(dst, single_id, item_id, limitations, extraText, extraFields)
   if not BOM.TBC then
     return
   end
 
   ---@type SpellDef
-  local fields = { isConsumable  = true,
-                   default       = false,
-                   consumableEra = BOM.TBC_ERA }
+  local fields = extraFields or {}
+  fields.isConsumable = true
+  fields.default = false
+  fields.consumableEra = BOM.TBC_ERA
 
   if type(item_id) == "table" then
     fields.item = item_id[1]
@@ -129,6 +132,7 @@ end
 ---@param item_id number
 ---@param limitations table Add extra conditions, if not nil
 ---@param extraText string Add extra text to the right if not nil
+---@return SpellDef
 function BOM.Class.SpellDef:classic_consumable(dst, single_id, item_id, limitations, extraText)
   local fields = { item = item_id, isConsumable = true, default = false, consumableEra = BOM.CLASSIC_ERA }
   if extraText then

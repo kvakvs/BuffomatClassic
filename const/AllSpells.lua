@@ -52,6 +52,8 @@ end
 ---@param spells table<string, SpellDef>
 ---@param enchants table<string, table<number>>
 local function bom_setup_priest_spells(spells, enchants)
+  local priestOnly = { playerClass = "PRIEST" }
+
   BOM.Class.SpellDef:scan_spell(spells, 10938, -- Fortitude / Seelenstärke
           { groupId        = 21562, default = true,
             singleFamily   = { 1243, 1244, 1245, 2791, 10937, 10938, -- Ranks 1-6
@@ -80,7 +82,7 @@ local function bom_setup_priest_spells(spells, enchants)
             groupFamily     = { 27683, -- Rank 1
                                 39374 }, -- TBC: Rank 2
             reagentRequired = { 17028, 17029 }, targetClasses = BOM_ALL_CLASSES },
-          { playerClass = "PRIEST" })
+          priestOnly)
   BOM.Class.SpellDef:scan_spell(spells, 6346, -- Fear Ward
           { default = false, singleDuration = DURATION_10M, hasCD = true, targetClasses = BOM_ALL_CLASSES })
 
@@ -97,36 +99,38 @@ local function bom_setup_priest_spells(spells, enchants)
           { default      = true, isOwn = true,
             singleFamily = { 2652, 19261, 19262, 19264, 19265, 19266, -- Ranks 1-6
                              25461 } }, -- TBC: Rank 7
-          { playerClass = "PRIEST" })
+          priestOnly)
   BOM.Class.SpellDef:scan_spell(spells, 10952, -- Inner Fire / inneres Feuer
           { default      = true, isOwn = true,
             singleFamily = { 588, 7128, 602, 1006, 10951, 10952, -- Ranks 1-6
                              25431 } }, -- TBC: Rank 7
-          { playerClass = "PRIEST" })
+          priestOnly)
   BOM.Class.SpellDef:scan_spell(spells, 19312, -- Shadowguard
           { default      = true, isOwn = true,
             singleFamily = { 18137, 19308, 19309, 19310, 19311, 19312, -- Ranks 1-6
                              25477 } }, -- TBC: Rank 7
-          { playerClass = "PRIEST" })
+          priestOnly)
   BOM.Class.SpellDef:scan_spell(spells, 19293, -- Elune's Grace
           { default      = true, isOwn = true,
             singleFamily = { 2651, -- Rank 1 also TBC: The only rank
                              19289, 19291, 19292, 19293 } }, -- Ranks 2-5 (non-TBC)
-          { playerClass = "PRIEST" })
+          priestOnly)
   BOM.Class.SpellDef:scan_spell(spells, 15473, -- Shadow Form
           { default = false, isOwn = true },
-          { playerClass = "PRIEST" })
+          priestOnly)
   BOM.Class.SpellDef:scan_spell(spells, 20770, -- Resurrection / Auferstehung
           { cancelForm   = true, type = "resurrection", default = true,
             singleFamily = { 2006, 2010, 10880, 10881, 20770, -- Ranks 1-5
                              25435 } }, -- TBC: Rank 6
-          { playerClass = "PRIEST" })
+          priestOnly)
 end
 
 ---Add DRUID spells
 ---@param spells table<string, SpellDef>
 ---@param enchants table<string, table<number>>
 local function bom_setup_druid_spells(spells, enchants)
+  local druidOnly = { playerClass = "DRUID" }
+
   BOM.Class.SpellDef:scan_spell(spells, 9885, --Gift/Mark of the Wild | Gabe/Mal der Wildniss
           { groupId         = 21849, cancelForm = true, default = true,
             singleFamily    = { 1126, 5232, 6756, 5234, 8907, 9884, 9885, -- Ranks 1-7
@@ -135,22 +139,22 @@ local function bom_setup_druid_spells(spells, enchants)
                                 26991 }, -- TBC: Rank 3
             singleDuration  = DURATION_30M, groupDuration = DURATION_1H,
             reagentRequired = { 17021, 17026 }, targetClasses = BOM_ALL_CLASSES },
-          { playerClass = "DRUID" })
+          druidOnly)
   BOM.Class.SpellDef:scan_spell(spells, 9910, --Thorns | Dornen
           { cancelForm     = true, default = false,
             singleFamily   = { 467, 782, 1075, 8914, 9756, 9910, -- Ranks 1-6
                                26992 }, -- TBC: Rank 7
             singleDuration = DURATION_10M, targetClasses = BOM_MELEE_CLASSES },
-          { playerClass = "DRUID" })
+          druidOnly)
   BOM.Class.SpellDef:scan_spell(spells, 16864, --Omen of Clarity
           { isOwn = true, cancelForm = true, default = true },
-          { playerClass = "DRUID" })
+          druidOnly)
   BOM.Class.SpellDef:scan_spell(spells, 17329, -- Nature's Grasp | Griff der Natur
           { isOwn        = true, cancelForm = true, default = false,
             hasCD        = true, requiresOutdoors = true,
             singleFamily = { 16689, 16810, 16811, 16812, 16813, 17329, -- Rank 1-6
                              27009 } }, -- TBC: Rank 7
-          { playerClass = "DRUID" })
+          druidOnly)
   BOM.Class.SpellDef:scan_spell(spells, 33891, --TBC: Tree of life
           { isOwn = true, default = true, default = false, singleId = 33891, shapeshiftFormId = 2 },
           { isTBC = true, playerClass = "DRUID" })
@@ -159,13 +163,15 @@ local function bom_setup_druid_spells(spells, enchants)
   BOM.Class.SpellDef:scan_spell(spells, BOM.SpellId.Druid.TrackHumanoids, -- Track Humanoids (Cat Form)
           { type      = "tracking", needForm = CAT_FORM, default = true,
             extraText = L.SpellLabel_TrackHumanoids },
-          { playerClass = "DRUID" })
+          druidOnly)
 end
 
 ---Add MAGE spells
 ---@param spells table<string, SpellDef>
 ---@param enchants table<string, table<number>>
 local function bom_setup_mage_spells(spells, enchants)
+  local mageOnly = { playerClass = "MAGE" }
+
   --{singleId=10938, isOwn=true, default=true, lockIfHaveItem={BOM.ItemId.Mage.ManaRuby}}, -- manastone/debug
   BOM.SpellDef_ArcaneIntelligence = function()
     return BOM.Class.SpellDef:new(10157, --Arcane Intellect | Brilliance
@@ -182,39 +188,39 @@ local function bom_setup_mage_spells(spells, enchants)
           { default      = false, singleDuration = DURATION_10M, targetClasses = { },
             singleFamily = { 604, 8450, 8451, 10173, 10174, -- Ranks 1-5
                              33944 } }, -- TBC: Rank 6
-          { playerClass = "MAGE" })
+          mageOnly)
   BOM.Class.SpellDef:scan_spell(spells, 10170, --Amplify Magic
           { default      = false, singleDuration = DURATION_10M, targetClasses = { },
             singleFamily = { 1008, 8455, 10169, 10170, -- Ranks 1-4
                              27130, 33946 } }, -- TBC: Ranks 5-6
-          { playerClass = "MAGE" })
+          mageOnly)
   BOM.Class.SpellDef:scan_spell(spells, 10220, -- Ice Armor / eisrüstung
           { type         = "seal", default = false,
             singleFamily = { 7302, 7320, 10219, 10220, -- Ranks 1-4, levels 30 40 50 60
                              27124 } }, -- TBC: Rank 5, level 69
-          { playerClass = "MAGE" })
+          mageOnly)
   BOM.Class.SpellDef:scan_spell(spells, 7301, -- Frost Armor / frostrüstung
           { type         = "seal", default = false,
             singleFamily = { 168, 7300, 7301 } }, -- Ranks 1-3, Levels 1, 10, 20
-          { playerClass = "MAGE" })
+          mageOnly)
   BOM.Class.SpellDef:scan_spell(spells, 30482, -- TBC: Molten Armor
           { type = "seal", default = false, singleFamily = { 30482 } }, -- TBC: Rank 1
-          { playerClass = "MAGE" })
+          mageOnly)
   BOM.Class.SpellDef:scan_spell(spells, 22783, -- Mage Armor / magische rüstung
           { type         = "seal", default = false,
             singleFamily = { 6117, 22782, 22783, -- Ranks 1-3
                              27125 } }, -- TBC: Rank 4
-          { playerClass = "MAGE" })
+          mageOnly)
   BOM.Class.SpellDef:scan_spell(spells, 10193, --Mana Shield | Manaschild - unabhängig von allen.
           { isOwn        = true, default = false, singleDuration = 60,
             singleFamily = { 1463, 8494, 8495, 10191, 10192, 10193, -- Ranks 1-6
                              27131 } }, -- TBC: Rank 7
-          { playerClass = "MAGE" })
+          mageOnly)
   BOM.Class.SpellDef:scan_spell(spells, 13033, --Ice Barrier
           { isOwn        = true, default = false, singleDuration = 60,
             singleFamily = { 11426, 13031, 13032, 13033, -- Ranks 1-4
                              27134, 33405 } }, -- TBC: Ranks 5-6
-          { playerClass = "MAGE" })
+          mageOnly)
 
   if UnitLevel("player") >= 58 then
     -- Conjure separate mana gems of 3 kinds
@@ -238,7 +244,7 @@ local function bom_setup_mage_spells(spells, enchants)
                                  BOM.SpellId.Mage.ConjureManaCitrine,
                                  BOM.SpellId.Mage.ConjureManaRuby,
                                  BOM.SpellId.Mage.ConjureManaEmerald } },
-            { playerClass = "MAGE" })
+            mageOnly)
   end
 end
 
@@ -248,13 +254,14 @@ end
 local function bom_setup_shaman_spells(spells, enchants)
   local duration = tbc_or_classic(DURATION_20M, DURATION_10M)
   local enchant_duration = tbc_or_classic(DURATION_30M, DURATION_5M) -- TBC: Shaman enchants become 30min
+  local shamanOnly = { playerClass = "SHAMAN" }
 
   BOM.Class.SpellDef:scan_spell(spells, 16342, --Flametongue Weapon
           { type         = "weapon", isOwn = true, isConsumable = false,
             default      = false, singleDuration = enchant_duration,
             singleFamily = { 8024, 8027, 8030, 16339, 16341, 16342, -- Ranks 1-6
                              25489 } }, -- TBC: Rank 7
-          { playerClass = "SHAMAN" },
+          shamanOnly,
           { "shamanEnchant" })
   enchants[16342] = { 3, 4, 5, 523, 1665, 1666, --Flametongue
                       2634 } --TBC: Flametongue 7
@@ -264,7 +271,7 @@ local function bom_setup_shaman_spells(spells, enchants)
             default      = false, singleDuration = enchant_duration,
             singleFamily = { 8033, 8038, 10456, 16355, 16356, -- Ranks 1-5
                              25500 } }, -- TBC: Rank 6
-          { playerClass = "SHAMAN" },
+          shamanOnly,
           { "shamanEnchant" })
   enchants[16356] = { 2, 12, 524, 1667, 1668, -- Frostbrand
                       2635 } -- TBC: Frostbrand 6
@@ -274,7 +281,7 @@ local function bom_setup_shaman_spells(spells, enchants)
             default      = false, singleDuration = enchant_duration,
             singleFamily = { 8017, 8018, 8019, 10399, 16314, 16315, 16316, -- Ranks 1-7
                              25479, 25485 } }, -- TBC: Ranks 8-9
-          { playerClass = "SHAMAN" },
+          shamanOnly,
           { "shamanEnchant" })
   -- Note: in TBC all enchantIds for rockbiter have changed
   enchants[16316] = { 1, 6, 29, 503, 504, 683, 1663, 1664, -- Rockbiter, also 504 some special +80 Rockbiter?
@@ -287,7 +294,7 @@ local function bom_setup_shaman_spells(spells, enchants)
             default      = false, singleDuration = enchant_duration,
             singleFamily = { 8232, 8235, 10486, 16362, -- Ranks 1-4
                              25505 } }, -- TBC: Rank 5
-          { playerClass = "SHAMAN" },
+          shamanOnly,
           { "shamanEnchant" })
   enchants[16362] = { 283, 284, 525, 1669, -- Windfury 1-4
                       2636 } -- TBC: Windfury 5
@@ -296,7 +303,7 @@ local function bom_setup_shaman_spells(spells, enchants)
           { default      = false, isOwn = true, duration = duration,
             singleFamily = { 324, 325, 905, 945, 8134, 10431, 10432, -- Ranks 1-7
                              25469, 25472 } }, -- TBC: Ranks 8-9
-          { playerClass = "SHAMAN" })
+          shamanOnly)
 
   BOM.Class.SpellDef:scan_spell(spells, 33736, -- TBC: Water Shield 1, 2
           { isOwn = true, default = true, duration = duration, singleFamily = { 24398, 33736 } },
@@ -305,30 +312,32 @@ local function bom_setup_shaman_spells(spells, enchants)
   BOM.Class.SpellDef:scan_spell(spells, 20777, -- Ancestral Spirit / Auferstehung
           { type         = "resurrection", default = true,
             singleFamily = { 2008, 20609, 20610, 20776, 20777 } },
-          { playerClass = "SHAMAN" })
+          shamanOnly)
 end
 
 ---Add WARLOCK spells
 ---@param spells table<string, SpellDef>
 ---@param enchants table<string, table<number>>
 local function bom_setup_warlock_spells(spells, enchants)
+  local warlockOnly = { playerClass = "WARLOCK" }
+
   BOM.Class.SpellDef:scan_spell(spells, 5697, -- Unending Breath
           { default = false, singleDuration = DURATION_10M, targetClasses = BOM_ALL_CLASSES },
-          { playerClass = "WARLOCK" })
+          warlockOnly)
   BOM.Class.SpellDef:scan_spell(spells, 11743, -- Detect Greater Invisibility | Große Unsichtbarkeit entdecken
           { default        = false, singleFamily = { 132, 2970, 11743 },
             singleDuration = DURATION_10M, targetClasses = BOM_ALL_CLASSES },
-          { playerClass = "WARLOCK" })
+          warlockOnly)
   BOM.Class.SpellDef:scan_spell(spells, 28610, -- Shadow Ward / Schattenzauberschutz
           { isOwn = true, default = false, singleFamily = { 6229, 11739, 11740, 28610 } },
-          { playerClass = "WARLOCK" })
+          warlockOnly)
   BOM.Class.SpellDef:scan_spell(spells, 28176, -- TBC: Fel Armor
           { isOwn = true, default = false, singleFamily = { 28176, 28189 } }, -- TBC: Rank 1-2
           { isTBC = true, playerClass = "WARLOCK" })
   BOM.Class.SpellDef:scan_spell(spells, 11735, -- Demon Armor
           { isOwn = true, default = false, singleFamily = { 706, 1086, 11733, 11734, 11735, -- Rank 5
                                                             27260 } }, -- TBC: Rank 6
-          { playerClass = "WARLOCK" })
+          warlockOnly)
   -- Obsolete at level 20, assuming the player will visit the trainer and at 21
   -- the spell will disappear from Buffomat
   BOM.Class.SpellDef:scan_spell(spells, 696, -- Demon skin
@@ -336,23 +345,23 @@ local function bom_setup_warlock_spells(spells, enchants)
           { playerClass = "WARLOCK", maxLevel = 20 })
 
   BOM.Class.SpellDef:scan_spell(spells, 18788, -- Demonic Sacrifice
-          { isOwn = true, default = true }, { playerClass = "WARLOCK" })
+          { isOwn = true, default = true }, warlockOnly)
   BOM.Class.SpellDef:scan_spell(spells, 25228, -- TBC: Soul Link, talent spell 19028
-          { isOwn = true, default = true }, { playerClass = "WARLOCK" })
+          { isOwn = true, default = true }, warlockOnly)
   BOM.Class.SpellDef:scan_spell(spells, 17953, -- Firestone
           { isOwn          = true, default = false,
             lockIfHaveItem = { 1254, 13699, 13700, 13701,
                                22128 }, -- TBC: Master Firestone
             singleFamily   = { 6366, 17951, 17952, 17953, -- Rank 1-4
                                27250 } }, -- TBC: Rank 5
-          { playerClass = "WARLOCK" })
+          warlockOnly)
   BOM.Class.SpellDef:scan_spell(spells, 17728, -- Spellstone
           { isOwn          = true, default = false,
             lockIfHaveItem = { 5522, 13602, 13603, -- "normal", Greater, Major Spellstone
                                22646 }, -- TBC: Master Spellstone
             singleFamily   = { 2362, 17727, 17728, -- Rank 1-3
                                28172 } }, -- TBC: Rank 4
-          { playerClass = "WARLOCK" })
+          warlockOnly)
   BOM.Class.SpellDef:scan_spell(spells, 11730, -- Healtstone
           { isOwn          = true, default = true,
             lockIfHaveItem = { 5512, 19005, 19004, 5511, 19007, 19006, 5509, 19009,
@@ -360,37 +369,39 @@ local function bom_setup_warlock_spells(spells, enchants)
                                22103, 22104, 22105 }, -- TBC: Master Healthstone (3 talent ranks)
             singleFamily   = { 6201, 6202, 5699, 11729, 11730, -- Rank 1-5
                                27230 } },
-          { playerClass = "WARLOCK" }) -- TBC: Rank 6
+          warlockOnly) -- TBC: Rank 6
   BOM.Class.SpellDef:scan_spell(spells, 20757, --Soulstone
           { isOwn          = true, default = true,
             lockIfHaveItem = { 5232, 16892, 16893, 16895, 16896,
                                22116 }, -- TBC: Master Soulstone
             singleFamily   = { 693, 20752, 20755, 20756, 20757, -- Ranks 1-5
                                27238 } },
-          { playerClass = "WARLOCK" }) -- TBC: Rank 6
+          warlockOnly) -- TBC: Rank 6
   BOM.Class.SpellDef:scan_spell(spells, 5500, --Sense Demons
           { type = "tracking", default = false },
-          { playerClass = "WARLOCK" })
+          warlockOnly)
 end
 
 ---Add HUNTER spells
 ---@param spells table<string, SpellDef>
 ---@param enchants table<string, table<number>>
 local function bom_setup_hunter_spells(spells, enchants)
+  local hunterOnly = { playerClass = "HUNTER" }
+
   BOM.Class.SpellDef:scan_spell(spells, 20906, -- Trueshot Aura
           { isOwn        = true, default = true,
             singleFamily = { 19506, 20905, 20906, -- Ranks 1-3
                              27066 } }, -- TBC: Rank 4
-          { playerClass = "HUNTER" })
+          hunterOnly)
 
   BOM.Class.SpellDef:scan_spell(spells, 25296, --Aspect of the Hawk
           { type         = "aura", default = true,
             singleFamily = { 13165, 14318, 14319, 14320, 14321, 14322, 25296, -- Rank 1-7
                              27044 } }, -- TBC: Rank 8
-          { playerClass = "HUNTER" })
+          hunterOnly)
   BOM.Class.SpellDef:scan_spell(spells, 13163, --Aspect of the monkey
           { type = "aura", default = false },
-          { playerClass = "HUNTER" })
+          hunterOnly)
   BOM.Class.SpellDef:scan_spell(spells, 34074, -- TBC: Aspect of the Viper
           { type = "aura", default = false },
           { playerClass = "HUNTER", isTBC = true })
@@ -398,36 +409,46 @@ local function bom_setup_hunter_spells(spells, enchants)
           { type         = "aura", default = false,
             singleFamily = { 20043, 20190, -- Ranks 1-2
                              27045 } }, -- TBC: Rank 3
-          { playerClass = "HUNTER" })
+          hunterOnly)
   BOM.Class.SpellDef:scan_spell(spells, 5118, --Aspect of the Cheetah
-          { type = "aura", default = false }, { playerClass = "HUNTER" })
+          { type = "aura", default = false }, hunterOnly)
   BOM.Class.SpellDef:scan_spell(spells, 13159, --Aspect of the pack
-          { type = "aura", default = false }, { playerClass = "HUNTER" })
+          { type = "aura", default = false }, hunterOnly)
   BOM.Class.SpellDef:scan_spell(spells, 13161, -- Aspect of the beast
-          { type = "aura", default = false }, { playerClass = "HUNTER" })
+          { type = "aura", default = false }, hunterOnly)
 
   BOM.Class.SpellDef:scan_spell(spells, 1494, -- Track Beast
-          { type = "tracking", default = false }, { playerClass = "HUNTER" })
+          { type = "tracking", default = false }, hunterOnly)
   BOM.Class.SpellDef:scan_spell(spells, 19878, -- Track Demon
-          { type = "tracking", default = false }, { playerClass = "HUNTER" })
+          { type = "tracking", default = false }, hunterOnly)
   BOM.Class.SpellDef:scan_spell(spells, 19879, -- Track Dragonkin
-          { type = "tracking", default = false }, { playerClass = "HUNTER" })
+          { type = "tracking", default = false }, hunterOnly)
   BOM.Class.SpellDef:scan_spell(spells, 19880, -- Track Elemental
-          { type = "tracking", default = false }, { playerClass = "HUNTER" })
+          { type = "tracking", default = false }, hunterOnly)
   BOM.Class.SpellDef:scan_spell(spells, 19883, -- Track Humanoids
-          { type = "tracking", default = false }, { playerClass = "HUNTER" })
+          { type = "tracking", default = false }, hunterOnly)
   BOM.Class.SpellDef:scan_spell(spells, 19882, -- Track Giants / riesen
-          { type = "tracking", default = false }, { playerClass = "HUNTER" })
+          { type = "tracking", default = false }, hunterOnly)
   BOM.Class.SpellDef:scan_spell(spells, 19884, -- Track Undead
-          { type = "tracking", default = false }, { playerClass = "HUNTER" })
+          { type = "tracking", default = false }, hunterOnly)
   BOM.Class.SpellDef:scan_spell(spells, 19885, -- Track Hidden / verborgenes
-          { type = "tracking", default = false }, { playerClass = "HUNTER" })
+          { type = "tracking", default = false }, hunterOnly)
+
+  -- TODO: Do not use tbc_consumable function, add new flags for pet-buff
+  BOM.Class.SpellDef:tbc_consumable(spells, 43771, 33874,
+          hunterOnly, "Pet buff +Str",
+          { tbcHunterPetBuff = true }) --TBC: Kibler's Bits +20 STR/20 SPI for hunter pet
+  BOM.Class.SpellDef:tbc_consumable(spells, 33272, 27656,
+          hunterOnly, "Pet buff +Stamina",
+          { tbcHunterPetBuff = true }) --TBC: Sporeling Snack +20 STAM/20 SPI for hunter pet
 end
 
 ---Add PALADIN spells
 ---@param spells table<string, SpellDef>
 ---@param enchants table<string, table<number>>
 local function bom_setup_paladin_spells(spells, enchants)
+  local paladinOnly = { playerClass = "PALADIN" }
+
   BOM.Class.SpellDef:scan_spell(spells, 25780, --Righteous Fury, same in TBC
           { isOwn = true, default = false })
 
@@ -441,7 +462,7 @@ local function bom_setup_paladin_spells(spells, enchants)
           { groupFamily    = { 25898 }, isBlessing = true, default = true,
             singleDuration = blessing_duration, ignoreIfHaveBuff = { 25898 }, -- Greater kings
             targetClasses  = { "MAGE", "HUNTER", "WARLOCK" } },
-          { playerClass = "PALADIN" })
+          paladinOnly)
 
   BOM.Class.SpellDef:scan_spell(spells, 19979, -- Blessing of Light
           { singleFamily   = { 19977, 19978, 19979, -- Ranks 1-3
@@ -449,19 +470,19 @@ local function bom_setup_paladin_spells(spells, enchants)
             isBlessing     = true, default = true, ignoreIfHaveBuff = { 21177 }, -- Greater Light
             singleDuration = blessing_duration, groupDuration = greater_blessing_duration,
             targetClasses  = BOM_NO_CLASS },
-          { playerClass = "PALADIN" })
+          paladinOnly)
 
   BOM.Class.SpellDef:scan_spell(spells, 25291, --Blessing of Might
           { isBlessing     = true, default = true, ignoreIfHaveBuff = { 25782, 25916, 27141 }, -- Greater Might
             singleFamily   = { 19740, 19834, 19835, 19836, 19837, 19838, 25291, -- Ranks 1-7
                                27140 }, -- TBC: Rank 8
             singleDuration = blessing_duration, targetClasses = { "WARRIOR", "ROGUE" } },
-          { playerClass = "PALADIN" })
+          paladinOnly)
 
   BOM.Class.SpellDef:scan_spell(spells, 1038, --Blessing of Salvation
           { isBlessing    = true, default = true, singleDuration = blessing_duration,
             targetClasses = BOM_NO_CLASS, ignoreIfHaveBuff = { 25895 }, },
-          { playerClass = "PALADIN" })
+          paladinOnly)
 
   BOM.Class.SpellDef:scan_spell(spells, 25290, --Blessing of Wisdom
           { isBlessing     = true, default = true,
@@ -469,7 +490,7 @@ local function bom_setup_paladin_spells(spells, enchants)
                                27142 }, -- TBC: Rank 7
             singleDuration = blessing_duration, groupDuration = greater_blessing_duration,
             targetClasses  = { "DRUID", "SHAMAN", "PRIEST", "PALADIN" } },
-          { playerClass = "PALADIN" })
+          paladinOnly)
   BOM.Class.SpellDef:scan_spell(spells, 20914, --Blessing of Sanctuary
           { isBlessing      = true, default = true,
             groupFamily     = { 25899, -- Rank 1
@@ -479,14 +500,14 @@ local function bom_setup_paladin_spells(spells, enchants)
             reagentRequired = { 21177 },
             singleDuration  = blessing_duration, groupDuration = greater_blessing_duration,
             targetClasses   = BOM_NO_CLASS },
-          { playerClass = "PALADIN" })
+          paladinOnly)
   --
   -- GREATER BLESSINGS
   --
   BOM.Class.SpellDef:scan_spell(spells, 25898, --Greater Blessing of Kings
           { isBlessing      = true, default = true, singleDuration = greater_blessing_duration,
             reagentRequired = { 21177 }, targetClasses = { "MAGE", "HUNTER", "WARLOCK" }, },
-          { playerClass = "PALADIN" })
+          paladinOnly)
 
   BOM.Class.SpellDef:scan_spell(spells, 25890, -- Greater Blessing of Light
           { singleFamily    = { 25890, -- Rank 1
@@ -494,26 +515,26 @@ local function bom_setup_paladin_spells(spells, enchants)
             isBlessing      = true, default = false,
             reagentRequired = { 21177 }, singleDuration = greater_blessing_duration,
             targetClasses   = BOM_NO_CLASS },
-          { playerClass = "PALADIN" })
+          paladinOnly)
   BOM.Class.SpellDef:scan_spell(spells, 25916, --Greater Blessing of Might
           { isBlessing      = true, default = false,
             singleFamily    = { 25782, 25916, -- Ranks 1-2
                                 27141 }, -- TBC: Rank 3
             singleDuration  = greater_blessing_duration,
             reagentRequired = { 21177 }, targetClasses = { "WARRIOR", "ROGUE" } },
-          { playerClass = "PALADIN" })
+          paladinOnly)
   BOM.Class.SpellDef:scan_spell(spells, 25895, --Greater Blessing of Salvation
           { singleFamily    = { 25895 }, isBlessing = true, default = false,
             singleDuration  = greater_blessing_duration,
             reagentRequired = { 21177 }, targetClasses = BOM_NO_CLASS },
-          { playerClass = "PALADIN" })
+          paladinOnly)
   BOM.Class.SpellDef:scan_spell(spells, 25918, --Greater Blessing of Wisdom
           { isBlessing      = true, default = false,
             singleFamily    = { 25894, 25918, -- Ranks 1-2
                                 27143 }, -- TBC: Rank 3
             singleDuration  = greater_blessing_duration,
             reagentRequired = { 21177 }, targetClasses = { "DRUID", "SHAMAN", "PRIEST", "PALADIN" } },
-          { playerClass = "PALADIN" })
+          paladinOnly)
 
   -- END ------
   --
@@ -523,36 +544,36 @@ local function bom_setup_paladin_spells(spells, enchants)
           { type         = "aura", default = false,
             singleFamily = { 465, 10290, 643, 10291, 1032, 10292, 10293, -- Rank 1-7
                              27149 } }, -- TBC: Rank 8
-          { playerClass = "PALADIN" })
+          paladinOnly)
   BOM.Class.SpellDef:scan_spell(spells, 10301, -- Retribution Aura
           { type         = "aura", default = true,
             singleFamily = { 7294, 10298, 10299, 10300, 10301, -- Ranks 1-5
                              27150 } }, -- TBC: Rank 6
-          { playerClass = "PALADIN" })
+          paladinOnly)
   BOM.Class.SpellDef:scan_spell(spells, 19746, --Concentration Aura
           { type = "aura", default = false },
-          { playerClass = "PALADIN" })
+          paladinOnly)
   BOM.Class.SpellDef:scan_spell(spells, 19896, -- Shadow Resistance Aura
           { type = "aura", default = false, singleFamily = { 19876, 19895, 19896, -- Rank 1-3
                                                              27151 } }, -- TBC: Rank 4
-          { playerClass = "PALADIN" })
+          paladinOnly)
   BOM.Class.SpellDef:scan_spell(spells, 19898, -- Frost Resistance Aura
           { type = "aura", default = false, singleFamily = { 19888, 19897, 19898, -- Rank 1-3
                                                              27152 } }, -- TBC: Rank 4
-          { playerClass = "PALADIN" })
+          paladinOnly)
   BOM.Class.SpellDef:scan_spell(spells, 19900, -- Fire Resistance Aura
           { type = "aura", default = false, singleFamily = { 19891, 19899, 19900, -- Rank 1-3
                                                              27153 } }, -- TBC: Rank 4
-          { playerClass = "PALADIN" })
+          paladinOnly)
   BOM.Class.SpellDef:scan_spell(spells, 20218, --Sanctity Aura
           { type = "aura", default = false },
-          { playerClass = "PALADIN" })
+          paladinOnly)
   --
   -- ----------------------------------
   --
   BOM.Class.SpellDef:scan_spell(spells, 20773, -- Redemption / Auferstehung
           { type = "resurrection", default = true, singleFamily = { 7328, 10322, 10324, 20772, 20773 } },
-          { playerClass = "PALADIN" })
+          paladinOnly)
 
   BOM.Class.SpellDef:scan_spell(spells, 20164, -- Sanctity seal
           { type = "seal", default = false },
@@ -560,52 +581,54 @@ local function bom_setup_paladin_spells(spells, enchants)
 
   BOM.Class.SpellDef:scan_spell(spells, 5502, -- Sense undead
           { type = "tracking", default = false },
-          { playerClass = "PALADIN" })
+          paladinOnly)
 
   BOM.Class.SpellDef:scan_spell(spells, 20165, -- Seal of Light
           { type         = "seal", default = false,
             singleFamily = { 20165, 20347, 20348, 20349, -- Ranks 1-4
                              27160 } }, -- TBC: Rank 5
-          { playerClass = "PALADIN" })
+          paladinOnly)
   BOM.Class.SpellDef:scan_spell(spells, 20154, -- Seal of Righteousness
           { type         = "seal", default = false,
             singleFamily = { 20154, 20287, 20288, 20289, 20290, 20291, 20292, 20293, -- Ranks 1-8
                              27155 } }, -- TBC: Seal rank 9
-          { playerClass = "PALADIN" })
+          paladinOnly)
   BOM.Class.SpellDef:scan_spell(spells, 20166, -- Seal of Wisdom
           { type = "seal", default = false },
-          { playerClass = "PALADIN" })
+          paladinOnly)
   BOM.Class.SpellDef:scan_spell(spells, 348704, -- TBC: Seal of Vengeance
           { type         = "seal", default = false,
             singleFamily = { 31801, -- TBC: level 70 spell for Blood Elf
                              348704 } }, -- TBC: Base spell for the alliance races
-          { playerClass = "PALADIN" })
+          paladinOnly)
   BOM.Class.SpellDef:scan_spell(spells, 348700, -- TBC: Seal of the Martyr (Draenei, Dwarf, Human)
           { type = "seal", default = false },
-          { playerClass = "PALADIN" })
+          paladinOnly)
   BOM.Class.SpellDef:scan_spell(spells, 31892, -- TBC: Seal of Blood
           { type         = "seal", default = false,
             singleFamily = { 31892, -- TBC: Base Blood Elf spell
                              38008 } }, -- TBC: Alliance version???
-          { playerClass = "PALADIN" })
+          paladinOnly)
 end
 
 ---Add WARRIOR spells
 local function bom_setup_warrior_spells(spells, enchants)
+  local warriorOnly = { playerClass = "WARRIOR" }
+
   BOM.Class.SpellDef:scan_spell(spells, 25289, --Battle Shout
           { isOwn        = true, default = true, default = false,
             singleFamily = { 6673, 5242, 6192, 11549, 11550, 11551, 25289, -- Ranks 1-7
                              2048 } }, -- TBC: Rank 8
-          { playerClass = "WARRIOR" })
+          warriorOnly)
   BOM.Class.SpellDef:scan_spell(spells, 2457, --Battle Stance
           { isOwn = true, default = true, default = false, singleId = 2457, shapeshiftFormId = 17 },
-          { playerClass = "WARRIOR" })
+          warriorOnly)
   BOM.Class.SpellDef:scan_spell(spells, 71, --Defensive Stance
           { isOwn = true, default = true, default = false, singleId = 71, shapeshiftFormId = 18 },
-          { playerClass = "WARRIOR" })
+          warriorOnly)
   BOM.Class.SpellDef:scan_spell(spells, 2458, --Berserker Stance
           { isOwn = true, default = true, default = false, singleId = 2458, shapeshiftFormId = 19 },
-          { playerClass = "WARRIOR" })
+          warriorOnly)
 end
 
 ---Add ROGUE spells

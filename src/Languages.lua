@@ -50,6 +50,8 @@ local function bomLanguage_English()
     MsgSpellExpired               = "%s expired.",
     ActionInCombatError           = "Can't show/hide window in combat",
     MsgOpenContainer              = "Use or open",
+    MSG_MAINHAND_ENCHANT_MISSING  = "Missing main hand temporary enchant",
+    MSG_OFFHAND_ENCHANT_MISSING   = "Missing off-hand temporary enchant",
 
     InactiveReason_PlayerDead     = "You are dead",
     InactiveReason_InCombat       = "You are in combat",

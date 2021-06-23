@@ -508,15 +508,15 @@ end
 ---Update spell.NeedMember, spell.NeedGroup and spell.DeathGroup
 ---@param party table<number, Member> - the party
 ---@param spell SpellDef - the spell to update
----@param player_member Member - the player
----@param someone_is_dead boolean - the flag that buffing cannot continue while someone is dead
+---@param playerMember Member - the player
+---@param someoneIsDead boolean - the flag that buffing cannot continue while someone is dead
 ---@return boolean someone_is_dead
-local function bomUpdateSpellTargets(party, spell, player_member, someone_is_dead)
+local function bomUpdateSpellTargets(party, spell, playerMember, someoneIsDead)
   spell.NeedMember = spell.NeedMember or {}
   spell.NeedGroup = spell.NeedGroup or {}
   spell.DeathGroup = spell.DeathGroup or {}
 
-  local player_buff = player_member.buffs[spell.ConfigID]
+  local player_buff = playerMember.buffs[spell.ConfigID]
 
   wipe(spell.NeedGroup)
   wipe(spell.NeedMember)
@@ -527,15 +527,15 @@ local function bomUpdateSpellTargets(party, spell, player_member, someone_is_dea
   elseif spell.type == "weapon" then
     local weapon_spell = BOM.GetProfileSpell(spell.ConfigID)
 
-    if (weapon_spell.MainHandEnable and player_member.MainHandBuff == nil)
-            or (weapon_spell.OffHandEnable and player_member.OffHandBuff == nil)
+    if (weapon_spell.MainHandEnable and playerMember.MainHandBuff == nil)
+            or (weapon_spell.OffHandEnable and playerMember.OffHandBuff == nil)
     then
-      tinsert(spell.NeedMember, player_member)
+      tinsert(spell.NeedMember, playerMember)
     end
 
   elseif spell.isConsumable then
     if not player_buff then
-      tinsert(spell.NeedMember, player_member)
+      tinsert(spell.NeedMember, playerMember)
     end
 
   elseif spell.isInfo then
@@ -560,15 +560,15 @@ local function bomUpdateSpellTargets(party, spell, player_member, someone_is_dea
       end
     end
   elseif spell.isOwn then
-    if not player_member.isDead then
+    if not playerMember.isDead then
       if spell.lockIfHaveItem then
         if IsSpellKnown(spell.singleId) and not (bomHasItem(spell.lockIfHaveItem)) then
-          tinsert(spell.NeedMember, player_member)
+          tinsert(spell.NeedMember, playerMember)
         end
       elseif not (player_buff
               and bomTimeCheck(player_buff.expirationTime, player_buff.duration))
       then
-        tinsert(spell.NeedMember, player_member)
+        tinsert(spell.NeedMember, playerMember)
       end
     end
 
@@ -596,21 +596,21 @@ local function bomUpdateSpellTargets(party, spell, player_member, someone_is_dea
             or BOM.ForceTracking == spell.trackingIconId)
     then
       --print("Need tracking: ", spell.singleId)
-      tinsert(spell.NeedMember, player_member)
+      tinsert(spell.NeedMember, playerMember)
     end
 
   elseif spell.type == "aura" then
     if BOM.ActivAura ~= spell.ConfigID
             and (BOM.CurrentProfile.LastAura == nil or BOM.CurrentProfile.LastAura == spell.ConfigID)
     then
-      tinsert(spell.NeedMember, player_member)
+      tinsert(spell.NeedMember, playerMember)
     end
 
   elseif spell.type == "seal" then
     if BOM.ActivSeal ~= spell.ConfigID
             and (BOM.CurrentProfile.LastSeal == nil or BOM.CurrentProfile.LastSeal == spell.ConfigID)
     then
-      tinsert(spell.NeedMember, player_member)
+      tinsert(spell.NeedMember, playerMember)
     end
 
   elseif spell.isBlessing then
@@ -649,7 +649,7 @@ local function bomUpdateSpellTargets(party, spell, player_member, someone_is_dea
 
         if member.isDead then
           if member.group ~= 9 and member.class ~= "pet" then
-            someone_is_dead = true
+            someoneIsDead = true
             spell.DeathGroup[member.class] = true
           end
 
@@ -707,7 +707,7 @@ local function bomUpdateSpellTargets(party, spell, player_member, someone_is_dea
         local member_buff = member.buffs[spell.ConfigID]
 
         if member.isDead then
-          someone_is_dead = true
+          someoneIsDead = true
           spell.DeathGroup[member.group] = true
 
         elseif member_buff then
@@ -740,11 +740,11 @@ local function bomUpdateSpellTargets(party, spell, player_member, someone_is_dea
         BOM.MinTimer = startTime
       end
 
-      someone_is_dead = false
+      someoneIsDead = false
     end
   end
 
-  return someone_is_dead
+  return someoneIsDead
 end
 
 local function bomRecreateMacro()
@@ -1383,29 +1383,31 @@ local function bomAddBuff(spell, party, player_member, in_range)
     count = ""
   end
 
-  --Group buff
+  ------------------------
+  -- GROUP BUFF
+  ------------------------
   if spell.groupMana ~= nil and not BOM.SharedState.NoGroupBuff then
-    for group_index = 1, 8 do
-      if spell.NeedGroup[group_index]
-              and spell.NeedGroup[group_index] >= BOM.SharedState.MinBuff
+    for groupIndex = 1, 8 do
+      if spell.NeedGroup[groupIndex]
+              and spell.NeedGroup[groupIndex] >= BOM.SharedState.MinBuff
       then
         BOM.RepeatUpdate = true
-        local Group = bomGetGroupInRange(spell.group, spell.NeedMember, group_index, spell)
+        local Group = bomGetGroupInRange(spell.group, spell.NeedMember, groupIndex, spell)
 
         if Group == nil then
-          Group = bomGetGroupInRange(spell.group, party, group_index, spell)
+          Group = bomGetGroupInRange(spell.group, party, groupIndex, spell)
         end
 
         if Group ~= nil
-                and (not spell.DeathGroup[group_index] or not BOM.SharedState.DeathBlock)
+                and (not spell.DeathGroup[groupIndex] or not BOM.SharedState.DeathBlock)
         then
           -- Text: Group 5 [Spell Name]
           tasklist:AddWithPrefix(
                   L.BUFF_CLASS_GROUPBUFF,
-                  bomFormatGroupBuffText(group_index, spell, false) .. count,
+                  spell.groupLink or spell.group,
                   spell.single,
                   "",
-                  BOM.Class.GroupBuffTarget:new(group_index),
+                  BOM.Class.GroupBuffTarget:new(groupIndex),
                   false)
           in_range = true
 
@@ -1414,17 +1416,19 @@ local function bomAddBuff(spell, party, player_member, in_range)
           -- Text: Group 5 [Spell Name]
           tasklist:AddWithPrefix(
                   L.BUFF_CLASS_GROUPBUFF,
-                  bomFormatGroupBuffText(group_index, spell, false) .. count,
+                  spell.groupLink or spell.group,
                   spell.single,
                   "",
-                  BOM.Class.GroupBuffTarget:new(group_index),
+                  BOM.Class.GroupBuffTarget:new(groupIndex),
                   false)
         end -- if group not nil
       end
     end -- for all 8 groups
   end
 
+  ------------------------
   -- SINGLE BUFF
+  ------------------------
   for memberIndex, member in ipairs(spell.NeedMember) do
     if not member.isDead
             and spell.singleMana ~= nil
@@ -1552,7 +1556,7 @@ end
 
 ---Adds a display text for a self buff or tracking or seal/weapon self-enchant
 ---@param spell SpellDef - the spell to cast
----@param playerMember table - the player
+---@param playerMember Member - the player
 local function bomAddSelfbuff(spell, playerMember)
   if (not spell.requiresOutdoors or IsOutdoors())
           and not tContains(spell.SkipList, playerMember.name) then
@@ -1585,7 +1589,7 @@ end
 ---@param playerMember table - the player
 ---@param bag_title string - if not empty, is item name from the bag
 ---@param bag_command string - console command to use item from the bag
----@return table (bag_title string, bag_command string)
+---@return string, string {cast_button_title, bag_macro_command}
 local function bomAddConsumableSelfbuff(spell, playerMember, bag_title, bag_command)
   local ok, bag, slot, count = bomHasItem(spell.items, true)
   count = count or 0
@@ -1760,7 +1764,7 @@ local function bomAddWeaponEnchant(spell, playerMember,
     tasklist:Add(
             spell.singleLink,
             spell.single,
-            "(" .. L.TooltipOffHand .. ")",
+            L.TooltipOffHand,
             BOM.Class.MemberBuffTarget:fromSelf(playerMember),
             true)
     bomQueueSpell(spell.singleMana, spell.singleId, spell.singleLink,
@@ -1774,7 +1778,7 @@ local function bomAddWeaponEnchant(spell, playerMember,
       tasklist:Add(
               spell.singleLink,
               spell.single,
-              "(" .. L.TooltipOffHand .. ") " .. L.ShamanEnchantBlocked,
+              L.TooltipOffHand .. ": " .. L.ShamanEnchantBlocked,
               BOM.Class.MemberBuffTarget:fromSelf(playerMember),
               true)
     else
@@ -1782,7 +1786,7 @@ local function bomAddWeaponEnchant(spell, playerMember,
       tasklist:Add(
               spell.singleLink,
               spell.single,
-              "(" .. L.TooltipOffHand .. ")",
+              L.TooltipOffHand,
               BOM.Class.MemberBuffTarget:fromSelf(playerMember),
               true)
       bomQueueSpell(spell.singleMana, spell.singleId, spell.singleLink,
@@ -1857,11 +1861,7 @@ local function bomCheckMissingWeaponEnchantments(player_member)
 
     if link then
       -- Text: [Consumable Enchant Link]
-      tasklist:Comment(
-              link,
-              "Missing main hand temporary enchant",
-              player_member,
-              true)
+      tasklist:Comment(player_member, L.MSG_MAINHAND_ENCHANT_MISSING)
     end
   end
 
@@ -1869,11 +1869,7 @@ local function bomCheckMissingWeaponEnchantments(player_member)
     local link = GetInventoryItemLink("player", GetInventorySlotInfo("SECONDARYHANDSLOT"))
 
     if link then
-      tasklist:Comment(
-              link,
-              "Missing off-hand temporary enchant",
-              player_member,
-              true)
+      tasklist:Comment(player_member, L.MSG_OFFHAND_ENCHANT_MISSING)
     end
   end
 end
@@ -1985,6 +1981,13 @@ local function bomScanSelectedSpells(playerMember, party, in_range, cast_button_
 
       elseif spell.isConsumable then
         if #spell.NeedMember > 0 then
+          cast_button_title, macro_command = bomAddConsumableSelfbuff(
+                  spell, playerMember, cast_button_title, macro_command)
+        end
+
+      elseif spell.tbcHunterPetBuff then
+        if #spell.NeedMember > 0 then
+          -- Hunter pets provide buff on pet, but the hunter has to eat them
           cast_button_title, macro_command = bomAddConsumableSelfbuff(
                   spell, playerMember, cast_button_title, macro_command)
         end
