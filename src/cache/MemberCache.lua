@@ -2,7 +2,13 @@
 local TOCNAME, BOM = ...
 
 ---@type table<string, Member>
-local bom_member_cache = {}
+local bomMemberCache = {}
+
+---@type Member
+local bomPlayerMemberCache --Copy of player info dict
+
+---@type table<number, Member>
+local bomPartyCache --Copy of party members, a dict of Member's
 
 ---@return Member
 ---@param unitid string
@@ -40,19 +46,13 @@ function BOM.GetMember(unitid, nameGroup, nameRole)
     link = BOM.FormatTexture(BOM.ICON_PET) .. name
   end
 
-  bom_member_cache[unitid] = bom_member_cache[unitid] or BOM.Class.Member:new({})
+  bomMemberCache[unitid] = bomMemberCache[unitid] or BOM.Class.Member:new({})
 
-  local member = bom_member_cache[unitid]
+  local member = bomMemberCache[unitid]
   member:Construct(unitid, name, group, class, link, isTank)
 
   return member
 end
-
----@type Member
-local bom_player_member_cache --Copy of player info dict
-
----@type table<number, Member>
-local bom_party_cache --Copy of party members, a dict of Member's
 
 ---@return number Party size including pets
 local function bomGetPartySize()
@@ -174,12 +174,12 @@ function BOM.GetPartyMembers()
 
   -- check if stored party is correct!
   if not BOM.PartyUpdateNeeded
-          and bom_party_cache ~= nil
-          and bom_player_member_cache ~= nil then
+          and bomPartyCache ~= nil
+          and bomPlayerMemberCache ~= nil then
 
-    if #bom_party_cache == bomGetPartySize() + (BOM.SaveTargetName and 1 or 0) then
+    if #bomPartyCache == bomGetPartySize() + (BOM.SaveTargetName and 1 or 0) then
       local ok = true
-      for i, member in ipairs(bom_party_cache) do
+      for i, member in ipairs(bomPartyCache) do
         local name = (UnitFullName(member.unitId))
 
         if name ~= member.name then
@@ -189,8 +189,8 @@ function BOM.GetPartyMembers()
       end
 
       if ok then
-        party = bom_party_cache
-        player_member = bom_player_member_cache
+        party = bomPartyCache
+        player_member = bomPlayerMemberCache
       end
     end
   end
@@ -217,8 +217,8 @@ function BOM.GetPartyMembers()
       end
     end
 
-    bom_party_cache = party
-    bom_player_member_cache = player_member
+    bomPartyCache = party
+    bomPlayerMemberCache = player_member
 
     -- Cleanup BOM.PlayerBuffs
     for name, val in pairs(BOM.PlayerBuffs) do

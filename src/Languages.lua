@@ -24,11 +24,13 @@ local function bomLanguage_English()
     TASK_BLESS                    = "Bless",
     TASK_CAST                     = "Cast",
     TASK_USE                      = "Use",
+    TASK_TBC_HUNTER_PET_BUFF      = "Use on pet",
     TASK_ACTIVATE                 = "Activate",
     TASK_UNEQUIP                  = "Unequip",
     ERR_RANGE                     = "Range",
     AD_REPUTATION_REMINDER        = "Argent Dawn trinket",
     RIDING_SPEED_REMINDER         = "Riding/Flight Speed trinket",
+    OUT_OF_THAT_ITEM              = "Not in bags",
 
     CHAT_MSG_PREFIX               = "Buffomat: ",
     Buffomat                      = "Buffomat", -- addon title in the main window

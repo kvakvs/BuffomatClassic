@@ -13,6 +13,7 @@
 - TBC: Fixed reminders to unequip AD trinket, added new Naxx trinket versions,
   added new zones: Auchenai and Karazhan to the list of places where undead can
   be found.
+- TBC: Hunter pet snacks added (two types for +strength and +stamina)
 
 ## Buffomat Classic and TBC 2021.6.3
 

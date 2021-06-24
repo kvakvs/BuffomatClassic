@@ -55,7 +55,7 @@ BOM.Class = BOM.Class or {}
 ---@field isScanned boolean
 ---@field Class table
 ---@field ConfigID number Spell id of level 60 spell used as key everywhere else
----@field DeathGroup table List of group members who might be dead but in need of this buff
+---@field DeathGroup table<string, boolean> Group/class members who might be dead but their class needs this buff
 ---@field Enable boolean Whether buff is to be watched
 ---@field ExcludedTarget table<string> List of target names to never buff
 ---@field ForcedTarget table<string> List of extra targets to buff

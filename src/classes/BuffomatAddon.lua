@@ -21,7 +21,7 @@ BOM.Class = BOM.Class or {}
 ---@field ArgentumDawn table Equipped AD trinket: Spell to and zone ids to check
 ---@field BuffExchangeId table<number, table<number>> Combines spell ids of spellrank flavours into main spell id
 ---@field BuffIgnoreAll table<number> Having this buff on target excludes the target (phaseshifted imp for example)
----@field CachedHasItems table Items in player's bag
+---@field CachedHasItems table<string, CachedItem> Items in player's bag
 ---@field CancelBuffSource string Unit who casted the buff to be auto-canceled
 ---@field Carrot table Equipped Riding trinket: Spell to and zone ids to check
 ---@field CheckForError boolean Used by error suppression code
@@ -42,7 +42,9 @@ BOM.Class = BOM.Class or {}
 ---@field PartyUpdateNeeded boolean Requests player party update
 ---@field PlayerCasting string|nil Indicates that the player is currently casting (updated in event handlers)
 ---@field SelectedSpells table<number, SpellDef>
+---@field cancelForm table<number, number> Spell ids which cancel shapeshift form
 ---@field SpellIdIsSingle table<number, boolean> Whether spell ids are single buffs
+---@field SpellIdtoConfig table<number, number> Maps spell ids to the key id of spell in the AllSpells
 ---@field SpellTabsCreatedFlag boolean Indicated spells tab already populated with controls
 ---@field SpellToSpell table<number, number> Maps spells ids to other spell ids
 ---@field TBC boolean Whether we are running TBC classic

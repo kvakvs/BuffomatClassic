@@ -701,7 +701,7 @@ function BOM.Init()
       { "%", L["SlashProfile"], BOM.ChooseProfile }
     },
     },
-    { "spellbook", L["SlashSpellBook"], BOM.GetSpells },
+    { "spellbook", L["SlashSpellBook"], BOM.SetupAvailableSpells },
     { "update", L["SlashUpdate"],
       function()
         BOM.SetForceUpdate()
@@ -783,7 +783,7 @@ local function Event_Bag()
 end
 
 local function Event_SpellsChanged()
-  BOM.GetSpells()
+  BOM.SetupAvailableSpells()
   BOM.SetForceUpdate("Evt Spells Changed")
   BOM.SpellTabsCreatedFlag = false
   BOM.OptionsInsertSpells()
