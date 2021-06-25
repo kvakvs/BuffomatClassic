@@ -45,6 +45,7 @@ src/Toolbox.lua
 src/Languages.lua
 src/Toolbox.lua
 src/TaskScan.lua
+src/SpellSetup.lua
 src/Bom.lua
 
 src/ui/Bom.xml
