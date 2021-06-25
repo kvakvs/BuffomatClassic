@@ -344,10 +344,6 @@ local function bom_setup_warlock_spells(spells, enchants)
           { isOwn = true, default = false, singleFamily = { 687, 696 } },
           { playerClass = "WARLOCK", maxLevel = 20 })
 
-  BOM.Class.SpellDef:scan_spell(spells, 18788, -- Demonic Sacrifice
-          { isOwn = true, default = true }, warlockOnly)
-  BOM.Class.SpellDef:scan_spell(spells, 25228, -- TBC: Soul Link, talent spell 19028
-          { isOwn = true, default = true }, warlockOnly)
   BOM.Class.SpellDef:scan_spell(spells, 17953, -- Firestone
           { isOwn          = true, default = false,
             lockIfHaveItem = { 1254, 13699, 13700, 13701,
@@ -379,6 +375,47 @@ local function bom_setup_warlock_spells(spells, enchants)
           warlockOnly) -- TBC: Rank 6
   BOM.Class.SpellDef:scan_spell(spells, 5500, --Sense Demons
           { type = "tracking", default = false },
+          warlockOnly)
+
+  ------------------------
+  -- Pet Management
+  ------------------------
+  BOM.Class.SpellDef:scan_spell(spells, BOM.SpellId.Warlock.DemonicSacrifice, -- Demonic Sacrifice
+          { isOwn = true, default = true, requiresWarlockPet = true },
+          warlockOnly)
+  BOM.Class.SpellDef:scan_spell(spells, 19028, -- TBC: Soul Link, talent spell 19028, gives buff 25228
+          { isOwn              = true, default = true, singleFamily = { 19028, 25228 },
+            requiresWarlockPet = true },
+          warlockOnly)
+
+  BOM.Class.SpellDef:scan_spell(spells, 688, --Summon Imp
+          { type           = "summon", default = true, isOwn = true,
+            creatureFamily = "Imp", creatureType = "Demon", sacrificeAuraIds = { 18789 } },
+          warlockOnly)
+
+  BOM.Class.SpellDef:scan_spell(spells, 697, --Summon Voidwalker
+          { type            = "summon", default = false, isOwn = true,
+            reagentRequired = { BOM.ItemId.Warlock.SoulShard },
+            creatureFamily  = "Voidwalker", creatureType = "Demon",
+            sacrificeAuraIds = { 18790, 1905 } }, -- TBC: Restore 2% hp, and Classic: Shield the warlock
+          warlockOnly)
+
+  BOM.Class.SpellDef:scan_spell(spells, 712, --Summon Succubus
+          { type            = "summon", default = false, isOwn = true,
+            reagentRequired = { BOM.ItemId.Warlock.SoulShard },
+            creatureFamily  = "Succubus", creatureType = "Demon", sacrificeAuraIds = { 18791 } },
+          warlockOnly)
+
+  BOM.Class.SpellDef:scan_spell(spells, 691, --Summon Felhunter
+          { type            = "summon", default = false, isOwn = true,
+            reagentRequired = { BOM.ItemId.Warlock.SoulShard },
+            creatureFamily  = "Felhunter", creatureType = "Demon", sacrificeAuraIds = { 18792 } },
+          warlockOnly)
+
+  BOM.Class.SpellDef:scan_spell(spells, 30146, --Summon Felguard
+          { type            = "summon", default = false, isOwn = true,
+            reagentRequired = { BOM.ItemId.Warlock.SoulShard },
+            creatureFamily  = "Felguard", creatureType = "Demon", sacrificeAuraIds = { 35701 } },
           warlockOnly)
 end
 

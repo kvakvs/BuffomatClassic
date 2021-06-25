@@ -22,6 +22,7 @@ local function bomLanguage_English()
     BUFF_CONSUMABLE_REMINDER      = "Hold Shift/Ctrl or Alt",
     TASK_BLESS_GROUP              = "Bless Group",
     TASK_BLESS                    = "Bless",
+    TASK_SUMMON                   = "Summon",
     TASK_CAST                     = "Cast",
     TASK_USE                      = "Use",
     TASK_TBC_HUNTER_PET_BUFF      = "Use on pet",

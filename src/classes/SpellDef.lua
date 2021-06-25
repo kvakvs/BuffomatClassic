@@ -18,6 +18,11 @@ BOM.Class = BOM.Class or {}
 ---@field consumableEra string One of constants BOM.CLASSIC_ERA or BOM.TBC_ERA which will affect buff visibility based on used choice
 ---@field tbcHunterPetBuff boolean True for TBC hunter pet consumable which places aura on the hunter pet
 ---
+---@field creatureFamily string Warlock summon pet family for type='summon' (Imp, etc)
+---@field creatureType string Warlock summon pet type for type='summon' (Demon)
+---@field sacrificeAuraIds number Aura id for demonic sacrifice of that pet. Do not summon if buff is present.
+---@field requiresWarlockPet boolean For Soul Link - must check if a demon pet is present
+---
 --- Selected spell casting and display on the cast button
 ---@field extraText string Added to the right of spell name in the spells config
 ---@field singleLink string Printable link for single buff

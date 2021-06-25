@@ -4,6 +4,7 @@ BOM.Class = BOM.Class or {}
 
 ---@class Member
 ---@field buffs table<number, Buff> Buffs on player keyed by spell id, only buffs supported by Buffomat are stored
+---@field buffExists table<number, boolean> Availability of all auras even those not supported by BOM, by id, no extra detail stored
 ---@field class string
 ---@field distance number
 ---@field group number Raid group number (9 if temporary moved out of the raid by BOM)
@@ -48,6 +49,7 @@ function BOM.Class.Member:ForceUpdateBuffs(player_member)
   self.NeedBuff = true
 
   wipe(self.buffs)
+  wipe(self.buffExists)
 
   BOM.SomeBodyGhost = BOM.SomeBodyGhost or self.isGhost
 
@@ -65,6 +67,10 @@ function BOM.Class.Member:ForceUpdateBuffs(player_member)
       local name, icon, count, debuffType, duration, expirationTime, source, isStealable
       , nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, castByPlayer
       , nameplateShowAll, timeMod = BOM.UnitAura(self.unitId, buffIndex, "HELPFUL")
+
+      if spellId then
+        self.buffExists[spellId] = true -- save all buffids even those not supported
+      end
 
       spellId = BOM.SpellToSpell[spellId] or spellId
 
@@ -116,6 +122,7 @@ function BOM.Class.Member:Construct(unitid, name, group, class, link, isTank)
   self.link = link
   self.isTank = isTank
   self.buffs = self.buffs or {}
+  self.buffExists = self.buffExists or {}
 end
 
 function BOM.Class.Member.GetDistance(self)

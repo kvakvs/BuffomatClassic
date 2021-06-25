@@ -318,6 +318,22 @@ local function bomUpdateSpellTargets(party, spell, playerMember, someoneIsDead)
       tinsert(spell.NeedMember, playerMember)
     end
 
+    --elseif spell.type == "summon" then
+    --  if not UnitExists("pet") then
+    --    -- No pet? Need summon
+    --    BOM.Dbg("No pet, summon")
+    --    tinsert(spell.NeedMember, playerMember)
+    --  else
+    --    -- Have pet? Check pet type
+    --    local ucType = UnitCreatureType("pet")
+    --    local ucFamily = UnitCreatureFamily("pet")
+    --
+    --    if ucType ~= spell.creatureType or ucFamily ~= spell.creatureFamily then
+    --      BOM.Dbg("Pet of " .. ucType .. ":" .. ucFamily .. " is wrong, summon")
+    --      tinsert(spell.NeedMember, playerMember)
+    --    end
+    --  end
+
   elseif spell.type == "aura" then
     if BOM.ActivAura ~= spell.ConfigID
             and (BOM.CurrentProfile.LastAura == nil or BOM.CurrentProfile.LastAura == spell.ConfigID)
@@ -488,9 +504,9 @@ local function bomClearMacro()
     return
   end
   bomRecreateMacro()
-  local macroText = "#showtooltip\n/bom update\n"
+  local macroText = "#showtooltip\n"
   icon = BOM.MACRO_ICON_DISABLED
-  EditMacro(BOM.MACRO_NAME, nil, icon, macroText)
+  EditMacro(BOM.MACRO_NAME, nil, icon, macroText .. "\n/bom update\n")
 end
 
 ---Updates the BOM macro
@@ -551,20 +567,20 @@ local function bomUpdateMacro(member, spellId, command)
     BOM.CastFailedSpellId = spellId
     local name = GetSpellInfo(spellId)
 
-    macroText = "#showtooltip\n/bom update\n" ..
+    macroText = "#showtooltip\n" ..
             (tContains(BOM.cancelForm, spellId) and "/cancelform [nocombat]\n" or "") ..
             "/bom _checkforerror\n" ..
             "/cast [@" .. member.unitId .. ",nocombat]" .. name .. rank .. "\n"
     icon = BOM.MACRO_ICON
   else
-    macroText = "#showtooltip\n/bom update\n"
+    macroText = "#showtooltip\n"
     if command then
       macroText = macroText .. command
     end
     icon = BOM.MACRO_ICON_DISABLED
   end
 
-  EditMacro(BOM.MACRO_NAME, nil, icon, macroText)
+  EditMacro(BOM.MACRO_NAME, nil, icon, macroText .. "\n/bom update\n")
   BOM.MinimapButton.SetTexture("Interface\\ICONS\\" .. icon)
 end
 
@@ -1289,6 +1305,12 @@ end
 ---@param spell SpellDef - the spell to cast
 ---@param playerMember Member - the player
 local function bomAddSelfbuff(spell, playerMember)
+  if spell.requiresWarlockPet then
+    if not UnitExists("pet") or UnitCreatureType("pet") ~= "Demon" then
+      return -- No demon pet - buff can not be casted
+    end
+  end
+
   if (not spell.requiresOutdoors or IsOutdoors())
           and not tContains(spell.SkipList, playerMember.name) then
     -- Text: Target [Spell Name]
@@ -1311,6 +1333,48 @@ local function bomAddSelfbuff(spell, playerMember)
             L.BUFF_CLASS_SELF_ONLY,
             BOM.Class.MemberBuffTarget:fromSelf(playerMember),
             true)
+  end
+end
+
+---Adds a summon spell to the tasks
+---@param spell SpellDef - the spell to cast
+---@param playerMember Member
+local function bomAddSummonSpell(spell, playerMember)
+  if spell.sacrificeAuraIds then
+    for i, id in ipairs(spell.sacrificeAuraIds) do
+      if playerMember.buffExists[id] then
+        return
+      end
+    end -- for each sacrifice aura id
+  end
+
+  local add = false
+
+  if not UnitExists("pet") then
+    -- No pet? Need summon
+    add = true
+  else
+    -- Have pet? Check pet type
+    local ucType = UnitCreatureType("pet")
+    local ucFamily = UnitCreatureFamily("pet")
+
+    if ucType ~= spell.creatureType or ucFamily ~= spell.creatureFamily then
+      add = true
+    end
+  end
+
+  if add then
+    -- Text: Summon [Spell Name]
+    tasklist:AddWithPrefix(
+            L.TASK_SUMMON,
+            spell.singleLink or spell.single,
+            spell.single,
+            nil,
+            BOM.Class.MemberBuffTarget:fromSelf(playerMember),
+            false)
+
+    bomQueueSpell(spell.singleMana, spell.singleId, spell.singleLink,
+            playerMember, spell)
   end
 end
 
@@ -1697,7 +1761,10 @@ local function bomScanOneSpell(spell, playerMember, party, inRange,
     end
   end
 
-  if spell.type == "weapon" then
+  if spell.type == "summon" then
+    bomAddSummonSpell(spell, playerMember)
+
+  elseif spell.type == "weapon" then
     if #spell.NeedMember > 0 then
       if spell.isConsumable then
         castButtonTitle, macroCommand = bomAddConsumableWeaponBuff(

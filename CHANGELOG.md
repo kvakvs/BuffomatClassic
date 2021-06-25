@@ -16,6 +16,9 @@
 - TBC: Hunter pet snacks added (two types for +strength and +stamina)
 - TBC: Added Bloodthistle to spell power buffs (Blood elf only)
 - TBC: Added Warp Burger, Grilled Mudfish to the 20 AGI/20 SPI buff food
+- Warlock: Added Soul Link and Demonic Sacrifice (require pet to be present)
+- Warlock: Added pet summon checkboxes. Summon will be inactive if pet of the
+  correct family is present, or if demonic sacrifice for that pet is active. 
 
 ## Buffomat Classic and TBC 2021.6.3
 
