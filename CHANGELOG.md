@@ -1,6 +1,6 @@
 # Changelog
 
-## Buffomat Classic and TBC 2021.6.4
+## Buffomat Classic and TBC 2021.6.5
 
 - Changed task wording in the task list and how tasks are sorted and displayed
 - Distance calculations code improved, out of range tasks are shown in red
@@ -18,7 +18,8 @@
 - TBC: Added Warp Burger, Grilled Mudfish to the 20 AGI/20 SPI buff food
 - Warlock: Added Soul Link and Demonic Sacrifice (require pet to be present)
 - Warlock: Added pet summon checkboxes. Summon will be inactive if pet of the
-  correct family is present, or if demonic sacrifice for that pet is active. 
+  correct family is present, or if demonic sacrifice for that pet is active.
+- Localization: Chinese translations updated.
 
 ## Buffomat Classic and TBC 2021.6.3
 

@@ -733,7 +733,7 @@ function BOM.SetupTranslations()
   setmetatable(BOM.L, {
     __index = BOM.locales["enEN"]
   })
-  BOM.L.AboutCredits = "wellcat for the Chinese translation|n" ..
+  BOM.L.AboutCredits = "nanjuekaien1 & wellcat for the Chinese translation|n" ..
           "OlivBEL for the french translation|n" ..
           "Arrogant_Dreamer & kvakvs for the russian translation|n"
 end
