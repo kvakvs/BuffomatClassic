@@ -168,19 +168,12 @@ local function bom_check_limitations(spell, limitations)
       end
     end
 
-    --if lim == "consumableEra" then
-    --  if BOM.TBC then
-    --    -- Fail if era is TBC, and consumable is from Classic era and show Classic consumes is disabled
-    --    if val == BOM.CLASSIC_ERA and not BOM.SharedState.ShowClassicConsumables then
-    --      return false
-    --    end
-    --  else
-    --    -- Fail if era is Classic, and consumable is from TBC era and show TBC consumes is disabled
-    --    if val == BOM.TBC_ERA and not BOM.SharedState.ShowTBCConsumables then
-    --      return false
-    --    end
-    --  end
-    --end
+    if lim == "playerRace" then
+      local _localisedRace, englishRace, _numericId = UnitRace("player")
+      if englishRace ~= val then
+        return false
+      end
+    end
 
     if lim == "playerClass" then
       if type(val) == "table" then

@@ -1401,7 +1401,7 @@ local function bomAddConsumableWeaponBuff(spell, playerMember,
         tasklist:Add(
                 offhand_message(),
                 nil,
-                "(" .. L.TooltipOffHand .. ") ",
+                "(" .. L.TooltipOffHand .. ") " .. L.BUFF_CONSUMABLE_REMINDER,
                 BOM.Class.MemberBuffTarget:fromSelf(playerMember),
                 true)
       else
@@ -1414,7 +1414,7 @@ local function bomAddConsumableWeaponBuff(spell, playerMember,
                 nil,
                 "(" .. L.TooltipOffHand .. ") ",
                 BOM.Class.MemberBuffTarget:fromSelf(playerMember),
-                true)
+                false)
       end
     end
 
@@ -1430,7 +1430,7 @@ local function bomAddConsumableWeaponBuff(spell, playerMember,
         tasklist:Add(
                 mainhand_message(),
                 nil,
-                "(" .. L.TooltipMainHand .. ") ",
+                "(" .. L.TooltipMainHand .. ") " .. L.BUFF_CONSUMABLE_REMINDER,
                 BOM.Class.MemberBuffTarget:fromSelf(playerMember),
                 true)
       else
@@ -1442,7 +1442,7 @@ local function bomAddConsumableWeaponBuff(spell, playerMember,
                 nil,
                 "(" .. L.TooltipMainHand .. ") ",
                 BOM.Class.MemberBuffTarget:fromSelf(playerMember),
-                true)
+                false)
       end
     end
     BOM.ScanModifier = BOM.SharedState.DontUseConsumables
@@ -1502,7 +1502,7 @@ local function bomAddWeaponEnchant(spell, playerMember,
             spell.single,
             L.TooltipOffHand,
             BOM.Class.MemberBuffTarget:fromSelf(playerMember),
-            true)
+            false)
     bomQueueSpell(spell.singleMana, spell.singleId, spell.singleLink,
             playerMember, spell)
   end
@@ -1524,7 +1524,7 @@ local function bomAddWeaponEnchant(spell, playerMember,
               spell.single,
               L.TooltipOffHand,
               BOM.Class.MemberBuffTarget:fromSelf(playerMember),
-              true)
+              false)
       bomQueueSpell(spell.singleMana, spell.singleId, spell.singleLink,
               playerMember, spell)
     end

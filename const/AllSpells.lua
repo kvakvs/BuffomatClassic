@@ -841,6 +841,10 @@ end
 ---@param enchants table<string, table<number>>
 local function bom_setup_caster_battle_elixirs(spells, enchants)
   -- Not visible in Classic
+  BOM.Class.SpellDef:tbc_consumable(spells, 28273, 22710, --TBC: Bloodthistle (Belf only)
+          { playerRace = "BloodElf", playerClass = BOM_MANA_CLASSES },
+          "+10 spell")
+
   BOM.Class.SpellDef:tbc_consumable(spells, 28509, 22840) --TBC: Elixir of Major Mageblood +16 mp5
   BOM.Class.SpellDef:tbc_consumable(spells, 28503, 22835, --TBC: Elixir of Major Shadow Power +55 SHADOW
           { playerClass = BOM_SHADOW_CLASSES })
@@ -979,17 +983,19 @@ local function bom_setup_food(spells, enchants)
           nil, L.TooltipSimilarFoods)
   --BOM.Class.SpellDef:tbc_consumable(spells, 35272, { 27660, 31672, 33026 }) --Well Fed +20 STA +20 SPI
 
-  BOM.Class.SpellDef:tbc_consumable(spells, 33261, { 27659, 30358, 27664 }, --Well Fed +20 AGI +20 SPI
+  -- Warp Burger, Grilled Mudfish, ...
+  BOM.Class.SpellDef:tbc_consumable(spells, 33261, { 27659, 30358, 27664, 33288, 33293 }, --Well Fed +20 AGI +20 SPI
           { playerClass = BOM_PHYSICAL_CLASSES }, L.TooltipSimilarFoods)
   BOM.Class.SpellDef:tbc_consumable(spells, 43764, 33872, --Spicy Hot Talbuk: Well Fed +20 HITRATING +20 SPI
           { playerClass = BOM_PHYSICAL_CLASSES })
   BOM.Class.SpellDef:tbc_consumable(spells, 33256, { 27658, 30359 }, -- Well Fed +20 STR +20 SPI
           { playerClass = BOM_MELEE_CLASSES }, L.TooltipSimilarFoods)
   BOM.Class.SpellDef:tbc_consumable(spells, 33259, 27655) --Ravager Dog: Well Fed +40 AP +20 SPI
-  BOM.Class.SpellDef:tbc_consumable(spells, 41030, 32721, --Skyguard Rations: Well Fed +15 STA +15 SPI
-          { playerClass = BOM_MANA_CLASSES })
   BOM.Class.SpellDef:tbc_consumable(spells, 46899, 35563, --Charred Bear Kabobs +24 AP
           { playerClass = BOM_PHYSICAL_CLASSES })
+
+  BOM.Class.SpellDef:tbc_consumable(spells, 41030, 32721, --Skyguard Rations: Well Fed +15 STA +15 SPI
+          { playerClass = BOM_MANA_CLASSES })
   BOM.Class.SpellDef:tbc_consumable(spells, 33263, { 27657, 31673, 27665, 30361 }, --Well Fed +23 SPELL +20 SPI
           { playerClass = BOM_MANA_CLASSES },
           L.TooltipSimilarFoods)

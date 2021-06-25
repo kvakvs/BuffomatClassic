@@ -14,6 +14,8 @@
   added new zones: Auchenai and Karazhan to the list of places where undead can
   be found.
 - TBC: Hunter pet snacks added (two types for +strength and +stamina)
+- TBC: Added Bloodthistle to spell power buffs (Blood elf only)
+- TBC: Added Warp Burger, Grilled Mudfish to the 20 AGI/20 SPI buff food
 
 ## Buffomat Classic and TBC 2021.6.3
 
