@@ -600,6 +600,8 @@ function BOM.Init()
   BOM.SetupItemCache()
   BOM.SetupTasklist()
 
+  BOM.Macro = BOM.Class.Macro:new(BOM.MACRO_NAME)
+
   function SetDefault(db, var, init)
     if db[var] == nil then
       db[var] = init

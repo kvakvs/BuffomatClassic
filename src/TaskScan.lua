@@ -482,41 +482,15 @@ local function bomUpdateSpellTargets(party, spell, playerMember, someoneIsDead)
   return someoneIsDead
 end
 
-local function bomRecreateMacro()
-  if (GetMacroInfo(BOM.MACRO_NAME)) == nil then
-    local perAccount, perChar = GetNumMacros()
-    local isChar
-
-    if perChar < MAX_CHARACTER_MACROS then
-      isChar = 1
-    elseif perAccount >= MAX_ACCOUNT_MACROS then
-      BOM.Print(L.MsgNeedOneMacroSlot)
-      return
-    end
-
-    CreateMacro(BOM.MACRO_NAME, BOM.MACRO_ICON, "", isChar)
-  end
-end
-
---- Does same as call to BOM.UpdateMacro with command and when member/spellid are nil
-local function bomClearMacro()
-  if InCombatLockdown() then
-    return
-  end
-  bomRecreateMacro()
-  local macroText = "#showtooltip\n"
-  icon = BOM.MACRO_ICON_DISABLED
-  EditMacro(BOM.MACRO_NAME, nil, icon, macroText .. "\n/bom update\n")
-end
-
 ---Updates the BOM macro
 ---@param member table - next target to buff
 ---@param spellId number - spell to cast
 ---@param command string - bag command
 local function bomUpdateMacro(member, spellId, command)
-  bomRecreateMacro()
+  local macro = BOM.Macro
+  macro:Recreate()
+  wipe(macro.lines)
 
-  local macroText, icon
   if member and spellId then
     --Downgrade-Check
     local spell = BOM.ConfigToSpell[spellId]
@@ -540,9 +514,8 @@ local function bomUpdateMacro(member, spellId, command)
 
         if x then
           local newSpellId
-          --print("Dodowngrade",spell.DownGrade[member.name])
+
           for i, id in ipairs(x) do
-            --print(id)
             if BOM.SharedState.SpellGreatherEqualThan[id] == nil or BOM.SharedState.SpellGreatherEqualThan[id] < level then
               newSpellId = id
             else
@@ -551,7 +524,6 @@ local function bomUpdateMacro(member, spellId, command)
             if id == spellId then
               break
             end
-            --print(newSpellId,spellId,"Set")
           end
           spellId = newSpellId or spellId
         end
@@ -567,21 +539,20 @@ local function bomUpdateMacro(member, spellId, command)
     BOM.CastFailedSpellId = spellId
     local name = GetSpellInfo(spellId)
 
-    macroText = "#showtooltip\n" ..
-            (tContains(BOM.cancelForm, spellId) and "/cancelform [nocombat]\n" or "") ..
-            "/bom _checkforerror\n" ..
-            "/cast [@" .. member.unitId .. ",nocombat]" .. name .. rank .. "\n"
-    icon = BOM.MACRO_ICON
-  else
-    macroText = "#showtooltip\n"
-    if command then
-      macroText = macroText .. command
+    if tContains(BOM.cancelForm, spellId) then
+      tinsert(macro.lines,  "/cancelform [nocombat]" )
     end
-    icon = BOM.MACRO_ICON_DISABLED
+    tinsert(macro.lines, "/bom _checkforerror")
+    tinsert(macro.lines, "/cast [@" .. member.unitId .. ",nocombat]" .. name .. rank)
+    macro.icon = BOM.MACRO_ICON
+  else
+    if command then
+      tinsert(macro.lines, command)
+    end
+    macro.icon = BOM.MACRO_ICON_DISABLED
   end
 
-  EditMacro(BOM.MACRO_NAME, nil, icon, macroText .. "\n/bom update\n")
-  BOM.MinimapButton.SetTexture("Interface\\ICONS\\" .. icon)
+  macro:UpdateMacro()
 end
 
 local function bomGetGroupInRange(SpellName, party, groupNb, spell)
@@ -1997,7 +1968,7 @@ local function bomUpdateScan_PreCheck(from)
     BOM.ForceUpdate = false
     BOM.CheckForError = false
     BOM.AutoClose()
-    bomClearMacro()
+    BOM.Macro:Clear()
     bomCastButton(why_disabled, false)
     return
   end

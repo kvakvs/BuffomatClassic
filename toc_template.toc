@@ -24,6 +24,7 @@ src/classes/Options.lua
 src/classes/RowBuilder.lua
 src/classes/SpellDef.lua
 src/classes/State.lua
+src/classes/Macro.lua
 src/classes/CharacterState.lua
 src/classes/Task.lua
 src/classes/MemberBuffTarget.lua
