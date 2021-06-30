@@ -4,6 +4,7 @@
 
 - Bug: Physical classes restriction on some consumables did not include
   Paladins. Now this is fixed.
+- TBC: Marked consumables from Classic Era as "Classic"
 
 ## Buffomat Classic and TBC 2021.6.6
 

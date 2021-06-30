@@ -107,7 +107,7 @@ end
 ---@param limitations table Add extra conditions, if not nil
 ---@param extraText string Add extra text to the right if not nil
 ---@return SpellDef
-function BOM.Class.SpellDef:tbc_consumable(dst, single_id, item_id, limitations, extraText, extraFields)
+function BOM.Class.SpellDef:tbcConsumable(dst, single_id, item_id, limitations, extraText, extraFields)
   if not BOM.TBC then
     return
   end
@@ -129,7 +129,7 @@ function BOM.Class.SpellDef:tbc_consumable(dst, single_id, item_id, limitations,
     fields.extraText = extraText
   end
 
-  BOM.Class.SpellDef:scan_spell(dst, single_id, fields, limitations)
+  BOM.Class.SpellDef:scanSpell(dst, single_id, fields, limitations)
 end
 
 ---@param dst table<SpellDef>
@@ -138,17 +138,17 @@ end
 ---@param limitations table Add extra conditions, if not nil
 ---@param extraText string Add extra text to the right if not nil
 ---@return SpellDef
-function BOM.Class.SpellDef:classic_consumable(dst, single_id, item_id, limitations, extraText)
+function BOM.Class.SpellDef:classicConsumable(dst, single_id, item_id, limitations, extraText)
   local fields = { item = item_id, isConsumable = true, default = false, consumableEra = BOM.CLASSIC_ERA }
   if extraText then
     fields.extraText = extraText
   end
-  BOM.Class.SpellDef:scan_spell(dst, single_id, fields, limitations)
+  BOM.Class.SpellDef:scanSpell(dst, single_id, fields, limitations)
 end
 
 local _, bom_player_class, _ = UnitClass("player")
 
-local function bom_check_limitations(spell, limitations)
+local function bomCheckLimitations(spell, limitations)
   -- empty limitations return true
   if limitations == nil or limitations == { } then
     return true
@@ -200,7 +200,7 @@ end
 
 ---@param spell SpellDef
 ---@param modifications table<function>
-local function bom_check_modifications(spell, modifications)
+local function bomCheckModifications(spell, modifications)
   -- empty modifications do not change the spell
   if modifications == nil or modifications == { } then
     return true
@@ -220,11 +220,12 @@ end
 ---@param fields table<string, any>
 ---@param limitations table<function> Check these conditions to skip adding the spell. Permanent conditions only like minlevel or class
 ---@param modifications table<function> Check these conditions and maybe modify the spelldef.
-function BOM.Class.SpellDef:scan_spell(dst, single_id, fields, limitations, modifications)
+function BOM.Class.SpellDef:scanSpell(dst, single_id, fields, limitations,
+                                      modifications, extraText)
   local spell = BOM.Class.SpellDef:new(single_id, fields)
 
-  if bom_check_limitations(spell, limitations) then
-    bom_check_modifications(spell, modifications)
+  if bomCheckLimitations(spell, limitations) then
+    bomCheckModifications(spell, modifications)
     tinsert(dst, spell)
   end
 end
