@@ -31,7 +31,7 @@ local BOM_MELEE_CLASSES = { "WARRIOR", "ROGUE", "DRUID", "SHAMAN", "PALADIN" }
 local BOM_SHADOW_CLASSES = { "PRIEST", "WARLOCK" }
 local BOM_FIRE_CLASSES = { "MAGE", "WARLOCK", "SHAMAN", "HUNTER" }
 local BOM_FROST_CLASSES = { "MAGE", "SHAMAN" }
-local BOM_PHYSICAL_CLASSES = { "HUNTER", "ROGUE", "SHAMAN", "WARRIOR", "DRUID" }
+local BOM_PHYSICAL_CLASSES = { "HUNTER", "ROGUE", "SHAMAN", "WARRIOR", "DRUID", "PALADIN" }
 
 local DURATION_1H = 3600
 local DURATION_30M = 1800
@@ -1127,7 +1127,7 @@ function BOM.SetupItemCache()
 
   ---@param icon number
   ---@param id number Item ID
-  local function make_item(id, name, color, icon)
+  local function makeItem(id, name, color, icon)
     local link = "|cff" .. color .. "|Hitem:" .. tostring(id) .. "::::::::1:::::::|h[" .. name .. "]|h|r"
     tinsert(s, { itemName = name,
                  itemLink = link,
@@ -1135,78 +1135,78 @@ function BOM.SetupItemCache()
   end
   local W = LE_ITEM_QUALITY_COMMON
   local G = LE_ITEM_QUALITY_UNCOMMON
-  make_item(18284, "Kreeg's Stout Beatdown", G, 132792)
-  make_item(13461, "Greater Arcane Protection Potion", W, 134863)
-  make_item(12643, "Dense Weightstone", W, 135259)
-  make_item(12455, "Juju Ember", W, 134317)
-  make_item(13810, "Blessed Sunfruit", W, 133997)
-  make_item(8928, "Instant Poison VI", W, 132273)
-  make_item(12457, "Juju Chill", W, 134311)
-  make_item(13813, "Blessed Sunfruit Juice", W, 132803)
-  make_item(12460, "Juju Might", W, 134309)
-  make_item(3825, "Elixir of Fortitude", W, 134823)
-  make_item(9186, "Mind-numbing Poison III", W, 136066)
-  make_item(9155, "Arcane Elixir", W, 134810)
-  make_item(20452, "Smoked Desert Dumplings", W, 134020)
+  makeItem(18284, "Kreeg's Stout Beatdown", G, 132792)
+  makeItem(13461, "Greater Arcane Protection Potion", W, 134863)
+  makeItem(12643, "Dense Weightstone", W, 135259)
+  makeItem(12455, "Juju Ember", W, 134317)
+  makeItem(13810, "Blessed Sunfruit", W, 133997)
+  makeItem(8928, "Instant Poison VI", W, 132273)
+  makeItem(12457, "Juju Chill", W, 134311)
+  makeItem(13813, "Blessed Sunfruit Juice", W, 132803)
+  makeItem(12460, "Juju Might", W, 134309)
+  makeItem(3825, "Elixir of Fortitude", W, 134823)
+  makeItem(9186, "Mind-numbing Poison III", W, 136066)
+  makeItem(9155, "Arcane Elixir", W, 134810)
+  makeItem(20452, "Smoked Desert Dumplings", W, 134020)
 
   if BOM.TBC then
-    make_item(22055, "Wound Poison V", W, 132274)
-    make_item(21835, "Anesthetic Poison", W, 132274)
-    make_item(28420, "Fel Weightstone", W, 132274)
-    make_item(28421, "Adamantite Weightstone", W, 132274)
-    make_item(23528, "Fel Sharpening Stone", W, 132274)
-    make_item(23529, "Adamantite Sharpening Stone", W, 132274)
+    makeItem(22055, "Wound Poison V", W, 132274)
+    makeItem(21835, "Anesthetic Poison", W, 132274)
+    makeItem(28420, "Fel Weightstone", W, 132274)
+    makeItem(28421, "Adamantite Weightstone", W, 132274)
+    makeItem(23528, "Fel Sharpening Stone", W, 132274)
+    makeItem(23529, "Adamantite Sharpening Stone", W, 132274)
   else
-    make_item(10922, "Wound Poison IV", W, 132274)
+    makeItem(10922, "Wound Poison IV", W, 132274)
   end
 
-  make_item(21023, "Dirge's Kickin' Chimaerok Chops", W, 134021)
-  make_item(12404, "Dense Sharpening Stone", W, 135252)
-  make_item(21151, "Rumsey Rum Black Label", W, 132791)
-  make_item(18254, "Runn Tum Tuber Surprise", W, 134019)
-  make_item(13445, "Elixir of Superior Defense", W, 134846)
-  make_item(13457, "Greater Fire Protection Potion", W, 134804)
-  make_item(12451, "Juju Power", W, 134313)
-  make_item(12218, "Monster Omelet", W, 133948)
-  make_item(13931, "Nightfin Soup", W, 132804)
-  make_item(20749, "Brilliant Wizard Oil", W, 134727)
-  make_item(5654, "Instant Toxin", W, 134799)
-  make_item(18262, "Elemental Sharpening Stone", G, 135228)
+  makeItem(21023, "Dirge's Kickin' Chimaerok Chops", W, 134021)
+  makeItem(12404, "Dense Sharpening Stone", W, 135252)
+  makeItem(21151, "Rumsey Rum Black Label", W, 132791)
+  makeItem(18254, "Runn Tum Tuber Surprise", W, 134019)
+  makeItem(13445, "Elixir of Superior Defense", W, 134846)
+  makeItem(13457, "Greater Fire Protection Potion", W, 134804)
+  makeItem(12451, "Juju Power", W, 134313)
+  makeItem(12218, "Monster Omelet", W, 133948)
+  makeItem(13931, "Nightfin Soup", W, 132804)
+  makeItem(20749, "Brilliant Wizard Oil", W, 134727)
+  makeItem(5654, "Instant Toxin", W, 134799)
+  makeItem(18262, "Elemental Sharpening Stone", G, 135228)
 
   if BOM.TBC then
-    make_item(22054, "Deadly Poison VII", W, 132290)
-    make_item(22521, "Superior Mana Oil", W, 134727)
-    make_item(22522, "Superior Wizard Oil", W, 134727)
+    makeItem(22054, "Deadly Poison VII", W, 132290)
+    makeItem(22521, "Superior Mana Oil", W, 134727)
+    makeItem(22522, "Superior Wizard Oil", W, 134727)
   else
-    make_item(20844, "Deadly Poison V", W, 132290)
+    makeItem(20844, "Deadly Poison V", W, 132290)
   end
 
-  make_item(20004, "Major Troll's Blood Potion", W, 134860)
-  make_item(12820, "Winterfall Firewater", W, 134872)
-  make_item(20007, "Mageblood Potion", W, 134825)
-  make_item(9264, "Elixir of Shadow Power", W, 134826)
-  make_item(11564, "Crystal Ward", W, 134129)
-  make_item(18269, "Gordok Green Grog", G, 132790)
-  make_item(21546, "Elixir of Greater Firepower", W, 134840)
-  make_item(23122, "Consecrated Sharpening Stone", G, 135249)
-  make_item(23123, "Blessed Wizard Oil", G, 134806)
-  make_item(13454, "Greater Arcane Elixir", W, 134805)
-  make_item(9088, "Gift of Arthas", W, 134808)
-  make_item(17708, "Elixir of Frost Power", W, 134714)
-  make_item(13928, "Grilled Squid", W, 133899)
-  make_item(13456, "Greater Frost Protection Potion", W, 134800)
-  make_item(13452, "Elixir of the Mongoose", W, 134812)
+  makeItem(20004, "Major Troll's Blood Potion", W, 134860)
+  makeItem(12820, "Winterfall Firewater", W, 134872)
+  makeItem(20007, "Mageblood Potion", W, 134825)
+  makeItem(9264, "Elixir of Shadow Power", W, 134826)
+  makeItem(11564, "Crystal Ward", W, 134129)
+  makeItem(18269, "Gordok Green Grog", G, 132790)
+  makeItem(21546, "Elixir of Greater Firepower", W, 134840)
+  makeItem(23122, "Consecrated Sharpening Stone", G, 135249)
+  makeItem(23123, "Blessed Wizard Oil", G, 134806)
+  makeItem(13454, "Greater Arcane Elixir", W, 134805)
+  makeItem(9088, "Gift of Arthas", W, 134808)
+  makeItem(17708, "Elixir of Frost Power", W, 134714)
+  makeItem(13928, "Grilled Squid", W, 133899)
+  makeItem(13456, "Greater Frost Protection Potion", W, 134800)
+  makeItem(13452, "Elixir of the Mongoose", W, 134812)
 
   -- Ungoro Crystal items
-  make_item(11564, "Crystal Ward", W, 134129)
-  make_item(11567, "Crystal Spire", W, 134134)
-  make_item(11563, "Crystal Force", W, 134088)
+  makeItem(11564, "Crystal Ward", W, 134129)
+  makeItem(11567, "Crystal Spire", W, 134134)
+  makeItem(11563, "Crystal Force", W, 134088)
 
-  make_item(20748, "Brilliant Mana Oil", W, 134722)
-  make_item(13458, "Greater Nature Protection Potion", W, 134802)
-  make_item(9206, "Elixir of Giants", W, 134841)
-  make_item(13459, "Greater Shadow Protection Potion", W, 134803)
-  make_item(3776, "Crippling Poison II", W, 134799)
+  makeItem(20748, "Brilliant Mana Oil", W, 134722)
+  makeItem(13458, "Greater Nature Protection Potion", W, 134802)
+  makeItem(9206, "Elixir of Giants", W, 134841)
+  makeItem(13459, "Greater Shadow Protection Potion", W, 134803)
+  makeItem(3776, "Crippling Poison II", W, 134799)
 
   BOM.ItemCache = s
 end

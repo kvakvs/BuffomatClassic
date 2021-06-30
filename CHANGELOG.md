@@ -1,6 +1,11 @@
 # Changelog
 
-## Buffomat Classic and TBC 2021.6.5
+## Buffomat Classic and TBC 2021.6.7
+
+- Bug: Physical classes restriction on some consumables did not include
+  Paladins. Now this is fixed.
+
+## Buffomat Classic and TBC 2021.6.6
 
 - Changed task wording in the task list and how tasks are sorted and displayed
 - Distance calculations code improved, out of range tasks are shown in red
