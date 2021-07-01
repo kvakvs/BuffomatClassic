@@ -18,5 +18,8 @@ BOM.SpellId.Warlock.DemonicSacrifice = 18788
 BOM.SpellId.Druid = {}
 BOM.SpellId.Druid.TrackHumanoids = 5225
 
+BOM.SpellId.Paladin = {}
+BOM.SpellId.Paladin.CrusaderAura = 32223
+
 BOM.SpellId.FindHerbs = 2383
 BOM.SpellId.FindMinerals = 2580

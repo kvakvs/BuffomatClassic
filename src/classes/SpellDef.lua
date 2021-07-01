@@ -228,6 +228,8 @@ function BOM.Class.SpellDef:scanSpell(dst, single_id, fields, limitations,
     bomCheckModifications(spell, modifications)
     tinsert(dst, spell)
   end
+
+  return spell
 end
 
 ---@param spellId number

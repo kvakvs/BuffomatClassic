@@ -94,6 +94,9 @@ local function bomLanguage_English()
     CboxAutoDismount              = "Auto-dismount Ground on cast",
     CboxAutoDismountFlying        = "Auto-dismount Flying on cast",
     CboxAutoDisTravel             = "Auto-remove travel form",
+    CboxAutoCrusaderAura          = "Paladin: Auto crusader aura when mounted",
+    CRUSADER_AURA_COMMENT         = "Can auto-cast based on settings",
+
     CboxBuffTarget                = "Also try and buff the current target",
     CboxOpenLootable              = "Open lootable items in the bags",
     CboxUseProfiles               = "Use profiles",

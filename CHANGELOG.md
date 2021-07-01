@@ -1,5 +1,11 @@
 # Changelog
 
+## Buffomat Classic and TBC 2021.7.1
+
+- TBC: Crusader aura reminder will pop up when you're on a mount.
+- TBC: For new Buffomat install all paladin blessings are off by default except
+  Might.
+
 ## Buffomat Classic and TBC 2021.6.7
 
 - Bug: Physical classes restriction on some consumables did not include

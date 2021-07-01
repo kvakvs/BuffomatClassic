@@ -500,7 +500,7 @@ local function bomSetupPaladinSpells(spells, enchants)
   -- LESSER BLESSINGS
 
   BOM.Class.SpellDef:scanSpell(spells, 20217, --Blessing of Kings
-          { groupFamily    = { 25898 }, isBlessing = true, default = true,
+          { groupFamily    = { 25898 }, isBlessing = true, default = false,
             singleDuration = blessing_duration, ignoreIfHaveBuff = { 25898 }, -- Greater kings
             targetClasses  = { "MAGE", "HUNTER", "WARLOCK" } },
           paladinOnly)
@@ -508,7 +508,7 @@ local function bomSetupPaladinSpells(spells, enchants)
   BOM.Class.SpellDef:scanSpell(spells, 19979, -- Blessing of Light
           { singleFamily   = { 19977, 19978, 19979, -- Ranks 1-3
                                27144 }, -- TBC: Rank 4
-            isBlessing     = true, default = true, ignoreIfHaveBuff = { 21177 }, -- Greater Light
+            isBlessing     = true, default = false, ignoreIfHaveBuff = { 21177 }, -- Greater Light
             singleDuration = blessing_duration, groupDuration = greater_blessing_duration,
             targetClasses  = BOM_NO_CLASS },
           paladinOnly)
@@ -521,19 +521,19 @@ local function bomSetupPaladinSpells(spells, enchants)
           paladinOnly)
 
   BOM.Class.SpellDef:scanSpell(spells, 1038, --Blessing of Salvation
-          { isBlessing    = true, default = true, singleDuration = blessing_duration,
+          { isBlessing    = true, default = false, singleDuration = blessing_duration,
             targetClasses = BOM_NO_CLASS, ignoreIfHaveBuff = { 25895 }, },
           paladinOnly)
 
   BOM.Class.SpellDef:scanSpell(spells, 25290, --Blessing of Wisdom
-          { isBlessing     = true, default = true,
+          { isBlessing     = true, default = false,
             singleFamily   = { 19742, 19850, 19852, 19853, 19854, 25290, -- Ranks 1-6
                                27142 }, -- TBC: Rank 7
             singleDuration = blessing_duration, groupDuration = greater_blessing_duration,
             targetClasses  = { "DRUID", "SHAMAN", "PRIEST", "PALADIN" } },
           paladinOnly)
   BOM.Class.SpellDef:scanSpell(spells, 20914, --Blessing of Sanctuary
-          { isBlessing      = true, default = true,
+          { isBlessing      = true, default = false,
             groupFamily     = { 25899, -- Rank 1
                                 27169 }, -- TBC: Rank 2
             singleFamily    = { 20911, 20912, 20913, 20914, -- Ranks 1-4
@@ -609,6 +609,13 @@ local function bomSetupPaladinSpells(spells, enchants)
   BOM.Class.SpellDef:scanSpell(spells, 20218, --Sanctity Aura
           { type = "aura", default = false },
           paladinOnly)
+
+  BOM.CrusaderAuraSpell = BOM.Class.SpellDef:scanSpell(
+          spells, BOM.SpellId.Paladin.CrusaderAura, --TBC: Crusader Aura
+          { type       = "aura", default = false, extraText = L.CRUSADER_AURA_COMMENT,
+            singleMana = 0 },
+          paladinOnly)
+
   --
   -- ----------------------------------
   --
@@ -821,9 +828,9 @@ local function bomSetupPhysicalDpsConsumables(spells, enchants)
   -- Weightstones for blunt weapons
   --
   BOM.Class.SpellDef:scanSpell(spells, 16622, --Weightstone
-          { item         = 12643, items = { 12643, 7965, 3241, 3240, 3239 },
-            isConsumable = true, type = "weapon", duration = DURATION_30M,
-            default      = false, onlyUsableFor = BOM_PHYSICAL_CLASSES,
+          { item          = 12643, items = { 12643, 7965, 3241, 3240, 3239 },
+            isConsumable  = true, type = "weapon", duration = DURATION_30M,
+            default       = false, onlyUsableFor = BOM_PHYSICAL_CLASSES,
             consumableEra = BOM.CLASSIC_ERA, extraText = bomClassicHint() })
   enchants[16622] = { 1703, 484, 21, 20, 19 } -- Weightstone
 

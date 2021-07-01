@@ -34,6 +34,7 @@ BOM.BehaviourSettings = {
   { "MainHand", false },
   { "SecondaryHand", false },
   { "UseRank", true },
+  { "AutoCrusaderAura", true },
   { "AutoDismount", true },
   { "AutoDismountFlying", false },
   { "AutoStand", true },

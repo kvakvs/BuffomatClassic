@@ -8,11 +8,26 @@ local L = setmetatable({}, { __index = function(t, k)
   end
 end })
 
-local bom_save_someone_is_dead = false
+local bomSaveSomeoneIsDead = false
 
 BOM.ALL_PROFILES = { "solo", "group", "raid", "battleground" }
 
 local tasklist ---@type TaskList
+
+local function bomIsFlying()
+  if BOM.TBC then
+    return IsFlying() and not BOM.SharedState.AutoDismountFlying
+  end
+  return false
+end
+
+local function bomIsMountedAndCrusaderAuraRequired()
+  local _, englishClass, _ = UnitClass("player")
+  return BOM.SharedState.AutoCrusaderAura -- if setting enabled
+          and englishClass == "PALADIN" -- and paladin
+          and (IsMounted() or bomIsFlying()) -- and flying
+          and GetShapeshiftForm() ~= 7 -- and not crusader aura
+end
 
 function BOM.SetupTasklist()
   tasklist = BOM.Class.TaskList:new()
@@ -540,7 +555,7 @@ local function bomUpdateMacro(member, spellId, command)
     local name = GetSpellInfo(spellId)
 
     if tContains(BOM.cancelForm, spellId) then
-      tinsert(macro.lines,  "/cancelform [nocombat]" )
+      tinsert(macro.lines, "/cancelform [nocombat]")
     end
     tinsert(macro.lines, "/bom _checkforerror")
     tinsert(macro.lines, "/cast [@" .. member.unitId .. ",nocombat]" .. name .. rank)
@@ -614,7 +629,7 @@ end
 local next_cast_spell = {}
 
 ---@type number
-local bom_current_player_mana
+local bomCurrentPlayerMana
 
 ---@param link string Clickable spell link with icon
 ---@param inactiveText string Spell name as text
@@ -643,7 +658,7 @@ end
 ---@param member Member player to benefit from the spell
 ---@param spell SpellDef the spell to be added
 local function bomQueueSpell(cost, id, link, member, spell)
-  if cost > bom_current_player_mana then
+  if cost > bomCurrentPlayerMana then
     return -- ouch
   end
 
@@ -733,6 +748,16 @@ local function bomIsActive()
   -- Cancel buff tasks if is in stealth, and option to scan is not set
   if not BOM.SharedState.ScanInStealth and IsStealthed() then
     return false, L.InactiveReason_IsStealthed
+  end
+
+  -- Having auto crusader aura enabled and Paladin class, and aura other than
+  -- Crusader will block this check temporarily
+  if bomIsFlying() and not bomIsMountedAndCrusaderAuraRequired() then
+    -- prevent dismount in flight, OUCH!
+    return false, L.MsgFlying
+
+  elseif UnitOnTaxi("player") then
+    return false, L.MsgOnTaxi
   end
 
   return true, nil
@@ -887,7 +912,7 @@ local function bomForceUpdate(party, player_member)
     someone_is_dead = bomUpdateSpellTargets(party, spell, player_member, someone_is_dead)
   end
 
-  bom_save_someone_is_dead = someone_is_dead
+  bomSaveSomeoneIsDead = someone_is_dead
   return someone_is_dead
 end
 
@@ -1721,13 +1746,13 @@ local function bomScanOneSpell(spell, playerMember, party, inRange,
           and not spell.isConsumable
   then
     if spell.singleMana < BOM.ManaLimit
-            and spell.singleMana > bom_current_player_mana then
+            and spell.singleMana > bomCurrentPlayerMana then
       BOM.ManaLimit = spell.singleMana
     end
 
     if spell.groupMana
             and spell.groupMana < BOM.ManaLimit
-            and spell.groupMana > bom_current_player_mana then
+            and spell.groupMana > bomCurrentPlayerMana then
       BOM.ManaLimit = spell.groupMana
     end
   end
@@ -1832,19 +1857,51 @@ local function bomScanSelectedSpells(playerMember, party, inRange, castButtonTit
   return inRange, castButtonTitle, macroCommand
 end
 
+---When a paladin is mounted and AutoCrusaderAura enabled,
+---offer player to cast Crusader Aura.
+---@return boolean True if the scanning should be interrupted and only crusader aura prompt will be visible
+local function bomMountedCrusaderAuraPrompt()
+  local playerMember = BOM.GetMember("player")
+
+  if bomIsMountedAndCrusaderAuraRequired() then
+    -- aura is not 7 (crusader)
+    BOM.Dbg("Must switch to crusader aura")
+
+    --bomAddSelfbuff(BOM.CrusaderAuraSpell, playerMember)
+    --bomCastButton("Crusader Aura", true)
+    --bomUpdateMacro(nil, nil, "/cast Crusader Aura")
+
+    local spell = BOM.CrusaderAuraSpell
+    tasklist:AddWithPrefix(
+            L.TASK_CAST,
+            spell.singleLink or spell.single,
+            spell.single,
+            L.BUFF_CLASS_SELF_ONLY,
+            BOM.Class.MemberBuffTarget:fromSelf(playerMember),
+            false)
+
+    bomQueueSpell(spell.singleMana, spell.singleId, spell.singleLink,
+            playerMember, spell)
+
+    return true -- only show the aura and nothing else
+  end
+
+  return false -- continue scanning spells
+end
+
 local function bomUpdateScan_Scan()
   local party, playerMember = BOM.GetPartyMembers()
 
-  local someone_is_dead = bom_save_someone_is_dead
+  local someoneIsDead = bomSaveSomeoneIsDead
   if BOM.ForceUpdate then
-    someone_is_dead = bomForceUpdate(party, playerMember)
+    someoneIsDead = bomForceUpdate(party, playerMember)
   end
 
   -- cancel buffs
   bomCancelBuffs(playerMember)
 
   -- fill list and find cast
-  bom_current_player_mana = UnitPower("player", 0) or 0 --mana
+  bomCurrentPlayerMana = UnitPower("player", 0) or 0 --mana
   BOM.ManaLimit = UnitPowerMax("player", 0) or 0
 
   bomClearNextCastSpell()
@@ -1853,17 +1910,25 @@ local function bomUpdateScan_Scan()
   local castButtonTitle ---@type string
   local inRange = false
 
-  BOM.ScanModifier = false
+  -- Cast crusader aura when mounted, without condition. Ignore all other buffs
+  if bomMountedCrusaderAuraPrompt() then
+    -- Do not scan other spells
+    castButtonTitle = "Crusader"
+    macroCommand = "/cast Crusader Aura"
+  else
+    -- Otherwise scan all enabled spells
+    BOM.ScanModifier = false
 
-  inRange, castButtonTitle, macroCommand = bomScanSelectedSpells(
-          playerMember, party, inRange,
-          castButtonTitle, macroCommand)
+    inRange, castButtonTitle, macroCommand = bomScanSelectedSpells(
+            playerMember, party, inRange,
+            castButtonTitle, macroCommand)
 
-  bomCheckReputationItems(playerMember)
-  bomCheckMissingWeaponEnchantments(playerMember) -- if option to warn is enabled
+    bomCheckReputationItems(playerMember)
+    bomCheckMissingWeaponEnchantments(playerMember) -- if option to warn is enabled
 
-  castButtonTitle, macroCommand = bomCheckItemsAndContainers(
-          playerMember, castButtonTitle, macroCommand)
+    castButtonTitle, macroCommand = bomCheckItemsAndContainers(
+            playerMember, castButtonTitle, macroCommand)
+  end
 
   -- Open Buffomat if any cast tasks were added to the task list
   if #tasklist.tasks > 0 or #tasklist.comments > 0 then
@@ -1915,7 +1980,7 @@ local function bomUpdateScan_Scan()
       end
 
     else
-      if someone_is_dead and BOM.SharedState.DeathBlock then
+      if someoneIsDead and BOM.SharedState.DeathBlock then
         bomCastButton(L.InactiveReason_DeadMember, false)
       else
         if inRange then
@@ -1946,7 +2011,6 @@ local function bomUpdateScan_Scan()
 
     bomUpdateMacro(nil, nil, macroCommand)
   end -- if not player casting
-
 end -- end function bomUpdateScan_Scan()
 
 local function bomUpdateScan_PreCheck(from)
@@ -1963,33 +2027,13 @@ local function bomUpdateScan_PreCheck(from)
   BOM.RepeatUpdate = false
 
   -- Check whether BOM is disabled due to some option and a matching condition
-  local is_bom_active, why_disabled = bomIsActive()
-  if not is_bom_active then
+  local isBomActive, reasonDisabled = bomIsActive()
+  if not isBomActive then
     BOM.ForceUpdate = false
     BOM.CheckForError = false
     BOM.AutoClose()
     BOM.Macro:Clear()
-    bomCastButton(why_disabled, false)
-    return
-  end
-
-  local flying = false -- prevent dismount in flight, OUCH!
-  if BOM.TBC then
-    flying = IsFlying() and not BOM.SharedState.AutoDismountFlying
-  end
-
-  if flying then
-    --Print player is flying, do not dismount, OUCH!
-    bomCastButton(L.MsgFlying, false)
-    bomUpdateMacro()
-    tasklist:Clear()
-    return
-
-  elseif UnitOnTaxi("player") then
-    --Print player is on taxi
-    bomCastButton(L.MsgOnTaxi, false)
-    bomUpdateMacro()
-    tasklist:Clear()
+    bomCastButton(reasonDisabled, false)
     return
   end
 
