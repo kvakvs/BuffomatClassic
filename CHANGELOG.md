@@ -1,7 +1,9 @@
 # Changelog
 
-## Buffomat Classic and TBC 2021.7.1
+## Buffomat Classic and TBC 2021.7.1-2
 
+- Paladin: Fixed ignore and force cast on blessings. Now you can exclude and 
+  include targets for more intricate blessing setups.
 - TBC: Crusader aura reminder will pop up when you're on a mount.
 - TBC: For new Buffomat install all paladin blessings are off by default except
   Might.

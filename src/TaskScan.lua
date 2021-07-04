@@ -22,9 +22,8 @@ local function bomIsFlying()
 end
 
 local function bomIsMountedAndCrusaderAuraRequired()
-  local _, englishClass, _ = UnitClass("player")
   return BOM.SharedState.AutoCrusaderAura -- if setting enabled
-          and englishClass == "PALADIN" -- and paladin
+          and IsSpellKnown(BOM.SpellId.Paladin.CrusaderAura) -- and has the spell
           and (IsMounted() or bomIsFlying()) -- and flying
           and GetShapeshiftForm() ~= 7 -- and not crusader aura
 end
@@ -333,22 +332,6 @@ local function bomUpdateSpellTargets(party, spell, playerMember, someoneIsDead)
       tinsert(spell.NeedMember, playerMember)
     end
 
-    --elseif spell.type == "summon" then
-    --  if not UnitExists("pet") then
-    --    -- No pet? Need summon
-    --    BOM.Dbg("No pet, summon")
-    --    tinsert(spell.NeedMember, playerMember)
-    --  else
-    --    -- Have pet? Check pet type
-    --    local ucType = UnitCreatureType("pet")
-    --    local ucFamily = UnitCreatureFamily("pet")
-    --
-    --    if ucType ~= spell.creatureType or ucFamily ~= spell.creatureFamily then
-    --      BOM.Dbg("Pet of " .. ucType .. ":" .. ucFamily .. " is wrong, summon")
-    --      tinsert(spell.NeedMember, playerMember)
-    --    end
-    --  end
-
   elseif spell.type == "aura" then
     if BOM.ActivAura ~= spell.ConfigID
             and (BOM.CurrentProfile.LastAura == nil or BOM.CurrentProfile.LastAura == spell.ConfigID)
@@ -368,26 +351,33 @@ local function bomUpdateSpellTargets(party, spell, playerMember, someoneIsDead)
       local ok = false
       local notGroup = false
       local blessing_name = BOM.GetProfileSpell(BOM.BLESSING_ID)
-      local blessing_spell = BOM.GetProfileSpell(spell.ConfigID)
+      local blessingSpell = BOM.GetProfileSpell(spell.ConfigID)
 
       if blessing_name[member.name] == spell.ConfigID
               or (member.isTank
-              and blessing_spell.Class["tank"]
-              and not blessing_spell.SelfCast)
+              and blessingSpell.Class["tank"]
+              and not blessingSpell.SelfCast)
       then
         ok = true
         notGroup = true
 
       elseif blessing_name[member.name] == nil then
-        if blessing_spell.Class[member.class]
+        if blessingSpell.Class[member.class]
                 and (not IsInRaid() or BomCharacterState.WatchGroup[member.group])
-                and not blessing_spell.SelfCast then
+                and not blessingSpell.SelfCast then
           ok = true
         end
-        if blessing_spell.SelfCast
+        if blessingSpell.SelfCast
                 and UnitIsUnit(member.unitId, "player") then
           ok = true
         end
+      end
+
+      if blessingSpell.ForcedTarget[member.name] then
+        ok = true
+      end
+      if blessingSpell.ExcludedTarget[member.name] then
+        ok = false
       end
 
       if member.NeedBuff
@@ -427,25 +417,25 @@ local function bomUpdateSpellTargets(party, spell, playerMember, someoneIsDead)
     for i, member in ipairs(party) do
       local ok = false
       ---@type SpellDef
-      local profile_spell = BOM.CurrentProfile.Spell[spell.ConfigID]
+      local profileSpell = BOM.CurrentProfile.Spell[spell.ConfigID]
 
-      if profile_spell.Class[member.class]
+      if profileSpell.Class[member.class]
               and (not IsInRaid() or BomCharacterState.WatchGroup[member.group])
-              and not profile_spell.SelfCast then
+              and not profileSpell.SelfCast then
         ok = true
       end
-      if profile_spell.SelfCast
+      if profileSpell.SelfCast
               and UnitIsUnit(member.unitId, "player") then
         ok = true
       end
-      if profile_spell.ForcedTarget[member.name] then
+      if member.isTank and profileSpell.Class["tank"]
+              and not profileSpell.SelfCast then
         ok = true
       end
-      if member.isTank and profile_spell.Class["tank"]
-              and not profile_spell.SelfCast then
+      if profileSpell.ForcedTarget[member.name] then
         ok = true
       end
-      if profile_spell.ExcludedTarget[member.name] then
+      if profileSpell.ExcludedTarget[member.name] then
         ok = false
       end
 
@@ -1864,13 +1854,6 @@ local function bomMountedCrusaderAuraPrompt()
   local playerMember = BOM.GetMember("player")
 
   if bomIsMountedAndCrusaderAuraRequired() then
-    -- aura is not 7 (crusader)
-    BOM.Dbg("Must switch to crusader aura")
-
-    --bomAddSelfbuff(BOM.CrusaderAuraSpell, playerMember)
-    --bomCastButton("Crusader Aura", true)
-    --bomUpdateMacro(nil, nil, "/cast Crusader Aura")
-
     local spell = BOM.CrusaderAuraSpell
     tasklist:AddWithPrefix(
             L.TASK_CAST,
