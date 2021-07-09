@@ -735,6 +735,11 @@ local function bomIsActive()
     return false, L.InactiveReason_RestArea
   end
 
+  -- Cancel buff task scan while mounted
+  if not BOM.SharedState.ScanWhileMounted and IsMounted() then
+    return false, L.InactiveReason_Mounted
+  end
+
   -- Cancel buff tasks if is in stealth, and option to scan is not set
   if not BOM.SharedState.ScanInStealth and IsStealthed() then
     return false, L.InactiveReason_IsStealthed

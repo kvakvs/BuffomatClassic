@@ -64,6 +64,7 @@ local function bomLanguage_English()
     InactiveReason_PvpZone        = "Buffing in PvP disabled",
     InactiveReason_Instance       = "Buffing in dungeons disabled",
     InactiveReason_OpenWorld      = "Buffing in the world disabled",
+    InactiveReason_Mounted        = "Buffing on mount disabled",
 
     MsgDownGrade                  = "Spell rank downgrade %s for %s. Please cast again.",
 
@@ -82,6 +83,7 @@ local function bomLanguage_English()
 
     CboxScanInStealth             = "Scan buffs in stealth",
     CboxScanInRestArea            = "Scan buffs in rest areas (city and inn)",
+    CboxScanWhileMounted          = "Scan while on a mount",
     CboxInWorld                   = "Scan buffs in the world and cities",
     CboxInPVP                     = "Scan buffs in battlegrounds",
     CboxInInstance                = "Scan buffs in dungeons and raids",
@@ -489,6 +491,7 @@ local function bomLanguage_Russian()
     MsgBusyChanneling             = "Занят / Долгое заклинание",
     InactiveReason_InCombat       = "В бою",
     InactiveReason_RestArea       = "В зоне отдыха (откл. в опциях)",
+    InactiveReason_Mounted        = "Игрок в седле (откл. в опциях)",
     InactiveReason_IsStealthed    = "Режим незаметности (откл. в опциях)",
     InactiveReason_PlayerDead     = "Мертв",
     MsgCancelBuff                 = "Отменён баф %s от %s",

@@ -931,14 +931,19 @@ end
 ---ITEMS, applicable to most of the classes, self buffs, containers to open etc
 ---@param spells table<string, SpellDef>
 ---@param enchants table<string, table<number>>
-local function bom_setup_caster_guardian_elixirs(spells, enchants)
-  BOM.Class.SpellDef:tbcConsumable(spells, 28514, 22848, --TBC: Elixir of Empowerment, -30 TARGET RESIST
+local function bomSetupCasterGuardianElixirs(spells, enchants)
+  BOM.Class.SpellDef:classicConsumable(spells, 11396, 9179, --Elixir of Greater Intellect +25
           nil, bomClassicHint())
+
+  BOM.Class.SpellDef:tbcConsumable(spells, 28514, 22848, --TBC: Elixir of Empowerment, -30 TARGET RESIST
+          { playerClass = BOM_MANA_CLASSES }, bomClassicHint())
+  BOM.Class.SpellDef:tbcConsumable(spells, 17535, 13447, --TBC: Elixir of the Sages +18 INT/+18 SPI
+          { playerClass = BOM_MANA_CLASSES }, bomClassicHint())
 end
 
 ---@param spells table<string, SpellDef>
 ---@param enchants table<string, table<number>>
-local function bom_setup_caster_buffs(spells, enchants)
+local function bomSetupCasterConsumables(spells, enchants)
   BOM.Class.SpellDef:classicConsumable(spells, 18194, 13931, --Nightfin Soup +8Mana/5
           { playerClass = BOM_MANA_CLASSES }, bomClassicHint())
   BOM.Class.SpellDef:classicConsumable(spells, 19710, 12218, --Monster Omelette
@@ -979,7 +984,7 @@ end
 
 ---@param spells table<string, SpellDef>
 ---@param enchants table<string, table<number>>
-local function bom_setup_battle_elixirs(spells, enchants)
+local function bomSetupBattleElixirs(spells, enchants)
   -- Sunwell only
   --tinsert(s, BOM.Class.SpellDef:new(45373, --TBC: Bloodberry Elixir +15 all stats
   --        { item = 34537, isConsumable = true, default = false }))
@@ -988,7 +993,7 @@ end
 
 ---@param spells table<string, SpellDef>
 ---@param enchants table<string, table<number>>
-local function bom_setup_guardian_elixirs(spells, enchants)
+local function bomSetupGuardianElixirs(spells, enchants)
   BOM.Class.SpellDef:tbcConsumable(spells, 28502, 22834) --TBC: Elixir of Major Defense +550 ARMOR
   BOM.Class.SpellDef:tbcConsumable(spells, 39628, 32068) --TBC: Elixir of Ironskin +30 RESIL
   BOM.Class.SpellDef:tbcConsumable(spells, 39625, 32062) --TBC: Elixir of Major Fortitude +250 HP and 10 HP/5
@@ -1039,7 +1044,7 @@ end
 
 ---@param spells table<string, SpellDef>
 ---@param enchants table<string, table<number>>
-local function bom_setup_item_spells(spells, enchants)
+local function bomSetupItemSpells(spells, enchants)
   BOM.Class.SpellDef:classicConsumable(spells, 15233, 11564, --Crystal Ward
           nil, bomClassicHint())
   BOM.Class.SpellDef:classicConsumable(spells, 15279, 11567, --Crystal Spire +12 THORNS
@@ -1050,7 +1055,7 @@ end
 
 ---@param spells table<string, SpellDef>
 ---@param enchants table<string, table<number>>
-local function bom_setup_food(spells, enchants)
+local function bomSetupFood(spells, enchants)
   BOM.Class.SpellDef:tbcConsumable(spells, 33257, { 33052, 27667 }, --Well Fed +30 STA +20 SPI
           nil, L.TooltipSimilarFoods)
 
@@ -1083,7 +1088,7 @@ end
 
 ---@param spells table<string, SpellDef>
 ---@param enchants table<string, table<number>>
-local function bom_setup_flasks(spells, enchants)
+local function bomSetupFlasks(spells, enchants)
   BOM.Class.SpellDef:tbcConsumable(spells, 28540, 22866, --TBC: Flask of Pure Death +80 SHADOW +80 FIRE +80 FROST
           { playerClass = BOM_MANA_CLASSES })
   BOM.Class.SpellDef:tbcConsumable(spells, 28520, 22854, --TBC: Flask of Relentless Assault +120 AP
@@ -1132,15 +1137,15 @@ function BOM.SetupSpells()
   bomSetupPhysicalDpsConsumables(spells, enchants)
   bomSetupPhysicalDpsBattleElixirs(spells, enchants)
   bomSetupPhysicalDpsGuardianElixirs(spells, enchants)
-  bom_setup_caster_buffs(spells, enchants)
+  bomSetupCasterConsumables(spells, enchants)
   bomSetupCasterBattleElixirs(spells, enchants)
-  bom_setup_caster_guardian_elixirs(spells, enchants)
-  bom_setup_battle_elixirs(spells, enchants)
-  bom_setup_guardian_elixirs(spells, enchants)
-  bom_setup_flasks(spells, enchants)
+  bomSetupCasterGuardianElixirs(spells, enchants)
+  bomSetupBattleElixirs(spells, enchants)
+  bomSetupGuardianElixirs(spells, enchants)
+  bomSetupFlasks(spells, enchants)
 
-  bom_setup_item_spells(spells, enchants)
-  bom_setup_food(spells, enchants)
+  bomSetupItemSpells(spells, enchants)
+  bomSetupFood(spells, enchants)
 
   --Preload items!
   for x, spell in ipairs(spells) do

@@ -20,6 +20,7 @@ BOM.BehaviourSettings = {
   { "AutoOpen", true },
   { "ScanInRestArea", false },
   { "ScanInStealth", false },
+  { "ScanWhileMounted", true },
   { "InWorld", true },
   { "InPVP", true },
   { "InInstance", true },
