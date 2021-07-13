@@ -546,6 +546,29 @@ end
 
 local function bomLanguage_Chinese()
   return {
+    SELF                          = "自己", -- use instead of name when buffing self
+    BUFF_CLASS_SELF_ONLY          = "自己-BUFF",
+    BUFF_CLASS_REGULAR            = "BUFF",
+    BUFF_CLASS_GROUPBUFF          = "队伍-BUFF",
+    BUFF_CLASS_TRACKING           = "追踪",
+    TASK_CLASS_REMINDER           = "提醒",
+    TASK_CLASS_RESURRECT          = "复活",
+    TASK_CLASS_MISSING_CONSUM     = "缺少材料",
+    BUFF_CLASS_CONSUMABLE         = "材料",
+    BUFF_CONSUMABLE_REMINDER      = "按住 Shift/Ctrl 和 Alt",
+    TASK_BLESS_GROUP              = "团队祝福",
+    TASK_BLESS                    = "祝福",
+    TASK_SUMMON                   = "召唤",
+    TASK_CAST                     = "Cast",
+    TASK_USE                      = "Use",
+    TASK_TBC_HUNTER_PET_BUFF      = "对宠物使用",
+    TASK_ACTIVATE                 = "启用",
+    TASK_UNEQUIP                  = "取消装备",
+    ERR_RANGE                     = "范围",
+    AD_REPUTATION_REMINDER        = "银色黎明饰品",
+    RIDING_SPEED_REMINDER         = "骑术/飞行速度饰品",
+    OUT_OF_THAT_ITEM              = "不在背包",
+    
     CHAT_MSG_PREFIX               = "Buffomat: ",
     Buffomat                      = "Buffomat", -- addon title in the main window
     ResetWatchGroups              = "将增益组重置为 1-8 ",
@@ -567,12 +590,12 @@ local function bomLanguage_Chinese()
 
     InactiveReason_PlayerDead     = "你死亡了",
     InactiveReason_InCombat       = "你在战斗中",
-    InactiveReason_RestArea       = "禁止在安全区检查 ",
+    InactiveReason_RestArea       = "在安全区禁用BUFF检查 ",
     InactiveReason_DeadMember     = "有队友死亡",
     InactiveReason_IsStealthed    = "Buffing in stealth disabled",
-    InactiveReason_PvpZone        = "在 PvP 禁用增益检查",
-    InactiveReason_Instance       = "在地下城禁用增益检查",
-    InactiveReason_OpenWorld      = "在世界禁用增益检查",
+    InactiveReason_PvpZone        = "在 PvP 禁用BUFF检查",
+    InactiveReason_Instance       = "在地下城禁用BUFF检查",
+    InactiveReason_OpenWorld      = "在世界禁用BUFF检查",
 
     MsgDownGrade                  = "%s 的技能等级降级为 %s。 请再补一次。 ",
 
@@ -580,12 +603,12 @@ local function bomLanguage_Chinese()
     CboxLockMinimapButton         = "锁定小地图按钮位置",
     CboxLockMinimapButtonDistance = "最小化小地图按钮距离",
     CboxAutoOpen                  = "自动 打开/取消 (输入 /bom)",
-    CboxDeathBlock                = "当有人死了就不施放群体Buff",
-    CboxNoGroupBuff               = "不使用群体Buff",
-    CboxGroupBuff                 = "必要时施放群体增益（额外的材料成本） ",
+    CboxDeathBlock                = "当有人死了就不施放群体BUFF",
+    CboxNoGroupBuff               = "不使用群体BUFF",
+    CboxGroupBuff                 = "必要时施放群体BUFF（额外的材料成本） ",
     CboxSameZone                  = "仅在某些区域",
     CboxResGhost                  = "复活",
-    CboxReplaceSingle             = "用群体 buff 替换单个 buff ",
+    CboxReplaceSingle             = "用群体BUFF替换单个BUFF ",
     CboxArgentumDawn              = "自动装备/取消[银色黎明徽记] ",
     CboxCarrot                    = "自动装备/取消[棍子上的胡萝卜]",
 
@@ -609,7 +632,7 @@ local function bomLanguage_Chinese()
     CboxDontUseConsumables        = "消耗材料仅与 Shift、Ctrl 或 Alt 一起使用 ",
     CboxShowClassicConsumables    = "显示 Classic 中可用的消耗品 ",
     CboxShowTBCConsumables        = "显示 TBC 中可用的消耗品 ",
-    CboxSlowerHardware            = "不那么频繁的增益检查（在团队副本中） ",
+    CboxSlowerHardware            = "不那么频繁的BUFF检查（在团队副本中） ",
 
     HeaderRenew                   = "到期前通知（秒）",
     EboxTime60                    = "持续时间 <=60 秒:",
@@ -617,43 +640,43 @@ local function bomLanguage_Chinese()
     EboxTime600                   = "持续时间 <=10 分:",
     EboxTime1800                  = "持续时间 <=30 分:",
     EboxTime3600                  = "持续时间 <=60 分:",
-    EboxMinBuff                   = "使用团体BUFF时需要多少的缺失BUFF的数量 ",
-    EboxMinBlessing               = "使用更大祝福时需要多少的祝福的数量 ",
+    EboxMinBuff                   = "使用群体BUFF需达到多少人以上才使用",
+    EboxMinBlessing               = "使用强大的祝福需达到多少人以上才使用  ",
 
     TooltipSelfCastCheckbox_Self  = "仅自己 ",
-    TooltipSelfCastCheckbox_Party = "活动中队伍和团体的 Buff  ",
-    TooltipEnableSpell            = "将此增益添加到列表 ",
-    TooltipEnableBuffCancel       = "已发现就取消这个buff ",
+    TooltipSelfCastCheckbox_Party = "活动中队伍/团体的BUFF ",
+    TooltipEnableSpell            = "将此BUFF添加到列表 ",
+    TooltipEnableBuffCancel       = "已发现就取消这个BUFF ",
     FormatToggleTarget            = "点击切换: %s",
     FormatAllForceCastTargets     = "强制释放: ",
     FormatForceCastNone           = "强制转换列表为空 ",
     FormatAllExcludeTargets       = "无视 : ",
     FormatExcludeNone             = "忽略列表为空 ",
-    TooltipForceCastOnTarget      = "将当前团队或队伍目标添加到buff的监控列表 ",
-    TooltipExcludeTarget          = "添加当前团队或队伍目标到排除列表 ",
+    TooltipForceCastOnTarget      = "将当前团队/队伍添加到监控列表 ",
+    TooltipExcludeTarget          = "添加当前团队/队伍到排除列表 ",
     TooltipSelectTarget           = "选择一个团队/队伍成员来启用这个选项 ",
-    TooltipGroup                  = "在团队中查看buff  %d",
+    TooltipGroup                  = "在团队中查看BUFF  %d",
     TooltipRaidGroupsSettings     = "团队查看设置",
-    MessageAddedForced            = "强制 buff ",
+    MessageAddedForced            = "强制BUFF ",
     MessageClearedForced          = "移除了力量BUFF ",
     MessageAddedExcluded          = "永远不会BUFF ",
     MessageClearedExcluded        = "删除了排除 ",
 
-    HintCancelThisBuff            = "取消这个 buff",
+    HintCancelThisBuff            = "取消这个BUFF",
     HintCancelThisBuff_Combat     = "战斗前",
     HintCancelThisBuff_Always     = "一直",
 
-    TooltipWhisperWhenExpired     = "当 buff 过期时，对施放 buff 的玩家密语 ",
+    TooltipWhisperWhenExpired     = "当BUFF过期时，对施放者密语提醒 ",
     TooltipMainHand               = "主手",
     TooltipOffHand                = "副手",
-    ShamanEnchantBlocked          = "Waiting for main hand", -- TBC: Shown when shaman cannot enchant this hand because the other hand goes first
+    ShamanEnchantBlocked          = "主手等待", -- TBC: Shown when shaman cannot enchant this hand because the other hand goes first
     PreventPVPTagBlocked          = "目标是PVP", -- PreventPVPTag option enabled, player is non-PVP and target is PVP
-    TooltipIncludesAllRanks       = "任何这种类型的buff ",
+    TooltipIncludesAllRanks       = "任何这种类型的BUFF",
     TooltipSimilarFoods           = "任何类型的食物 ",
 
-    TabBuff                       = "Buff",
-    TabDoNotBuff                  = "不要 buff",
-    TabBuffOnlySelf               = "Buff 仅限本人", -- Shown when all raid groups are deselected
+    TabBuff                       = "BUFF",
+    TabDoNotBuff                  = "不要BUFF",
+    TabBuffOnlySelf               = "BUFF仅限本人", -- Shown when all raid groups are deselected
     TabSpells                     = "技能",
     --TabItems = "Items",
     --TabBehaviour = "Behaviour",
@@ -701,15 +724,15 @@ local function bomLanguage_Chinese()
     profile_battleground          = "战场",
     profile_auto                  = "自动",
 
-    AboutInfo                     = "Buff'o'mat将扫描团队成员是否丢失Buff，然后单击它就能施放和补充。当三个或更多成员丢失同一个buff时，会使用大buff。插件的另一个功能是你死后提醒你再次施放“寻找草药”或“寻找矿物。插件同样可以用于复活技能。当你点击宏时，它将复活你身边的人-优先级最高为萨满，圣骑士和牧师 ",
-    AboutUsage                    = "你需要一个空闲的宏才能使用此插件. 主窗口有两个标签“Buff”和“法术”. 在“Buff”下你会找到所有缺失的Buff和一个施放按钮在“法术”下，你可以配置哪些法术应该被监控, 是否应该使用大buff版本。选择是只对你还是对所有队伍成员. 选择哪个buff应该在哪个职业上有效. 你也可以忽略完整的组（例如在raid中，当你被分配给7队和8队上智慧Buff时）你也可以在这里选择，一个buff应该在当前目标上激活。例如，当德鲁伊点击主坦克，在“荆棘术”部分点击“-”（最后一个符号）时，它会变成十字准星，现在插件将记住你要把buff施放给主坦克.你有两个选项可以从缺失的buff列表中选择一个去施放buff. 窗口中的法术按钮或插件的宏. 你可以在主窗口的“标题栏”上找到“M”按钮|n重要提示：插件只在脱战后起作用，因为暴雪不允许在战斗中更改宏. 另外，在战斗中不能打开或关闭主窗口!",
+    AboutInfo                     = "Buff'o'mat将扫描团队成员是否丢失Buff，然后单击它就能施放和补充。当三个或更多成员丢失同一个BUFF时，会使用群体BUFF。插件的另一个功能是你死后提醒你再次施放“寻找草药”或“寻找矿物。插件同样可以用于复活技能。当你点击宏时，它将复活你身边的人-优先级最高为萨满，圣骑士和牧师 ",
+    AboutUsage                    = "你需要一个空闲的宏才能使用此插件. 主窗口有两个标签“BUFF”和“法术”. 在“BUFF”下你会找到所有缺失的Buff和一个施放按钮在“法术”下，你可以配置哪些法术应该被监控, 是否应该使用大buff版本。选择是只对你还是对所有队伍成员. 选择哪个buff应该在哪个职业上有效. 你也可以忽略完整的组（例如在raid中，当你被分配给7队和8队上智慧Buff时）你也可以在这里选择，一个BUFF应该在当前目标上激活。例如，当德鲁伊点击主坦克，在“荆棘术”部分点击“-”（最后一个符号）时，它会变成十字准星，现在插件将记住你要把BUFF施放给主坦克.你有两个选项可以从缺失的BUFF列表中选择一个去施放BUFF. 窗口中的法术按钮或插件的宏. 你可以在主窗口的“标题栏”上找到“M”按钮|n重要提示：插件只在脱战后起作用，因为暴雪不允许在战斗中更改宏. 另外，在战斗中不能打开或关闭主窗口!",
 
     AboutSlashCommand             = "", --<value> can be true, 1, enable, false, 0, disable. If <value> is omitted, the current status switches.",
 
-    TooltipMacroButton            = "将此宏拖动到您的操作栏以施放buff|您可以在Key Bindings => Other 中为宏添加快捷键 ",
+    TooltipMacroButton            = "将此宏拖动到您的操作栏以施放BUFF|您可以在按键绑定 =>其他 中为宏添加快捷键 ",
     TooltipSettingsButton         = "打开快速设置和配置文件弹出菜单 ",
     TooltipCloseButton            = "隐藏 Buffomat 窗口，输入 /bom 重新打开或单击小地图按钮 ",
-    TooltipCastButton             = "从列表中施放法术。|n在战斗中不可用。|n也可以通过宏激活（在顶行）|n也不能在键绑定=>其他中绑定快捷键",
+    TooltipCastButton             = "从列表中施放法术。|n在战斗中不可用。|n也可以通过宏激活（在顶行）|n也不能在按键绑定=>其他 中绑定快捷键",
 
     SpellLabel_TrackHumanoids     = "Cat only - 覆盖跟踪草药和矿石 ",
   }
