@@ -655,8 +655,8 @@ local function bomLanguage_Chinese()
 
     TooltipSelfCastCheckbox_Self  = "仅自己",
     TooltipSelfCastCheckbox_Party = "活动中队伍/团体的BUFF",
-    TooltipEnableSpell            = "将此BUFF添加到列表",
-    TooltipEnableBuffCancel       = "已发现就移除这个BUFF",
+    TooltipEnableSpell            = "将BUFF添加到列表",
+    TooltipEnableBuffCancel       = "发现就移除这个BUFF",
     FormatToggleTarget            = "点击切换: %s",
     FormatAllForceCastTargets     = "强制释放目标: ",
     FormatForceCastNone           = "强制转换目标为空",
