@@ -145,7 +145,7 @@ local function bomSetupDruidSpells(spells, enchants)
             reagentRequired = { 17021, 17026 }, targetClasses = BOM_ALL_CLASSES },
           druidOnly)
   BOM.Class.SpellDef:scanSpell(spells, 9910, --Thorns | Dornen
-          { cancelForm     = true, default = false,
+          { cancelForm     = false, default = false,
             singleFamily   = { 467, 782, 1075, 8914, 9756, 9910, -- Ranks 1-6
                                26992 }, -- TBC: Rank 7
             singleDuration = DURATION_10M, targetClasses = BOM_MELEE_CLASSES },
@@ -1377,4 +1377,7 @@ BOM.BuffIgnoreAll = {
   4511 -- Phase Shift (imp)
 }
 
-local ShapeShiftTravel = { 2645, 783 } --Ghost wolf and travel druid
+local ShapeShiftTravel = {
+  2645,
+  783
+} --Ghost wolf and travel druid
