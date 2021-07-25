@@ -1,5 +1,12 @@
 # Changelog
 
+## Buffomat Classic and TBC 2021.7.5
+
+- Druid: Removed "cancelForm" flag from thorns, now should be castable in
+  Moonkin form.
+- Paladin: Blessing of Sanctuary is now split into normal and Greater, like the
+  other blessings, to show in spell list twice.
+
 ## Buffomat Classic and TBC 2021.7.4
 
 - Added classic consumables: Greater Intellect elixir +25, and Sages elixir +18

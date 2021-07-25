@@ -14,5 +14,7 @@ BOM.ItemId.Mage.ManaJade = 5513
 BOM.ItemId.Mage.ManaAgate = 5514
 
 BOM.ItemId.Warlock = {}
-
 BOM.ItemId.Warlock.SoulShard = 6265
+
+BOM.ItemId.Paladin = {}
+BOM.ItemId.Paladin.SymbolOfKings = 21177

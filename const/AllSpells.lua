@@ -534,11 +534,9 @@ local function bomSetupPaladinSpells(spells, enchants)
           paladinOnly)
   BOM.Class.SpellDef:scanSpell(spells, 20914, --Blessing of Sanctuary
           { isBlessing      = true, default = false,
-            groupFamily     = { 25899, -- Rank 1
-                                27169 }, -- TBC: Rank 2
             singleFamily    = { 20911, 20912, 20913, 20914, -- Ranks 1-4
                                 27168 }, -- TBC: Rank 5
-            reagentRequired = { 21177 },
+            reagentRequired = { BOM.ItemId.Paladin.SymbolOfKings },
             singleDuration  = blessing_duration, groupDuration = greater_blessing_duration,
             targetClasses   = BOM_NO_CLASS },
           paladinOnly)
@@ -547,34 +545,46 @@ local function bomSetupPaladinSpells(spells, enchants)
   --
   BOM.Class.SpellDef:scanSpell(spells, 25898, --Greater Blessing of Kings
           { isBlessing      = true, default = true, singleDuration = greater_blessing_duration,
-            reagentRequired = { 21177 }, targetClasses = { "MAGE", "HUNTER", "WARLOCK" }, },
+            reagentRequired = { BOM.ItemId.Paladin.SymbolOfKings },
+            targetClasses   = { "MAGE", "HUNTER", "WARLOCK" }, },
           paladinOnly)
 
   BOM.Class.SpellDef:scanSpell(spells, 25890, -- Greater Blessing of Light
-          { singleFamily    = { 25890, -- Rank 1
-                                27145 }, -- TBC: Rank 2
+          { singleFamily    = { 25890, -- Greater Rank 1
+                                27145 }, -- TBC: Greater Rank 2
             isBlessing      = true, default = false,
-            reagentRequired = { 21177 }, singleDuration = greater_blessing_duration,
+            reagentRequired = { BOM.ItemId.Paladin.SymbolOfKings }, singleDuration = greater_blessing_duration,
             targetClasses   = BOM_NO_CLASS },
           paladinOnly)
   BOM.Class.SpellDef:scanSpell(spells, 25916, --Greater Blessing of Might
           { isBlessing      = true, default = false,
-            singleFamily    = { 25782, 25916, -- Ranks 1-2
-                                27141 }, -- TBC: Rank 3
+            singleFamily    = { 25782, 25916, -- Greater Ranks 1-2
+                                27141 }, -- TBC: Greater Rank 3
             singleDuration  = greater_blessing_duration,
-            reagentRequired = { 21177 }, targetClasses = { "WARRIOR", "ROGUE" } },
+            reagentRequired = { BOM.ItemId.Paladin.SymbolOfKings },
+            targetClasses   = { "WARRIOR", "ROGUE" } },
           paladinOnly)
   BOM.Class.SpellDef:scanSpell(spells, 25895, --Greater Blessing of Salvation
           { singleFamily    = { 25895 }, isBlessing = true, default = false,
             singleDuration  = greater_blessing_duration,
-            reagentRequired = { 21177 }, targetClasses = BOM_NO_CLASS },
+            reagentRequired = { BOM.ItemId.Paladin.SymbolOfKings },
+            targetClasses   = BOM_NO_CLASS },
           paladinOnly)
   BOM.Class.SpellDef:scanSpell(spells, 25918, --Greater Blessing of Wisdom
           { isBlessing      = true, default = false,
-            singleFamily    = { 25894, 25918, -- Ranks 1-2
-                                27143 }, -- TBC: Rank 3
+            singleFamily    = { 25894, 25918, -- Greater Ranks 1-2
+                                27143 }, -- TBC: Greater Rank 3
             singleDuration  = greater_blessing_duration,
-            reagentRequired = { 21177 }, targetClasses = { "DRUID", "SHAMAN", "PRIEST", "PALADIN" } },
+            reagentRequired = { BOM.ItemId.Paladin.SymbolOfKings },
+            targetClasses   = { "DRUID", "SHAMAN", "PRIEST", "PALADIN" } },
+          paladinOnly)
+  BOM.Class.SpellDef:scanSpell(spells, 25899, --Greater Blessing of Sanctuary
+          { isBlessing      = true, default = false,
+            singleFamily    = { 25899, -- Greater Rank 1
+                                27169 }, -- TBC: Greater Rank 2
+            singleDuration  = greater_blessing_duration,
+            reagentRequired = { BOM.ItemId.Paladin.SymbolOfKings },
+            targetClasses   = BOM_NO_CLASS },
           paladinOnly)
 
   -- END ------
