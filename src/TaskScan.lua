@@ -1555,7 +1555,7 @@ local function bomAddWeaponEnchant(spell, playerMember,
     tasklist:Add(
             spell.singleLink,
             spell.single,
-            L.TooltipOffHand,
+            L.TooltipMainHand,
             BOM.Class.MemberBuffTarget:fromSelf(playerMember),
             false)
     bomQueueSpell(spell.singleMana, spell.singleId, spell.singleLink,

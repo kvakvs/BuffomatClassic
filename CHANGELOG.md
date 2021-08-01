@@ -1,5 +1,9 @@
 # Changelog
 
+## Buffomat Classic and TBC 2021.8.1
+
+- Typo for shaman weapon enchantments main hand was showing as off-hand in tasks
+
 ## Buffomat Classic and TBC 2021.7.5
 
 - Druid: Removed "cancelForm" flag from thorns, now should be castable in
