@@ -5,6 +5,9 @@ local TOCNAME, BOM = ...
 
 BOM.SpellId = {}
 
+-- Spell ids in this list hide food buffs from the task list
+-- BOM.SpellId.Food = {33264}
+
 BOM.SpellId.Mage = {}
 BOM.SpellId.Mage.ConjureManaRuby = 10054
 BOM.SpellId.Mage.ConjureManaEmerald = 27101
