@@ -11,11 +11,11 @@ local bomPlayerMemberCache --Copy of player info dict
 local bomPartyCache --Copy of party members, a dict of Member's
 
 ---@return Member
----@param unitid string
+---@param unitid string Player name or special name like "raidpet#"
 ---@param nameGroup string|number
 ---@param nameRole string MAINTANK?
-function BOM.GetMember(unitid, nameGroup, nameRole)
-  local name = UnitFullName(unitid)
+local function bomGetMember(unitid, nameGroup, nameRole, specialName)
+  local name, _unitRealm = UnitFullName(unitid)
   if name == nil then
     return nil
   end
@@ -46,13 +46,21 @@ function BOM.GetMember(unitid, nameGroup, nameRole)
     link = BOM.FormatTexture(BOM.ICON_PET) .. name
   end
 
-  bomMemberCache[unitid] = bomMemberCache[unitid] or BOM.Class.Member:new({})
-
-  local member = bomMemberCache[unitid]
-  member:Construct(unitid, name, group, class, link, isTank)
-
-  return member
+  if specialName then
+    -- do not cache just construct
+    local member = BOM.Class.Member:new({})
+    member:Construct(unitid, name, group, class, link, isTank)
+    return member
+  else
+    -- store in cache
+    bomMemberCache[unitid] = bomMemberCache[unitid] or BOM.Class.Member:new({})
+    local member = bomMemberCache[unitid]
+    member:Construct(unitid, name, group, class, link, isTank)
+    return member
+  end
 end
+
+BOM.GetMember = bomGetMember
 
 ---@return number Party size including pets
 local function bomGetPartySize()
@@ -97,13 +105,13 @@ local function bomGet5manPartyMembers(player_member)
   local member ---@type Member
 
   for groupIndex = 1, 4 do
-    member = BOM.GetMember("party" .. groupIndex)
+    member = bomGetMember("party" .. groupIndex)
 
     if member then
       tinsert(party, member)
     end
 
-    member = BOM.GetMember("partypet" .. groupIndex)
+    member = bomGetMember("party" .. groupIndex .. "-pet", nil, nil, true)
 
     if member then
       member.group = 9
@@ -112,10 +120,10 @@ local function bomGet5manPartyMembers(player_member)
     end
   end
 
-  player_member = BOM.GetMember("player")
+  player_member = bomGetMember("player")
   tinsert(party, player_member)
 
-  member = BOM.GetMember("pet")
+  member = bomGetMember("pet", nil, nil, true)
 
   if member then
     member.group = 9
@@ -146,7 +154,7 @@ local function bomGet40manRaidMembers(player_member)
   end
 
   for raid_index = 1, 40 do
-    local member = BOM.GetMember("raid" .. raid_index, name_group, name_role)
+    local member = bomGetMember("raid" .. raid_index, name_group, name_role)
 
     if member then
       if UnitIsUnit(member.unitId, "player") then
@@ -154,7 +162,7 @@ local function bomGet40manRaidMembers(player_member)
       end
       tinsert(party, member)
 
-      member = BOM.GetMember("raidpet" .. raid_index)
+      member = bomGetMember("raid" .. raid_index .. "-pet", nil, nil, true)
       if member then
         member.group = 9
         member.class = "pet"
@@ -210,7 +218,7 @@ function BOM.GetPartyMembers()
             and not UnitPlayerOrPetInParty("target") --out of party or raid
             and not UnitPlayerOrPetInRaid("target")
     then
-      local member = BOM.GetMember("target")
+      local member = bomGetMember("target")
       if member then
         member.group = 9 --move them outside of 8 buff groups
         tinsert(party, member)

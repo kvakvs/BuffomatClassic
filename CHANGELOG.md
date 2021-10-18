@@ -1,5 +1,10 @@
 # Changelog
 
+## Buffomat Classic and TBC 2021.10.1, 2021.10.2
+
+- Experimental: Fix for raid pets buffing.
+- Support for scrolls of strength and agility.
+
 ## Buffomat Classic and TBC 2021.8.1
 
 - Typo for shaman weapon enchantments main hand was showing as off-hand in tasks
