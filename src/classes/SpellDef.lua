@@ -37,6 +37,7 @@ BOM.Class = BOM.Class or {}
 ---type="weapon" The buff is a temporary weapon enchant on user's weapons (poison or shaman etc)
 ---@field type string Defines type: "aura", "consumable", "weapon" for Enchant Consumables, "seal", "tracking", "resurrection"
 ---@field isConsumable boolean Is an item-based buff; the spell must have 'items' field too
+---@field consumableTarget string Add "[@" .. consumableTarget .. "]" to the "/use bag slot" macro
 ---@field isInfo boolean
 ---@field isOwn boolean Spell only casts on self
 ---@field isBlessing boolean Spell will be cast on group members of the same class
@@ -216,13 +217,13 @@ end
 ---Create a spelldef if the limitations apply and add to the table.
 ---Only check permanent limitations here like minlevel, TBC, or player class.
 ---@param dst table<SpellDef>
----@param single_id number
+---@param buffSpellId number The buff spell ID is key in the AllSpells table
 ---@param fields table<string, any>
 ---@param limitations table<function> Check these conditions to skip adding the spell. Permanent conditions only like minlevel or class
 ---@param modifications table<function> Check these conditions and maybe modify the spelldef.
-function BOM.Class.SpellDef:scanSpell(dst, single_id, fields, limitations,
+function BOM.Class.SpellDef:scanSpell(dst, buffSpellId, fields, limitations,
                                       modifications, extraText)
-  local spell = BOM.Class.SpellDef:new(single_id, fields)
+  local spell = BOM.Class.SpellDef:new(buffSpellId, fields)
 
   if bomCheckLimitations(spell, limitations) then
     bomCheckModifications(spell, modifications)

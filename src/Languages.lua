@@ -146,6 +146,7 @@ local function bomLanguage_English()
     ShamanEnchantBlocked          = "Waiting for main hand", -- TBC: Shown when shaman cannot enchant this hand because the other hand goes first
     PreventPVPTagBlocked          = "Target is PvP", -- PreventPVPTag option enabled, player is non-PVP and target is PVP
     TooltipIncludesAllRanks       = "Any buff of this type",
+    TooltipSimilar                = "Any similar",
     TooltipSimilarFoods           = "Any similar food",
 
     TabBuff                       = "Buff",

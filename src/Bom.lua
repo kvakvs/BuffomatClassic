@@ -142,6 +142,7 @@ local function bom_make_popup_menu_settings_row(db, var)
   return L["Cbox" .. var], false, db, var
 end
 
+---Populate the [⚙] popup menu
 local function bomPopup(self, minimap)
   local name = (self:GetName() or "nil") .. (minimap and "Minimap" or "Normal")
 

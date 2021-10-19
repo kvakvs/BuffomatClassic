@@ -2,8 +2,8 @@
 
 ## Buffomat Classic and TBC 2021.10.1, 2021.10.2
 
-- Experimental: Fix for raid pets buffing.
-- Support for scrolls of strength and agility.
+- Support for scrolls of strength and agility, casted on self and pet.
+- Experimental: Fix for raid pets targeting when scanning buffs.
 
 ## Buffomat Classic and TBC 2021.8.1
 

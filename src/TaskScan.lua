@@ -1374,9 +1374,10 @@ end
 ---@param playerMember table - the player
 ---@param castButtonTitle string - if not empty, is item name from the bag
 ---@param macroCommand string - console command to use item from the bag
+---@param target string Insert this text into macro where [@player] target text would go
 ---@return string, string {cast_button_title, bag_macro_command}
-local function bomAddConsumableSelfbuff(spell, playerMember, castButtonTitle, macroCommand)
-  local ok, bag, slot, count = bomHasItem(spell.items, true)
+local function bomAddConsumableSelfbuff(spell, playerMember, castButtonTitle, macroCommand, target)
+  local haveItemOffCD, bag, slot, count = bomHasItem(spell.items, true)
   count = count or 0
 
   local taskText = L.TASK_USE
@@ -1384,7 +1385,7 @@ local function bomAddConsumableSelfbuff(spell, playerMember, castButtonTitle, ma
     taskText = L.TASK_TBC_HUNTER_PET_BUFF
   end
 
-  if ok then
+  if haveItemOffCD then
     if BOM.SharedState.DontUseConsumables
             and not IsModifierKeyDown() then
       -- Text: [Icon] [Consumable Name] x Count
@@ -1396,7 +1397,11 @@ local function bomAddConsumableSelfbuff(spell, playerMember, castButtonTitle, ma
               BOM.Class.MemberBuffTarget:fromSelf(playerMember),
               true)
     else
-      macroCommand = "/use " .. bag .. " " .. slot
+      if target then
+        macroCommand = string.format("/use [@%s] %d %d", target, bag, slot)
+      else
+        macroCommand = string.format("/use %d %d", bag, slot)
+      end
       castButtonTitle = L.TASK_USE .. " " .. spell.single
 
       -- Text: [Icon] [Consumable Name] x Count
@@ -1768,7 +1773,7 @@ local function bomScanOneSpell(spell, playerMember, party, inRange,
   elseif spell.isConsumable then
     if #spell.NeedMember > 0 then
       castButtonTitle, macroCommand = bomAddConsumableSelfbuff(
-              spell, playerMember, castButtonTitle, macroCommand)
+              spell, playerMember, castButtonTitle, macroCommand, spell.consumableTarget)
       inRange = true
     end
 

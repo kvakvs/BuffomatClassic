@@ -835,6 +835,23 @@ local function bomSetupPhysicalDpsConsumables(spells, enchants)
             consumableEra = BOM.CLASSIC_ERA, extraText = bomClassicHint() })
 
   --
+  -- Scrolls
+  --
+  BOM.Class.SpellDef:scanSpell(spells, 33077, --Scroll of Agility V
+          { item           = 27498, isConsumable = true, default = false, consumableTarget = "player",
+            singleDuration = DURATION_30M, targetClasses = BOM_ALL_CLASSES, extraText = L.TooltipSimilar })
+  BOM.Class.SpellDef:scanSpell(spells, 12174, --Scroll of Agility IV
+          { item           = 10309, isConsumable = true, default = false, consumableTarget = "player",
+            singleDuration = DURATION_30M, targetClasses = BOM_ALL_CLASSES, extraText = L.TooltipSimilar })
+
+  BOM.Class.SpellDef:scanSpell(spells, 33082, --Scroll of Strength V
+          { item           = 27503, isConsumable = true, default = false, consumableTarget = "player",
+            singleDuration = DURATION_30M, targetClasses = BOM_ALL_CLASSES, extraText = L.TooltipSimilar })
+  BOM.Class.SpellDef:scanSpell(spells, 12179, --Scroll of Strength IV
+          { item           = 10310, isConsumable = true, default = false, consumableTarget = "player",
+            singleDuration = DURATION_30M, targetClasses = BOM_ALL_CLASSES, extraText = L.TooltipSimilar })
+
+  --
   -- Weightstones for blunt weapons
   --
   BOM.Class.SpellDef:scanSpell(spells, 16622, --Weightstone
@@ -1256,6 +1273,12 @@ function BOM.SetupItemCache()
   makeItem(11564, "Crystal Ward", W, 134129)
   makeItem(11567, "Crystal Spire", W, 134134)
   makeItem(11563, "Crystal Force", W, 134088)
+
+  makeItem(27498, "Scroll of Agility V", W, 134938)
+  makeItem(10309, "Scroll of Agility IV", W, 134938)
+
+  makeItem(27503, "Scroll of Strength V", W, 134938)
+  makeItem(10310, "Scroll of Strength IV", W, 134938)
 
   makeItem(20748, "Brilliant Mana Oil", W, 134722)
   makeItem(13458, "Greater Nature Protection Potion", W, 134802)
