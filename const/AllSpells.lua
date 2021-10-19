@@ -839,17 +839,23 @@ local function bomSetupPhysicalDpsConsumables(spells, enchants)
   --
   BOM.Class.SpellDef:scanSpell(spells, 33077, --Scroll of Agility V
           { item           = 27498, isConsumable = true, default = false, consumableTarget = "player",
-            singleDuration = DURATION_30M, targetClasses = BOM_ALL_CLASSES, extraText = L.TooltipSimilar })
+            singleDuration = DURATION_30M, targetClasses = BOM_ALL_CLASSES, playerClass = BOM_PHYSICAL_CLASSES })
   BOM.Class.SpellDef:scanSpell(spells, 12174, --Scroll of Agility IV
           { item           = 10309, isConsumable = true, default = false, consumableTarget = "player",
-            singleDuration = DURATION_30M, targetClasses = BOM_ALL_CLASSES, extraText = L.TooltipSimilar })
+            singleDuration = DURATION_30M, targetClasses = BOM_ALL_CLASSES, playerClass = BOM_PHYSICAL_CLASSES, extraText = bomClassicHint() })
+  BOM.Class.SpellDef:scanSpell(spells, 8117, --Scroll of Agility III
+          { item           = 4425, isConsumable = true, default = false, consumableTarget = "player",
+            singleDuration = DURATION_30M, targetClasses = BOM_ALL_CLASSES, playerClass = BOM_PHYSICAL_CLASSES, extraText = bomClassicHint() })
 
   BOM.Class.SpellDef:scanSpell(spells, 33082, --Scroll of Strength V
           { item           = 27503, isConsumable = true, default = false, consumableTarget = "player",
-            singleDuration = DURATION_30M, targetClasses = BOM_ALL_CLASSES, extraText = L.TooltipSimilar })
+            singleDuration = DURATION_30M, targetClasses = BOM_ALL_CLASSES, playerClass = BOM_MELEE_CLASSES })
   BOM.Class.SpellDef:scanSpell(spells, 12179, --Scroll of Strength IV
           { item           = 10310, isConsumable = true, default = false, consumableTarget = "player",
-            singleDuration = DURATION_30M, targetClasses = BOM_ALL_CLASSES, extraText = L.TooltipSimilar })
+            singleDuration = DURATION_30M, targetClasses = BOM_ALL_CLASSES, playerClass = BOM_MELEE_CLASSES, extraText = bomClassicHint() })
+  BOM.Class.SpellDef:scanSpell(spells, 8120, --Scroll of Strength III
+          { item           = 4426, isConsumable = true, default = false, consumableTarget = "player",
+            singleDuration = DURATION_30M, targetClasses = BOM_ALL_CLASSES, playerClass = BOM_MELEE_CLASSES, extraText = bomClassicHint() })
 
   --
   -- Weightstones for blunt weapons
@@ -857,20 +863,20 @@ local function bomSetupPhysicalDpsConsumables(spells, enchants)
   BOM.Class.SpellDef:scanSpell(spells, 16622, --Weightstone
           { item          = 12643, items = { 12643, 7965, 3241, 3240, 3239 },
             isConsumable  = true, type = "weapon", duration = DURATION_30M,
-            default       = false, onlyUsableFor = BOM_PHYSICAL_CLASSES,
+            default       = false, onlyUsableFor = BOM_PHYSICAL_CLASSES, -- fist weapon = blunt
             consumableEra = BOM.CLASSIC_ERA, extraText = bomClassicHint() })
   enchants[16622] = { 1703, 484, 21, 20, 19 } -- Weightstone
 
   BOM.Class.SpellDef:scanSpell(spells, 34340, --TBC: Adamantite Weightstone +12 BLUNT +14 CRIT
-          { item    = 28421, items = { 28421 }, isConsumable = true, type = "weapon", duration = DURATION_1H,
-            default = false, onlyUsableFor = BOM_PHYSICAL_CLASSES, consumableEra = BOM.TBC_ERA },
-          { isTBC = true })
+          { item          = 28421, items = { 28421 }, isConsumable = true, type = "weapon", duration = DURATION_1H,
+            default       = false, onlyUsableFor = BOM_PHYSICAL_CLASSES, -- fist weapon = blunt
+            consumableEra = BOM.TBC_ERA }, { isTBC = true })
   enchants[34340] = { 2955 } --TBC: Adamantite Weightstone (Weight Weapon)
 
   BOM.Class.SpellDef:scanSpell(spells, 34339, --TBC: Fel Weightstone +12 BLUNT
-          { item    = 28420, items = { 28420 }, isConsumable = true, type = "weapon", duration = DURATION_1H,
-            default = false, onlyUsableFor = BOM_PHYSICAL_CLASSES, consumableEra = BOM.TBC_ERA },
-          { isTBC = true })
+          { item          = 28420, items = { 28420 }, isConsumable = true, type = "weapon", duration = DURATION_1H,
+            default       = false, onlyUsableFor = BOM_PHYSICAL_CLASSES, -- fist weapon = blunt
+            consumableEra = BOM.TBC_ERA }, { isTBC = true })
   enchants[34339] = { 2954 } --TBC: Fel Weightstone (Weighted +12)
 
 

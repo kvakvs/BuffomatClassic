@@ -17,6 +17,7 @@ const/ItemIds.lua
 
 src/classes/Control.lua
 src/classes/Buff.lua
+src/classes/BuffClass.lua
 src/classes/BuffomatAddon.lua
 src/classes/BuffomatTranslations.lua
 src/classes/Member.lua
