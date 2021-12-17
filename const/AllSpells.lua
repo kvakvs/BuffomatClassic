@@ -837,25 +837,47 @@ local function bomSetupPhysicalDpsConsumables(spells, enchants)
   --
   -- Scrolls
   --
-  BOM.Class.SpellDef:scanSpell(spells, 33077, --Scroll of Agility V
+  BOM.Class.SpellDef:scanSpell(spells, 33077, --TBC: Scroll of Agility V
           { item           = 27498, isConsumable = true, default = false, consumableTarget = "player",
-            singleDuration = DURATION_30M, targetClasses = BOM_ALL_CLASSES, playerClass = BOM_PHYSICAL_CLASSES })
+            singleDuration = DURATION_30M, playerClass = BOM_PHYSICAL_CLASSES },
+          { isTBC = true })
   BOM.Class.SpellDef:scanSpell(spells, 12174, --Scroll of Agility IV
           { item           = 10309, isConsumable = true, default = false, consumableTarget = "player",
-            singleDuration = DURATION_30M, targetClasses = BOM_ALL_CLASSES, playerClass = BOM_PHYSICAL_CLASSES, extraText = bomClassicHint() })
+            singleDuration = DURATION_30M, playerClass = BOM_PHYSICAL_CLASSES, extraText = bomClassicHint() })
   BOM.Class.SpellDef:scanSpell(spells, 8117, --Scroll of Agility III
           { item           = 4425, isConsumable = true, default = false, consumableTarget = "player",
-            singleDuration = DURATION_30M, targetClasses = BOM_ALL_CLASSES, playerClass = BOM_PHYSICAL_CLASSES, extraText = bomClassicHint() })
+            singleDuration = DURATION_30M, playerClass = BOM_PHYSICAL_CLASSES, extraText = bomClassicHint() })
 
-  BOM.Class.SpellDef:scanSpell(spells, 33082, --Scroll of Strength V
+  BOM.Class.SpellDef:scanSpell(spells, 33082, --TBC: Scroll of Strength V
           { item           = 27503, isConsumable = true, default = false, consumableTarget = "player",
-            singleDuration = DURATION_30M, targetClasses = BOM_ALL_CLASSES, playerClass = BOM_MELEE_CLASSES })
+            singleDuration = DURATION_30M, playerClass = BOM_MELEE_CLASSES },
+          { isTBC = true })
   BOM.Class.SpellDef:scanSpell(spells, 12179, --Scroll of Strength IV
           { item           = 10310, isConsumable = true, default = false, consumableTarget = "player",
-            singleDuration = DURATION_30M, targetClasses = BOM_ALL_CLASSES, playerClass = BOM_MELEE_CLASSES, extraText = bomClassicHint() })
+            singleDuration = DURATION_30M, playerClass = BOM_MELEE_CLASSES, extraText = bomClassicHint() })
   BOM.Class.SpellDef:scanSpell(spells, 8120, --Scroll of Strength III
           { item           = 4426, isConsumable = true, default = false, consumableTarget = "player",
-            singleDuration = DURATION_30M, targetClasses = BOM_ALL_CLASSES, playerClass = BOM_MELEE_CLASSES, extraText = bomClassicHint() })
+            singleDuration = DURATION_30M, playerClass = BOM_MELEE_CLASSES, extraText = bomClassicHint() })
+
+  BOM.Class.SpellDef:scanSpell(spells, 33079, --TBC: Scroll of Protection V
+          { item           = 27500, isConsumable = true, default = false, consumableTarget = "player",
+            singleDuration = DURATION_30M },
+          { isTBC = true })
+  BOM.Class.SpellDef:scanSpell(spells, 12175, --Scroll of Protection IV
+          { item           = 10305, isConsumable = true, default = false, consumableTarget = "player",
+            singleDuration = DURATION_30M, extraText = bomClassicHint() })
+
+  BOM.Class.SpellDef:scanSpell(spells, 33080, --Scroll of Spirit V
+          { item           = 27501, isConsumable = true, default = false, consumableTarget = "player",
+            singleDuration = DURATION_30M, playerClass = BOM_MANA_CLASSES },
+          { isTBC = true })
+
+  --
+  -- Rune of Warding
+  --
+  BOM.Class.SpellDef:scanSpell(spells, 32282, --TBC: Greater Rune of Warding
+          { item           = 25521, isConsumable = true, default = false, consumableTarget = "player",
+            singleDuration = DURATION_1H, targetClasses = BOM_ALL_CLASSES, playerClass = BOM_MELEE_CLASSES })
 
   --
   -- Weightstones for blunt weapons

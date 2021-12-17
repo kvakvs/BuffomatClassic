@@ -1,8 +1,9 @@
 # Changelog
 
-## Buffomat Classic and TBC 2021.10.1, 2021.10.2
+## Buffomat Classic and TBC 2021.10.1-3
 
-- Support for scrolls of strength and agility, casted on self and pet.
+- Support for scrolls of strength, agility, spirit, protection, casted on self.
+- Support for Greater Rune of Warding, casted on self.
 - Experimental: Fix for raid pets targeting when scanning buffs.
 
 ## Buffomat Classic and TBC 2021.8.1
