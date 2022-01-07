@@ -1,5 +1,9 @@
 # Changelog
 
+## Buffomat Classic and TBC 2022.1.0
+
+- Fix for raid pets/party pets buffing
+
 ## Buffomat Classic and TBC 2021.10.1-3
 
 - Support for scrolls of strength, agility, spirit, protection, casted on self.

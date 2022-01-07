@@ -74,7 +74,7 @@ local function bomGetPartySize()
     count = 0
   else
     countTo = 4
-    prefix = "group"
+    prefix = "party"
 
     if UnitPlayerOrPetInParty("pet") then
       count = 2
@@ -111,7 +111,7 @@ local function bomGet5manPartyMembers(player_member)
       tinsert(party, member)
     end
 
-    member = bomGetMember("party" .. groupIndex .. "-pet", nil, nil, true)
+    member = bomGetMember("partypet" .. groupIndex, nil, nil, true)
 
     if member then
       member.group = 9
@@ -162,7 +162,7 @@ local function bomGet40manRaidMembers(player_member)
       end
       tinsert(party, member)
 
-      member = bomGetMember("raid" .. raid_index .. "-pet", nil, nil, true)
+      member = bomGetMember("raidpet" .. raid_index, nil, nil, true)
       if member then
         member.group = 9
         member.class = "pet"
