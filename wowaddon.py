@@ -10,13 +10,13 @@ import subprocess
 import sys
 import zipfile
 
-VERSION = '2021.10.3'  # year.month.build_num
+VERSION = '2022.1.0'  # year.month.build_num
 
-UI_VERSION_CLASSIC = '11307'  # patch 1.13.7
+UI_VERSION_CLASSIC = '11401'  # patch 1.14.1
 BOM_NAME_CLASSIC = 'BuffomatClassic'  # Directory and zip name
 BOM_TITLE_CLASSIC = "Buffomat Classic"  # Title field in TOC
 
-UI_VERSION_CLASSIC_TBC = '20502'  # patch 2.5.2
+UI_VERSION_CLASSIC_TBC = '20503'  # patch 2.5.3 Phase 3 TBC
 BOM_NAME_CLASSIC_TBC = 'BuffomatClassicTBC'  # Directory and zip name
 BOM_TITLE_CLASSIC_TBC = "Buffomat Classic TBC"  # Title field in TOC
 

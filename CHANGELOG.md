@@ -1,4 +1,4 @@
-# Changelog
+_# Changelog
 
 ## Buffomat Classic and TBC 2022.1.0
 
@@ -6,7 +6,8 @@
 - Fix for "unknown unit id" error, thanks to Anonomit @github for reporting and
   explaining the cause
 - UI scale option (default to 1.0) allows you to shrink or expand the window (
-  for example when you are running on 4k resolution).
+  for example when you are running on 4k resolution). Hide and show Buffomat to
+  apply the new value.
 
 ## Buffomat Classic and TBC 2021.10.1-3
 
@@ -587,4 +588,4 @@
 
 ## 0.10
 
-- first release
+- first release_
