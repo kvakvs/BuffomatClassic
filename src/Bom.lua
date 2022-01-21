@@ -257,6 +257,11 @@ local function bom_add_editbox(Var, Init, width)
   BOM.Options.AddEditBox(BOM.SharedState, Var, Init, L["Ebox" .. Var], 50, width or 150, true)
 end
 
+local function bom_add_editbox_str(Var, Init, width)
+  --Options:AddEditBox(DB,Var,Init,TXTLeft,width,widthLeft,onlynumbers,tooltip,suggestion)
+  BOM.Options.AddEditBox(BOM.SharedState, Var, Init, L["Ebox" .. Var], 50, width or 150, false)
+end
+
 local function bom_options_add_main_panel()
   local opt = BOM.Options
   opt.AddPanel(BOM.TOC_TITLE, false, true)
@@ -274,6 +279,7 @@ local function bom_options_add_main_panel()
   end
 
   opt.AddSpace()
+  bom_add_editbox_str("UIWindowScale", 1, 350)
   bom_add_editbox("MinBuff", 3, 350)
   bom_add_editbox("MinBlessing", 3, 350)
   opt.AddSpace()
@@ -1266,6 +1272,7 @@ function BOM.ShowWindow(tab)
   if not InCombatLockdown() then
     if not BOM.WindowVisible() then
       BomC_MainWindow:Show()
+      BomC_MainWindow:SetScale(tonumber(BOM.SharedState.UIWindowScale) or 1.0)
       autoHelper = "KeepOpen"
     else
       BOM.BtnClose()
@@ -1295,6 +1302,7 @@ function BOM.AutoOpen()
     if not BOM.WindowVisible() and autoHelper == "open" then
       autoHelper = "close"
       BomC_MainWindow:Show()
+      BomC_MainWindow:SetScale(tonumber(BOM.SharedState.UIWindowScale) or 1.0)
       BOM.Tool.SelectTab(BomC_MainWindow, 1)
     end
   end

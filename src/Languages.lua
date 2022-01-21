@@ -114,6 +114,7 @@ local function bomLanguage_English()
     EboxTime600                   = "Duration <=10 min:",
     EboxTime1800                  = "Duration <=30 min:",
     EboxTime3600                  = "Duration <=60 min:",
+    EboxUIWindowScale             = "UI scale (default 1; Hide and show Buffomat to apply)",
     EboxMinBuff                   = "Number of missing buffs required to use a group buff",
     EboxMinBlessing               = "Number of missing blessing required to use a greater blessing",
 

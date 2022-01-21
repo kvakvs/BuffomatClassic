@@ -5,6 +5,8 @@
 - Fix for raid pets/party pets buffing
 - Fix for "unknown unit id" error, thanks to Anonomit @github for reporting and
   explaining the cause
+- UI scale option (default to 1.0) allows you to shrink or expand the window (
+  for example when you are running on 4k resolution).
 
 ## Buffomat Classic and TBC 2021.10.1-3
 
