@@ -1396,8 +1396,12 @@ BOM.ItemList = {
     16896 }, -- TBC: Major Soulstone
 }
 BOM.ItemListSpell = {
-  [8079] = 432, -- Water | Wasser
-  [5232] = 20762, [16892] = 20762, [16893] = 20762, [16895] = 20762, [16896] = 20762, -- Soulstone | Seelenstein
+  [8079]  = 432, -- Water | Wasser
+  [5232]  = 20762,
+  [16892] = 20762,
+  [16893] = 20762,
+  [16895] = 20762,
+  [16896] = 20762, -- Soulstone | Seelenstein
 }
 BOM.ItemListTarget = {}
 

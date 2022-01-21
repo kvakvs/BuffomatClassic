@@ -3,6 +3,8 @@
 ## Buffomat Classic and TBC 2022.1.0
 
 - Fix for raid pets/party pets buffing
+- Fix for "unknown unit id" error, thanks to Anonomit @github for reporting and
+  explaining the cause
 
 ## Buffomat Classic and TBC 2021.10.1-3
 

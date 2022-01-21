@@ -34,7 +34,7 @@ function BOM.Class.GroupBuffTarget.GetDistance(self)
       local rName = "raid" .. raidIndex
 
       if subgroup == self.groupIndex and UnitExists(rName) and UnitIsConnected(rName) then
-        local memberDistance = BOM.Tool.UnitDistanceSquared(name)
+        local memberDistance = BOM.Tool.UnitDistanceSquared(rName)
         if memberDistance < nearestDist then
           nearestDist = memberDistance
           nearestCount = nearestCount + 1
