@@ -2037,7 +2037,7 @@ local function bomUpdateScan_PreCheck(from)
     BOM.CurrentProfile = BOM.CharacterState[auto_profile]
     BOM.UpdateSpellsTab("UpdateScan1")
     BomC_MainWindow_Title:SetText(
-            BOM.FormatTexture(BOM.MACRO_ICON_FULLPATH)
+            BOM.FormatTexture(BOM.BOM_BEAR_ICON_FULLPATH)
                     .. " " .. BOM.TOC_TITLE .. " - "
                     .. L["profile_" .. auto_profile])
     BOM.SetForceUpdate("ProfileChanged")

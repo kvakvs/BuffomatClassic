@@ -1,5 +1,11 @@
 _# Changelog
 
+## Buffomat Classic and TBC 2022.1.1
+
+- Chinese language updated
+- Icon for macro is changed to INV_MISC_QUESTIONMARK which instructs the game to 
+  change the macro icon dynamically to the first spell in the macro.
+
 ## Buffomat Classic and TBC 2022.1.0
 
 - Fix for raid pets/party pets buffing

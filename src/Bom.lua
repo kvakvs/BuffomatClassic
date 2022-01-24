@@ -53,9 +53,10 @@ BOM.BehaviourSettings = {
 BOM.TOC_VERSION = GetAddOnMetadata(TOCNAME, "Version") --used for display in options
 BOM.TOC_TITLE = GetAddOnMetadata(TOCNAME, "Title")
 
-BOM.MACRO_ICON = "Ability_Druid_ChallangingRoar"
-BOM.MACRO_ICON_DISABLED = "Ability_Druid_DemoralizingRoar"
-BOM.MACRO_ICON_FULLPATH = "Interface\\ICONS\\Ability_Druid_ChallangingRoar"
+BOM.MACRO_ICON = "INV_MISC_QUESTIONMARK"
+BOM.MACRO_ICON_DISABLED = "INV_MISC_QUESTIONMARK"
+-- Icon picture used in window title, in the minimap icon, etc
+BOM.BOM_BEAR_ICON_FULLPATH = "Interface\\ICONS\\Ability_Druid_ChallangingRoar"
 
 BOM.ICON_FORMAT = "|T%s:0:0:0:0:64:64:4:60:4:60|t"
 BOM.PICTURE_FORMAT = "|T%s:0|t"
@@ -570,7 +571,7 @@ local function bom_init_ui()
 
   BOM.MinimapButton.Init(
           BOM.SharedState.Minimap,
-          BOM.MACRO_ICON_FULLPATH,
+          BOM.BOM_BEAR_ICON_FULLPATH,
           function(self, button)
             if button == "LeftButton" then
               BOM.ToggleWindow()
@@ -581,7 +582,7 @@ local function bom_init_ui()
           BOM.TOC_TITLE)
 
   BomC_MainWindow_Title:SetText(
-          BOM.FormatTexture(BOM.MACRO_ICON_FULLPATH)
+          BOM.FormatTexture(BOM.BOM_BEAR_ICON_FULLPATH)
                   .. " "
                   .. L.Buffomat
                   .. " - "
@@ -759,7 +760,7 @@ local function Event_ADDON_LOADED(arg1)
   end
 
   BOM.Tool.AddDataBrocker(
-          BOM.MACRO_ICON_FULLPATH,
+          BOM.BOM_BEAR_ICON_FULLPATH,
           function(self, button)
             if button == "LeftButton" then
               BOM.ToggleWindow()

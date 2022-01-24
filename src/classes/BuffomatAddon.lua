@@ -131,7 +131,7 @@ BOM.Class = BOM.Class or {}
 ---@field TOC_TITLE string Addon name
 ---@field MACRO_ICON string
 ---@field MACRO_ICON_DISABLED string
----@field MACRO_ICON_FULLPATH string
+---@field BOM_BEAR_ICON_FULLPATH string
 ---@field ICON_FORMAT string
 ---@field PICTURE_FORMAT string
 ---@field MACRO_NAME string
