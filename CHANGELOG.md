@@ -3,6 +3,7 @@ _# Changelog
 ## Buffomat Classic and TBC 2022.1.1
 
 - Chinese language updated
+- Buffomat window now clips to screen (never goes off-screen)
 - Icon for macro is changed to INV_MISC_QUESTIONMARK which instructs the game to 
   change the macro icon dynamically to the first spell in the macro.
 
