@@ -890,18 +890,18 @@ end
 
 -- Update timers for Buffomat checking spells and buffs
 -- See option: BOM.SharedState.SlowerHardware
-local bom_last_update_timestamp = 0
-local bom_last_modifier
-local bom_fps_check = 0
-local bom_slow_count = 0
+buffomatModule.lastUpdateTimestamp = 0
+buffomatModule.lastModifierKeyState = false
+buffomatModule.fpsCheck = 0
+buffomatModule.slowCount = 0
 
 ---bumped from 0.1 which potentially causes Naxxramas lag?
 ---Checking BOM.SharedState.SlowerHardware will use bom_slowerhardware_update_timer_limit
-local bom_update_timer_limit = 0.500
-local bom_slowerhardware_update_timer_limit = 1.500
--- This is written to bom_update_timer_limit if overload is detected in a large raid or slow hardware
-local BOM_THROTTLE_TIMER_LIMIT = 1.000
-local BOM_THROTTLE_SLOWER_HARDWARE_TIMER_LIMIT = 2.000
+buffomatModule.updateTimerLimit = 0.500
+buffomatModule.slowerhardwareUpdateTimerLimit = 1.500
+-- This is written to updateTimerLimit if overload is detected in a large raid or slow hardware
+buffomatModule.BOM_THROTTLE_TIMER_LIMIT = 1.000
+buffomatModule.BOM_THROTTLE_SLOWER_HARDWARE_TIMER_LIMIT = 2.000
 
 function BOM.UpdateTimer()
   if BOM.InLoading and BOM.LoadingScreenTimeOut then
@@ -911,7 +911,7 @@ function BOM.UpdateTimer()
     else
       --print("loading done")
       BOM.InLoading = false
-      Event_CombatStop()
+      eventsModule:OnCombatStop()
     end
   end
 
@@ -928,48 +928,48 @@ function BOM.UpdateTimer()
     end
   end
 
-  if BOM.ScanModifier and bom_last_modifier ~= IsModifierKeyDown() then
-    bom_last_modifier = IsModifierKeyDown()
+  if BOM.ScanModifier and buffomatModule.lastModifierKeyState ~= IsModifierKeyDown() then
+    buffomatModule.lastModifierKeyState = IsModifierKeyDown()
     BOM.SetForceUpdate("ModifierKeyDown")
   end
 
   --
   -- Update timers, slow hardware and auto-throttling
   --
-  bom_fps_check = bom_fps_check + 1
+  buffomatModule.fpsCheck = buffomatModule.fpsCheck + 1
 
-  local update_timer_limit = bom_update_timer_limit
+  local updateTimerLimit = buffomatModule.updateTimerLimit
   if BOM.SharedState.SlowerHardware then
-    update_timer_limit = bom_slowerhardware_update_timer_limit
+    updateTimerLimit = buffomatModule.slowerhardwareUpdateTimerLimit
   end
 
   if (BOM.ForceUpdate or BOM.RepeatUpdate)
-          and GetTime() - (bom_last_update_timestamp or 0) > update_timer_limit
+          and GetTime() - (buffomatModule.lastUpdateTimestamp or 0) > updateTimerLimit
           and InCombatLockdown() == false
   then
-    bom_last_update_timestamp = GetTime()
-    bom_fps_check = debugprofilestop()
+    buffomatModule.lastUpdateTimestamp = GetTime()
+    buffomatModule.fpsCheck = debugprofilestop()
 
     BOM.UpdateScan("Timer")
 
     -- If updatescan call above took longer than 6 ms, and repeated update, then
     -- bump the slow alarm counter, once it reaches 6 we consider throttling
-    if (debugprofilestop() - bom_fps_check) > 6 and BOM.RepeatUpdate then
-      bom_slow_count = bom_slow_count + 1
+    if (debugprofilestop() - buffomatModule.fpsCheck) > 6 and BOM.RepeatUpdate then
+      buffomatModule.slowCount = buffomatModule.slowCount + 1
 
-      if bom_slow_count >= 6 and update_timer_limit < 1 then
-        bom_update_timer_limit = BOM_THROTTLE_TIMER_LIMIT
-        bom_slowerhardware_update_timer_limit = BOM_THROTTLE_SLOWER_HARDWARE_TIMER_LIMIT
+      if buffomatModule.slowCount >= 6 and updateTimerLimit < 1 then
+        buffomatModule.updateTimerLimit = buffomatModule.BOM_THROTTLE_TIMER_LIMIT
+        buffomatModule.slowerhardwareUpdateTimerLimit = buffomatModule.BOM_THROTTLE_SLOWER_HARDWARE_TIMER_LIMIT
         BOM:Print("Overwhelmed - entering slow mode!")
       end
     else
-      bom_slow_count = 0
+      buffomatModule.slowCount = 0
     end
   end
 end
 
 function BOM.FastUpdateTimer()
-  bom_last_update_timestamp = 0
+  buffomatModule.lastUpdateTimestamp = 0
 end
 
 BOM.PlayerBuffs = {}
@@ -1019,12 +1019,13 @@ function BOM.UnitAura(unitId, buffIndex, filter)
   nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, castByPlayer, nameplateShowAll, timeMod
 end
 
-local autoHelper = "open"
+buffomatModule.autoHelper = "open"
+
 function BOM.HideWindow()
   if not InCombatLockdown() then
     if BOM.WindowVisible() then
       BomC_MainWindow:Hide()
-      autoHelper = "KeepClose"
+      buffomatModule.autoHelper = "KeepClose"
       BOM.SetForceUpdate("HideWindow")
       BOM.UpdateScan("HideWindow")
     end
@@ -1036,7 +1037,7 @@ function BOM.ShowWindow(tab)
     if not BOM.WindowVisible() then
       BomC_MainWindow:Show()
       BomC_MainWindow:SetScale(tonumber(BOM.SharedState.UIWindowScale) or 1.0)
-      autoHelper = "KeepOpen"
+      buffomatModule.autoHelper = "KeepOpen"
     else
       BOM.BtnClose()
     end
@@ -1062,8 +1063,8 @@ end
 
 function BOM.AutoOpen()
   if not InCombatLockdown() and BOM.SharedState.AutoOpen then
-    if not BOM.WindowVisible() and autoHelper == "open" then
-      autoHelper = "close"
+    if not BOM.WindowVisible() and buffomatModule.autoHelper == "open" then
+      buffomatModule.autoHelper = "close"
       BomC_MainWindow:Show()
       BomC_MainWindow:SetScale(tonumber(BOM.SharedState.UIWindowScale) or 1.0)
       BOM.Tool.SelectTab(BomC_MainWindow, 1)
@@ -1074,20 +1075,20 @@ end
 function BOM.AutoClose(x)
   if not InCombatLockdown() and BOM.SharedState.AutoOpen then
     if BOM.WindowVisible() then
-      if autoHelper == "close" then
+      if buffomatModule.autoHelper == "close" then
         BomC_MainWindow:Hide()
-        autoHelper = "open"
+        buffomatModule.autoHelper = "open"
       end
-    elseif autoHelper == "KeepClose" then
-      autoHelper = "open"
+    elseif buffomatModule.autoHelper == "KeepClose" then
+      buffomatModule.autoHelper = "open"
     end
   end
 end
 
 function BOM.AllowAutOpen()
   if not InCombatLockdown() and BOM.SharedState.AutoOpen then
-    if autoHelper == "KeepClose" then
-      autoHelper = "open"
+    if buffomatModule.autoHelper == "KeepClose" then
+      buffomatModule.autoHelper = "open"
     end
   end
 end

@@ -100,6 +100,10 @@ local function Event_CombatStop()
   BOM.AllowAutOpen()
 end
 
+function eventsModule:OnCombatStop()
+  return Event_CombatStop()
+end
+
 local function Event_LoadingStart()
   BOM.InLoading = true
   BOM.LoadingScreenTimeOut = nil

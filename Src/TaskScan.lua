@@ -2069,7 +2069,7 @@ local function bomUpdateScan_PreCheck(from)
     BOM.UpdateSpellsTab("UpdateScan1")
     BomC_MainWindow_Title:SetText(
             BOM.FormatTexture(constModule.BOM_BEAR_ICON_FULLPATH)
-                    .. " " .. BOM.SHORT_TITLE .. " - "
+                    .. " " .. constModule.SHORT_TITLE .. " - "
                     .. L["profile_" .. auto_profile])
     BOM.SetForceUpdate("ProfileChanged")
   end
