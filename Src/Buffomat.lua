@@ -4,6 +4,7 @@ local TOCNAME, _ = ...
 local buffomatModule = BuffomatModule.DeclareModule("Buffomat") ---@type BomBuffomatModule
 
 local constModule = BuffomatModule.Import("Const") ---@type BomConstModule
+local eventsModule = BuffomatModule.Import("Events") ---@type BomEventsModule
 
 ---global, visible from XML files and from script console and chat commands
 ---@class BuffomatAddon
@@ -138,7 +139,9 @@ local constModule = BuffomatModule.Import("Const") ---@type BomConstModule
 ---
 ---@field SpellId table<string, table<string, number>> Map of spell name to id
 ---@field ItemId table<string, table<string, number>> Map of item name to id
-BuffomatAddon = LibStub("AceAddon-3.0"):NewAddon("Buffomat", "AceConsole-3.0") ---@type BuffomatAddon
+BuffomatAddon = LibStub("AceAddon-3.0"):NewAddon(
+        "Buffomat",
+        "AceConsole-3.0", "AceEvent-3.0") ---@type BuffomatAddon
 local BOM = BuffomatAddon
 
 local L = setmetatable(
@@ -213,43 +216,6 @@ end
 function BOM.FormatTexture(texture)
   return string.format(constModule.ICON_FORMAT, texture)
 end
-
---"UNIT_POWER_UPDATE","UNIT_SPELLCAST_START","UNIT_SPELLCAST_STOP","PLAYER_STARTED_MOVING","PLAYER_STOPPED_MOVING"
-local EVT_COMBAT_STOP = { "PLAYER_REGEN_ENABLED" }
-local EVT_COMBAT_START = { "PLAYER_REGEN_DISABLED" }
-local EVT_LOADING_SCREEN_START = { "LOADING_SCREEN_ENABLED", "PLAYER_LEAVING_WORLD" }
-local EVT_LOADING_SCREEN_END = { "PLAYER_ENTERING_WORLD", "LOADING_SCREEN_DISABLED" }
-
-local EVT_UPDATE = {
-  "UPDATE_SHAPESHIFT_FORM", "UNIT_AURA", "READY_CHECK",
-  "PLAYER_ALIVE", "PLAYER_UNGHOST", "INCOMING_RESURRECT_CHANGED",
-  "UNIT_INVENTORY_CHANGED" }
-
-local EVT_BAG_CHANGED = { "BAG_UPDATE_DELAYED", "TRADE_CLOSED" }
-
-local EVT_PARTY_CHANGED = { "GROUP_JOINED", "GROUP_ROSTER_UPDATE",
-                            "RAID_ROSTER_UPDATE", "GROUP_LEFT" }
-
-local EVT_SPELLBOOK_CHANGED = { "SPELLS_CHANGED", "LEARNED_SPELL_IN_TAB" }
-
---- Error messages which will make player stand if sitting.
-local ERR_NOT_STANDING = {
-  ERR_CANTATTACK_NOTSTANDING, SPELL_FAILED_NOT_STANDING,
-  ERR_LOOT_NOTSTANDING, ERR_TAXINOTSTANDING }
-
---- Error messages which will make player dismount if mounted.
-local ERR_IS_MOUNTED = {
-  ERR_NOT_WHILE_MOUNTED, ERR_ATTACK_MOUNTED,
-  ERR_TAXIPLAYERALREADYMOUNTED, SPELL_FAILED_NOT_MOUNTED }
-
---- Error messages which will make player cancel shapeshift.
-local ERR_IS_SHAPESHIFT = {
-  ERR_EMBLEMERROR_NOTABARDGEOSET, ERR_CANT_INTERACT_SHAPESHIFTED,
-  ERR_MOUNT_SHAPESHIFTED, ERR_NO_ITEMS_WHILE_SHAPESHIFTED,
-  ERR_NOT_WHILE_SHAPESHIFTED, ERR_TAXIPLAYERSHAPESHIFTED,
-  SPELL_FAILED_NO_ITEMS_WHILE_SHAPESHIFTED,
-  SPELL_FAILED_NOT_SHAPESHIFT, SPELL_NOT_SHAPESHIFTED,
-  SPELL_NOT_SHAPESHIFTED_NOSPACE }
 
 ---Makes a tuple to pass to the menubuilder to display a settings checkbox in popup menu
 ---@param db table - BomSharedState reference to read settings from it
@@ -718,7 +684,7 @@ end
 
 ---Called from event handler on Addon Loaded event
 ---Execution start here
-function BOM.Init()
+function BuffomatAddon:Init()
   BOM.SetupTranslations()
   BOM.SetupSpells()
   BOM.SetupCancelBuffs()
@@ -868,12 +834,20 @@ function BOM.Init()
   --        .. " by " .. GetAddOnMetadata(TOCNAME, "Author"))
 end
 
-local function Event_ADDON_LOADED(arg1)
-  if arg1 == TOCNAME then
-    BOM.Init()
-  end
+---AceAddon handler
+function BuffomatAddon:OnInitialize()
+  -- do init tasks here, like loading the Saved Variables,
+  -- or setting up slash commands.
+end
 
-  BOM.Tool.AddDataBrocker(
+---AceAddon handler
+function BuffomatAddon:OnEnable()
+  -- Do more initialization here, that really enables the use of your addon.
+  -- Register Events, Hook functions, Create Frames, Get information from
+  -- the game that wasn't available in OnInitialize
+  self:Init()
+  eventsModule:InitEvents()
+  self.Tool.AddDataBroker(
           constModule.BOM_BEAR_ICON_FULLPATH,
           function(self, button)
             if button == "LeftButton" then
@@ -884,166 +858,8 @@ local function Event_ADDON_LOADED(arg1)
           end)
 end
 
-local function Event_UNIT_POWER_UPDATE(unitTarget, powerType)
-  --UNIT_POWER_UPDATE: "unitTarget", "powerType"
-  if powerType == "MANA" and UnitIsUnit(unitTarget, "player") then
-    local max_mana = BOM.PlayerManaMax or 0
-    local actual_mana = UnitPower("player", 0) or 0
-
-    if max_mana <= actual_mana then
-      BOM.SetForceUpdate(nil)
-    end
-  end
-end
-
-local function Event_GenericUpdate()
-  BOM.SetForceUpdate()
-end
-
-local function Event_Bag()
-  BOM.SetForceUpdate()
-  BOM.WipeCachedItems = true
-
-  if BOM.CachedHasItems then
-    wipe(BOM.CachedHasItems)
-  end
-end
-
-local function Event_SpellsChanged()
-  BOM.SetupAvailableSpells()
-  BOM.SetForceUpdate("Evt Spells Changed")
-  BOM.SpellTabsCreatedFlag = false
-  BOM.OptionsInsertSpells()
-end
-
-local bom_in_party = IsInRaid() or IsInGroup()
-
-local function Event_PartyChanged()
-  BOM.PartyUpdateNeeded = true
-  BOM.SetForceUpdate("Evt Party Changed")
-
-  -- if in_party changed from true to false, clear the watch groups
-  local in_party = IsInRaid() or IsInGroup()
-  if bom_in_party ~= in_party then
-    if not in_party then
-      BOM.MaybeResetWatchGroups()
-    end
-    bom_in_party = in_party
-  end
-end
-
-local function Event_UNIT_SPELLCAST_errors(unit)
-  if UnitIsUnit(unit, "player") then
-    BOM.CheckForError = false
-    BOM.SetForceUpdate()
-  end
-end
-
-local function Event_UNIT_SPELLCAST_START(unit)
-  if UnitIsUnit(unit, "player") and not BOM.PlayerCasting then
-    BOM.PlayerCasting = "cast"
-    BOM.SetForceUpdate()
-  end
-end
-
-local function Event_UNIT_SPELLCAST_STOP(unit)
-  if UnitIsUnit(unit, "player") and BOM.PlayerCasting then
-    BOM.PlayerCasting = nil
-    BOM.SetForceUpdate()
-    BOM.CheckForError = false
-  end
-end
-
-local function Event_UNIT_SPELLCHANNEL_START(unit)
-  if UnitIsUnit(unit, "player") and not BOM.PlayerCasting then
-    BOM.PlayerCasting = "channel"
-    BOM.SetForceUpdate()
-  end
-end
-
-local function Event_UNIT_SPELLCHANNEL_STOP(unit)
-  if UnitIsUnit(unit, "player") and BOM.PlayerCasting then
-    BOM.PlayerCasting = nil
-    BOM.SetForceUpdate()
-    BOM.CheckForError = false
-  end
-end
-
-local function Event_PLAYER_STARTED_MOVING()
-  BOM.IsMoving = true
-end
-
-local function Event_PLAYER_STOPPED_MOVING()
-  BOM.IsMoving = false
-end
-
----On combat start will close the UI window and disable the UI. Will cancel the cancelable buffs.
-local function Event_CombatStart()
-  BOM.SetForceUpdate("Evt Combat Start")
-  BOM.DeclineHasResurrection = true
-  BOM.AutoClose()
-  if not InCombatLockdown() then
-    BomC_ListTab_Button:Disable()
-  end
-
-  BOM.DoCancelBuffs()
-end
-
-local function Event_CombatStop()
-  BOM.ClearSkip()
-  BOM.SetForceUpdate("Evt Combat Stop")
-  BOM.DeclineHasResurrection = true
-  BOM.AllowAutOpen()
-end
-
-local function Event_LoadingStart()
-  BOM.InLoading = true
-  BOM.LoadingScreenTimeOut = nil
-  Event_CombatStart()
-  --print("loading start")
-end
-
-local function Event_LoadingStop()
-  BOM.LoadingScreenTimeOut = GetTime() + constModule.LOADING_SCREEN_TIMEOUT
-  BOM.SetForceUpdate("Evt Loading Stop")
-end
-
----Event_PLAYER_TARGET_CHANGED
----Handle player target change, spells possibly might have changed too.
-local function Event_PLAYER_TARGET_CHANGED()
-  if not InCombatLockdown() then
-    if UnitInParty("target") or UnitInRaid("target") or UnitIsUnit("target", "player") then
-      BOM.lastTarget = (UnitFullName("target"))
-      BOM.UpdateSpellsTab("PL_TAR_CHANGED1")
-
-    elseif BOM.lastTarget then
-      BOM.lastTarget = nil
-      BOM.UpdateSpellsTab("PL_TAR_CHANGED2")
-    end
-  else
-    BOM.lastTarget = nil
-  end
-
-  if not BOM.SharedState.BuffTarget then
-    return
-  end
-
-  local newName
-  if UnitExists("target")
-          and UnitCanCooperate("player", "target")
-          and UnitIsPlayer("target")
-          and not UnitPlayerOrPetInParty("target")
-          and not UnitPlayerOrPetInRaid("target")
-  then
-    newName = UnitName("target")
-  end
-
-  if newName ~= BOM.SaveTargetName then
-    BOM.SaveTargetName = newName
-    BOM.SetForceUpdate("PlayerTargetChanged")
-    BOM.UpdateScan("PlayerTargetChanged")
-  end
-
+---AceAddon handler
+function BuffomatAddon:OnDisable()
 end
 
 local function bomDownGrade()
@@ -1070,72 +886,6 @@ local function bomDownGrade()
       BOM.AddMemberToSkipList()
     end
   end
-end
-
----Event_UI_ERROR_MESSAGE
----Will stand if sitting, will dismount if mounted, will cancel shapeshift, if
----shapeshifted while trying to cast a spell and that produces an error message.
----@param errorType table
----@param message table
-local function Event_UI_ERROR_MESSAGE(errorType, message)
-  if tContains(ERR_NOT_STANDING, message) then
-    if BOM.SharedState.AutoStand then
-      UIErrorsFrame:Clear()
-      DoEmote("STAND")
-    end
-
-  elseif tContains(ERR_IS_MOUNTED, message) then
-    local flying = false -- prevent dismount in flight, OUCH!
-    if BOM.TBC then
-      flying = IsFlying() and not BOM.SharedState.AutoDismountFlying
-    end
-    if not flying then
-      if BOM.SharedState.AutoDismount then
-        UIErrorsFrame:Clear()
-        Dismount()
-      end
-    end
-
-  elseif BOM.SharedState.AutoDisTravel and tContains(ERR_IS_SHAPESHIFT, message) and BOM.CancelShapeShift() then
-    UIErrorsFrame:Clear()
-
-  elseif not InCombatLockdown() then
-    if BOM.CheckForError then
-      if message == SPELL_FAILED_LOWLEVEL then
-        bomDownGrade()
-      else
-        BOM.AddMemberToSkipList()
-      end
-    end
-  end
-
-  BOM.CheckForError = false
-end
-
----Event_TAXIMAP_OPENED
----Will dismount player if mounted when opening taxi tab. Will stand and cancel
----shapeshift to be able to talk to the taxi NPC.
-local function Event_TAXIMAP_OPENED()
-  if IsMounted() then
-    Dismount()
-  else
-    DoEmote("STAND")
-    BOM.CancelShapeShift()
-  end
-end
-
----PLAYER_LEVEL_UP Event
-local function Event_PLAYER_LEVEL_UP(level)
-  -- TODO: Rebuild the UI buttons for new spells which appeared due to level up
-  --BOM.SetupSpells()
-  --BOM.ForceUpdate = true
-  --BOM.UpdateScan()
-end
-
----Events which might change active state of Buffomat (like rested status change,
----or zone change, etc)
-local function Event_RequestForceUpdate()
-  BOM.ForceUpdate = true
 end
 
 -- Update timers for Buffomat checking spells and buffs
@@ -1267,108 +1017,6 @@ function BOM.UnitAura(unitId, buffIndex, filter)
 
   return name, icon, count, debuffType, duration, expirationTime, source, isStealable,
   nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, castByPlayer, nameplateShowAll, timeMod
-end
-
-local partyCheckMask = COMBATLOG_OBJECT_AFFILIATION_RAID + COMBATLOG_OBJECT_AFFILIATION_PARTY + COMBATLOG_OBJECT_AFFILIATION_MINE
---  BOM.PlayerBuffs cleanup in scan bom_get_party_members
-
-local function Event_COMBAT_LOG_EVENT_UNFILTERED()
-  local timestamp, event, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags,
-  spellId, spellName, spellSchool,
-  auraType, amount = CombatLogGetCurrentEventInfo()
-
-  if bit.band(destFlags, partyCheckMask) > 0 and destName ~= nil and destName ~= "" then
-    --print(event,spellName,bit.band(destFlags,partyCheckMask)>0,bit.band(sourceFlags,COMBATLOG_OBJECT_AFFILIATION_MINE)>0)
-    if event == "UNIT_DIED" then
-      --BOM.PlayerBuffs[destName]=nil -- problem with hunters and fake-deaths!
-      --additional check in bom_get_party_members
-      --print("dead",destName)
-      BOM.SetForceUpdate("Evt UNIT_DIED")
-
-    elseif BOM.SharedState.Duration[spellName] then
-      if bit.band(sourceFlags, COMBATLOG_OBJECT_AFFILIATION_MINE) > 0 then
-        if event == "SPELL_CAST_SUCCESS" then
-
-        elseif event == "SPELL_AURA_REFRESH" then
-          BOM.PlayerBuffs[destName] = BOM.PlayerBuffs[destName] or {}
-          BOM.PlayerBuffs[destName][spellName] = GetTime()
-
-        elseif event == "SPELL_AURA_APPLIED" then
-          BOM.PlayerBuffs[destName] = BOM.PlayerBuffs[destName] or {}
-          if BOM.PlayerBuffs[destName][spellName] == nil then
-            BOM.PlayerBuffs[destName][spellName] = GetTime()
-          end
-
-        elseif event == "SPELL_AURA_REMOVED" then
-          if BOM.PlayerBuffs[destName] and BOM.PlayerBuffs[destName][spellName] then
-            BOM.PlayerBuffs[destName][spellName] = nil
-          end
-        end
-
-      elseif event == "SPELL_AURA_REFRESH" or event == "SPELL_AURA_APPLIED" and event == "SPELL_AURA_REMOVED" then
-        if BOM.PlayerBuffs[destName] and BOM.PlayerBuffs[destName][spellName] then
-          BOM.PlayerBuffs[destName][spellName] = nil
-        end
-      end
-    end
-
-  end
-end
-
----OnLoad is called when XML frame for the main window is loaded into existence
----BOM.Init() will also be called when the addon is loaded (earlier than this)
-function BOM.OnLoad()
-  --BOM.RegisterEvent("PLAYER_LEVEL_UP", Event_PLAYER_LEVEL_UP)
-
-  -- Events which might change active state of Buffomat
-  BOM.RegisterEvent("ZONE_CHANGED", Event_RequestForceUpdate)
-  BOM.RegisterEvent("PLAYER_UPDATE_RESTING", Event_RequestForceUpdate)
-
-  BOM.RegisterEvent("TAXIMAP_OPENED", Event_TAXIMAP_OPENED)
-  BOM.RegisterEvent("ADDON_LOADED", Event_ADDON_LOADED)
-  BOM.RegisterEvent("UNIT_POWER_UPDATE", Event_UNIT_POWER_UPDATE)
-  BOM.RegisterEvent("PLAYER_STARTED_MOVING", Event_PLAYER_STARTED_MOVING)
-  BOM.RegisterEvent("PLAYER_STOPPED_MOVING", Event_PLAYER_STOPPED_MOVING)
-  BOM.RegisterEvent("PLAYER_TARGET_CHANGED", Event_PLAYER_TARGET_CHANGED)
-  BOM.RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED", Event_COMBAT_LOG_EVENT_UNFILTERED)
-  BOM.RegisterEvent("UI_ERROR_MESSAGE", Event_UI_ERROR_MESSAGE)
-
-  BOM.RegisterEvent("UNIT_SPELLCAST_START", Event_UNIT_SPELLCAST_START)
-  BOM.RegisterEvent("UNIT_SPELLCAST_STOP", Event_UNIT_SPELLCAST_STOP)
-  BOM.RegisterEvent("UNIT_SPELLCAST_CHANNEL_START", Event_UNIT_SPELLCHANNEL_START)
-  BOM.RegisterEvent("UNIT_SPELLCAST_CHANNEL_STOP", Event_UNIT_SPELLCHANNEL_STOP)
-
-  BOM.RegisterEvent("UNIT_SPELLCAST_SUCCEEDED", Event_UNIT_SPELLCAST_errors)
-  BOM.RegisterEvent("UNIT_SPELLCAST_INTERRUPTED", Event_UNIT_SPELLCAST_errors)
-  BOM.RegisterEvent("UNIT_SPELLCAST_FAILED", Event_UNIT_SPELLCAST_errors)
-
-  -- TODO for TBC: PLAYER_REGEN_DISABLED / ENABLED is sent before/after the combat and protected frames lock up
-
-  for i, event in ipairs(EVT_COMBAT_START) do
-    BOM.RegisterEvent(event, Event_CombatStart)
-  end
-  for i, event in ipairs(EVT_COMBAT_STOP) do
-    BOM.RegisterEvent(event, Event_CombatStop)
-  end
-  for i, event in ipairs(EVT_LOADING_SCREEN_START) do
-    BOM.RegisterEvent(event, Event_LoadingStart)
-  end
-  for i, event in ipairs(EVT_LOADING_SCREEN_END) do
-    BOM.RegisterEvent(event, Event_LoadingStop)
-  end
-
-  for i, event in ipairs(EVT_SPELLBOOK_CHANGED) do
-    BOM.RegisterEvent(event, Event_SpellsChanged)
-  end
-  for i, event in ipairs(EVT_PARTY_CHANGED) do
-    BOM.RegisterEvent(event, Event_PartyChanged)
-  end
-  for i, event in ipairs(EVT_UPDATE) do
-    BOM.RegisterEvent(event, Event_GenericUpdate)
-  end
-  for i, event in ipairs(EVT_BAG_CHANGED) do
-    BOM.RegisterEvent(event, Event_Bag)
-  end
 end
 
 local autoHelper = "open"

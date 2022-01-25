@@ -123,7 +123,7 @@ function Tool.EnableHyperlink(frame)
 end
 
 --- EventHandler
-local eventFrame ---@type Control
+--local eventFrame ---@type Control
 
 ---@param self Control
 local function bom_gpiprivat_event_handler(self, event, ...)
@@ -141,19 +141,19 @@ local function bom_gpiprivat_update_handler(self, ...)
   end
 end
 
-function BOM.RegisterEvent(event, func)
-  if eventFrame == nil then
-    eventFrame = CreateFrame("Frame")
-  end
-
-  if eventFrame._GPIPRIVAT_events == nil then
-    eventFrame._GPIPRIVAT_events = {}
-    eventFrame:SetScript("OnEvent", bom_gpiprivat_event_handler)
-  end
-
-  tinsert(eventFrame._GPIPRIVAT_events, { event, func })
-  eventFrame:RegisterEvent(event)
-end
+--function BuffomatAddon:RegisterEvent(event, func)
+--  if eventFrame == nil then
+--    eventFrame = CreateFrame("Frame")
+--  end
+--
+--  if eventFrame._GPIPRIVAT_events == nil then
+--    eventFrame._GPIPRIVAT_events = {}
+--    eventFrame:SetScript("OnEvent", bom_gpiprivat_event_handler)
+--  end
+--
+--  tinsert(eventFrame._GPIPRIVAT_events, { event, func })
+--  eventFrame:RegisterEvent(event)
+--end
 
 function Tool.OnUpdate(func)
   if eventFrame == nil then
@@ -741,13 +741,13 @@ function Tool.AddTab(frame, name, tabFrame, combatlockdown)
 end
 
 
--- DataBrocker
-local DataBrocker = false
-function Tool.AddDataBrocker(icon, onClick, onTooltipShow, text)
-  if LibStub ~= nil and DataBrocker ~= true then
+-- DataBroker
+local bomDataBroker = false
+function Tool.AddDataBroker(icon, onClick, onTooltipShow, text)
+  if LibStub ~= nil and bomDataBroker ~= true then
     local Launcher = LibStub('LibDataBroker-1.1', true)
     if Launcher ~= nil then
-      DataBrocker = true
+      bomDataBroker = true
       Launcher:NewDataObject(TOCNAME, {
         type          = "launcher",
         icon          = icon,

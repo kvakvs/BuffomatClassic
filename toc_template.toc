@@ -47,6 +47,7 @@ Src/Ui/MinimapButton.lua
 Src/Ui/SpellButtonsTab.lua
 Src/Ui/MyButton.lua
 
+Src/Events.lua
 Src/Toolbox.lua
 Src/Languages.lua
 Src/Toolbox.lua

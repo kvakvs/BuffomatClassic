@@ -398,7 +398,6 @@
 
     <Scripts>
       <OnLoad inherit="prepend">
-        BuffomatAddon.OnLoad()
         self:SetBackdrop({
           bgFile="Interface\\DialogFrame\\UI-DialogBox-Background-Dark",
           edgeFile="Interface\\DialogFrame\\UI-DialogBox-Border",
