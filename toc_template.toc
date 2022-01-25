@@ -14,6 +14,7 @@ embeds.xml
 Src/Module.lua
 Src/Buffomat.lua
 
+Src/Const/Const.lua
 Src/Const/Textures.lua
 Src/Const/AllSpells.lua
 Src/Const/SpellIds.lua

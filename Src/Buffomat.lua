@@ -1,7 +1,9 @@
 local TOCNAME, _ = ...
 
----@class BuffomataModule
-local buffomatModule = BuffomatModule.DeclareModule("Buffomat") ---@type BuffomataModule
+---@class BomBuffomatModule
+local buffomatModule = BuffomatModule.DeclareModule("Buffomat") ---@type BomBuffomatModule
+
+local constModule = BuffomatModule.Import("Const") ---@type BomConstModule
 
 ---global, visible from XML files and from script console and chat commands
 ---@class BuffomatAddon
@@ -50,6 +52,7 @@ local buffomatModule = BuffomatModule.DeclareModule("Buffomat") ---@type Buffoma
 ---@field SpellTabsCreatedFlag boolean Indicated spells tab already populated with controls
 ---@field SpellToSpell table<number, number> Maps spells ids to other spell ids
 ---@field TBC boolean Whether we are running TBC classic
+---@field IsClassic boolean Whether we are running Classic Era or Season of Mastery
 ---@field WipeCachedItems boolean Command to reset cached items
 ---@field MinimapButton GPIMinimapButton Minimap button control
 ---@field Options Options
@@ -130,23 +133,12 @@ local buffomatModule = BuffomatModule.DeclareModule("Buffomat") ---@type Buffoma
 ---@field IconUseRankOff string
 ---@field IconUseRankOn string
 ---
----@field TOC_VERSION string Addon version from TOC file
----@field TOC_TITLE string Addon name
----@field MACRO_ICON string
----@field MACRO_ICON_DISABLED string
----@field BOM_BEAR_ICON_FULLPATH string
----@field ICON_FORMAT string
----@field PICTURE_FORMAT string
----@field MACRO_NAME string
----@field MAX_AURAS number
----@field BLESSING_ID string
----@field LOADING_SCREEN_TIMEOUT number
 ---@field BehaviourSettings table<string, boolean> Key names and Defaults for 'Profile' settings
 ---@field QuickSingleBuff Control Button for single/group buff toggling next to cast button
 ---
 ---@field SpellId table<string, table<string, number>> Map of spell name to id
 ---@field ItemId table<string, table<string, number>> Map of item name to id
-BuffomatAddon = LibStub("AceAddon-3.0"):NewAddon(TOCNAME, "AceConsole-3.0") ---@type BuffomatAddon
+BuffomatAddon = LibStub("AceAddon-3.0"):NewAddon("Buffomat", "AceConsole-3.0") ---@type BuffomatAddon
 local BOM = BuffomatAddon
 
 local L = setmetatable(
@@ -197,38 +189,13 @@ BOM.BehaviourSettings = {
   --{ "ShowTBCConsumables", true},
 }
 
-BOM.TOC_VERSION = GetAddOnMetadata(TOCNAME, "Version") --used for display in options
-BOM.TOC_TITLE = GetAddOnMetadata(TOCNAME, "Title")
+--- Addon is running on Classic TBC client
+---@type boolean
+BOM.TBC = WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC
 
-BOM.MACRO_ICON = "INV_MISC_QUESTIONMARK"
-BOM.MACRO_ICON_DISABLED = "INV_MISC_QUESTIONMARK"
--- Icon picture used in window title, in the minimap icon, etc
-BOM.BOM_BEAR_ICON_FULLPATH = "Interface\\ICONS\\Ability_Druid_ChallangingRoar"
-
-BOM.ICON_FORMAT = "|T%s:0:0:0:0:64:64:4:60:4:60|t"
-BOM.PICTURE_FORMAT = "|T%s:0|t"
-
-BOM.MACRO_NAME = "Buff'o'mat"
-BOM.MAX_AURAS = 40
-BOM.BLESSING_ID = "blessing"
-BOM.LOADING_SCREEN_TIMEOUT = 2
-
-local function bom_is_tbc()
-  local function get_version()
-    return select(4, GetBuildInfo())
-  end
-
-  local ui_ver = get_version()
-  return ui_ver >= 20000 and ui_ver <= 29999
-end
-
-BOM.TBC = bom_is_tbc()
-
----Print a text with "Buffomat: " prefix in the game chat window
----@param t string
-function BOM.Print(t)
-  DEFAULT_CHAT_FRAME:AddMessage(BOM.Color("808080", L.CHAT_MSG_PREFIX) .. t)
-end
+--- Addon is running on Classic "Vanilla" client: Means Classic Era and its seasons like SoM
+---@type boolean
+BOM.IsClassic = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
 
 ---Print a text with "BomDebug: " prefix in the game chat window
 ---@param t string
@@ -244,7 +211,7 @@ end
 ---@param texture string - path to UI texture file (for example can come from
 ---  GetContainerItemInfo(bag, slot) or spell info etc
 function BOM.FormatTexture(texture)
-  return string.format(BOM.ICON_FORMAT, texture)
+  return string.format(constModule.ICON_FORMAT, texture)
 end
 
 --"UNIT_POWER_UPDATE","UNIT_SPELLCAST_START","UNIT_SPELLCAST_STOP","PLAYER_STARTED_MOVING","PLAYER_STOPPED_MOVING"
@@ -371,7 +338,7 @@ function BOM.BtnSettings(self)
 end
 
 function BOM.BtnMacro()
-  PickupMacro(BOM.MACRO_NAME)
+  PickupMacro(constModule.MACRO_NAME)
 end
 
 function BOM.ScrollMessage(self, delta)
@@ -412,8 +379,8 @@ end
 
 local function bom_options_add_main_panel()
   local opt = BOM.Options
-  opt.AddPanel(BOM.TOC_TITLE, false, true)
-  opt.AddVersion('Version |cff00c0ff' .. BOM.TOC_VERSION .. "|r")
+  opt.AddPanel(constModule.TOC_TITLE, false, true)
+  opt.AddVersion('Version |cff00c0ff' .. constModule.TOC_VERSION .. "|r")
 
   opt.AddCheckBox(BOM.SharedState.Minimap, "visible", true, L["Cboxshowminimapbutton"])
   opt.AddCheckBox(BOM.SharedState.Minimap, "lock", false, L["CboxLockMinimapButton"])
@@ -602,14 +569,14 @@ end
 function BOM.ChooseProfile (profile)
   if profile == nil or profil == "" or profile == "auto" then
     BOM.ForceProfile = nil
-    BOM.Print("Set profile to auto")
+    BOM:Print("Set profile to auto")
 
   elseif BOM.CharacterState[profile] then
     BOM.ForceProfile = profile
-    BOM.Print("Set profile to " .. profile)
+    BOM:Print("Set profile to " .. profile)
 
   else
-    BOM.Print("Unknown profile: " .. profile)
+    BOM:Print("Unknown profile: " .. profile)
   end
 
   BOM.ClearSkip()
@@ -710,7 +677,7 @@ local function bom_init_ui()
   BomC_ListTab_MessageFrame:SetMaxLines(100)
 
   BomC_ListTab_Button:SetAttribute("type", "macro")
-  BomC_ListTab_Button:SetAttribute("macro", BOM.MACRO_NAME)
+  BomC_ListTab_Button:SetAttribute("macro", constModule.MACRO_NAME)
 
   BOM.Tool.OnUpdate(BOM.UpdateTimer)
 
@@ -718,7 +685,7 @@ local function bom_init_ui()
 
   BOM.MinimapButton.Init(
           BOM.SharedState.Minimap,
-          BOM.BOM_BEAR_ICON_FULLPATH,
+          constModule.BOM_BEAR_ICON_FULLPATH,
           function(self, button)
             if button == "LeftButton" then
               BOM.ToggleWindow()
@@ -726,10 +693,10 @@ local function bom_init_ui()
               bomPopup(self.button, true)
             end
           end,
-          BOM.TOC_TITLE)
+          constModule.SHORT_TITLE)
 
   BomC_MainWindow_Title:SetText(
-          BOM.FormatTexture(BOM.BOM_BEAR_ICON_FULLPATH)
+          BOM.FormatTexture(constModule.BOM_BEAR_ICON_FULLPATH)
                   .. " "
                   .. L.Buffomat
                   .. " - "
@@ -758,7 +725,7 @@ function BOM.Init()
   BOM.SetupItemCache()
   BOM.SetupTasklist()
 
-  BOM.Macro = BOM.Class.Macro:new(BOM.MACRO_NAME)
+  BOM.Macro = BOM.Class.Macro:new(constModule.MACRO_NAME)
 
   function SetDefault(db, var, init)
     if db[var] == nil then
@@ -847,7 +814,7 @@ function BOM.Init()
       DB[var] = false
     end
 
-    BOM.Print("Set " .. var .. " to " .. tostring(DB[var]))
+    BOM:Print("Set " .. var .. " to " .. tostring(DB[var]))
     BOM.OptionsUpdate()
   end
 
@@ -907,7 +874,7 @@ local function Event_ADDON_LOADED(arg1)
   end
 
   BOM.Tool.AddDataBrocker(
-          BOM.BOM_BEAR_ICON_FULLPATH,
+          constModule.BOM_BEAR_ICON_FULLPATH,
           function(self, button)
             if button == "LeftButton" then
               BOM.ToggleWindow()
@@ -1037,7 +1004,7 @@ local function Event_LoadingStart()
 end
 
 local function Event_LoadingStop()
-  BOM.LoadingScreenTimeOut = GetTime() + BOM.LOADING_SCREEN_TIMEOUT
+  BOM.LoadingScreenTimeOut = GetTime() + constModule.LOADING_SCREEN_TIMEOUT
   BOM.SetForceUpdate("Evt Loading Stop")
 end
 
@@ -1092,7 +1059,7 @@ local function bomDownGrade()
         BOM.SharedState.SpellGreatherEqualThan[BOM.CastFailedSpellId] = level
         BOM.FastUpdateTimer()
         BOM.SetForceUpdate("Downgrade")
-        BOM.Print(string.format(L.MsgDownGrade,
+        BOM:Print(string.format(L.MsgDownGrade,
                 BOM.CastFailedSpell.single,
                 BOM.CastFailedSpellTarget.name))
 
@@ -1243,7 +1210,7 @@ function BOM.UpdateTimer()
       if bom_slow_count >= 6 and update_timer_limit < 1 then
         bom_update_timer_limit = BOM_THROTTLE_TIMER_LIMIT
         bom_slowerhardware_update_timer_limit = BOM_THROTTLE_SLOWER_HARDWARE_TIMER_LIMIT
-        BOM.Print("Overwhelmed - entering slow mode!")
+        BOM:Print("Overwhelmed - entering slow mode!")
       end
     else
       bom_slow_count = 0
@@ -1427,7 +1394,7 @@ function BOM.ShowWindow(tab)
     end
     BOM.Tool.SelectTab(BomC_MainWindow, tab or 1)
   else
-    BOM.Print(L.ActionInCombatError)
+    BOM:Print(L.ActionInCombatError)
   end
 end
 
@@ -1491,7 +1458,7 @@ function BOM.ResetWindow()
   BomC_MainWindow:SetHeight(200)
   BOM.SaveWindowPosition()
   BOM.ShowWindow(1)
-  BOM.Print("Window position is reset.")
+  BOM:Print("Window position is reset.")
 end
 
 local function perform_who_request(name)

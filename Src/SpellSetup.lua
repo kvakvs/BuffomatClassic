@@ -1,6 +1,8 @@
 local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BuffomatAddon
 
+local constModule = BuffomatModule.Import("Const") ---@type BomConstModule
+
 local L = setmetatable({}, { __index = function(t, k)
   if BOM.L and BOM.L[k] then
     return BOM.L[k]
@@ -122,7 +124,7 @@ local function bomSetup_EachSpell_Consumable(add, spell)
 
       BOM.SharedState.Cache.Item2[spell.item] = item_info
     else
-      --BOM.Print("Item not found! Spell=" .. tostring(spell.singleId)
+      --BOM:Print("Item not found! Spell=" .. tostring(spell.singleId)
       --      .. " Item=" .. tostring(spell.item))
 
       -- Go delayed fetch
@@ -345,7 +347,7 @@ function BOM.SetupAvailableSpells()
   for i, profil in ipairs(BOM.ALL_PROFILES) do
     BOM.CharacterState[profil].Spell = BOM.CharacterState[profil].Spell or {}
     BOM.CharacterState[profil].CancelBuff = BOM.CharacterState[profil].CancelBuff or {}
-    BOM.CharacterState[profil].Spell[BOM.BLESSING_ID] = BOM.CharacterState[profil].Spell[BOM.BLESSING_ID] or {}
+    BOM.CharacterState[profil].Spell[constModule.BLESSING_ID] = BOM.CharacterState[profil].Spell[constModule.BLESSING_ID] or {}
   end
 
   bomSetup_MaybeAddCustomSpells()

@@ -1,6 +1,8 @@
 local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BuffomatAddon
 
+local constModule = BuffomatModule.Import("Const") ---@type BomConstModule
+
 local L = setmetatable({}, { __index = function(t, k)
   if BOM.L and BOM.L[k] then
     return BOM.L[k]
@@ -44,7 +46,7 @@ function BOM.Class.Macro.Clear(self)
 
   self:Recreate()
   self.lines = {}
-  self.icon = BOM.MACRO_ICON_DISABLED
+  self.icon = constModule.MACRO_ICON_DISABLED
   EditMacro(self.name, nil, self.icon, self:GetText())
 end
 
@@ -60,23 +62,23 @@ end
 
 ---@param self Macro
 function BOM.Class.Macro.UpdateMacro(self)
-  EditMacro(BOM.MACRO_NAME, nil, self.icon, self:GetText())
+  EditMacro(constModule.MACRO_NAME, nil, self.icon, self:GetText())
   BOM.MinimapButton.SetTexture("Interface\\ICONS\\" .. self.icon)
 end
 
 ---@param self Macro
 function BOM.Class.Macro.Recreate(self)
-  if (GetMacroInfo(BOM.MACRO_NAME)) == nil then
+  if (GetMacroInfo(constModule.MACRO_NAME)) == nil then
     local perAccount, perChar = GetNumMacros()
     local isChar
 
     if perChar < MAX_CHARACTER_MACROS then
       isChar = 1
     elseif perAccount >= MAX_ACCOUNT_MACROS then
-      BOM.Print(L.MsgNeedOneMacroSlot)
+      BOM:Print(L.MsgNeedOneMacroSlot)
       return
     end
 
-    CreateMacro(self.name, BOM.MACRO_ICON, "", isChar)
+    CreateMacro(self.name, constModule.MACRO_ICON, "", isChar)
   end
 end

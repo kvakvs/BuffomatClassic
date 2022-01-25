@@ -737,11 +737,11 @@ local function bomUpdateSelectedSpell(spell)
 
       force_cast_button:SetScript("OnClick", function(self)
         if spell_force[last_target] == nil then
-          BOM.Print(BOM.FormatTexture(BOM.ICON_TARGET_ON) .. " "
+          BOM:Print(BOM.FormatTexture(BOM.ICON_TARGET_ON) .. " "
                   .. L.MessageAddedForced .. ": " .. last_target)
           spell_force[last_target] = last_target
         else
-          BOM.Print(BOM.FormatTexture(BOM.ICON_TARGET_ON) .. " "
+          BOM:Print(BOM.FormatTexture(BOM.ICON_TARGET_ON) .. " "
                   .. L.MessageClearedForced .. ": " .. last_target)
           spell_force[last_target] = nil
         end
@@ -756,11 +756,11 @@ local function bomUpdateSelectedSpell(spell)
 
       exclude_button:SetScript("OnClick", function(self)
         if spell_exclude[last_target] == nil then
-          BOM.Print(BOM.FormatTexture(BOM.ICON_TARGET_EXCLUDE) .. " "
+          BOM:Print(BOM.FormatTexture(BOM.ICON_TARGET_EXCLUDE) .. " "
                   .. L.MessageAddedExcluded .. ": " .. last_target)
           spell_exclude[last_target] = last_target
         else
-          BOM.Print(BOM.FormatTexture(BOM.ICON_TARGET_EXCLUDE) .. " "
+          BOM:Print(BOM.FormatTexture(BOM.ICON_TARGET_EXCLUDE) .. " "
                   .. L.MessageClearedExcluded .. ": " .. last_target)
           spell_exclude[last_target] = nil
         end

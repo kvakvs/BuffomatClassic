@@ -1,6 +1,8 @@
 local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BuffomatAddon
 
+local constModule = BuffomatModule.Import("Const") ---@type BomConstModule
+
 local L = setmetatable({}, { __index = function(t, k)
   if BOM.L and BOM.L[k] then
     return BOM.L[k]
@@ -135,7 +137,7 @@ function BOM.MaybeResetWatchGroups()
     BOM.UpdateBuffTabText()
 
     if need_to_report then
-      BOM.Print(L.ResetWatchGroups)
+      BOM:Print(L.ResetWatchGroups)
     end
   end
 end
@@ -166,13 +168,13 @@ local function bomSetTracking(spell, value)
       local name, texture, active, _category, _nesting, spellId = GetTrackingInfo(i)
       if spellId == spell.singleId then
         -- found, compare texture with spell icon
-        --BOM.Print(BOM.L.ActivateTracking .. " " .. name)
+        --BOM:Print(BOM.L.ActivateTracking .. " " .. name)
         SetTracking(i, value)
         return
       end
     end
   else
-    --BOM.Print(BOM.L.ActivateTracking .. " " .. spell.trackingSpellName)
+    --BOM:Print(BOM.L.ActivateTracking .. " " .. spell.trackingSpellName)
     CastSpellByID(spell.singleId)
   end
 end
@@ -351,7 +353,7 @@ local function bomUpdateSpellTargets(party, spell, playerMember, someoneIsDead)
     for i, member in ipairs(party) do
       local ok = false
       local notGroup = false
-      local blessing_name = BOM.GetProfileSpell(BOM.BLESSING_ID)
+      local blessing_name = BOM.GetProfileSpell(constModule.BLESSING_ID)
       local blessingSpell = BOM.GetProfileSpell(spell.ConfigID)
 
       if blessing_name[member.name] == spell.ConfigID
@@ -550,12 +552,12 @@ local function bomUpdateMacro(member, spellId, command)
     end
     tinsert(macro.lines, "/bom _checkforerror")
     tinsert(macro.lines, "/cast [@" .. member.unitId .. ",nocombat]" .. name .. rank)
-    macro.icon = BOM.MACRO_ICON
+    macro.icon = constModule.MACRO_ICON
   else
     if command then
       tinsert(macro.lines, command)
     end
-    macro.icon = BOM.MACRO_ICON_DISABLED
+    macro.icon = constModule.MACRO_ICON_DISABLED
   end
 
   macro:UpdateMacro()
@@ -927,7 +929,7 @@ local function bomCancelBuffs(player_member)
       local player_buff = player_member.buffs[spell.ConfigID]
 
       if player_buff then
-        BOM.Print(string.format(L.MsgCancelBuff,
+        BOM:Print(string.format(L.MsgCancelBuff,
                 spell.singleLink or spell.single,
                 UnitName(player_buff.source or "") or ""))
         bomCancelBuff(spell.singleFamily)
@@ -947,7 +949,7 @@ local function bomWhisperExpired(spell)
       local msg = string.format(L.MsgSpellExpired, spell.single)
       SendChatMessage(msg, "WHISPER", nil, name)
 
-      BOM.Print(msg, "WHISPER", nil, name)
+      BOM:Print(msg, "WHISPER", nil, name)
     end
   end
 end
@@ -1074,9 +1076,9 @@ local function bomAddBlessing(spell, party, playerMember, inRange)
       end
 
       local add = ""
-      local blessing_name = BOM.GetProfileSpell(BOM.BLESSING_ID)
+      local blessing_name = BOM.GetProfileSpell(constModule.BLESSING_ID)
       if blessing_name[member.name] ~= nil then
-        add = string.format(BOM.PICTURE_FORMAT, BOM.ICON_TARGET_ON)
+        add = string.format(constModule.PICTURE_FORMAT, BOM.ICON_TARGET_ON)
       end
 
       local test_in_range = IsSpellInRange(spell.single, member.unitId) == 1
@@ -1192,7 +1194,7 @@ local function bomAddBuff(spell, party, playerMember, inRange)
       local profile_spell = BOM.GetProfileSpell(spell.ConfigID)
 
       if profile_spell.ForcedTarget[member.name] then
-        add = string.format(BOM.PICTURE_FORMAT, BOM.ICON_TARGET_ON)
+        add = string.format(constModule.PICTURE_FORMAT, BOM.ICON_TARGET_ON)
       end
 
       local is_in_range = (IsSpellInRange(spell.single, member.unitId) == 1)
@@ -2066,8 +2068,8 @@ local function bomUpdateScan_PreCheck(from)
     BOM.CurrentProfile = BOM.CharacterState[auto_profile]
     BOM.UpdateSpellsTab("UpdateScan1")
     BomC_MainWindow_Title:SetText(
-            BOM.FormatTexture(BOM.BOM_BEAR_ICON_FULLPATH)
-                    .. " " .. BOM.TOC_TITLE .. " - "
+            BOM.FormatTexture(constModule.BOM_BEAR_ICON_FULLPATH)
+                    .. " " .. BOM.SHORT_TITLE .. " - "
                     .. L["profile_" .. auto_profile])
     BOM.SetForceUpdate("ProfileChanged")
   end
@@ -2115,7 +2117,7 @@ function BOM.DoCancelBuffs()
     if BOM.CurrentProfile.CancelBuff[spell.ConfigID].Enable
             and bomCancelBuff(spell.singleFamily)
     then
-      BOM.Print(string.format(L.MsgCancelBuff, spell.singleLink or spell.single,
+      BOM:Print(string.format(L.MsgCancelBuff, spell.singleLink or spell.single,
               UnitName(BOM.CancelBuffSource) or ""))
     end
   end
