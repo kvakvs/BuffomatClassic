@@ -10,47 +10,49 @@
 ## SavedVariables: BomSharedState
 ## SavedVariablesPerCharacter: BomCharacterState
 
-const/Textures.lua
-const/AllSpells.lua
-const/SpellIds.lua
-const/ItemIds.lua
+embeds.xml
 
-src/classes/Control.lua
-src/classes/Buff.lua
-src/classes/BuffClass.lua
-src/classes/BuffomatAddon.lua
-src/classes/BuffomatTranslations.lua
-src/classes/Member.lua
-src/classes/Options.lua
-src/classes/RowBuilder.lua
-src/classes/SpellDef.lua
-src/classes/State.lua
-src/classes/Macro.lua
-src/classes/CharacterState.lua
-src/classes/Task.lua
-src/classes/MemberBuffTarget.lua
-src/classes/GroupBuffTarget.lua
-src/classes/TaskList.lua
+Src/Const/Textures.lua
+Src/Const/AllSpells.lua
+Src/Const/SpellIds.lua
+Src/Const/ItemIds.lua
 
-src/cache/GetItemCache.lua
-src/cache/GetSpellCache.lua
-src/cache/GetItemListCache.lua
-src/cache/MemberCache.lua
+Src/Classes/Control.lua
+Src/Classes/Buff.lua
+Src/Classes/BuffClass.lua
+Src/Classes/BuffomatAddon.lua
+Src/Classes/BuffomatTranslations.lua
+Src/Classes/Member.lua
+Src/Classes/Options.lua
+Src/Classes/RowBuilder.lua
+Src/Classes/SpellDef.lua
+Src/Classes/State.lua
+Src/Classes/Macro.lua
+Src/Classes/CharacterState.lua
+Src/Classes/Task.lua
+Src/Classes/MemberBuffTarget.lua
+Src/Classes/GroupBuffTarget.lua
+Src/Classes/TaskList.lua
 
-src/ui/UiButton.lua
-src/ui/Options.lua
-src/ui/MinimapButton.lua
-src/ui/SpellButtonsTab.lua
-src/ui/MyButton.lua
+Src/Cache/GetItemCache.lua
+Src/Cache/GetSpellCache.lua
+Src/Cache/GetItemListCache.lua
+Src/Cache/MemberCache.lua
 
-src/Toolbox.lua
-src/Languages.lua
-src/Toolbox.lua
-src/TaskScan.lua
-src/SpellSetup.lua
-src/Bom.lua
+Src/Ui/UiButton.lua
+Src/Ui/Options.lua
+Src/Ui/MinimapButton.lua
+Src/Ui/SpellButtonsTab.lua
+Src/Ui/MyButton.lua
 
-src/ui/Bom.xml
+Src/Toolbox.lua
+Src/Languages.lua
+Src/Toolbox.lua
+Src/TaskScan.lua
+Src/SpellSetup.lua
+
+Src/Buffomat.lua
+Src/Ui/Buffomat.xml
 
 #
 # Do not edit - this file is generated from TOC_TEMPLATE.TOC
