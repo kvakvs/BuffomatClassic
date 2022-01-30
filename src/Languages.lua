@@ -55,6 +55,8 @@ local function bomLanguage_English()
     MsgOpenContainer              = "Use or open",
     MSG_MAINHAND_ENCHANT_MISSING  = "Missing main hand temporary enchant",
     MSG_OFFHAND_ENCHANT_MISSING   = "Missing off-hand temporary enchant",
+    InfoSomeoneIsDrinking         = "1 person is drinking",
+    InfoMultipleDrinking         = "%d persons are drinking",
 
     InactiveReason_PlayerDead     = "You are dead",
     InactiveReason_InCombat       = "You are in combat",
@@ -651,7 +653,7 @@ local function bomLanguage_Chinese()
     EboxTime600                   = "持续时间 <=10 分:",
     EboxTime1800                  = "持续时间 <=30 分:",
     EboxTime3600                  = "持续时间 <=60 分:",
-	EboxUIWindowScale             = "UI 比例 (默认 1; 隐藏和显示Buffomat设置)",
+    EboxUIWindowScale             = "UI 比例 (默认 1; 隐藏和显示Buffomat设置)",
     EboxMinBuff                   = "使用群体BUFF需达到多少人以上才使用",
     EboxMinBlessing               = "使用强大的祝福需达到多少人以上才使用",
 
@@ -681,7 +683,7 @@ local function bomLanguage_Chinese()
     TooltipWhisperWhenExpired     = "当BUFF过期时，对施放者密语提醒",
     TooltipMainHand               = "主手",
     TooltipOffHand                = "副手",
-    ShamanEnchantBlocked          = "主手等待", 
+    ShamanEnchantBlocked          = "主手等待",
     PreventPVPTagBlocked          = "目标启用PVP", -- PreventPVPTag option enabled, player is non-PVP and target is PVP
     TooltipIncludesAllRanks       = "所有这种类型的BUFF",
     TooltipSimilarFoods           = "所有类型的食物",
@@ -724,8 +726,8 @@ local function bomLanguage_Chinese()
     SlashOpen                     = "打开 BOM 窗口",
     SlashProfile                  = "将当前配置文件更改为 个人/队伍/团队/战场/自动",
 
-    Tank                          = "坦克", 
-    Pet                           = "宠物", 
+    Tank                          = "坦克",
+    Pet                           = "宠物",
     TooltipCastOnClass            = "给职业施法",
     TooltipCastOnTank             = "给坦克施法",
     TooltipCastOnPet              = "给宠物施法",

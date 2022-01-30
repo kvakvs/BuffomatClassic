@@ -1,5 +1,10 @@
 _# Changelog
 
+## Buffomat Classic and TBC 2022.1.2
+
+- Show a comment when someone in party or raid is drinking
+- Added Summon Incubus spell, sacrificeable just like succubus.
+
 ## Buffomat Classic and TBC 2022.1.1
 
 - Chinese language updated

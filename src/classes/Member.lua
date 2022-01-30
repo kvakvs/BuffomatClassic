@@ -70,6 +70,9 @@ function BOM.Class.Member:ForceUpdateBuffs(player_member)
 
       if spellId then
         self.buffExists[spellId] = true -- save all buffids even those not supported
+        if tContains(BOM.AllDrink, spellId) then
+          BOM.drinkingPersonCount = BOM.drinkingPersonCount + 1
+        end
       end
 
       spellId = BOM.SpellToSpell[spellId] or spellId

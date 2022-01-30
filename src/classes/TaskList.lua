@@ -56,7 +56,7 @@ function BOM.Class.TaskList.AddWithPrefix(self, prefix_text,
 end
 
 ---@param self TaskList
-function BOM.Class.TaskList.Comment(self, text)
+function BOM.Class.TaskList:Comment(text)
   tinsert(self.comments, text)
 end
 

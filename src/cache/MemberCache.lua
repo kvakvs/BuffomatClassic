@@ -177,8 +177,9 @@ end
 ---@return table<number, Member>, Member {Party, Player}
 function BOM.GetPartyMembers()
   -- and buffs
-  local party
+  local party ---@type table<number, Member>
   local player_member --- @type Member
+  BOM.drinkingPersonCount = 0
 
   -- check if stored party is correct!
   if not BOM.PartyUpdateNeeded

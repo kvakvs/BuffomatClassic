@@ -410,6 +410,12 @@ local function bomSetupWarlockSpells(spells, enchants)
             creatureFamily  = "Succubus", creatureType = "Demon", sacrificeAuraIds = { 18791 } },
           warlockOnly)
 
+  BOM.Class.SpellDef:scanSpell(spells, 713, --Summon Incubus (TBC)
+          { type            = "summon", default = false, isOwn = true,
+            reagentRequired = { BOM.ItemId.Warlock.SoulShard },
+            creatureFamily  = "Succubus", creatureType = "Demon", sacrificeAuraIds = { 18791 } },
+          warlockOnly)
+
   BOM.Class.SpellDef:scanSpell(spells, 691, --Summon Felhunter
           { type            = "summon", default = false, isOwn = true,
             reagentRequired = { BOM.ItemId.Warlock.SoulShard },
@@ -1446,3 +1452,17 @@ local ShapeShiftTravel = {
   2645,
   783
 } --Ghost wolf and travel druid
+
+BOM.drinkingPersonCount = false
+BOM.AllDrink = {
+  30024, -- Restores 20% mana
+  430, -- level 5 drink
+  431, -- level 15 drink
+  432, -- level 25 drink
+  1133, -- level 35 drink
+  1135, -- level 45 drink
+  1137, 29007, 43154, 24355, 25696, 43155, 26261, -- level 55 drink
+  10250, 22734, -- level 65 drink
+  34291, -- level 70 drink
+  27089, 43706, 46755, -- level 75 drink
+}

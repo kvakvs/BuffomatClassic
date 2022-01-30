@@ -1657,7 +1657,7 @@ local function bomCheckMissingWeaponEnchantments(player_member)
 
     if link then
       -- Text: [Consumable Enchant Link]
-      tasklist:Comment(player_member, L.MSG_MAINHAND_ENCHANT_MISSING)
+      tasklist:Comment(L.MSG_MAINHAND_ENCHANT_MISSING)
     end
   end
 
@@ -1665,7 +1665,7 @@ local function bomCheckMissingWeaponEnchantments(player_member)
     local link = GetInventoryItemLink("player", GetInventorySlotInfo("SECONDARYHANDSLOT"))
 
     if link then
-      tasklist:Comment(player_member, L.MSG_OFFHAND_ENCHANT_MISSING)
+      tasklist:Comment(L.MSG_OFFHAND_ENCHANT_MISSING)
     end
   end
 end
@@ -1676,9 +1676,9 @@ end
 ---@return string, string {cast_button_title, macro_command}
 local function bomCheckItemsAndContainers(playerMember, cast_button_title, macro_command)
   --itemcheck
-  local item_list = BOM.GetItemList() ---@type table<number, GetContainerItemInfoResult>
+  local allPlayerItems = BOM.GetItemList() ---@type table<number, GetContainerItemInfoResult>
 
-  for i, item in ipairs(item_list) do
+  for i, item in ipairs(allPlayerItems) do
     local ok = false
     local target
 
@@ -1918,6 +1918,13 @@ local function bomUpdateScan_Scan()
 
     bomCheckReputationItems(playerMember)
     bomCheckMissingWeaponEnchantments(playerMember) -- if option to warn is enabled
+
+    ---Check if someone has drink buff, print an info message
+    if BOM.drinkingPersonCount > 1 then
+      tasklist:Comment(string.format(L.InfoMultipleDrinking, BOM.drinkingPersonCount))
+    elseif BOM.drinkingPersonCount > 0 then
+      tasklist:Comment(L.InfoSomeoneIsDrinking)
+    end
 
     castButtonTitle, macroCommand = bomCheckItemsAndContainers(
             playerMember, castButtonTitle, macroCommand)
