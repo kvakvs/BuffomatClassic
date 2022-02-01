@@ -413,7 +413,7 @@ local function bomSetupWarlockSpells(spells, enchants)
   BOM.Class.SpellDef:scanSpell(spells, 713, --Summon Incubus (TBC)
           { type            = "summon", default = false, isOwn = true,
             reagentRequired = { BOM.ItemId.Warlock.SoulShard },
-            creatureFamily  = "Succubus", creatureType = "Demon", sacrificeAuraIds = { 18791 } },
+            creatureFamily  = "Incubus", creatureType = "Demon", sacrificeAuraIds = { 18791 } },
           warlockOnly)
 
   BOM.Class.SpellDef:scanSpell(spells, 691, --Summon Felhunter

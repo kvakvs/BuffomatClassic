@@ -1,11 +1,13 @@
 _# Changelog
 
-## Buffomat Classic and TBC 2022.2.1
+## Buffomat Classic and TBC 2022.2.1, and .2
 
 - Option to hide "Someone is drinking message", off by default, enable to hide.
 - Option to disable Buffomat if priest's Spirit Tap talent is active (to
   maximize mana regen by preventing priest self-buffing after the combat). Off
   by default, click to enable (also please be a priest!).
+- Incubus pet creature family was set incorrectly to "Succubus" and this did not
+  really work well.
 
 ## Buffomat Classic and TBC 2022.1.2
 
