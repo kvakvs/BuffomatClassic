@@ -46,6 +46,7 @@ BOM.BehaviourSettings = {
   { "SelfFirst", false },
   { "DontUseConsumables", false },
   { "SlowerHardware", false },
+  { "HideSomeoneIsDrinking", false },
   --{ "ShowClassicConsumables", true},
   --{ "ShowTBCConsumables", true},
 }

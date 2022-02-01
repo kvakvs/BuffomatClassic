@@ -1920,10 +1920,12 @@ local function bomUpdateScan_Scan()
     bomCheckMissingWeaponEnchantments(playerMember) -- if option to warn is enabled
 
     ---Check if someone has drink buff, print an info message
-    if BOM.drinkingPersonCount > 1 then
-      tasklist:Comment(string.format(L.InfoMultipleDrinking, BOM.drinkingPersonCount))
-    elseif BOM.drinkingPersonCount > 0 then
-      tasklist:Comment(L.InfoSomeoneIsDrinking)
+    if not BOM.SharedState.HideSomeoneIsDrinking then
+      if BOM.drinkingPersonCount > 1 then
+        tasklist:Comment(string.format(L.InfoMultipleDrinking, BOM.drinkingPersonCount))
+      elseif BOM.drinkingPersonCount > 0 then
+        tasklist:Comment(L.InfoSomeoneIsDrinking)
+      end
     end
 
     castButtonTitle, macroCommand = bomCheckItemsAndContainers(

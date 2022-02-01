@@ -56,7 +56,7 @@ local function bomLanguage_English()
     MSG_MAINHAND_ENCHANT_MISSING  = "Missing main hand temporary enchant",
     MSG_OFFHAND_ENCHANT_MISSING   = "Missing off-hand temporary enchant",
     InfoSomeoneIsDrinking         = "1 person is drinking",
-    InfoMultipleDrinking         = "%d persons are drinking",
+    InfoMultipleDrinking          = "%d persons are drinking",
 
     InactiveReason_PlayerDead     = "You are dead",
     InactiveReason_InCombat       = "You are in combat",
@@ -106,6 +106,7 @@ local function bomLanguage_English()
     CboxUseProfiles               = "Use profiles",
     CboxSelfFirst                 = "Always buff self first",
     CboxDontUseConsumables        = "Use consumables only with Shift, Ctrl or Alt",
+    CboxHideSomeoneIsDrinking     = "Hide 'Someone is drinking' info message",
     CboxShowClassicConsumables    = "Show consumables available in Classic",
     CboxShowTBCConsumables        = "Show consumables available in TBC",
     CboxSlowerHardware            = "Less frequent buff checks (slow hardware/raid)",
