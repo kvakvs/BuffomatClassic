@@ -1,7 +1,6 @@
 --- Spell IDS given reasonable names
----
----@type BuffomatAddon
-local TOCNAME, BOM = ...
+local TOCNAME, _ = ...
+local BOM = BuffomatAddon ---@type BuffomatAddon
 
 BOM.SpellId = {}
 

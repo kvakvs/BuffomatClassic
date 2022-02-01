@@ -11,6 +11,8 @@
 ## SavedVariablesPerCharacter: BomCharacterState
 
 embeds.xml
+Src/Module.lua
+Src/Buffomat.lua
 
 Src/Const/Textures.lua
 Src/Const/AllSpells.lua
@@ -20,7 +22,6 @@ Src/Const/ItemIds.lua
 Src/Classes/Control.lua
 Src/Classes/Buff.lua
 Src/Classes/BuffClass.lua
-Src/Classes/BuffomatAddon.lua
 Src/Classes/BuffomatTranslations.lua
 Src/Classes/Member.lua
 Src/Classes/Options.lua
@@ -51,7 +52,6 @@ Src/Toolbox.lua
 Src/TaskScan.lua
 Src/SpellSetup.lua
 
-Src/Buffomat.lua
 Src/Ui/Buffomat.xml
 
 #

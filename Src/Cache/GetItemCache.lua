@@ -1,5 +1,5 @@
----@type BuffomatAddon
-local TOCNAME, BOM = ...
+local TOCNAME, _ = ...
+local BOM = BuffomatAddon ---@type BuffomatAddon
 
 ---@class GIICacheItem
 ---@field itemName string

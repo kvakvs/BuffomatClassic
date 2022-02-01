@@ -1,5 +1,6 @@
----@type BuffomatAddon
-local TOCNAME, BOM = ...
+local TOCNAME, _ = ...
+local BOM = BuffomatAddon ---@type BuffomatAddon
+
 BOM.Class = BOM.Class or {}
 
 ---@class State Snapshot of current options state as selected by the player

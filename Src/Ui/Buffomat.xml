@@ -146,7 +146,7 @@
     <Scripts>
       <OnLoad>
         UIPanelButton_OnLoad(self)
-        BUFFOMAT_ADDON.Tool.Tooltip(self, "TooltipCastButton")
+        BuffomatAddon.Tool.Tooltip(self, "TooltipCastButton")
       </OnLoad>
       <OnMouseDown function="UIPanelButton_OnMouseDown"/>
       <OnMouseUp function="UIPanelButton_OnMouseUp"/>
@@ -228,8 +228,8 @@
           </Anchor>
         </Anchors>
         <Scripts>
-          <OnClick>BUFFOMAT_ADDON.BtnClose()</OnClick>
-          <OnLoad>BUFFOMAT_ADDON.Tool.Tooltip(self, "TooltipCloseButton")
+          <OnClick>BuffomatAddon.BtnClose()</OnClick>
+          <OnLoad>BuffomatAddon.Tool.Tooltip(self, "TooltipCloseButton")
           </OnLoad>
         </Scripts>
       </Button>
@@ -247,8 +247,8 @@
                   relativePoint="LEFT"/>
         </Anchors>
         <Scripts>
-          <OnMouseDown>BUFFOMAT_ADDON.BtnSettings(self)</OnMouseDown>
-          <OnLoad>BUFFOMAT_ADDON.Tool.Tooltip(self, "TooltipSettingsButton")
+          <OnMouseDown>BuffomatAddon.BtnSettings(self)</OnMouseDown>
+          <OnLoad>BuffomatAddon.Tool.Tooltip(self, "TooltipSettingsButton")
           </OnLoad>
         </Scripts>
       </Button>
@@ -266,8 +266,8 @@
                   relativePoint="LEFT"/>
         </Anchors>
         <Scripts>
-          <OnMouseDown>BUFFOMAT_ADDON.BtnMacro()</OnMouseDown>
-          <OnLoad>BUFFOMAT_ADDON.Tool.Tooltip(self, "TooltipMacroButton")
+          <OnMouseDown>BuffomatAddon.BtnMacro()</OnMouseDown>
+          <OnLoad>BuffomatAddon.Tool.Tooltip(self, "TooltipMacroButton")
           </OnLoad>
         </Scripts>
       </Button>
@@ -331,16 +331,16 @@
             </Size>
             <Scripts>
               <OnMouseWheel>
-                BUFFOMAT_ADDON.ScrollMessage(self,delta)
+                BuffomatAddon.ScrollMessage(self,delta)
               </OnMouseWheel>
               <OnHyperlinkEnter>
-                BUFFOMAT_ADDON.EnterHyperlink(self,link)
+                BuffomatAddon.EnterHyperlink(self,link)
               </OnHyperlinkEnter>
               <OnHyperlinkLeave>
-                BUFFOMAT_ADDON.LeaveHyperlink(self)
+                BuffomatAddon.LeaveHyperlink(self)
               </OnHyperlinkLeave>
               <OnHyperlinkClick>
-                BUFFOMAT_ADDON.ClickHyperlink(self,link)
+                BuffomatAddon.ClickHyperlink(self,link)
               </OnHyperlinkClick>
             </Scripts>
 
@@ -398,7 +398,7 @@
 
     <Scripts>
       <OnLoad inherit="prepend">
-        BUFFOMAT_ADDON.OnLoad()
+        BuffomatAddon.OnLoad()
         self:SetBackdrop({
           bgFile="Interface\\DialogFrame\\UI-DialogBox-Background-Dark",
           edgeFile="Interface\\DialogFrame\\UI-DialogBox-Border",

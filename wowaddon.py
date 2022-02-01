@@ -20,8 +20,8 @@ UI_VERSION_CLASSIC_TBC = '20503'  # patch 2.5.3 Phase 3 TBC
 BOM_NAME_CLASSIC_TBC = 'BuffomatClassicTBC'  # Directory and zip name
 BOM_TITLE_CLASSIC_TBC = "Buffomat Classic TBC"  # Title field in TOC
 
-COPY_DIRS = ['src', 'const']
-COPY_FILES = ['Bindings.xml', 'CHANGELOG.md',
+COPY_DIRS = ['Src', 'Ace3']
+COPY_FILES = ['Bindings.xml', 'CHANGELOG.md', 'embeds.xml',
               'LICENSE.txt', 'README.md', 'README.Deutsch.txt']
 
 

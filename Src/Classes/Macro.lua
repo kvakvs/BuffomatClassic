@@ -1,5 +1,5 @@
----@type BuffomatAddon
-local TOCNAME, BOM = ...
+local TOCNAME, _ = ...
+local BOM = BuffomatAddon ---@type BuffomatAddon
 
 local L = setmetatable({}, { __index = function(t, k)
   if BOM.L and BOM.L[k] then

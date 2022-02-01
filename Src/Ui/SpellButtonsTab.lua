@@ -1,6 +1,7 @@
 ---| Module contains code to update the already selected spells in tabs
----@type BuffomatAddon
-local TOCNAME, BOM = ...
+local TOCNAME, _ = ...
+local BOM = BuffomatAddon ---@type BuffomatAddon
+
 local L = setmetatable(
         {},
         {

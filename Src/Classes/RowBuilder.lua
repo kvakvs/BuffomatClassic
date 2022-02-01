@@ -1,5 +1,5 @@
-local TOCNAME, BOM = ...
-BOM.Class = BOM.Class or {}
+local TOCNAME, _ = ...
+local BOM = BuffomatAddon ---@type BuffomatAddon
 
 ---@class RowBuilder
 ---@field section string
