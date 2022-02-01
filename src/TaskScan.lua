@@ -700,7 +700,8 @@ end
 
 ---Run checks to see if BOM should not be scanning buffs
 ---@return boolean, string {Active, WhyNotActive: string}
-local function bomIsActive()
+---@param playerUnit Member
+local function bomIsActive(playerUnit)
   local in_instance, instance_type = IsInInstance()
 
   -- Cancel buff tasks if in combat (ALWAYS FIRST CHECK)
@@ -743,6 +744,12 @@ local function bomIsActive()
   -- Cancel buff tasks if is in stealth, and option to scan is not set
   if not BOM.SharedState.ScanInStealth and IsStealthed() then
     return false, L.InactiveReason_IsStealthed
+  end
+
+  -- Cancel buff tasks if is in stealth, and option to scan is not set
+  if BOM.SharedState.DeactivateBomOnSpiritTap
+          and playerUnit.buffExists[BOM.SpellId.Priest.SpiritTap] then
+    return false, L.InactiveReason_SpiritTap
   end
 
   -- Having auto crusader aura enabled and Paladin class, and aura other than
@@ -1885,6 +1892,17 @@ end
 local function bomUpdateScan_Scan()
   local party, playerMember = BOM.GetPartyMembers()
 
+  -- Check whether BOM is disabled due to some option and a matching condition
+  local isBomActive, reasonDisabled = bomIsActive(playerMember)
+  if not isBomActive then
+    BOM.ForceUpdate = false
+    BOM.CheckForError = false
+    BOM.AutoClose()
+    BOM.Macro:Clear()
+    bomCastButton(reasonDisabled, false)
+    return
+  end
+
   local someoneIsDead = bomSaveSomeoneIsDead
   if BOM.ForceUpdate then
     someoneIsDead = bomForceUpdate(party, playerMember)
@@ -2028,16 +2046,17 @@ local function bomUpdateScan_PreCheck(from)
   tasklist:Clear()
   BOM.RepeatUpdate = false
 
+  -- moved to next stage bomUpdateScan_Scan
   -- Check whether BOM is disabled due to some option and a matching condition
-  local isBomActive, reasonDisabled = bomIsActive()
-  if not isBomActive then
-    BOM.ForceUpdate = false
-    BOM.CheckForError = false
-    BOM.AutoClose()
-    BOM.Macro:Clear()
-    bomCastButton(reasonDisabled, false)
-    return
-  end
+  --local isBomActive, reasonDisabled = bomIsActive()
+  --if not isBomActive then
+  --  BOM.ForceUpdate = false
+  --  BOM.CheckForError = false
+  --  BOM.AutoClose()
+  --  BOM.Macro:Clear()
+  --  bomCastButton(reasonDisabled, false)
+  --  return
+  --end
 
   --Choose Profile
   local auto_profile = bomChooseProfile()

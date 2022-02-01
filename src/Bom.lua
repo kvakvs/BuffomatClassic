@@ -47,6 +47,7 @@ BOM.BehaviourSettings = {
   { "DontUseConsumables", false },
   { "SlowerHardware", false },
   { "HideSomeoneIsDrinking", false },
+  { "DeactivateBomOnSpiritTap", false },
   --{ "ShowClassicConsumables", true},
   --{ "ShowTBCConsumables", true},
 }

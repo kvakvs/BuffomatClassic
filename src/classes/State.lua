@@ -15,6 +15,7 @@ BOM.Class = BOM.Class or {}
 ---@field DisableInRestArea boolean Hide BOM and clear tasks if in resting area ZZZ/city or inn
 ---@field DontUseConsumables boolean Prevent use of consumables
 ---@field HideSomeoneIsDrinking boolean Hide 'someone is drinking' message
+---@field DeactivateBomOnSpiritTap boolean Deactivate Buffomat while Priest talent 'Spirit tap' is active
 ---@field InInstance boolean Buff while in an instance
 ---@field InPVP boolean Buff while in PvP instance
 ---@field InWorld boolean Buff in the open world

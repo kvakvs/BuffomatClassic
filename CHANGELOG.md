@@ -1,5 +1,12 @@
 _# Changelog
 
+## Buffomat Classic and TBC 2022.2.1
+
+- Option to hide "Someone is drinking message", off by default, enable to hide.
+- Option to disable Buffomat if priest's Spirit Tap talent is active (to
+  maximize mana regen by preventing priest self-buffing after the combat). Off
+  by default, click to enable (also please be a priest!).
+
 ## Buffomat Classic and TBC 2022.1.2
 
 - Show a comment when someone in party or raid is drinking
@@ -9,7 +16,7 @@ _# Changelog
 
 - Chinese language updated
 - Buffomat window now clips to screen (never goes off-screen)
-- Icon for macro is changed to INV_MISC_QUESTIONMARK which instructs the game to 
+- Icon for macro is changed to INV_MISC_QUESTIONMARK which instructs the game to
   change the macro icon dynamically to the first spell in the macro.
 
 ## Buffomat Classic and TBC 2022.1.0

@@ -18,6 +18,9 @@ BOM.SpellId.Mage.ConjureManaAgate = 759
 BOM.SpellId.Warlock = {}
 BOM.SpellId.Warlock.DemonicSacrifice = 18788
 
+BOM.SpellId.Priest = {}
+BOM.SpellId.Priest.SpiritTap = 15271
+
 BOM.SpellId.Druid = {}
 BOM.SpellId.Druid.TrackHumanoids = 5225
 
