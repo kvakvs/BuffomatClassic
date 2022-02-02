@@ -1,2 +1,0 @@
-﻿
-- [ ] Port Spirit Tap support

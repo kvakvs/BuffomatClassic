@@ -4,7 +4,7 @@
 ## Interface: 20503
 ## Title: Buffomat Classic TBC
 ## Notes: Semi-automatic buff and resurrection bot, compatible with Burning Crusade Classic
-## Version: 2022.2.2-e2b70fc4
+## Version: 2022.2.2-925f3f59
 ## Author: kvakvs; by GPI/Erytheia-Razorfen
 ## DefaultState: enabled
 ## SavedVariables: BomSharedState

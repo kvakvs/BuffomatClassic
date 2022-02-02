@@ -1,6 +1,9 @@
 local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BuffomatAddon
 
+---@class BomToolboxModule
+local toolboxModule = BuffomatModule.DeclareModule("Toolbox") ---@type BomToolboxModule
+
 local L = setmetatable(
         {},
         {
@@ -21,7 +24,7 @@ local L = setmetatable(
 ---@field ClassName table<string> Localized class names (male)
 ---@field ClassColor table<string, table> Localized class colors
 ---@field NameToClass table<string, string> Reverse class name lookup
----@field _EditBox Control
+---@field _EditBox BomControl
 
 BOM.Tool = BOM.Tool or {} ---@type BuffomatTool
 local Tool = BOM.Tool ---@type BuffomatTool
@@ -125,7 +128,7 @@ end
 --- EventHandler
 --local eventFrame ---@type Control
 
----@param self Control
+---@param self BomControl
 local function bom_gpiprivat_event_handler(self, event, ...)
   for i, Entry in pairs(self._GPIPRIVAT_events) do
     if Entry[1] == event then
@@ -134,7 +137,7 @@ local function bom_gpiprivat_event_handler(self, event, ...)
   end
 end
 
----@param self Control
+---@param self BomControl
 local function bom_gpiprivat_update_handler(self, ...)
   for i, Entry in pairs(self._GPIPRIVAT_updates) do
     Entry(...)
@@ -189,7 +192,7 @@ end
 
 -- misc tools
 
-local MyScanningTooltip ---@type Control
+local MyScanningTooltip ---@type BomControl
 
 function Tool.ScanToolTip(what, ...)
   local TextList = {}
@@ -416,7 +419,7 @@ end
 
 -- Size 
 
-local ResizeCursor ---@type Control
+local ResizeCursor ---@type BomControl
 
 local SizingStop = function(self, button)
   self:GetParent():StopMovingOrSizing()
@@ -433,7 +436,7 @@ local SizingStart = function(self, button)
   end
 end
 
----@type Control
+---@type BomControl
 local SizingEnter = function(self)
   if not (GetCursorInfo()) then
     ResizeCursor:Show()
@@ -449,7 +452,7 @@ end
 local sizecount = 0
 
 local function CreateSizeBorder(frame, name, a1, x1, y1, a2, x2, y2, cursor, rot, OnStart, OnStop)
-  local FrameSizeBorder ---@type Control
+  local FrameSizeBorder ---@type BomControl
   sizecount = sizecount + 1
   FrameSizeBorder = CreateFrame("Frame", (frame:GetName() or TOCNAME .. sizecount) .. "_size_" .. name, frame)
   FrameSizeBorder:SetPoint("TOPLEFT", frame, a1, x1, y1)
@@ -546,7 +549,7 @@ end
 
 local PopupLastWipeName
 
----@param self Control
+---@param self BomControl
 local function PopupWipe(self, WipeName)
   self._Frame._GPIPRIVAT_Items.count = 0
   PopupDepth = nil
@@ -697,9 +700,9 @@ function Tool.GetSelectedTab(frame)
 end
 
 ---Adds a Tab to a frame (main window for example)
----@param frame Control | string - where to add a tab
+---@param frame BomControl | string - where to add a tab
 ---@param name string - tab text
----@param tabFrame Control | string - tab text
+---@param tabFrame BomControl | string - tab text
 ---@param combatlockdown boolean - accessible in combat or not
 function Tool.AddTab(frame, name, tabFrame, combatlockdown)
   local frameName
@@ -965,8 +968,8 @@ end
 
 ---If maybe_label is nil, creates a text label under the parent. Calls position_fn
 ---on the label to set its position.
----@param maybe_label Control|nil - the existing label or nil
----@param parent Control - parent where the label is created
+---@param maybe_label BomControl|nil - the existing label or nil
+---@param parent BomControl - parent where the label is created
 ---@param position_fn function - applies function after creating the label
 function bom_create_smalltext_label(maybe_label, parent, position_fn)
   if maybe_label == nil then
@@ -977,7 +980,7 @@ function bom_create_smalltext_label(maybe_label, parent, position_fn)
 end
 
 ---Add onenter/onleave scripts to show the tooltip with translation by key
----@param control Control
+---@param control BomControl
 ---@param translation_key string - the key from Languages.lua
 function Tool.Tooltip(control, translation_key)
   control:SetScript("OnEnter", function()
@@ -991,7 +994,7 @@ function Tool.Tooltip(control, translation_key)
 end
 
 ---Add onenter/onleave scripts to show the tooltip with TEXT
----@param control Control
+---@param control BomControl
 ---@param text string - the localized text to display
 function Tool.TooltipText(control, text)
   control:SetScript("OnEnter", function()
@@ -1022,7 +1025,7 @@ local function bom_find_spellid(spellName)
 end
 
 ---Add onenter/onleave scripts to show the tooltip with spell
----@param control Control
+---@param control BomControl
 ---@param link string The string in format "spell:<id>" or "item:<id>"
 function Tool.TooltipLink(control, link)
   control:SetScript("OnEnter", function()

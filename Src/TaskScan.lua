@@ -1,6 +1,9 @@
 local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BuffomatAddon
 
+---@class BomTaskScanModule
+local taskScanModule = BuffomatModule.DeclareModule("TaskScan") ---@type BomTaskScanModule
+
 local constModule = BuffomatModule.Import("Const") ---@type BomConstModule
 
 local L = setmetatable({}, { __index = function(t, k)
@@ -233,9 +236,9 @@ end
 
 ---Check for party, spell and player, which targets that spell goes onto
 ---Update spell.NeedMember, spell.NeedGroup and spell.DeathGroup
----@param party table<number, Member> - the party
+---@param party table<number, BomUnit> - the party
 ---@param spell SpellDef - the spell to update
----@param playerMember Member - the player
+---@param playerMember BomUnit - the player
 ---@param someoneIsDead boolean - the flag that buffing cannot continue while someone is dead
 ---@return boolean someoneIsDead
 local function bomUpdateSpellTargets(party, spell, playerMember, someoneIsDead)
@@ -585,7 +588,7 @@ end
 
 ---Return list of members of class in spell range
 ---@param spellName string
----@param party table<number, Member>
+---@param party table<number, BomUnit>
 ---@param class string
 ---@param spell SpellDef
 local function bomGetClassInRange(spellName, party, class, spell)
@@ -626,7 +629,7 @@ local bomCurrentPlayerMana
 
 ---@param link string Clickable spell link with icon
 ---@param inactiveText string Spell name as text
----@param member Member
+---@param member BomUnit
 ---@return boolean True if spell cast is prevented by PvP guard, false if spell can be casted
 local function bomPreventPvpTagging(link, inactiveText, member)
   if BOM.SharedState.PreventPVPTag then
@@ -648,7 +651,7 @@ end
 ---@param cost number Resource cost (mana cost)
 ---@param id number Spell id to capture
 ---@param link string Spell link for a picture
----@param member Member player to benefit from the spell
+---@param member BomUnit player to benefit from the spell
 ---@param spell SpellDef the spell to be added
 local function bomQueueSpell(cost, id, link, member, spell)
   if cost > bomCurrentPlayerMana then
@@ -703,7 +706,7 @@ end
 
 ---Run checks to see if BOM should not be scanning buffs
 ---@return boolean, string {Active, WhyNotActive: string}
----@param playerUnit Member
+---@param playerUnit BomUnit
 local function bomIsActive(playerUnit)
   local in_instance, instance_type = IsInInstance()
 
@@ -750,8 +753,10 @@ local function bomIsActive(playerUnit)
   end
 
   -- Cancel buff tasks if is in stealth, and option to scan is not set
+  -- and current mana is < 90%
   if BOM.SharedState.DeactivateBomOnSpiritTap
-          and playerUnit.buffExists[BOM.SpellId.Priest.SpiritTap] then
+          and playerUnit.buffExists[BOM.SpellId.Priest.SpiritTap]
+          and bomCurrentPlayerMana < BOM.PlayerManaMax * 0.9 then
     return false, L.InactiveReason_SpiritTap
   end
 
@@ -828,7 +833,7 @@ local function bomActivateSelectedTracking()
   end
 end
 
----@param player_member Member
+---@param player_member BomUnit
 local function bomGetActiveAuraAndSeal(player_member)
   --find activ aura / seal
   BOM.ActivAura = nil
@@ -896,8 +901,8 @@ local function bomCheckChangesAndUpdateSpelltab()
   end
 end
 
----@param party table<number, Member> - the party
----@param player_member Member - the player
+---@param party table<number, BomUnit> - the party
+---@param player_member BomUnit - the player
 local function bomForceUpdate(party, player_member)
   bomActivateSelectedTracking()
 
@@ -1001,7 +1006,7 @@ end
 
 ---Add a paladin blessing
 ---@param spell SpellDef - spell to cast
----@param party table<number, Member> - the party
+---@param party table<number, BomUnit> - the party
 ---@param playerMember table - player
 ---@param inRange boolean - spell target is in range
 local function bomAddBlessing(spell, party, playerMember, inRange)
@@ -1115,8 +1120,8 @@ end
 
 ---Add a generic buff of some sorts, or a group buff
 ---@param spell SpellDef - spell to cast
----@param party table<number, Member> - the party
----@param playerMember Member - player
+---@param party table<number, BomUnit> - the party
+---@param playerMember BomUnit - player
 ---@param inRange boolean - spell target is in range
 local function bomAddBuff(spell, party, playerMember, inRange)
   local ok, bag, slot, count
@@ -1304,7 +1309,7 @@ end
 
 ---Adds a display text for a self buff or tracking or seal/weapon self-enchant
 ---@param spell SpellDef - the spell to cast
----@param playerMember Member - the player
+---@param playerMember BomUnit - the player
 local function bomAddSelfbuff(spell, playerMember)
   if spell.requiresWarlockPet then
     if not UnitExists("pet") or UnitCreatureType("pet") ~= "Demon" then
@@ -1339,7 +1344,7 @@ end
 
 ---Adds a summon spell to the tasks
 ---@param spell SpellDef - the spell to cast
----@param playerMember Member
+---@param playerMember BomUnit
 local function bomAddSummonSpell(spell, playerMember)
   if spell.sacrificeAuraIds then
     for i, id in ipairs(spell.sacrificeAuraIds) do
@@ -1537,7 +1542,7 @@ end
 
 ---Adds a display text for a weapon buff created by a spell (shamans and paladins)
 ---@param spell SpellDef - the spell to cast
----@param playerMember Member - the player
+---@param playerMember BomUnit - the player
 ---@param castButtonTitle string - if not empty, is item name from the bag
 ---@param macroCommand string - console command to use item from the bag
 ---@return string, string cast button title and macro command
@@ -1624,7 +1629,7 @@ local function bomCastButton(t, enable)
 end
 
 ---Check if player has rep items equipped where they should not have them
----@param playerMember Member
+---@param playerMember BomUnit
 local function bomCheckReputationItems(playerMember)
   local name, instanceType, difficultyID, difficultyName, maxPlayers
   , dynamicDifficulty, isDynamic, instanceID, instanceGroupSize
@@ -1655,7 +1660,7 @@ local function bomCheckReputationItems(playerMember)
 end
 
 ---Check player weapons and report if they have the "Warn about missing enchants" option enabled
----@param player_member Member
+---@param player_member BomUnit
 local function bomCheckMissingWeaponEnchantments(player_member)
   -- enchantment on weapons
   local hasMainHandEnchant, mainHandExpiration, mainHandCharges, mainHandEnchantID
@@ -1680,7 +1685,7 @@ local function bomCheckMissingWeaponEnchantments(player_member)
   end
 end
 
----@param playerMember Member
+---@param playerMember BomUnit
 ---@param cast_button_title string
 ---@param macro_command string
 ---@return string, string {cast_button_title, macro_command}
@@ -1743,8 +1748,8 @@ local function bomCheckItemsAndContainers(playerMember, cast_button_title, macro
 end
 
 ---@param spell SpellDef
----@param playerMember Member
----@param party table<number, Member>
+---@param playerMember BomUnit
+---@param party table<number, BomUnit>
 ---@param inRange boolean
 ---@param castButtonTitle string
 ---@param macroCommand string
@@ -1842,8 +1847,8 @@ local function bomScanOneSpell(spell, playerMember, party, inRange,
   return inRange, castButtonTitle, macroCommand
 end
 
----@param playerMember Member
----@param party table<number, Member>
+---@param playerMember BomUnit
+---@param party table<number, BomUnit>
 ---@param inRange boolean
 ---@param castButtonTitle string
 ---@param macroCommand string
