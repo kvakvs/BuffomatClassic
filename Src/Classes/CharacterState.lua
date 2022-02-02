@@ -1,6 +1,9 @@
 local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BuffomatAddon
 
+---@class BomCharacterStateModule
+local characterStateModule = BuffomatModule.DeclareModule("CharacterState") ---@type BomCharacterStateModule
+
 BOM.Class = BOM.Class or {}
 
 ---@class CharacterState Current character state snapshots per profile

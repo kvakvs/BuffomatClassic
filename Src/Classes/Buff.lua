@@ -1,6 +1,9 @@
 local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BuffomatAddon
 
+---@class BomBuffModule
+local buffModule = BuffomatModule.DeclareModule("Buff") ---@type BomBuffModule
+
 BOM.Class = BOM.Class or {}
 
 ---@class Buff
@@ -14,8 +17,6 @@ BOM.Class = BOM.Class or {}
 BOM.Class.Buff = {}
 BOM.Class.Buff.__index = BOM.Class.Buff
 
-local CLASS_TAG = "buff"
-
 ---Creates a new Buff
 ---@param singleId number Spell id also serving as key
 ---@param duration number
@@ -25,7 +26,6 @@ local CLASS_TAG = "buff"
 ---@return Buff
 function BOM.Class.Buff:new(singleId, duration, expirationTime, source, isSingle)
   local fields = {
-    t              = CLASS_TAG,
     singleId       = singleId,
     duration       = duration,
     expirationTime = expirationTime,
@@ -35,3 +35,4 @@ function BOM.Class.Buff:new(singleId, duration, expirationTime, source, isSingle
   setmetatable(fields, BOM.Class.Buff)
   return fields
 end
+

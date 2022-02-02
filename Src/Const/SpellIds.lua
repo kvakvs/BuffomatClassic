@@ -2,6 +2,9 @@
 local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BuffomatAddon
 
+---@class BomSpellIdsModule
+local spellIdsModule = BuffomatModule.DeclareModule("SpellIds") ---@type BomSpellIdsModule
+
 BOM.SpellId = {}
 
 -- Spell ids in this list hide food buffs from the task list

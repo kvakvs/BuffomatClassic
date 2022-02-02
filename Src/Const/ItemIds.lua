@@ -2,6 +2,9 @@
 local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BuffomatAddon
 
+---@class BomItemIdsModule
+local itemIdsModule = BuffomatModule.DeclareModule("ItemIds") ---@type BomItemIdsModule
+
 BOM.ItemId = {}
 
 BOM.ItemId.Mage = {}

@@ -1,6 +1,9 @@
 local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BuffomatAddon
 
+---@class BomAllSpellsModule
+local allSpellsModule = BuffomatModule.DeclareModule("AllSpells") ---@type BomAllSpellsModule
+
 local L = setmetatable(
         {},
         {

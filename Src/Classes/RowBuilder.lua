@@ -1,6 +1,9 @@
 local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BuffomatAddon
 
+---@class BomRowBuilderModule
+local taskListModule = BuffomatModule.DeclareModule("RowBuilder") ---@type BomRowBuilderModule
+
 ---@class RowBuilder
 ---@field section string
 

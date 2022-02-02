@@ -1,6 +1,9 @@
 local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BuffomatAddon
 
+---@class BomMemberBuffTargetModule
+local memberBuffTargetModule = BuffomatModule.DeclareModule("MemberBuffTarget") ---@type BomMemberBuffTargetModule
+
 BOM.Class = BOM.Class or {}
 
 ---@class MemberBuffTarget
@@ -24,12 +27,12 @@ function BOM.Class.MemberBuffTarget:new(unitName, link)
   return fields
 end
 
----@param m Member
+---@param m BomUnit
 function BOM.Class.MemberBuffTarget:fromMember(m)
   return BOM.Class.MemberBuffTarget:new(m.unitId, m.link)
 end
 
----@param m Member
+---@param m BomUnit
 function BOM.Class.MemberBuffTarget:fromSelf(m)
   return BOM.Class.MemberBuffTarget:new("player", m.link)
 end

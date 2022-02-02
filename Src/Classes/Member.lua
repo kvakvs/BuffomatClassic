@@ -1,9 +1,13 @@
+--TODO: Rename to Unit.lua
 local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BuffomatAddon
 
+---@class BomMemberModule
+local memberModule = BuffomatModule.DeclareModule("Member") ---@type BomMemberModule
+
 BOM.Class = BOM.Class or {}
 
----@class Member
+---@class BomUnit
 ---@field buffs table<number, Buff> Buffs on player keyed by spell id, only buffs supported by Buffomat are stored
 ---@field buffExists table<number, boolean> Availability of all auras even those not supported by BOM, by id, no extra detail stored
 ---@field class string
@@ -24,7 +28,7 @@ BOM.Class = BOM.Class or {}
 ---@field OffHandBuff number|nil Temporary enchant on off-hand
 ---@field unitId string
 
----@type Member
+---@type BomUnit
 BOM.Class.Member = {}
 BOM.Class.Member.__index = BOM.Class.Member
 
@@ -38,8 +42,8 @@ function BOM.Class.Member:new(fields)
 end
 
 ---Force updates buffs for one party member
----@param player_member Member
----@param self Member
+---@param player_member BomUnit
+---@param self BomUnit
 function BOM.Class.Member:ForceUpdateBuffs(player_member)
 
   self.isPlayer = (self == player_member)

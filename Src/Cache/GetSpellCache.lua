@@ -1,6 +1,9 @@
 local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BuffomatAddon
 
+---@class BomSpellCacheModule
+local spellCacheModule = BuffomatModule.DeclareModule("SpellCache") ---@type BomSpellCacheModule
+
 ---@class GSICacheItem
 ---@field name string
 ---@field rank string

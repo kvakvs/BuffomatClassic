@@ -1,6 +1,9 @@
 local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BuffomatAddon
 
+---@class BomControlModule
+local controlModule = BuffomatModule.DeclareModule("Control") ---@type BomControlModule
+
 BOM.Class = BOM.Class or {}
 
 ---@class GPIMenuItem
@@ -41,7 +44,7 @@ BOM.Class.GPIMinimapButton = {}
 BOM.Class.GPIMinimapButton.__index = BOM.Class.GPIMinimapButton
 
 
----@class Control A blizzard UI frame but may contain private fields used by internal library by GPI
+---@class BomControl A blizzard UI frame but may contain private fields used by internal library by GPI
 ---@field _privat_DB table Stores value when button is clicked
 ---@field _privat_Var string Variable name in the _privat_DB
 ---@field _privat_Set any Value to be set/reset to nil when the button is clicked, use nil to toggle a boolean
@@ -63,7 +66,7 @@ BOM.Class.GPIMinimapButton.__index = BOM.Class.GPIMinimapButton
 ---@field GPI_SIZETYPE string
 ---@field Lib_GPI_MinimapButton GPIMinimapButton Stores extra values for minimap button control
 
----@type Control
+---@type BomControl
 BOM.Class.Control = {}
 BOM.Class.Control.__index = BOM.Class.Control
 

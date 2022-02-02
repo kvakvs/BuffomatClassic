@@ -1,16 +1,18 @@
 local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BuffomatAddon
 
----@type table<string, Member>
-local bomMemberCache = {}
+---@class BomUnitCacheModule
+---@field unitCache table<string, BomUnit>
+local unitCacheModule = BuffomatModule.DeclareModule("UnitCache") ---@type BomUnitCacheModule
+unitCacheModule.unitCache = {}
 
----@type Member
+---@type BomUnit
 local bomPlayerMemberCache --Copy of player info dict
 
----@type table<number, Member>
+---@type table<number, BomUnit>
 local bomPartyCache --Copy of party members, a dict of Member's
 
----@return Member
+---@return BomUnit
 ---@param unitid string Player name or special name like "raidpet#"
 ---@param nameGroup string|number
 ---@param nameRole string MAINTANK?
@@ -53,8 +55,8 @@ local function bomGetMember(unitid, nameGroup, nameRole, specialName)
     return member
   else
     -- store in cache
-    bomMemberCache[unitid] = bomMemberCache[unitid] or BOM.Class.Member:new({})
-    local member = bomMemberCache[unitid]
+    unitCacheModule.unitCache[unitid] = unitCacheModule.unitCache[unitid] or BOM.Class.Member:new({})
+    local member = unitCacheModule.unitCache[unitid]
     member:Construct(unitid, name, group, class, link, isTank)
     return member
   end
@@ -96,13 +98,13 @@ local function bomGetPartySize()
   return count
 end
 
----@return table, Member
----@param player_member Member
+---@return table, BomUnit
+---@param player_member BomUnit
 local function bomGet5manPartyMembers(player_member)
   local name_group = {}
   local name_role = {}
   local party = {}
-  local member ---@type Member
+  local member ---@type BomUnit
 
   for groupIndex = 1, 4 do
     member = bomGetMember("party" .. groupIndex)
@@ -135,8 +137,8 @@ local function bomGet5manPartyMembers(player_member)
 end
 
 ---For when player is in raid, retrieve all 40 raid members
----@param player_member Member
----@return table, Member
+---@param player_member BomUnit
+---@return table, BomUnit
 local function bomGet40manRaidMembers(player_member)
   local name_group = {}
   local name_role = {}
@@ -174,11 +176,11 @@ local function bomGet40manRaidMembers(player_member)
 end
 
 ---Retrieve a table with party members
----@return table<number, Member>, Member {Party, Player}
+---@return table<number, BomUnit>, BomUnit {Party, Player}
 function BOM.GetPartyMembers()
   -- and buffs
-  local party ---@type table<number, Member>
-  local player_member --- @type Member
+  local party ---@type table<number, BomUnit>
+  local player_member --- @type BomUnit
   BOM.drinkingPersonCount = 0
 
   -- check if stored party is correct!

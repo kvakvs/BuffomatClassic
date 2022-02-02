@@ -135,7 +135,7 @@ local eventsModule = BuffomatModule.Import("Events") ---@type BomEventsModule
 ---@field IconUseRankOn string
 ---
 ---@field BehaviourSettings table<string, boolean> Key names and Defaults for 'Profile' settings
----@field QuickSingleBuff Control Button for single/group buff toggling next to cast button
+---@field QuickSingleBuff BomControl Button for single/group buff toggling next to cast button
 ---
 ---@field SpellId table<string, table<string, number>> Map of spell name to id
 ---@field ItemId table<string, table<string, number>> Map of item name to id

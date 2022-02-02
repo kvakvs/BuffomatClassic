@@ -1,6 +1,9 @@
 local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BuffomatAddon
 
+---@class BomTaskModule
+local taskModule = BuffomatModule.DeclareModule("Task") ---@type BomTaskModule
+
 BOM.Class = BOM.Class or {}
 
 ---@class Task
@@ -27,7 +30,7 @@ local CLASS_TAG = "task_item"
 
 ---Creates a new TaskListItem
 ---@param priority number|nil Sorting priority to display
----@param target Member|GroupBuffTarget Unit to calculate distance to or boolean true
+---@param target BomUnit|GroupBuffTarget Unit to calculate distance to or boolean true
 ---@param action_text string
 ---@param action_link string
 ---@param prefix_text string

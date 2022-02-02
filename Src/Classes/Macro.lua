@@ -1,6 +1,9 @@
 local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BuffomatAddon
 
+---@class BomMacroModule
+local macroModule = BuffomatModule.DeclareModule("Macro") ---@type BomMacroModule
+
 local constModule = BuffomatModule.Import("Const") ---@type BomConstModule
 
 local L = setmetatable({}, { __index = function(t, k)

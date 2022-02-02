@@ -1,6 +1,12 @@
 local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BuffomatAddon
 
+---@class BomItemCacheModule
+local itemCacheModule = BuffomatModule.DeclareModule("ItemCache") ---@type BomItemCacheModule
+
+------@field cache table<number|string, GIICacheItem> Stores arg to results mapping for GetItemInfo
+itemCacheModule.cache = {}
+
 ---@class GIICacheItem
 ---@field itemName string
 ---@field itemLink string Printable colored clickable item link
@@ -14,16 +20,13 @@ local BOM = BuffomatAddon ---@type BuffomatAddon
 ---@field itemTexture string|number Texture or icon id
 ---@field itemSellPrice number Copper price for the item
 
----@type table<number|string, GIICacheItem> Stores arg to results mapping for GetItemInfo
-local bom_gii_cache = {}
-
 ---Calls GetItemInfo and saves the results, or not (if nil was returned)
 ---@param arg number|string
 ---@return GIICacheItem|nil
 function BOM.GetItemInfo(arg)
-  if bom_gii_cache[arg] ~= nil then
+  if itemCacheModule.cache[arg] ~= nil then
     --print("Cached item response for ", arg)
-    return bom_gii_cache[arg]
+    return itemCacheModule.cache[arg]
   end
 
   local itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType
@@ -46,6 +49,6 @@ function BOM.GetItemInfo(arg)
     itemSellPrice = itemSellPrice
   }
   --print("Added to cache item info for ", arg)
-  bom_gii_cache[arg] = cache_item
+  itemCacheModule.cache[arg] = cache_item
   return cache_item
 end

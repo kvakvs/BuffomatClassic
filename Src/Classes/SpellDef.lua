@@ -1,6 +1,9 @@
 local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BuffomatAddon
 
+---@class BomSpellDefModule
+local spellDefModule = BuffomatModule.DeclareModule("SpellDef") ---@type BomSpellDefModule
+
 BOM.Class = BOM.Class or {}
 
 ---
@@ -66,9 +69,9 @@ BOM.Class = BOM.Class or {}
 ---@field Enable boolean Whether buff is to be watched
 ---@field ExcludedTarget table<string> List of target names to never buff
 ---@field ForcedTarget table<string> List of extra targets to buff
----@field frames table<string, Control> Dynamic list of controls associated with this spell
+---@field frames table<string, BomControl> Dynamic list of controls associated with this spell
 ---@field NeedGroup table List of group members who might need group version of this buff
----@field NeedMember table<number, Member> List of group members who might need this buff
+---@field NeedMember table<number, BomUnit> List of group members who might need this buff
 ---@field SelfCast boolean
 ---@field SkipList table If spell cast failed, contains recently failed targets
 ---@field trackingIconId number Numeric id for the tracking texture icon

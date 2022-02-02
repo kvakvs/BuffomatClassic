@@ -1,6 +1,9 @@
 local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BuffomatAddon
 
+---@class BomTaskListModule
+local taskListModule = BuffomatModule.DeclareModule("TaskList") ---@type BomTaskListModule
+
 BOM.Class = BOM.Class or {}
 
 ---@class TaskList
@@ -28,7 +31,7 @@ end
 ---@param action_text string Text to display (target of the action) with icon and color
 ---@param action_link string Text to display if inactive (just text)
 ---@param extra_text string Text to display (extra comment)
----@param target Member Distance to the party member, or group (if string)
+---@param target BomUnit Distance to the party member, or group (if string)
 ---@param is_info boolean Whether the text is info text or a cast
 ---@param prio number|nil Priority, a constant from BOM.TaskPriority
 function BOM.Class.TaskList.Add(self, action_link, action_text, extra_text,
@@ -45,7 +48,7 @@ end
 ---@param action_text string|nil Text to display if inactive (just text). Nil to use action_link
 ---@param prefix_text string Text to display before spell (a verb?)
 ---@param extra_text string Text to display (extra comment)
----@param target Member Distance to the party member, or group (if string)
+---@param target BomUnit Distance to the party member, or group (if string)
 ---@param _is_info boolean Whether the text is info text or a cast
 ---@param prio number|nil Priority, a constant from BOM.TaskPriority
 function BOM.Class.TaskList.AddWithPrefix(self, prefix_text,
@@ -69,8 +72,8 @@ function BOM.Class.TaskList.Clear(self)
   wipe(self.comments)
 end
 
----@param a GroupBuffTarget|Member
----@param b GroupBuffTarget|Member
+---@param a GroupBuffTarget|BomUnit
+---@param b GroupBuffTarget|BomUnit
 local function bomCompareGroupsOrMembers(a, b)
   if not b then return false end
   if not a then return true end

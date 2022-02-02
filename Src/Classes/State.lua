@@ -1,6 +1,9 @@
 local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BuffomatAddon
 
+---@class BomStateModule
+local stateModule = BuffomatModule.DeclareModule("State") ---@type BomStateModule
+
 BOM.Class = BOM.Class or {}
 
 ---@class State Snapshot of current options state as selected by the player

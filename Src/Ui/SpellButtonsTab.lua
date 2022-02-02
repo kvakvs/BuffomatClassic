@@ -2,6 +2,11 @@
 local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BuffomatAddon
 
+---@class BomSpellButtonsTabModule
+local spellButtonsTabModule = BuffomatModule.DeclareModule("Ui/SpellButtonsTab") ---@type BomSpellButtonsTabModule
+
+local uiButtonModule = BuffomatModule.Import("UiButton") ---@type BomUiButtonModule
+
 local L = setmetatable(
         {},
         {
@@ -127,7 +132,7 @@ local function bomAddClassesRow(row_builder, is_horde, spell)
   -- Force Cast Button -(+)-
   --========================================
   if spell.frames.ForceCastButton == nil then
-    spell.frames.ForceCastButton = BOM.UI.CreateSmallButton(
+    spell.frames.ForceCastButton = uiButtonModule:CreateSmallButton(
             "ForceCast" .. spell.singleId,
             BomC_SpellTab_Scroll_Child,
             BOM.ICON_TARGET_ON)
@@ -145,7 +150,7 @@ local function bomAddClassesRow(row_builder, is_horde, spell)
   -- Exclude/Ignore Buff Target Button (X)
   --========================================
   if spell.frames.ExcludeButton == nil then
-    spell.frames.ExcludeButton = BOM.UI.CreateSmallButton(
+    spell.frames.ExcludeButton = uiButtonModule:CreateSmallButton(
             "Exclude" .. spell.singleId,
             BomC_SpellTab_Scroll_Child,
             BOM.ICON_TARGET_EXCLUDE)
@@ -724,8 +729,8 @@ local function bomUpdateSelectedSpell(spell)
     end
 
     --========================================
-    local force_cast_button = spell.frames.ForceCastButton ---@type Control
-    local exclude_button = spell.frames.ExcludeButton ---@type Control
+    local force_cast_button = spell.frames.ForceCastButton ---@type BomControl
+    local exclude_button = spell.frames.ExcludeButton ---@type BomControl
 
     if BOM.lastTarget ~= nil then
       -------------------------

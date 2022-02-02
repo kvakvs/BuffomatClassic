@@ -1,6 +1,9 @@
 local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BuffomatAddon
 
+---@class BomUiOptionsModule
+local uiOptionsModule = BuffomatModule.DeclareModule("Ui/Options") ---@type BomUiOptionsModule
+
 BOM.Options = BOM.Options or {}
 local Options = BOM.Options
 
@@ -616,7 +619,7 @@ end
 ---@param onlynumbers boolean - numeric value only allowed
 ---@param tooltip string
 ---@param suggestion table
----@return Control
+---@return BomControl
 function Options.AddEditBox(DB, Var, Init, TXTLeft, width, widthLeft, onlynumbers,
                             tooltip, suggestion)
   if width == nil then
