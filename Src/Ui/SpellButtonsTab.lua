@@ -5,7 +5,7 @@ local BOM = BuffomatAddon ---@type BuffomatAddon
 ---@class BomSpellButtonsTabModule
 local spellButtonsTabModule = BuffomatModule.DeclareModule("Ui/SpellButtonsTab") ---@type BomSpellButtonsTabModule
 
-local uiButtonModule = BuffomatModule.Import("UiButton") ---@type BomUiButtonModule
+local uiButtonModule = BuffomatModule.Import("Ui/UiButton") ---@type BomUiButtonModule
 
 local L = setmetatable(
         {},

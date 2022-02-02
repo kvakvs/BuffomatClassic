@@ -4,6 +4,7 @@ local TOCNAME, _ = ...
 local buffomatModule = BuffomatModule.DeclareModule("Buffomat") ---@type BomBuffomatModule
 
 local constModule = BuffomatModule.Import("Const") ---@type BomConstModule
+local optionsModule = BuffomatModule.Import("Options") ---@type BomOptionsModule
 local eventsModule = BuffomatModule.Import("Events") ---@type BomEventsModule
 
 ---global, visible from XML files and from script console and chat commands
@@ -56,7 +57,7 @@ local eventsModule = BuffomatModule.Import("Events") ---@type BomEventsModule
 ---@field IsClassic boolean Whether we are running Classic Era or Season of Mastery
 ---@field WipeCachedItems boolean Command to reset cached items
 ---@field MinimapButton GPIMinimapButton Minimap button control
----@field Options Options
+---@field legacyOptions BomLegacyUiOptions
 ---
 ---@field ICON_PET string
 ---@field ICON_OPT_ENABLED string
@@ -140,8 +141,7 @@ local eventsModule = BuffomatModule.Import("Events") ---@type BomEventsModule
 ---@field SpellId table<string, table<string, number>> Map of spell name to id
 ---@field ItemId table<string, table<string, number>> Map of item name to id
 BuffomatAddon = LibStub("AceAddon-3.0"):NewAddon(
-        "Buffomat",
-        "AceConsole-3.0", "AceEvent-3.0") ---@type BuffomatAddon
+        "Buffomat", "AceConsole-3.0", "AceEvent-3.0") ---@type BuffomatAddon
 local BOM = BuffomatAddon
 
 local L = setmetatable(
@@ -157,6 +157,11 @@ local L = setmetatable(
         })
 
 BOM.BehaviourSettings = {
+  --{ "ShowMinimapButton", true },
+  --{ "LockMinimapButton", false },
+  --{ "LockMinimapButtonDistance", false },
+  --{ "UseProfiles", false },
+
   { "AutoOpen", true },
   { "ScanInRestArea", false },
   { "ScanInStealth", false },
@@ -221,7 +226,7 @@ end
 ---@param db table - BomSharedState reference to read settings from it
 ---@param var string Variable name from BOM.BehaviourSettings
 local function bom_make_popup_menu_settings_row(db, var)
-  return L["Cbox" .. var], false, db, var
+  return L["options.short." .. var], false, db, var
 end
 
 ---Populate the [⚙] popup menu
@@ -235,7 +240,7 @@ local function bomPopup(self, minimap)
   if minimap then
     BOM.PopupDynamic:AddItem(L.BtnOpen, false, BOM.ShowWindow)
     BOM.PopupDynamic:AddItem()
-    BOM.PopupDynamic:AddItem(L["Cboxshowminimapbutton"], false, BOM.SharedState.Minimap, "visible")
+    BOM.PopupDynamic:AddItem(L["CboxShowMinimapButton"], false, BOM.SharedState.Minimap, "visible")
     BOM.PopupDynamic:AddItem(L["CboxLockMinimapButton"], false, BOM.SharedState.Minimap, "lock")
     BOM.PopupDynamic:AddItem(L["CboxLockMinimapButtonDistance"], false, BOM.SharedState.Minimap, "lockDistance")
     BOM.PopupDynamic:AddItem()
@@ -289,7 +294,7 @@ local function bomPopup(self, minimap)
 
   BOM.PopupDynamic:SubMenu()
 
-  BOM.PopupDynamic:AddItem(L.BtnSettings, false, BOM.Options.Open, 1)
+  BOM.PopupDynamic:AddItem(L.BtnSettings, false, BOM.legacyOptions.Open, 1)
   BOM.PopupDynamic:AddItem(L["BtnCancel"], false)
 
   BOM.PopupDynamic:Show(self or "cursor", 0, 0)
@@ -326,25 +331,25 @@ function BOM.OptionsUpdate()
   BOM.UpdateSpellsTab("OptonsUpdate")
   BOM.MyButtonUpdateAll()
   BOM.MinimapButton.UpdatePosition()
-  BOM.Options.DoCancel()
+  BOM.legacyOptions.DoCancel()
 end
 
 local function bom_add_checkbox(Var, Init)
-  BOM.Options.AddCheckBox(BOM.SharedState, Var, Init, L["Cbox" .. Var])
+  BOM.legacyOptions.AddCheckBox(BOM.SharedState, Var, Init, L["options.short." .. Var])
 end
 
 local function bom_add_editbox(Var, Init, width)
   --Options:AddEditBox(DB,Var,Init,TXTLeft,width,widthLeft,onlynumbers,tooltip,suggestion)
-  BOM.Options.AddEditBox(BOM.SharedState, Var, Init, L["Ebox" .. Var], 50, width or 150, true)
+  BOM.legacyOptions.AddEditBox(BOM.SharedState, Var, Init, L["Ebox" .. Var], 50, width or 150, true)
 end
 
 local function bom_add_editbox_str(Var, Init, width)
   --Options:AddEditBox(DB,Var,Init,TXTLeft,width,widthLeft,onlynumbers,tooltip,suggestion)
-  BOM.Options.AddEditBox(BOM.SharedState, Var, Init, L["Ebox" .. Var], 50, width or 150, false)
+  BOM.legacyOptions.AddEditBox(BOM.SharedState, Var, Init, L["Ebox" .. Var], 50, width or 150, false)
 end
 
 local function bom_options_add_main_panel()
-  local opt = BOM.Options
+  local opt = BOM.legacyOptions
   opt.AddPanel(constModule.TOC_TITLE, false, true)
   opt.AddVersion('Version |cff00c0ff' .. constModule.TOC_VERSION .. "|r")
 
@@ -377,7 +382,7 @@ local function bom_options_add_main_panel()
 end
 
 local function bom_options_add_localization_panel()
-  local opt = BOM.Options
+  local opt = BOM.legacyOptions
 
   opt.AddPanel(L["HeaderCustomLocales"], false, true)
   opt.SetScale(0.85)
@@ -412,7 +417,7 @@ local function bom_options_add_localization_panel()
 end
 
 local function bom_options_add_about_panel()
-  local opt = BOM.Options
+  local opt = BOM.legacyOptions
 
   local panel = opt.AddPanel(L.PanelAbout, false, true)
   panel:SetHyperlinksEnabled(true);
@@ -480,27 +485,37 @@ local function bom_options_add_about_panel()
   opt.AddCategory(" ")
 end
 
-function BOM.OptionsInit()
-  local newDoOk = function()
-    BOM.Options.DoOk()
-    BOM.OptionsUpdate()
-  end
-  local newDoCancel = function()
-    BOM.Options.DoCancel()
-    BOM.OptionsUpdate()
-  end
-  local newDoDefault = function()
-    BOM.Options.DoDefault()
-    BOM.SharedState.Minimap.position = 50
-    BOM.ResetWindow()
-    BOM.OptionsUpdate()
+function buffomatModule:OptionsInit()
+  LibStub("AceConfig-3.0"):RegisterOptionsTable("Buffomat", optionsModule:CreateOptionsTable(), { "/myslash", "/my" })
+
+  self.optionsFrames = {
+    general = LibStub("AceConfigDialog-3.0"):AddToBlizOptions(
+            constModule.SHORT_TITLE, L["options.OptionsTitle"], nil)
+  }
+  self.optionsFrames.general.default = function()
+    optionsModule:ResetDefaultOptions()
   end
 
-  BOM.Options.Init(newDoOk, newDoCancel, newDoDefault)
+  --local newDoOk = function()
+  --  BOM.legacyOptions.DoOk()
+  --  BOM.OptionsUpdate()
+  --end
+  --local newDoCancel = function()
+  --  BOM.legacyOptions.DoCancel()
+  --  BOM.OptionsUpdate()
+  --end
+  --local newDoDefault = function()
+  --  BOM.legacyOptions.DoDefault()
+  --  BOM.SharedState.Minimap.position = 50
+  --  BOM.ResetWindow()
+  --  BOM.OptionsUpdate()
+  --end
+  --
+  --BOM.legacyOptions.Init(newDoOk, newDoCancel, newDoDefault)
 
-  bom_options_add_main_panel()
-  bom_options_add_localization_panel()
-  bom_options_add_about_panel()
+  --bom_options_add_main_panel()
+  --bom_options_add_localization_panel()
+  --bom_options_add_about_panel()
 end
 
 ---Update spell list in options, called from Event_SpellsChanged
@@ -508,10 +523,10 @@ function BOM.OptionsInsertSpells()
   for i, spell in ipairs(BOM.AllBuffomatSpells) do
     if type(spell) == "table" and spell.optionText then
       if spell.groupId then
-        BOM.Options.EditText(spell.optionText,
+        BOM.legacyOptions.EditText(spell.optionText,
                 (spell.singleLink or spell.single) .. " / " .. (spell.groupLink or spell.group))
       else
-        BOM.Options.EditText(spell.optionText,
+        BOM.legacyOptions.EditText(spell.optionText,
                 (spell.singleLink or spell.single or spell.ConfigID))
       end
     end
@@ -519,7 +534,7 @@ function BOM.OptionsInsertSpells()
 
   for i, spell in ipairs(BOM.CancelBuffs) do
     if spell.optionText then
-      BOM.Options.EditText(spell.optionText,
+      BOM.legacyOptions.EditText(spell.optionText,
               (spell.singleLink or spell.single or spell.ConfigID))
     end
   end
@@ -669,7 +684,7 @@ local function bom_init_ui()
                   .. L.profile_solo)
   --BomC_ListTab_Button:SetText(L["BtnGetMacro"])
 
-  BOM.OptionsInit()
+  buffomatModule:OptionsInit()
   BOM.PartyUpdateNeeded = true
   BOM.RepeatUpdate = false
 

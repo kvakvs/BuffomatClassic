@@ -4,7 +4,7 @@
 ## Interface: 11401
 ## Title: Buffomat Classic
 ## Notes: Semi-automatic buff and resurrection bot, compatible with Burning Crusade Classic
-## Version: 2022.2.2-289ef1b1
+## Version: 2022.2.2-79820902
 ## Author: kvakvs; by GPI/Erytheia-Razorfen
 ## DefaultState: enabled
 ## SavedVariables: BomSharedState
@@ -25,7 +25,6 @@ Src/Classes/Buff.lua
 Src/Classes/BuffClass.lua
 Src/Classes/BuffomatTranslations.lua
 Src/Classes/Member.lua
-Src/Classes/Options.lua
 Src/Classes/RowBuilder.lua
 Src/Classes/SpellDef.lua
 Src/Classes/State.lua
@@ -42,6 +41,7 @@ Src/Cache/GetItemListCache.lua
 Src/Cache/MemberCache.lua
 
 Src/Ui/UiButton.lua
+Src/Ui/LegacyOptions.lua
 Src/Ui/Options.lua
 Src/Ui/MinimapButton.lua
 Src/Ui/SpellButtonsTab.lua

@@ -25,7 +25,6 @@ Src/Classes/Buff.lua
 Src/Classes/BuffClass.lua
 Src/Classes/BuffomatTranslations.lua
 Src/Classes/Member.lua
-Src/Classes/Options.lua
 Src/Classes/RowBuilder.lua
 Src/Classes/SpellDef.lua
 Src/Classes/State.lua
@@ -42,6 +41,7 @@ Src/Cache/GetItemListCache.lua
 Src/Cache/MemberCache.lua
 
 Src/Ui/UiButton.lua
+Src/Ui/LegacyOptions.lua
 Src/Ui/Options.lua
 Src/Ui/MinimapButton.lua
 Src/Ui/SpellButtonsTab.lua
