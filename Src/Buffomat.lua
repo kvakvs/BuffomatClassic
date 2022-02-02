@@ -240,9 +240,9 @@ local function bomPopup(self, minimap)
   if minimap then
     BOM.PopupDynamic:AddItem(L.BtnOpen, false, BOM.ShowWindow)
     BOM.PopupDynamic:AddItem()
-    BOM.PopupDynamic:AddItem(L["CboxShowMinimapButton"], false, BOM.SharedState.Minimap, "visible")
-    BOM.PopupDynamic:AddItem(L["CboxLockMinimapButton"], false, BOM.SharedState.Minimap, "lock")
-    BOM.PopupDynamic:AddItem(L["CboxLockMinimapButtonDistance"], false, BOM.SharedState.Minimap, "lockDistance")
+    BOM.PopupDynamic:AddItem(_t("options.short.ShowMinimapButton"), false, BOM.SharedState.Minimap, "visible")
+    BOM.PopupDynamic:AddItem(_t("options.short.LockMinimapButton"), false, BOM.SharedState.Minimap, "lock")
+    BOM.PopupDynamic:AddItem(_t("options.short.LockMinimapButtonDistance"), false, BOM.SharedState.Minimap, "lockDistance")
     BOM.PopupDynamic:AddItem()
   end
 
@@ -353,11 +353,11 @@ local function bom_options_add_main_panel()
   opt.AddPanel(constModule.TOC_TITLE, false, true)
   opt.AddVersion('Version |cff00c0ff' .. constModule.TOC_VERSION .. "|r")
 
-  opt.AddCheckBox(BOM.SharedState.Minimap, "visible", true, L["Cboxshowminimapbutton"])
-  opt.AddCheckBox(BOM.SharedState.Minimap, "lock", false, L["CboxLockMinimapButton"])
-  opt.AddCheckBox(BOM.SharedState.Minimap, "lockDistance", false, L["CboxLockMinimapButtonDistance"])
+  opt.AddCheckBox(BOM.SharedState.Minimap, "visible", true, L["options.short.ShowMinimapButton"])
+  opt.AddCheckBox(BOM.SharedState.Minimap, "lock", false, L["options.short.LockMinimapButton"])
+  opt.AddCheckBox(BOM.SharedState.Minimap, "lockDistance", false, L["options.short.LockMinimapButtonDistance"])
   opt.AddSpace()
-  opt.AddCheckBox(BOM.CharacterState, "UseProfiles", false, L["CboxUseProfiles"])
+  opt.AddCheckBox(BOM.CharacterState, "UseProfiles", false, L["options.short.UseProfiles"])
   opt.AddSpace()
 
   for i, set in ipairs(BOM.BehaviourSettings) do

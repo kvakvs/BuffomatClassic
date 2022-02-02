@@ -7,8 +7,14 @@ optionsModule.optionsOrder = 0
 
 local _t = BuffomatModule.Import("Languages") ---@type BomLanguagesModule
 
-function optionsModule:TemplateCheckbox(name)
+---@param dict table|nil
+---@param key string|nil
+---@param notify function|nil Call this with (key, value) on option change
+function optionsModule:TemplateCheckbox(name, dict, key, notify)
   self.optionsOrder = self.optionsOrder + 1
+
+  dict = dict or BOM.SharedState
+  key = key or name
 
   return {
     name  = _t("options.short." .. name),
@@ -18,10 +24,13 @@ function optionsModule:TemplateCheckbox(name)
     order = self.optionsOrder,
 
     set   = function(info, val)
-      BOM.SharedState[name] = val
+      dict[key] = val
+      if notify then
+        notify(key, val)
+      end
     end,
     get   = function(info)
-      return BOM.SharedState[name] == true
+      return dict[key] == true
     end,
   }
 end
@@ -37,11 +46,14 @@ function optionsModule:CreateOptionsTable()
         name = _t("options.general.group.General"),
         args = {
           autoOpen              = self:TemplateCheckbox("AutoOpen"),
-          useProfiles           = self:TemplateCheckbox("UseProfiles"),
+          useProfiles           = self:TemplateCheckbox("UseProfiles", BOM.CharacterState),
           slowerHardware        = self:TemplateCheckbox("SlowerHardware"),
-          minimapButtonShow     = self:TemplateCheckbox("ShowMinimapButton"),
-          minimapButtonLock     = self:TemplateCheckbox("LockMinimapButton"),
-          minimapButtonLockDist = self:TemplateCheckbox("LockMinimapButtonDistance"),
+          minimapButtonShow     = self:TemplateCheckbox(
+                  "ShowMinimapButton", BOM.SharedState.Minimap, "visible"),
+          minimapButtonLock     = self:TemplateCheckbox(
+                  "LockMinimapButton", BOM.SharedState.Minimap, "lock"),
+          minimapButtonLockDist = self:TemplateCheckbox(
+                  "LockMinimapButtonDistance", BOM.SharedState.Minimap, "lockDistance"),
         }
       },
       scanOptions        = {
