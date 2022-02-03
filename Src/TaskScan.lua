@@ -756,7 +756,7 @@ local function bomIsActive(playerUnit)
   -- and current mana is < 90%
   if BOM.SharedState.DeactivateBomOnSpiritTap
           and playerUnit.buffExists[BOM.SpellId.Priest.SpiritTap]
-          and bomCurrentPlayerMana < BOM.PlayerManaMax * 0.9 then
+          and bomCurrentPlayerMana < UnitPowerMax("player", 0) * 0.9 then
     return false, L.InactiveReason_SpiritTap
   end
 

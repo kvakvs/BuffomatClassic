@@ -331,159 +331,159 @@ function BOM.OptionsUpdate()
   BOM.UpdateSpellsTab("OptonsUpdate")
   BOM.MyButtonUpdateAll()
   BOM.MinimapButton.UpdatePosition()
-  BOM.legacyOptions.DoCancel()
+  --BOM.legacyOptions.DoCancel()
 end
 
-local function bom_add_checkbox(Var, Init)
-  BOM.legacyOptions.AddCheckBox(BOM.SharedState, Var, Init, L["options.short." .. Var])
-end
+--local function bom_add_checkbox(Var, Init)
+--  BOM.legacyOptions.AddCheckBox(BOM.SharedState, Var, Init, L["options.short." .. Var])
+--end
 
-local function bom_add_editbox(Var, Init, width)
-  --Options:AddEditBox(DB,Var,Init,TXTLeft,width,widthLeft,onlynumbers,tooltip,suggestion)
-  BOM.legacyOptions.AddEditBox(BOM.SharedState, Var, Init, L["Ebox" .. Var], 50, width or 150, true)
-end
+--local function bom_add_editbox(Var, Init, width)
+--  --Options:AddEditBox(DB,Var,Init,TXTLeft,width,widthLeft,onlynumbers,tooltip,suggestion)
+--  BOM.legacyOptions.AddEditBox(BOM.SharedState, Var, Init, L["Ebox" .. Var], 50, width or 150, true)
+--end
 
-local function bom_add_editbox_str(Var, Init, width)
-  --Options:AddEditBox(DB,Var,Init,TXTLeft,width,widthLeft,onlynumbers,tooltip,suggestion)
-  BOM.legacyOptions.AddEditBox(BOM.SharedState, Var, Init, L["Ebox" .. Var], 50, width or 150, false)
-end
+--local function bom_add_editbox_str(Var, Init, width)
+--  --Options:AddEditBox(DB,Var,Init,TXTLeft,width,widthLeft,onlynumbers,tooltip,suggestion)
+--  BOM.legacyOptions.AddEditBox(BOM.SharedState, Var, Init, L["Ebox" .. Var], 50, width or 150, false)
+--end
 
-local function bom_options_add_main_panel()
-  local opt = BOM.legacyOptions
-  opt.AddPanel(constModule.TOC_TITLE, false, true)
-  opt.AddVersion('Version |cff00c0ff' .. constModule.TOC_VERSION .. "|r")
+--local function bom_options_add_main_panel()
+--  local opt = BOM.legacyOptions
+--  opt.AddPanel(constModule.TOC_TITLE, false, true)
+--  opt.AddVersion('Version |cff00c0ff' .. constModule.TOC_VERSION .. "|r")
+--
+--  opt.AddCheckBox(BOM.SharedState.Minimap, "visible", true, L["options.short.ShowMinimapButton"])
+--  opt.AddCheckBox(BOM.SharedState.Minimap, "lock", false, L["options.short.LockMinimapButton"])
+--  opt.AddCheckBox(BOM.SharedState.Minimap, "lockDistance", false, L["options.short.LockMinimapButtonDistance"])
+--  opt.AddSpace()
+--  opt.AddCheckBox(BOM.CharacterState, "UseProfiles", false, L["options.short.UseProfiles"])
+--  opt.AddSpace()
+--
+--  for i, set in ipairs(BOM.BehaviourSettings) do
+--    bom_add_checkbox(set[1], set[2])
+--  end
+--
+--  opt.AddSpace()
+--  bom_add_editbox_str("UIWindowScale", 1, 350)
+--  bom_add_editbox("MinBuff", 3, 350)
+--  bom_add_editbox("MinBlessing", 3, 350)
+--  opt.AddSpace()
+--  opt.AddCategory(L.HeaderRenew)
+--  opt.Indent(20)
+--  bom_add_editbox("Time60", 10)--60 s rebuff in 10 s
+--  bom_add_editbox("Time300", 60)--5 m rebuff in 1 min
+--  bom_add_editbox("Time600", 120)--10 m rebuff in 2 min
+--  bom_add_editbox("Time1800", 300)--30 m rebuff in 5 min
+--  bom_add_editbox("Time3600", 300)--60 m rebuff in 5 min
+--  opt.Indent(-20)
+--  opt.AddSpace()
+--  opt.AddButton(L.BtnSettingsSpells, BOM.ShowSpellSettings)
+--end
 
-  opt.AddCheckBox(BOM.SharedState.Minimap, "visible", true, L["options.short.ShowMinimapButton"])
-  opt.AddCheckBox(BOM.SharedState.Minimap, "lock", false, L["options.short.LockMinimapButton"])
-  opt.AddCheckBox(BOM.SharedState.Minimap, "lockDistance", false, L["options.short.LockMinimapButtonDistance"])
-  opt.AddSpace()
-  opt.AddCheckBox(BOM.CharacterState, "UseProfiles", false, L["options.short.UseProfiles"])
-  opt.AddSpace()
+--local function bom_options_add_localization_panel()
+--  local opt = BOM.legacyOptions
+--
+--  opt.AddPanel(L["HeaderCustomLocales"], false, true)
+--  opt.SetScale(0.85)
+--  opt.AddText(L["MsgLocalRestart"])
+--  opt.AddSpace()
+--
+--  local locales = BOM.locales.enEN
+--  local t = {}
+--
+--  for key, value in pairs(locales) do
+--    table.insert(t, key)
+--  end
+--
+--  table.sort(t)
+--
+--  for i, key in ipairs(t) do
+--    local col = L[key] ~= locales[key] and "|cffffffff" or "|cffff4040"
+--    local txt = L[key .. "_org"] ~= "[" .. key .. "_org]" and L[key .. "_org"] or L[key]
+--
+--    opt.AddEditBox(
+--            BOM.SharedState.CustomLocales,
+--            key,
+--            "",
+--            col .. "[" .. key .. "]",
+--            450, 200,
+--            false,
+--            locales[key],
+--            txt)
+--  end
+--
+--  opt.SetScale(1)
+--end
 
-  for i, set in ipairs(BOM.BehaviourSettings) do
-    bom_add_checkbox(set[1], set[2])
-  end
-
-  opt.AddSpace()
-  bom_add_editbox_str("UIWindowScale", 1, 350)
-  bom_add_editbox("MinBuff", 3, 350)
-  bom_add_editbox("MinBlessing", 3, 350)
-  opt.AddSpace()
-  opt.AddCategory(L.HeaderRenew)
-  opt.Indent(20)
-  bom_add_editbox("Time60", 10)--60 s rebuff in 10 s
-  bom_add_editbox("Time300", 60)--5 m rebuff in 1 min
-  bom_add_editbox("Time600", 120)--10 m rebuff in 2 min
-  bom_add_editbox("Time1800", 300)--30 m rebuff in 5 min
-  bom_add_editbox("Time3600", 300)--60 m rebuff in 5 min
-  opt.Indent(-20)
-  opt.AddSpace()
-  opt.AddButton(L.BtnSettingsSpells, BOM.ShowSpellSettings)
-end
-
-local function bom_options_add_localization_panel()
-  local opt = BOM.legacyOptions
-
-  opt.AddPanel(L["HeaderCustomLocales"], false, true)
-  opt.SetScale(0.85)
-  opt.AddText(L["MsgLocalRestart"])
-  opt.AddSpace()
-
-  local locales = BOM.locales.enEN
-  local t = {}
-
-  for key, value in pairs(locales) do
-    table.insert(t, key)
-  end
-
-  table.sort(t)
-
-  for i, key in ipairs(t) do
-    local col = L[key] ~= locales[key] and "|cffffffff" or "|cffff4040"
-    local txt = L[key .. "_org"] ~= "[" .. key .. "_org]" and L[key .. "_org"] or L[key]
-
-    opt.AddEditBox(
-            BOM.SharedState.CustomLocales,
-            key,
-            "",
-            col .. "[" .. key .. "]",
-            450, 200,
-            false,
-            locales[key],
-            txt)
-  end
-
-  opt.SetScale(1)
-end
-
-local function bom_options_add_about_panel()
-  local opt = BOM.legacyOptions
-
-  local panel = opt.AddPanel(L.PanelAbout, false, true)
-  panel:SetHyperlinksEnabled(true);
-  panel:SetScript("OnHyperlinkEnter", BOM.EnterHyperlink)
-  panel:SetScript("OnHyperlinkLeave", BOM.LeaveHyperlink)
-
-  local function bom_add_text(txt)
-    opt.AddText(txt)
-  end
-
-  opt.AddCategory("|cFFFF1C1C" .. GetAddOnMetadata(TOCNAME, "Title")
-          .. " " .. GetAddOnMetadata(TOCNAME, "Version")
-          .. " by " .. GetAddOnMetadata(TOCNAME, "Author"))
-  opt.Indent(10)
-  opt.AddText(GetAddOnMetadata(TOCNAME, "Notes"))
-  opt.Indent(-10)
-
-  opt.AddCategory(L["HeaderInfo"])
-  opt.Indent(10)
-  opt.AddText(L["AboutInfo"], -20)
-  opt.Indent(-10)
-
-  opt.AddCategory(L["HeaderUsage"])
-  opt.Indent(10)
-  opt.AddText(L["AboutUsage"], -20)
-  opt.Indent(-10)
-
-  opt.AddCategory(L["HeaderSlashCommand"])
-  opt.Indent(10)
-  opt.AddText(L["AboutSlashCommand"], -20)
-  BOM.Tool.PrintSlashCommand(nil, nil, bom_add_text)
-  opt.Indent(-10)
-
-  opt.AddCategory(L["HeaderCredits"])
-  opt.Indent(10)
-  opt.AddText(L["AboutCredits"], -20)
-  opt.Indent(-10)
-
-  opt.AddCategory(L.HeaderSupportedSpells)
-  opt.Indent(20)
-
-  for i, spell in ipairs(BOM.AllBuffomatSpells) do
-    if type(spell) == "table" then
-      spell.optionText = opt.AddText("<placeholder>")
-    else
-      opt.Indent(-10)
-      if LOCALIZED_CLASS_NAMES_MALE[spell] then
-        opt.AddCategory(LOCALIZED_CLASS_NAMES_MALE[spell])
-      else
-        opt.AddCategory(L["Header_" .. spell])
-      end
-      opt.Indent(10)
-    end
-  end
-
-  opt.Indent(-10)
-  opt.AddCategory(L["Header_CANCELBUFF"])
-  opt.Indent(10)
-
-  for i, spell in ipairs(BOM.CancelBuffs) do
-    spell.optionText = opt.AddText("<placeholder>")
-  end
-
-  opt.Indent(-10)
-  opt.AddCategory(" ")
-end
+--local function bom_options_add_about_panel()
+--  local opt = BOM.legacyOptions
+--
+--  local panel = opt.AddPanel(L.PanelAbout, false, true)
+--  panel:SetHyperlinksEnabled(true);
+--  panel:SetScript("OnHyperlinkEnter", BOM.EnterHyperlink)
+--  panel:SetScript("OnHyperlinkLeave", BOM.LeaveHyperlink)
+--
+--  local function bom_add_text(txt)
+--    opt.AddText(txt)
+--  end
+--
+--  opt.AddCategory("|cFFFF1C1C" .. GetAddOnMetadata(TOCNAME, "Title")
+--          .. " " .. GetAddOnMetadata(TOCNAME, "Version")
+--          .. " by " .. GetAddOnMetadata(TOCNAME, "Author"))
+--  opt.Indent(10)
+--  opt.AddText(GetAddOnMetadata(TOCNAME, "Notes"))
+--  opt.Indent(-10)
+--
+--  opt.AddCategory(L["HeaderInfo"])
+--  opt.Indent(10)
+--  opt.AddText(L["AboutInfo"], -20)
+--  opt.Indent(-10)
+--
+--  opt.AddCategory(L["HeaderUsage"])
+--  opt.Indent(10)
+--  opt.AddText(L["AboutUsage"], -20)
+--  opt.Indent(-10)
+--
+--  opt.AddCategory(L["HeaderSlashCommand"])
+--  opt.Indent(10)
+--  opt.AddText(L["AboutSlashCommand"], -20)
+--  BOM.Tool.PrintSlashCommand(nil, nil, bom_add_text)
+--  opt.Indent(-10)
+--
+--  opt.AddCategory(L["HeaderCredits"])
+--  opt.Indent(10)
+--  opt.AddText(L["AboutCredits"], -20)
+--  opt.Indent(-10)
+--
+--  opt.AddCategory(L.HeaderSupportedSpells)
+--  opt.Indent(20)
+--
+--  for i, spell in ipairs(BOM.AllBuffomatSpells) do
+--    if type(spell) == "table" then
+--      spell.optionText = opt.AddText("<placeholder>")
+--    else
+--      opt.Indent(-10)
+--      if LOCALIZED_CLASS_NAMES_MALE[spell] then
+--        opt.AddCategory(LOCALIZED_CLASS_NAMES_MALE[spell])
+--      else
+--        opt.AddCategory(L["Header_" .. spell])
+--      end
+--      opt.Indent(10)
+--    end
+--  end
+--
+--  opt.Indent(-10)
+--  opt.AddCategory(L["Header_CANCELBUFF"])
+--  opt.Indent(10)
+--
+--  for i, spell in ipairs(BOM.CancelBuffs) do
+--    spell.optionText = opt.AddText("<placeholder>")
+--  end
+--
+--  opt.Indent(-10)
+--  opt.AddCategory(" ")
+--end
 
 function buffomatModule:OptionsInit()
   LibStub("AceConfig-3.0"):RegisterOptionsTable("Buffomat", optionsModule:CreateOptionsTable(), { "/myslash", "/my" })
@@ -518,31 +518,27 @@ function buffomatModule:OptionsInit()
   --bom_options_add_about_panel()
 end
 
----Update spell list in options, called from Event_SpellsChanged
-function BOM.OptionsInsertSpells()
-  for i, spell in ipairs(BOM.AllBuffomatSpells) do
-    if type(spell) == "table" and spell.optionText then
-      if spell.groupId then
-        BOM.legacyOptions.EditText(spell.optionText,
-                (spell.singleLink or spell.single) .. " / " .. (spell.groupLink or spell.group))
-      else
-        BOM.legacyOptions.EditText(spell.optionText,
-                (spell.singleLink or spell.single or spell.ConfigID))
-      end
-    end
-  end
-
-  for i, spell in ipairs(BOM.CancelBuffs) do
-    if spell.optionText then
-      BOM.legacyOptions.EditText(spell.optionText,
-              (spell.singleLink or spell.single or spell.ConfigID))
-    end
-  end
-
-  BOM.UpdateSpellsTab("OptionsInsertSpells")
-  BOM.SetForceUpdate("OptionsInsertSpells")
-  BOM.UpdateScan("OptionsInsertSpells")
-end
+-----Update spell list in options, called from Event_SpellsChanged
+--function BOM.OptionsInsertSpells()
+--  for i, spell in ipairs(BOM.AllBuffomatSpells) do
+--    if type(spell) == "table" and spell.optionText then
+--      if spell.groupId then
+--        BOM.legacyOptions.EditText(spell.optionText,
+--                (spell.singleLink or spell.single) .. " / " .. (spell.groupLink or spell.group))
+--      else
+--        BOM.legacyOptions.EditText(spell.optionText,
+--                (spell.singleLink or spell.single or spell.ConfigID))
+--      end
+--    end
+--  end
+--
+--  for i, spell in ipairs(BOM.CancelBuffs) do
+--    if spell.optionText then
+--      BOM.legacyOptions.EditText(spell.optionText,
+--              (spell.singleLink or spell.single or spell.ConfigID))
+--    end
+--  end
+----end
 
 ---ChooseProfile
 ---BOM profile selection, using 'auto' by default

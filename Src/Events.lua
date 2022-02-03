@@ -20,7 +20,7 @@ eventsModule.EVT_UPDATE = {
 eventsModule.EVT_BAG_CHANGED = { "BAG_UPDATE_DELAYED", "TRADE_CLOSED" }
 
 eventsModule.EVT_PARTY_CHANGED = { "GROUP_JOINED", "GROUP_ROSTER_UPDATE",
-                            "RAID_ROSTER_UPDATE", "GROUP_LEFT" }
+                                   "RAID_ROSTER_UPDATE", "GROUP_LEFT" }
 
 eventsModule.EVT_SPELLBOOK_CHANGED = { "SPELLS_CHANGED", "LEARNED_SPELL_IN_TAB" }
 
@@ -302,9 +302,13 @@ end
 
 local function Event_SpellsChanged()
   BOM.SetupAvailableSpells()
-  BOM.SetForceUpdate("Evt Spells Changed")
+  BOM.SetForceUpdate("event Spells Changed")
   BOM.SpellTabsCreatedFlag = false
-  BOM.OptionsInsertSpells()
+
+  --BOM.OptionsInsertSpells()
+  BOM.UpdateSpellsTab("event Spells Changed")
+  BOM.SetForceUpdate("event Spells Changed")
+  BOM.UpdateScan("event Spells Changed")
 end
 
 local function Event_ADDON_LOADED(arg1)
