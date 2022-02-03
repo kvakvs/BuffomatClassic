@@ -35,6 +35,65 @@ function optionsModule:TemplateCheckbox(name, dict, key, notify)
   }
 end
 
+---@param dict table|nil
+---@param key string|nil
+---@param notify function|nil Call this with (key, value) on option change
+function optionsModule:TemplateInput(name, dict, key, notify)
+  self.optionsOrder = self.optionsOrder + 1
+
+  dict = dict or BOM.SharedState
+  key = key or name
+
+  return {
+    name  = _t("options.short." .. name),
+    desc  = _t("options.long." .. name),
+    type  = "input",
+    width = "full",
+    order = self.optionsOrder,
+
+    set   = function(info, val)
+      dict[key] = val
+      if notify then
+        notify(key, val)
+      end
+    end,
+    get   = function(info)
+      return dict[key]
+    end,
+  }
+end
+
+---@param dict table|nil
+---@param key string|nil
+---@param notify function|nil Call this with (key, value) on option change
+function optionsModule:TemplateRange(name, rangeFrom, rangeTo, step, dict, key, notify)
+  self.optionsOrder = self.optionsOrder + 1
+
+  dict = dict or BOM.SharedState
+  key = key or name
+
+  return {
+    name  = _t("options.short." .. name),
+    desc  = _t("options.long." .. name),
+    type  = "range",
+    min   = rangeFrom,
+    max   = rangeTo,
+    step  = step,
+    width = "full",
+    order = self.optionsOrder,
+
+    set   = function(info, val)
+      dict[key] = val
+      if notify then
+        notify(key, val)
+      end
+    end,
+    get   = function(info)
+      return dict[key]
+    end,
+  }
+end
+
 function optionsModule:CreateOptionsTable()
   self.optionsOrder = 0
 
@@ -54,6 +113,7 @@ function optionsModule:CreateOptionsTable()
                   "LockMinimapButton", BOM.SharedState.Minimap, "lock"),
           minimapButtonLockDist = self:TemplateCheckbox(
                   "LockMinimapButtonDistance", BOM.SharedState.Minimap, "lockDistance"),
+          uiWindowScale         = self:TemplateInput("UIWindowScale"),
         }
       },
       scanOptions        = {
@@ -100,10 +160,23 @@ function optionsModule:CreateOptionsTable()
           dontUseConsumables       = self:TemplateCheckbox("DontUseConsumables"),
           hideSomeoneIsDrinking    = self:TemplateCheckbox("HideSomeoneIsDrinking"),
           deactivateBomOnSpiritTap = self:TemplateCheckbox("DeactivateBomOnSpiritTap"),
-        }
-      },
-    }
-  }
+        },
+      }, -- end convenience options
+      buffingOptions     = {
+        type = "group",
+        name = _t("options.general.group.Buffing"),
+        args = {
+          minBuff        = self:TemplateRange("MinBuff", 1, 5, 1),
+          minBlessing    = self:TemplateRange("MinBlessing", 1, 40, 1),
+          rebuffTime60   = self:TemplateRange("Time60", 10, 50, 5),
+          rebuffTime300  = self:TemplateRange("Time300", 30, 300-60, 10),
+          rebuffTime600  = self:TemplateRange("Time600", 30, 600-120, 10),
+          rebuffTime1800 = self:TemplateRange("Time1800", 30, 600-30, 30),
+          rebuffTime3600 = self:TemplateRange("Time3600", 30, 600-30, 30),
+        } -- end args
+      }, -- end buffing options
+    } -- end args
+  } -- end
 end
 
 ---Called from options' Default button
