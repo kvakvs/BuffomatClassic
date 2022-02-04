@@ -7,6 +7,26 @@ optionsModule.optionsOrder = 0
 
 local _t = BuffomatModule.Import("Languages") ---@type BomLanguagesModule
 
+function optionsModule:ValueToText(type, value)
+  if type == "string" then
+    return value
+  elseif type == "float" then
+    return string.format("%.02f", value)
+  elseif type == "integer" then
+    return string.format("%d", value)
+  end
+end
+
+function optionsModule:TextToValue(type, editFieldText)
+  if type == "string" then
+    return editFieldText
+  elseif type == "float" then
+    return tonumber(editFieldText)
+  elseif type == "integer" then
+    return tonumber(editFieldText)
+  end
+end
+
 ---@param dict table|nil
 ---@param key string|nil
 ---@param notify function|nil Call this with (key, value) on option change
@@ -38,7 +58,7 @@ end
 ---@param dict table|nil
 ---@param key string|nil
 ---@param notify function|nil Call this with (key, value) on option change
-function optionsModule:TemplateInput(name, dict, key, notify)
+function optionsModule:TemplateInput(type, name, dict, key, notify)
   self.optionsOrder = self.optionsOrder + 1
 
   dict = dict or BOM.SharedState
@@ -52,13 +72,15 @@ function optionsModule:TemplateInput(name, dict, key, notify)
     order = self.optionsOrder,
 
     set   = function(info, val)
+      val = self:TextToValue(type, val)
       dict[key] = val
+
       if notify then
         notify(key, val)
       end
     end,
     get   = function(info)
-      return dict[key]
+      return self:ValueToText(type, dict[key])
     end,
   }
 end
@@ -113,7 +135,7 @@ function optionsModule:CreateOptionsTable()
                   "LockMinimapButton", BOM.SharedState.Minimap, "lock"),
           minimapButtonLockDist = self:TemplateCheckbox(
                   "LockMinimapButtonDistance", BOM.SharedState.Minimap, "lockDistance"),
-          uiWindowScale         = self:TemplateInput("UIWindowScale"),
+          uiWindowScale         = self:TemplateInput("float", "UIWindowScale"),
         }
       },
       scanOptions        = {
@@ -169,10 +191,10 @@ function optionsModule:CreateOptionsTable()
           minBuff        = self:TemplateRange("MinBuff", 1, 5, 1),
           minBlessing    = self:TemplateRange("MinBlessing", 1, 40, 1),
           rebuffTime60   = self:TemplateRange("Time60", 10, 50, 5),
-          rebuffTime300  = self:TemplateRange("Time300", 30, 300-60, 10),
-          rebuffTime600  = self:TemplateRange("Time600", 30, 600-120, 10),
-          rebuffTime1800 = self:TemplateRange("Time1800", 30, 600-30, 30),
-          rebuffTime3600 = self:TemplateRange("Time3600", 30, 600-30, 30),
+          rebuffTime300  = self:TemplateRange("Time300", 30, 300 - 60, 10),
+          rebuffTime600  = self:TemplateRange("Time600", 30, 600 - 120, 10),
+          rebuffTime1800 = self:TemplateRange("Time1800", 30, 600 - 30, 30),
+          rebuffTime3600 = self:TemplateRange("Time3600", 30, 600 - 30, 30),
         } -- end args
       }, -- end buffing options
     } -- end args

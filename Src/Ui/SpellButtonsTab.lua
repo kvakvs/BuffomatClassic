@@ -6,6 +6,7 @@ local BOM = BuffomatAddon ---@type BuffomatAddon
 local spellButtonsTabModule = BuffomatModule.DeclareModule("Ui/SpellButtonsTab") ---@type BomSpellButtonsTabModule
 
 local uiButtonModule = BuffomatModule.Import("Ui/UiButton") ---@type BomUiButtonModule
+local optionsPopupModule = BuffomatModule.Import("OptionsPopup") ---@type BomOptionsPopupModule
 
 local L = setmetatable(
         {},
@@ -287,7 +288,7 @@ local function bomFillBottomSection(row_builder)
 
   row_builder.prev_control = SpellSettingsFrames[0]
 
-  --for i, set in ipairs(BOM.BehaviourSettings) do
+  --for i, set in ipairs(optionsPopupModule.BehaviourSettings) do
   --  local key = set[1]
   --
   --  if BOM["Icon" .. key .. "On"] then
@@ -323,7 +324,7 @@ local function bomFillBottomSection(row_builder)
   --end
 
 
-  --for i, set in ipairs(BOM.BehaviourSettings) do
+  --for i, set in ipairs(optionsPopupModule.BehaviourSettings) do
   --  local key = set[1]
   --
   --  if not BOM["Icon" .. key .. "On"] then
@@ -363,7 +364,7 @@ local function bomFillBottomSection(row_builder)
     SpellSettingsFrames[i]:Show()
   end
 
-  for i, set in ipairs(BOM.BehaviourSettings) do
+  for i, set in ipairs(optionsPopupModule.behaviourSettings) do
     if SpellSettingsFrames[set[1]] then
       SpellSettingsFrames[set[1]]:Show()
     end

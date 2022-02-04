@@ -43,6 +43,7 @@ Src/Cache/MemberCache.lua
 Src/Ui/UiButton.lua
 Src/Ui/LegacyOptions.lua
 Src/Ui/Options.lua
+Src/Ui/OptionsPopup.lua
 Src/Ui/MinimapButton.lua
 Src/Ui/SpellButtonsTab.lua
 Src/Ui/MyButton.lua

@@ -565,6 +565,7 @@ local function PopupWipe(self, WipeName)
   return true
 end
 
+---@param frame BomControl
 local function PopupCreate(frame, level, menuList)
   if level == nil then
     return
@@ -624,10 +625,18 @@ local function PopupShow(self, where, x, y)
   self._y = y
 end
 
-function Tool.CreatePopup(TableCallback)
-  local popup = {}
-  popup._Frame = CreateFrame("Frame", nil, UIParent, "UIDropDownMenuTemplate")
-  popup._Frame._GPIPRIVAT_TableCallback = TableCallback
+---@class BomPopupDynamic
+---@field _Frame BomControl
+---@field AddItem function
+---@field SubMenu function
+---@field Show function
+---@field Wipe function
+
+---@return BomPopupDynamic
+function Tool.CreatePopup(callbackFn)
+  local popup = {} ---@type BomPopupDynamic
+  popup._Frame = CreateFrame("Frame", nil, UIParent, "UIDropDownMenuTemplate") ---@type BomControl
+  popup._Frame._GPIPRIVAT_TableCallback = callbackFn
   popup._Frame._GPIPRIVAT_Items = {}
   popup._Frame._GPIPRIVAT_Items.count = 0
   popup.AddItem = PopupAddItem

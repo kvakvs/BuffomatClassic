@@ -6,6 +6,7 @@ local buffomatModule = BuffomatModule.DeclareModule("Buffomat") ---@type BomBuff
 local constModule = BuffomatModule.Import("Const") ---@type BomConstModule
 local optionsModule = BuffomatModule.Import("Options") ---@type BomOptionsModule
 local eventsModule = BuffomatModule.Import("Events") ---@type BomEventsModule
+local optionsPopupModule = BuffomatModule.Import("OptionsPopup") ---@type BomOptionsPopupModule
 
 ---global, visible from XML files and from script console and chat commands
 ---@class BuffomatAddon
@@ -135,11 +136,12 @@ local eventsModule = BuffomatModule.Import("Events") ---@type BomEventsModule
 ---@field IconUseRankOff string
 ---@field IconUseRankOn string
 ---
----@field BehaviourSettings table<string, boolean> Key names and Defaults for 'Profile' settings
 ---@field QuickSingleBuff BomControl Button for single/group buff toggling next to cast button
 ---
 ---@field SpellId table<string, table<string, number>> Map of spell name to id
 ---@field ItemId table<string, table<string, number>> Map of item name to id
+---@field PopupDynamic BomPopupDynamic
+
 BuffomatAddon = LibStub("AceAddon-3.0"):NewAddon(
         "Buffomat", "AceConsole-3.0", "AceEvent-3.0") ---@type BuffomatAddon
 local BOM = BuffomatAddon
@@ -155,47 +157,6 @@ local L = setmetatable(
             end
           end
         })
-
-BOM.BehaviourSettings = {
-  --{ "ShowMinimapButton", true },
-  --{ "LockMinimapButton", false },
-  --{ "LockMinimapButtonDistance", false },
-  --{ "UseProfiles", false },
-
-  { "AutoOpen", true },
-  { "ScanInRestArea", false },
-  { "ScanInStealth", false },
-  { "ScanWhileMounted", true },
-  { "InWorld", true },
-  { "InPVP", true },
-  { "InInstance", true },
-  { "PreventPVPTag", true },
-
-  { "DeathBlock", true },
-  { "NoGroupBuff", false },
-  { "SameZone", false },
-  { "ResGhost", false },
-  { "ReplaceSingle", true },
-  { "ArgentumDawn", false },
-  { "Carrot", false },
-  { "MainHand", false },
-  { "SecondaryHand", false },
-  { "UseRank", true },
-  { "AutoCrusaderAura", true },
-  { "AutoDismount", true },
-  { "AutoDismountFlying", false },
-  { "AutoStand", true },
-  { "AutoDisTravel", true },
-  { "BuffTarget", false },
-  { "OpenLootable", true },
-  { "SelfFirst", false },
-  { "DontUseConsumables", false },
-  { "SlowerHardware", false },
-  { "HideSomeoneIsDrinking", false },
-  { "DeactivateBomOnSpiritTap", false },
-  --{ "ShowClassicConsumables", true},
-  --{ "ShowTBCConsumables", true},
-}
 
 --- Addon is running on Classic TBC client
 ---@type boolean
@@ -222,90 +183,12 @@ function BOM.FormatTexture(texture)
   return string.format(constModule.ICON_FORMAT, texture)
 end
 
----Makes a tuple to pass to the menubuilder to display a settings checkbox in popup menu
----@param db table - BomSharedState reference to read settings from it
----@param var string Variable name from BOM.BehaviourSettings
-local function bom_make_popup_menu_settings_row(db, var)
-  return L["options.short." .. var], false, db, var
-end
-
----Populate the [⚙] popup menu
-local function bomPopup(self, minimap)
-  local name = (self:GetName() or "nil") .. (minimap and "Minimap" or "Normal")
-
-  if not BOM.PopupDynamic:Wipe(name) then
-    return
-  end
-
-  if minimap then
-    BOM.PopupDynamic:AddItem(L.BtnOpen, false, BOM.ShowWindow)
-    BOM.PopupDynamic:AddItem()
-    BOM.PopupDynamic:AddItem(_t("options.short.ShowMinimapButton"), false, BOM.SharedState.Minimap, "visible")
-    BOM.PopupDynamic:AddItem(_t("options.short.LockMinimapButton"), false, BOM.SharedState.Minimap, "lock")
-    BOM.PopupDynamic:AddItem(_t("options.short.LockMinimapButtonDistance"), false, BOM.SharedState.Minimap, "lockDistance")
-    BOM.PopupDynamic:AddItem()
-  end
-
-  BOM.PopupDynamic:AddItem(L["CboxUseProfiles"], false, BOM.CharacterState, "UseProfiles")
-
-  if BOM.CharacterState.UseProfiles then
-    BOM.PopupDynamic:SubMenu(L["HeaderProfiles"], "subProfiles")
-    BOM.PopupDynamic:AddItem(L["profile_auto"], false, BOM.ChooseProfile, "auto")
-
-    for _i, profile in pairs(BOM.ALL_PROFILES) do
-      BOM.PopupDynamic:AddItem(L["profile_" .. profile], false, BOM.ChooseProfile, profile)
-    end
-
-    BOM.PopupDynamic:SubMenu()
-  end
-
-  BOM.PopupDynamic:AddItem()
-
-  for i, spell in ipairs(BOM.SelectedSpells) do
-    if not spell.isConsumable then
-      BOM.PopupDynamic:AddItem(spell.singleLink or spell.single,
-              "keep",
-              BOM.GetProfileSpell(spell.ConfigID),
-              "Enable")
-    end
-  end
-
-  local inBuffGroup -- unused? nil?
-  if inBuffGroup then
-    BOM.PopupDynamic:SubMenu()
-  end
-
-  BOM.PopupDynamic:AddItem()
-  BOM.PopupDynamic:SubMenu(L.BtnQuickSettings, "subSettings")
-
-  for i, set in ipairs(BOM.BehaviourSettings) do
-    BOM.PopupDynamic:AddItem(bom_make_popup_menu_settings_row(BOM.SharedState, set[1]))
-  end
-
-  -----------------------
-  -- Watch in Raid group -> 1 2 3 4 5 6 7 8
-  -----------------------
-  BOM.PopupDynamic:AddItem()
-  BOM.PopupDynamic:SubMenu(L["HeaderWatchGroup"], "subGroup")
-
-  for i = 1, 8 do
-    BOM.PopupDynamic:AddItem(i, "keep", BomCharacterState.WatchGroup, i)
-  end
-
-  BOM.PopupDynamic:SubMenu()
-
-  BOM.PopupDynamic:AddItem(L.BtnSettings, false, BOM.legacyOptions.Open, 1)
-  BOM.PopupDynamic:AddItem(L["BtnCancel"], false)
-
-  BOM.PopupDynamic:Show(self or "cursor", 0, 0)
-end
-
 function BOM.BtnClose()
   BOM.HideWindow()
 end
 
 function BOM.BtnSettings(self)
-  bomPopup(self)
+  optionsPopupModule:Setup(self)
 end
 
 function BOM.BtnMacro()
@@ -360,7 +243,7 @@ end
 --  opt.AddCheckBox(BOM.CharacterState, "UseProfiles", false, L["options.short.UseProfiles"])
 --  opt.AddSpace()
 --
---  for i, set in ipairs(BOM.BehaviourSettings) do
+--  for i, set in ipairs(optionsPopupModule.BehaviourSettings) do
 --    bom_add_checkbox(set[1], set[2])
 --  end
 --
@@ -486,7 +369,7 @@ end
 --end
 
 function buffomatModule:OptionsInit()
-  LibStub("AceConfig-3.0"):RegisterOptionsTable("Buffomat", optionsModule:CreateOptionsTable(), { "/myslash", "/my" })
+  LibStub("AceConfig-3.0"):RegisterOptionsTable(constModule.SHORT_TITLE, optionsModule:CreateOptionsTable(), { "/myslash", "/my" })
 
   self.optionsFrames = {
     general = LibStub("AceConfigDialog-3.0"):AddToBlizOptions(
@@ -667,7 +550,7 @@ local function bom_init_ui()
             if button == "LeftButton" then
               BOM.ToggleWindow()
             else
-              bomPopup(self.button, true)
+              optionsPopupModule:Setup(self.button, true)
             end
           end,
           constModule.SHORT_TITLE)
@@ -864,7 +747,7 @@ function BuffomatAddon:OnEnable()
             if button == "LeftButton" then
               BOM.ToggleWindow()
             else
-              bomPopup(self, true)
+              optionsPopupModule:Setup(self, true)
             end
           end)
 end
