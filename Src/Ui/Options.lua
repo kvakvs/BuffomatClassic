@@ -181,7 +181,7 @@ function optionsModule:CreateOptionsTable()
           selfFirst                = self:TemplateCheckbox("SelfFirst"),
           dontUseConsumables       = self:TemplateCheckbox("DontUseConsumables"),
           hideSomeoneIsDrinking    = self:TemplateCheckbox("HideSomeoneIsDrinking"),
-          deactivateBomOnSpiritTap = self:TemplateCheckbox("DeactivateBomOnSpiritTap"),
+          activateBomOnSpiritTap = self:TemplateRange("ActivateBomOnSpiritTap", 0, 100, 10),
         },
       }, -- end convenience options
       buffingOptions     = {

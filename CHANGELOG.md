@@ -1,5 +1,11 @@
 _# Changelog
 
+## Buffomat Classic and TBC 2022.2.3 Beta
+
+- Using new tech now: AceAddon, AceConfig, and event handlers from Ace.
+- Changed Spirit Tap setting to a slider, the previously set boolean value is 
+  now lost as the variable was renamed and became a percentage.
+
 ## Buffomat Classic and TBC 2022.2.1, and .2
 
 - Option to hide "Someone is drinking message", off by default, enable to hide.

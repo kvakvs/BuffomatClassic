@@ -41,7 +41,7 @@ local function bomLanguage_English()
     ["options.short.AutoStand"]                 = "Auto stand up",
     ["options.short.BuffTarget"]                = "Buff target first",
     ["options.short.Carrot"]                    = "Warn about mount items",
-    ["options.short.DeactivateBomOnSpiritTap"]  = "Deactivate on Spirit Tap",
+    ["options.short.ActivateBomOnSpiritTap"]    = "Activate on Spirit Tap below mana %",
     ["options.short.DeathBlock"]                = "Pause if someone is dead",
     ["options.short.DontUseConsumables"]        = "Dont use consumables",
     ["options.short.HideSomeoneIsDrinking"]     = "Hide 'Someone is drinking'",
@@ -76,7 +76,7 @@ local function bomLanguage_English()
     ["options.long.AutoStand"]                  = "If the character was sitting, Buffomat will stand up the character",
     ["options.long.BuffTarget"]                 = "Also try and buff the current target",
     ["options.long.Carrot"]                     = "Remind to unequip Riding/Flight trinkets",
-    ["options.long.DeactivateBomOnSpiritTap"]   = "Disable Buffomat if priest 'Spirit tap' is active",
+    ["options.long.ActivateBomOnSpiritTap"]     = "Disable Buffomat if priest 'Spirit tap' is active and player mana is below %",
     ["options.long.DeathBlock"]                 = "Don't cast group buffs, when somebody is dead",
     ["options.long.DontUseConsumables"]         = "Use consumables only with Shift, Ctrl or Alt",
     ["options.long.GroupBuff"]                  = "Cast group buffs when necessary (extra reagent cost)",
@@ -543,7 +543,9 @@ local function bomLanguage_Russian()
     ["options.short.ShowClassicConsumables"]    = "Показывать бафы из классической версии",
     ["options.short.ShowTBCConsumables"]        = "Показывать бафы из TBC",
     ["options.short.HideSomeoneIsDrinking"]     = "Не показывать сообщение о том, что 'Кто-то пьёт'",
-    ["options.short.DeactivateBomOnSpiritTap"]  = "Запретить Бафомёт, если 'Захват духа' жреца активен",
+    ["options.short.ActivateBomOnSpiritTap"]    = "Запретить Бафомёт, при 'Захвате духа' жреца",
+
+    ["options.long.ActivateBomOnSpiritTap"]     = "Запретить Бафомёт, если 'Захват духа' жреца активен и мана меньше указанного процента",
 
     InfoSomeoneIsDrinking                       = "Один игрок пьёт",
     InfoMultipleDrinking                        = "Несколько игроков пьют (%d)",

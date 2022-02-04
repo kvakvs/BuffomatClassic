@@ -38,9 +38,6 @@ optionsPopupModule.behaviourSettings = {
   { "DontUseConsumables", false },
   { "SlowerHardware", false },
   { "HideSomeoneIsDrinking", false },
-  { "DeactivateBomOnSpiritTap", false },
-  --{ "ShowClassicConsumables", true},
-  --{ "ShowTBCConsumables", true},
 }
 
 local _t = BuffomatModule.Import("Languages") ---@type BomLanguagesModule
