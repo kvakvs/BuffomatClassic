@@ -755,8 +755,9 @@ local function bomIsActive(playerUnit)
   -- Cancel buff tasks if is in stealth, and option to scan is not set
   -- and current mana is < 90%
   local spiritTapManaPercent = (BOM.SharedState.ActivateBomOnSpiritTap or 0) * 0.01
+  local currentMana = bomCurrentPlayerMana or UnitPower("player", 0)
   if playerUnit.buffExists[BOM.SpellId.Priest.SpiritTap]
-          and bomCurrentPlayerMana < UnitPowerMax("player", 0) * spiritTapManaPercent then
+          and currentMana < UnitPowerMax("player", 0) * spiritTapManaPercent then
     return false, L.InactiveReason_SpiritTap
   end
 

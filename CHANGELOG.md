@@ -1,6 +1,6 @@
 _# Changelog
 
-## Buffomat Classic and TBC 2022.2.3 Beta
+## Buffomat Classic and TBC 2022.2.3
 
 - Using new tech now: AceAddon, AceConfig, and event handlers from Ace.
 - Changed Spirit Tap setting to a slider, the previously set boolean value is 
