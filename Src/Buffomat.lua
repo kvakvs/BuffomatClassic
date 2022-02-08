@@ -369,7 +369,8 @@ end
 --end
 
 function buffomatModule:OptionsInit()
-  LibStub("AceConfig-3.0"):RegisterOptionsTable(constModule.SHORT_TITLE, optionsModule:CreateOptionsTable(), { "/myslash", "/my" })
+  LibStub("AceConfig-3.0"):RegisterOptionsTable(
+          constModule.SHORT_TITLE, optionsModule:CreateOptionsTable(), { })
 
   self.optionsFrames = {
     general = LibStub("AceConfigDialog-3.0"):AddToBlizOptions(
