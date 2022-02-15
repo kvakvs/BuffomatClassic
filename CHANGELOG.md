@@ -1,5 +1,9 @@
 _# Changelog
 
+## Buffomat Classic and TBC 2022.2.5
+
+- Added Find Fish tracking.
+
 ## Buffomat Classic and TBC 2022.2.4
 
 - Using new tech now: AceAddon, AceConfig, and event handlers from Ace.

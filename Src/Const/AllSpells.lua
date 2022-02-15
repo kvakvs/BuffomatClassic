@@ -761,6 +761,8 @@ local function bomSetupTrackingSpells(spells, enchants)
           { type = "tracking", default = true }))
   tinsert(spells, BOM.Class.SpellDef:new(2481, -- Find Treasure / Schatzsuche / Zwerge
           { type = "tracking", default = true }))
+  tinsert(spells, BOM.Class.SpellDef:new(43308, -- Find Fish (TBC daily quest reward)
+          { type = "tracking", default = false }))
 
   return spells
 end
