@@ -1,8 +1,11 @@
 _# Changelog
 
-## Buffomat Classic and TBC 2022.2.5
+## Buffomat Classic and TBC 2022.2.5, .6
 
 - Added Find Fish tracking.
+- Packaging error: library CallbackHandler was included but not embedded 
+  properly, so on systems without other Ace3 addons it would blow up with a 
+  script error.
 
 ## Buffomat Classic and TBC 2022.2.4
 
