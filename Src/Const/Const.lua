@@ -7,7 +7,7 @@ constModule.TOC_VERSION = GetAddOnMetadata(TOCNAME, "Version") --used for displa
 constModule.TOC_TITLE = GetAddOnMetadata(TOCNAME, "Title") -- Longer title like "Buffomat Classic TBC"
 constModule.SHORT_TITLE = "Buffomat"
 constModule.MACRO_ICON = "INV_MISC_QUESTIONMARK"
-constModule.MACRO_ICON_DISABLED = "INV_MISC_QUESTIONMARK"
+constModule.MACRO_ICON_DISABLED = "Ability_Druid_DemoralizingRoar"
 constModule.BOM_BEAR_ICON_FULLPATH = "Interface\\ICONS\\Ability_Druid_ChallangingRoar" -- Icon picture used in window title, in the minimap icon, etc
 
 constModule.ICON_FORMAT = "|T%s:0:0:0:0:64:64:4:60:4:60|t"
