@@ -116,7 +116,7 @@ local function bomGet5manPartyMembers(player_member)
     member = bomGetMember("partypet" .. groupIndex, nil, nil, true)
 
     if member then
-      member.group = 9
+      member.owner = bomGetMember("party" .. groupIndex)
       member.class = "pet"
       tinsert(party, member)
     end
@@ -128,7 +128,7 @@ local function bomGet5manPartyMembers(player_member)
   member = bomGetMember("pet", nil, nil, true)
 
   if member then
-    member.group = 9
+    member.owner = bomGetMember("player")
     member.class = "pet"
     tinsert(party, member)
   end
@@ -164,9 +164,9 @@ local function bomGet40manRaidMembers(player_member)
       end
       tinsert(party, member)
 
-      member = bomGetMember("raidpet" .. raid_index, nil, nil, true)
+      member = bomGetMember("raidpet" .. raid_index, name_group, nil, true)
       if member then
-        member.group = 9
+        member.owner = bomGetMember("raid" .. raid_index, name_group, name_role)
         member.class = "pet"
         tinsert(party, member)
       end

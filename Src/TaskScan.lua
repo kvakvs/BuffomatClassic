@@ -316,7 +316,7 @@ local function bomUpdateSpellTargets(party, spell, playerMember, someoneIsDead)
       if member.isDead
               and not member.hasResurrection
               and member.isConnected
-              and member.group ~= 9
+              and member.class ~= "pet"
               and (not BOM.SharedState.SameZone or member.isSameZone) then
         tinsert(spell.NeedMember, member)
       end
@@ -448,7 +448,7 @@ local function bomUpdateSpellTargets(party, spell, playerMember, someoneIsDead)
       if member.NeedBuff
               and ok
               and member.isConnected
-              and (not BOM.SharedState.SameZone or member.isSameZone) then
+              and (not BOM.SharedState.SameZone or (member.isSameZone or member.class == "pet" and member.owner.isSameZone)) then
         local found = false
         local member_buff = member.buffs[spell.ConfigID]
 
