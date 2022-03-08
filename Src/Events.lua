@@ -5,6 +5,7 @@ local BOM = BuffomatAddon ---@type BuffomatAddon
 local eventsModule = BuffomatModule.DeclareModule("Events") ---@type BomEventsModule
 
 local constModule = BuffomatModule.Import("Const") ---@type BomConstModule
+local allSpellsModule = BuffomatModule.Import("AllSpells") ---@type BomAllSpellsModule
 
 --"UNIT_POWER_UPDATE","UNIT_SPELLCAST_START","UNIT_SPELLCAST_STOP","PLAYER_STARTED_MOVING","PLAYER_STOPPED_MOVING"
 eventsModule.EVT_COMBAT_STOP = { "PLAYER_REGEN_ENABLED" }
@@ -111,7 +112,14 @@ local function Event_LoadingStart()
   --print("loading start")
 end
 
+local oneTimeLoadItemsAndSpells = false
+
 local function Event_LoadingStop()
+  if not oneTimeLoadItemsAndSpells then
+    oneTimeLoadItemsAndSpells = true
+    allSpellsModule:LoadItemsAndSpells()
+  end
+
   BOM.LoadingScreenTimeOut = GetTime() + constModule.LOADING_SCREEN_TIMEOUT
   BOM.SetForceUpdate("Evt Loading Stop")
 end

@@ -3,8 +3,10 @@ local BOM = BuffomatAddon ---@type BuffomatAddon
 
 ---@class BomSpellCacheModule
 local spellCacheModule = BuffomatModule.DeclareModule("SpellCache") ---@type BomSpellCacheModule
+---@type table<number|string, BomSpellCacheElement> Stores arg to results mapping for GetItemInfo
+spellCacheModule.cache = {}
 
----@class GSICacheItem
+---@class BomSpellCacheElement
 ---@field name string
 ---@field rank string
 ---@field icon string
@@ -13,15 +15,12 @@ local spellCacheModule = BuffomatModule.DeclareModule("SpellCache") ---@type Bom
 ---@field maxRange number
 ---@field spellId number
 
----@type table<number|string, GSICacheItem> Stores arg to results mapping for GetItemInfo
-local bom_gsi_cache = {}
-
 ---Calls GetSpellInfo and saves the results, or not (if nil was returned)
 ---@param arg number|string
----@return GSICacheItem|nil
+---@return BomSpellCacheElement|nil
 function BOM.GetSpellInfo(arg)
-  if bom_gsi_cache[arg] ~= nil then
-    return bom_gsi_cache[arg]
+  if spellCacheModule.cache[arg] ~= nil then
+    return spellCacheModule.cache[arg]
   end
 
   local name, rank, icon, castTime, minRange, maxRange, spellId = GetSpellInfo(arg)
@@ -32,16 +31,48 @@ function BOM.GetSpellInfo(arg)
   name = name or "MISSING NAME"
   icon = icon or "MISSING ICON"
 
-  local cache_item = {
-    name = name,
-    rank = rank,
-    icon = icon,
-    castTime = castTime,
-    minRange = minRange,
-    maxRange = maxRange,
-    spellId = spellId,
-  }
+  local cacheSpell = {} ---@type BomSpellCacheElement
+  cacheSpell.name = name
+  cacheSpell.rank = rank
+  cacheSpell.icon = icon
+  cacheSpell.castTime = castTime
+  cacheSpell.minRange = minRange
+  cacheSpell.maxRange = maxRange
+  cacheSpell.spellId = spellId
 
-  bom_gsi_cache[arg] = cache_item
-  return cache_item
+  spellCacheModule.cache[arg] = cacheSpell
+  return cacheSpell
+end
+
+---Precache spell and store it
+function spellCacheModule:LoadSpell(spellId)
+  local spellMixin = Spell:CreateFromSpellID(spellId)
+
+  local cacheSpell = {} ---@type BomSpellCacheElement
+  cacheSpell.spellId = spellId
+
+  local spellInfoReady_func = function()
+    local spellDef = spellDefModule.allSpells[spellId]
+
+    -- Assume the spell info is loaded here and the response is instant
+    local _name, rank, icon, castTime, minRange, maxRange, _spellId = GetSpellInfo(spellId)
+    if name == nil then
+      return
+    end
+
+    spellDef.name = spellMixin:GetSpellName()
+    cacheSpell.rank = rank
+    cacheSpell.icon = icon
+    cacheSpell.castTime = castTime
+    cacheSpell.minRange = minRange
+    cacheSpell.maxRange = maxRange
+    self.cache[spellId] = cacheSpell
+
+    --BOM:Print("Loaded spell " .. spellId .. ": " .. spellDef.spellName)
+    BOM.ForceUpdate = true
+  end
+
+  if C_Spell.DoesSpellExist(spellId) then
+    spellMixin:ContinueOnSpellLoad(spellInfoReady_func)
+  end
 end

@@ -1,16 +1,22 @@
-_# Changelog
+# Changelog
+
+## Buffomat Classic and TBC 2022.3.1
+
+- Shattrath Flasks added.
+- Item/spell info queries refresh spell tabs when they succeed, to fix the old
+  problem with missing spell/item names.
 
 ## Buffomat Classic and TBC 2022.2.5, .6
 
 - Added Find Fish tracking.
-- Packaging error: library CallbackHandler was included but not embedded 
-  properly, so on systems without other Ace3 addons it would blow up with a 
+- Packaging error: library CallbackHandler was included but not embedded
+  properly, so on systems without other Ace3 addons it would blow up with a
   script error.
 
 ## Buffomat Classic and TBC 2022.2.4
 
 - Using new tech now: AceAddon, AceConfig, and event handlers from Ace.
-- Changed Spirit Tap setting to a slider, the previously set boolean value is 
+- Changed Spirit Tap setting to a slider, the previously set boolean value is
   now lost as the variable was renamed and became a percentage.
 
 ## Buffomat Classic and TBC 2022.2.1, and .2

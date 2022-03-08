@@ -7,6 +7,7 @@ local constModule = BuffomatModule.Import("Const") ---@type BomConstModule
 local optionsModule = BuffomatModule.Import("Options") ---@type BomOptionsModule
 local eventsModule = BuffomatModule.Import("Events") ---@type BomEventsModule
 local optionsPopupModule = BuffomatModule.Import("OptionsPopup") ---@type BomOptionsPopupModule
+local allSpellsModule = BuffomatModule.Import("AllSpells") ---@type BomAllSpellsModule
 
 ---global, visible from XML files and from script console and chat commands
 ---@class BuffomatAddon
@@ -20,7 +21,7 @@ local optionsPopupModule = BuffomatModule.Import("OptionsPopup") ---@type BomOpt
 ---@field AllBuffomatSpells table<number, SpellDef> All spells known to Buffomat
 ---@field EnchantList table<number, table<number>> Spell ids mapping to enchant ids
 ---@field CancelBuffs table<number, SpellDef> All spells to be canceled on detection
----@field ItemCache table<number, table> Precreated precached items
+---@field ItemCache table<number, BomItemCacheElement> Precreated precached items
 ---@field ActivAura nil|number Spell id of aura if an unique aura was casted (only one can be active)
 ---@field ActivSeal nil|number Spell id of weapon seal, if an seal-type temporary enchant was used (only one can be active)
 ---
@@ -583,7 +584,7 @@ function BuffomatAddon:Init()
   BOM.SetupTranslations()
   BOM.SetupSpells()
   BOM.SetupCancelBuffs()
-  BOM.SetupItemCache()
+  --BOM.SetupItemCache()
   BOM.SetupTasklist()
 
   BOM.Macro = BOM.Class.Macro:new(constModule.MACRO_NAME)
