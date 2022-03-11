@@ -1,5 +1,9 @@
 # Changelog
 
+## Buffomat Classic and TBC 2022.3.2
+
+- Script error fixed for uninitialized values of remaining durations settings. 
+
 ## Buffomat Classic and TBC 2022.3.1
 
 - Shattrath Flasks added.

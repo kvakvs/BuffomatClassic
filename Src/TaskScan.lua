@@ -182,34 +182,34 @@ local function bomSetTracking(spell, value)
   end
 end
 
----@param expiration_time number Buff expiration time
----@param max_duration number Max buff duration
-local function bomTimeCheck(expiration_time, max_duration)
-  if expiration_time == nil
-          or max_duration == nil
-          or expiration_time == 0
-          or max_duration == 0 then
+---@param expirationTime number Buff expiration time
+---@param maxDuration number Max buff duration
+local function bomTimeCheck(expirationTime, maxDuration)
+  if expirationTime == nil
+          or maxDuration == nil
+          or expirationTime == 0
+          or maxDuration == 0 then
     return true
   end
 
-  local dif
+  local remainingTimeTrigger
 
-  if max_duration <= 60 then
-    dif = BOM.SharedState.Time60
-  elseif max_duration <= 300 then
-    dif = BOM.SharedState.Time300
-  elseif max_duration <= 600 then
-    dif = BOM.SharedState.Time600
-  elseif max_duration <= 1800 then
-    dif = BOM.SharedState.Time1800
+  if maxDuration <= 60 then
+    remainingTimeTrigger = BOM.SharedState.Time60 or 10
+  elseif maxDuration <= 300 then
+    remainingTimeTrigger = BOM.SharedState.Time300 or 90
+  elseif maxDuration <= 600 then
+    remainingTimeTrigger = BOM.SharedState.Time600 or 120
+  elseif maxDuration <= 1800 then
+    remainingTimeTrigger = BOM.SharedState.Time1800 or 180
   else
-    dif = BOM.SharedState.Time3600
+    remainingTimeTrigger = BOM.SharedState.Time3600 or 180
   end
 
-  if dif + GetTime() < expiration_time then
-    expiration_time = expiration_time - dif
-    if expiration_time < BOM.MinTimer then
-      BOM.MinTimer = expiration_time
+  if remainingTimeTrigger + GetTime() < expirationTime then
+    expirationTime = expirationTime - remainingTimeTrigger
+    if expirationTime < BOM.MinTimer then
+      BOM.MinTimer = expirationTime
     end
     return true
   end
