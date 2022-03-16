@@ -4,10 +4,10 @@ local BOM = BuffomatAddon ---@type BuffomatAddon
 ---@class BomItemCacheModule
 local itemCacheModule = BuffomatModule.DeclareModule("ItemCache") ---@type BomItemCacheModule
 
-------@field cache table<number|string, GIICacheItem> Stores arg to results mapping for GetItemInfo
+------@field cache table<number|string, BomItemCacheElement> Stores arg to results mapping for GetItemInfo
 itemCacheModule.cache = {}
 
----@class GIICacheItem
+---@class BomItemCacheElement
 ---@field itemName string
 ---@field itemLink string Printable colored clickable item link
 ---@field itemRarity number 0=poor, 1=normal, 2=uncommon, 3=rare ... etc
@@ -22,7 +22,7 @@ itemCacheModule.cache = {}
 
 ---Calls GetItemInfo and saves the results, or not (if nil was returned)
 ---@param arg number|string
----@return GIICacheItem|nil
+---@return BomItemCacheElement|nil
 function BOM.GetItemInfo(arg)
   if itemCacheModule.cache[arg] ~= nil then
     --print("Cached item response for ", arg)
@@ -35,20 +35,54 @@ function BOM.GetItemInfo(arg)
     return nil
   end
 
-  local cache_item = {
-    itemName = itemName,
-    itemLink = itemLink,
-    itemRarity = itemRarity,
-    itemLevel = itemLevel,
-    itemMinLevel = itemMinLevel,
-    itemType = itemType,
-    itemSubType = itemSubType,
-    itemStackCount = itemStackCount,
-    itemEquipLoc = itemEquipLoc,
-    itemTexture = itemTexture,
-    itemSellPrice = itemSellPrice
-  }
+  local cacheItem = {} ---@type BomItemCacheElement
+  cacheItem.itemName = itemName
+  cacheItem.itemLink = itemLink
+  cacheItem.itemRarity = itemRarity
+  cacheItem.itemLevel = itemLevel
+  cacheItem.itemMinLevel = itemMinLevel
+  cacheItem.itemType = itemType
+  cacheItem.itemSubType = itemSubType
+  cacheItem.itemStackCount = itemStackCount
+  cacheItem.itemEquipLoc = itemEquipLoc
+  cacheItem.itemTexture = itemTexture
+  cacheItem.itemSellPrice = itemSellPrice
+
   --print("Added to cache item info for ", arg)
-  itemCacheModule.cache[arg] = cache_item
-  return cache_item
+  itemCacheModule.cache[arg] = cacheItem
+  return cacheItem
+end
+
+function itemCacheModule:LoadItem(itemId)
+  local itemMixin = Item:CreateFromItemID(itemId)
+
+  local itemLoaded = function()
+    local itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType
+    , itemSubType, itemStackCount, itemEquipLoc, itemTexture, itemSellPrice = GetItemInfo(itemId)
+    if itemName == nil then
+      return
+    end
+
+    local cacheItem = {} ---@type BomItemCacheElement
+    cacheItem.itemName = itemMixin:GetItemName()
+    cacheItem.itemLink = itemMixin:GetItemLink()
+    cacheItem.itemRarity = itemMixin:GetItemQuality()
+    cacheItem.itemLevel = itemLevel
+    cacheItem.itemMinLevel = itemMinLevel
+    cacheItem.itemType = itemType
+    cacheItem.itemSubType = itemSubType
+    cacheItem.itemStackCount = itemStackCount
+    cacheItem.itemEquipLoc = itemEquipLoc
+    cacheItem.itemTexture = itemMixin:GetItemIcon()
+    cacheItem.itemSellPrice = itemSellPrice
+
+    itemCacheModule.cache[itemId] = cacheItem
+
+    --BOM:Print(string.format("Loaded item %d (%s)", itemId, cacheItem.itemName))
+    BOM.ForceUpdate = true
+  end
+
+  if C_Item.DoesItemExistByID(itemId) then
+    itemMixin:ContinueOnItemLoad(itemLoaded)
+  end
 end

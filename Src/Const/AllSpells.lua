@@ -4,6 +4,9 @@ local BOM = BuffomatAddon ---@type BuffomatAddon
 ---@class BomAllSpellsModule
 local allSpellsModule = BuffomatModule.DeclareModule("AllSpells") ---@type BomAllSpellsModule
 
+local spellCacheModule = BuffomatModule.Import("SpellCache") ---@type BomSpellCacheModule
+local itemCacheModule = BuffomatModule.Import("ItemCache") ---@type BomItemCacheModule
+
 local L = setmetatable(
         {},
         {
@@ -1158,15 +1161,28 @@ end
 local function bomSetupFlasks(spells, enchants)
   BOM.Class.SpellDef:tbcConsumable(spells, 28540, 22866, --TBC: Flask of Pure Death +80 SHADOW +80 FIRE +80 FROST
           { playerClass = BOM_MANA_CLASSES })
-  BOM.Class.SpellDef:tbcConsumable(spells, 28520, 22854, --TBC: Flask of Relentless Assault +120 AP
-          { playerClass = BOM_PHYSICAL_CLASSES })
   BOM.Class.SpellDef:tbcConsumable(spells, 28521, 22861, --TBC: Flask of Blinding Light +80 ARC +80 HOLY +80 NATURE
           { playerClass = BOM_MANA_CLASSES })
+  BOM.Class.SpellDef:tbcConsumable(spells, 28520, 22854, --TBC: Flask of Relentless Assault +120 AP
+          { playerClass = BOM_PHYSICAL_CLASSES })
   BOM.Class.SpellDef:tbcConsumable(spells, 28518, 22851) --TBC: Flask of Fortification +500 HP +10 DEF RATING
   BOM.Class.SpellDef:tbcConsumable(spells, 28519, 22853) --TBC: Flask of Mighty Restoration +25 MP/5
   BOM.Class.SpellDef:tbcConsumable(spells, 42735, 33208) --TBC: Flask of Chromatic Wonder +35 ALL RESIST +18 ALL STATS
 
-  -- TODO: Shattrath Flask of... (SSC and Tempest Keep only)
+  --
+  -- Shattrath Flasks...
+  --
+  BOM.Class.SpellDef:tbcConsumable(spells, 46837, 35716, --TBC: Shattrath Flask of Pure Death +80 SHADOW +80 FIRE +80 FROST
+          { playerClass = BOM_MANA_CLASSES })
+  BOM.Class.SpellDef:tbcConsumable(spells, 46839, 35717, --TBC: Shattrath Flask of Blinding Light +80 ARC +80 HOLY +80 NATURE
+          { playerClass = BOM_MANA_CLASSES })
+  BOM.Class.SpellDef:tbcConsumable(spells, 41608, 32901, --TBC: Shattrath Flask of Relentless Assault +120 AP
+          { playerClass = BOM_PHYSICAL_CLASSES })
+  BOM.Class.SpellDef:tbcConsumable(spells, 41609, 32898) --TBC: Shattrath Flask of Fortification +500 HP +10 DEF RATING
+  BOM.Class.SpellDef:tbcConsumable(spells, 41610, 32899) --TBC: Shattrath Flask of Mighty Restoration +25 MP/5
+  BOM.Class.SpellDef:tbcConsumable(spells, 41611, 32900, --TBC: Shattrath Flask of Supreme Power +70 SPELL
+          { playerClass = BOM_MANA_CLASSES })
+
   -- TODO: Unstable Flask of... (Blade's Edge and Gruul's Lair only)
 
   BOM.Class.SpellDef:classicConsumable(spells, 17628, 13512, --Flask of Supreme Power +70 SPELL
@@ -1233,118 +1249,118 @@ function BOM.SetupSpells()
 end
 
 
---TODO: This can be calculated from AllSpells spell ids
-function BOM.SetupItemCache()
-  local s = {}
-
-  ---@param icon number
-  ---@param id number Item ID
-  local function makeItem(id, name, color, icon)
-    local link = "|cff" .. color .. "|Hitem:" .. tostring(id) .. "::::::::1:::::::|h[" .. name .. "]|h|r"
-    tinsert(s, { itemName = name,
-                 itemLink = link,
-                 itemIcon = icon })
-  end
-  local W = LE_ITEM_QUALITY_COMMON
-  local G = LE_ITEM_QUALITY_UNCOMMON
-  makeItem(18284, "Kreeg's Stout Beatdown", G, 132792)
-  makeItem(13461, "Greater Arcane Protection Potion", W, 134863)
-  makeItem(12643, "Dense Weightstone", W, 135259)
-  makeItem(12455, "Juju Ember", W, 134317)
-  makeItem(13810, "Blessed Sunfruit", W, 133997)
-  makeItem(8928, "Instant Poison VI", W, 132273)
-  makeItem(12457, "Juju Chill", W, 134311)
-  makeItem(13813, "Blessed Sunfruit Juice", W, 132803)
-  makeItem(12460, "Juju Might", W, 134309)
-  makeItem(3825, "Elixir of Fortitude", W, 134823)
-  makeItem(9186, "Mind-numbing Poison III", W, 136066)
-  makeItem(9155, "Arcane Elixir", W, 134810)
-  makeItem(20452, "Smoked Desert Dumplings", W, 134020)
-
-  if BOM.TBC then
-    makeItem(22055, "Wound Poison V", W, 132274)
-    makeItem(21835, "Anesthetic Poison", W, 132274)
-    makeItem(28420, "Fel Weightstone", W, 132274)
-    makeItem(28421, "Adamantite Weightstone", W, 132274)
-    makeItem(23528, "Fel Sharpening Stone", W, 132274)
-    makeItem(23529, "Adamantite Sharpening Stone", W, 132274)
-  else
-    makeItem(10922, "Wound Poison IV", W, 132274)
-  end
-
-  makeItem(21023, "Dirge's Kickin' Chimaerok Chops", W, 134021)
-  makeItem(12404, "Dense Sharpening Stone", W, 135252)
-  makeItem(21151, "Rumsey Rum Black Label", W, 132791)
-  makeItem(18254, "Runn Tum Tuber Surprise", W, 134019)
-  makeItem(13445, "Elixir of Superior Defense", W, 134846)
-  makeItem(13457, "Greater Fire Protection Potion", W, 134804)
-  makeItem(12451, "Juju Power", W, 134313)
-  makeItem(12218, "Monster Omelet", W, 133948)
-  makeItem(13931, "Nightfin Soup", W, 132804)
-  makeItem(20749, "Brilliant Wizard Oil", W, 134727)
-  makeItem(5654, "Instant Toxin", W, 134799)
-  makeItem(18262, "Elemental Sharpening Stone", G, 135228)
-
-  if BOM.TBC then
-    makeItem(22054, "Deadly Poison VII", W, 132290)
-    makeItem(22521, "Superior Mana Oil", W, 134727)
-    makeItem(22522, "Superior Wizard Oil", W, 134727)
-  else
-    makeItem(20844, "Deadly Poison V", W, 132290)
-  end
-
-  makeItem(20004, "Major Troll's Blood Potion", W, 134860)
-  makeItem(12820, "Winterfall Firewater", W, 134872)
-  makeItem(20007, "Mageblood Potion", W, 134825)
-  makeItem(9264, "Elixir of Shadow Power", W, 134826)
-  makeItem(11564, "Crystal Ward", W, 134129)
-  makeItem(18269, "Gordok Green Grog", G, 132790)
-  makeItem(21546, "Elixir of Greater Firepower", W, 134840)
-  makeItem(23122, "Consecrated Sharpening Stone", G, 135249)
-  makeItem(23123, "Blessed Wizard Oil", G, 134806)
-  makeItem(13454, "Greater Arcane Elixir", W, 134805)
-  makeItem(9088, "Gift of Arthas", W, 134808)
-  makeItem(17708, "Elixir of Frost Power", W, 134714)
-  makeItem(13928, "Grilled Squid", W, 133899)
-  makeItem(13456, "Greater Frost Protection Potion", W, 134800)
-  makeItem(13452, "Elixir of the Mongoose", W, 134812)
-
-  -- Ungoro Crystal items
-  makeItem(11564, "Crystal Ward", W, 134129)
-  makeItem(11567, "Crystal Spire", W, 134134)
-  makeItem(11563, "Crystal Force", W, 134088)
-
-  makeItem(27498, "Scroll of Agility V", W, 134938)
-  makeItem(10309, "Scroll of Agility IV", W, 134938)
-
-  makeItem(27503, "Scroll of Strength V", W, 134938)
-  makeItem(10310, "Scroll of Strength IV", W, 134938)
-
-  makeItem(20748, "Brilliant Mana Oil", W, 134722)
-  makeItem(13458, "Greater Nature Protection Potion", W, 134802)
-  makeItem(9206, "Elixir of Giants", W, 134841)
-  makeItem(13459, "Greater Shadow Protection Potion", W, 134803)
-  makeItem(3776, "Crippling Poison II", W, 134799)
-
-  if BOM.TBC then
-    makeItem(22710, "Bloodthistle", W, 134191)
-    makeItem(22840, "Elixir of Major Mageblood", W, 134778)
-    makeItem(22835, "Elixir of Major Shadow Power", W, 134771)
-    makeItem(22833, "Elixir of Major Firepower", W, 134772)
-    makeItem(22827, "Elixir of Major Frost Power", W, 134774)
-    makeItem(22825, "Elixir of Healing Power", W, 134768)
-    makeItem(28103, "Adept's Elixir", W, 134876)
-    makeItem(32067, "Elixir of Draenic Wisdom", W, 134782)
-    makeItem(22848, "Elixir of Empowerment", W, 134761)
-    makeItem(28104, "Elixir of Mastery", W, 134734)
-    makeItem(22834, "Elixir of Major Defense", W, 134746)
-    makeItem(32068, "Elixir of Ironskin", W, 134786)
-    makeItem(32062, "Elixir of Major Fortitude", W, 134785)
-    makeItem(32063, "Earthen Elixir", W, 134781)
-  end
-
-  BOM.ItemCache = s
-end
+--T ODO: This can be calculated from AllSpells spell ids
+--function BOM.SetupItemCache()
+--  local s = {}
+--
+--  ---@param icon number
+--  ---@param id number Item ID
+--  local function makeItem(id, name, color, icon)
+--    local link = "|cff" .. color .. "|Hitem:" .. tostring(id) .. "::::::::1:::::::|h[" .. name .. "]|h|r"
+--    tinsert(s, { itemName = name,
+--                 itemLink = link,
+--                 itemIcon = icon })
+--  end
+--  local W = LE_ITEM_QUALITY_COMMON
+--  local G = LE_ITEM_QUALITY_UNCOMMON
+--  makeItem(18284, "Kreeg's Stout Beatdown", G, 132792)
+--  makeItem(13461, "Greater Arcane Protection Potion", W, 134863)
+--  makeItem(12643, "Dense Weightstone", W, 135259)
+--  makeItem(12455, "Juju Ember", W, 134317)
+--  makeItem(13810, "Blessed Sunfruit", W, 133997)
+--  makeItem(8928, "Instant Poison VI", W, 132273)
+--  makeItem(12457, "Juju Chill", W, 134311)
+--  makeItem(13813, "Blessed Sunfruit Juice", W, 132803)
+--  makeItem(12460, "Juju Might", W, 134309)
+--  makeItem(3825, "Elixir of Fortitude", W, 134823)
+--  makeItem(9186, "Mind-numbing Poison III", W, 136066)
+--  makeItem(9155, "Arcane Elixir", W, 134810)
+--  makeItem(20452, "Smoked Desert Dumplings", W, 134020)
+--
+--  if BOM.TBC then
+--    makeItem(22055, "Wound Poison V", W, 132274)
+--    makeItem(21835, "Anesthetic Poison", W, 132274)
+--    makeItem(28420, "Fel Weightstone", W, 132274)
+--    makeItem(28421, "Adamantite Weightstone", W, 132274)
+--    makeItem(23528, "Fel Sharpening Stone", W, 132274)
+--    makeItem(23529, "Adamantite Sharpening Stone", W, 132274)
+--  else
+--    makeItem(10922, "Wound Poison IV", W, 132274)
+--  end
+--
+--  makeItem(21023, "Dirge's Kickin' Chimaerok Chops", W, 134021)
+--  makeItem(12404, "Dense Sharpening Stone", W, 135252)
+--  makeItem(21151, "Rumsey Rum Black Label", W, 132791)
+--  makeItem(18254, "Runn Tum Tuber Surprise", W, 134019)
+--  makeItem(13445, "Elixir of Superior Defense", W, 134846)
+--  makeItem(13457, "Greater Fire Protection Potion", W, 134804)
+--  makeItem(12451, "Juju Power", W, 134313)
+--  makeItem(12218, "Monster Omelet", W, 133948)
+--  makeItem(13931, "Nightfin Soup", W, 132804)
+--  makeItem(20749, "Brilliant Wizard Oil", W, 134727)
+--  makeItem(5654, "Instant Toxin", W, 134799)
+--  makeItem(18262, "Elemental Sharpening Stone", G, 135228)
+--
+--  if BOM.TBC then
+--    makeItem(22054, "Deadly Poison VII", W, 132290)
+--    makeItem(22521, "Superior Mana Oil", W, 134727)
+--    makeItem(22522, "Superior Wizard Oil", W, 134727)
+--  else
+--    makeItem(20844, "Deadly Poison V", W, 132290)
+--  end
+--
+--  makeItem(20004, "Major Troll's Blood Potion", W, 134860)
+--  makeItem(12820, "Winterfall Firewater", W, 134872)
+--  makeItem(20007, "Mageblood Potion", W, 134825)
+--  makeItem(9264, "Elixir of Shadow Power", W, 134826)
+--  makeItem(11564, "Crystal Ward", W, 134129)
+--  makeItem(18269, "Gordok Green Grog", G, 132790)
+--  makeItem(21546, "Elixir of Greater Firepower", W, 134840)
+--  makeItem(23122, "Consecrated Sharpening Stone", G, 135249)
+--  makeItem(23123, "Blessed Wizard Oil", G, 134806)
+--  makeItem(13454, "Greater Arcane Elixir", W, 134805)
+--  makeItem(9088, "Gift of Arthas", W, 134808)
+--  makeItem(17708, "Elixir of Frost Power", W, 134714)
+--  makeItem(13928, "Grilled Squid", W, 133899)
+--  makeItem(13456, "Greater Frost Protection Potion", W, 134800)
+--  makeItem(13452, "Elixir of the Mongoose", W, 134812)
+--
+--  -- Ungoro Crystal items
+--  makeItem(11564, "Crystal Ward", W, 134129)
+--  makeItem(11567, "Crystal Spire", W, 134134)
+--  makeItem(11563, "Crystal Force", W, 134088)
+--
+--  makeItem(27498, "Scroll of Agility V", W, 134938)
+--  makeItem(10309, "Scroll of Agility IV", W, 134938)
+--
+--  makeItem(27503, "Scroll of Strength V", W, 134938)
+--  makeItem(10310, "Scroll of Strength IV", W, 134938)
+--
+--  makeItem(20748, "Brilliant Mana Oil", W, 134722)
+--  makeItem(13458, "Greater Nature Protection Potion", W, 134802)
+--  makeItem(9206, "Elixir of Giants", W, 134841)
+--  makeItem(13459, "Greater Shadow Protection Potion", W, 134803)
+--  makeItem(3776, "Crippling Poison II", W, 134799)
+--
+--  if BOM.TBC then
+--    makeItem(22710, "Bloodthistle", W, 134191)
+--    makeItem(22840, "Elixir of Major Mageblood", W, 134778)
+--    makeItem(22835, "Elixir of Major Shadow Power", W, 134771)
+--    makeItem(22833, "Elixir of Major Firepower", W, 134772)
+--    makeItem(22827, "Elixir of Major Frost Power", W, 134774)
+--    makeItem(22825, "Elixir of Healing Power", W, 134768)
+--    makeItem(28103, "Adept's Elixir", W, 134876)
+--    makeItem(32067, "Elixir of Draenic Wisdom", W, 134782)
+--    makeItem(22848, "Elixir of Empowerment", W, 134761)
+--    makeItem(28104, "Elixir of Mastery", W, 134734)
+--    makeItem(22834, "Elixir of Major Defense", W, 134746)
+--    makeItem(32068, "Elixir of Ironskin", W, 134786)
+--    makeItem(32062, "Elixir of Major Fortitude", W, 134785)
+--    makeItem(32063, "Earthen Elixir", W, 134781)
+--  end
+--
+--  BOM.ItemCache = s
+--end
 
 BOM.ArgentumDawn = {
   itemIds = {
@@ -1472,3 +1488,23 @@ BOM.AllDrink = {
   34291, -- level 70 drink
   27089, 43706, 46755, -- level 75 drink
 }
+
+---For all spells database load data for spellids and items
+function allSpellsModule:LoadItemsAndSpells()
+  for _id, buffDef in pairs(BOM.AllBuffomatSpells) do
+    if type(buffDef.single) == "number" then
+      spellCacheModule:LoadSpell(buffDef.single)
+    end
+    if type(buffDef.group) == "number" then
+      spellCacheModule:LoadSpell(buffDef.group)
+    end
+
+    if type(buffDef.items) == "table" then
+      for _index, itemId in ipairs(buffDef.items) do
+        itemCacheModule:LoadItem(itemId)
+      end
+    elseif type(buffDef.item) == "number" then
+      itemCacheModule:LoadItem(buffDef.item)
+    end
+  end
+end

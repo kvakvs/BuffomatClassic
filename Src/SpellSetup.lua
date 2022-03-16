@@ -5,6 +5,7 @@ local BOM = BuffomatAddon ---@type BuffomatAddon
 local spellSetupModule = BuffomatModule.DeclareModule("SpellSetup") ---@type BomSpellSetupModule
 
 local constModule = BuffomatModule.Import("Const") ---@type BomConstModule
+local itemCacheModule = BuffomatModule.Import("ItemCache") ---@type BomItemCacheModule
 
 local L = setmetatable({}, { __index = function(t, k)
   if BOM.L and BOM.L[k] then
@@ -19,7 +20,7 @@ local bomSpellsImportedFromConfig = false
 
 ---Formats a spell icon + spell name as a link
 -- TODO: Move to SpellDef class
----@param spellInfo GSICacheItem spell info from the cache via BOM.GetSpellInfo
+---@param spellInfo BomSpellCacheElement spell info from the cache via BOM.GetSpellInfo
 local function bomFormatSpellLink(spellInfo)
   if spellInfo == nil then
     return "NIL SPELL"
@@ -110,9 +111,9 @@ local function bomSetup_EachSpell_Consumable(add, spell)
     elseif (not item_info
             or not item_info.itemName
             or not item_info.itemLink
-            or not item_info.itemIcon) and BOM.ItemCache[spell.item]
+            or not item_info.itemIcon) and itemCacheModule.cache[spell.item]
     then
-      item_info = BOM.ItemCache[spell.item]
+      item_info = itemCacheModule.cache[spell.item]
     end
 
     if item_info
