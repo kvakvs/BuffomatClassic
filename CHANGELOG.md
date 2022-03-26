@@ -1,5 +1,9 @@
 # Changelog
 
+## Buffomat Classic and TBC 2022.3.4
+
+- [Bug] Added AceGUI to embeds.xml, this seems to be required by the options page.
+
 ## Buffomat Classic and TBC 2022.3.2
 
 - Script error fixed for uninitialized values of remaining durations settings. 
