@@ -11,9 +11,9 @@ function optionsModule:ValueToText(type, value)
   if type == "string" then
     return value
   elseif type == "float" then
-    return string.format("%.02f", value)
+    return string.format("%.02f", value or 0)
   elseif type == "integer" then
-    return string.format("%d", value)
+    return string.format("%d", value or 0)
   end
 end
 
