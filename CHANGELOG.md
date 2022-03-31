@@ -1,5 +1,15 @@
 # Changelog
 
+## Buffomat Classic and TBC 2022.3.4, 3.5
+
+- [Bug] Added AceGUI to embeds.xml, this seems to be required by the options page.
+- [Bug] Order of lines in embeds.xml
+- Updated build number for Classic Era (11402)
+
+## Buffomat Classic and TBC 2022.3.2
+
+- Script error fixed for uninitialized values of remaining durations settings. 
+
 ## Buffomat Classic and TBC 2022.3.1
 
 - Shattrath Flasks added.
