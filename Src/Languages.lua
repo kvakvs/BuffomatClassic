@@ -682,7 +682,7 @@ local function bomLanguage_Chinese()
     ["options.short.UseRank"]                   = "使用等级增益",
     ["options.short.UseProfiles"]               = "使用配置文档",
 
-    --[[["options.long.ArgentumDawn"]               = "提醒更换银色黎明饰品",
+    ["options.long.ArgentumDawn"]               = "提醒更换银色黎明饰品",
     ["options.long.AutoCrusaderAura"]           = "圣骑士: 骑乘时自动开启十字军光环",
     ["options.long.AutoDismount"]               = "施法时自动取消地面坐骑",
     ["options.long.AutoDismountFlying"]         = "施法时自动取消飞行坐骑 (小心摔死)",
@@ -694,7 +694,7 @@ local function bomLanguage_Chinese()
     ["options.long.ActivateBomOnSpiritTap"]     = "如果牧师的'精神' 处于活跃状态且玩家法力低于 % ,则禁用",
     ["options.long.DeathBlock"]                 = "当有人死亡,不施放群体增益",
     ["options.long.DontUseConsumables"]         = "仅通过 Shift, Ctrl 或 Alt 使用消耗品",
-    ["options.long.GroupBuff"]                  = "一直施放群体BUFF(额外的材料成本)",",
+    ["options.long.GroupBuff"]                  = "一直施放群体BUFF(额外的材料成本)",
     ["options.long.HideSomeoneIsDrinking"]      = "隐藏'有人在喝酒' 的信息",
     ["options.long.InInstance"]                 = "在地下城和团本扫描增益",
     ["options.long.InPVP"]                      = "在战场扫描增益",
@@ -719,7 +719,7 @@ local function bomLanguage_Chinese()
     ["options.long.SlowerHardware"]             = "不太频繁的增益检查 (针对硬件不好/团队)",
     ["options.long.UseProfiles"]                = "使用配置文档",
     ["options.long.UseRank"]                    = "使用有等级的技能",
-    ["options.long.UseProfiles"]                = "根据玩家个人/队伍/团队/战场使用配置文档",]]
+    ["options.long.UseProfiles"]                = "根据玩家个人/队伍/团队/战场使用配置文档",
 
     SELF                                        = "自己", -- use instead of name when buffing self
     BUFF_CLASS_SELF_ONLY                        = "自己-Buff",
