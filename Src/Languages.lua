@@ -128,6 +128,8 @@ local function bomLanguage_English()
     AD_REPUTATION_REMINDER                      = "Argent Dawn trinket",
     RIDING_SPEED_REMINDER                       = "Riding/Flight Speed trinket",
     OUT_OF_THAT_ITEM                            = "Not in bags",
+    CboxNoGroupBuff                             = "Single buff always",
+    CboxGroupBuff                               = "Cast group buffs when necessary (extra reagent cost)",
 
     CHAT_MSG_PREFIX                             = "Buffomat: ",
     Buffomat                                    = "Buffomat", -- addon title in the main window
@@ -743,6 +745,8 @@ local function bomLanguage_Chinese()
     AD_REPUTATION_REMINDER                      = "银色黎明徽记",
     RIDING_SPEED_REMINDER                       = "骑术/飞行速度饰品",
     OUT_OF_THAT_ITEM                            = "不在背包",
+    CboxNoGroupBuff                             = "不使用群体BUFF",
+    CboxGroupBuff                               = "一直施放群体BUFF(额外的材料成本)",
 
     CHAT_MSG_PREFIX                             = "Buffomat: ",
     Buffomat                                    = "Buffomat", -- addon title in the main window
