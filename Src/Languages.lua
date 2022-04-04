@@ -461,7 +461,7 @@ local function bomLanguage_French()
     --missing TooltipExcludeTarget
     TooltipSelectTarget                         = "Choisir un membre groupe/raid pour activer cette option",
     TooltipGroup                                = "Groupe %d",
-
+    
     TabBuff                                     = "Buff",
     TabSpells                                   = "Sorts",
 
@@ -567,6 +567,9 @@ local function bomLanguage_Russian()
     ["options.short.Time3600"]                  = "Продолжительность <=60 мин:",
     ["options.short.Time60"]                    = "Продолжительность <=60 сек:",
     ["options.short.Time600"]                   = "Продолжительность <=10 мин:",
+    
+    CboxGroupBuff                               = "Групповые бафы, если это экономит ману (увеличенный расход реагентов)",
+    CboxReplaceSingle                           = "Заменить одиночный баф групповым",
 
     --[[Translation missing --]]
     --[[ ["Header_INFO"] = "Information",--]]
