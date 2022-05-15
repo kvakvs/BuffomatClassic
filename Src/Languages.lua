@@ -102,7 +102,6 @@ local function bomLanguage_English()
     ["options.long.ShowMinimapButton"]          = "Show minimap button",
     ["options.long.ShowTBCConsumables"]         = "Show consumables available in TBC",
     ["options.long.SlowerHardware"]             = "Less frequent buff checks (slow hardware/raid)",
-    ["options.long.UseProfiles"]                = "Use profiles",
     ["options.long.UseRank"]                    = "Use spells with ranks",
     ["options.long.UseProfiles"]                = "Use profiles based on whether the player is solo, in a group, raid or a battleground",
 

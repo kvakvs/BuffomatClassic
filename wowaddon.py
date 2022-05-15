@@ -16,7 +16,7 @@ UI_VERSION_CLASSIC = '11402'  # patch 1.14.2
 BOM_NAME_CLASSIC = 'BuffomatClassic'  # Directory and zip name
 BOM_TITLE_CLASSIC = "Buffomat Classic"  # Title field in TOC
 
-UI_VERSION_CLASSIC_TBC = '20504'  # patch 2.5.4 Phase 4 TBC
+UI_VERSION_CLASSIC_TBC = '20504'  # patch 2.5.4 Phase 4 and 5 TBC
 BOM_NAME_CLASSIC_TBC = 'BuffomatClassicTBC'  # Directory and zip name
 BOM_TITLE_CLASSIC_TBC = "Buffomat Classic TBC"  # Title field in TOC
 
