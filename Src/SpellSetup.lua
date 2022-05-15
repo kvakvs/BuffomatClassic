@@ -94,7 +94,7 @@ local function bomSetup_CancelBuffs()
   end
 end
 
----@param spell SpellDef
+---@param spell BomSpellDef
 ---@param add boolean
 local function bomSetup_EachSpell_Consumable(add, spell)
   -- call results are cached if they are successful, should not be a performance hit
@@ -190,7 +190,7 @@ local function bomSetup_EachSpell_CacheUpdate(spell)
   end
 end
 
----@param spell SpellDef
+---@param spell BomSpellDef
 local function bomSetup_EachSpell_SetupNonConsumable(spell)
   -- Load spell info and save some good fields for later use
   local spellInfo = BOM.GetSpellInfo(spell.singleId)
@@ -216,7 +216,7 @@ local function bomSetup_EachSpell_SetupNonConsumable(spell)
   end -- spell info returned success
 end
 
----@param spell SpellDef
+---@param spell BomSpellDef
 local function bomSetup_EachSpell_SetupGroupBuff(spell)
   local spellInfo = BOM.GetSpellInfo(spell.groupId)
 
@@ -235,7 +235,7 @@ local function bomSetup_EachSpell_SetupGroupBuff(spell)
 end
 
 ---Adds a spell to the palette of spells to configure and use, for each profile
----@param spell SpellDef
+---@param spell BomSpellDef
 local function bomSetup_EachSpell_Add(spell)
   tinsert(BOM.SelectedSpells, spell)
   BOM.Tool.iMerge(BOM.AllSpellIds, spell.singleFamily, spell.groupFamily,
@@ -248,7 +248,7 @@ local function bomSetup_EachSpell_Add(spell)
 
   --setDefaultValues!
   for j, eachProfile in ipairs(BOM.ALL_PROFILES) do
-    ---@type SpellDef
+    ---@type BomSpellDef
     local profileSpell = BOM.CharacterState[eachProfile].Spell[spell.ConfigID]
 
     if profileSpell == nil then
@@ -284,7 +284,7 @@ end
 
 ---For each spell known to Buffomat check whether the player can use it and the
 ---category where it will go. Build mapping tables to quickly find spells
----@param spell SpellDef
+---@param spell BomSpellDef
 local function bomSetup_EachSpell(spell)
   spell.SkipList = {}
   BOM.ConfigToSpell[spell.ConfigID] = spell
@@ -369,7 +369,7 @@ function BOM.SetupAvailableSpells()
 
   bomSetup_CancelBuffs()
 
-  ---@param spell SpellDef
+  ---@param spell BomSpellDef
   for i, spell in ipairs(BOM.AllBuffomatSpells) do
     bomSetup_EachSpell(spell)
   end -- for all BOM-supported spells

@@ -158,7 +158,7 @@ end
 --  eventFrame:RegisterEvent(event)
 --end
 
-function Tool.OnUpdate(func)
+function toolboxModule:OnUpdate(func)
   if eventFrame == nil then
     eventFrame = CreateFrame("Frame")
   end
@@ -633,7 +633,7 @@ end
 ---@field Wipe function
 
 ---@return BomPopupDynamic
-function Tool.CreatePopup(callbackFn)
+function toolboxModule:CreatePopup(callbackFn)
   local popup = {} ---@type BomPopupDynamic
   popup._Frame = CreateFrame("Frame", nil, UIParent, "UIDropDownMenuTemplate") ---@type BomControl
   popup._Frame._GPIPRIVAT_TableCallback = callbackFn
@@ -685,7 +685,7 @@ function Tool.TabShow(frame, id)
   end
 end
 
-function Tool.SelectTab(frame, id)
+function toolboxModule:SelectTab(frame, id)
   if id and frame.Tabs and frame.Tabs[id] then
     bomSelectTab(frame.Tabs[id])
   end
@@ -713,7 +713,7 @@ end
 ---@param name string - tab text
 ---@param tabFrame BomControl | string - tab text
 ---@param combatlockdown boolean - accessible in combat or not
-function Tool.AddTab(frame, name, tabFrame, combatlockdown)
+function toolboxModule:AddTab(frame, name, tabFrame, combatlockdown)
   local frameName
 
   if type(frame) == "string" then

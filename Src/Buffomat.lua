@@ -3,11 +3,14 @@ local TOCNAME, _ = ...
 ---@class BomBuffomatModule
 local buffomatModule = BuffomatModule.DeclareModule("Buffomat") ---@type BomBuffomatModule
 
-local constModule = BuffomatModule.Import("Const") ---@type BomConstModule
-local optionsModule = BuffomatModule.Import("Options") ---@type BomOptionsModule
-local eventsModule = BuffomatModule.Import("Events") ---@type BomEventsModule
-local optionsPopupModule = BuffomatModule.Import("OptionsPopup") ---@type BomOptionsPopupModule
 local allSpellsModule = BuffomatModule.Import("AllSpells") ---@type BomAllSpellsModule
+local constModule = BuffomatModule.Import("Const") ---@type BomConstModule
+local eventsModule = BuffomatModule.Import("Events") ---@type BomEventsModule
+local languagesModule = BuffomatModule.Import("Languages") ---@type BomLanguagesModule
+local optionsModule = BuffomatModule.Import("Options") ---@type BomOptionsModule
+local optionsPopupModule = BuffomatModule.Import("OptionsPopup") ---@type BomOptionsPopupModule
+local taskScanModule = BuffomatModule.Import("TaskScan") ---@type BomTaskScanModule
+local toolboxModule = BuffomatModule.Import("Toolbox") ---@type BomToolboxModule
 
 ---global, visible from XML files and from script console and chat commands
 ---@class BuffomatAddon
@@ -18,9 +21,9 @@ local allSpellsModule = BuffomatModule.Import("AllSpells") ---@type BomAllSpells
 ---@field TBC_ERA string Constant for era classification of a consumable
 ---@field locales BuffomatTranslations (same as BOM.L)
 ---@field L BuffomatTranslations (same as BOM.locales)
----@field AllBuffomatSpells table<number, SpellDef> All spells known to Buffomat
+---@field AllBuffomatSpells table<number, BomSpellDef> All spells known to Buffomat
 ---@field EnchantList table<number, table<number>> Spell ids mapping to enchant ids
----@field CancelBuffs table<number, SpellDef> All spells to be canceled on detection
+---@field CancelBuffs table<number, BomSpellDef> All spells to be canceled on detection
 ---@field ItemCache table<number, BomItemCacheElement> Precreated precached items
 ---@field ActivAura nil|number Spell id of aura if an unique aura was casted (only one can be active)
 ---@field ActivSeal nil|number Spell id of weapon seal, if an seal-type temporary enchant was used (only one can be active)
@@ -49,7 +52,7 @@ local allSpellsModule = BuffomatModule.Import("AllSpells") ---@type BomAllSpells
 ---@field ManaLimit number Player max mana
 ---@field PartyUpdateNeeded boolean Requests player party update
 ---@field PlayerCasting string|nil Indicates that the player is currently casting (updated in event handlers)
----@field SelectedSpells table<number, SpellDef>
+---@field SelectedSpells table<number, BomSpellDef>
 ---@field cancelForm table<number, number> Spell ids which cancel shapeshift form
 ---@field SpellIdIsSingle table<number, boolean> Whether spell ids are single buffs
 ---@field SpellIdtoConfig table<number, number> Maps spell ids to the key id of spell in the AllSpells
@@ -209,7 +212,7 @@ function BOM.SetForceUpdate(reason)
 end
 
 -- Something changed (buff gained possibly?) update all spells and spell tabs
-function BOM.OptionsUpdate()
+function buffomatModule:OptionsUpdate()
   BOM.SetForceUpdate("OptionsUpdate")
   BOM.UpdateScan("OptionsUpdate")
   BOM.UpdateSpellsTab("OptonsUpdate")
@@ -530,7 +533,7 @@ function BOM.CreateSingleBuffButton(parent_frame)
   end
 end
 
-local function bom_init_ui()
+function buffomatModule:InitUI()
   BomC_ListTab_MessageFrame:SetFading(false);
   BomC_ListTab_MessageFrame:SetFontObject(GameFontNormalSmall);
   BomC_ListTab_MessageFrame:SetJustifyH("LEFT");
@@ -541,16 +544,16 @@ local function bom_init_ui()
   BomC_ListTab_Button:SetAttribute("type", "macro")
   BomC_ListTab_Button:SetAttribute("macro", constModule.MACRO_NAME)
 
-  BOM.Tool.OnUpdate(BOM.UpdateTimer)
+  toolboxModule:OnUpdate(self.UpdateTimer)
 
-  BOM.PopupDynamic = BOM.Tool.CreatePopup(BOM.OptionsUpdate)
+  BOM.PopupDynamic = toolboxModule:CreatePopup(buffomatModule.OptionsUpdate)
 
   BOM.MinimapButton.Init(
           BOM.SharedState.Minimap,
           constModule.BOM_BEAR_ICON_FULLPATH,
           function(self, button)
             if button == "LeftButton" then
-              BOM.ToggleWindow()
+              buffomatModule:ToggleWindow()
             else
               optionsPopupModule:Setup(self.button, true)
             end
@@ -573,27 +576,27 @@ local function bom_init_ui()
   BOM.Tool.EnableMoving(BomC_MainWindow, BOM.SaveWindowPosition)
   BomC_MainWindow:SetMinResize(180, 90)
 
-  BOM.Tool.AddTab(BomC_MainWindow, L.TabBuff, BomC_ListTab, true)
-  BOM.Tool.AddTab(BomC_MainWindow, L.TabSpells, BomC_SpellTab, true)
-  BOM.Tool.SelectTab(BomC_MainWindow, 1)
+  toolboxModule:AddTab(BomC_MainWindow, L.TabBuff, BomC_ListTab, true)
+  toolboxModule:AddTab(BomC_MainWindow, L.TabSpells, BomC_SpellTab, true)
+  toolboxModule:SelectTab(BomC_MainWindow, 1)
 end
 
 ---Called from event handler on Addon Loaded event
 ---Execution start here
 function BuffomatAddon:Init()
-  BOM.SetupTranslations()
-  BOM.SetupSpells()
-  BOM.SetupCancelBuffs()
+  languagesModule:SetupTranslations()
+  allSpellsModule:SetupSpells()
+  allSpellsModule:SetupCancelBuffs()
   --BOM.SetupItemCache()
-  BOM.SetupTasklist()
+  taskScanModule:SetupTasklist()
 
   BOM.Macro = BOM.Class.Macro:new(constModule.MACRO_NAME)
 
-  function SetDefault(db, var, init)
-    if db[var] == nil then
-      db[var] = init
-    end
-  end
+  --function SetDefault(db, var, init)
+  --  if db[var] == nil then
+  --    db[var] = init
+  --  end
+  --end
 
   ---@type table - returns value if not nil, otherwise returns empty table
   local init_val = function(v)
@@ -642,7 +645,7 @@ function BuffomatAddon:Init()
   BOM.CharacterState = BomCharacterState
   BOM.CurrentProfile = BomCharacterState[BOM.ALL_PROFILES[1]]
 
-  BOM.LocalizationInit()
+  languagesModule:LocalizationInit()
 
   do
     -- addon window position
@@ -677,7 +680,7 @@ function BuffomatAddon:Init()
     end
 
     BOM:Print("Set " .. var .. " to " .. tostring(DB[var]))
-    BOM.OptionsUpdate()
+    buffomatModule:OptionsUpdate()
   end
 
   BOM.Tool.SlashCommand({ "/bom", "/buffomat" }, {
@@ -708,7 +711,7 @@ function BuffomatAddon:Init()
     { "", L["SlashOpen"], BOM.ShowWindow },
   })
 
-  bom_init_ui()
+  buffomatModule:InitUI()
 
   -- Which groups are watched by the buff scanner - save in character state
   if not BomCharacterState.WatchGroup then
@@ -747,7 +750,7 @@ function BuffomatAddon:OnEnable()
           constModule.BOM_BEAR_ICON_FULLPATH,
           function(self, button)
             if button == "LeftButton" then
-              BOM.ToggleWindow()
+              buffomatModule:ToggleWindow()
             else
               optionsPopupModule:Setup(self, true)
             end
@@ -799,7 +802,7 @@ buffomatModule.slowerhardwareUpdateTimerLimit = 1.500
 buffomatModule.BOM_THROTTLE_TIMER_LIMIT = 1.000
 buffomatModule.BOM_THROTTLE_SLOWER_HARDWARE_TIMER_LIMIT = 2.000
 
-function BOM.UpdateTimer()
+function buffomatModule:UpdateTimer()
   if BOM.InLoading and BOM.LoadingScreenTimeOut then
     if BOM.LoadingScreenTimeOut > GetTime() then
       --print("prevent buffomat!")
@@ -937,7 +940,7 @@ function BOM.ShowWindow(tab)
     else
       BOM.BtnClose()
     end
-    BOM.Tool.SelectTab(BomC_MainWindow, tab or 1)
+    toolboxModule:SelectTab(BomC_MainWindow, tab or 1)
   else
     BOM:Print(L.ActionInCombatError)
   end
@@ -947,7 +950,7 @@ function BOM.WindowVisible()
   return BomC_MainWindow:IsVisible()
 end
 
-function BOM.ToggleWindow()
+function buffomatModule:ToggleWindow()
   if BomC_MainWindow:IsVisible() then
     BOM.HideWindow()
   else
@@ -963,7 +966,7 @@ function BOM.AutoOpen()
       buffomatModule.autoHelper = "close"
       BomC_MainWindow:Show()
       BomC_MainWindow:SetScale(tonumber(BOM.SharedState.UIWindowScale) or 1.0)
-      BOM.Tool.SelectTab(BomC_MainWindow, 1)
+      toolboxModule:SelectTab(BomC_MainWindow, 1)
     end
   end
 end
@@ -1088,5 +1091,5 @@ function BOM.ShowSpellSettings()
 end
 
 function BOM.MyButtonOnClick(self)
-  BOM.OptionsUpdate()
+  buffomatModule:OptionsUpdate()
 end

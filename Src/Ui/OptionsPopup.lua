@@ -6,6 +6,7 @@ local BOM = BuffomatAddon ---@type BuffomatAddon
 local optionsPopupModule = BuffomatModule.DeclareModule("OptionsPopup") ---@type BomOptionsPopupModule
 
 local constModule = BuffomatModule.Import("Const") ---@type BomConstModule
+local spellDefModule = BuffomatModule.Import("SpellDef") ---@type BomSpellDefModule
 
 optionsPopupModule.behaviourSettings = {
   { "AutoOpen", true },
@@ -106,7 +107,7 @@ function optionsPopupModule:Setup(control, minimap)
     if not spell.isConsumable then
       BOM.PopupDynamic:AddItem(spell.singleLink or spell.single,
               "keep",
-              BOM.GetProfileSpell(spell.ConfigID),
+              spellDefModule:GetProfileSpell(spell.ConfigID),
               "Enable")
     end
   end

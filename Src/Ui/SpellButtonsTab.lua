@@ -5,7 +5,9 @@ local BOM = BuffomatAddon ---@type BuffomatAddon
 ---@class BomSpellButtonsTabModule
 local spellButtonsTabModule = BuffomatModule.DeclareModule("Ui/SpellButtonsTab") ---@type BomSpellButtonsTabModule
 
+local buffomatModule = BuffomatModule.Import("Buffomat") ---@type BomBuffomatModule
 local uiButtonModule = BuffomatModule.Import("Ui/UiButton") ---@type BomUiButtonModule
+local spellDefModule = BuffomatModule.Import("SpellDef") ---@type BomSpellDefModule
 local optionsPopupModule = BuffomatModule.Import("OptionsPopup") ---@type BomOptionsPopupModule
 
 local L = setmetatable(
@@ -32,7 +34,7 @@ local function bomDoBlessingOnClick(self)
   self._privat_DB[self._privat_Var] = saved
 
   BOM.MyButtonUpdateAll()
-  BOM.OptionsUpdate()
+  buffomatModule:OptionsUpdate()
 end
 
 local SpellSettingsFrames = {}
@@ -41,7 +43,7 @@ BOM.SpellSettingsFrames = SpellSettingsFrames -- group settings buttons after th
 ---Add some clickable elements to Spell Tab row with all classes
 ---@param row_builder RowBuilder The structure used for building button rows
 ---@param is_horde boolean Whether we are the horde
----@param spell SpellDef The spell currently being displayed
+---@param spell BomSpellDef The spell currently being displayed
 local function bomAddClassesRow(row_builder, is_horde, spell)
   if spell.frames.SelfCast == nil then
     spell.frames.SelfCast = BOM.CreateMyButton(
@@ -50,7 +52,7 @@ local function bomAddClassesRow(row_builder, is_horde, spell)
             BOM.ICON_SELF_CAST_OFF)
   end
 
-  local profile_spell = BOM.GetProfileSpell(spell.ConfigID)
+  local profile_spell = spellDefModule:GetProfileSpell(spell.ConfigID)
 
   spell.frames.SelfCast:SetPoint("TOPLEFT", row_builder.prev_control, "TOPRIGHT", row_builder.dx, 0)
   spell.frames.SelfCast:SetVariable(profile_spell, "SelfCast")
@@ -167,7 +169,7 @@ local function bomAddClassesRow(row_builder, is_horde, spell)
 end
 
 ---Add a row with spell cancel buttons
----@param spell SpellDef - The spell to be canceled
+---@param spell BomSpellDef - The spell to be canceled
 ---@param row_builder RowBuilder The structure used for building button rows
 ---@return {dy, prev_control}
 local function bomAddSpellCancelRow(spell, row_builder)
@@ -378,7 +380,7 @@ end
 
 ---Creates a row
 ---@param is_horde boolean Whether we're the horde
----@param spell SpellDef Spell we're adding now
+---@param spell BomSpellDef Spell we're adding now
 ---@param row_builder RowBuilder The structure used for building button rows
 ---@param self_class string Character class
 local function bomCreateTabRow(row_builder, is_horde, spell, self_class)
@@ -454,7 +456,7 @@ local function bomCreateTabRow(row_builder, is_horde, spell, self_class)
             BOM.ICON_OPT_DISABLED)
   end
 
-  local profile_spell = BOM.GetProfileSpell(spell.ConfigID)
+  local profile_spell = spellDefModule:GetProfileSpell(spell.ConfigID)
 
   spell.frames.Enable:SetPoint("TOPLEFT", row_builder.prev_control, "TOPRIGHT", row_builder.dx, 0)
   spell.frames.Enable:SetVariable(profile_spell, "Enable")
@@ -670,7 +672,7 @@ local function bomForceTargetsTooltipText(spell)
           spell.ForcedTarget or {})
 end
 
----@param spell SpellDef
+---@param spell BomSpellDef
 local function bomUpdateForcecastTooltip(button, spell)
   local tooltip_force_targets = bomForceTargetsTooltipText(spell)
   BOM.Tool.TooltipText(
@@ -687,7 +689,7 @@ local function bomExcludeTargetsTooltip(spell)
           spell.ExcludedTarget or {})
 end
 
----@param spell SpellDef
+---@param spell BomSpellDef
 local function bomUpdateExcludeTargetsTooltip(button, spell)
   local tooltip_exclude_targets = bomExcludeTargetsTooltip(spell)
   BOM.Tool.TooltipText(
@@ -697,10 +699,10 @@ local function bomUpdateExcludeTargetsTooltip(button, spell)
                   .. tooltip_exclude_targets)
 end
 
----@param spell SpellDef
+---@param spell BomSpellDef
 local function bomUpdateSelectedSpell(spell)
   -- the pointer to spell in current BOM profile
-  ---@type SpellDef
+  ---@type BomSpellDef
   local profile_spell = BOM.CurrentProfile.Spell[spell.ConfigID]
 
   spell.frames.Enable:SetVariable(profile_spell, "Enable")
@@ -836,11 +838,11 @@ local function bomUpdateSpellsTab()
     BOM.SpellTabsCreatedFlag = true
   end
 
-  local _className, self_class_name, _classId = UnitClass("player")
+  local _className, playerClass, _classId = UnitClass("player")
 
   for i, spell in ipairs(BOM.SelectedSpells) do
     if type(spell.onlyUsableFor) == "table"
-            and not tContains(spell.onlyUsableFor, self_class_name) then
+            and not tContains(spell.onlyUsableFor, playerClass) then
       -- skip
     else
       bomUpdateSelectedSpell(spell)

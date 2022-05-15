@@ -7,7 +7,7 @@ local characterStateModule = BuffomatModule.DeclareModule("CharacterState") ---@
 BOM.Class = BOM.Class or {}
 
 ---@class CharacterState Current character state snapshots per profile
----@field Spell table<number, SpellDef>
+---@field Spell table<number, BomSpellDef>
 ---@field Duration table<string, number> Remaining aura duration on SELF, keyed with buff names
 ---@field LastTracking number Icon id for the last active tracking (not relevant in TBC?)
 ---@field solo State

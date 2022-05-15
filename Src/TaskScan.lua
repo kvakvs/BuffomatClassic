@@ -5,6 +5,7 @@ local BOM = BuffomatAddon ---@type BuffomatAddon
 local taskScanModule = BuffomatModule.DeclareModule("TaskScan") ---@type BomTaskScanModule
 
 local constModule = BuffomatModule.Import("Const") ---@type BomConstModule
+local spellDefModule = BuffomatModule.Import("SpellDef") ---@type BomSpellDefModule
 
 local L = setmetatable({}, { __index = function(t, k)
   if BOM.L and BOM.L[k] then
@@ -34,7 +35,7 @@ local function bomIsMountedAndCrusaderAuraRequired()
           and GetShapeshiftForm() ~= 7 -- and not crusader aura
 end
 
-function BOM.SetupTasklist()
+function taskScanModule:SetupTasklist()
   tasklist = BOM.Class.TaskList:new()
 end
 
@@ -146,7 +147,7 @@ function BOM.MaybeResetWatchGroups()
 end
 
 ---Checks whether a tracking spell is now active
----@param spell SpellDef The tracking spell which might have tracking enabled
+---@param spell BomSpellDef The tracking spell which might have tracking enabled
 local function bomIsTrackingActive(spell)
   if BOM.TBC then
     for i = 1, GetNumTrackingTypes() do
@@ -163,7 +164,7 @@ local function bomIsTrackingActive(spell)
 end
 
 ---Tries to activate tracking described by `spell`
----@param spell SpellDef The tracking spell to activate
+---@param spell BomSpellDef The tracking spell to activate
 ---@param value boolean Whether tracking should be enabled
 local function bomSetTracking(spell, value)
   if BOM.TBC then
@@ -237,7 +238,7 @@ end
 ---Check for party, spell and player, which targets that spell goes onto
 ---Update spell.NeedMember, spell.NeedGroup and spell.DeathGroup
 ---@param party table<number, BomUnit> - the party
----@param spell SpellDef - the spell to update
+---@param spell BomSpellDef - the spell to update
 ---@param playerMember BomUnit - the player
 ---@param someoneIsDead boolean - the flag that buffing cannot continue while someone is dead
 ---@return boolean someoneIsDead
@@ -252,11 +253,11 @@ local function bomUpdateSpellTargets(party, spell, playerMember, someoneIsDead)
   wipe(spell.NeedMember)
   wipe(spell.DeathGroup)
 
-  if not BOM.IsSpellEnabled(spell.ConfigID) then
+  if not spellDefModule:IsSpellEnabled(spell.ConfigID) then
     --nothing!
 
   elseif spell.type == "weapon" then
-    local weaponSpell = BOM.GetProfileSpell(spell.ConfigID)
+    local weaponSpell = spellDefModule:GetProfileSpell(spell.ConfigID)
 
     if (weaponSpell.MainHandEnable and playerMember.MainHandBuff == nil)
             or (weaponSpell.OffHandEnable and playerMember.OffHandBuff == nil)
@@ -328,7 +329,7 @@ local function bomUpdateSpellTargets(party, spell, playerMember, someoneIsDead)
     if (spell.singleId == BOM.SpellId.FindHerbs or
             spell.singleId == BOM.SpellId.FindMinerals)
             and GetShapeshiftFormID() == CAT_FORM
-            and BOM.IsSpellEnabled(BOM.SpellId.Druid.TrackHumanoids) then
+            and spellDefModule:IsSpellEnabled(BOM.SpellId.Druid.TrackHumanoids) then
       -- Do nothing - ignore herbs and minerals in catform if enabled track humanoids
     elseif not bomIsTrackingActive(spell)
             and (BOM.ForceTracking == nil
@@ -356,8 +357,8 @@ local function bomUpdateSpellTargets(party, spell, playerMember, someoneIsDead)
     for i, member in ipairs(party) do
       local ok = false
       local notGroup = false
-      local blessing_name = BOM.GetProfileSpell(constModule.BLESSING_ID)
-      local blessingSpell = BOM.GetProfileSpell(spell.ConfigID)
+      local blessing_name = spellDefModule:GetProfileSpell(constModule.BLESSING_ID)
+      local blessingSpell = spellDefModule:GetProfileSpell(spell.ConfigID)
 
       if blessing_name[member.name] == spell.ConfigID
               or (member.isTank
@@ -422,7 +423,7 @@ local function bomUpdateSpellTargets(party, spell, playerMember, someoneIsDead)
     --spells
     for i, member in ipairs(party) do
       local ok = false
-      ---@type SpellDef
+      ---@type BomSpellDef
       local profileSpell = BOM.CurrentProfile.Spell[spell.ConfigID]
 
       if profileSpell.Class[member.class]
@@ -592,7 +593,7 @@ end
 ---@param spellName string
 ---@param party table<number, BomUnit>
 ---@param class string
----@param spell SpellDef
+---@param spell BomSpellDef
 local function bomGetClassInRange(spellName, party, class, spell)
   local minDist
   local ret
@@ -619,7 +620,7 @@ local function bomGetClassInRange(spellName, party, class, spell)
 end
 
 ---@class BomScan_NextCastSpell
----@field Spell SpellDef
+---@field Spell BomSpellDef
 ---@field Link string|nil
 ---@field Member string|nil
 ---@field SpellId number|nil
@@ -654,7 +655,7 @@ end
 ---@param id number Spell id to capture
 ---@param link string Spell link for a picture
 ---@param member BomUnit player to benefit from the spell
----@param spell SpellDef the spell to be added
+---@param spell BomSpellDef the spell to be added
 local function bomQueueSpell(cost, id, link, member, spell)
   if cost > bomCurrentPlayerMana then
     return -- ouch
@@ -806,10 +807,10 @@ local function bomActivateSelectedTracking()
   --reset tracking
   BOM.ForceTracking = nil
 
-  ---@param spell SpellDef
+  ---@param spell BomSpellDef
   for i, spell in ipairs(BOM.SelectedSpells) do
     if spell.type == "tracking" then
-      if BOM.IsSpellEnabled(spell.ConfigID) then
+      if spellDefModule:IsSpellEnabled(spell.ConfigID) then
         if spell.needForm ~= nil then
           if GetShapeshiftFormID() == spell.needForm
                   and BOM.ForceTracking ~= spell.trackingIconId then
@@ -842,7 +843,7 @@ local function bomGetActiveAuraAndSeal(player_member)
   BOM.ActivAura = nil
   BOM.ActivSeal = nil
 
-  ---@param spell SpellDef
+  ---@param spell BomSpellDef
   for i, spell in ipairs(BOM.SelectedSpells) do
     local player_buff = player_member.buffs[spell.ConfigID]
 
@@ -869,10 +870,10 @@ end
 
 local function bomCheckChangesAndUpdateSpelltab()
   --reset aura/seal
-  ---@param spell SpellDef
+  ---@param spell BomSpellDef
   for i, spell in ipairs(BOM.SelectedSpells) do
     if spell.type == "aura" then
-      if BOM.IsSpellEnabled(spell.ConfigID) then
+      if spellDefModule:IsSpellEnabled(spell.ConfigID) then
         if BOM.ActivAura == spell.ConfigID
                 and BOM.CurrentProfile.LastAura ~= spell.ConfigID then
           BOM.CurrentProfile.LastAura = spell.ConfigID
@@ -887,7 +888,7 @@ local function bomCheckChangesAndUpdateSpelltab()
       end -- if currentprofile.spell.enable
 
     elseif spell.type == "seal" then
-      if BOM.IsSpellEnabled(spell.ConfigID) then
+      if spellDefModule:IsSpellEnabled(spell.ConfigID) then
         if BOM.ActivSeal == spell.ConfigID
                 and BOM.CurrentProfile.LastSeal ~= spell.ConfigID then
           BOM.CurrentProfile.LastSeal = spell.ConfigID
@@ -920,7 +921,7 @@ local function bomForceUpdate(party, player_member)
   local someone_is_dead = false -- the flag that buffing cannot continue while someone is dead
 
   -- For each selected spell check the targets
-  ---@param spell SpellDef
+  ---@param spell BomSpellDef
   for i, spell in ipairs(BOM.SelectedSpells) do
     someone_is_dead = bomUpdateSpellTargets(party, spell, player_member, someone_is_dead)
   end
@@ -962,7 +963,7 @@ local function bomWhisperExpired(spell)
   end
 end
 
------@param spell SpellDef
+-----@param spell BomSpellDef
 -----@param groupIndex number
 -----@param classColorize boolean
 -----@return string
@@ -1008,7 +1009,7 @@ local function bomFormatItemBuffText(bag, slot, count)
 end
 
 ---Add a paladin blessing
----@param spell SpellDef - spell to cast
+---@param spell BomSpellDef - spell to cast
 ---@param party table<number, BomUnit> - the party
 ---@param playerMember table - player
 ---@param inRange boolean - spell target is in range
@@ -1084,7 +1085,7 @@ local function bomAddBlessing(spell, party, playerMember, inRange)
       end
 
       local add = ""
-      local blessing_name = BOM.GetProfileSpell(constModule.BLESSING_ID)
+      local blessing_name = spellDefModule:GetProfileSpell(constModule.BLESSING_ID)
       if blessing_name[member.name] ~= nil then
         add = string.format(constModule.PICTURE_FORMAT, BOM.ICON_TARGET_ON)
       end
@@ -1122,7 +1123,7 @@ local function bomAddBlessing(spell, party, playerMember, inRange)
 end
 
 ---Add a generic buff of some sorts, or a group buff
----@param spell SpellDef - spell to cast
+---@param spell BomSpellDef - spell to cast
 ---@param party table<number, BomUnit> - the party
 ---@param playerMember BomUnit - player
 ---@param inRange boolean - spell target is in range
@@ -1199,7 +1200,7 @@ local function bomAddBuff(spell, party, playerMember, inRange)
       end
 
       local add = ""
-      local profile_spell = BOM.GetProfileSpell(spell.ConfigID)
+      local profile_spell = spellDefModule:GetProfileSpell(spell.ConfigID)
 
       if profile_spell.ForcedTarget[member.name] then
         add = string.format(constModule.PICTURE_FORMAT, BOM.ICON_TARGET_ON)
@@ -1238,7 +1239,7 @@ local function bomAddBuff(spell, party, playerMember, inRange)
 end
 
 ---Adds a display text for a weapon buff
----@param spell SpellDef - the spell to cast
+---@param spell BomSpellDef - the spell to cast
 ---@param player_member table - the player
 ---@param inRange boolean - value for range check
 ---@return table (bag_title string, bag_command string)
@@ -1311,7 +1312,7 @@ local function bomAddResurrection(spell, player_member, inRange)
 end
 
 ---Adds a display text for a self buff or tracking or seal/weapon self-enchant
----@param spell SpellDef - the spell to cast
+---@param spell BomSpellDef - the spell to cast
 ---@param playerMember BomUnit - the player
 local function bomAddSelfbuff(spell, playerMember)
   if spell.requiresWarlockPet then
@@ -1346,7 +1347,7 @@ local function bomAddSelfbuff(spell, playerMember)
 end
 
 ---Adds a summon spell to the tasks
----@param spell SpellDef - the spell to cast
+---@param spell BomSpellDef - the spell to cast
 ---@param playerMember BomUnit
 local function bomAddSummonSpell(spell, playerMember)
   if spell.sacrificeAuraIds then
@@ -1388,7 +1389,7 @@ local function bomAddSummonSpell(spell, playerMember)
 end
 
 ---Adds a display text for a weapon buff
----@param spell SpellDef - the spell to cast
+---@param spell BomSpellDef - the spell to cast
 ---@param playerMember table - the player
 ---@param castButtonTitle string - if not empty, is item name from the bag
 ---@param macroCommand string - console command to use item from the bag
@@ -1451,7 +1452,7 @@ local function bomAddConsumableSelfbuff(spell, playerMember, castButtonTitle, ma
 end
 
 ---Adds a display text for a weapon buff created by a consumable item
----@param spell SpellDef - the spell to cast
+---@param spell BomSpellDef - the spell to cast
 ---@param playerMember table - the player
 ---@param castButtonTitle string - if not empty, is item name from the bag
 ---@param macroCommand string - console command to use item from the bag
@@ -1465,7 +1466,7 @@ local function bomAddConsumableWeaponBuff(spell, playerMember,
   if have_item then
     -- Have item, display the cast message and setup the cast button
     local texture, _, _, _, _, _, item_link, _, _, _ = GetContainerItemInfo(bag, slot)
-    local profile_spell = BOM.GetProfileSpell(spell.ConfigID)
+    local profile_spell = spellDefModule:GetProfileSpell(spell.ConfigID)
 
     if profile_spell.OffHandEnable
             and playerMember.OffHandBuff == nil then
@@ -1544,7 +1545,7 @@ local function bomAddConsumableWeaponBuff(spell, playerMember,
 end
 
 ---Adds a display text for a weapon buff created by a spell (shamans and paladins)
----@param spell SpellDef - the spell to cast
+---@param spell BomSpellDef - the spell to cast
 ---@param playerMember BomUnit - the player
 ---@param castButtonTitle string - if not empty, is item name from the bag
 ---@param macroCommand string - console command to use item from the bag
@@ -1570,7 +1571,7 @@ local function bomAddWeaponEnchant(spell, playerMember,
     end
   end
 
-  local profile_spell = BOM.GetProfileSpell(spell.ConfigID)
+  local profile_spell = spellDefModule:GetProfileSpell(spell.ConfigID)
 
   if profile_spell.MainHandEnable
           and playerMember.MainHandBuff == nil then
@@ -1750,7 +1751,7 @@ local function bomCheckItemsAndContainers(playerMember, cast_button_title, macro
   return cast_button_title, macro_command
 end
 
----@param spell SpellDef
+---@param spell BomSpellDef
 ---@param playerMember BomUnit
 ---@param party table<number, BomUnit>
 ---@param inRange boolean
@@ -1858,14 +1859,14 @@ end
 ---@return boolean, string, string {in_range, cast_button_title, macro_command}
 local function bomScanSelectedSpells(playerMember, party, inRange, castButtonTitle, macroCommand)
   for _, spell in ipairs(BOM.SelectedSpells) do
-    local profile_spell = BOM.GetProfileSpell(spell.ConfigID)
+    local profile_spell = spellDefModule:GetProfileSpell(spell.ConfigID)
 
     if spell.isInfo and profile_spell.Whisper then
       bomWhisperExpired(spell)
     end
 
     -- if spell is enabled and we're in the correct shapeshift form
-    if BOM.IsSpellEnabled(spell.ConfigID)
+    if spellDefModule:IsSpellEnabled(spell.ConfigID)
             and (spell.needForm == nil or GetShapeshiftFormID() == spell.needForm) then
       inRange, castButtonTitle, macroCommand = bomScanOneSpell(
               spell, playerMember, party, inRange, castButtonTitle, macroCommand)

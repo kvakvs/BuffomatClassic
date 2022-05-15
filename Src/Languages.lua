@@ -742,6 +742,8 @@ local function bomLanguage_Chinese()
     AD_REPUTATION_REMINDER                      = "银色黎明徽记",
     RIDING_SPEED_REMINDER                       = "骑术/飞行速度饰品",
     OUT_OF_THAT_ITEM                            = "不在背包",
+    CboxNoGroupBuff                             = "不使用群体BUFF",
+    CboxGroupBuff                               = "一直施放群体BUFF(额外的材料成本)",
 
     CHAT_MSG_PREFIX                             = "Buffomat: ",
     Buffomat                                    = "Buffomat", -- addon title in the main window
@@ -917,7 +919,7 @@ local function bomLanguage_Chinese()
   }
 end
 
-function BOM.SetupTranslations()
+function languagesModule:SetupTranslations()
   -- Always add english and add one language that is supported and is current
   BOM.locales = {
     enEN = bomLanguage_English(),
@@ -946,7 +948,7 @@ function BOM.SetupTranslations()
           "Arrogant_Dreamer & kvakvs for the russian translation|n"
 end
 
-function BOM.LocalizationInit()
+function languagesModule:LocalizationInit()
   if BomSharedState and BomSharedState.CustomLocales then
     for key, value in pairs(BomSharedState.CustomLocales) do
       if value ~= nil and value ~= "" then
