@@ -2,6 +2,7 @@ local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BuffomatAddon
 
 ---@class BomSpellCacheModule
+---@field cacheChanged boolean
 local spellCacheModule = BuffomatModule.DeclareModule("SpellCache") ---@type BomSpellCacheModule
 ---@type table<number|string, BomSpellCacheElement> Stores arg to results mapping for GetItemInfo
 spellCacheModule.cache = {}
@@ -66,9 +67,9 @@ function spellCacheModule:LoadSpell(spellId)
     cacheSpell.castTime = castTime
     cacheSpell.minRange = minRange
     cacheSpell.maxRange = maxRange
-    self.cache[spellId] = cacheSpell
 
-    --BOM:Print("Loaded spell " .. spellId .. ": " .. spellDef.spellName)
+    self.cache[spellId] = cacheSpell
+    spellCacheModule.cacheChanged = true
     BOM.ForceUpdate = true
   end
 

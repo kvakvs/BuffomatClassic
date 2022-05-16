@@ -2,9 +2,9 @@ local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BuffomatAddon
 
 ---@class BomItemCacheModule
+---@field cacheChanged boolean Set to true on item query callbacks
+---@field cache table<number|string, BomItemCacheElement> Stores arg to results mapping for GetItemInfo
 local itemCacheModule = BuffomatModule.DeclareModule("ItemCache") ---@type BomItemCacheModule
-
-------@field cache table<number|string, BomItemCacheElement> Stores arg to results mapping for GetItemInfo
 itemCacheModule.cache = {}
 
 ---@class BomItemCacheElement
@@ -77,8 +77,7 @@ function itemCacheModule:LoadItem(itemId)
     cacheItem.itemSellPrice = itemSellPrice
 
     itemCacheModule.cache[itemId] = cacheItem
-
-    --BOM:Print(string.format("Loaded item %d (%s)", itemId, cacheItem.itemName))
+    itemCacheModule.cacheChanged = true
     BOM.ForceUpdate = true
   end
 

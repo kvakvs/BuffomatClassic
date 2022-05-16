@@ -311,3 +311,51 @@ function spellDefModule:IsSpellEnabled(spell_id, profile_name)
   end
   return spell.Enable
 end
+
+function spellDefClass:GetIcon()
+  if self.Icon then
+    return self.Icon
+  end
+
+  local info = BOM.GetSpellInfo(self.singleId)
+  if info then
+    self.Icon = info.icon -- update own copy of icon
+    --self.single = info.name -- update own copy of spell name
+    return info.icon
+  end
+end
+
+--- Get single text for item or spell
+function spellDefClass:GetSingleText()
+  if self.single then
+    return self.single
+  end
+
+  if self.items then
+    local _, item = next(self.items)
+    local info = BOM.GetItemInfo(item)
+    if info then
+      self.Icon = info.itemTexture -- update own copy of icon
+      self.single = info.itemName -- update own copy of item name
+      return info.itemName
+    end
+  end
+
+  if self.item then
+    local info = BOM.GetItemInfo(self.item)
+    if info then
+      self.Icon = info.itemTexture -- update own copy of icon
+      self.single = info.itemName -- update own copy of item name
+      return info.itemName
+    end
+  end
+
+  if self.singleId then
+    local info = BOM.GetSpellInfo(self.singleId)
+    if info then
+      self.Icon = info.icon -- update own copy of icon
+      self.single = info.name -- update own copy of spell name
+      return info.single
+    end
+  end
+end

@@ -347,7 +347,7 @@ local function bomSetup_EachSpell(spell)
 end
 
 ---Scan all spells known to Buffomat and see if they are available to the player
-function BOM.SetupAvailableSpells()
+function spellSetupModule:SetupAvailableSpells()
   for i, profil in ipairs(BOM.ALL_PROFILES) do
     BOM.CharacterState[profil].Spell = BOM.CharacterState[profil].Spell or {}
     BOM.CharacterState[profil].CancelBuff = BOM.CharacterState[profil].CancelBuff or {}

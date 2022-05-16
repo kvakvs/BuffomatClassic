@@ -7,6 +7,7 @@ local eventsModule = BuffomatModule.DeclareModule("Events") ---@type BomEventsMo
 local constModule = BuffomatModule.Import("Const") ---@type BomConstModule
 local allSpellsModule = BuffomatModule.Import("AllSpells") ---@type BomAllSpellsModule
 local spellButtonsTabModule = BuffomatModule.Import("Ui/SpellButtonsTab") ---@type BomSpellButtonsTabModule
+local spellSetupModule = BuffomatModule.Import("SpellSetup") ---@type BomSpellSetupModule
 
 --"UNIT_POWER_UPDATE","UNIT_SPELLCAST_START","UNIT_SPELLCAST_STOP","PLAYER_STARTED_MOVING","PLAYER_STOPPED_MOVING"
 eventsModule.EVT_COMBAT_STOP = { "PLAYER_REGEN_ENABLED" }
@@ -310,7 +311,7 @@ local function Event_UNIT_SPELLCHANNEL_STOP(unit)
 end
 
 local function Event_SpellsChanged()
-  BOM.SetupAvailableSpells()
+  spellSetupModule:SetupAvailableSpells()
   BOM.SetForceUpdate("event Spells Changed")
   spellButtonsTabModule.spellTabsCreatedFlag = false
 

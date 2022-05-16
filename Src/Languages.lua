@@ -37,6 +37,7 @@ local function bomLanguage_English()
     ["Category_classicPhysBuff"]                = "Physical Buffs (Classic)",
     ["Category_classicSpellElixir"]             = "Spell Elixirs (Classic)",
     ["Category_classicElixir"]                  = "Elixirs (Classic)",
+    ["Category_classicBuff"]                    = "Buffs (Classic)",
     ["Category_tbcPhysicalFood"]                = "Physical Food",
     ["Category_tbcSpellFood"]                   = "Spell Food",
     ["Category_tbcFood"]                        = "Other Food",
@@ -44,7 +45,7 @@ local function bomLanguage_English()
     ["Category_tbcSpellElixir"]                 = "Spell Elixirs",
     ["Category_tbcElixir"]                      = "Other Elixirs",
     ["Category_scroll"]                         = "Scrolls",
-    ["Category_oil"]                            = "Oils",
+    ["Category_weaponEnchantment"]              = "Weapon Enchantments",
     ["Category_none"]                           = "Uncategorized",
 
     ["options.OptionsTitle"]                    = "Buffomat",

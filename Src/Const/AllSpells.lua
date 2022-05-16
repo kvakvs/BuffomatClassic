@@ -56,10 +56,6 @@ local function tbcOrClassic(tbc, classic)
   return classic
 end
 
-local function bomClassicHint()
-  return tbcOrClassic("Classic", nil)
-end
-
 ---Add PRIEST spells
 ---@param spells table<string, BomSpellDef>
 ---@param enchants table<string, table<number>>
@@ -955,34 +951,30 @@ end
 function allSpellsModule:SetupPhysicalDpsConsumables(spells, enchants)
   spellDefModule:addBuff(spells, 17538, --Elixir of the Mongoose
           { item          = 13452, isConsumable = true, default = false,
-            onlyUsableFor = BOM_PHYSICAL_CLASSES, consumableEra = BOM.CLASSIC_ERA,
-            extraText     = bomClassicHint() })
+            onlyUsableFor = BOM_PHYSICAL_CLASSES, consumableEra = BOM.CLASSIC_ERA })
                 :Category(self.CLASSIC_PHYS_ELIXIR)
                 :ElixirType(self.ELIX_BATTLE)
   spellDefModule:addBuff(spells, 11334, --Elixir of Greater Agility
           { item          = 9187, isConsumable = true, default = false,
-            onlyUsableFor = BOM_PHYSICAL_CLASSES, consumableEra = BOM.CLASSIC_ERA,
-            extraText     = bomClassicHint() })
+            onlyUsableFor = BOM_PHYSICAL_CLASSES, consumableEra = BOM.CLASSIC_ERA })
                 :Category(self.CLASSIC_PHYS_ELIXIR)
                 :ElixirType(self.ELIX_BATTLE)
   spellDefModule:addBuff(spells, 11405, --Elixir of Giants
           { item          = 9206, isConsumable = true, default = false,
-            onlyUsableFor = BOM_PHYSICAL_CLASSES, consumableEra = BOM.CLASSIC_ERA,
-            extraText     = bomClassicHint() })
+            onlyUsableFor = BOM_PHYSICAL_CLASSES, consumableEra = BOM.CLASSIC_ERA })
                 :Category(self.CLASSIC_PHYS_ELIXIR)
                 :ElixirType(self.ELIX_BATTLE)
   spellDefModule:addBuff(spells, 17038, --Winterfall Firewater
           { item          = 12820, isConsumable = true, default = false,
-            onlyUsableFor = BOM_PHYSICAL_CLASSES, consumableEra = BOM.CLASSIC_ERA,
-            extraText     = bomClassicHint() })
+            onlyUsableFor = BOM_PHYSICAL_CLASSES, consumableEra = BOM.CLASSIC_ERA })
                 :Category(self.CLASSIC_PHYS_BUFF)
   spellDefModule:addBuff(spells, 16329, --Juju Might +40AP
           { item          = 12460, isConsumable = true, default = false,
-            consumableEra = BOM.CLASSIC_ERA, extraText = bomClassicHint() })
+            consumableEra = BOM.CLASSIC_ERA, })
                 :Category(self.CLASSIC_PHYS_BUFF)
   spellDefModule:addBuff(spells, 16323, --Juju Power +30Str
           { item          = 12451, isConsumable = true, default = false,
-            consumableEra = BOM.CLASSIC_ERA, extraText = bomClassicHint() })
+            consumableEra = BOM.CLASSIC_ERA, })
                 :Category(self.CLASSIC_PHYS_BUFF)
   --
   -- Scrolls
@@ -991,36 +983,45 @@ function allSpellsModule:SetupPhysicalDpsConsumables(spells, enchants)
           { item           = 27498, isConsumable = true, default = false, consumableTarget = "player",
             singleDuration = DURATION_30M, playerClass = BOM_PHYSICAL_CLASSES },
           { isTBC = true })
+                :Category(self.SCROLL)
   spellDefModule:addBuff(spells, 12174, --Scroll of Agility IV
           { item           = 10309, isConsumable = true, default = false, consumableTarget = "player",
-            singleDuration = DURATION_30M, playerClass = BOM_PHYSICAL_CLASSES, extraText = bomClassicHint() })
+            singleDuration = DURATION_30M, playerClass = BOM_PHYSICAL_CLASSES, })
+                :Category(self.SCROLL)
   spellDefModule:addBuff(spells, 8117, --Scroll of Agility III
           { item           = 4425, isConsumable = true, default = false, consumableTarget = "player",
-            singleDuration = DURATION_30M, playerClass = BOM_PHYSICAL_CLASSES, extraText = bomClassicHint() })
+            singleDuration = DURATION_30M, playerClass = BOM_PHYSICAL_CLASSES, })
+                :Category(self.SCROLL)
 
   spellDefModule:addBuff(spells, 33082, --TBC: Scroll of Strength V
           { item           = 27503, isConsumable = true, default = false, consumableTarget = "player",
             singleDuration = DURATION_30M, playerClass = BOM_MELEE_CLASSES },
           { isTBC = true })
+                :Category(self.SCROLL)
   spellDefModule:addBuff(spells, 12179, --Scroll of Strength IV
           { item           = 10310, isConsumable = true, default = false, consumableTarget = "player",
-            singleDuration = DURATION_30M, playerClass = BOM_MELEE_CLASSES, extraText = bomClassicHint() })
+            singleDuration = DURATION_30M, playerClass = BOM_MELEE_CLASSES, })
+                :Category(self.SCROLL)
   spellDefModule:addBuff(spells, 8120, --Scroll of Strength III
           { item           = 4426, isConsumable = true, default = false, consumableTarget = "player",
-            singleDuration = DURATION_30M, playerClass = BOM_MELEE_CLASSES, extraText = bomClassicHint() })
+            singleDuration = DURATION_30M, playerClass = BOM_MELEE_CLASSES, })
+                :Category(self.SCROLL)
 
   spellDefModule:addBuff(spells, 33079, --TBC: Scroll of Protection V
           { item           = 27500, isConsumable = true, default = false, consumableTarget = "player",
             singleDuration = DURATION_30M },
           { isTBC = true })
+                :Category(self.SCROLL)
   spellDefModule:addBuff(spells, 12175, --Scroll of Protection IV
           { item           = 10305, isConsumable = true, default = false, consumableTarget = "player",
-            singleDuration = DURATION_30M, extraText = bomClassicHint() })
+            singleDuration = DURATION_30M, })
+                :Category(self.SCROLL)
 
   spellDefModule:addBuff(spells, 33080, --Scroll of Spirit V
           { item           = 27501, isConsumable = true, default = false, consumableTarget = "player",
             singleDuration = DURATION_30M, playerClass = BOM_MANA_CLASSES },
           { isTBC = true })
+                :Category(self.SCROLL)
 
   --
   -- Rune of Warding
@@ -1036,19 +1037,22 @@ function allSpellsModule:SetupPhysicalDpsConsumables(spells, enchants)
           { item          = 12643, items = { 12643, 7965, 3241, 3240, 3239 },
             isConsumable  = true, type = "weapon", duration = DURATION_30M,
             default       = false, onlyUsableFor = BOM_PHYSICAL_CLASSES, -- fist weapon = blunt
-            consumableEra = BOM.CLASSIC_ERA, extraText = bomClassicHint() })
+            consumableEra = BOM.CLASSIC_ERA, })
+                :Category(self.WEAPON_ENCHANTMENT)
   enchants[16622] = { 1703, 484, 21, 20, 19 } -- Weightstone
 
   spellDefModule:addBuff(spells, 34340, --TBC: Adamantite Weightstone +12 BLUNT +14 CRIT
           { item          = 28421, items = { 28421 }, isConsumable = true, type = "weapon", duration = DURATION_1H,
             default       = false, onlyUsableFor = BOM_PHYSICAL_CLASSES, -- fist weapon = blunt
             consumableEra = BOM.TBC_ERA }, { isTBC = true })
+                :Category(self.WEAPON_ENCHANTMENT)
   enchants[34340] = { 2955 } --TBC: Adamantite Weightstone (Weight Weapon)
 
   spellDefModule:addBuff(spells, 34339, --TBC: Fel Weightstone +12 BLUNT
           { item          = 28420, items = { 28420 }, isConsumable = true, type = "weapon", duration = DURATION_1H,
             default       = false, onlyUsableFor = BOM_PHYSICAL_CLASSES, -- fist weapon = blunt
             consumableEra = BOM.TBC_ERA }, { isTBC = true })
+                :Category(self.WEAPON_ENCHANTMENT)
   enchants[34339] = { 2954 } --TBC: Fel Weightstone (Weighted +12)
 
 
@@ -1059,24 +1063,32 @@ function allSpellsModule:SetupPhysicalDpsConsumables(spells, enchants)
           { item          = 12404, items = { 12404, 7964, 2871, 2863, 2862 },
             isConsumable  = true, type = "weapon", duration = DURATION_30M, default = false,
             onlyUsableFor = BOM_PHYSICAL_CLASSES, consumableEra = BOM.CLASSIC_ERA })
+                :Category(self.WEAPON_ENCHANTMENT)
   enchants[16138] = { 1643, 483, 14, 13, 40 } --Sharpening Stone
+
   spellDefModule:addBuff(spells, 28891, --Consecrated Sharpening Stone
           { item     = 23122, isConsumable = true, type = "weapon",
             duration = DURATION_1H, default = false, onlyUsableFor = BOM_PHYSICAL_CLASSES, consumableEra = BOM.CLASSIC_ERA })
+                :Category(self.WEAPON_ENCHANTMENT)
   enchants[28891] = { 2684 } --Consecrated Sharpening Stone
+
   spellDefModule:addBuff(spells, 22756, --Elemental Sharpening Stone
           { item     = 18262, isConsumable = true, type = "weapon",
             duration = DURATION_30M, default = false, onlyUsableFor = BOM_PHYSICAL_CLASSES, consumableEra = BOM.CLASSIC_ERA })
+                :Category(self.WEAPON_ENCHANTMENT)
   enchants[22756] = { 2506 } --Elemental Sharpening Stone
 
   spellDefModule:addBuff(spells, 29453, --TBC: Adamantite Sharpening Stone +12 WEAPON +14 CRIT
           { item    = 23529, items = { 23529 }, isConsumable = true, type = "weapon", duration = DURATION_1H,
             default = false, onlyUsableFor = BOM_PHYSICAL_CLASSES, consumableEra = BOM.TBC_ERA },
           { isTBC = true })
+                :Category(self.WEAPON_ENCHANTMENT)
+
   spellDefModule:addBuff(spells, 29452, --TBC: Fel Sharpening Stone +12 WEAPON
           { item    = 23528, items = { 23528 }, isConsumable = true, type = "weapon", duration = DURATION_1H,
             default = false, onlyUsableFor = BOM_PHYSICAL_CLASSES, consumableEra = BOM.TBC_ERA },
           { isTBC = true })
+                :Category(self.WEAPON_ENCHANTMENT)
   enchants[29452] = { 2712 } --TBC: Fel Sharpening Stone (Sharpened +12)
   enchants[29453] = { 2713 } --TBC: Adamantite Sharpening Stone (Sharpened +14 Crit, +12)
 end
@@ -1089,34 +1101,73 @@ function allSpellsModule:SetupCasterBattleElixirs(spells, enchants)
   spellDefModule:tbcConsumable(spells, 28273, 22710, --TBC: Bloodthistle (Belf only)
           { playerRace = "BloodElf", playerClass = BOM_MANA_CLASSES },
           "+10 spell")
+                :Category(self.TBC_FOOD)
+                :ElixirType(self.ELIX_BATTLE)
 
   spellDefModule:tbcConsumable(spells, 28509, 22840) --TBC: Elixir of Major Mageblood +16 mp5
+                :Category(self.TBC_SPELL_ELIXIR)
+                :ElixirType(self.ELIX_BATTLE)
+
   spellDefModule:tbcConsumable(spells, 28503, 22835, --TBC: Elixir of Major Shadow Power +55 SHADOW
           { playerClass = BOM_SHADOW_CLASSES })
+                :Category(self.TBC_SPELL_ELIXIR)
+                :ElixirType(self.ELIX_BATTLE)
+
   spellDefModule:tbcConsumable(spells, 28501, 22833, --TBC: Elixir of Major Firepower +55 FIRE
           { playerClass = BOM_FIRE_CLASSES })
+                :Category(self.TBC_SPELL_ELIXIR)
+                :ElixirType(self.ELIX_BATTLE)
+
   spellDefModule:tbcConsumable(spells, 28493, 22827, --TBC: Elixir of Major Frost Power +55 FROST
           { playerClass = BOM_FROST_CLASSES })
+                :Category(self.TBC_SPELL_ELIXIR)
+                :ElixirType(self.ELIX_BATTLE)
+
   spellDefModule:tbcConsumable(spells, 28491, 22825, --TBC: Elixir of Healing Power +50 HEAL
           { playerClass = BOM_MANA_CLASSES })
+                :Category(self.TBC_SPELL_ELIXIR)
+                :ElixirType(self.ELIX_BATTLE)
+
   spellDefModule:tbcConsumable(spells, 33721, 28103, --TBC: Adept's Elixir +24 SPELL, +24 SPELLCRIT
           { playerClass = BOM_MANA_CLASSES })
+                :Category(self.TBC_SPELL_ELIXIR)
+                :ElixirType(self.ELIX_BATTLE)
+
   spellDefModule:tbcConsumable(spells, 39627, 32067, --TBC: Elixir of Draenic Wisdom +30 SPI
           { playerClass = BOM_MANA_CLASSES })
+                :Category(self.TBC_SPELL_ELIXIR)
+                :ElixirType(self.ELIX_GUARDIAN)
 
   -- Visible in TBC but marked as Classic consumables
   spellDefModule:classicConsumable(spells, 24363, 20007, --Mageblood Potion
-          { playerClass = BOM_MANA_CLASSES }, bomClassicHint())
+          { playerClass = BOM_MANA_CLASSES })
+                :Category(self.CLASSIC_SPELL_ELIXIR)
+                :ElixirType(self.ELIX_GUARDIAN)
+
   spellDefModule:classicConsumable(spells, 17539, 13454, --Greater Arcane Elixir
-          { playerClass = BOM_MANA_CLASSES }, bomClassicHint())
+          { playerClass = BOM_MANA_CLASSES })
+                :Category(self.CLASSIC_SPELL_ELIXIR)
+                :ElixirType(self.ELIX_BATTLE)
+
   spellDefModule:classicConsumable(spells, 11390, 9155, --Greater Arcane Elixir
-          { playerClass = BOM_MANA_CLASSES }, bomClassicHint())
+          { playerClass = BOM_MANA_CLASSES })
+                :Category(self.CLASSIC_SPELL_ELIXIR)
+                :ElixirType(self.ELIX_BATTLE)
+
   spellDefModule:classicConsumable(spells, 11474, 9264, -- Elixir of Shadow Power
-          { playerClass = BOM_SHADOW_CLASSES }, bomClassicHint())
+          { playerClass = BOM_SHADOW_CLASSES })
+                :Category(self.CLASSIC_SPELL_ELIXIR)
+                :ElixirType(self.ELIX_BATTLE)
+
   spellDefModule:classicConsumable(spells, 26276, 21546, --Elixir of Greater Firepower
-          { playerClass = BOM_FIRE_CLASSES }, bomClassicHint())
+          { playerClass = BOM_FIRE_CLASSES })
+                :Category(self.CLASSIC_SPELL_ELIXIR)
+                :ElixirType(self.ELIX_BATTLE)
+
   spellDefModule:classicConsumable(spells, 21920, 17708, --Elixir of Frost Power
-          { playerClass = BOM_FROST_CLASSES }, bomClassicHint())
+          { playerClass = BOM_FROST_CLASSES })
+                :Category(self.CLASSIC_SPELL_ELIXIR)
+                :ElixirType(self.ELIX_BATTLE)
 end
 
 ---ITEMS, applicable to most of the classes, self buffs, containers to open etc
@@ -1124,31 +1175,44 @@ end
 ---@param enchants table<string, table<number>>
 function allSpellsModule:SetupCasterGuardianElixirs(spells, enchants)
   spellDefModule:classicConsumable(spells, 11396, 9179, --Elixir of Greater Intellect +25
-          nil, bomClassicHint())
+          nil)
+                :Category(self.TBC_SPELL_ELIXIR)
+                :ElixirType(self.ELIX_GUARDIAN)
 
   spellDefModule:tbcConsumable(spells, 28514, 22848, --TBC: Elixir of Empowerment, -30 TARGET RESIST
-          { playerClass = BOM_MANA_CLASSES }, bomClassicHint())
+          { playerClass = BOM_MANA_CLASSES })
+                :Category(self.TBC_SPELL_ELIXIR)
+                :ElixirType(self.ELIX_GUARDIAN)
+
   spellDefModule:tbcConsumable(spells, 17535, 13447, --TBC: Elixir of the Sages +18 INT/+18 SPI
-          { playerClass = BOM_MANA_CLASSES }, bomClassicHint())
+          { playerClass = BOM_MANA_CLASSES })
+                :Category(self.CLASSIC_SPELL_ELIXIR)
+                :ElixirType(self.ELIX_GUARDIAN)
 end
 
 ---@param spells table<string, BomSpellDef>
 ---@param enchants table<string, table<number>>
 function allSpellsModule:SetupCasterConsumables(spells, enchants)
   spellDefModule:classicConsumable(spells, 18194, 13931, --Nightfin Soup +8Mana/5
-          { playerClass = BOM_MANA_CLASSES }, bomClassicHint())
+          { playerClass = BOM_MANA_CLASSES })
+                :Category(self.CLASSIC_SPELL_FOOD)
+
   spellDefModule:classicConsumable(spells, 19710, 12218, --Monster Omelette
-          { playerClass = BOM_MANA_CLASSES }, bomClassicHint())
+          { playerClass = BOM_MANA_CLASSES })
+                :Category(self.CLASSIC_SPELL_FOOD)
+
   spellDefModule:addBuff(spells, 18141, --Blessed Sunfruit Juice +10 SPIRIT
           { item          = 13813, isConsumable = true, default = false,
             onlyUsableFor = BOM_MANA_CLASSES, consumableEra = BOM.CLASSIC_ERA },
           { isTBC = false }) -- hide in TBC
+                :Category(self.CLASSIC_SPELL_FOOD)
 
   if BOM.TBC then
     spellDefModule:addBuff(spells, 28017, --Superior Wizard Oil +42 SPELL
             { item          = 22522, items = { 22522 }, isConsumable = true,
               type          = "weapon", duration = DURATION_1H, default = false,
               onlyUsableFor = BOM_MANA_CLASSES })
+                  :Category(self.WEAPON_ENCHANTMENT)
   end
 
   spellDefModule:addBuff(spells, 25123, --Minor, Lesser, Brilliant Mana Oil
@@ -1156,6 +1220,7 @@ function allSpellsModule:SetupCasterConsumables(spells, enchants)
             items    = { 20748, 20747, 20745, -- Minor, Lesser, Brilliant Mana Oil
                          22521 }, -- TBC: Superior Mana Oil
             duration = DURATION_30M, default = false, onlyUsableFor = BOM_MANA_CLASSES })
+                :Category(self.WEAPON_ENCHANTMENT)
   enchants[25123] = { 2624, 2625, 2629, -- Minor, Lesser, Brilliant Mana Oil (enchant)
                       2677 } -- TBC: Superior Mana Oil (enchant)
 
@@ -1164,12 +1229,14 @@ function allSpellsModule:SetupCasterConsumables(spells, enchants)
             items    = { 20749, 20746, 20744, 20750, --Minor, Lesser, "regular", Brilliant Wizard Oil
                          22522 }, -- TBC: Superior Wizard Oil
             duration = DURATION_30M, default = false, onlyUsableFor = BOM_MANA_CLASSES })
+                :Category(self.WEAPON_ENCHANTMENT)
   enchants[25122] = { 2623, 2626, 2627, 2628, --Minor, Lesser, "regular", Brilliant Wizard Oil (enchant)
                       2678 }, -- TBC: Superior Wizard Oil (enchant)
 
   spellDefModule:addBuff(spells, 28898, --Blessed Wizard Oil
           { item     = 23123, isConsumable = true, type = "weapon",
             duration = DURATION_1H, default = false, onlyUsableFor = BOM_MANA_CLASSES })
+                :Category(self.WEAPON_ENCHANTMENT)
   enchants[28898] = { 2685 } --Blessed Wizard Oil
 end
 
@@ -1179,69 +1246,130 @@ function allSpellsModule:SetupBattleElixirs(spells, enchants)
   -- Sunwell only
   --tinsert(s, BOM.Class.SpellDef:new(45373, --TBC: Bloodberry Elixir +15 all stats
   --        { item = 34537, isConsumable = true, default = false }))
-  spellDefModule:tbcConsumable(spells, 33726, 28104) --TBC: Elixir of Mastery +15 all stats
 end
 
 ---@param spells table<string, BomSpellDef>
 ---@param enchants table<string, table<number>>
 function allSpellsModule:SetupGuardianElixirs(spells, enchants)
+  spellDefModule:tbcConsumable(spells, 33726, 28104) --TBC: Elixir of Mastery +15 all stats
+                :Category(self.TBC_ELIXIR)
+                :ElixirType(self.ELIX_GUARDIAN)
+
   spellDefModule:tbcConsumable(spells, 28502, 22834) --TBC: Elixir of Major Defense +550 ARMOR
+                :Category(self.TBC_ELIXIR)
+                :ElixirType(self.ELIX_GUARDIAN)
+
   spellDefModule:tbcConsumable(spells, 39628, 32068) --TBC: Elixir of Ironskin +30 RESIL
+                :Category(self.TBC_ELIXIR)
+                :ElixirType(self.ELIX_GUARDIAN)
+
   spellDefModule:tbcConsumable(spells, 39625, 32062) --TBC: Elixir of Major Fortitude +250 HP and 10 HP/5
+                :Category(self.TBC_ELIXIR)
+                :ElixirType(self.ELIX_GUARDIAN)
+
   spellDefModule:tbcConsumable(spells, 39626, 32063) --TBC: Earthen Elixir -20 ALL DMG TAKEN
+                :Category(self.TBC_ELIXIR)
+                :ElixirType(self.ELIX_GUARDIAN)
 
   spellDefModule:classicConsumable(spells, 3593, 3825, --Elixir of Fortitude
-          nil, bomClassicHint())
+          nil)
+                :Category(self.CLASSIC_ELIXIR)
+                :ElixirType(self.ELIX_GUARDIAN)
+
   spellDefModule:classicConsumable(spells, 11348, 13445, --Elixir of Superior Defense
-          nil, bomClassicHint())
+          nil)
+                :Category(self.CLASSIC_ELIXIR)
+                :ElixirType(self.ELIX_GUARDIAN)
+
   spellDefModule:classicConsumable(spells, 24361, 20004, --Major Troll's Blood Potion
-          nil, bomClassicHint())
+          nil)
+                :Category(self.CLASSIC_SPELL_ELIXIR)
+                :ElixirType(self.ELIX_GUARDIAN)
+
   spellDefModule:classicConsumable(spells, 11371, 9088, --Gift of Arthas
-          nil, bomClassicHint())
+          nil)
+                :Category(self.CLASSIC_ELIXIR)
+                :ElixirType(self.ELIX_GUARDIAN)
+
   spellDefModule:classicConsumable(spells, 16326, 12455, --Juju Ember +15FR
-          nil, bomClassicHint())
+          nil)
+                :Category(self.CLASSIC_BUFF)
+
   spellDefModule:classicConsumable(spells, 16325, 12457, --Juju Chill +15FrostR
-          nil, bomClassicHint())
+          nil)
+                :Category(self.CLASSIC_BUFF)
 
   spellDefModule:classicConsumable(spells, 22730, 18254, --Runn Tum Tuber Surprise
-          nil, bomClassicHint())
+          nil)
+                :Category(self.CLASSIC_SPELL_FOOD)
   spellDefModule:classicConsumable(spells, 25661, 21023, --Dirge's Kickin' Chimaerok Chops x
-          nil, bomClassicHint())
+          nil)
+                :Category(self.CLASSIC_FOOD)
   spellDefModule:classicConsumable(spells, 22790, 18284, --Kreeg's Stout Beatdown
-          { playerClass = BOM_MANA_CLASSES }, bomClassicHint())
+          { playerClass = BOM_MANA_CLASSES })
+                :Category(self.CLASSIC_FOOD)
   spellDefModule:classicConsumable(spells, 22789, 18269, --Gordok Green Grog
-          nil, bomClassicHint())
+          nil)
+                :Category(self.CLASSIC_FOOD)
   spellDefModule:classicConsumable(spells, 25804, 21151, --Rumsey Rum Black Label
-          nil, bomClassicHint())
+          nil)
+                :Category(self.CLASSIC_FOOD)
 
   spellDefModule:classicConsumable(spells, 17549, 13461, --Greater Arcane Protection Potion
-          nil, bomClassicHint())
+          nil)
+                :Category(self.CLASSIC_ELIXIR)
+                :ElixirType(self.ELIX_GUARDIAN)
   spellDefModule:classicConsumable(spells, 17543, 13457, --Greater Fire Protection Potion
-          nil, bomClassicHint())
+          nil)
+                :Category(self.CLASSIC_ELIXIR)
+                :ElixirType(self.ELIX_GUARDIAN)
   spellDefModule:classicConsumable(spells, 17544, 13456, --Greater Frost Protection Potion
-          nil, bomClassicHint())
+          nil)
+                :Category(self.CLASSIC_ELIXIR)
+                :ElixirType(self.ELIX_GUARDIAN)
   spellDefModule:classicConsumable(spells, 17546, 13458, --Greater Nature Protection Potion
-          nil, bomClassicHint())
+          nil)
+                :Category(self.CLASSIC_ELIXIR)
+                :ElixirType(self.ELIX_GUARDIAN)
   spellDefModule:classicConsumable(spells, 17548, 13459, --Greater Shadow Protection Potion
-          nil, bomClassicHint())
+          nil)
+                :Category(self.CLASSIC_ELIXIR)
+                :ElixirType(self.ELIX_GUARDIAN)
 
   spellDefModule:tbcConsumable(spells, 28536, 22845) --Major Arcane Protection Potion (crafted and cauldron 32840)
+                :Category(self.TBC_ELIXIR)
+                :ElixirType(self.ELIX_GUARDIAN)
   spellDefModule:tbcConsumable(spells, 28511, 22841) --Major Fire Protection Potion (crafted and cauldron 32846)
+                :Category(self.TBC_ELIXIR)
+                :ElixirType(self.ELIX_GUARDIAN)
   spellDefModule:tbcConsumable(spells, 28512, 22842) --Major Frost Protection Potion (crafted and cauldron 32847)
+                :Category(self.TBC_ELIXIR)
+                :ElixirType(self.ELIX_GUARDIAN)
   spellDefModule:tbcConsumable(spells, 28513, 22844) --Major Nature Protection Potion (crafted and cauldron 32844)
+                :Category(self.TBC_ELIXIR)
+                :ElixirType(self.ELIX_GUARDIAN)
   spellDefModule:tbcConsumable(spells, 28537, 22846) --Major Shadow Protection Potion (crafted and cauldron 32845)
+                :Category(self.TBC_ELIXIR)
+                :ElixirType(self.ELIX_GUARDIAN)
   spellDefModule:tbcConsumable(spells, 28538, 22847) --Major Holy Protection Potion (crafted)
+                :Category(self.TBC_ELIXIR)
+                :ElixirType(self.ELIX_GUARDIAN)
 end
 
 ---@param spells table<string, BomSpellDef>
 ---@param enchants table<string, table<number>>
 function allSpellsModule:SetupItemSpells(spells, enchants)
   spellDefModule:classicConsumable(spells, 15233, 11564, --Crystal Ward
-          nil, bomClassicHint())
+          nil)
+                :Category(self.CLASSIC_BUFF)
+
   spellDefModule:classicConsumable(spells, 15279, 11567, --Crystal Spire +12 THORNS
-          nil, bomClassicHint())
+          nil)
+                :Category(self.CLASSIC_BUFF)
+
   spellDefModule:classicConsumable(spells, 15231, 11563, --Crystal Force +30 SPI
-          nil, bomClassicHint())
+          nil)
+                :Category(self.CLASSIC_BUFF)
 end
 
 ---@param spells table<string, BomSpellDef>
@@ -1254,44 +1382,65 @@ function allSpellsModule:SetupFood(spells, enchants)
           { item          = 13928, isConsumable = true, default = false, onlyUsableFor = BOM_PHYSICAL_CLASSES,
             consumableEra = BOM.CLASSIC_ERA },
           { isTBC = false }) -- hide in TBC
+                :Category(self.CLASSIC_PHYS_FOOD)
   spellDefModule:addBuff(spells, 24799, --Smoked Desert Dumplings +Strength
           { item          = 20452, isConsumable = true, default = false, onlyUsableFor = BOM_PHYSICAL_CLASSES,
             consumableEra = BOM.CLASSIC_ERA },
           { isTBC = false }) -- hide in TBC
+                :Category(self.CLASSIC_PHYS_FOOD)
   spellDefModule:classicConsumable(spells, 18125, 13810, --Blessed Sunfruit +STR
-          { playerClass = BOM_MELEE_CLASSES }, bomClassicHint())
+          { playerClass = BOM_MELEE_CLASSES })
+                :Category(self.CLASSIC_PHYS_FOOD)
 
   --
   -- Food (The Burning Crusade)
   --
   spellDefModule:tbcConsumable(spells, 33257, { 33052, 27667 }, --Well Fed +30 STA +20 SPI
           nil, L.TooltipSimilarFoods)
+                :Category(self.TBC_FOOD)
 
   spellDefModule:tbcConsumable(spells, 35254, { 27651, 30155, 27662, 33025 }, --Well Fed +20 STA +20 SPI
           nil, L.TooltipSimilarFoods)
+                :Category(self.TBC_FOOD)
   --BOM.Class.SpellDef:tbc_consumable(spells, 35272, { 27660, 31672, 33026 }) --Well Fed +20 STA +20 SPI
 
   -- Warp Burger, Grilled Mudfish, ...
   spellDefModule:tbcConsumable(spells, 33261, { 27659, 30358, 27664, 33288, 33293 }, --Well Fed +20 AGI +20 SPI
           { playerClass = BOM_PHYSICAL_CLASSES }, L.TooltipSimilarFoods)
+                :Category(self.TBC_PHYS_FOOD)
+
   spellDefModule:tbcConsumable(spells, 43764, 33872, --Spicy Hot Talbuk: Well Fed +20 HITRATING +20 SPI
           { playerClass = BOM_PHYSICAL_CLASSES })
+                :Category(self.TBC_PHYS_FOOD)
+
   spellDefModule:tbcConsumable(spells, 33256, { 27658, 30359 }, -- Well Fed +20 STR +20 SPI
           { playerClass = BOM_MELEE_CLASSES }, L.TooltipSimilarFoods)
+                :Category(self.TBC_PHYS_FOOD)
+
   spellDefModule:tbcConsumable(spells, 33259, 27655) --Ravager Dog: Well Fed +40 AP +20 SPI
+                :Category(self.TBC_PHYS_FOOD)
+
   spellDefModule:tbcConsumable(spells, 46899, 35563, --Charred Bear Kabobs +24 AP
           { playerClass = BOM_PHYSICAL_CLASSES })
+                :Category(self.TBC_PHYS_FOOD)
 
   spellDefModule:tbcConsumable(spells, 41030, 32721, --Skyguard Rations: Well Fed +15 STA +15 SPI
           { playerClass = BOM_MANA_CLASSES })
+                :Category(self.TBC_FOOD)
+
   spellDefModule:tbcConsumable(spells, 33263, { 27657, 31673, 27665, 30361 }, --Well Fed +23 SPELL +20 SPI
           { playerClass = BOM_MANA_CLASSES },
           L.TooltipSimilarFoods)
+                :Category(self.TBC_SPELL_FOOD)
+
   spellDefModule:tbcConsumable(spells, 33265, 27663, --Blackened Sporefish: Well Fed +8 MP5 +20 STA
           { playerClass = BOM_MANA_CLASSES })
+                :Category(self.TBC_SPELL_FOOD)
+
   spellDefModule:tbcConsumable(spells, 33268, { 27666, 30357 }, --Golden Fish Sticks: Well Fed +44 HEAL +20 SPI
           { playerClass = BOM_MANA_CLASSES },
           L.TooltipSimilarFoods)
+                :Category(self.TBC_SPELL_FOOD)
 end
 
 ---@param spells table<string, BomSpellDef>
@@ -1299,39 +1448,83 @@ end
 function allSpellsModule:SetupFlasks(spells, enchants)
   spellDefModule:tbcConsumable(spells, 28540, 22866, --TBC: Flask of Pure Death +80 SHADOW +80 FIRE +80 FROST
           { playerClass = BOM_MANA_CLASSES })
+                :Category(self.TBC_SPELL_ELIXIR)
+                :ElixirType(self.ELIX_FLASK)
+
   spellDefModule:tbcConsumable(spells, 28521, 22861, --TBC: Flask of Blinding Light +80 ARC +80 HOLY +80 NATURE
           { playerClass = BOM_MANA_CLASSES })
+                :Category(self.TBC_SPELL_ELIXIR)
+                :ElixirType(self.ELIX_FLASK)
+
   spellDefModule:tbcConsumable(spells, 28520, 22854, --TBC: Flask of Relentless Assault +120 AP
           { playerClass = BOM_PHYSICAL_CLASSES })
+                :Category(self.TBC_PHYS_ELIXIR)
+                :ElixirType(self.ELIX_FLASK)
+
   spellDefModule:tbcConsumable(spells, 28518, 22851) --TBC: Flask of Fortification +500 HP +10 DEF RATING
+                :Category(self.TBC_ELIXIR)
+                :ElixirType(self.ELIX_FLASK)
+
   spellDefModule:tbcConsumable(spells, 28519, 22853) --TBC: Flask of Mighty Restoration +25 MP/5
+                :Category(self.TBC_SPELL_ELIXIR)
+                :ElixirType(self.ELIX_FLASK)
+
   spellDefModule:tbcConsumable(spells, 42735, 33208) --TBC: Flask of Chromatic Wonder +35 ALL RESIST +18 ALL STATS
+                :Category(self.TBC_ELIXIR)
+                :ElixirType(self.ELIX_FLASK)
 
   --
   -- Shattrath Flasks...
   --
   spellDefModule:tbcConsumable(spells, 46837, 35716, --TBC: Shattrath Flask of Pure Death +80 SHADOW +80 FIRE +80 FROST
           { playerClass = BOM_MANA_CLASSES })
+                :Category(self.TBC_SPELL_ELIXIR)
+                :ElixirType(self.ELIX_FLASK)
+
   spellDefModule:tbcConsumable(spells, 46839, 35717, --TBC: Shattrath Flask of Blinding Light +80 ARC +80 HOLY +80 NATURE
           { playerClass = BOM_MANA_CLASSES })
+                :Category(self.TBC_SPELL_ELIXIR)
+                :ElixirType(self.ELIX_FLASK)
+
   spellDefModule:tbcConsumable(spells, 41608, 32901, --TBC: Shattrath Flask of Relentless Assault +120 AP
           { playerClass = BOM_PHYSICAL_CLASSES })
+                :Category(self.TBC_PHYS_ELIXIR)
+                :ElixirType(self.ELIX_FLASK)
+
   spellDefModule:tbcConsumable(spells, 41609, 32898) --TBC: Shattrath Flask of Fortification +500 HP +10 DEF RATING
+                :Category(self.TBC_ELIXIR)
+                :ElixirType(self.ELIX_FLASK)
+
   spellDefModule:tbcConsumable(spells, 41610, 32899) --TBC: Shattrath Flask of Mighty Restoration +25 MP/5
+                :Category(self.TBC_SPELL_ELIXIR)
+                :ElixirType(self.ELIX_FLASK)
+
   spellDefModule:tbcConsumable(spells, 41611, 32900, --TBC: Shattrath Flask of Supreme Power +70 SPELL
           { playerClass = BOM_MANA_CLASSES })
+                :Category(self.TBC_SPELL_ELIXIR)
+                :ElixirType(self.ELIX_FLASK)
 
   -- TODO: Unstable Flask of... (Blade's Edge and Gruul's Lair only)
 
   spellDefModule:classicConsumable(spells, 17628, 13512, --Flask of Supreme Power +70 SPELL
-          { playerClass = BOM_MANA_CLASSES }, bomClassicHint())
-  spellDefModule:classicConsumable(spells, 17626, 13510, --Flask of the Titans +400 HP
-          nil, bomClassicHint())
-  spellDefModule:classicConsumable(spells, 17627, 13511, --Flask of Distilled Wisdom +65 INT
-          { playerClass = BOM_MANA_CLASSES }, bomClassicHint())
-  spellDefModule:classicConsumable(spells, 17629, 13513, --Flask of Chromatic Resistance
-          nil, bomClassicHint())
+          { playerClass = BOM_MANA_CLASSES })
+                :Category(self.CLASSIC_SPELL_ELIXIR)
+                :ElixirType(self.ELIX_FLASK)
 
+  spellDefModule:classicConsumable(spells, 17626, 13510, --Flask of the Titans +400 HP
+          nil)
+                :Category(self.CLASSIC_ELIXIR)
+                :ElixirType(self.ELIX_FLASK)
+
+  spellDefModule:classicConsumable(spells, 17627, 13511, --Flask of Distilled Wisdom +65 INT
+          { playerClass = BOM_MANA_CLASSES })
+                :Category(self.CLASSIC_SPELL_ELIXIR)
+                :ElixirType(self.ELIX_FLASK)
+
+  spellDefModule:classicConsumable(spells, 17629, 13513, --Flask of Chromatic Resistance
+          nil)
+                :Category(self.CLASSIC_ELIXIR)
+                :ElixirType(self.ELIX_FLASK)
 end
 
 function allSpellsModule:SetupConstants()
@@ -1353,6 +1546,7 @@ function allSpellsModule:SetupConstants()
   self.CLASSIC_FOOD = "classicFood"
   self.CLASSIC_PHYS_ELIXIR = "classicPhysElixir"
   self.CLASSIC_PHYS_BUFF = "classicPhysBuff"
+  self.CLASSIC_BUFF = "classicBuff"
   self.CLASSIC_SPELL_ELIXIR = "classicSpellElixir"
   self.CLASSIC_ELIXIR = "classicElixir"
 
@@ -1364,7 +1558,7 @@ function allSpellsModule:SetupConstants()
   self.TBC_ELIXIR = "tbcElixir"
 
   self.SCROLL = "scroll"
-  self.OIL = "oil"
+  self.WEAPON_ENCHANTMENT = "weaponEnchantment"
 
   -- Categories ordered for display
   self.buffCategories = {
@@ -1374,6 +1568,7 @@ function allSpellsModule:SetupConstants()
     self.CLASSIC_PHYS_BUFF,
     self.CLASSIC_SPELL_ELIXIR,
     self.CLASSIC_ELIXIR,
+    self.CLASSIC_BUFF,
     self.TBC_PHYS_ELIXIR,
     self.TBC_SPELL_ELIXIR,
     self.TBC_ELIXIR,
@@ -1386,7 +1581,7 @@ function allSpellsModule:SetupConstants()
     self.TBC_FOOD,
 
     self.SCROLL,
-    self.OIL,
+    self.WEAPON_ENCHANTMENT,
     false, -- special value no category
   }
 end

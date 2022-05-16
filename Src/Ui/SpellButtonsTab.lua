@@ -8,13 +8,16 @@ local BOM = BuffomatAddon ---@type BuffomatAddon
 local spellButtonsTabModule = BuffomatModule.DeclareModule("Ui/SpellButtonsTab") ---@type BomSpellButtonsTabModule
 spellButtonsTabModule.categoryLabels = {}
 
-local buffomatModule = BuffomatModule.Import("Buffomat") ---@type BomBuffomatModule
-local uiButtonModule = BuffomatModule.Import("Ui/UiButton") ---@type BomUiButtonModule
-local spellDefModule = BuffomatModule.Import("SpellDef") ---@type BomSpellDefModule
-local optionsPopupModule = BuffomatModule.Import("OptionsPopup") ---@type BomOptionsPopupModule
 local allSpellsModule = BuffomatModule.Import("AllSpells") ---@type BomAllSpellsModule
-local toolboxModule = BuffomatModule.Import("Toolbox") ---@type BomToolboxModule
+local buffomatModule = BuffomatModule.Import("Buffomat") ---@type BomBuffomatModule
+local itemCacheModule = BuffomatModule.Import("ItemCache") ---@type BomItemCacheModule
+local optionsPopupModule = BuffomatModule.Import("OptionsPopup") ---@type BomOptionsPopupModule
 local rowBuilderModule = BuffomatModule.Import("RowBuilder") ---@type BomRowBuilderModule
+local spellCacheModule = BuffomatModule.Import("SpellCache") ---@type BomSpellCacheModule
+local spellDefModule = BuffomatModule.Import("SpellDef") ---@type BomSpellDefModule
+local spellSetupModule = BuffomatModule.Import("SpellSetup") ---@type BomSpellSetupModule
+local toolboxModule = BuffomatModule.Import("Toolbox") ---@type BomToolboxModule
+local uiButtonModule = BuffomatModule.Import("Ui/UiButton") ---@type BomUiButtonModule
 
 local L = setmetatable(
         {},
@@ -389,7 +392,7 @@ function spellButtonsTabModule:CreateTabRow(rowBuilder, playerIsHorde, spell, pl
   if spell.frames.info == nil then
     spell.frames.info = BOM.CreateManagedButton(
             BomC_SpellTab_Scroll_Child,
-            spell.Icon,
+            spell:GetIcon(),
             nil,
             nil,
             { 0.1, 0.9, 0.1, 0.9 })
@@ -507,7 +510,7 @@ function spellButtonsTabModule:CreateTabRow(rowBuilder, playerIsHorde, spell, pl
 
   -- Calculate label to the right of the spell config buttons,
   -- spell name and extra text label
-  local label = spell.single or "-"
+  local label = spell:GetSingleText() or "-"
   if spell.type == "weapon" then
     label = label .. ": " .. BOM.Color("bbbbee", L.TooltipIncludesAllRanks)
   elseif spell.extraText then
@@ -679,7 +682,7 @@ function spellButtonsTabModule:AddCategoryRow(catId, rowBuilder)
 
   if not label then
     label = BomC_SpellTab_Scroll_Child:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-    label:SetText(BOM.Color("cccccc", self:CategoryLabel(catId)))
+    label:SetText(BOM.Color("aaaaaa", self:CategoryLabel(catId)))
     self.categoryLabels[catId] = label
   end
 
@@ -822,12 +825,18 @@ function spellButtonsTabModule:UpdateSpellsTab(caller)
     return
   end
 
+  if self.spellTabsCreatedFlag and (spellCacheModule.cacheChanged or itemCacheModule.cacheChanged) then
+    --spellSetupModule:SetupAvailableSpells()
+    BOM.HideAllManagedButtons()
+    self.categoryLabels = {}
+    self.spellTabsCreatedFlag = false
+  end
+
   if not self.spellTabsCreatedFlag then
     BOM.HideAllManagedButtons()
 
     local playerIsHorde = (UnitFactionGroup("player") == "Horde")
     self:CreateTab(playerIsHorde)
-
     self.spellTabsCreatedFlag = true
   end
 
