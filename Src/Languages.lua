@@ -662,6 +662,30 @@ end
 
 local function bomLanguage_Chinese()
   return {
+    ["Category_class"]                          = "职业 Buff",
+    ["Category_classBlessing"]                  = "祝福",
+    ["Category_pet"]                            = "宠物",
+    ["Category_tracking"]                       = "追踪",
+    ["Category_aura"]                           = "光环",
+    ["Category_seal"]                           = "Seals",
+    ["Category_classicPhysicalFood"]            = "物理食物 (经典)",
+    ["Category_classicSpellFood"]               = "法系食物 (经典)",
+    ["Category_classicFood"]                    = "其他食物 (经典)",
+    ["Category_classicPhysElixir"]              = "物理药剂 (经典)",
+    ["Category_classicPhysBuff"]                = "物理增益 (经典)",
+    ["Category_classicSpellElixir"]             = "法系药剂 (经典)",
+    ["Category_classicElixir"]                  = "增益药剂 (经典)",
+    ["Category_classicBuff"]                    = "增益 (经典)",
+    ["Category_tbcPhysicalFood"]                = "物理食物",
+    ["Category_tbcSpellFood"]                   = "法系食物",
+    ["Category_tbcFood"]                        = "其他食物",
+    ["Category_tbcPhysElixir"]                  = "物理药剂",
+    ["Category_tbcSpellElixir"]                 = "法系药剂",
+    ["Category_tbcElixir"]                      = "其他药剂",
+    ["Category_scroll"]                         = "卷轴",
+    ["Category_weaponEnchantment"]              = "武器附魔",
+    ["Category_none"]                           = "未分类",
+    
     ["options.OptionsTitle"]                    = "Buffomat",
 
     ["options.general.group.AutoActions"]       = "自动操作",
