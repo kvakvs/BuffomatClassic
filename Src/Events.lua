@@ -6,6 +6,7 @@ local eventsModule = BuffomatModule.DeclareModule("Events") ---@type BomEventsMo
 
 local constModule = BuffomatModule.Import("Const") ---@type BomConstModule
 local allSpellsModule = BuffomatModule.Import("AllSpells") ---@type BomAllSpellsModule
+local spellButtonsTabModule = BuffomatModule.Import("Ui/SpellButtonsTab") ---@type BomSpellButtonsTabModule
 
 --"UNIT_POWER_UPDATE","UNIT_SPELLCAST_START","UNIT_SPELLCAST_STOP","PLAYER_STARTED_MOVING","PLAYER_STOPPED_MOVING"
 eventsModule.EVT_COMBAT_STOP = { "PLAYER_REGEN_ENABLED" }
@@ -130,11 +131,11 @@ local function Event_PLAYER_TARGET_CHANGED()
   if not InCombatLockdown() then
     if UnitInParty("target") or UnitInRaid("target") or UnitIsUnit("target", "player") then
       BOM.lastTarget = (UnitFullName("target"))
-      BOM.UpdateSpellsTab("PL_TAR_CHANGED1")
+      spellButtonsTabModule:UpdateSpellsTab("PL_TAR_CHANGED1")
 
     elseif BOM.lastTarget then
       BOM.lastTarget = nil
-      BOM.UpdateSpellsTab("PL_TAR_CHANGED2")
+      spellButtonsTabModule:UpdateSpellsTab("PL_TAR_CHANGED2")
     end
   else
     BOM.lastTarget = nil
@@ -311,10 +312,10 @@ end
 local function Event_SpellsChanged()
   BOM.SetupAvailableSpells()
   BOM.SetForceUpdate("event Spells Changed")
-  BOM.SpellTabsCreatedFlag = false
+  spellButtonsTabModule.spellTabsCreatedFlag = false
 
   --BOM.OptionsInsertSpells()
-  BOM.UpdateSpellsTab("event Spells Changed")
+  spellButtonsTabModule:UpdateSpellsTab("event Spells Changed")
   BOM.SetForceUpdate("event Spells Changed")
   BOM.UpdateScan("event Spells Changed")
 end

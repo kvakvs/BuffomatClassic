@@ -24,6 +24,29 @@ setmetatable(languagesModule, {
 
 local function bomLanguage_English()
   return {
+    ["Category_class"]                          = "Class Buffs",
+    ["Category_classBlessing"]                  = "Blessings",
+    ["Category_pet"]                            = "Pet",
+    ["Category_tracking"]                       = "Tracking",
+    ["Category_aura"]                           = "Auras",
+    ["Category_seal"]                           = "Seals",
+    ["Category_classicPhysicalFood"]            = "Physical Food (Classic)",
+    ["Category_classicSpellFood"]               = "Spell Food (Classic)",
+    ["Category_classicFood"]                    = "Other Food (Classic)",
+    ["Category_classicPhysElixir"]              = "Physical Elixirs (Classic)",
+    ["Category_classicPhysBuff"]                = "Physical Buffs (Classic)",
+    ["Category_classicSpellElixir"]             = "Spell Elixirs (Classic)",
+    ["Category_classicElixir"]                  = "Elixirs (Classic)",
+    ["Category_tbcPhysicalFood"]                = "Physical Food",
+    ["Category_tbcSpellFood"]                   = "Spell Food",
+    ["Category_tbcFood"]                        = "Other Food",
+    ["Category_tbcPhysElixir"]                  = "Physical Elixirs",
+    ["Category_tbcSpellElixir"]                 = "Spell Elixirs",
+    ["Category_tbcElixir"]                      = "Other Elixirs",
+    ["Category_scroll"]                         = "Scrolls",
+    ["Category_oil"]                            = "Oils",
+    ["Category_none"]                           = "Uncategorized",
+
     ["options.OptionsTitle"]                    = "Buffomat",
 
     ["options.general.group.AutoActions"]       = "Auto Actions",

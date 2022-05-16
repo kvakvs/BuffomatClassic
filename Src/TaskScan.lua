@@ -6,6 +6,7 @@ local taskScanModule = BuffomatModule.DeclareModule("TaskScan") ---@type BomTask
 
 local constModule = BuffomatModule.Import("Const") ---@type BomConstModule
 local spellDefModule = BuffomatModule.Import("SpellDef") ---@type BomSpellDefModule
+local spellButtonsTabModule = BuffomatModule.Import("Ui/SpellButtonsTab") ---@type BomSpellButtonsTabModule
 
 local L = setmetatable({}, { __index = function(t, k)
   if BOM.L and BOM.L[k] then
@@ -815,18 +816,18 @@ local function bomActivateSelectedTracking()
           if GetShapeshiftFormID() == spell.needForm
                   and BOM.ForceTracking ~= spell.trackingIconId then
             BOM.ForceTracking = spell.trackingIconId
-            BOM.UpdateSpellsTab("ForceUp1")
+            spellButtonsTabModule:UpdateSpellsTab("ForceUp1")
           end
         elseif bomIsTrackingActive(spell)
                 and BOM.CharacterState.LastTracking ~= spell.trackingIconId then
           BOM.CharacterState.LastTracking = spell.trackingIconId
-          BOM.UpdateSpellsTab("ForceUp2")
+          spellButtonsTabModule:UpdateSpellsTab("ForceUp2")
         end
       else
         if BOM.CharacterState.LastTracking == spell.trackingIconId
                 and BOM.CharacterState.LastTracking ~= nil then
           BOM.CharacterState.LastTracking = nil
-          BOM.UpdateSpellsTab("ForceUp3")
+          spellButtonsTabModule:UpdateSpellsTab("ForceUp3")
         end
       end -- if spell.enable
     end -- if tracking
@@ -877,13 +878,13 @@ local function bomCheckChangesAndUpdateSpelltab()
         if BOM.ActivAura == spell.ConfigID
                 and BOM.CurrentProfile.LastAura ~= spell.ConfigID then
           BOM.CurrentProfile.LastAura = spell.ConfigID
-          BOM.UpdateSpellsTab("ForceUp4")
+          spellButtonsTabModule:UpdateSpellsTab("ForceUp4")
         end
       else
         if BOM.CurrentProfile.LastAura == spell.ConfigID
                 and BOM.CurrentProfile.LastAura ~= nil then
           BOM.CurrentProfile.LastAura = nil
-          BOM.UpdateSpellsTab("ForceUp5")
+          spellButtonsTabModule:UpdateSpellsTab("ForceUp5")
         end
       end -- if currentprofile.spell.enable
 
@@ -892,13 +893,13 @@ local function bomCheckChangesAndUpdateSpelltab()
         if BOM.ActivSeal == spell.ConfigID
                 and BOM.CurrentProfile.LastSeal ~= spell.ConfigID then
           BOM.CurrentProfile.LastSeal = spell.ConfigID
-          BOM.UpdateSpellsTab("ForceUp6")
+          spellButtonsTabModule:UpdateSpellsTab("ForceUp6")
         end
       else
         if BOM.CurrentProfile.LastSeal == spell.ConfigID
                 and BOM.CurrentProfile.LastSeal ~= nil then
           BOM.CurrentProfile.LastSeal = nil
-          BOM.UpdateSpellsTab("ForceUp7")
+          spellButtonsTabModule:UpdateSpellsTab("ForceUp7")
         end
       end -- if currentprofile.spell.enable
     end -- if is aura
@@ -2075,7 +2076,7 @@ local function bomUpdateScan_PreCheck(from)
 
   if BOM.CurrentProfile ~= BOM.CharacterState[auto_profile] then
     BOM.CurrentProfile = BOM.CharacterState[auto_profile]
-    BOM.UpdateSpellsTab("UpdateScan1")
+    spellButtonsTabModule:UpdateSpellsTab("UpdateScan1")
     BomC_MainWindow_Title:SetText(
             BOM.FormatTexture(constModule.BOM_BEAR_ICON_FULLPATH)
                     .. " " .. constModule.SHORT_TITLE .. " - "

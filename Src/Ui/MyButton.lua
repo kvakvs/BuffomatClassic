@@ -200,7 +200,7 @@ local bom_managed_mybuttons = {}
 ---@param disCoord table - texcoord for disabled
 ---@param unmanaged boolean - set to true to not add button to bom_managed_mybuttons
 ---@return BomControl
-function BOM.CreateMyButton(parent, sel, unsel, dis, selCoord, unselCoord, disCoord, unmanaged)
+function BOM.CreateManagedButton(parent, sel, unsel, dis, selCoord, unselCoord, disCoord, unmanaged)
   local new_button_frame = CreateFrame("frame", nil, parent, "BomC_MyButton")
   BOM.MyButton_OnLoad(new_button_frame)
   new_button_frame:SetTextures(sel, unsel, dis, selCoord, unselCoord, disCoord)
@@ -230,7 +230,7 @@ function BOM.MyButtonUpdateAll()
 end
 
 -- Hides all icons and clickable buttons in the spells tab
-function BOM.MyButtonHideAll()
+function BOM.HideAllManagedButtons()
   for i, Frame in ipairs(bom_managed_mybuttons) do
     Frame:Hide()
   end

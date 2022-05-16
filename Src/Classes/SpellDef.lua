@@ -71,7 +71,7 @@ BOM.Class = BOM.Class or {}
 ---@field Enable boolean Whether buff is to be watched
 ---@field ExcludedTarget table<string> List of target names to never buff
 ---@field ForcedTarget table<string> List of extra targets to buff
----@field frames table<string, BomControl> Dynamic list of controls associated with this spell
+---@field frames table<string, BomControl> Dynamic list of controls associated with this spell in the UI
 ---@field NeedGroup table List of group members who might need group version of this buff
 ---@field NeedMember table<number, BomUnit> List of group members who might need this buff
 ---@field SelfCast boolean
@@ -85,24 +85,26 @@ BOM.Class = BOM.Class or {}
 ---@field buffSource string Unit/player who gave this buff
 
 ---@type BomSpellDef
-BOM.Class.SpellDef = {}
-BOM.Class.SpellDef.__index = BOM.Class.SpellDef
+local spellDefClass = {}
+spellDefClass.__index = spellDefClass
 
 ---Creates a new SpellDef
----@param single_id number Spell id also serving as configId key
+---@param singleId number Spell id also serving as configId key
 ---@param fields BomSpellDef Other fields
 ---@return BomSpellDef
-function spellDefModule:new(single_id, fields)
-  fields = fields or {} ---@type BomSpellDef
-  setmetatable(fields, BOM.Class.SpellDef)
+function spellDefModule:new(singleId, fields)
+  local newSpell = fields or {} ---@type BomSpellDef
+  setmetatable(newSpell, spellDefClass)
 
-  fields.ConfigID = single_id
-  fields.singleId = single_id
+  newSpell.category = false -- special value no category
+  newSpell.frames = {} -- spell buttons from the UI go here
+  newSpell.ConfigID = singleId
+  newSpell.singleId = singleId
 
-  fields.ForcedTarget = {}
-  fields.ExcludedTarget = {}
+  newSpell.ForcedTarget = {}
+  newSpell.ExcludedTarget = {}
 
-  return fields
+  return newSpell
 end
 
 ---@param dst table<BomSpellDef>
@@ -132,7 +134,7 @@ function spellDefModule:tbcConsumable(dst, single_id, item_id, limitations, extr
     fields.extraText = extraText
   end
 
-  return spellDefModule:scanSpell(dst, single_id, fields, limitations)
+  return spellDefModule:addBuff(dst, single_id, fields, limitations)
 end
 
 ---@param dst table<BomSpellDef>
@@ -146,12 +148,12 @@ function spellDefModule:classicConsumable(dst, single_id, item_id, limitations, 
   if extraText then
     fields.extraText = extraText
   end
-  return spellDefModule:scanSpell(dst, single_id, fields, limitations)
+  return spellDefModule:addBuff(dst, single_id, fields, limitations)
 end
 
 local _, playerClass, _ = UnitClass("player")
 
-local function bomCheckLimitations(spell, limitations)
+function spellDefModule:CheckLimitations(spell, limitations)
   -- empty limitations return true
   if limitations == nil or limitations == { } then
     return true
@@ -203,7 +205,7 @@ end
 
 ---@param spell BomSpellDef
 ---@param modifications table<function>
-local function bomCheckModifications(spell, modifications)
+function spellDefModule:CheckModifications(spell, modifications)
   -- empty modifications do not change the spell
   if modifications == nil or modifications == { } then
     return true
@@ -218,17 +220,17 @@ end
 
 ---Create a spelldef if the limitations apply and add to the table.
 ---Only check permanent limitations here like minlevel, TBC, or player class.
----@param dst table<BomSpellDef>
+---@param dst table<number, BomSpellDef>
 ---@param buffSpellId number The buff spell ID is key in the AllSpells table
 ---@param fields table<string, any>
 ---@param limitations table<function> Check these conditions to skip adding the spell. Permanent conditions only like minlevel or class
 ---@param modifications table<function> Check these conditions and maybe modify the spelldef.
-function spellDefModule:scanSpell(dst, buffSpellId, fields, limitations,
-                                  modifications, extraText)
+---@return BomSpellDef
+function spellDefModule:addBuff(dst, buffSpellId, fields, limitations, modifications, extraText)
   local spell = spellDefModule:new(buffSpellId, fields)
 
-  if bomCheckLimitations(spell, limitations) then
-    bomCheckModifications(spell, modifications)
+  if self:CheckLimitations(spell, limitations) then
+    self:CheckModifications(spell, modifications)
     tinsert(dst, spell)
   end
 
@@ -245,7 +247,7 @@ function spellDefModule:conjureItem(spellId, itemId)
             singleFamily   = { spellId } })
 end
 
-function BOM.Class.SpellDef:ShamanEnchant()
+function spellDefClass:ShamanEnchant()
   -- for before TBC make this a seal spell, for TBC do not modify
   if not BOM.TBC then
     self.type = "seal"
@@ -254,19 +256,19 @@ function BOM.Class.SpellDef:ShamanEnchant()
 end
 
 ---@return BomSpellDef
-function BOM.Class.SpellDef:Category(cat)
+function spellDefClass:Category(cat)
   self.category = cat
   return self
 end
 
 ---@return BomSpellDef
-function BOM.Class.SpellDef:ElixirType(elixirType)
+function spellDefClass:ElixirType(elixirType)
   self.elixirType = elixirType
   return self
 end
 
 ---@return boolean Whether the spell allows user to do target class choices
-function BOM.Class.SpellDef:HasClasses()
+function spellDefClass:HasClasses()
   return not (self.isConsumable
           or self.isOwn
           or self.type == "resurrection"
@@ -277,7 +279,7 @@ function BOM.Class.SpellDef:HasClasses()
 end
 
 ---@param class_name string
-function BOM.Class.SpellDef:IncrementNeedGroupBuff(class_name)
+function spellDefClass:IncrementNeedGroupBuff(class_name)
   self.NeedGroup[class_name] = (self.NeedGroup[class_name] or 0) + 1
 end
 

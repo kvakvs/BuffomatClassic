@@ -977,15 +977,15 @@ end
 
 ---If maybe_label is nil, creates a text label under the parent. Calls position_fn
 ---on the label to set its position.
----@param maybe_label BomControl|nil - the existing label or nil
+---@param maybeLabel BomControl|nil - the existing label or nil
 ---@param parent BomControl - parent where the label is created
 ---@param position_fn function - applies function after creating the label
-function bom_create_smalltext_label(maybe_label, parent, position_fn)
-  if maybe_label == nil then
-    maybe_label = parent:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+function toolboxModule:CreateSmalltextLabel(maybeLabel, parent, position_fn)
+  if maybeLabel == nil then
+    maybeLabel = parent:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
   end
-  position_fn(maybe_label)
-  return maybe_label
+  position_fn(maybeLabel)
+  return maybeLabel
 end
 
 ---Add onenter/onleave scripts to show the tooltip with translation by key

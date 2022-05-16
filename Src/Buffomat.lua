@@ -11,6 +11,7 @@ local optionsModule = BuffomatModule.Import("Options") ---@type BomOptionsModule
 local optionsPopupModule = BuffomatModule.Import("OptionsPopup") ---@type BomOptionsPopupModule
 local taskScanModule = BuffomatModule.Import("TaskScan") ---@type BomTaskScanModule
 local toolboxModule = BuffomatModule.Import("Toolbox") ---@type BomToolboxModule
+local spellButtonsTabModule = BuffomatModule.Import("Ui/SpellButtonsTab") ---@type BomSpellButtonsTabModule
 
 ---global, visible from XML files and from script console and chat commands
 ---@class BuffomatAddon
@@ -215,7 +216,7 @@ end
 function buffomatModule:OptionsUpdate()
   BOM.SetForceUpdate("OptionsUpdate")
   BOM.UpdateScan("OptionsUpdate")
-  BOM.UpdateSpellsTab("OptonsUpdate")
+  spellButtonsTabModule:UpdateSpellsTab("OptionsUpdate")
   BOM.MyButtonUpdateAll()
   BOM.MinimapButton.UpdatePosition()
   --BOM.legacyOptions.DoCancel()
@@ -513,7 +514,7 @@ BOM.UpdateBuffTabText = bom_update_buff_tab_text
 ---Creates small mybutton which toggles group buff setting, next to CAST button
 function BOM.CreateSingleBuffButton(parent_frame)
   if BOM.QuickSingleBuff == nil then
-    BOM.QuickSingleBuff = BOM.CreateMyButton(
+    BOM.QuickSingleBuff = BOM.CreateManagedButton(
             parent_frame,
             BOM.ICON_SELF_CAST_ON,
             BOM.ICON_SELF_CAST_OFF,
@@ -699,7 +700,7 @@ function BuffomatAddon:Init()
         BOM.SetForceUpdate()
         BOM.UpdateScan("Macro /bom update")
       end },
-    { "updatespellstab", "", BOM.UpdateSpellsTab },
+    { "updatespellstab", "", spellButtonsTabModule.UpdateSpellsTab },
     { "close", L["SlashClose"], BOM.HideWindow },
     { "reset", L["SlashReset"], BOM.ResetWindow },
     { "_checkforerror", "",

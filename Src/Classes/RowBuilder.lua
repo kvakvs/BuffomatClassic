@@ -2,29 +2,31 @@ local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BuffomatAddon
 
 ---@class BomRowBuilderModule
-local taskListModule = BuffomatModule.DeclareModule("RowBuilder") ---@type BomRowBuilderModule
+local rowBuilderModule = BuffomatModule.DeclareModule("RowBuilder") ---@type BomRowBuilderModule
 
 ---@class RowBuilder
----@field section string
+---@field prevControl BomControl|nil Previous control in the row
+---@field categories table<string, boolean> True if category label was created already
 
----@type RowBuilder
-BOM.Class.RowBuilder = {}
-BOM.Class.RowBuilder.__index = BOM.Class.RowBuilder
-
-local CLASS_TAG = "rowbuilder"
+local rowBuilderClass = {} ---@type RowBuilder
+rowBuilderClass.__index = rowBuilderClass
 
 ---Creates a new RowBuilder
 ---@field prev_control table Stores last created control, for lining up the following one
 ---@return RowBuilder
-function BOM.Class.RowBuilder:new()
-  local fields = {}
-  setmetatable(fields, BOM.Class.RowBuilder)
+function rowBuilderModule:new()
+  local fields = {} ---@type RowBuilder
+  setmetatable(fields, rowBuilderClass)
 
-  fields.t = CLASS_TAG
-  fields.prev_control = nil
+  fields.categories = {}
+  fields.prevControl = nil
   fields.dx = 0
   fields.dy = 0
-  fields.section = nil
 
   return fields
+end
+
+function rowBuilderClass:StepRight(control, dx)
+  self.prevControl = control
+  self.dx = dx
 end

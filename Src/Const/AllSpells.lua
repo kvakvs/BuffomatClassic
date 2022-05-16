@@ -63,10 +63,10 @@ end
 ---Add PRIEST spells
 ---@param spells table<string, BomSpellDef>
 ---@param enchants table<string, table<number>>
-local function bomSetupPriestSpells(spells, enchants)
+function allSpellsModule:SetupPriestSpells(spells, enchants)
   local priestOnly = { playerClass = "PRIEST" }
 
-  spellDefModule:scanSpell(spells, 10938, -- Fortitude / Seelenstärke
+  spellDefModule:addBuff(spells, 10938, -- Fortitude / Seelenstärke
           { groupId        = 21562, default = true,
             singleFamily   = { 1243, 1244, 1245, 2791, 10937, 10938, -- Ranks 1-6
                                25389 }, -- TBC: Rank 7
@@ -74,6 +74,7 @@ local function bomSetupPriestSpells(spells, enchants)
                                25392 }, -- TBC: Rank 3
             singleDuration = DURATION_30M, groupDuration = DURATION_1H, reagentRequired = { 17028, 17029 },
             targetClasses  = BOM_ALL_CLASSES })
+                :Category(self.CLASS)
 
   BOM.SpellDef_PrayerOfSpirit = function()
     return spellDefModule:new(14819, -- Divine Spirit / Prayer of Spirit / Willenstärke
@@ -84,10 +85,11 @@ local function bomSetupPriestSpells(spells, enchants)
                                  32999 }, --- TBC: Rank 2
               singleDuration = DURATION_30M, groupDuration = DURATION_1H, reagentRequired = { 17028, 17029 },
               targetClasses  = BOM_MANA_CLASSES })
+                         :Category(self.CLASS)
   end
   tinsert(spells, BOM.SpellDef_PrayerOfSpirit())
 
-  spellDefModule:scanSpell(spells, 10958, --Shadow Protection / Prayer of Shadow / Schattenschutz
+  spellDefModule:addBuff(spells, 10958, --Shadow Protection / Prayer of Shadow / Schattenschutz
           { groupId         = 27683, default = false, singleDuration = DURATION_10M, groupDuration = 1200,
             singleFamily    = { 976, 10957, 10958, -- Ranks 1-3
                                 25433 }, -- TBC: Rank 4
@@ -95,8 +97,10 @@ local function bomSetupPriestSpells(spells, enchants)
                                 39374 }, -- TBC: Rank 2
             reagentRequired = { 17028, 17029 }, targetClasses = BOM_ALL_CLASSES },
           priestOnly)
-  spellDefModule:scanSpell(spells, 6346, -- Fear Ward
+                :Category(self.CLASS)
+  spellDefModule:addBuff(spells, 6346, -- Fear Ward
           { default = false, singleDuration = DURATION_10M, hasCD = true, targetClasses = BOM_ALL_CLASSES })
+                :Category(self.CLASS)
 
   BOM.SpellDef_PW_Shield = function()
     return spellDefModule:new(10901, -- Power Word: Shield / Powerword:Shild
@@ -104,46 +108,53 @@ local function bomSetupPriestSpells(spells, enchants)
               singleFamily   = { 17, 592, 600, 3747, 6065, 6066, 10898, 10899, 10900, 10901, -- Ranks 1-10
                                  25217, 25218 }, -- TBC: Ranks 11-12
               singleDuration = 30, hasCD = true, targetClasses = { } })
+                         :Category(self.CLASS)
   end
   tinsert(spells, BOM.SpellDef_PW_Shield())
 
-  spellDefModule:scanSpell(spells, 19266, -- Touch of Weakness / Berührung der Schwäche
+  spellDefModule:addBuff(spells, 19266, -- Touch of Weakness / Berührung der Schwäche
           { default      = true, isOwn = true,
             singleFamily = { 2652, 19261, 19262, 19264, 19265, 19266, -- Ranks 1-6
                              25461 } }, -- TBC: Rank 7
           priestOnly)
-  spellDefModule:scanSpell(spells, 10952, -- Inner Fire / inneres Feuer
+                :Category(self.CLASS)
+  spellDefModule:addBuff(spells, 10952, -- Inner Fire / inneres Feuer
           { default      = true, isOwn = true,
             singleFamily = { 588, 7128, 602, 1006, 10951, 10952, -- Ranks 1-6
                              25431 } }, -- TBC: Rank 7
           priestOnly)
-  spellDefModule:scanSpell(spells, 19312, -- Shadowguard
+                :Category(self.CLASS)
+  spellDefModule:addBuff(spells, 19312, -- Shadowguard
           { default      = true, isOwn = true,
             singleFamily = { 18137, 19308, 19309, 19310, 19311, 19312, -- Ranks 1-6
                              25477 } }, -- TBC: Rank 7
           priestOnly)
-  spellDefModule:scanSpell(spells, 19293, -- Elune's Grace
+                :Category(self.CLASS)
+  spellDefModule:addBuff(spells, 19293, -- Elune's Grace
           { default      = true, isOwn = true,
             singleFamily = { 2651, -- Rank 1 also TBC: The only rank
                              19289, 19291, 19292, 19293 } }, -- Ranks 2-5 (non-TBC)
           priestOnly)
-  spellDefModule:scanSpell(spells, 15473, -- Shadow Form
+                :Category(self.CLASS)
+  spellDefModule:addBuff(spells, 15473, -- Shadow Form
           { default = false, isOwn = true },
           priestOnly)
-  spellDefModule:scanSpell(spells, 20770, -- Resurrection / Auferstehung
+                :Category(self.CLASS)
+  spellDefModule:addBuff(spells, 20770, -- Resurrection / Auferstehung
           { cancelForm   = true, type = "resurrection", default = true,
             singleFamily = { 2006, 2010, 10880, 10881, 20770, -- Ranks 1-5
                              25435 } }, -- TBC: Rank 6
           priestOnly)
+                :Category(self.CLASS)
 end
 
 ---Add DRUID spells
 ---@param spells table<string, BomSpellDef>
 ---@param enchants table<string, table<number>>
-local function bomSetupDruidSpells(spells, enchants)
+function allSpellsModule:SetupDruidSpells(spells, enchants)
   local druidOnly = { playerClass = "DRUID" }
 
-  spellDefModule:scanSpell(spells, 9885, --Gift/Mark of the Wild | Gabe/Mal der Wildniss
+  spellDefModule:addBuff(spells, 9885, --Gift/Mark of the Wild | Gabe/Mal der Wildniss
           { groupId         = 21849, cancelForm = true, default = true,
             singleFamily    = { 1126, 5232, 6756, 5234, 8907, 9884, 9885, -- Ranks 1-7
                                 26990 }, -- TBC: Rank 8
@@ -152,36 +163,42 @@ local function bomSetupDruidSpells(spells, enchants)
             singleDuration  = DURATION_30M, groupDuration = DURATION_1H,
             reagentRequired = { 17021, 17026 }, targetClasses = BOM_ALL_CLASSES },
           druidOnly)
-  spellDefModule:scanSpell(spells, 9910, --Thorns | Dornen
+                :Category(self.CLASS)
+  spellDefModule:addBuff(spells, 9910, --Thorns | Dornen
           { cancelForm     = false, default = false,
             singleFamily   = { 467, 782, 1075, 8914, 9756, 9910, -- Ranks 1-6
                                26992 }, -- TBC: Rank 7
             singleDuration = DURATION_10M, targetClasses = BOM_MELEE_CLASSES },
           druidOnly)
-  spellDefModule:scanSpell(spells, 16864, --Omen of Clarity
+                :Category(self.CLASS)
+  spellDefModule:addBuff(spells, 16864, --Omen of Clarity
           { isOwn = true, cancelForm = true, default = true },
           druidOnly)
-  spellDefModule:scanSpell(spells, 17329, -- Nature's Grasp | Griff der Natur
+                :Category(self.CLASS)
+  spellDefModule:addBuff(spells, 17329, -- Nature's Grasp | Griff der Natur
           { isOwn        = true, cancelForm = true, default = false,
             hasCD        = true, requiresOutdoors = true,
             singleFamily = { 16689, 16810, 16811, 16812, 16813, 17329, -- Rank 1-6
                              27009 } }, -- TBC: Rank 7
           druidOnly)
-  spellDefModule:scanSpell(spells, 33891, --TBC: Tree of life
+                :Category(self.CLASS)
+  spellDefModule:addBuff(spells, 33891, --TBC: Tree of life
           { isOwn = true, default = true, default = false, singleId = 33891, shapeshiftFormId = 2 },
           { isTBC = true, playerClass = "DRUID" })
+                :Category(self.CLASS)
 
   -- Special code: This will disable herbalism and mining tracking in Cat Form
-  spellDefModule:scanSpell(spells, BOM.SpellId.Druid.TrackHumanoids, -- Track Humanoids (Cat Form)
+  spellDefModule:addBuff(spells, BOM.SpellId.Druid.TrackHumanoids, -- Track Humanoids (Cat Form)
           { type      = "tracking", needForm = CAT_FORM, default = true,
             extraText = L.SpellLabel_TrackHumanoids },
           druidOnly)
+                :Category(self.TRACKING)
 end
 
 ---Add MAGE spells
 ---@param spells table<string, BomSpellDef>
 ---@param enchants table<string, table<number>>
-local function bomSetupMageSpells(spells, enchants)
+function allSpellsModule:SetupMageSpells(spells, enchants)
   local mageOnly = { playerClass = "MAGE" }
 
   --{singleId=10938, isOwn=true, default=true, lockIfHaveItem={BOM.ItemId.Mage.ManaRuby}}, -- manastone/debug
@@ -193,58 +210,76 @@ local function bomSetupMageSpells(spells, enchants)
                                   27127 }, -- TBC: Brillance Rank 2
               default         = true, singleDuration = DURATION_30M, groupDuration = DURATION_1H,
               reagentRequired = { 17020 }, targetClasses = BOM_MANA_CLASSES })
+                         :Category(self.CLASS)
   end
   tinsert(spells, BOM.SpellDef_ArcaneIntelligence())
 
-  spellDefModule:scanSpell(spells, 10174, --Dampen Magic
+  spellDefModule:addBuff(spells, 10174, --Dampen Magic
           { default      = false, singleDuration = DURATION_10M, targetClasses = { },
             singleFamily = { 604, 8450, 8451, 10173, 10174, -- Ranks 1-5
                              33944 } }, -- TBC: Rank 6
           mageOnly)
-  spellDefModule:scanSpell(spells, 10170, --Amplify Magic
+                :Category(self.CLASS)
+  spellDefModule:addBuff(spells, 10170, --Amplify Magic
           { default      = false, singleDuration = DURATION_10M, targetClasses = { },
             singleFamily = { 1008, 8455, 10169, 10170, -- Ranks 1-4
                              27130, 33946 } }, -- TBC: Ranks 5-6
           mageOnly)
-  spellDefModule:scanSpell(spells, 10220, -- Ice Armor / eisrüstung
+                :Category(self.CLASS)
+  spellDefModule:addBuff(spells, 10220, -- Ice Armor / eisrüstung
           { type         = "seal", default = false,
             singleFamily = { 7302, 7320, 10219, 10220, -- Ranks 1-4, levels 30 40 50 60
                              27124 } }, -- TBC: Rank 5, level 69
           mageOnly)
-  spellDefModule:scanSpell(spells, 7301, -- Frost Armor / frostrüstung
+                :Category(self.CLASS)
+  spellDefModule:addBuff(spells, 7301, -- Frost Armor / frostrüstung
           { type         = "seal", default = false,
             singleFamily = { 168, 7300, 7301 } }, -- Ranks 1-3, Levels 1, 10, 20
           mageOnly)
-  spellDefModule:scanSpell(spells, 30482, -- TBC: Molten Armor
+                :Category(self.CLASS)
+  spellDefModule:addBuff(spells, 30482, -- TBC: Molten Armor
           { type = "seal", default = false, singleFamily = { 30482 } }, -- TBC: Rank 1
           mageOnly)
-  spellDefModule:scanSpell(spells, 22783, -- Mage Armor / magische rüstung
+                :Category(self.CLASS)
+  spellDefModule:addBuff(spells, 22783, -- Mage Armor / magische rüstung
           { type         = "seal", default = false,
             singleFamily = { 6117, 22782, 22783, -- Ranks 1-3
                              27125 } }, -- TBC: Rank 4
           mageOnly)
-  spellDefModule:scanSpell(spells, 10193, --Mana Shield | Manaschild - unabhängig von allen.
+                :Category(self.CLASS)
+  spellDefModule:addBuff(spells, 10193, --Mana Shield | Manaschild - unabhängig von allen.
           { isOwn        = true, default = false, singleDuration = 60,
             singleFamily = { 1463, 8494, 8495, 10191, 10192, 10193, -- Ranks 1-6
                              27131 } }, -- TBC: Rank 7
           mageOnly)
-  spellDefModule:scanSpell(spells, 13033, --Ice Barrier
+                :Category(self.CLASS)
+  spellDefModule:addBuff(spells, 13033, --Ice Barrier
           { isOwn        = true, default = false, singleDuration = 60,
             singleFamily = { 11426, 13031, 13032, 13033, -- Ranks 1-4
                              27134, 33405 } }, -- TBC: Ranks 5-6
           mageOnly)
+                :Category(self.CLASS)
 
   if UnitLevel("player") >= 58 then
     -- Conjure separate mana gems of 3 kinds
-    tinsert(spells, spellDefModule:conjureItem(BOM.SpellId.Mage.ConjureManaEmerald, BOM.ItemId.Mage.ManaEmerald))
-    tinsert(spells, spellDefModule:conjureItem(BOM.SpellId.Mage.ConjureManaRuby, BOM.ItemId.Mage.ManaRuby))
+    tinsert(spells,
+            spellDefModule:conjureItem(BOM.SpellId.Mage.ConjureManaEmerald, BOM.ItemId.Mage.ManaEmerald)
+                          :Category(self.CLASS)
+    )
+    tinsert(spells,
+            spellDefModule:conjureItem(BOM.SpellId.Mage.ConjureManaRuby, BOM.ItemId.Mage.ManaRuby)
+                          :Category(self.CLASS)
+    )
     if UnitLevel("player") < 68 then
       -- Players > 68 will not be interested in Citrine
-      tinsert(spells, spellDefModule:conjureItem(BOM.SpellId.Mage.ConjureManaCitrine, BOM.ItemId.Mage.ManaCitrine))
+      tinsert(spells,
+              spellDefModule:conjureItem(BOM.SpellId.Mage.ConjureManaCitrine, BOM.ItemId.Mage.ManaCitrine)
+                            :Category(self.CLASS)
+      )
     end
   else
     -- For < 58 - Have generic conjuration of 1 gem (only max rank)
-    spellDefModule:scanSpell(spells, BOM.SpellId.Mage.ConjureManaEmerald, -- Conjure Mana Stone (Max Rank)
+    spellDefModule:addBuff(spells, BOM.SpellId.Mage.ConjureManaEmerald, -- Conjure Mana Stone (Max Rank)
             { isOwn          = true, default = true,
               lockIfHaveItem = { BOM.ItemId.Mage.ManaAgate,
                                  BOM.ItemId.Mage.ManaJade,
@@ -257,120 +292,138 @@ local function bomSetupMageSpells(spells, enchants)
                                  BOM.SpellId.Mage.ConjureManaRuby,
                                  BOM.SpellId.Mage.ConjureManaEmerald } },
             mageOnly)
+                  :Category(self.CLASS)
   end
 end
 
 ---Add SHAMAN spells
 ---@param spells table<string, BomSpellDef>
 ---@param enchants table<string, table<number>>
-local function bomSetupShamanSpells(spells, enchants)
+function allSpellsModule:SetupShamanSpells(spells, enchants)
   local duration = tbcOrClassic(DURATION_20M, DURATION_10M)
   local enchant_duration = tbcOrClassic(DURATION_30M, DURATION_5M) -- TBC: Shaman enchants become 30min
   local shamanOnly = { playerClass = "SHAMAN" }
 
-  spellDefModule:scanSpell(spells, 16342, --Flametongue Weapon
+  spellDefModule:addBuff(spells, 16342, --Flametongue Weapon
           { type         = "weapon", isOwn = true, isConsumable = false,
             default      = false, singleDuration = enchant_duration,
             singleFamily = { 8024, 8027, 8030, 16339, 16341, 16342, -- Ranks 1-6
                              25489 } }, -- TBC: Rank 7
           shamanOnly,
           { "shamanEnchant" })
+                :Category(self.CLASS)
   enchants[16342] = { 3, 4, 5, 523, 1665, 1666, --Flametongue
                       2634 } --TBC: Flametongue 7
 
-  spellDefModule:scanSpell(spells, 16356, --Frostbrand Weapon
+  spellDefModule:addBuff(spells, 16356, --Frostbrand Weapon
           { type         = "weapon", isOwn = true, isConsumable = false,
             default      = false, singleDuration = enchant_duration,
             singleFamily = { 8033, 8038, 10456, 16355, 16356, -- Ranks 1-5
                              25500 } }, -- TBC: Rank 6
           shamanOnly,
           { "shamanEnchant" })
+                :Category(self.CLASS)
   enchants[16356] = { 2, 12, 524, 1667, 1668, -- Frostbrand
                       2635 } -- TBC: Frostbrand 6
 
-  spellDefModule:scanSpell(spells, 16316, --Rockbiter Weapon
+  spellDefModule:addBuff(spells, 16316, --Rockbiter Weapon
           { type         = "weapon", isOwn = true, isConsumable = false,
             default      = false, singleDuration = enchant_duration,
             singleFamily = { 8017, 8018, 8019, 10399, 16314, 16315, 16316, -- Ranks 1-7
                              25479, 25485 } }, -- TBC: Ranks 8-9
           shamanOnly,
           { "shamanEnchant" })
+                :Category(self.CLASS)
   -- Note: in TBC all enchantIds for rockbiter have changed
   enchants[16316] = { 1, 6, 29, 503, 504, 683, 1663, 1664, -- Rockbiter, also 504 some special +80 Rockbiter?
                       3040, -- rockbiter 7
                       3023, 3026, 3028, 3031, 3034, 3037, 3040, -- TBC: Rockbiter 1-7
                       2632, 2633 } -- TBC: Rockbiter 8-9
 
-  spellDefModule:scanSpell(spells, 16362, --Windfury Weapon
+  spellDefModule:addBuff(spells, 16362, --Windfury Weapon
           { type         = "weapon", isOwn = true, isConsumable = false,
             default      = false, singleDuration = enchant_duration,
             singleFamily = { 8232, 8235, 10486, 16362, -- Ranks 1-4
                              25505 } }, -- TBC: Rank 5
           shamanOnly,
           { "shamanEnchant" })
+                :Category(self.CLASS)
   enchants[16362] = { 283, 284, 525, 1669, -- Windfury 1-4
                       2636 } -- TBC: Windfury 5
 
-  spellDefModule:scanSpell(spells, 10432, -- Lightning Shield / Blitzschlagschild
+  spellDefModule:addBuff(spells, 10432, -- Lightning Shield / Blitzschlagschild
           { default      = false, isOwn = true, duration = duration,
             singleFamily = { 324, 325, 905, 945, 8134, 10431, 10432, -- Ranks 1-7
                              25469, 25472 } }, -- TBC: Ranks 8-9
           shamanOnly)
+                :Category(self.CLASS)
 
-  spellDefModule:scanSpell(spells, 33736, -- TBC: Water Shield 1, 2
+  spellDefModule:addBuff(spells, 33736, -- TBC: Water Shield 1, 2
           { isOwn = true, default = true, duration = duration, singleFamily = { 24398, 33736 } },
           { playerClass = "SHAMAN", isTBC = true })
+                :Category(self.CLASS)
 
-  spellDefModule:scanSpell(spells, 20777, -- Ancestral Spirit / Auferstehung
+  spellDefModule:addBuff(spells, 20777, -- Ancestral Spirit / Auferstehung
           { type         = "resurrection", default = true,
             singleFamily = { 2008, 20609, 20610, 20776, 20777 } },
           shamanOnly)
+                :Category(self.CLASS)
 end
 
 ---Add WARLOCK spells
 ---@param spells table<string, BomSpellDef>
 ---@param enchants table<string, table<number>>
-local function bomSetupWarlockSpells(spells, enchants)
+function allSpellsModule:SetupWarlockSpells(spells, enchants)
   local warlockOnly = { playerClass = "WARLOCK" }
 
-  spellDefModule:scanSpell(spells, 5697, -- Unending Breath
+  spellDefModule:addBuff(spells, 5697, -- Unending Breath
           { default = false, singleDuration = DURATION_10M, targetClasses = BOM_ALL_CLASSES },
           warlockOnly)
-  spellDefModule:scanSpell(spells, 11743, -- Detect Greater Invisibility | Große Unsichtbarkeit entdecken
+                :Category(self.CLASS)
+  spellDefModule:addBuff(spells, 11743, -- Detect Greater Invisibility | Große Unsichtbarkeit entdecken
           { default        = false, singleFamily = { 132, 2970, 11743 },
             singleDuration = DURATION_10M, targetClasses = BOM_ALL_CLASSES },
           warlockOnly)
-  spellDefModule:scanSpell(spells, 28610, -- Shadow Ward / Schattenzauberschutz
+                :Category(self.CLASS)
+  spellDefModule:addBuff(spells, 28610, -- Shadow Ward / Schattenzauberschutz
           { isOwn = true, default = false, singleFamily = { 6229, 11739, 11740, 28610 } },
           warlockOnly)
-  spellDefModule:scanSpell(spells, 28176, -- TBC: Fel Armor
+                :Category(self.CLASS)
+  spellDefModule:addBuff(spells, 28176, -- TBC: Fel Armor
           { isOwn = true, default = false, singleFamily = { 28176, 28189 } }, -- TBC: Rank 1-2
           { isTBC = true, playerClass = "WARLOCK" })
-  spellDefModule:scanSpell(spells, 11735, -- Demon Armor
+                :Category(self.CLASS)
+  spellDefModule:addBuff(spells, 11735, -- Demon Armor
           { isOwn = true, default = false, singleFamily = { 706, 1086, 11733, 11734, 11735, -- Rank 5
                                                             27260 } }, -- TBC: Rank 6
           warlockOnly)
+                :Category(self.CLASS)
   -- Obsolete at level 20, assuming the player will visit the trainer and at 21
   -- the spell will disappear from Buffomat
-  spellDefModule:scanSpell(spells, 696, -- Demon skin
+  spellDefModule:addBuff(spells, 696, -- Demon skin
           { isOwn = true, default = false, singleFamily = { 687, 696 } },
           { playerClass = "WARLOCK", maxLevel = 20 })
+                :Category(self.CLASS)
 
-  spellDefModule:scanSpell(spells, 17953, -- Firestone
+  spellDefModule:addBuff(spells, 17953, -- Firestone
           { isOwn          = true, default = false,
             lockIfHaveItem = { 1254, 13699, 13700, 13701,
                                22128 }, -- TBC: Master Firestone
             singleFamily   = { 6366, 17951, 17952, 17953, -- Rank 1-4
                                27250 } }, -- TBC: Rank 5
           warlockOnly)
-  spellDefModule:scanSpell(spells, 17728, -- Spellstone
+                :Category(self.CLASS)
+
+  spellDefModule:addBuff(spells, 17728, -- Spellstone
           { isOwn          = true, default = false,
             lockIfHaveItem = { 5522, 13602, 13603, -- "normal", Greater, Major Spellstone
                                22646 }, -- TBC: Master Spellstone
             singleFamily   = { 2362, 17727, 17728, -- Rank 1-3
                                28172 } }, -- TBC: Rank 4
           warlockOnly)
-  spellDefModule:scanSpell(spells, 11730, -- Healtstone
+                :Category(self.CLASS)
+
+  spellDefModule:addBuff(spells, 11730, -- Healtstone
           { isOwn          = true, default = true,
             lockIfHaveItem = { 5512, 19005, 19004, 5511, 19007, 19006, 5509, 19009,
                                19008, 5510, 19011, 19010, 9421, 19013, 19012, -- Healthstones (3 talent ranks)
@@ -378,134 +431,166 @@ local function bomSetupWarlockSpells(spells, enchants)
             singleFamily   = { 6201, 6202, 5699, 11729, 11730, -- Rank 1-5
                                27230 } },
           warlockOnly) -- TBC: Rank 6
-  spellDefModule:scanSpell(spells, 20757, --Soulstone
+                :Category(self.CLASS)
+
+  spellDefModule:addBuff(spells, 20757, --Soulstone
           { isOwn          = true, default = true,
             lockIfHaveItem = { 5232, 16892, 16893, 16895, 16896,
                                22116 }, -- TBC: Master Soulstone
             singleFamily   = { 693, 20752, 20755, 20756, 20757, -- Ranks 1-5
                                27238 } },
           warlockOnly) -- TBC: Rank 6
-  spellDefModule:scanSpell(spells, 5500, --Sense Demons
+                :Category(self.CLASS)
+
+  spellDefModule:addBuff(spells, 5500, --Sense Demons
           { type = "tracking", default = false },
           warlockOnly)
+                :Category(self.TRACKING)
 
   ------------------------
   -- Pet Management
   ------------------------
-  spellDefModule:scanSpell(spells, BOM.SpellId.Warlock.DemonicSacrifice, -- Demonic Sacrifice
+  spellDefModule:addBuff(spells, BOM.SpellId.Warlock.DemonicSacrifice, -- Demonic Sacrifice
           { isOwn = true, default = true, requiresWarlockPet = true },
           warlockOnly)
-  spellDefModule:scanSpell(spells, 19028, -- TBC: Soul Link, talent spell 19028, gives buff 25228
+                :Category(self.PET)
+  spellDefModule:addBuff(spells, 19028, -- TBC: Soul Link, talent spell 19028, gives buff 25228
           { isOwn              = true, default = true, singleFamily = { 19028, 25228 },
             requiresWarlockPet = true },
           warlockOnly)
+                :Category(self.PET)
 
-  spellDefModule:scanSpell(spells, 688, --Summon Imp
+  spellDefModule:addBuff(spells, 688, --Summon Imp
           { type           = "summon", default = true, isOwn = true,
             creatureFamily = "Imp", creatureType = "Demon", sacrificeAuraIds = { 18789 } },
           warlockOnly)
+                :Category(self.PET)
 
-  spellDefModule:scanSpell(spells, 697, --Summon Voidwalker
+  spellDefModule:addBuff(spells, 697, --Summon Voidwalker
           { type             = "summon", default = false, isOwn = true,
             reagentRequired  = { BOM.ItemId.Warlock.SoulShard },
             creatureFamily   = "Voidwalker", creatureType = "Demon",
             sacrificeAuraIds = { 18790, 1905 } }, -- TBC: Restore 2% hp, and Classic: Shield the warlock
           warlockOnly)
+                :Category(self.PET)
 
-  spellDefModule:scanSpell(spells, 712, --Summon Succubus
+  spellDefModule:addBuff(spells, 712, --Summon Succubus
           { type            = "summon", default = false, isOwn = true,
             reagentRequired = { BOM.ItemId.Warlock.SoulShard },
             creatureFamily  = "Succubus", creatureType = "Demon", sacrificeAuraIds = { 18791 } },
           warlockOnly)
+                :Category(self.PET)
 
-  spellDefModule:scanSpell(spells, 713, --Summon Incubus (TBC)
+  spellDefModule:addBuff(spells, 713, --Summon Incubus (TBC)
           { type            = "summon", default = false, isOwn = true,
             reagentRequired = { BOM.ItemId.Warlock.SoulShard },
             creatureFamily  = "Incubus", creatureType = "Demon", sacrificeAuraIds = { 18791 } },
           warlockOnly)
+                :Category(self.PET)
 
-  spellDefModule:scanSpell(spells, 691, --Summon Felhunter
+  spellDefModule:addBuff(spells, 691, --Summon Felhunter
           { type            = "summon", default = false, isOwn = true,
             reagentRequired = { BOM.ItemId.Warlock.SoulShard },
             creatureFamily  = "Felhunter", creatureType = "Demon", sacrificeAuraIds = { 18792 } },
           warlockOnly)
+                :Category(self.PET)
 
-  spellDefModule:scanSpell(spells, 30146, --Summon Felguard
+  spellDefModule:addBuff(spells, 30146, --Summon Felguard
           { type            = "summon", default = false, isOwn = true,
             reagentRequired = { BOM.ItemId.Warlock.SoulShard },
             creatureFamily  = "Felguard", creatureType = "Demon", sacrificeAuraIds = { 35701 } },
           warlockOnly)
+                :Category(self.PET)
 end
 
 ---Add HUNTER spells
 ---@param spells table<string, BomSpellDef>
 ---@param enchants table<string, table<number>>
-local function bomSetupHunterSpells(spells, enchants)
+function allSpellsModule:SetupHunterSpells(spells, enchants)
   local hunterOnly = { playerClass = "HUNTER" }
 
-  spellDefModule:scanSpell(spells, 20906, -- Trueshot Aura
+  spellDefModule:addBuff(spells, 20906, -- Trueshot Aura
           { isOwn        = true, default = true,
             singleFamily = { 19506, 20905, 20906, -- Ranks 1-3
                              27066 } }, -- TBC: Rank 4
           hunterOnly)
+                :Category(self.AURA)
 
-  spellDefModule:scanSpell(spells, 25296, --Aspect of the Hawk
+  spellDefModule:addBuff(spells, 25296, --Aspect of the Hawk
           { type         = "aura", default = true,
             singleFamily = { 13165, 14318, 14319, 14320, 14321, 14322, 25296, -- Rank 1-7
                              27044 } }, -- TBC: Rank 8
           hunterOnly)
-  spellDefModule:scanSpell(spells, 13163, --Aspect of the monkey
+                :Category(self.CLASS)
+  spellDefModule:addBuff(spells, 13163, --Aspect of the monkey
           { type = "aura", default = false },
           hunterOnly)
-  spellDefModule:scanSpell(spells, 34074, -- TBC: Aspect of the Viper
+                :Category(self.CLASS)
+  spellDefModule:addBuff(spells, 34074, -- TBC: Aspect of the Viper
           { type = "aura", default = false },
           { playerClass = "HUNTER", isTBC = true })
-  spellDefModule:scanSpell(spells, 20190, --Aspect of the wild
+                :Category(self.CLASS)
+  spellDefModule:addBuff(spells, 20190, --Aspect of the wild
           { type         = "aura", default = false,
             singleFamily = { 20043, 20190, -- Ranks 1-2
                              27045 } }, -- TBC: Rank 3
           hunterOnly)
-  spellDefModule:scanSpell(spells, 5118, --Aspect of the Cheetah
+                :Category(self.AURA)
+  spellDefModule:addBuff(spells, 5118, --Aspect of the Cheetah
           { type = "aura", default = false }, hunterOnly)
-  spellDefModule:scanSpell(spells, 13159, --Aspect of the pack
+                :Category(self.CLASS)
+  spellDefModule:addBuff(spells, 13159, --Aspect of the pack
           { type = "aura", default = false }, hunterOnly)
-  spellDefModule:scanSpell(spells, 13161, -- Aspect of the beast
+                :Category(self.AURA)
+  spellDefModule:addBuff(spells, 13161, -- Aspect of the beast
           { type = "aura", default = false }, hunterOnly)
+                :Category(self.CLASS)
 
-  spellDefModule:scanSpell(spells, 1494, -- Track Beast
+  spellDefModule:addBuff(spells, 1494, -- Track Beast
           { type = "tracking", default = false }, hunterOnly)
-  spellDefModule:scanSpell(spells, 19878, -- Track Demon
+                :Category(self.TRACKING)
+  spellDefModule:addBuff(spells, 19878, -- Track Demon
           { type = "tracking", default = false }, hunterOnly)
-  spellDefModule:scanSpell(spells, 19879, -- Track Dragonkin
+                :Category(self.TRACKING)
+  spellDefModule:addBuff(spells, 19879, -- Track Dragonkin
           { type = "tracking", default = false }, hunterOnly)
-  spellDefModule:scanSpell(spells, 19880, -- Track Elemental
+                :Category(self.TRACKING)
+  spellDefModule:addBuff(spells, 19880, -- Track Elemental
           { type = "tracking", default = false }, hunterOnly)
-  spellDefModule:scanSpell(spells, 19883, -- Track Humanoids
+                :Category(self.TRACKING)
+  spellDefModule:addBuff(spells, 19883, -- Track Humanoids
           { type = "tracking", default = false }, hunterOnly)
-  spellDefModule:scanSpell(spells, 19882, -- Track Giants / riesen
+                :Category(self.TRACKING)
+  spellDefModule:addBuff(spells, 19882, -- Track Giants / riesen
           { type = "tracking", default = false }, hunterOnly)
-  spellDefModule:scanSpell(spells, 19884, -- Track Undead
+                :Category(self.TRACKING)
+  spellDefModule:addBuff(spells, 19884, -- Track Undead
           { type = "tracking", default = false }, hunterOnly)
-  spellDefModule:scanSpell(spells, 19885, -- Track Hidden / verborgenes
+                :Category(self.TRACKING)
+  spellDefModule:addBuff(spells, 19885, -- Track Hidden / verborgenes
           { type = "tracking", default = false }, hunterOnly)
+                :Category(self.TRACKING)
 
   -- TODO: Do not use tbc_consumable function, add new flags for pet-buff
   spellDefModule:tbcConsumable(spells, 43771, 33874,
           hunterOnly, "Pet buff +Str",
           { tbcHunterPetBuff = true }) --TBC: Kibler's Bits +20 STR/20 SPI for hunter pet
+                :Category(self.PET)
   spellDefModule:tbcConsumable(spells, 33272, 27656,
           hunterOnly, "Pet buff +Stamina",
           { tbcHunterPetBuff = true }) --TBC: Sporeling Snack +20 STAM/20 SPI for hunter pet
+                :Category(self.PET)
 end
 
 ---Add PALADIN spells
 ---@param spells table<string, BomSpellDef>
 ---@param enchants table<string, table<number>>
-local function bomSetupPaladinSpells(spells, enchants)
+function allSpellsModule:SetupPaladinSpells(spells, enchants)
   local paladinOnly = { playerClass = "PALADIN" }
 
-  spellDefModule:scanSpell(spells, 25780, --Righteous Fury, same in TBC
+  spellDefModule:addBuff(spells, 25780, --Righteous Fury, same in TBC
           { isOwn = true, default = false })
+                :Category(self.CLASS)
 
   local blessing_duration = tbcOrClassic(DURATION_10M, DURATION_5M)
   local greater_blessing_duration = tbcOrClassic(DURATION_15M, DURATION_30M)
@@ -513,40 +598,46 @@ local function bomSetupPaladinSpells(spells, enchants)
   --
   -- LESSER BLESSINGS
 
-  spellDefModule:scanSpell(spells, 20217, --Blessing of Kings
+  spellDefModule:addBuff(spells, 20217, --Blessing of Kings
           { groupFamily    = { 25898 }, isBlessing = true, default = false,
             singleDuration = blessing_duration, ignoreIfHaveBuff = { 25898 }, -- Greater kings
             targetClasses  = { "MAGE", "HUNTER", "WARLOCK" } },
           paladinOnly)
+                :Category(self.BLESSING)
 
-  spellDefModule:scanSpell(spells, 19979, -- Blessing of Light
+  spellDefModule:addBuff(spells, 19979, -- Blessing of Light
           { singleFamily   = { 19977, 19978, 19979, -- Ranks 1-3
                                27144 }, -- TBC: Rank 4
             isBlessing     = true, default = false, ignoreIfHaveBuff = { 21177 }, -- Greater Light
             singleDuration = blessing_duration, groupDuration = greater_blessing_duration,
             targetClasses  = BOM_NO_CLASS },
           paladinOnly)
+                :Category(self.BLESSING)
 
-  spellDefModule:scanSpell(spells, 25291, --Blessing of Might
+  spellDefModule:addBuff(spells, 25291, --Blessing of Might
           { isBlessing     = true, default = true, ignoreIfHaveBuff = { 25782, 25916, 27141 }, -- Greater Might
             singleFamily   = { 19740, 19834, 19835, 19836, 19837, 19838, 25291, -- Ranks 1-7
                                27140 }, -- TBC: Rank 8
             singleDuration = blessing_duration, targetClasses = { "WARRIOR", "ROGUE" } },
           paladinOnly)
+                :Category(self.BLESSING)
 
-  spellDefModule:scanSpell(spells, 1038, --Blessing of Salvation
+  spellDefModule:addBuff(spells, 1038, --Blessing of Salvation
           { isBlessing    = true, default = false, singleDuration = blessing_duration,
             targetClasses = BOM_NO_CLASS, ignoreIfHaveBuff = { 25895 }, },
           paladinOnly)
+                :Category(self.BLESSING)
 
-  spellDefModule:scanSpell(spells, 25290, --Blessing of Wisdom
+  spellDefModule:addBuff(spells, 25290, --Blessing of Wisdom
           { isBlessing     = true, default = false,
             singleFamily   = { 19742, 19850, 19852, 19853, 19854, 25290, -- Ranks 1-6
                                27142 }, -- TBC: Rank 7
             singleDuration = blessing_duration, groupDuration = greater_blessing_duration,
             targetClasses  = { "DRUID", "SHAMAN", "PRIEST", "PALADIN" } },
           paladinOnly)
-  spellDefModule:scanSpell(spells, 20914, --Blessing of Sanctuary
+                :Category(self.BLESSING)
+
+  spellDefModule:addBuff(spells, 20914, --Blessing of Sanctuary
           { isBlessing      = true, default = false,
             singleFamily    = { 20911, 20912, 20913, 20914, -- Ranks 1-4
                                 27168 }, -- TBC: Rank 5
@@ -554,23 +645,27 @@ local function bomSetupPaladinSpells(spells, enchants)
             singleDuration  = blessing_duration, groupDuration = greater_blessing_duration,
             targetClasses   = BOM_NO_CLASS },
           paladinOnly)
+                :Category(self.BLESSING)
   --
   -- GREATER BLESSINGS
   --
-  spellDefModule:scanSpell(spells, 25898, --Greater Blessing of Kings
+  spellDefModule:addBuff(spells, 25898, --Greater Blessing of Kings
           { isBlessing      = true, default = true, singleDuration = greater_blessing_duration,
             reagentRequired = { BOM.ItemId.Paladin.SymbolOfKings },
             targetClasses   = { "MAGE", "HUNTER", "WARLOCK" }, },
           paladinOnly)
+                :Category(self.BLESSING)
 
-  spellDefModule:scanSpell(spells, 25890, -- Greater Blessing of Light
+  spellDefModule:addBuff(spells, 25890, -- Greater Blessing of Light
           { singleFamily    = { 25890, -- Greater Rank 1
                                 27145 }, -- TBC: Greater Rank 2
             isBlessing      = true, default = false,
             reagentRequired = { BOM.ItemId.Paladin.SymbolOfKings }, singleDuration = greater_blessing_duration,
             targetClasses   = BOM_NO_CLASS },
           paladinOnly)
-  spellDefModule:scanSpell(spells, 25916, --Greater Blessing of Might
+                :Category(self.BLESSING)
+
+  spellDefModule:addBuff(spells, 25916, --Greater Blessing of Might
           { isBlessing      = true, default = false,
             singleFamily    = { 25782, 25916, -- Greater Ranks 1-2
                                 27141 }, -- TBC: Greater Rank 3
@@ -578,13 +673,17 @@ local function bomSetupPaladinSpells(spells, enchants)
             reagentRequired = { BOM.ItemId.Paladin.SymbolOfKings },
             targetClasses   = { "WARRIOR", "ROGUE" } },
           paladinOnly)
-  spellDefModule:scanSpell(spells, 25895, --Greater Blessing of Salvation
+                :Category(self.BLESSING)
+
+  spellDefModule:addBuff(spells, 25895, --Greater Blessing of Salvation
           { singleFamily    = { 25895 }, isBlessing = true, default = false,
             singleDuration  = greater_blessing_duration,
             reagentRequired = { BOM.ItemId.Paladin.SymbolOfKings },
             targetClasses   = BOM_NO_CLASS },
           paladinOnly)
-  spellDefModule:scanSpell(spells, 25918, --Greater Blessing of Wisdom
+                :Category(self.BLESSING)
+
+  spellDefModule:addBuff(spells, 25918, --Greater Blessing of Wisdom
           { isBlessing      = true, default = false,
             singleFamily    = { 25894, 25918, -- Greater Ranks 1-2
                                 27143 }, -- TBC: Greater Rank 3
@@ -592,7 +691,9 @@ local function bomSetupPaladinSpells(spells, enchants)
             reagentRequired = { BOM.ItemId.Paladin.SymbolOfKings },
             targetClasses   = { "DRUID", "SHAMAN", "PRIEST", "PALADIN" } },
           paladinOnly)
-  spellDefModule:scanSpell(spells, 25899, --Greater Blessing of Sanctuary
+                :Category(self.BLESSING)
+
+  spellDefModule:addBuff(spells, 25899, --Greater Blessing of Sanctuary
           { isBlessing      = true, default = false,
             singleFamily    = { 25899, -- Greater Rank 1
                                 27169 }, -- TBC: Greater Rank 2
@@ -600,173 +701,213 @@ local function bomSetupPaladinSpells(spells, enchants)
             reagentRequired = { BOM.ItemId.Paladin.SymbolOfKings },
             targetClasses   = BOM_NO_CLASS },
           paladinOnly)
+                :Category(self.BLESSING)
 
-  -- END ------
+  -- END blessings ------
   --
   -- ----------------------------------
   --
-  spellDefModule:scanSpell(spells, 10293, -- Devotion Aura
+  spellDefModule:addBuff(spells, 10293, -- Devotion Aura
           { type         = "aura", default = false,
             singleFamily = { 465, 10290, 643, 10291, 1032, 10292, 10293, -- Rank 1-7
                              27149 } }, -- TBC: Rank 8
           paladinOnly)
-  spellDefModule:scanSpell(spells, 10301, -- Retribution Aura
+                :Category(self.AURA)
+  spellDefModule:addBuff(spells, 10301, -- Retribution Aura
           { type         = "aura", default = true,
             singleFamily = { 7294, 10298, 10299, 10300, 10301, -- Ranks 1-5
                              27150 } }, -- TBC: Rank 6
           paladinOnly)
-  spellDefModule:scanSpell(spells, 19746, --Concentration Aura
+                :Category(self.AURA)
+  spellDefModule:addBuff(spells, 19746, --Concentration Aura
           { type = "aura", default = false },
           paladinOnly)
-  spellDefModule:scanSpell(spells, 19896, -- Shadow Resistance Aura
+                :Category(self.AURA)
+  spellDefModule:addBuff(spells, 19896, -- Shadow Resistance Aura
           { type = "aura", default = false, singleFamily = { 19876, 19895, 19896, -- Rank 1-3
                                                              27151 } }, -- TBC: Rank 4
           paladinOnly)
-  spellDefModule:scanSpell(spells, 19898, -- Frost Resistance Aura
+                :Category(self.AURA)
+  spellDefModule:addBuff(spells, 19898, -- Frost Resistance Aura
           { type = "aura", default = false, singleFamily = { 19888, 19897, 19898, -- Rank 1-3
                                                              27152 } }, -- TBC: Rank 4
           paladinOnly)
-  spellDefModule:scanSpell(spells, 19900, -- Fire Resistance Aura
+                :Category(self.AURA)
+  spellDefModule:addBuff(spells, 19900, -- Fire Resistance Aura
           { type = "aura", default = false, singleFamily = { 19891, 19899, 19900, -- Rank 1-3
                                                              27153 } }, -- TBC: Rank 4
           paladinOnly)
-  spellDefModule:scanSpell(spells, 20218, --Sanctity Aura
+                :Category(self.AURA)
+  spellDefModule:addBuff(spells, 20218, --Sanctity Aura
           { type = "aura", default = false },
           paladinOnly)
+                :Category(self.AURA)
 
-  BOM.CrusaderAuraSpell = spellDefModule:scanSpell(
+  BOM.CrusaderAuraSpell = spellDefModule:addBuff(
           spells, BOM.SpellId.Paladin.CrusaderAura, --TBC: Crusader Aura
           { type       = "aura", default = false, extraText = L.CRUSADER_AURA_COMMENT,
             singleMana = 0 },
           paladinOnly)
+                                        :Category(self.AURA)
 
   --
   -- ----------------------------------
   --
-  spellDefModule:scanSpell(spells, 20773, -- Redemption / Auferstehung
+  spellDefModule:addBuff(spells, 20773, -- Redemption / Auferstehung
           { type = "resurrection", default = true, singleFamily = { 7328, 10322, 10324, 20772, 20773 } },
           paladinOnly)
+                :Category(self.CLASS)
 
-  spellDefModule:scanSpell(spells, 20164, -- Sanctity seal
+  spellDefModule:addBuff(spells, 20164, -- Sanctity seal
           { type = "seal", default = false },
           { playerClass = "PALADIN", isTBC = false })
+                :Category(self.SEAL)
 
-  spellDefModule:scanSpell(spells, 5502, -- Sense undead
+  spellDefModule:addBuff(spells, 5502, -- Sense undead
           { type = "tracking", default = false },
           paladinOnly)
+                :Category(self.TRACKING)
 
-  spellDefModule:scanSpell(spells, 20165, -- Seal of Light
+  spellDefModule:addBuff(spells, 20165, -- Seal of Light
           { type         = "seal", default = false,
             singleFamily = { 20165, 20347, 20348, 20349, -- Ranks 1-4
                              27160 } }, -- TBC: Rank 5
           paladinOnly)
-  spellDefModule:scanSpell(spells, 20154, -- Seal of Righteousness
+                :Category(self.SEAL)
+  spellDefModule:addBuff(spells, 20154, -- Seal of Righteousness
           { type         = "seal", default = false,
             singleFamily = { 20154, 20287, 20288, 20289, 20290, 20291, 20292, 20293, -- Ranks 1-8
                              27155 } }, -- TBC: Seal rank 9
           paladinOnly)
-  spellDefModule:scanSpell(spells, 20166, -- Seal of Wisdom
+                :Category(self.SEAL)
+  spellDefModule:addBuff(spells, 20166, -- Seal of Wisdom
           { type = "seal", default = false },
           paladinOnly)
-  spellDefModule:scanSpell(spells, 348704, -- TBC: Seal of Vengeance
+                :Category(self.SEAL)
+  spellDefModule:addBuff(spells, 348704, -- TBC: Seal of Vengeance
           { type         = "seal", default = false,
             singleFamily = { 31801, -- TBC: level 70 spell for Blood Elf
                              348704 } }, -- TBC: Base spell for the alliance races
           paladinOnly)
-  spellDefModule:scanSpell(spells, 348700, -- TBC: Seal of the Martyr (Draenei, Dwarf, Human)
+                :Category(self.SEAL)
+  spellDefModule:addBuff(spells, 348700, -- TBC: Seal of the Martyr (Draenei, Dwarf, Human)
           { type = "seal", default = false },
           paladinOnly)
-  spellDefModule:scanSpell(spells, 31892, -- TBC: Seal of Blood
+                :Category(self.SEAL)
+  spellDefModule:addBuff(spells, 31892, -- TBC: Seal of Blood
           { type         = "seal", default = false,
             singleFamily = { 31892, -- TBC: Base Blood Elf spell
                              38008 } }, -- TBC: Alliance version???
           paladinOnly)
+                :Category(self.SEAL)
 end
 
 ---Add WARRIOR spells
-local function bomSetupWarriorSpells(spells, enchants)
+function allSpellsModule:SetupWarriorSpells(spells, enchants)
   local warriorOnly = { playerClass = "WARRIOR" }
 
-  spellDefModule:scanSpell(spells, 25289, --Battle Shout
+  spellDefModule:addBuff(spells, 25289, --Battle Shout
           { isOwn        = true, default = true, default = false,
             singleFamily = { 6673, 5242, 6192, 11549, 11550, 11551, 25289, -- Ranks 1-7
                              2048 } }, -- TBC: Rank 8
           warriorOnly)
-  spellDefModule:scanSpell(spells, 2457, --Battle Stance
+                :Category(self.CLASS)
+  spellDefModule:addBuff(spells, 2457, --Battle Stance
           { isOwn = true, default = true, default = false, singleId = 2457, shapeshiftFormId = 17 },
           warriorOnly)
-  spellDefModule:scanSpell(spells, 71, --Defensive Stance
+                :Category(self.CLASS)
+  spellDefModule:addBuff(spells, 71, --Defensive Stance
           { isOwn = true, default = true, default = false, singleId = 71, shapeshiftFormId = 18 },
           warriorOnly)
-  spellDefModule:scanSpell(spells, 2458, --Berserker Stance
+                :Category(self.CLASS)
+  spellDefModule:addBuff(spells, 2458, --Berserker Stance
           { isOwn = true, default = true, default = false, singleId = 2458, shapeshiftFormId = 19 },
           warriorOnly)
+                :Category(self.CLASS)
 end
 
 ---Add ROGUE spells
 ---@param spells table<string, BomSpellDef>
 ---@param enchants table<string, table<number>>
-local function bomSetupRogueSpells(spells, enchants)
+function allSpellsModule:SetupRogueSpells(spells, enchants)
   local duration = tbcOrClassic(DURATION_1H, DURATION_30M) -- TBC: Poisons become 1 hour
 
-  spellDefModule:scanSpell(spells, 25351, --Deadly Poison
+  spellDefModule:addBuff(spells, 25351, --Deadly Poison
           { item         = tbcOrClassic(22054, 20844),
             items        = { 22054, 22053, -- TBC: Deadly Poison
                              20844, 8985, 8984, 2893, 2892 },
             isConsumable = true, type = "weapon", duration = duration, default = false },
           { playerClass = "ROGUE", minLevel = 2 })
+                :Category(self.CLASS)
   enchants[25351] = { 2643, 2642, -- TBC: Deadly Poison
                       2630, 627, 626, 8, 7 } --Deadly Poison
 
-  spellDefModule:scanSpell(spells, 11399, --Mind-numbing Poison
+  spellDefModule:addBuff(spells, 11399, --Mind-numbing Poison
           { item     = 9186, items = { 9186, 6951, 5237 }, isConsumable = true, type = "weapon",
             duration = duration, default = false },
           { playerClass = "ROGUE", minLevel = 24 })
+                :Category(self.CLASS)
   enchants[11399] = { 643, 23, 35 } --Mind-numbing Poison
 
-  spellDefModule:scanSpell(spells, 11340, --Instant Poison
+  spellDefModule:addBuff(spells, 11340, --Instant Poison
           { item         = tbcOrClassic(21927, 8928),
             items        = { 21927, -- TBC: Instant Poison
                              8928, 8927, 8926, 6950, 6949, 6947 },
             isConsumable = true, type = "weapon", duration = duration, default = false },
           { playerClass = "ROGUE", minLevel = 20 })
+                :Category(self.CLASS)
   enchants[11340] = { 2641, -- TBC: Instant Poison
                       625, 624, 623, 325, 324, 323 } --Instant Poison
 
-  spellDefModule:scanSpell(spells, 13227, --Wound Poison
+  spellDefModule:addBuff(spells, 13227, --Wound Poison
           { item         = tbcOrClassic(22055, 10922),
             items        = { 22055, -- TBC: Wound Poison
                              10922, 10921, 10920, 10918 },
             isConsumable = true, type = "weapon", duration = duration, default = false },
           { playerClass = "ROGUE", minLevel = 32 })
+                :Category(self.CLASS)
   enchants[13227] = { 2644, -- TBC: Wound Poison
                       706, 705, 704, 703 } --Wound Poison
 
-  spellDefModule:scanSpell(spells, 11202, --Crippling Poison
+  spellDefModule:addBuff(spells, 11202, --Crippling Poison
           { item     = 3776, items = { 3776, 3775 }, isConsumable = true, type = "weapon",
             duration = duration, default = false },
           { playerClass = "ROGUE", minLevel = 20 })
+                :Category(self.CLASS)
   enchants[11202] = { 603, 22 } --Crippling Poison
 
-  spellDefModule:scanSpell(spells, 26785, --TBC: Anesthetic Poison
+  spellDefModule:addBuff(spells, 26785, --TBC: Anesthetic Poison
           { item         = 21835, items = { 21835 },
             isConsumable = true, type = "weapon", duration = duration, default = false },
           { playerClass = "ROGUE", isTBC = true, minLevel = 68 })
+                :Category(self.CLASS)
   enchants[26785] = { 2640, } --TBC: Anesthetic Poison
 end
 
 ---Add RESOURCE TRACKING spells
 ---@param spells table<string, BomSpellDef>
 ---@param enchants table<string, table<number>>
-local function bomSetupTrackingSpells(spells, enchants)
-  tinsert(spells, spellDefModule:new(BOM.SpellId.FindHerbs, -- Find Herbs / kräuter
-          { type = "tracking", default = true }))
-  tinsert(spells, spellDefModule:new(BOM.SpellId.FindMinerals, -- Find Minerals / erz
-          { type = "tracking", default = true }))
-  tinsert(spells, spellDefModule:new(2481, -- Find Treasure / Schatzsuche / Zwerge
-          { type = "tracking", default = true }))
-  tinsert(spells, spellDefModule:new(43308, -- Find Fish (TBC daily quest reward)
-          { type = "tracking", default = false }))
+function allSpellsModule:SetupTrackingSpells(spells, enchants)
+  tinsert(spells,
+          spellDefModule:new(BOM.SpellId.FindHerbs, -- Find Herbs / kräuter
+                  { type = "tracking", default = true })
+                        :Category(self.TRACKING)
+  )
+  tinsert(spells,
+          spellDefModule:new(BOM.SpellId.FindMinerals, -- Find Minerals / erz
+                  { type = "tracking", default = true })
+                        :Category(self.TRACKING)
+  )
+  tinsert(spells,
+          spellDefModule:new(2481, -- Find Treasure / Schatzsuche / Zwerge
+                  { type = "tracking", default = true })
+                        :Category(self.TRACKING)
+  )
+  tinsert(spells,
+          spellDefModule:new(43308, -- Find Fish (TBC daily quest reward)
+                  { type = "tracking", default = false })
+                        :Category(self.TRACKING)
+  )
 
   return spells
 end
@@ -774,7 +915,7 @@ end
 ---MISC spells applicable to every class
 ---@param spells table<string, BomSpellDef>
 ---@param enchants table<string, table<number>>
-local function bomSetupMiscSpells(spells, enchants)
+function allSpellsModule:SetupMiscSpells(spells, enchants)
   return spells
 end
 
@@ -782,25 +923,25 @@ end
 ---@param spells table<string, BomSpellDef>
 ---@param enchants table<string, table<number>>
 function allSpellsModule:SetupPhysicalDpsBattleElixirs(spells, enchants)
-  spellDefModule:scanSpell(spells, 28497, --TBC: Elixir of Major Agility +35 AGI +20 CRIT
+  spellDefModule:addBuff(spells, 28497, --TBC: Elixir of Major Agility +35 AGI +20 CRIT
           { item          = 22831, isConsumable = true, default = false,
             onlyUsableFor = BOM_PHYSICAL_CLASSES, consumableEra = BOM.TBC_ERA },
           { isTBC = true })
                 :Category(self.TBC_PHYS_ELIXIR)
                 :ElixirType(self.ELIX_BATTLE)
-  spellDefModule:scanSpell(spells, 38954, --TBC: Fel Strength Elixir +90AP -10 STA
+  spellDefModule:addBuff(spells, 38954, --TBC: Fel Strength Elixir +90AP -10 STA
           { item          = 31679, isConsumable = true, default = false,
             onlyUsableFor = BOM_PHYSICAL_CLASSES, consumableEra = BOM.TBC_ERA },
           { isTBC = true })
                 :Category(self.TBC_PHYS_ELIXIR)
                 :ElixirType(self.ELIX_BATTLE)
-  spellDefModule:scanSpell(spells, 28490, --TBC: Elixir of Major Strength +35 STR
+  spellDefModule:addBuff(spells, 28490, --TBC: Elixir of Major Strength +35 STR
           { item          = 22824, isConsumable = true, default = false,
             onlyUsableFor = BOM_PHYSICAL_CLASSES, consumableEra = BOM.TBC_ERA },
           { isTBC = true })
                 :Category(self.TBC_PHYS_ELIXIR)
                 :ElixirType(self.ELIX_BATTLE)
-  spellDefModule:scanSpell(spells, 33720, --TBC: Onslaught Elixir +60 AP
+  spellDefModule:addBuff(spells, 33720, --TBC: Onslaught Elixir +60 AP
           { item          = 28102, isConsumable = true, default = false,
             onlyUsableFor = BOM_PHYSICAL_CLASSES, consumableEra = BOM.TBC_ERA },
           { isTBC = true })
@@ -812,71 +953,71 @@ end
 ---@param spells table<string, BomSpellDef>
 ---@param enchants table<string, table<number>>
 function allSpellsModule:SetupPhysicalDpsConsumables(spells, enchants)
-  spellDefModule:scanSpell(spells, 17538, --Elixir of the Mongoose
+  spellDefModule:addBuff(spells, 17538, --Elixir of the Mongoose
           { item          = 13452, isConsumable = true, default = false,
             onlyUsableFor = BOM_PHYSICAL_CLASSES, consumableEra = BOM.CLASSIC_ERA,
             extraText     = bomClassicHint() })
                 :Category(self.CLASSIC_PHYS_ELIXIR)
                 :ElixirType(self.ELIX_BATTLE)
-  spellDefModule:scanSpell(spells, 11334, --Elixir of Greater Agility
+  spellDefModule:addBuff(spells, 11334, --Elixir of Greater Agility
           { item          = 9187, isConsumable = true, default = false,
             onlyUsableFor = BOM_PHYSICAL_CLASSES, consumableEra = BOM.CLASSIC_ERA,
             extraText     = bomClassicHint() })
-                :Category(self.classicPhysElixir)
+                :Category(self.CLASSIC_PHYS_ELIXIR)
                 :ElixirType(self.ELIX_BATTLE)
-  spellDefModule:scanSpell(spells, 11405, --Elixir of Giants
+  spellDefModule:addBuff(spells, 11405, --Elixir of Giants
           { item          = 9206, isConsumable = true, default = false,
             onlyUsableFor = BOM_PHYSICAL_CLASSES, consumableEra = BOM.CLASSIC_ERA,
             extraText     = bomClassicHint() })
-                :Category(self.classicPhysElixir)
+                :Category(self.CLASSIC_PHYS_ELIXIR)
                 :ElixirType(self.ELIX_BATTLE)
-  spellDefModule:scanSpell(spells, 17038, --Winterfall Firewater
+  spellDefModule:addBuff(spells, 17038, --Winterfall Firewater
           { item          = 12820, isConsumable = true, default = false,
             onlyUsableFor = BOM_PHYSICAL_CLASSES, consumableEra = BOM.CLASSIC_ERA,
             extraText     = bomClassicHint() })
-                :Category(self.classicPhysElixir)
-  spellDefModule:scanSpell(spells, 16329, --Juju Might +40AP
+                :Category(self.CLASSIC_PHYS_BUFF)
+  spellDefModule:addBuff(spells, 16329, --Juju Might +40AP
           { item          = 12460, isConsumable = true, default = false,
             consumableEra = BOM.CLASSIC_ERA, extraText = bomClassicHint() })
-                :Category(self.classicPhysElixir)
-  spellDefModule:scanSpell(spells, 16323, --Juju Power +30Str
+                :Category(self.CLASSIC_PHYS_BUFF)
+  spellDefModule:addBuff(spells, 16323, --Juju Power +30Str
           { item          = 12451, isConsumable = true, default = false,
             consumableEra = BOM.CLASSIC_ERA, extraText = bomClassicHint() })
-                :Category(self.classicPhysElixir)
+                :Category(self.CLASSIC_PHYS_BUFF)
   --
   -- Scrolls
   --
-  spellDefModule:scanSpell(spells, 33077, --TBC: Scroll of Agility V
+  spellDefModule:addBuff(spells, 33077, --TBC: Scroll of Agility V
           { item           = 27498, isConsumable = true, default = false, consumableTarget = "player",
             singleDuration = DURATION_30M, playerClass = BOM_PHYSICAL_CLASSES },
           { isTBC = true })
-  spellDefModule:scanSpell(spells, 12174, --Scroll of Agility IV
+  spellDefModule:addBuff(spells, 12174, --Scroll of Agility IV
           { item           = 10309, isConsumable = true, default = false, consumableTarget = "player",
             singleDuration = DURATION_30M, playerClass = BOM_PHYSICAL_CLASSES, extraText = bomClassicHint() })
-  spellDefModule:scanSpell(spells, 8117, --Scroll of Agility III
+  spellDefModule:addBuff(spells, 8117, --Scroll of Agility III
           { item           = 4425, isConsumable = true, default = false, consumableTarget = "player",
             singleDuration = DURATION_30M, playerClass = BOM_PHYSICAL_CLASSES, extraText = bomClassicHint() })
 
-  spellDefModule:scanSpell(spells, 33082, --TBC: Scroll of Strength V
+  spellDefModule:addBuff(spells, 33082, --TBC: Scroll of Strength V
           { item           = 27503, isConsumable = true, default = false, consumableTarget = "player",
             singleDuration = DURATION_30M, playerClass = BOM_MELEE_CLASSES },
           { isTBC = true })
-  spellDefModule:scanSpell(spells, 12179, --Scroll of Strength IV
+  spellDefModule:addBuff(spells, 12179, --Scroll of Strength IV
           { item           = 10310, isConsumable = true, default = false, consumableTarget = "player",
             singleDuration = DURATION_30M, playerClass = BOM_MELEE_CLASSES, extraText = bomClassicHint() })
-  spellDefModule:scanSpell(spells, 8120, --Scroll of Strength III
+  spellDefModule:addBuff(spells, 8120, --Scroll of Strength III
           { item           = 4426, isConsumable = true, default = false, consumableTarget = "player",
             singleDuration = DURATION_30M, playerClass = BOM_MELEE_CLASSES, extraText = bomClassicHint() })
 
-  spellDefModule:scanSpell(spells, 33079, --TBC: Scroll of Protection V
+  spellDefModule:addBuff(spells, 33079, --TBC: Scroll of Protection V
           { item           = 27500, isConsumable = true, default = false, consumableTarget = "player",
             singleDuration = DURATION_30M },
           { isTBC = true })
-  spellDefModule:scanSpell(spells, 12175, --Scroll of Protection IV
+  spellDefModule:addBuff(spells, 12175, --Scroll of Protection IV
           { item           = 10305, isConsumable = true, default = false, consumableTarget = "player",
             singleDuration = DURATION_30M, extraText = bomClassicHint() })
 
-  spellDefModule:scanSpell(spells, 33080, --Scroll of Spirit V
+  spellDefModule:addBuff(spells, 33080, --Scroll of Spirit V
           { item           = 27501, isConsumable = true, default = false, consumableTarget = "player",
             singleDuration = DURATION_30M, playerClass = BOM_MANA_CLASSES },
           { isTBC = true })
@@ -884,27 +1025,27 @@ function allSpellsModule:SetupPhysicalDpsConsumables(spells, enchants)
   --
   -- Rune of Warding
   --
-  spellDefModule:scanSpell(spells, 32282, --TBC: Greater Rune of Warding
+  spellDefModule:addBuff(spells, 32282, --TBC: Greater Rune of Warding
           { item           = 25521, isConsumable = true, default = false, consumableTarget = "player",
             singleDuration = DURATION_1H, targetClasses = BOM_ALL_CLASSES, playerClass = BOM_MELEE_CLASSES })
 
   --
   -- Weightstones for blunt weapons
   --
-  spellDefModule:scanSpell(spells, 16622, --Weightstone
+  spellDefModule:addBuff(spells, 16622, --Weightstone
           { item          = 12643, items = { 12643, 7965, 3241, 3240, 3239 },
             isConsumable  = true, type = "weapon", duration = DURATION_30M,
             default       = false, onlyUsableFor = BOM_PHYSICAL_CLASSES, -- fist weapon = blunt
             consumableEra = BOM.CLASSIC_ERA, extraText = bomClassicHint() })
   enchants[16622] = { 1703, 484, 21, 20, 19 } -- Weightstone
 
-  spellDefModule:scanSpell(spells, 34340, --TBC: Adamantite Weightstone +12 BLUNT +14 CRIT
+  spellDefModule:addBuff(spells, 34340, --TBC: Adamantite Weightstone +12 BLUNT +14 CRIT
           { item          = 28421, items = { 28421 }, isConsumable = true, type = "weapon", duration = DURATION_1H,
             default       = false, onlyUsableFor = BOM_PHYSICAL_CLASSES, -- fist weapon = blunt
             consumableEra = BOM.TBC_ERA }, { isTBC = true })
   enchants[34340] = { 2955 } --TBC: Adamantite Weightstone (Weight Weapon)
 
-  spellDefModule:scanSpell(spells, 34339, --TBC: Fel Weightstone +12 BLUNT
+  spellDefModule:addBuff(spells, 34339, --TBC: Fel Weightstone +12 BLUNT
           { item          = 28420, items = { 28420 }, isConsumable = true, type = "weapon", duration = DURATION_1H,
             default       = false, onlyUsableFor = BOM_PHYSICAL_CLASSES, -- fist weapon = blunt
             consumableEra = BOM.TBC_ERA }, { isTBC = true })
@@ -914,50 +1055,36 @@ function allSpellsModule:SetupPhysicalDpsConsumables(spells, enchants)
   --
   -- Sharpening Stones for sharp weapons
   --
-  spellDefModule:scanSpell(spells, 16138, --Sharpening Stone
+  spellDefModule:addBuff(spells, 16138, --Sharpening Stone
           { item          = 12404, items = { 12404, 7964, 2871, 2863, 2862 },
             isConsumable  = true, type = "weapon", duration = DURATION_30M, default = false,
             onlyUsableFor = BOM_PHYSICAL_CLASSES, consumableEra = BOM.CLASSIC_ERA })
   enchants[16138] = { 1643, 483, 14, 13, 40 } --Sharpening Stone
-  spellDefModule:scanSpell(spells, 28891, --Consecrated Sharpening Stone
+  spellDefModule:addBuff(spells, 28891, --Consecrated Sharpening Stone
           { item     = 23122, isConsumable = true, type = "weapon",
             duration = DURATION_1H, default = false, onlyUsableFor = BOM_PHYSICAL_CLASSES, consumableEra = BOM.CLASSIC_ERA })
   enchants[28891] = { 2684 } --Consecrated Sharpening Stone
-  spellDefModule:scanSpell(spells, 22756, --Elemental Sharpening Stone
+  spellDefModule:addBuff(spells, 22756, --Elemental Sharpening Stone
           { item     = 18262, isConsumable = true, type = "weapon",
             duration = DURATION_30M, default = false, onlyUsableFor = BOM_PHYSICAL_CLASSES, consumableEra = BOM.CLASSIC_ERA })
   enchants[22756] = { 2506 } --Elemental Sharpening Stone
 
-  spellDefModule:scanSpell(spells, 29453, --TBC: Adamantite Sharpening Stone +12 WEAPON +14 CRIT
+  spellDefModule:addBuff(spells, 29453, --TBC: Adamantite Sharpening Stone +12 WEAPON +14 CRIT
           { item    = 23529, items = { 23529 }, isConsumable = true, type = "weapon", duration = DURATION_1H,
             default = false, onlyUsableFor = BOM_PHYSICAL_CLASSES, consumableEra = BOM.TBC_ERA },
           { isTBC = true })
-  spellDefModule:scanSpell(spells, 29452, --TBC: Fel Sharpening Stone +12 WEAPON
+  spellDefModule:addBuff(spells, 29452, --TBC: Fel Sharpening Stone +12 WEAPON
           { item    = 23528, items = { 23528 }, isConsumable = true, type = "weapon", duration = DURATION_1H,
             default = false, onlyUsableFor = BOM_PHYSICAL_CLASSES, consumableEra = BOM.TBC_ERA },
           { isTBC = true })
   enchants[29452] = { 2712 } --TBC: Fel Sharpening Stone (Sharpened +12)
   enchants[29453] = { 2713 } --TBC: Adamantite Sharpening Stone (Sharpened +14 Crit, +12)
-
-  --
-  -- Food (pre TBC)
-  --
-  spellDefModule:scanSpell(spells, 18192, --Grilled Squid +10 Agility
-          { item          = 13928, isConsumable = true, default = false, onlyUsableFor = BOM_PHYSICAL_CLASSES,
-            consumableEra = BOM.CLASSIC_ERA },
-          { isTBC = false }) -- hide in TBC
-  spellDefModule:scanSpell(spells, 24799, --Smoked Desert Dumplings +Strength
-          { item          = 20452, isConsumable = true, default = false, onlyUsableFor = BOM_PHYSICAL_CLASSES,
-            consumableEra = BOM.CLASSIC_ERA },
-          { isTBC = false }) -- hide in TBC
-  spellDefModule:classicConsumable(spells, 18125, 13810, --Blessed Sunfruit +STR
-          { playerClass = BOM_MELEE_CLASSES }, bomClassicHint())
 end
 
 ---ITEMS, applicable to most of the classes, self buffs, containers to open etc
 ---@param spells table<string, BomSpellDef>
 ---@param enchants table<string, table<number>>
-local function bomSetupCasterBattleElixirs(spells, enchants)
+function allSpellsModule:SetupCasterBattleElixirs(spells, enchants)
   -- Not visible in Classic
   spellDefModule:tbcConsumable(spells, 28273, 22710, --TBC: Bloodthistle (Belf only)
           { playerRace = "BloodElf", playerClass = BOM_MANA_CLASSES },
@@ -995,7 +1122,7 @@ end
 ---ITEMS, applicable to most of the classes, self buffs, containers to open etc
 ---@param spells table<string, BomSpellDef>
 ---@param enchants table<string, table<number>>
-local function bomSetupCasterGuardianElixirs(spells, enchants)
+function allSpellsModule:SetupCasterGuardianElixirs(spells, enchants)
   spellDefModule:classicConsumable(spells, 11396, 9179, --Elixir of Greater Intellect +25
           nil, bomClassicHint())
 
@@ -1007,24 +1134,24 @@ end
 
 ---@param spells table<string, BomSpellDef>
 ---@param enchants table<string, table<number>>
-local function bomSetupCasterConsumables(spells, enchants)
+function allSpellsModule:SetupCasterConsumables(spells, enchants)
   spellDefModule:classicConsumable(spells, 18194, 13931, --Nightfin Soup +8Mana/5
           { playerClass = BOM_MANA_CLASSES }, bomClassicHint())
   spellDefModule:classicConsumable(spells, 19710, 12218, --Monster Omelette
           { playerClass = BOM_MANA_CLASSES }, bomClassicHint())
-  spellDefModule:scanSpell(spells, 18141, --Blessed Sunfruit Juice +10 SPIRIT
+  spellDefModule:addBuff(spells, 18141, --Blessed Sunfruit Juice +10 SPIRIT
           { item          = 13813, isConsumable = true, default = false,
             onlyUsableFor = BOM_MANA_CLASSES, consumableEra = BOM.CLASSIC_ERA },
           { isTBC = false }) -- hide in TBC
 
   if BOM.TBC then
-    spellDefModule:scanSpell(spells, 28017, --Superior Wizard Oil +42 SPELL
+    spellDefModule:addBuff(spells, 28017, --Superior Wizard Oil +42 SPELL
             { item          = 22522, items = { 22522 }, isConsumable = true,
               type          = "weapon", duration = DURATION_1H, default = false,
               onlyUsableFor = BOM_MANA_CLASSES })
   end
 
-  spellDefModule:scanSpell(spells, 25123, --Minor, Lesser, Brilliant Mana Oil
+  spellDefModule:addBuff(spells, 25123, --Minor, Lesser, Brilliant Mana Oil
           { item     = 20748, isConsumable = true, type = "weapon",
             items    = { 20748, 20747, 20745, -- Minor, Lesser, Brilliant Mana Oil
                          22521 }, -- TBC: Superior Mana Oil
@@ -1032,7 +1159,7 @@ local function bomSetupCasterConsumables(spells, enchants)
   enchants[25123] = { 2624, 2625, 2629, -- Minor, Lesser, Brilliant Mana Oil (enchant)
                       2677 } -- TBC: Superior Mana Oil (enchant)
 
-  spellDefModule:scanSpell(spells, 25122, -- Wizard Oil
+  spellDefModule:addBuff(spells, 25122, -- Wizard Oil
           { item     = 20749, isConsumable = true, type = "weapon",
             items    = { 20749, 20746, 20744, 20750, --Minor, Lesser, "regular", Brilliant Wizard Oil
                          22522 }, -- TBC: Superior Wizard Oil
@@ -1040,7 +1167,7 @@ local function bomSetupCasterConsumables(spells, enchants)
   enchants[25122] = { 2623, 2626, 2627, 2628, --Minor, Lesser, "regular", Brilliant Wizard Oil (enchant)
                       2678 }, -- TBC: Superior Wizard Oil (enchant)
 
-  spellDefModule:scanSpell(spells, 28898, --Blessed Wizard Oil
+  spellDefModule:addBuff(spells, 28898, --Blessed Wizard Oil
           { item     = 23123, isConsumable = true, type = "weapon",
             duration = DURATION_1H, default = false, onlyUsableFor = BOM_MANA_CLASSES })
   enchants[28898] = { 2685 } --Blessed Wizard Oil
@@ -1048,7 +1175,7 @@ end
 
 ---@param spells table<string, BomSpellDef>
 ---@param enchants table<string, table<number>>
-local function bomSetupBattleElixirs(spells, enchants)
+function allSpellsModule:SetupBattleElixirs(spells, enchants)
   -- Sunwell only
   --tinsert(s, BOM.Class.SpellDef:new(45373, --TBC: Bloodberry Elixir +15 all stats
   --        { item = 34537, isConsumable = true, default = false }))
@@ -1057,7 +1184,7 @@ end
 
 ---@param spells table<string, BomSpellDef>
 ---@param enchants table<string, table<number>>
-local function bomSetupGuardianElixirs(spells, enchants)
+function allSpellsModule:SetupGuardianElixirs(spells, enchants)
   spellDefModule:tbcConsumable(spells, 28502, 22834) --TBC: Elixir of Major Defense +550 ARMOR
   spellDefModule:tbcConsumable(spells, 39628, 32068) --TBC: Elixir of Ironskin +30 RESIL
   spellDefModule:tbcConsumable(spells, 39625, 32062) --TBC: Elixir of Major Fortitude +250 HP and 10 HP/5
@@ -1108,7 +1235,7 @@ end
 
 ---@param spells table<string, BomSpellDef>
 ---@param enchants table<string, table<number>>
-local function bomSetupItemSpells(spells, enchants)
+function allSpellsModule:SetupItemSpells(spells, enchants)
   spellDefModule:classicConsumable(spells, 15233, 11564, --Crystal Ward
           nil, bomClassicHint())
   spellDefModule:classicConsumable(spells, 15279, 11567, --Crystal Spire +12 THORNS
@@ -1119,10 +1246,24 @@ end
 
 ---@param spells table<string, BomSpellDef>
 ---@param enchants table<string, table<number>>
-local function bomSetupFood(spells, enchants)
-  spellDefModule:classicConsumable(spells, 18192, { 13928 }, --Grilled Squid +10 AGI
-          nil)
+function allSpellsModule:SetupFood(spells, enchants)
+  --
+  -- Food (Classic)
+  --
+  spellDefModule:addBuff(spells, 18192, --Grilled Squid +10 Agility
+          { item          = 13928, isConsumable = true, default = false, onlyUsableFor = BOM_PHYSICAL_CLASSES,
+            consumableEra = BOM.CLASSIC_ERA },
+          { isTBC = false }) -- hide in TBC
+  spellDefModule:addBuff(spells, 24799, --Smoked Desert Dumplings +Strength
+          { item          = 20452, isConsumable = true, default = false, onlyUsableFor = BOM_PHYSICAL_CLASSES,
+            consumableEra = BOM.CLASSIC_ERA },
+          { isTBC = false }) -- hide in TBC
+  spellDefModule:classicConsumable(spells, 18125, 13810, --Blessed Sunfruit +STR
+          { playerClass = BOM_MELEE_CLASSES }, bomClassicHint())
 
+  --
+  -- Food (The Burning Crusade)
+  --
   spellDefModule:tbcConsumable(spells, 33257, { 33052, 27667 }, --Well Fed +30 STA +20 SPI
           nil, L.TooltipSimilarFoods)
 
@@ -1155,7 +1296,7 @@ end
 
 ---@param spells table<string, BomSpellDef>
 ---@param enchants table<string, table<number>>
-local function bomSetupFlasks(spells, enchants)
+function allSpellsModule:SetupFlasks(spells, enchants)
   spellDefModule:tbcConsumable(spells, 28540, 22866, --TBC: Flask of Pure Death +80 SHADOW +80 FIRE +80 FROST
           { playerClass = BOM_MANA_CLASSES })
   spellDefModule:tbcConsumable(spells, 28521, 22861, --TBC: Flask of Blinding Light +80 ARC +80 HOLY +80 NATURE
@@ -1193,66 +1334,25 @@ local function bomSetupFlasks(spells, enchants)
 
 end
 
----All spells known to Buffomat
----Note: you can add your own spell in the "WTF\Account\<accountname>\SavedVariables\buffOmat.lua"
----table CustomSpells
----@return table<number, BomSpellDef> All known spells table (all spells to be scanned)
-function allSpellsModule:SetupSpells()
-  local spells = {} ---@type table<number, BomSpellDef>
-  local enchants = {} ---@type table<number, table<number>>
-
-  bomSetupPriestSpells(spells, enchants)
-  bomSetupDruidSpells(spells, enchants)
-  bomSetupMageSpells(spells, enchants)
-  bomSetupShamanSpells(spells, enchants)
-  bomSetupWarlockSpells(spells, enchants)
-  bomSetupHunterSpells(spells, enchants)
-  bomSetupPaladinSpells(spells, enchants)
-  bomSetupWarriorSpells(spells, enchants)
-  bomSetupRogueSpells(spells, enchants)
-
-  bomSetupTrackingSpells(spells, enchants)
-  bomSetupMiscSpells(spells, enchants)
-
-  self:SetupPhysicalDpsConsumables(spells, enchants)
-  self:SetupPhysicalDpsBattleElixirs(spells, enchants)
-  bomSetupCasterConsumables(spells, enchants)
-  bomSetupCasterBattleElixirs(spells, enchants)
-  bomSetupCasterGuardianElixirs(spells, enchants)
-  bomSetupBattleElixirs(spells, enchants)
-  bomSetupGuardianElixirs(spells, enchants)
-  bomSetupFlasks(spells, enchants)
-
-  bomSetupItemSpells(spells, enchants)
-  bomSetupFood(spells, enchants)
-
-  --Preload items!
-  for x, spell in ipairs(spells) do
-    if spell.isConsumable then
-      BOM.GetItemInfo(spell.item)
-    end
-  end
-
-  BOM.EnchantToSpell = {}
-  for dest, list in pairs(enchants) do
-    for i, id in ipairs(list) do
-      BOM.EnchantToSpell[id] = dest
-    end
-  end
-
-  BOM.AllBuffomatSpells = spells
-  BOM.EnchantList = enchants
-
+function allSpellsModule:SetupConstants()
   -- Elixir types for mutual exclusions
   self.ELIX_BATTLE = "elixir-battle"
   self.ELIX_GUARDIAN = "elixir-guardian"
   self.ELIX_FLASK = "elixir-flask" -- both battle and guardian
 
   --- Categories for nice display of titles and grouping
+  self.CLASS = "class" -- class buffs go first
+  self.BLESSING = "classBlessing" -- paladin blessings
+  self.PET = "pet" -- class buffs for pets
+  self.TRACKING = "tracking"
+  self.AURA = "aura" -- auras for paladins and hunters etc
+  self.SEAL = "seal" -- seals for paladins
+
   self.CLASSIC_PHYS_FOOD = "classicPhysicalFood"
   self.CLASSIC_SPELL_FOOD = "classicSpellFood"
   self.CLASSIC_FOOD = "classicFood"
   self.CLASSIC_PHYS_ELIXIR = "classicPhysElixir"
+  self.CLASSIC_PHYS_BUFF = "classicPhysBuff"
   self.CLASSIC_SPELL_ELIXIR = "classicSpellElixir"
   self.CLASSIC_ELIXIR = "classicElixir"
 
@@ -1268,7 +1368,10 @@ function allSpellsModule:SetupSpells()
 
   -- Categories ordered for display
   self.buffCategories = {
+    self.CLASS, self.BLESSING, self.AURA, self.PET, self.TRACKING, self.SEAL,
+
     self.CLASSIC_PHYS_ELIXIR,
+    self.CLASSIC_PHYS_BUFF,
     self.CLASSIC_SPELL_ELIXIR,
     self.CLASSIC_ELIXIR,
     self.TBC_PHYS_ELIXIR,
@@ -1284,8 +1387,60 @@ function allSpellsModule:SetupSpells()
 
     self.SCROLL,
     self.OIL,
-    nil, -- include all uncategorised
+    false, -- special value no category
   }
+end
+
+---All spells known to Buffomat
+---Note: you can add your own spell in the "WTF\Account\<accountname>\SavedVariables\buffOmat.lua"
+---table CustomSpells
+---@return table<number, BomSpellDef> All known spells table (all spells to be scanned)
+function allSpellsModule:SetupSpells()
+  local spells = {} ---@type table<number, BomSpellDef>
+  local enchants = {} ---@type table<number, table<number>>
+  self:SetupConstants()
+
+  self:SetupPriestSpells(spells, enchants)
+  self:SetupDruidSpells(spells, enchants)
+  self:SetupMageSpells(spells, enchants)
+  self:SetupShamanSpells(spells, enchants)
+  self:SetupWarlockSpells(spells, enchants)
+  self:SetupHunterSpells(spells, enchants)
+  self:SetupPaladinSpells(spells, enchants)
+  self:SetupWarriorSpells(spells, enchants)
+  self:SetupRogueSpells(spells, enchants)
+
+  self:SetupTrackingSpells(spells, enchants)
+  self:SetupMiscSpells(spells, enchants)
+
+  self:SetupPhysicalDpsConsumables(spells, enchants)
+  self:SetupPhysicalDpsBattleElixirs(spells, enchants)
+  self:SetupCasterConsumables(spells, enchants)
+  self:SetupCasterBattleElixirs(spells, enchants)
+  self:SetupCasterGuardianElixirs(spells, enchants)
+  self:SetupBattleElixirs(spells, enchants)
+  self:SetupGuardianElixirs(spells, enchants)
+  self:SetupFlasks(spells, enchants)
+
+  self:SetupItemSpells(spells, enchants)
+  self:SetupFood(spells, enchants)
+
+  --Preload items!
+  for x, spell in ipairs(spells) do
+    if spell.isConsumable and spell.item then
+      BOM.GetItemInfo(spell.item)
+    end
+  end
+
+  BOM.EnchantToSpell = {}
+  for dest, list in pairs(enchants) do
+    for i, id in ipairs(list) do
+      BOM.EnchantToSpell[id] = dest
+    end
+  end
+
+  BOM.AllBuffomatSpells = spells
+  BOM.EnchantList = enchants
 end
 
 BOM.ArgentumDawn = {
