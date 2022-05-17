@@ -182,7 +182,7 @@ function spellButtonsTabModule:AddSpellCancelRow(spell, rowBuilder)
     -- Create spell tooltip button
     spell.frames.info = BOM.CreateManagedButton(
             BomC_SpellTab_Scroll_Child,
-            spell.Icon,
+            spell:GetIcon(),
             nil,
             nil,
             { 0.1, 0.9, 0.1, 0.9 })
@@ -830,6 +830,9 @@ function spellButtonsTabModule:UpdateSpellsTab(caller)
     BOM.HideAllManagedButtons()
     self.categoryLabels = {}
     self.spellTabsCreatedFlag = false
+
+    spellCacheModule.cacheChanged = false
+    itemCacheModule.cacheChanged = false
   end
 
   if not self.spellTabsCreatedFlag then

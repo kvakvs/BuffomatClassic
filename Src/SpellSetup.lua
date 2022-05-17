@@ -78,10 +78,10 @@ local function bomSetup_CancelBuffs()
     -- GetSpellNames and set default duration
     local spell_info = BOM.GetSpellInfo(spell.singleId)
 
-    spell.single = spell_info.name
+    spell.singleText = spell_info.name
     spell_info.rank = GetSpellSubtext(spell.singleId) or ""
     spell.singleLink = bomFormatSpellLink(spell_info)
-    spell.Icon = spell_info.icon
+    spell.spellIcon = spell_info.icon
 
     BOM.Tool.iMerge(BOM.AllSpellIds, spell.singleFamily)
 
@@ -121,7 +121,7 @@ local function bomSetup_EachSpell_Consumable(add, spell)
             and item_info.itemLink
             and item_info.itemIcon then
       add = true
-      spell.single = item_info.itemName
+      spell.singleText = item_info.itemName
       spell.singleLink = BOM.FormatTexture(item_info.itemIcon) .. item_info.itemLink
       spell.Icon = item_info.itemIcon
       spell.isScanned = true
@@ -196,10 +196,10 @@ local function bomSetup_EachSpell_SetupNonConsumable(spell)
   local spellInfo = BOM.GetSpellInfo(spell.singleId)
 
   if spellInfo ~= nil then
-    spell.single = spellInfo.name
+    spell.singleText = spellInfo.name
     spellInfo.rank = GetSpellSubtext(spell.singleId) or ""
     spell.singleLink = bomFormatSpellLink(spellInfo)
-    spell.Icon = spellInfo.icon
+    spell.spellIcon = spellInfo.icon
 
     if spell.type == "tracking" then
       spell.trackingIconId = spellInfo.icon
@@ -221,7 +221,7 @@ local function bomSetup_EachSpell_SetupGroupBuff(spell)
   local spellInfo = BOM.GetSpellInfo(spell.groupId)
 
   if spellInfo ~= nil then
-    spell.group = spellInfo.name
+    spell.groupText = spellInfo.name
     spellInfo.rank = GetSpellSubtext(spell.groupId) or ""
     spell.groupLink = bomFormatSpellLink(spellInfo)
 
@@ -307,7 +307,7 @@ local function bomSetup_EachSpell(spell)
   if IsSpellKnown(spell.singleId) then
     add = true
     spell.singleMana = 0
-    local cost = GetSpellPowerCost(spell.single)
+    local cost = GetSpellPowerCost(spell.singleText)
 
     if type(cost) == "table" then
       for j = 1, #cost do
@@ -319,10 +319,10 @@ local function bomSetup_EachSpell(spell)
   end
 
   -- Add group buffs which are known
-  if spell.group and IsSpellKnown(spell.groupId) then
+  if spell.groupText and IsSpellKnown(spell.groupId) then
     add = true
     spell.groupMana = 0
-    local cost = GetSpellPowerCost(spell.group)
+    local cost = GetSpellPowerCost(spell.groupText)
 
     if type(cost) == "table" then
       for j = 1, #cost do

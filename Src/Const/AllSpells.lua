@@ -970,11 +970,11 @@ function allSpellsModule:SetupPhysicalDpsConsumables(spells, enchants)
                 :Category(self.CLASSIC_PHYS_BUFF)
   spellDefModule:addBuff(spells, 16329, --Juju Might +40AP
           { item          = 12460, isConsumable = true, default = false,
-            consumableEra = BOM.CLASSIC_ERA, })
+            consumableEra = BOM.CLASSIC_ERA, playerClass = BOM_PHYSICAL_CLASSES, })
                 :Category(self.CLASSIC_PHYS_BUFF)
   spellDefModule:addBuff(spells, 16323, --Juju Power +30Str
           { item          = 12451, isConsumable = true, default = false,
-            consumableEra = BOM.CLASSIC_ERA, })
+            consumableEra = BOM.CLASSIC_ERA, playerClass = BOM_PHYSICAL_CLASSES, })
                 :Category(self.CLASSIC_PHYS_BUFF)
   --
   -- Scrolls
@@ -1417,7 +1417,8 @@ function allSpellsModule:SetupFood(spells, enchants)
           { playerClass = BOM_MELEE_CLASSES }, L.TooltipSimilarFoods)
                 :Category(self.TBC_PHYS_FOOD)
 
-  spellDefModule:tbcConsumable(spells, 33259, 27655) --Ravager Dog: Well Fed +40 AP +20 SPI
+  spellDefModule:tbcConsumable(spells, 33259, 27655,
+          { playerClass = BOM_PHYSICAL_CLASSES }) --Ravager Dog: Well Fed +40 AP +20 SPI
                 :Category(self.TBC_PHYS_FOOD)
 
   spellDefModule:tbcConsumable(spells, 46899, 35563, --Charred Bear Kabobs +24 AP
@@ -1758,11 +1759,11 @@ BOM.AllDrink = {
 ---For all spells database load data for spellids and items
 function allSpellsModule:LoadItemsAndSpells()
   for _id, buffDef in pairs(BOM.AllBuffomatSpells) do
-    if type(buffDef.single) == "number" then
-      spellCacheModule:LoadSpell(buffDef.single)
+    if type(buffDef.singleText) == "number" then
+      spellCacheModule:LoadSpell(buffDef.singleText)
     end
-    if type(buffDef.group) == "number" then
-      spellCacheModule:LoadSpell(buffDef.group)
+    if type(buffDef.groupText) == "number" then
+      spellCacheModule:LoadSpell(buffDef.groupText)
     end
 
     if type(buffDef.items) == "table" then

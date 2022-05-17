@@ -33,8 +33,10 @@ BOM.Class = BOM.Class or {}
 ---@field extraText string Added to the right of spell name in the spells config
 ---@field singleLink string Printable link for single buff
 ---@field groupLink string Printable link for group buff
----@field single string Name of single buff spell (from GetSpellInfo())
----@field group string Name of group buff spell (from GetSpellInfo())
+---@field singleText string Name of single buff spell (from GetSpellInfo())
+---@field groupText string Name of group buff spell (from GetSpellInfo())
+---@field spellIcon string
+---@field itemIcon string
 ---
 ---type="aura" Auras are no target buff check. True if the buff affects others in radius, and not a target buff
 ---type="seal" Seals are 1hand enchants which are unique for equipped weapon. Paladins use seals. Shamans also use seals but in TBC shamans have 2 independent seals.
@@ -312,50 +314,72 @@ function spellDefModule:IsSpellEnabled(spell_id, profile_name)
   return spell.Enable
 end
 
+---@return string|nil
 function spellDefClass:GetIcon()
-  if self.Icon then
-    return self.Icon
+  if self:IsItem() then
+    if self.itemIcon then
+      return self.itemIcon
+    end
+    if self.spellIcon then
+      return self.spellIcon
+    end
   end
 
-  local info = BOM.GetSpellInfo(self.singleId)
-  if info then
-    self.Icon = info.icon -- update own copy of icon
-    --self.single = info.name -- update own copy of spell name
-    return info.icon
+  self:RefreshTextAndIcon()
+
+  if self.itemIcon then
+    return self.itemIcon
+  end
+  if self.spellIcon then
+    return self.spellIcon
   end
 end
 
 --- Get single text for item or spell
+---@return string|nil
 function spellDefClass:GetSingleText()
-  if self.single then
-    return self.single
+  if self.singleText then
+    return self.singleText
   end
 
+  self:RefreshTextAndIcon()
+  return self.singleText
+end
+
+function spellDefClass:IsItem()
+  return self.items or self.item
+end
+
+function spellDefClass:RefreshTextAndIcon()
   if self.items then
     local _, item = next(self.items)
     local info = BOM.GetItemInfo(item)
     if info then
-      self.Icon = info.itemTexture -- update own copy of icon
-      self.single = info.itemName -- update own copy of item name
-      return info.itemName
+      self.itemIcon = info.itemTexture -- update own copy of icon
+      self.singleText = info.itemName -- update own copy of item name
+      return
+    end
+  else
+    -- Only do this if not an multi-item buff
+    if self.item then
+      local info = BOM.GetItemInfo(self.item)
+      if info then
+        self.itemIcon = info.itemTexture -- update own copy of icon
+        self.singleText = info.itemName -- update own copy of item name
+        return
+      end
+    else
+      -- Only do this if not an item
+      if self.singleId then
+        local info = BOM.GetSpellInfo(self.singleId)
+        if info then
+          self.spellIcon = info.icon -- update own copy of icon
+          self.singleText = info.name -- update own copy of spell name
+          return
+        end
+      end
     end
   end
 
-  if self.item then
-    local info = BOM.GetItemInfo(self.item)
-    if info then
-      self.Icon = info.itemTexture -- update own copy of icon
-      self.single = info.itemName -- update own copy of item name
-      return info.itemName
-    end
-  end
-
-  if self.singleId then
-    local info = BOM.GetSpellInfo(self.singleId)
-    if info then
-      self.Icon = info.icon -- update own copy of icon
-      self.single = info.name -- update own copy of spell name
-      return info.single
-    end
-  end
+  -- nil otherwise
 end

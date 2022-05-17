@@ -12,6 +12,8 @@ local optionsPopupModule = BuffomatModule.Import("OptionsPopup") ---@type BomOpt
 local taskScanModule = BuffomatModule.Import("TaskScan") ---@type BomTaskScanModule
 local toolboxModule = BuffomatModule.Import("Toolbox") ---@type BomToolboxModule
 local spellButtonsTabModule = BuffomatModule.Import("Ui/SpellButtonsTab") ---@type BomSpellButtonsTabModule
+local spellCacheModule = BuffomatModule.Import("SpellCache") ---@type BomSpellCacheModule
+local itemCacheModule = BuffomatModule.Import("ItemCache") ---@type BomItemCacheModule
 
 ---global, visible from XML files and from script console and chat commands
 ---@class BuffomatAddon
@@ -776,7 +778,7 @@ local function bomDownGrade()
         BOM.FastUpdateTimer()
         BOM.SetForceUpdate("Downgrade")
         BOM:Print(string.format(L.MsgDownGrade,
-                BOM.CastFailedSpell.single,
+                BOM.CastFailedSpell.singleText,
                 BOM.CastFailedSpellTarget.name))
 
       elseif BOM.SharedState.SpellGreatherEqualThan[BOM.CastFailedSpellId] >= level then
@@ -803,13 +805,11 @@ buffomatModule.slowerhardwareUpdateTimerLimit = 1.500
 buffomatModule.BOM_THROTTLE_TIMER_LIMIT = 1.000
 buffomatModule.BOM_THROTTLE_SLOWER_HARDWARE_TIMER_LIMIT = 2.000
 
-function buffomatModule:UpdateTimer()
+function buffomatModule.UpdateTimer()
   if BOM.InLoading and BOM.LoadingScreenTimeOut then
     if BOM.LoadingScreenTimeOut > GetTime() then
-      --print("prevent buffomat!")
       return
     else
-      --print("loading done")
       BOM.InLoading = false
       eventsModule:OnCombatStop()
     end
@@ -850,6 +850,9 @@ function buffomatModule:UpdateTimer()
     buffomatModule.lastUpdateTimestamp = GetTime()
     buffomatModule.fpsCheck = debugprofilestop()
 
+    if spellCacheModule.cacheChanged or itemCacheModule.cacheChanged then
+      spellButtonsTabModule:UpdateSpellsTab("Item or spell cache")
+    end
     BOM.UpdateScan("Timer")
 
     -- If updatescan call above took longer than 6 ms, and repeated update, then
@@ -857,7 +860,7 @@ function buffomatModule:UpdateTimer()
     if (debugprofilestop() - buffomatModule.fpsCheck) > 6 and BOM.RepeatUpdate then
       buffomatModule.slowCount = buffomatModule.slowCount + 1
 
-      if buffomatModule.slowCount >= 6 and updateTimerLimit < 1 then
+      if buffomatModule.slowCount >= 20 and updateTimerLimit < 1 then
         buffomatModule.updateTimerLimit = buffomatModule.BOM_THROTTLE_TIMER_LIMIT
         buffomatModule.slowerhardwareUpdateTimerLimit = buffomatModule.BOM_THROTTLE_SLOWER_HARDWARE_TIMER_LIMIT
         BOM:Print("Overwhelmed - entering slow mode!")
@@ -869,7 +872,7 @@ function buffomatModule:UpdateTimer()
 end
 
 function BOM.FastUpdateTimer()
-  buffomatModule.lastUpdateTimestamp = 0
+  self.lastUpdateTimestamp = 0
 end
 
 BOM.PlayerBuffs = {}

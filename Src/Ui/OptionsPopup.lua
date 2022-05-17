@@ -105,7 +105,7 @@ function optionsPopupModule:Setup(control, minimap)
   -- --------------------------------------------
   for i, spell in ipairs(BOM.SelectedSpells) do
     if not spell.isConsumable then
-      BOM.PopupDynamic:AddItem(spell.singleLink or spell.single,
+      BOM.PopupDynamic:AddItem(spell.singleLink or spell.singleText,
               "keep",
               spellDefModule:GetProfileSpell(spell.ConfigID),
               "Enable")
