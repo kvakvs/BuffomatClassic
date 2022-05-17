@@ -10,9 +10,9 @@ import subprocess
 import sys
 import zipfile
 
-VERSION = '2022.4.1'  # year.month.build_num
+VERSION = '2022.5.1'  # year.month.build_num
 
-UI_VERSION_CLASSIC = '11402'  # patch 1.14.2
+UI_VERSION_CLASSIC = '11403'  # patch 1.14.3
 BOM_NAME_CLASSIC = 'BuffomatClassic'  # Directory and zip name
 BOM_TITLE_CLASSIC = "Buffomat Classic"  # Title field in TOC
 

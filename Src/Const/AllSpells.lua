@@ -1380,13 +1380,11 @@ function allSpellsModule:SetupFood(spells, enchants)
   --
   spellDefModule:addBuff(spells, 18192, --Grilled Squid +10 Agility
           { item          = 13928, isConsumable = true, default = false, onlyUsableFor = BOM_PHYSICAL_CLASSES,
-            consumableEra = BOM.CLASSIC_ERA },
-          { isTBC = false }) -- hide in TBC
+            consumableEra = BOM.CLASSIC_ERA })
                 :Category(self.CLASSIC_PHYS_FOOD)
   spellDefModule:addBuff(spells, 24799, --Smoked Desert Dumplings +Strength
           { item          = 20452, isConsumable = true, default = false, onlyUsableFor = BOM_PHYSICAL_CLASSES,
-            consumableEra = BOM.CLASSIC_ERA },
-          { isTBC = false }) -- hide in TBC
+            consumableEra = BOM.CLASSIC_ERA })
                 :Category(self.CLASSIC_PHYS_FOOD)
   spellDefModule:classicConsumable(spells, 18125, 13810, --Blessed Sunfruit +STR
           { playerClass = BOM_MELEE_CLASSES })

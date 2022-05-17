@@ -2,12 +2,11 @@
 
 ## Buffomat Classic and TBC 2022.5.1
 
-- Added Winter Squid (Grilled Squid) food buff.
-- Added riding trinket reminder in Arena zones, do not forget your trinkets!
+- Grouped buffs by categories
 - [Bug] Try cache items and spells and update all spells list icons and text
+- Added riding trinket reminder in Arena zones, do not forget your trinkets!
+- [Bug] Allow crusader aura suggestion even if mounted buffing is disabled.
 - Chinese language update (contributed by nanjuekaien1 @github)
- 
-- TODO: Allow crusader aura suggestion even if mounted buffing is disabled.
 
 ## Buffomat Classic and TBC 2022.4.1
 
