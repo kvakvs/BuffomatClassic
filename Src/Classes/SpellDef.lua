@@ -4,6 +4,8 @@ local BOM = BuffomatAddon ---@type BuffomatAddon
 ---@class BomSpellDefModule
 local spellDefModule = BuffomatModule.DeclareModule("SpellDef") ---@type BomSpellDefModule
 
+local buffRowModule = BuffomatModule.Import("Ui/BuffRow") ---@type BomBuffRowModule
+
 BOM.Class = BOM.Class or {}
 
 ---
@@ -73,7 +75,7 @@ BOM.Class = BOM.Class or {}
 ---@field Enable boolean Whether buff is to be watched
 ---@field ExcludedTarget table<string> List of target names to never buff
 ---@field ForcedTarget table<string> List of extra targets to buff
----@field frames table<string, BomControl> Dynamic list of controls associated with this spell in the UI
+---@field frames BomBuffRowFrames Dynamic list of controls associated with this spell in the UI
 ---@field NeedGroup table List of group members who might need group version of this buff
 ---@field NeedMember table<number, BomUnit> List of group members who might need this buff
 ---@field SelfCast boolean
@@ -99,7 +101,7 @@ function spellDefModule:new(singleId, fields)
   setmetatable(newSpell, spellDefClass)
 
   newSpell.category = false -- special value no category
-  newSpell.frames = {} -- spell buttons from the UI go here
+  newSpell.frames = buffRowModule:new() -- spell buttons from the UI go here
   newSpell.ConfigID = singleId
   newSpell.singleId = singleId
 
@@ -347,6 +349,7 @@ function spellDefClass:GetSingleText()
 end
 
 function spellDefClass:IsItem()
+  -- TODO: self.isConsumable does this too?
   return self.items or self.item
 end
 

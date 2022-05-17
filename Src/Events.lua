@@ -8,6 +8,7 @@ local constModule = BuffomatModule.Import("Const") ---@type BomConstModule
 local allSpellsModule = BuffomatModule.Import("AllSpells") ---@type BomAllSpellsModule
 local spellButtonsTabModule = BuffomatModule.Import("Ui/SpellButtonsTab") ---@type BomSpellButtonsTabModule
 local spellSetupModule = BuffomatModule.Import("SpellSetup") ---@type BomSpellSetupModule
+local taskScanModule = BuffomatModule.Import("TaskScan") ---@type BomTaskScanModule
 
 --"UNIT_POWER_UPDATE","UNIT_SPELLCAST_START","UNIT_SPELLCAST_STOP","PLAYER_STARTED_MOVING","PLAYER_STOPPED_MOVING"
 eventsModule.EVT_COMBAT_STOP = { "PLAYER_REGEN_ENABLED" }
@@ -267,7 +268,7 @@ local function Event_PartyChanged()
   local inParty = IsInRaid() or IsInGroup()
   if eventsModule.isPlayerInParty ~= inParty then
     if not inParty then
-      BOM.MaybeResetWatchGroups()
+      taskScanModule:MaybeResetWatchGroups()
     end
     eventsModule.isPlayerInParty = inParty
   end

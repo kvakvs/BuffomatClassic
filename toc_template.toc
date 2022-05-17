@@ -41,6 +41,7 @@ Src/Cache/GetItemListCache.lua
 Src/Cache/MemberCache.lua
 
 Src/Ui/UiButton.lua
+Src/Ui/BuffRow.lua
 Src/Ui/LegacyOptions.lua
 Src/Ui/Options.lua
 Src/Ui/OptionsPopup.lua

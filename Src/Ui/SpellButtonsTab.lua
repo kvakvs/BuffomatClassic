@@ -46,14 +46,15 @@ local function bomDoBlessingOnClick(self)
   buffomatModule:OptionsUpdate()
 end
 
-local SpellSettingsFrames = {}
-BOM.SpellSettingsFrames = SpellSettingsFrames -- group settings buttons after the spell list
+local bomSpellSettingsFrames = {}
+-- accessible from TaskScan.MaybeResetWatchGroups
+spellButtonsTabModule.spellSettingsFrames = bomSpellSettingsFrames
 
 ---Add some clickable elements to Spell Tab row with all classes
 ---@param rowBuilder RowBuilder The structure used for building button rows
 ---@param playerIsHorde boolean Whether we are the horde
 ---@param spell BomSpellDef The spell currently being displayed
-function spellButtonsTabModule:AddClassesRow(rowBuilder, playerIsHorde, spell)
+function spellButtonsTabModule:AddSpellRow_ClassSelector(rowBuilder, playerIsHorde, spell, profileSpell)
   if spell.frames.SelfCast == nil then
     spell.frames.SelfCast = BOM.CreateManagedButton(
             BomC_SpellTab_Scroll_Child,
@@ -61,10 +62,8 @@ function spellButtonsTabModule:AddClassesRow(rowBuilder, playerIsHorde, spell)
             BOM.ICON_SELF_CAST_OFF)
   end
 
-  local profile_spell = spellDefModule:GetProfileSpell(spell.ConfigID)
-
   spell.frames.SelfCast:SetPoint("TOPLEFT", rowBuilder.prevControl, "TOPRIGHT", rowBuilder.dx, 0)
-  spell.frames.SelfCast:SetVariable(profile_spell, "SelfCast")
+  spell.frames.SelfCast:SetVariable(profileSpell, "SelfCast")
   spell.frames.SelfCast:SetOnClick(BOM.MyButtonOnClick)
   BOM.Tool.TooltipText(
           spell.frames.SelfCast,
@@ -87,7 +86,7 @@ function spellButtonsTabModule:AddClassesRow(rowBuilder, playerIsHorde, spell)
     end
 
     spell.frames[class]:SetPoint("TOPLEFT", rowBuilder.prevControl, "TOPRIGHT", rowBuilder.dx, 0)
-    spell.frames[class]:SetVariable(profile_spell.Class, class)
+    spell.frames[class]:SetVariable(profileSpell.Class, class)
     spell.frames[class]:SetOnClick(bomDoBlessingOnClick)
 
     BOM.Tool.TooltipText(
@@ -115,7 +114,7 @@ function spellButtonsTabModule:AddClassesRow(rowBuilder, playerIsHorde, spell)
   end
 
   spell.frames["tank"]:SetPoint("TOPLEFT", rowBuilder.prevControl, "TOPRIGHT", rowBuilder.dx, 0)
-  spell.frames["tank"]:SetVariable(profile_spell.Class, "tank")
+  spell.frames["tank"]:SetVariable(profileSpell.Class, "tank")
   spell.frames["tank"]:SetOnClick(bomDoBlessingOnClick)
   BOM.Tool.TooltipText(spell.frames["tank"], BOM.FormatTexture(BOM.ICON_TANK) .. " - " .. L.TooltipCastOnTank)
 
@@ -132,7 +131,7 @@ function spellButtonsTabModule:AddClassesRow(rowBuilder, playerIsHorde, spell)
   end
 
   spell.frames["pet"]:SetPoint("TOPLEFT", rowBuilder.prevControl, "TOPRIGHT", rowBuilder.dx, 0)
-  spell.frames["pet"]:SetVariable(profile_spell.Class, "pet")
+  spell.frames["pet"]:SetVariable(profileSpell.Class, "pet")
   spell.frames["pet"]:SetOnClick(bomDoBlessingOnClick)
   BOM.Tool.TooltipText(spell.frames["pet"], BOM.FormatTexture(BOM.ICON_PET) .. " - " .. L.TooltipCastOnPet)
 
@@ -197,17 +196,9 @@ function spellButtonsTabModule:AddSpellCancelRow(spell, rowBuilder)
 
   rowBuilder.prevControl = spell.frames.info
 
-  if spell.frames.Enable == nil then
-    spell.frames.Enable = BOM.CreateManagedButton(
-            BomC_SpellTab_Scroll_Child,
-            BOM.ICON_OPT_ENABLED,
-            BOM.ICON_OPT_DISABLED)
-  end
-
-  spell.frames.Enable:SetPoint("LEFT", spell.frames.info, "RIGHT", 7, 0)
-  spell.frames.Enable:SetVariable(BOM.CurrentProfile.CancelBuff[spell.ConfigID], "Enable")
-  spell.frames.Enable:SetOnClick(BOM.MyButtonOnClick)
-  BOM.Tool.Tooltip(spell.frames.Enable, "TooltipEnableBuffCancel")
+  local enableCheckbox = spell.frames:CreateEnableCheckbox(L.TooltipEnableBuffCancel)
+  enableCheckbox:SetPoint("LEFT", spell.frames.info, "RIGHT", 7, 0)
+  enableCheckbox:SetVariable(BOM.CurrentProfile.CancelBuff[spell.ConfigID], "Enable")
 
   --Add "Only before combat" text label
   spell.frames.OnlyCombat = toolboxModule:CreateSmalltextLabel(
@@ -219,24 +210,24 @@ function spellButtonsTabModule:AddSpellCancelRow(spell, rowBuilder)
             else
               ctrl:SetText(L.HintCancelThisBuff .. ": " .. L.HintCancelThisBuff_Always)
             end
-            ctrl:SetPoint("TOPLEFT", spell.frames.Enable, "TOPRIGHT", 7, -3)
+            ctrl:SetPoint("TOPLEFT", enableCheckbox, "TOPRIGHT", 7, -3)
           end)
 
   spell.frames.info:Show()
-  spell.frames.Enable:Show()
+  enableCheckbox:Show()
 
   if spell.frames.OnlyCombat then
     spell.frames.OnlyCombat:Show()
   end
 end
 
----@param row_builder RowBuilder The structure used for building button rows
-function spellButtonsTabModule:FillBottomSection(row_builder)
+---@param rowBuilder RowBuilder The structure used for building button rows
+function spellButtonsTabModule:AddGroupScanSelector(rowBuilder)
   -------------------------
   -- Add settings frame with icon, icon is not clickable
   -------------------------
-  if SpellSettingsFrames.Settings == nil then
-    SpellSettingsFrames.Settings = BOM.CreateManagedButton(
+  if bomSpellSettingsFrames.Settings == nil then
+    bomSpellSettingsFrames.Settings = BOM.CreateManagedButton(
             BomC_SpellTab_Scroll_Child,
             BOM.ICON_GEAR,
             nil,
@@ -244,140 +235,124 @@ function spellButtonsTabModule:FillBottomSection(row_builder)
             { 0.1, 0.9, 0.1, 0.9 })
   end
 
-  BOM.Tool.Tooltip(SpellSettingsFrames.Settings, "TooltipRaidGroupsSettings")
-  SpellSettingsFrames.Settings:SetPoint("TOPLEFT", row_builder.prevControl, "BOTTOMLEFT", 0, -12)
+  BOM.Tool.Tooltip(bomSpellSettingsFrames.Settings, "TooltipRaidGroupsSettings")
+  bomSpellSettingsFrames.Settings:SetPoint("TOPLEFT", rowBuilder.prevControl, "BOTTOMLEFT", 0, -12)
 
-  row_builder:StepRight(SpellSettingsFrames.Settings, 7)
-  local l = row_builder.prevControl
+  rowBuilder:StepRight(bomSpellSettingsFrames.Settings, 7)
+  local l = rowBuilder.prevControl
 
-  if SpellSettingsFrames[0] == nil then
-    SpellSettingsFrames[0] = BOM.CreateManagedButton(
+  if bomSpellSettingsFrames[0] == nil then
+    bomSpellSettingsFrames[0] = BOM.CreateManagedButton(
             BomC_SpellTab_Scroll_Child,
             BOM.ICON_GROUP,
             nil,
             nil,
             { 0.1, 0.9, 0.1, 0.9 })
   end
-  BOM.Tool.Tooltip(SpellSettingsFrames[0], "HeaderWatchGroup")
-  SpellSettingsFrames[0]:SetPoint("TOPLEFT", l, "TOPRIGHT", row_builder.dx, 0)
+  BOM.Tool.Tooltip(bomSpellSettingsFrames[0], "HeaderWatchGroup")
+  bomSpellSettingsFrames[0]:SetPoint("TOPLEFT", l, "TOPRIGHT", rowBuilder.dx, 0)
 
-  l = SpellSettingsFrames[0]
-  row_builder.dx = 7
+  l = bomSpellSettingsFrames[0]
+  rowBuilder.dx = 7
 
   ------------------------------
   -- Add "Watch Group #" buttons
   ------------------------------
   for i = 1, 8 do
-    if SpellSettingsFrames[i] == nil then
-      SpellSettingsFrames[i] = BOM.CreateManagedButton(
+    if bomSpellSettingsFrames[i] == nil then
+      bomSpellSettingsFrames[i] = BOM.CreateManagedButton(
               BomC_SpellTab_Scroll_Child,
               BOM.ICON_GROUP_ITEM,
               BOM.ICON_GROUP_NONE)
     end
 
-    SpellSettingsFrames[i]:SetPoint("TOPLEFT", l, "TOPRIGHT", row_builder.dx, 0)
-    SpellSettingsFrames[i]:SetVariable(BomCharacterState.WatchGroup, i)
-    SpellSettingsFrames[i]:SetText(i)
-    BOM.Tool.TooltipText(SpellSettingsFrames[i], string.format(L.TooltipGroup, i))
+    bomSpellSettingsFrames[i]:SetPoint("TOPLEFT", l, "TOPRIGHT", rowBuilder.dx, 0)
+    bomSpellSettingsFrames[i]:SetVariable(BomCharacterState.WatchGroup, i)
+    bomSpellSettingsFrames[i]:SetText(i)
+    BOM.Tool.TooltipText(bomSpellSettingsFrames[i], string.format(L.TooltipGroup, i))
 
     -- Let the MyButton library function handle the data update, and update the tab text too
-    SpellSettingsFrames[i]:SetOnClick(function()
+    bomSpellSettingsFrames[i]:SetOnClick(function()
       BOM.MyButtonOnClick(self)
       BOM.UpdateBuffTabText()
     end)
 
-    l = SpellSettingsFrames[i]
-    row_builder.dx = 2
+    l = bomSpellSettingsFrames[i]
+    rowBuilder.dx = 2
   end
 
-  row_builder.prevControl = SpellSettingsFrames[0]
+  rowBuilder.prevControl = bomSpellSettingsFrames[0]
 
-  --for i, set in ipairs(optionsPopupModule.BehaviourSettings) do
-  --  local key = set[1]
-  --
-  --  if BOM["Icon" .. key .. "On"] then
-  --    if SpellSettingsFrames[key] == nil then
-  --      SpellSettingsFrames[key] = BOM.CreateMyButton(
-  --              BomC_SpellTab_Scroll_Child,
-  --              BOM["Icon" .. key .. "On"],
-  --              BOM["Icon" .. key .. "Off"],
-  --              nil,
-  --              BOM["Icon" .. key .. "OnCoord"],
-  --              BOM["Icon" .. key .. "OffCoord"])
-  --    end
-  --
-  --    SpellSettingsFrames[key]:SetPoint("TOPLEFT", last, "BOTTOMLEFT", 0, -2)
-  --    SpellSettingsFrames[key]:SetVariable(BOM.SharedState, key)
-  --    SpellSettingsFrames[key]:SetTooltip(L["Cbox" .. key])
-  --    SpellSettingsFrames[key]:SetOnClick(BOM.MyButtonOnClick)
-  --    l = SpellSettingsFrames[key]
-  --    dx = 2
-  --
-  --    if SpellSettingsFrames[key .. "txt"] == nil then
-  --      SpellSettingsFrames[key .. "txt"] = BomC_SpellTab_Scroll_Child:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-  --    end
-  --
-  --    SpellSettingsFrames[key .. "txt"]:SetText(L["Cbox" .. key])
-  --    SpellSettingsFrames[key .. "txt"]:SetPoint("TOPLEFT", l, "TOPRIGHT", 7, -1)
-  --    l = SpellSettingsFrames[key .. "txt"]
-  --    dx = 7
-  --
-  --    last = SpellSettingsFrames[key]
-  --    dx = 0
-  --  end
-  --end
-
-
-  --for i, set in ipairs(optionsPopupModule.BehaviourSettings) do
-  --  local key = set[1]
-  --
-  --  if not BOM["Icon" .. key .. "On"] then
-  --    if SpellSettingsFrames[key] == nil then
-  --      SpellSettingsFrames[key] = BOM.CreateMyButton(
-  --              BomC_SpellTab_Scroll_Child,
-  --              BOM.ICON_SETTING_ON,
-  --              BOM.ICON_SETTING_OFF,
-  --              nil,
-  --              nil,
-  --              nil)
-  --    end
-  --
-  --    SpellSettingsFrames[key]:SetPoint("TOPLEFT", last, "BOTTOMLEFT", dx, -2)
-  --    SpellSettingsFrames[key]:SetVariable(BOM.SharedState, key)
-  --    SpellSettingsFrames[key]:SetTooltip(L["Cbox" .. key])
-  --    SpellSettingsFrames[key]:SetOnClick(BOM.MyButtonOnClick)
-  --    l = SpellSettingsFrames[key]
-  --    dx = 2
-  --
-  --    if SpellSettingsFrames[key .. "txt"] == nil then
-  --      SpellSettingsFrames[key .. "txt"] = BomC_SpellTab_Scroll_Child:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-  --    end
-  --    SpellSettingsFrames[key .. "txt"]:SetText(L["Cbox" .. key])
-  --    SpellSettingsFrames[key .. "txt"]:SetPoint("TOPLEFT", l, "TOPRIGHT", 7, -1)
-  --    l = SpellSettingsFrames[key .. "txt"]
-  --    dx = 7
-  --
-  --    last = SpellSettingsFrames[key]
-  --    dx = 0
-  --  end
-  --end
-
-  SpellSettingsFrames.Settings:Show()
+  bomSpellSettingsFrames.Settings:Show()
 
   for i = 0, 8 do
-    SpellSettingsFrames[i]:Show()
+    bomSpellSettingsFrames[i]:Show()
   end
 
   for i, set in ipairs(optionsPopupModule.behaviourSettings) do
-    if SpellSettingsFrames[set[1]] then
-      SpellSettingsFrames[set[1]]:Show()
+    if bomSpellSettingsFrames[set[1]] then
+      bomSpellSettingsFrames[set[1]]:Show()
     end
-    if SpellSettingsFrames[set[1] .. "txt"] then
-      SpellSettingsFrames[set[1] .. "txt"]:Show()
+    if bomSpellSettingsFrames[set[1] .. "txt"] then
+      bomSpellSettingsFrames[set[1] .. "txt"]:Show()
     end
   end
 
-  row_builder.prevControl = SpellSettingsFrames.Settings
+  rowBuilder.prevControl = bomSpellSettingsFrames.Settings
+end
+
+---@param rowBuilder RowBuilder The structure used for building button rows
+---@param spell BomSpellDef Spell we're adding now
+function spellButtonsTabModule:AddSpellRow_WhisperExpired(rowBuilder, spell, profileSpell)
+  if spell.frames.Whisper == nil then
+    spell.frames.Whisper = BOM.CreateManagedButton(
+            BomC_SpellTab_Scroll_Child,
+            BOM.ICON_WHISPER_ON,
+            BOM.ICON_WHISPER_OFF)
+  end
+
+  spell.frames.Whisper:SetPoint("TOPLEFT", rowBuilder.prevControl, "TOPRIGHT", rowBuilder.dx, 0)
+  spell.frames.Whisper:SetVariable(profileSpell, "Whisper")
+  spell.frames.Whisper:SetOnClick(BOM.MyButtonOnClick)
+  BOM.Tool.Tooltip(spell.frames.Whisper, "TooltipWhisperWhenExpired")
+
+  rowBuilder:StepRight(spell.frames.Whisper, 2)
+end
+
+---@param rowBuilder RowBuilder The structure used for building button rows
+---@param spell BomSpellDef Spell we're adding now
+function spellButtonsTabModule:AddSpellRow_Weapon(rowBuilder, spell, profileSpell)
+  if spell.frames.MainHand == nil then
+    spell.frames.MainHand = BOM.CreateManagedButton(
+            BomC_SpellTab_Scroll_Child,
+            BOM.IconMainHandOn,
+            BOM.IconMainHandOff,
+            BOM.ICON_DISABLED,
+            BOM.IconMainHandOnCoord)
+  end
+
+  spell.frames.MainHand:SetPoint("TOPLEFT", rowBuilder.prevControl, "TOPRIGHT", rowBuilder.dx, 0)
+  spell.frames.MainHand:SetVariable(profileSpell, "MainHandEnable")
+  spell.frames.MainHand:SetOnClick(BOM.MyButtonOnClick)
+  BOM.Tool.Tooltip(spell.frames.MainHand, "TooltipMainHand")
+
+  rowBuilder:StepRight(spell.frames.MainHand, 2)
+
+  if spell.frames.OffHand == nil then
+    spell.frames.OffHand = BOM.CreateManagedButton(
+            BomC_SpellTab_Scroll_Child,
+            BOM.IconSecondaryHandOn,
+            BOM.IconSecondaryHandOff,
+            BOM.ICON_DISABLED,
+            BOM.IconSecondaryHandOnCoord)
+  end
+
+  spell.frames.OffHand:SetPoint("TOPLEFT", rowBuilder.prevControl, "TOPRIGHT", rowBuilder.dx, 0)
+  spell.frames.OffHand:SetVariable(profileSpell, "OffHandEnable")
+  spell.frames.OffHand:SetOnClick(BOM.MyButtonOnClick)
+  BOM.Tool.Tooltip(spell.frames.OffHand, "TooltipOffHand")
+
+  rowBuilder:StepRight(spell.frames.OffHand, 2)
 end
 
 ---Creates a row
@@ -385,145 +360,69 @@ end
 ---@param spell BomSpellDef Spell we're adding now
 ---@param rowBuilder RowBuilder The structure used for building button rows
 ---@param playerClass string Character class
-function spellButtonsTabModule:CreateTabRow(rowBuilder, playerIsHorde, spell, playerClass)
-  --------------------------------
+function spellButtonsTabModule:AddSpellRow(rowBuilder, playerIsHorde, spell, playerClass)
   -- Create buff icon with tooltip
-  --------------------------------
-  if spell.frames.info == nil then
-    spell.frames.info = BOM.CreateManagedButton(
-            BomC_SpellTab_Scroll_Child,
-            spell:GetIcon(),
-            nil,
-            nil,
-            { 0.1, 0.9, 0.1, 0.9 })
-  end
-
-  if spell.isConsumable then
-    --spell.frames.info:SetTooltipLink("item:" .. spell.item)
-    BOM.Tool.TooltipLink(spell.frames.info, "item:" .. spell.item)
-  else
-    --spell.frames.info:SetTooltipLink("spell:" .. spell.singleId)
-    BOM.Tool.TooltipLink(spell.frames.info, "spell:" .. spell.singleId)
-  end
-  --<<----------------------------
+  local infoIcon = spell.frames:CreateInfoIcon(spell)
 
   if rowBuilder.prevControl then
-    spell.frames.info:SetPoint("TOPLEFT", rowBuilder.prevControl, "BOTTOMLEFT", 0, -rowBuilder.dy)
+    infoIcon:SetPoint("TOPLEFT", rowBuilder.prevControl, "BOTTOMLEFT", 0, -rowBuilder.dy)
   else
-    spell.frames.info:SetPoint("TOPLEFT", 0, -rowBuilder.dy)
+    infoIcon:SetPoint("TOPLEFT", 0, -rowBuilder.dy)
   end
 
-  rowBuilder:StepRight(spell.frames.info, 7)
+  rowBuilder:StepRight(infoIcon, 7)
 
-  if spell.frames.Enable == nil then
-    spell.frames.Enable = BOM.CreateManagedButton(
-            BomC_SpellTab_Scroll_Child,
-            BOM.ICON_OPT_ENABLED,
-            BOM.ICON_OPT_DISABLED)
-  end
+  local profileSpell = spellDefModule:GetProfileSpell(spell.ConfigID)
 
-  local profile_spell = spellDefModule:GetProfileSpell(spell.ConfigID)
+  local enableCheckbox = spell.frames:CreateEnableCheckbox(L.TooltipEnableSpell)
+  enableCheckbox:SetPoint("TOPLEFT", rowBuilder.prevControl, "TOPRIGHT", rowBuilder.dx, 0)
+  enableCheckbox:SetVariable(profileSpell, "Enable")
 
-  spell.frames.Enable:SetPoint("TOPLEFT", rowBuilder.prevControl, "TOPRIGHT", rowBuilder.dx, 0)
-  spell.frames.Enable:SetVariable(profile_spell, "Enable")
-  spell.frames.Enable:SetOnClick(BOM.MyButtonOnClick)
-  BOM.Tool.Tooltip(spell.frames.Enable, "TooltipEnableSpell")
-
-  rowBuilder:StepRight(spell.frames.Enable, 7)
+  rowBuilder:StepRight(enableCheckbox, 7)
 
   if spell:HasClasses() then
     -- Create checkboxes one per class
-    self:AddClassesRow(rowBuilder, playerIsHorde, spell)
+    self:AddSpellRow_ClassSelector(rowBuilder, playerIsHorde, spell, profileSpell)
   end
 
+  -- Add checkbox for spells which can be enabled and present at the same time?
+  -->>------------------------------
   if (spell.type == "tracking"
           or spell.type == "aura"
           or spell.type == "seal")
           and spell.needForm == nil then
-    if spell.frames.Set == nil then
-      spell.frames.Set = BOM.CreateMyButtonSecure(
-              BomC_SpellTab_Scroll_Child,
-              BOM.ICON_CHECKED,
-              BOM.ICON_CHECKED_OFF)
-    end
-
-    spell.frames.Set:SetPoint("TOPLEFT", rowBuilder.prevControl, "TOPRIGHT", rowBuilder.dx, 0)
-    spell.frames.Set:SetSpell(spell.singleId)
-
-    rowBuilder:StepRight(spell.frames.Set, 7)
+    local statusImage = spell.frames:CreateStatusCheckboxImage(spell)
+    statusImage:SetPoint("TOPLEFT", infoIcon, "TOPRIGHT", rowBuilder.dx, 0)
+    rowBuilder:StepRight(statusImage, 7)
   end
+  --<<------------------------------
 
   if spell.isInfo and spell.allowWhisper then
-    if spell.frames.Whisper == nil then
-      spell.frames.Whisper = BOM.CreateManagedButton(
-              BomC_SpellTab_Scroll_Child,
-              BOM.ICON_WHISPER_ON,
-              BOM.ICON_WHISPER_OFF)
-    end
-
-    spell.frames.Whisper:SetPoint("TOPLEFT", rowBuilder.prevControl, "TOPRIGHT", rowBuilder.dx, 0)
-    spell.frames.Whisper:SetVariable(profile_spell, "Whisper")
-    spell.frames.Whisper:SetOnClick(BOM.MyButtonOnClick)
-    BOM.Tool.Tooltip(spell.frames.Whisper, "TooltipWhisperWhenExpired")
-
-    rowBuilder:StepRight(spell.frames.Whisper, 2)
+    self:AddSpellRow_WhisperExpired(rowBuilder, spell, profileSpell)
   end
 
   if spell.type == "weapon" then
-    if spell.frames.MainHand == nil then
-      spell.frames.MainHand = BOM.CreateManagedButton(
-              BomC_SpellTab_Scroll_Child,
-              BOM.IconMainHandOn,
-              BOM.IconMainHandOff,
-              BOM.ICON_DISABLED,
-              BOM.IconMainHandOnCoord)
-    end
-
-    spell.frames.MainHand:SetPoint("TOPLEFT", rowBuilder.prevControl, "TOPRIGHT", rowBuilder.dx, 0)
-    spell.frames.MainHand:SetVariable(profile_spell, "MainHandEnable")
-    spell.frames.MainHand:SetOnClick(BOM.MyButtonOnClick)
-    BOM.Tool.Tooltip(spell.frames.MainHand, "TooltipMainHand")
-
-    rowBuilder:StepRight(spell.frames.MainHand, 2)
-
-    if spell.frames.OffHand == nil then
-      spell.frames.OffHand = BOM.CreateManagedButton(
-              BomC_SpellTab_Scroll_Child,
-              BOM.IconSecondaryHandOn,
-              BOM.IconSecondaryHandOff,
-              BOM.ICON_DISABLED,
-              BOM.IconSecondaryHandOnCoord)
-    end
-
-    spell.frames.OffHand:SetPoint("TOPLEFT", rowBuilder.prevControl, "TOPRIGHT", rowBuilder.dx, 0)
-    spell.frames.OffHand:SetVariable(profile_spell, "OffHandEnable")
-    spell.frames.OffHand:SetOnClick(BOM.MyButtonOnClick)
-    BOM.Tool.Tooltip(spell.frames.OffHand, "TooltipOffHand")
-
-    rowBuilder:StepRight(spell.frames.OffHand, 2)
-  end
-
-  if spell.frames.buff == nil then
-    spell.frames.buff = BomC_SpellTab_Scroll_Child:CreateFontString(
-            nil, "OVERLAY", "GameFontNormalSmall")
+    self:AddSpellRow_Weapon(rowBuilder, spell, profileSpell)
   end
 
   -- Calculate label to the right of the spell config buttons,
   -- spell name and extra text label
-  local label = spell:GetSingleText() or "-"
+  -->>---------------------------
+  local buffLabelText = spell:GetSingleText() or "-"
+
   if spell.type == "weapon" then
-    label = label .. ": " .. BOM.Color("bbbbee", L.TooltipIncludesAllRanks)
+    buffLabelText = buffLabelText .. ": " .. BOM.Color("bbbbee", L.TooltipIncludesAllRanks)
   elseif spell.extraText then
-    label = label .. ": " .. BOM.Color("bbbbee", spell.extraText)
+    buffLabelText = buffLabelText .. ": " .. BOM.Color("bbbbee", spell.extraText)
   end
-  spell.frames.buff:SetText(label)
 
-  spell.frames.buff:SetPoint("TOPLEFT", rowBuilder.prevControl, "TOPRIGHT", 7, -1)
+  local buffLabel = spell.frames:CreateBuffLabel(buffLabelText)
+  buffLabel:SetPoint("TOPLEFT", rowBuilder.prevControl, "TOPRIGHT", 7, -1)
+  rowBuilder:StepRight(buffLabel, 7)
+  --<<---------------------------
 
-  rowBuilder:StepRight(spell.frames.buff, 7)
-
-  spell.frames.info:Show()
-  spell.frames.Enable:Show()
+  infoIcon:Show()
+  enableCheckbox:Show()
 
   if spell:HasClasses() then
     spell.frames.SelfCast:Show()
@@ -539,16 +438,16 @@ function spellButtonsTabModule:CreateTabRow(rowBuilder, playerIsHorde, spell, pl
       end
     end
 
-    spell.frames["tank"]:Show()
-    spell.frames["pet"]:Show()
+    spell.frames.tank:Show()
+    spell.frames.pet:Show()
   end
 
   if spell.frames.Set then
     spell.frames.Set:Show()
   end
 
-  if spell.frames.buff then
-    spell.frames.buff:Show()
+  if buffLabel then
+    buffLabel:Show()
   end
 
   if spell.frames.Whisper then
@@ -565,7 +464,7 @@ function spellButtonsTabModule:CreateTabRow(rowBuilder, playerIsHorde, spell, pl
 
   -- Finished building a row, set the icon frame for this row to be the anchor
   -- point for the next
-  rowBuilder.prevControl = spell.frames.info
+  rowBuilder.prevControl = infoIcon
 end
 
 ---Filter all known spells through current player spellbook.
@@ -587,7 +486,7 @@ function spellButtonsTabModule:CreateTab(playerIsHorde)
           rowBuilder.dy = 2 -- step down 2 px between rows
         end
 
-        self:CreateTabRow(rowBuilder, playerIsHorde, spell, selfClass)
+        self:AddSpellRow(rowBuilder, playerIsHorde, spell, selfClass)
       end -- if category of the spell == cat
     end
   end
@@ -607,7 +506,7 @@ function spellButtonsTabModule:CreateTab(playerIsHorde)
   end
 
   if rowBuilder.prev_control then
-    self:FillBottomSection(rowBuilder)
+    self:AddGroupScanSelector(rowBuilder)
   end
 end
 

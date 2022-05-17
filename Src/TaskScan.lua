@@ -126,7 +126,7 @@ end
 --end
 
 ---If player just left the raid or party, reset watched frames to "watch all 8"
-function BOM.MaybeResetWatchGroups()
+function taskScanModule:MaybeResetWatchGroups()
   if UnitPlayerOrPetInParty("player") == false then
     -- We have left the party - can clear monitored groups
     local need_to_report = false
@@ -134,7 +134,7 @@ function BOM.MaybeResetWatchGroups()
     for i = 1, 8 do
       if not BomCharacterState.WatchGroup[i] then
         BomCharacterState.WatchGroup[i] = true
-        BOM.SpellSettingsFrames[i]:SetState(true)
+        spellButtonsTabModule.spellSettingsFrames[i]:SetState(true)
         need_to_report = true
       end
     end
