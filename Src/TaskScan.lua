@@ -1906,14 +1906,17 @@ local function bomUpdateScan_Scan()
   local party, playerMember = BOM.GetPartyMembers()
 
   -- Check whether BOM is disabled due to some option and a matching condition
-  local isBomActive, reasonDisabled = bomIsActive(playerMember)
-  if not isBomActive then
-    BOM.ForceUpdate = false
-    BOM.CheckForError = false
-    BOM.AutoClose()
-    BOM.Macro:Clear()
-    bomCastButton(reasonDisabled, false)
-    return
+  if not bomIsMountedAndCrusaderAuraRequired() then
+    -- If mounted and crusader aura enabled, then do not do further checks, allow the crusader aura
+    local isBomActive, reasonDisabled = bomIsActive(playerMember)
+    if not isBomActive then
+      BOM.ForceUpdate = false
+      BOM.CheckForError = false
+      BOM.AutoClose()
+      BOM.Macro:Clear()
+      bomCastButton(reasonDisabled, false)
+      return
+    end
   end
 
   local someoneIsDead = bomSaveSomeoneIsDead

@@ -816,7 +816,6 @@ function buffomatModule.UpdateTimer()
   end
 
   if BOM.MinTimer and BOM.MinTimer < GetTime() then
-    --print("MINTIMER!")
     BOM.SetForceUpdate("MinTimer")
   end
 
