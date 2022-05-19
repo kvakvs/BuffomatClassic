@@ -127,7 +127,7 @@ function buffRowClass:CreateOffhandToggle(tooltip)
   self.OffHand:SetOnClick(BOM.MyButtonOnClick)
   BOM.Tool.Tooltip(self.OffHand, tooltip)
 
-  return self.MainHand
+  return self.OffHand
 end
 
 ---@param tooltip string
