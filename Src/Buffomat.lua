@@ -871,7 +871,7 @@ function buffomatModule.UpdateTimer()
 end
 
 function BOM.FastUpdateTimer()
-  self.lastUpdateTimestamp = 0
+  buffomatModule.lastUpdateTimestamp = 0
 end
 
 BOM.PlayerBuffs = {}
