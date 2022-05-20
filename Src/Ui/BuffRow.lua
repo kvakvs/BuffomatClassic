@@ -75,10 +75,14 @@ function buffRowClass:CreateInfoIcon(spell)
   if self.info == nil then
     self.info = BOM.CreateManagedButton(
             BomC_SpellTab_Scroll_Child,
-            spell:GetIcon(),
+            BOM.ICON_EMPTY,
             nil,
             nil,
             { 0.1, 0.9, 0.1, 0.9 })
+    -- Set texture when ready, might load with a delay
+    spell:GetIcon(function(texture)
+      self.info:SetTextures(texture, nil, nil, { 0.1, 0.9, 0.1, 0.9 }, nil, nil)
+    end)
   end
 
   if spell.isConsumable then
@@ -127,7 +131,7 @@ function buffRowClass:CreateOffhandToggle(tooltip)
   self.OffHand:SetOnClick(BOM.MyButtonOnClick)
   BOM.Tool.Tooltip(self.OffHand, tooltip)
 
-  return self.MainHand
+  return self.OffHand
 end
 
 ---@param tooltip string

@@ -849,9 +849,6 @@ function buffomatModule.UpdateTimer()
     buffomatModule.lastUpdateTimestamp = GetTime()
     buffomatModule.fpsCheck = debugprofilestop()
 
-    if spellCacheModule.cacheChanged or itemCacheModule.cacheChanged then
-      spellButtonsTabModule:UpdateSpellsTab("Item or spell cache")
-    end
     BOM.UpdateScan("Timer")
 
     -- If updatescan call above took longer than 6 ms, and repeated update, then

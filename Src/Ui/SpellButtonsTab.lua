@@ -18,6 +18,7 @@ local spellDefModule = BuffomatModule.Import("SpellDef") ---@type BomSpellDefMod
 local spellSetupModule = BuffomatModule.Import("SpellSetup") ---@type BomSpellSetupModule
 local toolboxModule = BuffomatModule.Import("Toolbox") ---@type BomToolboxModule
 local uiButtonModule = BuffomatModule.Import("Ui/UiButton") ---@type BomUiButtonModule
+local _t = BuffomatModule.Import("Languages") ---@type BomLanguagesModule
 
 local L = setmetatable(
         {},
@@ -55,8 +56,8 @@ spellButtonsTabModule.spellSettingsFrames = bomSpellSettingsFrames
 ---@param playerIsHorde boolean Whether we are the horde
 ---@param spell BomSpellDef The spell currently being displayed
 function spellButtonsTabModule:AddSpellRow_ClassSelector(rowBuilder, playerIsHorde, spell, profileSpell)
-  local tooltip1 = BOM.FormatTexture(BOM.ICON_SELF_CAST_ON) .. " - " .. L.TooltipSelfCastCheckbox_Self .. "|n"
-          .. BOM.FormatTexture(BOM.ICON_SELF_CAST_OFF) .. " - " .. L.TooltipSelfCastCheckbox_Party
+  local tooltip1 = BOM.FormatTexture(BOM.ICON_SELF_CAST_ON) .. " - " .. _t("TooltipSelfCastCheckbox_Self") .. "|n"
+          .. BOM.FormatTexture(BOM.ICON_SELF_CAST_OFF) .. " - " .. _t("TooltipSelfCastCheckbox_Party")
   local selfcastToggle = spell.frames:CreateSelfCastToggle(tooltip1)
   selfcastToggle:SetPoint("TOPLEFT", rowBuilder.prevControl, "TOPRIGHT", rowBuilder.dx, 0)
   selfcastToggle:SetVariable(profileSpell, "SelfCast")
@@ -66,9 +67,9 @@ function spellButtonsTabModule:AddSpellRow_ClassSelector(rowBuilder, playerIsHor
   -- Class-Cast checkboxes one per class
   --------------------------------------
   for ci, class in ipairs(BOM.Tool.Classes) do
-    local tooltip2 = BOM.Tool.IconClass[class] .. " - " .. L.TooltipCastOnClass .. ": " .. BOM.Tool.ClassName[class] .. "|n"
-            .. BOM.FormatTexture(BOM.ICON_EMPTY) .. " - " .. L.TabDoNotBuff .. ": " .. BOM.Tool.ClassName[class] .. "|n"
-            .. BOM.FormatTexture(BOM.ICON_DISABLED) .. " - " .. L.TabBuffOnlySelf
+    local tooltip2 = BOM.Tool.IconClass[class] .. " - " .. _t("TooltipCastOnClass") .. ": " .. BOM.Tool.ClassName[class] .. "|n"
+            .. BOM.FormatTexture(BOM.ICON_EMPTY) .. " - " .. _t("TabDoNotBuff") .. ": " .. BOM.Tool.ClassName[class] .. "|n"
+            .. BOM.FormatTexture(BOM.ICON_DISABLED) .. " - " .. _t("TabBuffOnlySelf")
     local classToggle = spell.frames:CreateClassToggle(class, tooltip2, bomDoBlessingOnClick)
     spell.frames[class]:SetPoint("TOPLEFT", rowBuilder.prevControl, "TOPRIGHT", rowBuilder.dx, 0)
     spell.frames[class]:SetVariable(profileSpell.Class, class)
@@ -82,26 +83,26 @@ function spellButtonsTabModule:AddSpellRow_ClassSelector(rowBuilder, playerIsHor
   end -- for each class in class_sort_order
 
   --========================================
-  local tooltip3 = BOM.FormatTexture(BOM.ICON_TANK) .. " - " .. L.TooltipCastOnTank
+  local tooltip3 = BOM.FormatTexture(BOM.ICON_TANK) .. " - " .. _t("TooltipCastOnTank")
   local tankToggle = spell.frames:CreateTankToggle(tooltip3, bomDoBlessingOnClick)
   tankToggle:SetPoint("TOPLEFT", rowBuilder.prevControl, "TOPRIGHT", rowBuilder.dx, 0)
   tankToggle:SetVariable(profileSpell.Class, "tank")
   rowBuilder.prevControl = tankToggle
 
   --========================================
-  local tooltip4 = BOM.FormatTexture(BOM.ICON_PET) .. " - " .. L.TooltipCastOnPet
+  local tooltip4 = BOM.FormatTexture(BOM.ICON_PET) .. " - " .. _t("TooltipCastOnPet")
   local petToggle = spell.frames:CreatePetToggle(tooltip4, bomDoBlessingOnClick)
   petToggle:SetPoint("TOPLEFT", rowBuilder.prevControl, "TOPRIGHT", rowBuilder.dx, 0)
   petToggle:SetVariable(profileSpell.Class, "pet")
   rowBuilder:StepRight(petToggle, 7)
 
   -- Force Cast Button -(+)-
-  local forceToggle = spell.frames:CreateForceCastToggle(L.TooltipForceCastOnTarget, spell)
+  local forceToggle = spell.frames:CreateForceCastToggle(_t("TooltipForceCastOnTarget"), spell)
   forceToggle:SetPoint("TOPLEFT", rowBuilder.prevControl, "TOPRIGHT", rowBuilder.dx, 0)
   rowBuilder:StepRight(forceToggle, 0)
 
   -- Exclude/Ignore Buff Target Button (X)
-  local excludeToggle = spell.frames:CreateExcludeToggle(L.TooltipExcludeTarget, spell)
+  local excludeToggle = spell.frames:CreateExcludeToggle(_t("TooltipExcludeTarget"), spell)
   excludeToggle:SetPoint("TOPLEFT", rowBuilder.prevControl, "TOPRIGHT", rowBuilder.dx, 0)
   rowBuilder:StepRight(excludeToggle, 2)
 end
@@ -111,16 +112,7 @@ end
 ---@param rowBuilder RowBuilder The structure used for building button rows
 ---@return {dy, prev_control}
 function spellButtonsTabModule:AddSpellCancelRow(spell, rowBuilder)
-  if spell.frames.info == nil then
-    -- Create spell tooltip button
-    spell.frames.info = BOM.CreateManagedButton(
-            BomC_SpellTab_Scroll_Child,
-            spell:GetIcon(),
-            nil,
-            nil,
-            { 0.1, 0.9, 0.1, 0.9 })
-    BOM.Tool.TooltipLink(spell.frames.info, "spell:" .. spell.singleId)
-  end
+  spell.frames:CreateInfoIcon(spell)
 
   if rowBuilder.prevControl then
     spell.frames.info:SetPoint("TOPLEFT", rowBuilder.prevControl, "BOTTOMLEFT", 0, -rowBuilder.dy)
@@ -130,7 +122,7 @@ function spellButtonsTabModule:AddSpellCancelRow(spell, rowBuilder)
 
   rowBuilder.prevControl = spell.frames.info
 
-  local enableCheckbox = spell.frames:CreateEnableCheckbox(L.TooltipEnableBuffCancel)
+  local enableCheckbox = spell.frames:CreateEnableCheckbox(_t("TooltipEnableBuffCancel"))
   enableCheckbox:SetPoint("LEFT", spell.frames.info, "RIGHT", 7, 0)
   enableCheckbox:SetVariable(BOM.CurrentProfile.CancelBuff[spell.ConfigID], "Enable")
 
@@ -140,9 +132,9 @@ function spellButtonsTabModule:AddSpellCancelRow(spell, rowBuilder)
           BomC_SpellTab_Scroll_Child,
           function(ctrl)
             if spell.OnlyCombat then
-              ctrl:SetText(L.HintCancelThisBuff .. ": " .. L.HintCancelThisBuff_Combat)
+              ctrl:SetText(_t("HintCancelThisBuff") .. ": " .. _t("HintCancelThisBuff_Combat"))
             else
-              ctrl:SetText(L.HintCancelThisBuff .. ": " .. L.HintCancelThisBuff_Always)
+              ctrl:SetText(_t("HintCancelThisBuff") .. ": " .. _t("HintCancelThisBuff_Always"))
             end
             ctrl:SetPoint("TOPLEFT", enableCheckbox, "TOPRIGHT", 7, -3)
           end)
@@ -169,7 +161,7 @@ function spellButtonsTabModule:AddGroupScanSelector(rowBuilder)
             { 0.1, 0.9, 0.1, 0.9 })
   end
 
-  BOM.Tool.Tooltip(bomSpellSettingsFrames.Settings, "TooltipRaidGroupsSettings")
+  BOM.Tool.Tooltip(bomSpellSettingsFrames.Settings, _t("TooltipRaidGroupsSettings"))
   bomSpellSettingsFrames.Settings:SetPoint("TOPLEFT", rowBuilder.prevControl, "BOTTOMLEFT", 0, -12)
 
   rowBuilder:StepRight(bomSpellSettingsFrames.Settings, 7)
@@ -183,7 +175,7 @@ function spellButtonsTabModule:AddGroupScanSelector(rowBuilder)
             nil,
             { 0.1, 0.9, 0.1, 0.9 })
   end
-  BOM.Tool.Tooltip(bomSpellSettingsFrames[0], "HeaderWatchGroup")
+  BOM.Tool.Tooltip(bomSpellSettingsFrames[0], _t("HeaderWatchGroup"))
   bomSpellSettingsFrames[0]:SetPoint("TOPLEFT", l, "TOPRIGHT", rowBuilder.dx, 0)
 
   l = bomSpellSettingsFrames[0]
@@ -203,7 +195,7 @@ function spellButtonsTabModule:AddGroupScanSelector(rowBuilder)
     bomSpellSettingsFrames[i]:SetPoint("TOPLEFT", l, "TOPRIGHT", rowBuilder.dx, 0)
     bomSpellSettingsFrames[i]:SetVariable(BomCharacterState.WatchGroup, i)
     bomSpellSettingsFrames[i]:SetText(i)
-    BOM.Tool.TooltipText(bomSpellSettingsFrames[i], string.format(L.TooltipGroup, i))
+    BOM.Tool.TooltipText(bomSpellSettingsFrames[i], string.format(_t("TooltipGroup"), i))
 
     -- Let the MyButton library function handle the data update, and update the tab text too
     bomSpellSettingsFrames[i]:SetOnClick(function()
@@ -255,7 +247,7 @@ function spellButtonsTabModule:AddSpellRow(rowBuilder, playerIsHorde, spell, pla
   local profileSpell = spellDefModule:GetProfileSpell(spell.ConfigID)
 
   -- Add a checkbox [x]
-  local enableCheckbox = spell.frames:CreateEnableCheckbox(L.TooltipEnableSpell)
+  local enableCheckbox = spell.frames:CreateEnableCheckbox(_t("TooltipEnableSpell"))
   enableCheckbox:SetPoint("TOPLEFT", rowBuilder.prevControl, "TOPRIGHT", rowBuilder.dx, 0)
   enableCheckbox:SetVariable(profileSpell, "Enable")
   rowBuilder:StepRight(enableCheckbox, 7)
@@ -278,7 +270,7 @@ function spellButtonsTabModule:AddSpellRow(rowBuilder, playerIsHorde, spell, pla
   --<<------------------------------
 
   if spell.isInfo and spell.allowWhisper then
-    local whisperToggle = spell.frames:CreateWhisperToggle(L.TooltipWhisperWhenExpired)
+    local whisperToggle = spell.frames:CreateWhisperToggle(_t("TooltipWhisperWhenExpired"))
     whisperToggle:SetPoint("TOPLEFT", rowBuilder.prevControl, "TOPRIGHT", rowBuilder.dx, 0)
     whisperToggle:SetVariable(profileSpell, "Whisper")
     rowBuilder:StepRight(whisperToggle, 2)
@@ -286,30 +278,34 @@ function spellButtonsTabModule:AddSpellRow(rowBuilder, playerIsHorde, spell, pla
 
   if spell.type == "weapon" then
     -- Add choices for mainhand & offhand
-    local mainhandToggle = spell.frames:CreateMainhandToggle(L.TooltipMainHand)
+    local mainhandToggle = spell.frames:CreateMainhandToggle(_t("TooltipMainHand"))
     mainhandToggle:SetPoint("TOPLEFT", rowBuilder.prevControl, "TOPRIGHT", rowBuilder.dx, 0)
     mainhandToggle:SetVariable(profileSpell, "MainHandEnable")
     rowBuilder:StepRight(mainhandToggle, 2)
 
-    local offhandToggle = spell.frames:CreateOffhandToggle(L.TooltipOffHand)
+    local offhandToggle = spell.frames:CreateOffhandToggle(_t("TooltipOffHand"))
     offhandToggle:SetPoint("TOPLEFT", rowBuilder.prevControl, "TOPRIGHT", rowBuilder.dx, 0)
     offhandToggle:SetVariable(profileSpell, "OffHandEnable")
-    rowBuilder:StepRight(spell.frames.OffHand, 2)
+    rowBuilder:StepRight(offhandToggle, 2)
   end
 
   -- Calculate label to the right of the spell config buttons,
   -- spell name and extra text label
   -->>---------------------------
-  local buffLabelText = spell:GetSingleText() or "-"
-
-  if spell.type == "weapon" then
-    buffLabelText = buffLabelText .. ": " .. BOM.Color("bbbbee", L.TooltipIncludesAllRanks)
-  elseif spell.extraText then
-    buffLabelText = buffLabelText .. ": " .. BOM.Color("bbbbee", spell.extraText)
-  end
-
-  local buffLabel = spell.frames:CreateBuffLabel(buffLabelText)
+  local buffLabel = spell.frames:CreateBuffLabel("-")
   buffLabel:SetPoint("TOPLEFT", rowBuilder.prevControl, "TOPRIGHT", 7, -1)
+
+  spell:GetSingleText(
+          function(buffLabelText)
+            if spell.type == "weapon" then
+              buffLabelText = buffLabelText .. ": " .. BOM.Color("bbbbee", _t("TooltipIncludesAllRanks"))
+            elseif spell.extraText then
+              buffLabelText = buffLabelText .. ": " .. BOM.Color("bbbbee", spell.extraText)
+            end
+            buffLabel:SetText(buffLabelText)
+          end
+  ) -- update when spell loaded
+
   rowBuilder:StepRight(buffLabel, 7)
   --<<---------------------------
 
@@ -426,8 +422,8 @@ end
 
 local function bomForceTargetsTooltipText(spell)
   return bomGetTargetsTooltipText(
-          L.FormatAllForceCastTargets,
-          L.FormatForceCastNone,
+          _t("FormatAllForceCastTargets"),
+          _t("FormatForceCastNone"),
           spell.ForcedTarget or {})
 end
 
@@ -436,15 +432,15 @@ function spellButtonsTabModule:UpdateForcecastTooltip(button, spell)
   local tooltip_force_targets = bomForceTargetsTooltipText(spell)
   BOM.Tool.TooltipText(
           button,
-          L.TooltipForceCastOnTarget .. "|n"
-                  .. string.format(L.FormatToggleTarget, BOM.lastTarget)
+          _t("TooltipForceCastOnTarget") .. "|n"
+                  .. string.format(_t("FormatToggleTarget"), BOM.lastTarget)
                   .. tooltip_force_targets)
 end
 
 local function bomExcludeTargetsTooltip(spell)
   return bomGetTargetsTooltipText(
-          L.FormatAllExcludeTargets,
-          L.FormatExcludeNone,
+          _t("FormatAllExcludeTargets"),
+          _t("FormatExcludeNone"),
           spell.ExcludedTarget or {})
 end
 
@@ -453,8 +449,8 @@ function spellButtonsTabModule:UpdateExcludeTargetsTooltip(button, spell)
   local tooltip_exclude_targets = bomExcludeTargetsTooltip(spell)
   BOM.Tool.TooltipText(
           button,
-          L.TooltipExcludeTarget .. "|n"
-                  .. string.format(L.FormatToggleTarget, BOM.lastTarget)
+          _t("TooltipExcludeTarget") .. "|n"
+                  .. string.format(_t("FormatToggleTarget"), BOM.lastTarget)
                   .. tooltip_exclude_targets)
 end
 
@@ -533,11 +529,11 @@ function spellButtonsTabModule:UpdateSelectedSpell(spell)
       forceCastButton:SetScript("OnClick", function(self)
         if spellForcedTarget[lastTarget] == nil then
           BOM:Print(BOM.FormatTexture(BOM.ICON_TARGET_ON) .. " "
-                  .. L.MessageAddedForced .. ": " .. lastTarget)
+                  .. _t("MessageAddedForced") .. ": " .. lastTarget)
           spellForcedTarget[lastTarget] = lastTarget
         else
           BOM:Print(BOM.FormatTexture(BOM.ICON_TARGET_ON) .. " "
-                  .. L.MessageClearedForced .. ": " .. lastTarget)
+                  .. _t("MessageClearedForced") .. ": " .. lastTarget)
           spellForcedTarget[lastTarget] = nil
         end
         self:UpdateForcecastTooltip(self, profile_spell)
@@ -552,11 +548,11 @@ function spellButtonsTabModule:UpdateSelectedSpell(spell)
       excludeButton:SetScript("OnClick", function(self)
         if spell_exclude[lastTarget] == nil then
           BOM:Print(BOM.FormatTexture(BOM.ICON_TARGET_EXCLUDE) .. " "
-                  .. L.MessageAddedExcluded .. ": " .. lastTarget)
+                  .. _t("MessageAddedExcluded") .. ": " .. lastTarget)
           spell_exclude[lastTarget] = lastTarget
         else
           BOM:Print(BOM.FormatTexture(BOM.ICON_TARGET_EXCLUDE) .. " "
-                  .. L.MessageClearedExcluded .. ": " .. lastTarget)
+                  .. _t("MessageClearedExcluded") .. ": " .. lastTarget)
           spell_exclude[lastTarget] = nil
         end
         self:UpdateExcludeTargetsTooltip(self, profile_spell)
@@ -567,14 +563,14 @@ function spellButtonsTabModule:UpdateSelectedSpell(spell)
       forceCastButton:Disable()
       BOM.Tool.TooltipText(
               forceCastButton,
-              L.TooltipForceCastOnTarget .. "|n" .. L.TooltipSelectTarget
+              _t("TooltipForceCastOnTarget") .. "|n" .. _t("TooltipSelectTarget")
                       .. bomForceTargetsTooltipText(profile_spell))
       --force_cast_button:SetVariable()
       ---------------------------------
       excludeButton:Disable()
       BOM.Tool.TooltipText(
               excludeButton,
-              L.TooltipExcludeTarget .. "|n" .. L.TooltipSelectTarget
+              _t("TooltipExcludeTarget") .. "|n" .. _t("TooltipSelectTarget")
                       .. bomExcludeTargetsTooltip(profile_spell))
       --exclude_button:SetVariable()
     end
@@ -614,16 +610,6 @@ function spellButtonsTabModule:UpdateSpellsTab(caller)
 
   if InCombatLockdown() then
     return
-  end
-
-  if self.spellTabsCreatedFlag and (spellCacheModule.cacheChanged or itemCacheModule.cacheChanged) then
-    --spellSetupModule:SetupAvailableSpells()
-    BOM.HideAllManagedButtons()
-    self.categoryLabels = {}
-    self.spellTabsCreatedFlag = false
-
-    spellCacheModule.cacheChanged = false
-    itemCacheModule.cacheChanged = false
   end
 
   if not self.spellTabsCreatedFlag then

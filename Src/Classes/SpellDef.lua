@@ -4,6 +4,8 @@ local BOM = BuffomatAddon ---@type BuffomatAddon
 ---@class BomSpellDefModule
 local spellDefModule = BuffomatModule.DeclareModule("SpellDef") ---@type BomSpellDefModule
 
+local spellCacheModule = BuffomatModule.Import("SpellCache") ---@type BomSpellCacheModule
+local itemCacheModule = BuffomatModule.Import("ItemCache") ---@type BomItemCacheModule
 local buffRowModule = BuffomatModule.Import("Ui/BuffRow") ---@type BomBuffRowModule
 
 BOM.Class = BOM.Class or {}
@@ -316,36 +318,36 @@ function spellDefModule:IsSpellEnabled(spell_id, profile_name)
   return spell.Enable
 end
 
+---Call function with the icon when icon value is ready, or immediately if value
+---is available. This allows for late loaded icons.
+---@param iconReadyFn function
 ---@return string|nil
-function spellDefClass:GetIcon()
-  if self:IsItem() then
-    if self.itemIcon then
-      return self.itemIcon
-    end
-    if self.spellIcon then
-      return self.spellIcon
-    end
-  end
-
-  self:RefreshTextAndIcon()
-
+function spellDefClass:GetIcon(iconReadyFn)
   if self.itemIcon then
-    return self.itemIcon
+    iconReadyFn(self.itemIcon) -- value was ready
+    return
   end
+
   if self.spellIcon then
-    return self.spellIcon
+    iconReadyFn(self.spellIcon) -- value was ready
+    return
   end
+
+  -- Value was not ready
+  self:RefreshTextAndIcon(iconReadyFn, nil)
 end
 
---- Get single text for item or spell
+---Get single text for item or spell. Apply text as a parameter to function
+---immediately if ready, or when ready. This allows for late loaded names.
+---@param nameReadyFn function
 ---@return string|nil
-function spellDefClass:GetSingleText()
+function spellDefClass:GetSingleText(nameReadyFn)
   if self.singleText then
-    return self.singleText
+    nameReadyFn(self.singleText)
+    return
   end
 
-  self:RefreshTextAndIcon()
-  return self.singleText
+  self:RefreshTextAndIcon(nil, nameReadyFn)
 end
 
 function spellDefClass:IsItem()
@@ -353,36 +355,58 @@ function spellDefClass:IsItem()
   return self.items or self.item
 end
 
-function spellDefClass:RefreshTextAndIcon()
-  if self.items then
-    local _, item = next(self.items)
-    local info = BOM.GetItemInfo(item)
-    if info then
-      self.itemIcon = info.itemTexture -- update own copy of icon
-      self.singleText = info.itemName -- update own copy of item name
-      return
+---@param iconReadyFn function|nil Call with result when icon value is ready
+---@param nameReadyFn function|nil Call with result when name value is ready
+function spellDefClass:RefreshTextAndIcon(iconReadyFn, nameReadyFn)
+  if self:IsItem() then
+    local itemId = self.item
+
+    if self.items then
+      local _, firstItem = next(self.items)
+      itemId = firstItem
     end
-  else
-    -- Only do this if not an multi-item buff
-    if self.item then
-      local info = BOM.GetItemInfo(self.item)
-      if info then
-        self.itemIcon = info.itemTexture -- update own copy of icon
-        self.singleText = info.itemName -- update own copy of item name
-        return
-      end
-    else
-      -- Only do this if not an item
-      if self.singleId then
-        local info = BOM.GetSpellInfo(self.singleId)
-        if info then
-          self.spellIcon = info.icon -- update own copy of icon
-          self.singleText = info.name -- update own copy of spell name
-          return
-        end
-      end
-    end
+
+    itemCacheModule:LoadItem(
+            itemId,
+            function(loadedItem)
+              self.itemIcon = loadedItem.itemTexture
+              if iconReadyFn ~= nil then
+                iconReadyFn(loadedItem.itemTexture)
+              end
+
+              self.singleText = loadedItem.itemName
+              if nameReadyFn ~= nil then
+                nameReadyFn(loadedItem.itemName)
+              end
+            end)
+    return
   end
+
+  spellCacheModule:LoadSpell(
+          self.singleId,
+          function(loadedSpell)
+            self.spellIcon = loadedSpell.icon -- update own copy of icon
+            if iconReadyFn ~= nil then
+              iconReadyFn(loadedSpell.icon)
+            end
+
+            self.singleText = loadedSpell.name -- update own copy of spell name
+            if nameReadyFn ~= nil then
+              nameReadyFn(loadedSpell.name)
+            end
+          end)
+
+  --    -- Only do this if not an item
+  --    if self.singleId then
+  --      local info = BOM.GetSpellInfo(self.singleId)
+  --      if info then
+  --        self.spellIcon = info.icon -- update own copy of icon
+  --        self.singleText = info.name -- update own copy of spell name
+  --        return
+  --      end
+  --    end
+  --  end
+  --end
 
   -- nil otherwise
 end

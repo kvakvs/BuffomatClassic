@@ -2,7 +2,6 @@ local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BuffomatAddon
 
 ---@class BomItemCacheModule
----@field cacheChanged boolean Set to true on item query callbacks
 ---@field cache table<number|string, BomItemCacheElement> Stores arg to results mapping for GetItemInfo
 local itemCacheModule = BuffomatModule.DeclareModule("ItemCache") ---@type BomItemCacheModule
 itemCacheModule.cache = {}
@@ -25,7 +24,6 @@ itemCacheModule.cache = {}
 ---@return BomItemCacheElement|nil
 function BOM.GetItemInfo(arg)
   if itemCacheModule.cache[arg] ~= nil then
-    --print("Cached item response for ", arg)
     return itemCacheModule.cache[arg]
   end
 
@@ -53,7 +51,18 @@ function BOM.GetItemInfo(arg)
   return cacheItem
 end
 
-function itemCacheModule:LoadItem(itemId)
+function itemCacheModule:HasItemCached(arg)
+  return self.cache[arg] ~= nil
+end
+
+---@param itemId number
+---@param onLoaded function Called with loaded BomItemCacheElement
+function itemCacheModule:LoadItem(itemId, onLoaded)
+  if itemCacheModule.cache[arg] ~= nil then
+    onLoaded(itemCacheModule.cache[arg])
+    return
+  end
+
   local itemMixin = Item:CreateFromItemID(itemId)
 
   local itemLoaded = function()
@@ -77,8 +86,11 @@ function itemCacheModule:LoadItem(itemId)
     cacheItem.itemSellPrice = itemSellPrice
 
     itemCacheModule.cache[itemId] = cacheItem
-    itemCacheModule.cacheChanged = true
     BOM.ForceUpdate = true
+
+    if onLoaded ~= nil then
+      onLoaded(cacheItem)
+    end
   end
 
   if C_Item.DoesItemExistByID(itemId) then

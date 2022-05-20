@@ -5,6 +5,7 @@ local BOM = BuffomatAddon ---@type BuffomatAddon
 local macroModule = BuffomatModule.DeclareModule("Macro") ---@type BomMacroModule
 
 local constModule = BuffomatModule.Import("Const") ---@type BomConstModule
+local _t = BuffomatModule.Import("Languages") ---@type BomLanguagesModule
 
 local L = setmetatable({}, { __index = function(t, k)
   if BOM.L and BOM.L[k] then
@@ -78,7 +79,7 @@ function BOM.Class.Macro.Recreate(self)
     if perChar < MAX_CHARACTER_MACROS then
       isChar = 1
     elseif perAccount >= MAX_ACCOUNT_MACROS then
-      BOM:Print(L.MsgNeedOneMacroSlot)
+      BOM:Print(_t("MsgNeedOneMacroSlot"))
       return
     end
 

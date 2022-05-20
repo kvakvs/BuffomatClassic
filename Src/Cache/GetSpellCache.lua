@@ -2,10 +2,11 @@ local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BuffomatAddon
 
 ---@class BomSpellCacheModule
----@field cacheChanged boolean
 local spellCacheModule = BuffomatModule.DeclareModule("SpellCache") ---@type BomSpellCacheModule
 ---@type table<number|string, BomSpellCacheElement> Stores arg to results mapping for GetItemInfo
 spellCacheModule.cache = {}
+
+local spellDefModule = BuffomatModule.Import("SpellDef") ---@type BomSpellDefModule
 
 ---@class BomSpellCacheElement
 ---@field name string
@@ -45,8 +46,19 @@ function BOM.GetSpellInfo(arg)
   return cacheSpell
 end
 
+function spellCacheModule:HasSpellCached(arg)
+  return self.cache[arg] ~= nil
+end
+
 ---Precache spell and store it
-function spellCacheModule:LoadSpell(spellId)
+---@param spellId number
+---@param onLoaded function Called with loaded BomSpellCacheElement
+function spellCacheModule:LoadSpell(spellId, onLoaded)
+  if spellCacheModule.cache[arg] ~= nil then
+    onLoaded(spellCacheModule.cache[arg])
+    return
+  end
+
   local spellMixin = Spell:CreateFromSpellID(spellId)
 
   local cacheSpell = {} ---@type BomSpellCacheElement
@@ -56,12 +68,14 @@ function spellCacheModule:LoadSpell(spellId)
     local spellDef = spellDefModule.allSpells[spellId]
 
     -- Assume the spell info is loaded here and the response is instant
-    local _name, rank, icon, castTime, minRange, maxRange, _spellId = GetSpellInfo(spellId)
+    local name, rank, icon, castTime, minRange, maxRange, _spellId = GetSpellInfo(spellId)
     if name == nil then
       return
     end
 
-    spellDef.name = spellMixin:GetSpellName()
+    cacheSpell.name = spellMixin:GetSpellName()
+    spellDef.name = cacheSpell.name
+
     cacheSpell.rank = rank
     cacheSpell.icon = icon
     cacheSpell.castTime = castTime
@@ -69,8 +83,11 @@ function spellCacheModule:LoadSpell(spellId)
     cacheSpell.maxRange = maxRange
 
     self.cache[spellId] = cacheSpell
-    spellCacheModule.cacheChanged = true
     BOM.ForceUpdate = true
+
+    if onLoaded ~= nil then
+      onLoaded(cacheSpell)
+    end
   end
 
   if C_Spell.DoesSpellExist(spellId) then

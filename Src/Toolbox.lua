@@ -990,11 +990,11 @@ end
 
 ---Add onenter/onleave scripts to show the tooltip with translation by key
 ---@param control BomControl
----@param translation_key string - the key from Languages.lua
-function Tool.Tooltip(control, translation_key)
+---@param text string The translated text
+function Tool.Tooltip(control, text)
   control:SetScript("OnEnter", function()
     GameTooltip:SetOwner(control, "ANCHOR_RIGHT")
-    GameTooltip:AddLine(L[translation_key])
+    GameTooltip:AddLine(text)
     GameTooltip:Show()
   end)
   control:SetScript("OnLeave", function()
