@@ -44,7 +44,12 @@ BOM.Class.GPIMinimapButton = {}
 BOM.Class.GPIMinimapButton.__index = BOM.Class.GPIMinimapButton
 
 
----@class BomControl A blizzard UI frame but may contain private fields used by internal library by GPI
+---@class BomControl A blizzard UI frame but may contain private fields used by internal library by Buffomat
+---@field bomToolTipLink string Mouseover will show the link
+---@field bomToolTipText string Mouseover will show the text
+---@field bomReadVariable function Returns value which the button can modify, boolean for toggle buttons
+
+---@class BomLegacyControl A blizzard UI frame but may contain private fields used by internal library by GPI
 ---@field _privat_DB table Stores value when button is clicked
 ---@field _privat_Var string Variable name in the _privat_DB
 ---@field _privat_Set any Value to be set/reset to nil when the button is clicked, use nil to toggle a boolean
@@ -52,6 +57,8 @@ BOM.Class.GPIMinimapButton.__index = BOM.Class.GPIMinimapButton
 ---@field _privat_state boolean
 ---@field _privat_disabled boolean
 ---@field _privat_Text string
+---@field _privat_ToolTipLink string Mouseover will show the link
+---@field _privat_ToolTipText string Mouseover will show the text
 ---
 ---@field _GPIPRIVAT_events table<string, function> Events
 ---@field _GPIPRIVAT_updates table<function> private field
@@ -66,7 +73,7 @@ BOM.Class.GPIMinimapButton.__index = BOM.Class.GPIMinimapButton
 ---@field GPI_SIZETYPE string
 ---@field Lib_GPI_MinimapButton GPIMinimapButton Stores extra values for minimap button control
 
----@type BomControl
+---@type BomLegacyControl
 BOM.Class.Control = {}
 BOM.Class.Control.__index = BOM.Class.Control
 

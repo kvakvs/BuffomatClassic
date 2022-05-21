@@ -146,7 +146,7 @@
     <Scripts>
       <OnLoad>
         UIPanelButton_OnLoad(self)
-        BuffomatAddon.Tool.Tooltip(self, "TooltipCastButton")
+        BuffomatAddon.Tool.TooltipWithTranslationKey(self, "TooltipCastButton")
       </OnLoad>
       <OnMouseDown function="UIPanelButton_OnMouseDown"/>
       <OnMouseUp function="UIPanelButton_OnMouseUp"/>
@@ -229,7 +229,7 @@
         </Anchors>
         <Scripts>
           <OnClick>BuffomatAddon.BtnClose()</OnClick>
-          <OnLoad>BuffomatAddon.Tool.Tooltip(self, "TooltipCloseButton")
+          <OnLoad>BuffomatAddon.Tool.TooltipWithTranslationKey(self, "TooltipCloseButton")
           </OnLoad>
         </Scripts>
       </Button>
@@ -248,7 +248,7 @@
         </Anchors>
         <Scripts>
           <OnMouseDown>BuffomatAddon.BtnSettings(self)</OnMouseDown>
-          <OnLoad>BuffomatAddon.Tool.Tooltip(self, "TooltipSettingsButton")
+          <OnLoad>BuffomatAddon.Tool.TooltipWithTranslationKey(self, "TooltipSettingsButton")
           </OnLoad>
         </Scripts>
       </Button>
@@ -267,7 +267,7 @@
         </Anchors>
         <Scripts>
           <OnMouseDown>BuffomatAddon.BtnMacro()</OnMouseDown>
-          <OnLoad>BuffomatAddon.Tool.Tooltip(self, "TooltipMacroButton")
+          <OnLoad>BuffomatAddon.Tool.TooltipWithTranslationKey(self, "TooltipMacroButton")
           </OnLoad>
         </Scripts>
       </Button>

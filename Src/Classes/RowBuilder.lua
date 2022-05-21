@@ -5,7 +5,7 @@ local BOM = BuffomatAddon ---@type BuffomatAddon
 local rowBuilderModule = BuffomatModule.DeclareModule("RowBuilder") ---@type BomRowBuilderModule
 
 ---@class RowBuilder
----@field prevControl BomControl|nil Previous control in the row
+---@field prevControl BomLegacyControl|nil Previous control in the row
 ---@field categories table<string, boolean> True if category label was created already
 
 local rowBuilderClass = {} ---@type RowBuilder

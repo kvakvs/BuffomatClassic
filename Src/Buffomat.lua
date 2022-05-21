@@ -143,7 +143,7 @@ local itemCacheModule = BuffomatModule.Import("ItemCache") ---@type BomItemCache
 ---@field IconUseRankOff string
 ---@field IconUseRankOn string
 ---
----@field QuickSingleBuff BomControl Button for single/group buff toggling next to cast button
+---@field QuickSingleBuff BomLegacyControl Button for single/group buff toggling next to cast button
 ---
 ---@field SpellId table<string, table<string, number>> Map of spell name to id
 ---@field ItemId table<string, table<string, number>> Map of item name to id

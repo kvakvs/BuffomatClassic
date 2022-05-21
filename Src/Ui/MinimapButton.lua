@@ -8,7 +8,7 @@ BOM.MinimapButton = BOM.MinimapButton or {}
 local minimapButtonClass = BOM.MinimapButton
 
 ---Change minimap button texture position slightly
----@param button BomControl
+---@param button BomLegacyControl
 local function minimap_button_texture_zoom(button)
   local deltaX, deltaY = 0, 0
 
@@ -21,7 +21,7 @@ local function minimap_button_texture_zoom(button)
 end
 
 ---Called when minimap button is dragged to update.
----@param button BomControl
+---@param button BomLegacyControl
 local function minimap_button_drag_update(button)
   local mx, my = Minimap:GetCenter()
   local px, py = GetCursorPosition()

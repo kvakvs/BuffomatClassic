@@ -48,6 +48,7 @@ Src/Ui/OptionsPopup.lua
 Src/Ui/MinimapButton.lua
 Src/Ui/SpellButtonsTab.lua
 Src/Ui/LegacyManagedButton.lua
+Src/Ui/ManagedUi.lua
 
 Src/Events.lua
 Src/Toolbox.lua

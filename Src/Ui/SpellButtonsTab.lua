@@ -4,8 +4,8 @@ local BOM = BuffomatAddon ---@type BuffomatAddon
 
 ---@class BomSpellButtonsTabModule
 ---@field spellTabsCreatedFlag boolean True if spells tab is created and filled
----@field categoryLabels table<string, BomControl> Collection of category labels indexed per category name
----@field categoryCheckboxes table<string, BomControl> Collection of category checkboxes indexed per category name
+---@field categoryLabels table<string, BomLegacyControl> Collection of category labels indexed per category name
+---@field categoryCheckboxes table<string, BomLegacyControl> Collection of category checkboxes indexed per category name
 local spellButtonsTabModule = BuffomatModule.DeclareModule("Ui/SpellButtonsTab") ---@type BomSpellButtonsTabModule
 spellButtonsTabModule.categoryLabels = {}
 spellButtonsTabModule.categoryCheckboxes = {}
@@ -547,8 +547,8 @@ function spellButtonsTabModule:UpdateSelectedSpell(spell)
     end
 
     --========================================
-    local forceCastButton = spell.frames.ForceCastButton ---@type BomControl
-    local excludeButton = spell.frames.ExcludeButton ---@type BomControl
+    local forceCastButton = spell.frames.ForceCastButton ---@type BomLegacyControl
+    local excludeButton = spell.frames.ExcludeButton ---@type BomLegacyControl
 
     if BOM.lastTarget ~= nil then
       -------------------------

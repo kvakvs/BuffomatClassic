@@ -27,7 +27,7 @@ function BOM.MyButton_Update(self)
   end
 end
 
----@param self BomControl
+---@param self BomLegacyControl
 function BOM.MyButton_SetOnClick(self, func)
   self._privat_OnClick = func
 end
@@ -42,7 +42,7 @@ function BOM.MyButton_OnEnable(self)
   BOM.MyButton_Update(self)
 end
 
----@param self BomControl
+---@param self BomLegacyControl
 function BOM.MyButton_OnEnter(self)
   if self._privat_ToolTipLink or self._privat_ToolTipText then
     GameTooltip_SetDefaultAnchor(BomC_Tooltip, UIParent)
@@ -78,7 +78,7 @@ function BOM.MyButton_OnLeave(self)
   self._iconHighlight:SetVertexColor(1, 1, 1, 0);
 end
 
----@param self BomControl
+---@param self BomLegacyControl
 function BOM.MyButton_OnMouseUp(self, button)
   if not self._privat_disabled then
     if self._privat_DB and self._privat_Var then
@@ -105,7 +105,7 @@ function BOM.MyButton_SetText(self, text)
   BOM.MyButton_Update(self)
 end
 
----@param self BomControl
+---@param self BomLegacyControl
 function BOM.MyButton_OnLoad(self, isSecure)
   self._privat_state = true
   self._privat_disabled = false
@@ -131,7 +131,7 @@ function BOM.MyButton_OnLoad(self, isSecure)
   self:SetScript("OnLeave", BOM.MyButton_OnLeave)
 end
 
----@param self BomControl
+---@param self BomLegacyControl
 function BOM.MyButton_SetState(self, state)
   if state == nil then
     if self._privat_DB and self._privat_Var then
@@ -162,7 +162,7 @@ end
 ---@param db table<string, any> A storage table where clicking the button will modify something
 ---@param var string Key in the table to be modified
 ---@param set any Value to be written to the table if the button is clicked
----@param self BomControl
+---@param self BomLegacyControl
 function BOM.MyButton_SetVariable(self, db, var, set)
   self._privat_DB = db
   self._privat_Var = var
@@ -187,7 +187,7 @@ function BOM.MyButton_SetSpell(self, spell)
 end
 
 ---Contains all MyButtons
----@type table<string, BomControl>
+---@type table<string, BomLegacyControl>
 local bom_managed_mybuttons = {}
 
 ---Creates small clickable button in the spell tab
@@ -199,7 +199,7 @@ local bom_managed_mybuttons = {}
 ---@param unselCoord table - texcoord for unselected
 ---@param disCoord table - texcoord for disabled
 ---@param unmanaged boolean - set to true to not add button to bom_managed_mybuttons
----@return BomControl
+---@return BomLegacyControl
 function BOM.CreateManagedButton(parent, sel, unsel, dis, selCoord, unselCoord, disCoord, unmanaged)
   local new_button_frame = CreateFrame("frame", nil, parent, "BomC_MyButton")
   BOM.MyButton_OnLoad(new_button_frame)
@@ -212,13 +212,13 @@ function BOM.CreateManagedButton(parent, sel, unsel, dis, selCoord, unselCoord, 
   return new_button_frame
 end
 
----@return BomControl
+---@return BomLegacyControl
 function BOM.CreateMyButtonSecure(parent, sel, unsel, dis, selCoord, unselCoord, disCoord)
-  local new_button_frame = CreateFrame("Button", nil, parent, "BomC_MyButtonSecure")
-  BOM.MyButton_OnLoad(new_button_frame, true)
-  new_button_frame:SetTextures(sel, unsel, dis, selCoord, unselCoord, disCoord)
-  tinsert(bom_managed_mybuttons, new_button_frame)
-  return new_button_frame
+  local newButton = CreateFrame("Button", nil, parent, "BomC_MyButtonSecure")
+  BOM.MyButton_OnLoad(newButton, true)
+  newButton:SetTextures(sel, unsel, dis, selCoord, unselCoord, disCoord)
+  tinsert(bom_managed_mybuttons, newButton)
+  return newButton
 end
 
 function BOM.MyButtonUpdateAll()
