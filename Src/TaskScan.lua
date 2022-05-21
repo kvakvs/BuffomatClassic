@@ -4,10 +4,11 @@ local BOM = BuffomatAddon ---@type BuffomatAddon
 ---@class BomTaskScanModule
 local taskScanModule = BuffomatModule.DeclareModule("TaskScan") ---@type BomTaskScanModule
 
-local constModule = BuffomatModule.Import("Const") ---@type BomConstModule
-local spellDefModule = BuffomatModule.Import("SpellDef") ---@type BomSpellDefModule
-local spellButtonsTabModule = BuffomatModule.Import("Ui/SpellButtonsTab") ---@type BomSpellButtonsTabModule
 local _t = BuffomatModule.Import("Languages") ---@type BomLanguagesModule
+local buffomatModule = BuffomatModule.Import("Buffomat") ---@type BomBuffomatModule
+local constModule = BuffomatModule.Import("Const") ---@type BomConstModule
+local spellButtonsTabModule = BuffomatModule.Import("Ui/SpellButtonsTab") ---@type BomSpellButtonsTabModule
+local spellDefModule = BuffomatModule.Import("SpellDef") ---@type BomSpellDefModule
 
 local L = setmetatable({}, { __index = function(t, k)
   if BOM.L and BOM.L[k] then
@@ -140,7 +141,7 @@ function taskScanModule:MaybeResetWatchGroups()
       end
     end
 
-    BOM.UpdateBuffTabText()
+    buffomatModule:UpdateBuffTabText()
 
     if need_to_report then
       BOM:Print(_t("ResetWatchGroups"))

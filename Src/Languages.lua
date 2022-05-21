@@ -689,7 +689,7 @@ local function bomLanguage_Chinese()
     ["options.short.LockMinimapButton"]         = "锁定小地图图标",
     ["options.short.LockMinimapButtonDistance"] = "锁定小地图图标距离",
     ["options.short.MainHand"]                  = "缺少主手附魔",
-    ["options.short.NoGroupBuff"]               = "避免群体增益",
+    ["options.short.NoGroupBuff"]               = "不使用群体BUFF",
     ["options.short.OpenLootable"]              = "打开可拾取的容器",
     ["options.short.PreventPVPTag"]             = "防止PVP标志",
     ["options.short.ReplaceSingle"]             = "替换单体增益",
@@ -766,8 +766,6 @@ local function bomLanguage_Chinese()
     AD_REPUTATION_REMINDER                      = "银色黎明徽记",
     RIDING_SPEED_REMINDER                       = "骑术/飞行速度饰品",
     OUT_OF_THAT_ITEM                            = "不在背包",
-    CboxNoGroupBuff                             = "不使用群体BUFF",
-    CboxGroupBuff                               = "一直施放群体BUFF(额外的材料成本)",
 
     CHAT_MSG_PREFIX                             = "Buffomat: ",
     Buffomat                                    = "Buffomat", -- addon title in the main window

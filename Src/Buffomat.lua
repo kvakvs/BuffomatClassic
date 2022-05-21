@@ -14,6 +14,7 @@ local toolboxModule = BuffomatModule.Import("Toolbox") ---@type BomToolboxModule
 local spellButtonsTabModule = BuffomatModule.Import("Ui/SpellButtonsTab") ---@type BomSpellButtonsTabModule
 local spellCacheModule = BuffomatModule.Import("SpellCache") ---@type BomSpellCacheModule
 local itemCacheModule = BuffomatModule.Import("ItemCache") ---@type BomItemCacheModule
+local _t = BuffomatModule.Import("Languages") ---@type BomLanguagesModule
 
 ---global, visible from XML files and from script console and chat commands
 ---@class BuffomatAddon
@@ -152,18 +153,6 @@ local itemCacheModule = BuffomatModule.Import("ItemCache") ---@type BomItemCache
 BuffomatAddon = LibStub("AceAddon-3.0"):NewAddon(
         "Buffomat", "AceConsole-3.0", "AceEvent-3.0") ---@type BuffomatAddon
 local BOM = BuffomatAddon
-
-local L = setmetatable(
-        {},
-        {
-          __index = function(_t, k)
-            if BOM.L and BOM.L[k] then
-              return BOM.L[k]
-            else
-              return "[" .. k .. "]"
-            end
-          end
-        })
 
 --- Addon is running on Classic TBC client
 ---@type boolean
@@ -381,7 +370,7 @@ function buffomatModule:OptionsInit()
 
   self.optionsFrames = {
     general = LibStub("AceConfigDialog-3.0"):AddToBlizOptions(
-            constModule.SHORT_TITLE, L["options.OptionsTitle"], nil)
+            constModule.SHORT_TITLE, _t("options.OptionsTitle"), nil)
   }
   self.optionsFrames.general.default = function()
     optionsModule:ResetDefaultOptions()
@@ -455,29 +444,29 @@ end
 
 ---When BomCharacterState.WatchGroup has changed, update the buff tab text to show what's
 ---being buffed. Example: "Buff All", "Buff G3,5-7"...
-local function bom_update_buff_tab_text()
-  local selected_groups = 0
+function buffomatModule:UpdateBuffTabText()
+  local selectedGroups = 0
   local t = BomC_MainWindow.Tabs[1]
 
   for i = 1, 8 do
     if BomCharacterState.WatchGroup[i] then
-      selected_groups = selected_groups + 1
+      selectedGroups = selectedGroups + 1
     end
   end
 
-  if selected_groups == 8 then
-    t:SetText(L.TabBuff)
+  if selectedGroups == 8 then
+    t:SetText(_t("TabBuff"))
     PanelTemplates_TabResize(t, 0)
     return
   end
 
-  if selected_groups == 0 then
-    t:SetText(L.TabBuffOnlySelf)
+  if selectedGroups == 0 then
+    t:SetText(_t("TabBuffOnlySelf"))
     PanelTemplates_TabResize(t, 0)
     return
   end
 
-  local function ends_with(str, ending)
+  local function endsWith(str, ending)
     return ending == "" or str:sub(-#ending) == ending
   end
 
@@ -489,11 +478,11 @@ local function bom_update_buff_tab_text()
       local prev = tostring(i - 1)
       local prev_range = "-" .. tostring(i - 1)
 
-      if ends_with(groups, prev_range) then
+      if endsWith(groups, prev_range) then
         --"1-2" + "3" should become "1-3"
         groups = groups:gsub(prev_range, "") .. "-" .. tostring(i)
       else
-        if ends_with(groups, prev) then
+        if endsWith(groups, prev) then
           --"1" + "2" should become "1-2"
           groups = groups .. "-" .. tostring(i)
         else
@@ -507,11 +496,10 @@ local function bom_update_buff_tab_text()
     end
   end
 
-  t:SetText(L.TabBuff .. " G" .. groups)
+  -- Set tab name to display groups too: "Buff G1-5" for example
+  t:SetText(_t("TabBuff") .. " G" .. groups)
   PanelTemplates_TabResize(t, 0)
 end
-
-BOM.UpdateBuffTabText = bom_update_buff_tab_text
 
 ---Creates small mybutton which toggles group buff setting, next to CAST button
 function BOM.CreateSingleBuffButton(parent_frame)
@@ -528,9 +516,9 @@ function BOM.CreateSingleBuffButton(parent_frame)
     BOM.QuickSingleBuff:SetOnClick(BOM.MyButtonOnClick)
     BOM.Tool.TooltipText(
             BOM.QuickSingleBuff,
-            BOM.FormatTexture(BOM.ICON_SELF_CAST_ON) .. " - " .. L.CboxNoGroupBuff
+            BOM.FormatTexture(BOM.ICON_SELF_CAST_ON) .. " - " .. _t("options.long.NoGroupBuff")
                     .. "|n"
-                    .. BOM.FormatTexture(BOM.ICON_SELF_CAST_OFF) .. " - " .. L.CboxGroupBuff)
+                    .. BOM.FormatTexture(BOM.ICON_SELF_CAST_OFF) .. " - " .. _t("options.long.GroupBuff"))
 
     BOM.QuickSingleBuff:Show()
   end
@@ -566,9 +554,9 @@ function buffomatModule:InitUI()
   BomC_MainWindow_Title:SetText(
           BOM.FormatTexture(constModule.BOM_BEAR_ICON_FULLPATH)
                   .. " "
-                  .. L.Buffomat
+                  .. _t("Buffomat")
                   .. " - "
-                  .. L.profile_solo)
+                  .. _t("profile_solo"))
   --BomC_ListTab_Button:SetText(L["BtnGetMacro"])
 
   buffomatModule:OptionsInit()
@@ -579,8 +567,8 @@ function buffomatModule:InitUI()
   BOM.Tool.EnableMoving(BomC_MainWindow, BOM.SaveWindowPosition)
   BomC_MainWindow:SetMinResize(180, 90)
 
-  toolboxModule:AddTab(BomC_MainWindow, L.TabBuff, BomC_ListTab, true)
-  toolboxModule:AddTab(BomC_MainWindow, L.TabSpells, BomC_SpellTab, true)
+  toolboxModule:AddTab(BomC_MainWindow, _t("TabBuff"), BomC_ListTab, true)
+  toolboxModule:AddTab(BomC_MainWindow, _t("TabSpells"), BomC_SpellTab, true)
   toolboxModule:SelectTab(BomC_MainWindow, 1)
 end
 
@@ -693,25 +681,25 @@ function BuffomatAddon:Init()
     },
     },
     { "profile", "", {
-      { "%", L["SlashProfile"], BOM.ChooseProfile }
+      { "%", _t("SlashProfile"), BOM.ChooseProfile }
     },
     },
-    { "spellbook", L["SlashSpellBook"], BOM.SetupAvailableSpells },
-    { "update", L["SlashUpdate"],
+    { "spellbook", _t("SlashSpellBook"), BOM.SetupAvailableSpells },
+    { "update", _t("SlashUpdate"),
       function()
         BOM.SetForceUpdate()
         BOM.UpdateScan("Macro /bom update")
       end },
     { "updatespellstab", "", spellButtonsTabModule.UpdateSpellsTab },
-    { "close", L["SlashClose"], BOM.HideWindow },
-    { "reset", L["SlashReset"], BOM.ResetWindow },
+    { "close", _t("SlashClose"), BOM.HideWindow },
+    { "reset", _t("SlashReset"), BOM.ResetWindow },
     { "_checkforerror", "",
       function()
         if not InCombatLockdown() then
           BOM.CheckForError = true
         end
       end },
-    { "", L["SlashOpen"], BOM.ShowWindow },
+    { "", _t("SlashOpen"), BOM.ShowWindow },
   })
 
   buffomatModule:InitUI()
@@ -724,16 +712,12 @@ function BuffomatAddon:Init()
     end
   end
 
-  bom_update_buff_tab_text()
+  buffomatModule:UpdateBuffTabText()
 
   -- Key Binding section header and key translations (see Bindings.XML)
   _G["BINDING_HEADER_BUFFOMATHEADER"] = "Buffomat Classic"
-  _G["BINDING_NAME_MACRO Buffomat Classic"] = L["ButtonCastBuff"]
-  _G["BINDING_NAME_BUFFOMAT_WINDOW"] = L["ButtonBuffomatWindow"]
-
-  --print("|cFFFF1C1C Loaded: " .. GetAddOnMetadata(TOCNAME, "Title") .. " "
-  --        .. GetAddOnMetadata(TOCNAME, "Version")
-  --        .. " by " .. GetAddOnMetadata(TOCNAME, "Author"))
+  _G["BINDING_NAME_MACRO Buffomat Classic"] = _t("ButtonCastBuff")
+  _G["BINDING_NAME_BUFFOMAT_WINDOW"] = _t("ButtonBuffomatWindow")
 end
 
 ---AceAddon handler
@@ -777,7 +761,7 @@ local function bomDownGrade()
         BOM.SharedState.SpellGreatherEqualThan[BOM.CastFailedSpellId] = level
         BOM.FastUpdateTimer()
         BOM.SetForceUpdate("Downgrade")
-        BOM:Print(string.format(L.MsgDownGrade,
+        BOM:Print(string.format(_t("MsgDownGrade"),
                 BOM.CastFailedSpell.singleText,
                 BOM.CastFailedSpellTarget.name))
 
@@ -942,7 +926,7 @@ function BOM.ShowWindow(tab)
     end
     toolboxModule:SelectTab(BomC_MainWindow, tab or 1)
   else
-    BOM:Print(L.ActionInCombatError)
+    BOM:Print(_t("ActionInCombatError"))
   end
 end
 

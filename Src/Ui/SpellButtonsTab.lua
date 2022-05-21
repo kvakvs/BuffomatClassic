@@ -202,7 +202,7 @@ function spellButtonsTabModule:AddGroupScanSelector(rowBuilder)
     -- Let the MyButton library function handle the data update, and update the tab text too
     bomSpellSettingsFrames[i]:SetOnClick(function()
       BOM.MyButtonOnClick(self)
-      BOM.UpdateBuffTabText()
+      buffomatModule:UpdateBuffTabText()
     end)
 
     l = bomSpellSettingsFrames[i]
@@ -402,9 +402,9 @@ function spellButtonsTabModule:CreateTab(playerIsHorde)
     rowBuilder.dy = 2
   end
 
-  if rowBuilder.prev_control then
-    self:AddGroupScanSelector(rowBuilder)
-  end
+  --if rowBuilder.prev_control then
+  self:AddGroupScanSelector(rowBuilder)
+  --end
 end
 
 ---Build a tooltip string to add to the target force-cast or exclude button
