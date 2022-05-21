@@ -28,7 +28,8 @@ end
 
 ---@param control BomControl
 ---@param betweenLinesOffset number|nil If defined, will step down extra before new line except the first line
-function rowBuilderClass:PositionAtNewRow(control, betweenLinesOffset)
+---@param afterOffset number|nil
+function rowBuilderClass:PositionAtNewRow(control, betweenLinesOffset, afterOffset)
   if self.rowStartControl ~= nil then
     if betweenLinesOffset then
       self.dy = self.dy + betweenLinesOffset
@@ -40,6 +41,8 @@ function rowBuilderClass:PositionAtNewRow(control, betweenLinesOffset)
   end
 
   self.dy = 0
+  self.dx = afterOffset or 0
+  self.prevControl = control
   self.rowStartControl = control
 end
 
@@ -57,7 +60,6 @@ function rowBuilderClass:ChainToTheRight(anchor, control, spaceAfter)
   self.prevControl = control
 end
 
----@deprecated Use ChainToTheRight instead
 function rowBuilderClass:SpaceToTheRight(control, dx)
   self.prevControl = control
   self.dx = dx

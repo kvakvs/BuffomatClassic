@@ -980,12 +980,12 @@ end
 ---on the label to set its position.
 ---@param maybeLabel BomLegacyControl|nil - the existing label or nil
 ---@param parent BomLegacyControl - parent where the label is created
----@param position_fn function - applies function after creating the label
-function toolboxModule:CreateSmalltextLabel(maybeLabel, parent, position_fn)
+---@param positionFn function - applies function after creating the label
+function toolboxModule:CreateSmalltextLabel(maybeLabel, parent, positionFn)
   if maybeLabel == nil then
     maybeLabel = parent:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
   end
-  position_fn(maybeLabel)
+  positionFn(maybeLabel)
   return maybeLabel
 end
 

@@ -28,6 +28,7 @@ local uiButtonModule = BuffomatModule.Import("Ui/UiButton") ---@type BomUiButton
 ---@field PRIEST BomLegacyControl Per class setting for class-specific buffs
 ---@field WARLOCK BomLegacyControl Per class setting for class-specific buffs
 ---@field PALADIN BomLegacyControl Per class setting for class-specific buffs
+---@field cancelBuffLabel BomControl Text label for buff cancel row (in combat or always)
 
 local buffRowClass = {} ---@type BomBuffRowFrames
 buffRowClass.__index = buffRowClass
