@@ -63,7 +63,7 @@ function spellButtonsTabModule:AddSpellRow_ClassSelector(rowBuilder, playerIsHor
   local selfcastToggle = spell.frames:CreateSelfCastToggle(tooltip1)
   selfcastToggle:SetPoint("TOPLEFT", rowBuilder.prevControl, "TOPRIGHT", rowBuilder.dx, 0)
   selfcastToggle:SetVariable(profileSpell, "SelfCast")
-  rowBuilder:StepRight(selfcastToggle, 0)
+  rowBuilder:SpaceToTheRight(selfcastToggle, 0)
 
   --------------------------------------
   -- Class-Cast checkboxes one per class
@@ -96,17 +96,17 @@ function spellButtonsTabModule:AddSpellRow_ClassSelector(rowBuilder, playerIsHor
   local petToggle = spell.frames:CreatePetToggle(tooltip4, bomDoBlessingOnClick)
   petToggle:SetPoint("TOPLEFT", rowBuilder.prevControl, "TOPRIGHT", rowBuilder.dx, 0)
   petToggle:SetVariable(profileSpell.Class, "pet")
-  rowBuilder:StepRight(petToggle, 7)
+  rowBuilder:SpaceToTheRight(petToggle, 7)
 
   -- Force Cast Button -(+)-
   local forceToggle = spell.frames:CreateForceCastToggle(_t("TooltipForceCastOnTarget"), spell)
   forceToggle:SetPoint("TOPLEFT", rowBuilder.prevControl, "TOPRIGHT", rowBuilder.dx, 0)
-  rowBuilder:StepRight(forceToggle, 0)
+  rowBuilder:SpaceToTheRight(forceToggle, 0)
 
   -- Exclude/Ignore Buff Target Button (X)
   local excludeToggle = spell.frames:CreateExcludeToggle(_t("TooltipExcludeTarget"), spell)
   excludeToggle:SetPoint("TOPLEFT", rowBuilder.prevControl, "TOPRIGHT", rowBuilder.dx, 0)
-  rowBuilder:StepRight(excludeToggle, 2)
+  rowBuilder:SpaceToTheRight(excludeToggle, 2)
 end
 
 ---Add a row with spell cancel buttons
@@ -166,7 +166,7 @@ function spellButtonsTabModule:AddGroupScanSelector(rowBuilder)
   BOM.Tool.Tooltip(bomSpellSettingsFrames.Settings, _t("TooltipRaidGroupsSettings"))
   bomSpellSettingsFrames.Settings:SetPoint("TOPLEFT", rowBuilder.prevControl, "BOTTOMLEFT", 0, -12)
 
-  rowBuilder:StepRight(bomSpellSettingsFrames.Settings, 7)
+  rowBuilder:SpaceToTheRight(bomSpellSettingsFrames.Settings, 7)
   local l = rowBuilder.prevControl
 
   if bomSpellSettingsFrames[0] == nil then
@@ -238,21 +238,16 @@ function spellButtonsTabModule:AddSpellRow(rowBuilder, playerIsHorde, spell, pla
   -- Create buff icon with tooltip
   local infoIcon = spell.frames:CreateInfoIcon(spell)
 
-  if rowBuilder.prevControl then
-    infoIcon:SetPoint("TOPLEFT", rowBuilder.prevControl, "BOTTOMLEFT", 0, -rowBuilder.dy)
-  else
-    infoIcon:SetPoint("TOPLEFT", 0, -rowBuilder.dy)
-  end
-
-  rowBuilder:StepRight(infoIcon, 7)
+  rowBuilder:PositionAtNewRow(infoIcon)
+  rowBuilder:SpaceToTheRight(infoIcon, 7)
 
   local profileSpell = spellDefModule:GetProfileSpell(spell.ConfigID)
 
   -- Add a checkbox [x]
   local enableCheckbox = spell.frames:CreateEnableCheckbox(_t("TooltipEnableSpell"))
-  enableCheckbox:SetPoint("TOPLEFT", rowBuilder.prevControl, "TOPRIGHT", rowBuilder.dx, 0)
   enableCheckbox:SetVariable(profileSpell, "Enable")
-  rowBuilder:StepRight(enableCheckbox, 7)
+  rowBuilder:ChainToTheRight(nil, enableCheckbox, 7)
+  rowBuilder:SpaceToTheRight(enableCheckbox, 7)
 
   if spell:HasClasses() then
     -- Create checkboxes one per class
@@ -267,7 +262,7 @@ function spellButtonsTabModule:AddSpellRow(rowBuilder, playerIsHorde, spell, pla
           and spell.needForm == nil then
     local statusImage = spell.frames:CreateStatusCheckboxImage(spell)
     statusImage:SetPoint("TOPLEFT", infoIcon, "TOPRIGHT", rowBuilder.dx, 0)
-    rowBuilder:StepRight(statusImage, 7)
+    rowBuilder:SpaceToTheRight(statusImage, 7)
   end
   --<<------------------------------
 
@@ -275,7 +270,7 @@ function spellButtonsTabModule:AddSpellRow(rowBuilder, playerIsHorde, spell, pla
     local whisperToggle = spell.frames:CreateWhisperToggle(_t("TooltipWhisperWhenExpired"))
     whisperToggle:SetPoint("TOPLEFT", rowBuilder.prevControl, "TOPRIGHT", rowBuilder.dx, 0)
     whisperToggle:SetVariable(profileSpell, "Whisper")
-    rowBuilder:StepRight(whisperToggle, 2)
+    rowBuilder:SpaceToTheRight(whisperToggle, 2)
   end
 
   if spell.type == "weapon" then
@@ -283,12 +278,12 @@ function spellButtonsTabModule:AddSpellRow(rowBuilder, playerIsHorde, spell, pla
     local mainhandToggle = spell.frames:CreateMainhandToggle(_t("TooltipMainHand"))
     mainhandToggle:SetPoint("TOPLEFT", rowBuilder.prevControl, "TOPRIGHT", rowBuilder.dx, 0)
     mainhandToggle:SetVariable(profileSpell, "MainHandEnable")
-    rowBuilder:StepRight(mainhandToggle, 2)
+    rowBuilder:SpaceToTheRight(mainhandToggle, 2)
 
     local offhandToggle = spell.frames:CreateOffhandToggle(_t("TooltipOffHand"))
     offhandToggle:SetPoint("TOPLEFT", rowBuilder.prevControl, "TOPRIGHT", rowBuilder.dx, 0)
     offhandToggle:SetVariable(profileSpell, "OffHandEnable")
-    rowBuilder:StepRight(offhandToggle, 2)
+    rowBuilder:SpaceToTheRight(offhandToggle, 2)
   end
 
   -- Calculate label to the right of the spell config buttons,
@@ -308,7 +303,7 @@ function spellButtonsTabModule:AddSpellRow(rowBuilder, playerIsHorde, spell, pla
           end
   ) -- update when spell loaded
 
-  rowBuilder:StepRight(buffLabel, 7)
+  rowBuilder:SpaceToTheRight(buffLabel, 7)
   --<<---------------------------
 
   if BomCharacterState.BuffCategoriesHidden[spell.category] then
@@ -474,8 +469,6 @@ end
 ---with localised category name
 ---@param rowBuilder RowBuilder
 function spellButtonsTabModule:AddCategoryRow(catId, rowBuilder)
-  local firstRow = rowBuilder.prevControl == nil
-
   -->>---- Checkbox for category ----
   local buffCatCheckbox = spellButtonsTabModule.categoryCheckboxes[catId]
   if buffCatCheckbox == nil then
@@ -488,12 +481,7 @@ function spellButtonsTabModule:AddCategoryRow(catId, rowBuilder)
   buffCatCheckbox:SetOnClick(BOM.MyButtonOnClick)
   buffCatCheckbox:SetVariable(BomCharacterState.BuffCategoriesHidden, catId)
 
-  if not firstRow then
-    buffCatCheckbox:SetPoint("TOPLEFT", rowBuilder.prevControl, "BOTTOMLEFT", 0, -8)
-  else
-    buffCatCheckbox:SetPoint("TOPLEFT")
-  end
-
+  rowBuilder:PositionAtNewRow(buffCatCheckbox, 6)
   buffCatCheckbox:Show()
 
   --<<-------------------------------
@@ -506,13 +494,8 @@ function spellButtonsTabModule:AddCategoryRow(catId, rowBuilder)
     self.categoryLabels[catId] = label
   end
 
-  label:SetPoint("TOPLEFT", buffCatCheckbox, "TOPRIGHT", 0, 0)
-
-  if not firstRow then
-    rowBuilder.dy = 12 + 12 -- step 2 lines down
-  else
-    rowBuilder.dy = 12 -- step 1 line down
-  end
+  rowBuilder:ChainToTheRight(buffCatCheckbox, label)
+  rowBuilder.dy = 4 -- step down a little
 end
 
 ---@param spell BomSpellDef

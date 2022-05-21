@@ -45,9 +45,8 @@ function managedUiModule.ButtonOnEnter(self)
     if self.bomToolTipLink then
       BomC_Tooltip:SetHyperlink(self.bomToolTipLink)
     else
-      local add = "" -- add a checkbox to the tooltip
-
-      if self.bomReadVariable then
+      local add = ""
+      if self.bomReadVariable then -- add a checkbox to the tooltip
         add = " " .. (self.bomReadVariable()
                 and managedUiModule.ICON_ON
                 or managedUiModule.ICON_OFF)

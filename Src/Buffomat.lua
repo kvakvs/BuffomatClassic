@@ -187,6 +187,7 @@ function BOM.BtnSettings(self)
   optionsPopupModule:Setup(self)
 end
 
+---Bound the the macro cast button in the buff tab
 function BOM.BtnMacro()
   PickupMacro(constModule.MACRO_NAME)
 end
