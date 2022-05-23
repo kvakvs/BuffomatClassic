@@ -121,7 +121,7 @@ end
 ---@return BomSpellDef
 function spellDefModule:tbcConsumable(dst, single_id, item_id, limitations, extraText, extraFields)
   if not BOM.TBC then
-    return
+    return spellDefModule:new(0, {}) -- dummy spelldef to not crash following setters
   end
 
   local fields = extraFields or {} ---@type BomSpellDef

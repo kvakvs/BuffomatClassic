@@ -1,5 +1,9 @@
 # Changelog
 
+## Buffomat Classic and TBC 2022.5.5
+
+- Fix for classic version (script error)
+
 ## Buffomat Classic and TBC 2022.5.1
 
 - Grouped buffs by categories
