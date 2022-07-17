@@ -1133,6 +1133,11 @@ end
 local function bomAddBuff(spell, party, playerMember, inRange)
   local ok, bag, slot, count
 
+  if spell:HaveIgnoredBuffs(playerMember) then
+    tasklist:LowPrioComment(_t("tasklist.IgnoredBuff") .. ": " .. spell.singleText)
+    return
+  end
+
   if spell.reagentRequired then
     ok, bag, slot, count = bomHasItem(spell.reagentRequired, true)
   end
@@ -1146,10 +1151,12 @@ local function bomAddBuff(spell, party, playerMember, inRange)
   ------------------------
   -- Add GROUP BUFF
   ------------------------
+  local minBuff = BOM.SharedState.MinBuff or 3
+
   if spell.groupMana ~= nil and not BOM.SharedState.NoGroupBuff then
     for groupIndex = 1, 8 do
       if spell.NeedGroup[groupIndex]
-              and spell.NeedGroup[groupIndex] >= BOM.SharedState.MinBuff
+              and spell.NeedGroup[groupIndex] >= minBuff
       then
         BOM.RepeatUpdate = true
         local Group = bomGetGroupInRange(spell.groupText, spell.NeedMember, groupIndex, spell)
@@ -1196,7 +1203,7 @@ local function bomAddBuff(spell, party, playerMember, inRange)
             or spell.groupMana == nil
             or member.group == 9
             or spell.NeedGroup[member.group] == nil
-            or spell.NeedGroup[member.group] < BOM.SharedState.MinBuff)
+            or spell.NeedGroup[member.group] < minBuff)
     then
       if not member.isPlayer then
         BOM.RepeatUpdate = true

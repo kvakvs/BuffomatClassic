@@ -129,6 +129,7 @@ local function bomLanguage_English()
     ["options.long.UseRank"]                    = "Use spells with ranks",
     ["options.long.UseProfiles"]                = "Use profiles based on whether the player is solo, in a group, raid or a battleground",
 
+    ["tasklist.IgnoredBuff"]                    = "Ignored", -- when a buff is not listed because a better buff exists
     SELF                                        = "Self", -- use instead of name when buffing self
     BUFF_CLASS_SELF_ONLY                        = "Self-buff",
     BUFF_CLASS_REGULAR                          = "Buff",

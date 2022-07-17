@@ -9,6 +9,7 @@ BOM.Class = BOM.Class or {}
 ---@class TaskList
 ---@field tasks table<number, Task> This potentially becomes a macro action on the buff bu
 ---@field comments table<number, string>
+---@field lowPrioComments table<number, string>
 
 ---@type TaskList
 BOM.Class.TaskList = {}
@@ -18,9 +19,10 @@ local CLASS_TAG = "task_list"
 
 function BOM.Class.TaskList:new()
   local fields = {
-    t        = CLASS_TAG,
-    tasks    = {},
-    comments = {},
+    t               = CLASS_TAG,
+    tasks           = {},
+    comments        = {},
+    lowPrioComments = {},
   }
   setmetatable(fields, BOM.Class.TaskList)
   return fields
@@ -59,6 +61,18 @@ function BOM.Class.TaskList.AddWithPrefix(self, prefix_text,
   tinsert(self.tasks, new_task)
 end
 
+---Add a comment text which WILL auto open buffomat window when it is displayed
+---@param self TaskList
+function BOM.Class.TaskList:Comment(text)
+  tinsert(self.comments, text)
+end
+
+---Add a comment text which WILL NOT auto open buffomat window and will display in grey
+---@param self TaskList
+function BOM.Class.TaskList:LowPrioComment(text)
+  tinsert(self.lowPrioComments, text)
+end
+
 ---@param self TaskList
 function BOM.Class.TaskList:Comment(text)
   tinsert(self.comments, text)
@@ -70,16 +84,21 @@ function BOM.Class.TaskList.Clear(self)
   BomC_ListTab_MessageFrame:Clear()
   wipe(self.tasks)
   wipe(self.comments)
+  wipe(self.lowPrioComments)
 end
 
 ---@param a GroupBuffTarget|BomUnit
 ---@param b GroupBuffTarget|BomUnit
 local function bomCompareGroupsOrMembers(a, b)
-  if not b then return false end
-  if not a then return true end
+  if not b then
+    return false
+  end
+  if not a then
+    return true
+  end
   return a.distance < b.distance -- or
-          --a.priority < b.priority or
-          --a.action_text < b.action_text
+  --a.priority < b.priority or
+  --a.action_text < b.action_text
 end
 
 ---Unload the contents of DisplayInfo cache into BomC_ListTab_MessageFrame
@@ -101,6 +120,10 @@ function BOM.Class.TaskList.Display(self)
   end
 
   table.sort(self.tasks, bomCompareGroupsOrMembers)
+
+  for i, text in ipairs(self.lowPrioComments) do
+    BomC_ListTab_MessageFrame:AddMessage(BOM.Color("aaaaaa", text))
+  end
 
   for i, text in ipairs(self.comments) do
     BomC_ListTab_MessageFrame:AddMessage(text)

@@ -1,5 +1,9 @@
 # Changelog
 
+## Buffomat Classic and TBC 2022.7
+
+- Skip mage Intellect buff if K'iru's Song of Victory is up in SWP or the island.
+
 ## Buffomat Classic and TBC 2022.5.5
 
 - Fix for classic version (script error)

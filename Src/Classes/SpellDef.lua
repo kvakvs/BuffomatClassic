@@ -268,6 +268,13 @@ function spellDefClass:Category(cat)
 end
 
 ---@return BomSpellDef
+function spellDefClass:IgnoreIfHaveBuff(spellId)
+  self.ignoreIfHaveBuff = self.ignoreIfHaveBuff or {}
+  tinsert(self.ignoreIfHaveBuff, spellId)
+  return self
+end
+
+---@return BomSpellDef
 function spellDefClass:ElixirType(elixirType)
   self.elixirType = elixirType
   return self
@@ -353,6 +360,18 @@ end
 function spellDefClass:IsItem()
   -- TODO: self.isConsumable does this too?
   return self.items or self.item
+end
+
+---@param unit BomUnit
+function spellDefClass:HaveIgnoredBuffs(unit)
+  if type(self.ignoreIfHaveBuff) == "table" then
+    for _i, spellId in ipairs(self.ignoreIfHaveBuff) do
+      if unit.buffs[spellId] ~= nil or unit.buffExists[spellId] ~= nil then
+        return true
+      end
+    end
+  end
+  return false
 end
 
 ---@param iconReadyFn function|nil Call with result when icon value is ready

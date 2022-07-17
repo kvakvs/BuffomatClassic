@@ -206,6 +206,7 @@ function allSpellsModule:SetupMageSpells(spells, enchants)
                                   27127 }, -- TBC: Brillance Rank 2
               default         = true, singleDuration = DURATION_30M, groupDuration = DURATION_1H,
               reagentRequired = { 17020 }, targetClasses = BOM_MANA_CLASSES })
+                         :IgnoreIfHaveBuff(46302) -- Kiru's Song of Victory (Sunwell)
                          :Category(self.CLASS)
   end
   tinsert(spells, BOM.SpellDef_ArcaneIntelligence())
@@ -596,32 +597,37 @@ function allSpellsModule:SetupPaladinSpells(spells, enchants)
 
   spellDefModule:addBuff(spells, 20217, --Blessing of Kings
           { groupFamily    = { 25898 }, isBlessing = true, default = false,
-            singleDuration = blessing_duration, ignoreIfHaveBuff = { 25898 }, -- Greater kings
+            singleDuration = blessing_duration,
             targetClasses  = { "MAGE", "HUNTER", "WARLOCK" } },
           paladinOnly)
+                :IgnoreIfHaveBuff(25898) -- Greater Kings
                 :Category(self.BLESSING)
 
   spellDefModule:addBuff(spells, 19979, -- Blessing of Light
           { singleFamily   = { 19977, 19978, 19979, -- Ranks 1-3
                                27144 }, -- TBC: Rank 4
-            isBlessing     = true, default = false, ignoreIfHaveBuff = { 21177 }, -- Greater Light
+            isBlessing     = true, default = false,
             singleDuration = blessing_duration, groupDuration = greater_blessing_duration,
             targetClasses  = BOM_NO_CLASS },
           paladinOnly)
+                :IgnoreIfHaveBuff(21177) -- Greater Light
                 :Category(self.BLESSING)
 
   spellDefModule:addBuff(spells, 25291, --Blessing of Might
-          { isBlessing     = true, default = true, ignoreIfHaveBuff = { 25782, 25916, 27141 }, -- Greater Might
+          { isBlessing     = true, default = true,
             singleFamily   = { 19740, 19834, 19835, 19836, 19837, 19838, 25291, -- Ranks 1-7
                                27140 }, -- TBC: Rank 8
-            singleDuration = blessing_duration, targetClasses = { "WARRIOR", "ROGUE" } },
-          paladinOnly)
+            singleDuration = blessing_duration, targetClasses = BOM_PHYSICAL_CLASSES }, paladinOnly)
+                :IgnoreIfHaveBuff(25782) -- Greater Might
+                :IgnoreIfHaveBuff(25916) -- Greater Might
+                :IgnoreIfHaveBuff(27141) -- Greater Might
                 :Category(self.BLESSING)
 
   spellDefModule:addBuff(spells, 1038, --Blessing of Salvation
           { isBlessing    = true, default = false, singleDuration = blessing_duration,
-            targetClasses = BOM_NO_CLASS, ignoreIfHaveBuff = { 25895 }, },
+            targetClasses = BOM_NO_CLASS, },
           paladinOnly)
+                :IgnoreIfHaveBuff(25895) -- Greater Salv
                 :Category(self.BLESSING)
 
   spellDefModule:addBuff(spells, 25290, --Blessing of Wisdom
