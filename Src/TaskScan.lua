@@ -1133,11 +1133,6 @@ end
 local function bomAddBuff(spell, party, playerMember, inRange)
   local ok, bag, slot, count
 
-  if spell:HaveIgnoredBuffs(playerMember) then
-    tasklist:LowPrioComment(_t("tasklist.IgnoredBuff") .. ": " .. spell.singleText)
-    return
-  end
-
   if spell.reagentRequired then
     ok, bag, slot, count = bomHasItem(spell.reagentRequired, true)
   end
@@ -1219,7 +1214,10 @@ local function bomAddBuff(spell, party, playerMember, inRange)
       local is_in_range = (IsSpellInRange(spell.singleText, member.unitId) == 1)
               and not tContains(spell.SkipList, member.name)
 
-      if bomPreventPvpTagging(spell.singleLink, spell.singleText, member) then
+      if spell:HaveIgnoredBuffs(member) then
+        tasklist:LowPrioComment(string.format(_t("tasklist.IgnoredBuffOn"), member.name, spell.singleText))
+        -- Leave message that the target has a better or ignored buff
+      elseif bomPreventPvpTagging(spell.singleLink, spell.singleText, member) then
         -- Nothing, prevent poison function has already added the text
       elseif is_in_range then
         -- Text: Target [Spell Name]

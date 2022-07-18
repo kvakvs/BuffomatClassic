@@ -129,7 +129,7 @@ local function bomLanguage_English()
     ["options.long.UseRank"]                    = "Use spells with ranks",
     ["options.long.UseProfiles"]                = "Use profiles based on whether the player is solo, in a group, raid or a battleground",
 
-    ["tasklist.IgnoredBuff"]                    = "Ignored", -- when a buff is not listed because a better buff exists
+    ["tasklist.IgnoredBuffOn"]                  = "Ignored %s: %s", -- when a buff is not listed because a better buff exists
     SELF                                        = "Self", -- use instead of name when buffing self
     BUFF_CLASS_SELF_ONLY                        = "Self-buff",
     BUFF_CLASS_REGULAR                          = "Buff",
@@ -590,8 +590,8 @@ local function bomLanguage_Russian()
     ["options.short.Time60"]                    = "Продолжительность <=60 сек:",
     ["options.short.Time600"]                   = "Продолжительность <=10 мин:",
 
-    --[[Translation missing --]]
-    --[[ ["Header_INFO"] = "Information",--]]
+    ["tasklist.IgnoredBuffOn"]                  = "Пропускаем %s: %s", -- when a buff is not listed because a better buff exists
+
     Header_TRACKING                             = "Отслеживание",
     HeaderCredits                               = "Авторы",
     HeaderCustomLocales                         = "Перевод",

@@ -251,6 +251,7 @@ local function Event_UI_ERROR_MESSAGE(errorType, message)
 end
 
 -----PLAYER_LEVEL_UP Event
+--- Should also fire spellbook change event and we handle there
 --local function Event_PLAYER_LEVEL_UP(level)
 --  -- TODO: Rebuild the UI buttons for new spells which appeared due to level up
 --  --BOM.SetupSpells()
@@ -339,6 +340,7 @@ local function Event_Bag()
 end
 
 function eventsModule:InitEvents()
+  -- Should also fire spellbook change event and we handle there
   --BuffomatAddon:RegisterEvent("PLAYER_LEVEL_UP", Event_PLAYER_LEVEL_UP)
 
   -- Events which might change active state of Buffomat
