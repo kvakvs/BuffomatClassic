@@ -6,6 +6,7 @@ local optionsModule = BuffomatModule.DeclareModule("Options") ---@type BomOption
 optionsModule.optionsOrder = 0
 
 local _t = BuffomatModule.Import("Languages") ---@type BomLanguagesModule
+local allSpellsModule = BuffomatModule.Import("AllSpells") ---@type BomAllSpellsModule
 
 function optionsModule:ValueToText(type, value)
   if type == "string" then
@@ -50,6 +51,35 @@ function optionsModule:TemplateCheckbox(name, dict, key, notify)
       end
     end,
     get   = function(info)
+      return dict[key] == true
+    end,
+  }
+end
+
+---@param values table|function
+---@param dict table|nil
+---@param key string|nil
+---@param notifyFn function|nil Call this with (key, value) on option change
+function optionsModule:TemplateMultiselect(name, values, dict, notifyFn, setFn, getFn)
+  self.optionsOrder = self.optionsOrder + 1
+
+  dict = dict or BOM.SharedState
+
+  return {
+    name   = _t("options.short." .. name),
+    desc   = _t("options.long." .. name),
+    type   = "multiselect",
+    width  = "full",
+    order  = self.optionsOrder,
+    values = values,
+
+    set    = setFn or function(state, key, value)
+      dict[key] = value
+      if notifyFn then
+        notifyFn(key, value)
+      end
+    end,
+    get    = getFn or function(state, key)
       return dict[key] == true
     end,
   }
@@ -166,21 +196,21 @@ function optionsModule:CreateOptionsTable()
         type = "group",
         name = _t("options.general.group.Convenience"),
         args = {
-          preventPVPTag            = self:TemplateCheckbox("PreventPVPTag"),
-          deathBlock               = self:TemplateCheckbox("DeathBlock"),
-          noGroupBuff              = self:TemplateCheckbox("NoGroupBuff"),
-          resGhost                 = self:TemplateCheckbox("ResGhost"),
-          replaceSingle            = self:TemplateCheckbox("ReplaceSingle"),
-          argentumDawn             = self:TemplateCheckbox("ArgentumDawn"),
-          carrot                   = self:TemplateCheckbox("Carrot"),
-          mainHand                 = self:TemplateCheckbox("MainHand"),
-          secondaryHand            = self:TemplateCheckbox("SecondaryHand"),
-          useRank                  = self:TemplateCheckbox("UseRank"),
-          buffTarget               = self:TemplateCheckbox("BuffTarget"),
-          openLootable             = self:TemplateCheckbox("OpenLootable"),
-          selfFirst                = self:TemplateCheckbox("SelfFirst"),
-          dontUseConsumables       = self:TemplateCheckbox("DontUseConsumables"),
-          hideSomeoneIsDrinking    = self:TemplateCheckbox("HideSomeoneIsDrinking"),
+          preventPVPTag          = self:TemplateCheckbox("PreventPVPTag"),
+          deathBlock             = self:TemplateCheckbox("DeathBlock"),
+          noGroupBuff            = self:TemplateCheckbox("NoGroupBuff"),
+          resGhost               = self:TemplateCheckbox("ResGhost"),
+          replaceSingle          = self:TemplateCheckbox("ReplaceSingle"),
+          argentumDawn           = self:TemplateCheckbox("ArgentumDawn"),
+          carrot                 = self:TemplateCheckbox("Carrot"),
+          mainHand               = self:TemplateCheckbox("MainHand"),
+          secondaryHand          = self:TemplateCheckbox("SecondaryHand"),
+          useRank                = self:TemplateCheckbox("UseRank"),
+          buffTarget             = self:TemplateCheckbox("BuffTarget"),
+          openLootable           = self:TemplateCheckbox("OpenLootable"),
+          selfFirst              = self:TemplateCheckbox("SelfFirst"),
+          dontUseConsumables     = self:TemplateCheckbox("DontUseConsumables"),
+          hideSomeoneIsDrinking  = self:TemplateCheckbox("HideSomeoneIsDrinking"),
           activateBomOnSpiritTap = self:TemplateRange("ActivateBomOnSpiritTap", 0, 100, 10),
         },
       }, -- end convenience options
@@ -195,6 +225,25 @@ function optionsModule:CreateOptionsTable()
           rebuffTime600  = self:TemplateRange("Time600", 30, 600 - 120, 10),
           rebuffTime1800 = self:TemplateRange("Time1800", 30, 600 - 30, 30),
           rebuffTime3600 = self:TemplateRange("Time3600", 30, 600 - 30, 30),
+        } -- end args
+      }, -- end buffing options
+      visibilityOptions  = {
+        type = "group",
+        name = _t("options.general.group.Visibility"),
+        args = {
+          categories = self:TemplateMultiselect(
+                  "VisibleCategories",
+                  allSpellsModule:GetBuffCategories(), -- all categories ordered
+                  BomCharacterState.BuffCategoriesHidden, -- settings table
+                  nil,
+                  function(state, key, value)
+                    BomCharacterState.BuffCategoriesHidden[key] = not value -- invert
+                    BOM.OnSpellsChanged()
+                  end,
+                  function(state, key)
+                    return BomCharacterState.BuffCategoriesHidden[key] ~= true -- invert
+                  end
+          ),
         } -- end args
       }, -- end buffing options
     } -- end args

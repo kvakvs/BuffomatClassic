@@ -103,7 +103,7 @@ function spellDefModule:new(singleId, fields)
   setmetatable(newSpell, spellDefClass)
 
   newSpell.category = false -- special value no category
-  newSpell.frames = buffRowModule:new() -- spell buttons from the UI go here
+  newSpell.frames = buffRowModule:New() -- spell buttons from the UI go here
   newSpell.ConfigID = singleId
   newSpell.singleId = singleId
 

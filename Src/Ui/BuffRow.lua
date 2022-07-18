@@ -4,6 +4,7 @@ local BOM = BuffomatAddon ---@type BuffomatAddon
 ---@class BomBuffRowModule
 local buffRowModule = BuffomatModule.DeclareModule("Ui/BuffRow") ---@type BomBuffRowModule
 
+local managedUiModule = BuffomatModule.Import("Ui/MyButton") ---@type BomUiMyButtonModule
 local uiButtonModule = BuffomatModule.Import("Ui/UiButton") ---@type BomUiButtonModule
 
 ---@class BomBuffRowFrames
@@ -15,6 +16,7 @@ local uiButtonModule = BuffomatModule.Import("Ui/UiButton") ---@type BomUiButton
 ---@field ExcludeButton BomLegacyControl Button to add/remove from exclude list
 ---@field Whisper BomLegacyControl Button to whisper on buff expiration
 ---@field buff BomLegacyControl Text label with buff name
+---@field buffNameLabel BomControl Text label for buff name
 ---@field MainHand BomLegacyControl Toggle to enchant main hand
 ---@field OffHand BomLegacyControl Toggle to enchant off-hand
 ---@field tank BomLegacyControl Toggle to buff tanks
@@ -35,7 +37,7 @@ buffRowClass.__index = buffRowClass
 
 ---Creates a new Buff Row UI
 ---@return BomBuffRowFrames
-function buffRowModule:new()
+function buffRowModule:New()
   local newRow = {} ---@type BomBuffRowFrames
   setmetatable(newRow, buffRowClass)
   return newRow
@@ -45,7 +47,7 @@ end
 ---@param tooltip string
 function buffRowClass:CreateEnableCheckbox(tooltip)
   if self.Enable == nil then
-    self.Enable = BOM.CreateManagedButton(
+    self.Enable = managedUiModule:CreateManagedButton(
             BomC_SpellTab_Scroll_Child,
             BOM.ICON_OPT_ENABLED,
             BOM.ICON_OPT_DISABLED)
@@ -61,7 +63,7 @@ end
 ---@param spell BomSpellDef
 function buffRowClass:CreateStatusCheckboxImage(spell)
   if self.Set == nil then
-    self.Set = BOM.CreateMyButtonSecure(
+    self.Set = managedUiModule:CreateMyButtonSecure(
             BomC_SpellTab_Scroll_Child,
             BOM.ICON_CHECKED,
             BOM.ICON_CHECKED_OFF)
@@ -74,7 +76,7 @@ end
 ---@param spell BomSpellDef
 function buffRowClass:CreateInfoIcon(spell)
   if self.info == nil then
-    self.info = BOM.CreateManagedButton(
+    self.info = managedUiModule:CreateManagedButton(
             BomC_SpellTab_Scroll_Child,
             BOM.ICON_EMPTY,
             nil,
@@ -98,6 +100,7 @@ end
 function buffRowClass:CreateBuffLabel(text)
   self.buff = BomC_SpellTab_Scroll_Child:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
   self.buff:SetText(text)
+  managedUiModule.ManageControl(self.buff)
 
   return self.buff
 end
@@ -105,7 +108,7 @@ end
 ---@return BomLegacyControl
 function buffRowClass:CreateMainhandToggle(tooltip)
   if self.MainHand == nil then
-    self.MainHand = BOM.CreateManagedButton(
+    self.MainHand = managedUiModule:CreateManagedButton(
             BomC_SpellTab_Scroll_Child,
             BOM.IconMainHandOn,
             BOM.IconMainHandOff,
@@ -122,7 +125,7 @@ end
 ---@return BomLegacyControl
 function buffRowClass:CreateOffhandToggle(tooltip)
   if self.OffHand == nil then
-    self.OffHand = BOM.CreateManagedButton(
+    self.OffHand = managedUiModule:CreateManagedButton(
             BomC_SpellTab_Scroll_Child,
             BOM.IconSecondaryHandOn,
             BOM.IconSecondaryHandOff,
@@ -139,7 +142,7 @@ end
 ---@return BomLegacyControl
 function buffRowClass:CreateWhisperToggle(tooltip)
   if self.Whisper == nil then
-    self.Whisper = BOM.CreateManagedButton(
+    self.Whisper = managedUiModule:CreateManagedButton(
             BomC_SpellTab_Scroll_Child,
             BOM.ICON_WHISPER_ON,
             BOM.ICON_WHISPER_OFF)
@@ -154,7 +157,7 @@ end
 ---@return BomLegacyControl
 function buffRowClass:CreateSelfCastToggle(tooltip)
   if self.SelfCast == nil then
-    self.SelfCast = BOM.CreateManagedButton(
+    self.SelfCast = managedUiModule:CreateManagedButton(
             BomC_SpellTab_Scroll_Child,
             BOM.ICON_SELF_CAST_ON,
             BOM.ICON_SELF_CAST_OFF)
@@ -169,7 +172,7 @@ end
 ---@return BomLegacyControl
 function buffRowClass:CreateClassToggle(class, tooltip, onClick)
   if self[class] == nil then
-    self[class] = BOM.CreateManagedButton(
+    self[class] = managedUiModule:CreateManagedButton(
             BomC_SpellTab_Scroll_Child,
             BOM.CLASS_ICONS_ATLAS,
             BOM.ICON_EMPTY,
@@ -186,7 +189,7 @@ end
 ---@return BomLegacyControl
 function buffRowClass:CreateTankToggle(tooltip, onClick)
   if self.tank == nil then
-    self.tank = BOM.CreateManagedButton(
+    self.tank = managedUiModule:CreateManagedButton(
             BomC_SpellTab_Scroll_Child,
             BOM.ICON_TANK,
             BOM.ICON_EMPTY,
@@ -203,7 +206,7 @@ end
 ---@return BomLegacyControl
 function buffRowClass:CreatePetToggle(tooltip, onClick)
   if self.pet == nil then
-    self.pet = BOM.CreateManagedButton(
+    self.pet = managedUiModule:CreateManagedButton(
             BomC_SpellTab_Scroll_Child,
             BOM.ICON_PET,
             BOM.ICON_EMPTY,

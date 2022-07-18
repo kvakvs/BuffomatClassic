@@ -1,12 +1,12 @@
 local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BuffomatAddon
 
----@class BomStateModule
-local stateModule = BuffomatModule.DeclareModule("State") ---@type BomStateModule
+---@class BomProfileModule
+local stateModule = BuffomatModule.DeclareModule("Profile") ---@type BomProfileModule
 
 BOM.Class = BOM.Class or {}
 
----@class State Snapshot of current options state as selected by the player
+---@class BomProfile Snapshot of current options state as selected by the player
 ---Named options: Are addressed by their string name in translations, control names, etc
 ---@field ArgentumDawn boolean Warn if AD trinket is equipped while in an instance 
 ---@field AutoDismount boolean Dismount if necessary for buff cast 
@@ -38,7 +38,7 @@ BOM.Class = BOM.Class or {}
 ---
 ---@field Cache table<number, table> Caches responses from GetItemInfo() and GetSpellInfo()
 
----@type State
+---@type BomProfile
 BOM.Class.Profile = {}
 BOM.Class.Profile.__index = BOM.Class.Profile
 

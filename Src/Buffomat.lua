@@ -3,18 +3,19 @@ local TOCNAME, _ = ...
 ---@class BomBuffomatModule
 local buffomatModule = BuffomatModule.DeclareModule("Buffomat") ---@type BomBuffomatModule
 
+local _t = BuffomatModule.Import("Languages") ---@type BomLanguagesModule
 local allSpellsModule = BuffomatModule.Import("AllSpells") ---@type BomAllSpellsModule
 local constModule = BuffomatModule.Import("Const") ---@type BomConstModule
 local eventsModule = BuffomatModule.Import("Events") ---@type BomEventsModule
+local itemCacheModule = BuffomatModule.Import("ItemCache") ---@type BomItemCacheModule
 local languagesModule = BuffomatModule.Import("Languages") ---@type BomLanguagesModule
+local managedUiModule = BuffomatModule.DeclareModule("Ui/MyButton") ---@type BomUiMyButtonModule
 local optionsModule = BuffomatModule.Import("Options") ---@type BomOptionsModule
 local optionsPopupModule = BuffomatModule.Import("OptionsPopup") ---@type BomOptionsPopupModule
-local taskScanModule = BuffomatModule.Import("TaskScan") ---@type BomTaskScanModule
-local toolboxModule = BuffomatModule.Import("Toolbox") ---@type BomToolboxModule
 local spellButtonsTabModule = BuffomatModule.Import("Ui/SpellButtonsTab") ---@type BomSpellButtonsTabModule
 local spellCacheModule = BuffomatModule.Import("SpellCache") ---@type BomSpellCacheModule
-local itemCacheModule = BuffomatModule.Import("ItemCache") ---@type BomItemCacheModule
-local _t = BuffomatModule.Import("Languages") ---@type BomLanguagesModule
+local taskScanModule = BuffomatModule.Import("TaskScan") ---@type BomTaskScanModule
+local toolboxModule = BuffomatModule.Import("Toolbox") ---@type BomToolboxModule
 
 ---global, visible from XML files and from script console and chat commands
 ---@class BuffomatAddon
@@ -40,9 +41,9 @@ local _t = BuffomatModule.Import("Languages") ---@type BomLanguagesModule
 ---@field CancelBuffSource string Unit who casted the buff to be auto-canceled
 ---@field Carrot table Equipped Riding trinket: Spell to and zone ids to check
 ---@field CheckForError boolean Used by error suppression code
----@field CurrentProfile State Current profile from CharacterState.Profiles
----@field CharacterState CharacterState Copy of state only for the current character, with separate states per profile
----@field SharedState State Copy of state shared with all accounts
+---@field CurrentProfile BomProfile Current profile from CharacterState.Profiles
+---@field CharacterState BomCharacterState Copy of state only for the current character, with separate states per profile
+---@field SharedState BomProfile Copy of state shared with all accounts
 ---@field DeclineHasResurrection boolean Set to true on combat start, stop, holding Alt, cleared on party update
 ---@field EnchantToSpell table<number, number> Reverse-maps enchant ids back to spells
 ---@field ForceTracking number|nil Defines icon id for enforced tracking
@@ -207,7 +208,7 @@ end
 -- Something changed (buff gained possibly?) update all spells and spell tabs
 function buffomatModule:OptionsUpdate()
   BOM.SetForceUpdate("OptionsUpdate")
-  BOM.UpdateScan("OptionsUpdate")
+  taskScanModule:UpdateScan("OptionsUpdate")
   spellButtonsTabModule:UpdateSpellsTab("OptionsUpdate")
   BOM.MyButtonUpdateAll()
   BOM.MinimapButton.UpdatePosition()
@@ -440,7 +441,7 @@ function BOM.ChooseProfile (profile)
   BOM.ClearSkip()
   BOM.PopupDynamic:Wipe()
   BOM.SetForceUpdate("ChooseProfile")
-  BOM.UpdateScan("ChooseProfile")
+  taskScanModule:UpdateScan("ChooseProfile")
 end
 
 ---When BomCharacterState.WatchGroup has changed, update the buff tab text to show what's
@@ -505,7 +506,7 @@ end
 ---Creates small mybutton which toggles group buff setting, next to CAST button
 function BOM.CreateSingleBuffButton(parent_frame)
   if BOM.QuickSingleBuff == nil then
-    BOM.QuickSingleBuff = BOM.CreateManagedButton(
+    BOM.QuickSingleBuff = managedUiModule:CreateManagedButton(
             parent_frame,
             BOM.ICON_SELF_CAST_ON,
             BOM.ICON_SELF_CAST_OFF,
@@ -605,7 +606,7 @@ function BuffomatAddon:Init()
   BomSharedState.CustomLocales = init_val(BomSharedState.CustomLocales)
   BomSharedState.CustomSpells = init_val(BomSharedState.CustomSpells)
   BomSharedState.CustomCancelBuff = init_val(BomSharedState.CustomCancelBuff)
-  BomCharacterState = init_val(BomCharacterState)
+  BomCharacterState = init_val(BomCharacterState) ---@type BomCharacterState
 
   if BomCharacterState.Duration then
     BomSharedState.Duration = BomCharacterState.Duration
@@ -689,7 +690,7 @@ function BuffomatAddon:Init()
     { "update", _t("SlashUpdate"),
       function()
         BOM.SetForceUpdate()
-        BOM.UpdateScan("Macro /bom update")
+        taskScanModule:UpdateScan("Macro /bom update")
       end },
     { "updatespellstab", "", spellButtonsTabModule.UpdateSpellsTab },
     { "close", _t("SlashClose"), BOM.HideWindow },
@@ -834,7 +835,7 @@ function buffomatModule.UpdateTimer()
     buffomatModule.lastUpdateTimestamp = GetTime()
     buffomatModule.fpsCheck = debugprofilestop()
 
-    BOM.UpdateScan("Timer")
+    taskScanModule:UpdateScan("Timer")
 
     -- If updatescan call above took longer than 6 ms, and repeated update, then
     -- bump the slow alarm counter, once it reaches 6 we consider throttling
@@ -911,7 +912,7 @@ function BOM.HideWindow()
       BomC_MainWindow:Hide()
       buffomatModule.autoHelper = "KeepClose"
       BOM.SetForceUpdate("HideWindow")
-      BOM.UpdateScan("HideWindow")
+      taskScanModule:UpdateScan("HideWindow")
     end
   end
 end
@@ -940,7 +941,7 @@ function buffomatModule:ToggleWindow()
     BOM.HideWindow()
   else
     BOM.SetForceUpdate("ToggleWindow")
-    BOM.UpdateScan("ToggleWindow")
+    taskScanModule:UpdateScan("ToggleWindow")
     BOM.ShowWindow()
   end
 end

@@ -2,7 +2,7 @@ local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BuffomatAddon
 
 ---@class BomUiMyButtonModule
-local uiMyButtonModule = BuffomatModule.DeclareModule("Ui/MyButton") ---@type BomUiMyButtonModule
+local managedUiModule = BuffomatModule.DeclareModule("Ui/MyButton") ---@type BomUiMyButtonModule
 
 local ONIcon = "|TInterface\\RAIDFRAME\\ReadyCheck-Ready:0:0:0:0:64:64:4:60:4:60|t"
 local OFFIcon = "|TInterface\\RAIDFRAME\\ReadyCheck-NotReady:0:0:0:0:64:64:4:60:4:60|t"
@@ -188,7 +188,7 @@ end
 
 ---Contains all MyButtons
 ---@type table<string, BomLegacyControl>
-local bom_managed_mybuttons = {}
+local managedUiButtons = {}
 
 ---Creates small clickable button in the spell tab
 ---@param parent table - UI parent frame
@@ -200,29 +200,33 @@ local bom_managed_mybuttons = {}
 ---@param disCoord table - texcoord for disabled
 ---@param unmanaged boolean - set to true to not add button to bom_managed_mybuttons
 ---@return BomLegacyControl
-function BOM.CreateManagedButton(parent, sel, unsel, dis, selCoord, unselCoord, disCoord, unmanaged)
-  local new_button_frame = CreateFrame("frame", nil, parent, "BomC_MyButton")
-  BOM.MyButton_OnLoad(new_button_frame)
-  new_button_frame:SetTextures(sel, unsel, dis, selCoord, unselCoord, disCoord)
+function managedUiModule:CreateManagedButton(parent, sel, unsel, dis, selCoord, unselCoord, disCoord, unmanaged)
+  local newButtonFrame = CreateFrame("frame", nil, parent, "BomC_MyButton")
+  BOM.MyButton_OnLoad(newButtonFrame)
+  newButtonFrame:SetTextures(sel, unsel, dis, selCoord, unselCoord, disCoord)
 
   if unmanaged == nil or unmanaged == false then
-    tinsert(bom_managed_mybuttons, new_button_frame)
+    self:ManageControl(newButtonFrame)
   end
 
-  return new_button_frame
+  return newButtonFrame
+end
+
+function managedUiModule:ManageControl(control)
+  tinsert(managedUiButtons, control)
 end
 
 ---@return BomLegacyControl
-function BOM.CreateMyButtonSecure(parent, sel, unsel, dis, selCoord, unselCoord, disCoord)
+function managedUiModule:CreateMyButtonSecure(parent, sel, unsel, dis, selCoord, unselCoord, disCoord)
   local newButton = CreateFrame("Button", nil, parent, "BomC_MyButtonSecure")
   BOM.MyButton_OnLoad(newButton, true)
   newButton:SetTextures(sel, unsel, dis, selCoord, unselCoord, disCoord)
-  tinsert(bom_managed_mybuttons, newButton)
+  self:ManageControl(newButton)
   return newButton
 end
 
 function BOM.MyButtonUpdateAll()
-  for i, Frame in ipairs(bom_managed_mybuttons) do
+  for i, Frame in ipairs(managedUiButtons) do
     if Frame.SetState then
       Frame:SetState()
     end
@@ -231,7 +235,7 @@ end
 
 -- Hides all icons and clickable buttons in the spells tab
 function BOM.HideAllManagedButtons()
-  for i, Frame in ipairs(bom_managed_mybuttons) do
+  for i, Frame in ipairs(managedUiButtons) do
     Frame:Hide()
   end
 end

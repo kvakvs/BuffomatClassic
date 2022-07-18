@@ -4,19 +4,19 @@ local BOM = BuffomatAddon ---@type BuffomatAddon
 ---@class BomRowBuilderModule
 local rowBuilderModule = BuffomatModule.DeclareModule("RowBuilder") ---@type BomRowBuilderModule
 
----@class RowBuilder
+---@class BomRowBuilder
 ---@field prevControl BomControl|nil Previous control in the row
 ---@field rowStartControl BomControl|nil First control in the row, to align next row
 ---@field categories table<string, boolean> True if category label was created already
 
-local rowBuilderClass = {} ---@type RowBuilder
+local rowBuilderClass = {} ---@type BomRowBuilder
 rowBuilderClass.__index = rowBuilderClass
 
 ---Creates a new RowBuilder
 ---@field prev_control table Stores last created control, for lining up the following one
----@return RowBuilder
+---@return BomRowBuilder
 function rowBuilderModule:new()
-  local fields = {} ---@type RowBuilder
+  local fields = {} ---@type BomRowBuilder
   setmetatable(fields, rowBuilderClass)
 
   fields.categories = {}

@@ -55,6 +55,7 @@ local function bomLanguage_English()
     ["options.general.group.General"]           = "General",
     ["options.general.group.Scan"]              = "Scanning",
     ["options.general.group.Buffing"]           = "Buffing",
+    ["options.general.group.Visibility"]        = "Buff Visibility",
 
     ["options.short.ArgentumDawn"]              = "Warn about reputation items",
     ["options.short.AutoCrusaderAura"]          = "Suggest crusader aura",
@@ -90,6 +91,7 @@ local function bomLanguage_English()
     ["options.short.SlowerHardware"]            = "Scan buffs less often",
     ["options.short.UseRank"]                   = "Use ranked buffs",
     ["options.short.UseProfiles"]               = "Use profiles",
+    ["options.short.VisibleCategories"]         = "Show buffs (per character setting)",
 
     ["options.long.ArgentumDawn"]               = "Remind to unequip Argent Dawn trinket",
     ["options.long.AutoCrusaderAura"]           = "Paladin: Auto crusader aura when mounted",
@@ -128,6 +130,7 @@ local function bomLanguage_English()
     ["options.long.SlowerHardware"]             = "Less frequent buff checks (slow hardware/raid)",
     ["options.long.UseRank"]                    = "Use spells with ranks",
     ["options.long.UseProfiles"]                = "Use profiles based on whether the player is solo, in a group, raid or a battleground",
+    ["options.long.VisibleCategories"]          = "Show a category of buffs in the spells list (per character setting)",
 
     ["tasklist.IgnoredBuffOn"]                  = "Ignored %s: %s", -- when a buff is not listed because a better buff exists
     SELF                                        = "Self", -- use instead of name when buffing self

@@ -27,7 +27,7 @@ Src/Classes/BuffomatTranslations.lua
 Src/Classes/Member.lua
 Src/Classes/RowBuilder.lua
 Src/Classes/SpellDef.lua
-Src/Classes/State.lua
+Src/Classes/Profile.lua
 Src/Classes/Macro.lua
 Src/Classes/CharacterState.lua
 Src/Classes/Task.lua

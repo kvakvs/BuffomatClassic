@@ -160,7 +160,7 @@ local function Event_PLAYER_TARGET_CHANGED()
   if newName ~= BOM.SaveTargetName then
     BOM.SaveTargetName = newName
     BOM.SetForceUpdate("PlayerTargetChanged")
-    BOM.UpdateScan("PlayerTargetChanged")
+    taskScanModule:UpdateScan("PlayerTargetChanged")
   end
 end
 
@@ -314,14 +314,17 @@ end
 
 local function Event_SpellsChanged()
   spellSetupModule:SetupAvailableSpells()
-  BOM.SetForceUpdate("event Spells Changed")
+  BOM.SetForceUpdate("event Spells Changed 1")
   spellButtonsTabModule.spellTabsCreatedFlag = false
 
   --BOM.OptionsInsertSpells()
   spellButtonsTabModule:UpdateSpellsTab("event Spells Changed")
-  BOM.SetForceUpdate("event Spells Changed")
-  BOM.UpdateScan("event Spells Changed")
+  BOM.SetForceUpdate("event Spells Changed 2")
+  taskScanModule:UpdateScan("event Spells Changed")
 end
+
+-- Global accessor to refresh the spells tab
+BOM.OnSpellsChanged = Event_SpellsChanged
 
 local function Event_ADDON_LOADED(arg1)
 end

@@ -2,11 +2,14 @@ local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BuffomatAddon
 
 ---@class BomAllSpellsModule
+---@field buffCategories table<number, string> Category names for buffs
+---@field allBuffs table<number, BomSpellDef> All buffs, same as BOM.AllBuffomatSpells for convenience
 local allSpellsModule = BuffomatModule.DeclareModule("AllSpells") ---@type BomAllSpellsModule
 
 local spellCacheModule = BuffomatModule.Import("SpellCache") ---@type BomSpellCacheModule
 local itemCacheModule = BuffomatModule.Import("ItemCache") ---@type BomItemCacheModule
 local spellDefModule = BuffomatModule.Import("SpellDef") ---@type BomSpellDefModule
+local _t = BuffomatModule.Import("Languages") ---@type BomLanguagesModule
 
 local L = setmetatable(
         {},
@@ -186,7 +189,7 @@ function allSpellsModule:SetupDruidSpells(spells, enchants)
   -- Special code: This will disable herbalism and mining tracking in Cat Form
   spellDefModule:addBuff(spells, BOM.SpellId.Druid.TrackHumanoids, -- Track Humanoids (Cat Form)
           { type      = "tracking", needForm = CAT_FORM, default = true,
-            extraText = L.SpellLabel_TrackHumanoids },
+            extraText = _t("SpellLabel_TrackHumanoids") },
           druidOnly)
                 :Category(self.TRACKING)
 end
@@ -747,7 +750,7 @@ function allSpellsModule:SetupPaladinSpells(spells, enchants)
 
   BOM.CrusaderAuraSpell = spellDefModule:addBuff(
           spells, BOM.SpellId.Paladin.CrusaderAura, --TBC: Crusader Aura
-          { type       = "aura", default = false, extraText = L.CRUSADER_AURA_COMMENT,
+          { type       = "aura", default = false, extraText = _t("CRUSADER_AURA_COMMENT"),
             singleMana = 0 },
           paladinOnly)
                                         :Category(self.AURA)
@@ -1400,17 +1403,17 @@ function allSpellsModule:SetupFood(spells, enchants)
   -- Food (The Burning Crusade)
   --
   spellDefModule:tbcConsumable(spells, 33257, { 33052, 27667 }, --Well Fed +30 STA +20 SPI
-          nil, L.TooltipSimilarFoods)
+          nil, _t("TooltipSimilarFoods"))
                 :Category(self.TBC_FOOD)
 
   spellDefModule:tbcConsumable(spells, 35254, { 27651, 30155, 27662, 33025 }, --Well Fed +20 STA +20 SPI
-          nil, L.TooltipSimilarFoods)
+          nil, _t("TooltipSimilarFoods"))
                 :Category(self.TBC_FOOD)
   --BOM.Class.SpellDef:tbc_consumable(spells, 35272, { 27660, 31672, 33026 }) --Well Fed +20 STA +20 SPI
 
   -- Warp Burger, Grilled Mudfish, ...
   spellDefModule:tbcConsumable(spells, 33261, { 27659, 30358, 27664, 33288, 33293 }, --Well Fed +20 AGI +20 SPI
-          { playerClass = BOM_PHYSICAL_CLASSES }, L.TooltipSimilarFoods)
+          { playerClass = BOM_PHYSICAL_CLASSES }, _t("TooltipSimilarFoods"))
                 :Category(self.TBC_PHYS_FOOD)
 
   spellDefModule:tbcConsumable(spells, 43764, 33872, --Spicy Hot Talbuk: Well Fed +20 HITRATING +20 SPI
@@ -1418,7 +1421,7 @@ function allSpellsModule:SetupFood(spells, enchants)
                 :Category(self.TBC_PHYS_FOOD)
 
   spellDefModule:tbcConsumable(spells, 33256, { 27658, 30359 }, -- Well Fed +20 STR +20 SPI
-          { playerClass = BOM_MELEE_CLASSES }, L.TooltipSimilarFoods)
+          { playerClass = BOM_MELEE_CLASSES }, _t("TooltipSimilarFoods"))
                 :Category(self.TBC_PHYS_FOOD)
 
   spellDefModule:tbcConsumable(spells, 33259, 27655,
@@ -1435,7 +1438,7 @@ function allSpellsModule:SetupFood(spells, enchants)
 
   spellDefModule:tbcConsumable(spells, 33263, { 27657, 31673, 27665, 30361 }, --Well Fed +23 SPELL +20 SPI
           { playerClass = BOM_MANA_CLASSES },
-          L.TooltipSimilarFoods)
+          _t("TooltipSimilarFoods"))
                 :Category(self.TBC_SPELL_FOOD)
 
   spellDefModule:tbcConsumable(spells, 33265, 27663, --Blackened Sporefish: Well Fed +8 MP5 +20 STA
@@ -1444,7 +1447,7 @@ function allSpellsModule:SetupFood(spells, enchants)
 
   spellDefModule:tbcConsumable(spells, 33268, { 27666, 30357 }, --Golden Fish Sticks: Well Fed +44 HEAL +20 SPI
           { playerClass = BOM_MANA_CLASSES },
-          L.TooltipSimilarFoods)
+          _t("TooltipSimilarFoods"))
                 :Category(self.TBC_SPELL_FOOD)
 end
 
@@ -1591,6 +1594,17 @@ function allSpellsModule:SetupConstants()
   }
 end
 
+--- Filter away the 'false' element and return only keys, values become the translation strings
+function allSpellsModule:GetBuffCategories()
+  local result = {}
+  for _i, cat in ipairs(self.buffCategories) do
+    if type(cat) == "string" then
+      result[cat] = _t("Category_" .. cat)
+    end
+  end
+  return result
+end
+
 ---All spells known to Buffomat
 ---Note: you can add your own spell in the "WTF\Account\<accountname>\SavedVariables\buffOmat.lua"
 ---table CustomSpells
@@ -1639,6 +1653,7 @@ function allSpellsModule:SetupSpells()
     end
   end
 
+  self.allBuffs = spells
   BOM.AllBuffomatSpells = spells
   BOM.EnchantList = enchants
 end

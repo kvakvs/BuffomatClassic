@@ -2,7 +2,10 @@
 
 ## Buffomat Classic and TBC 2022.7
 
-- Skip mage Intellect buff if K'iru's Song of Victory is up in SWP or the island.
+- Page in Options which allows Visibility selection for buff categories.
+  Invisible categories are not scanned, even if they're checked.
+- Skip mage Intellect buff if K'iru's Song of Victory is up in SWP or the
+  island.
 
 ## Buffomat Classic and TBC 2022.5.5
 
