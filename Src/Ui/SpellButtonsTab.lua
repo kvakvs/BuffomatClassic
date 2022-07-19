@@ -602,14 +602,11 @@ function spellButtonsTabModule:UpdateSpellsTab(caller)
   end
 
   self:ClearTab()
-
-  if not self.spellTabsCreatedFlag then
-    --BOM.HideAllManagedButtons()
-
-    local playerIsHorde = (UnitFactionGroup("player") == "Horde")
-    self:CreateTab(playerIsHorde)
-    self.spellTabsCreatedFlag = true
-  end
+  --if not self.spellTabsCreatedFlag then
+  --BOM.HideAllManagedButtons()
+  self:CreateTab(UnitFactionGroup("player") == "Horde")
+  --self.spellTabsCreatedFlag = true
+  --end
 
   local _className, playerClass, _classId = UnitClass("player")
 

@@ -118,26 +118,24 @@ function optionsPopupModule:Setup(control, minimap)
   end
 
   BOM.PopupDynamic:AddItem()
-  BOM.PopupDynamic:SubMenu(L["popup.QuickSettings"], "subSettings")
-
-  for i, set in ipairs(self.behaviourSettings) do
-    BOM.PopupDynamic:AddItem(self:MakeSettingsRow(BOM.SharedState, set[1]))
-  end
-
-  -- -------------------------------------------
-  -- Watch in Raid group -> 1 2 3 4 5 6 7 8
-  -- -------------------------------------------
-  BOM.PopupDynamic:AddItem()
-  BOM.PopupDynamic:SubMenu(L["HeaderWatchGroup"], "subGroup")
-
-  for i = 1, 8 do
-    BOM.PopupDynamic:AddItem(i, "keep", BomCharacterState.WatchGroup, i)
-  end
-
-  BOM.PopupDynamic:SubMenu()
-
+  --BOM.PopupDynamic:SubMenu(L["popup.QuickSettings"], "subSettings")
+  --
+  --for i, set in ipairs(self.behaviourSettings) do
+  --  BOM.PopupDynamic:AddItem(self:MakeSettingsRow(BOM.SharedState, set[1]))
+  --end
+  --
+  ---- -------------------------------------------
+  ---- Watch in Raid group -> 1 2 3 4 5 6 7 8
+  ---- -------------------------------------------
+  --BOM.PopupDynamic:AddItem()
+  --BOM.PopupDynamic:SubMenu(L["HeaderWatchGroup"], "subGroup")
+  --
+  --for i = 1, 8 do
+  --  BOM.PopupDynamic:AddItem(i, "keep", BomCharacterState.WatchGroup, i)
+  --end
+  --
+  --BOM.PopupDynamic:SubMenu()
   BOM.PopupDynamic:AddItem(L.BtnSettings, false, bomOpenOptions, 1)
-  --BOM.PopupDynamic:AddItem(L["BtnCancel"], false)
 
   BOM.PopupDynamic:Show(control or "cursor", 0, 0)
 end

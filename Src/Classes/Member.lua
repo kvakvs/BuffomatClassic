@@ -5,6 +5,8 @@ local BOM = BuffomatAddon ---@type BuffomatAddon
 ---@class BomMemberModule
 local memberModule = BuffomatModule.DeclareModule("Member") ---@type BomMemberModule
 
+local buffomatModule = BuffomatModule.Import("Buffomat") ---@type BomBuffomatModule
+
 BOM.Class = BOM.Class or {}
 
 ---@class BomUnit
@@ -69,18 +71,16 @@ function BOM.Class.Member:ForceUpdateBuffs(player_member)
     repeat
       buffIndex = buffIndex + 1
 
-      local name, icon, count, debuffType, duration, expirationTime, source, isStealable
-      , nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, castByPlayer
-      , nameplateShowAll, timeMod = BOM.UnitAura(self.unitId, buffIndex, "HELPFUL")
+      local unitAura = buffomatModule:UnitAura(self.unitId, buffIndex, "HELPFUL")
 
-      if spellId then
-        self.buffExists[spellId] = true -- save all buffids even those not supported
-        if tContains(BOM.AllDrink, spellId) then
+      if unitAura.spellId then
+        self.buffExists[unitAura.spellId] = true -- save all buffids even those not supported
+        if tContains(BOM.AllDrink, unitAura.spellId) then
           BOM.drinkingPersonCount = BOM.drinkingPersonCount + 1
         end
       end
 
-      spellId = BOM.SpellToSpell[spellId] or spellId
+      local spellId = BOM.SpellToSpell[unitAura.spellId] or unitAura.spellId
 
       if spellId then
         -- Skip members who have a buff on the global ignore list - example phaseshifted imps
@@ -103,14 +103,14 @@ function BOM.Class.Member:ForceUpdateBuffs(player_member)
 
           self.buffs[configKey] = BOM.Class.Buff:new(
                   spellId,
-                  duration,
-                  expirationTime,
-                  source,
+                  unitAura.duration,
+                  unitAura.expirationTime,
+                  unitAura.source,
                   BOM.SpellIdIsSingle[spellId])
         end
       end
 
-    until (not name)
+    until (not unitAura.name)
   end -- if is not dead
 end
 

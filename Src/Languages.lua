@@ -50,12 +50,12 @@ local function bomLanguage_English()
 
     ["options.OptionsTitle"]                    = "Buffomat",
 
-    ["options.general.group.AutoActions"]       = "Auto Actions",
+    ["options.general.group.AutoActions"]       = "Reactive Actions",
     ["options.general.group.Convenience"]       = "Convenience",
     ["options.general.group.General"]           = "General",
     ["options.general.group.Scan"]              = "Scanning",
-    ["options.general.group.Buffing"]           = "Buffing",
-    ["options.general.group.Visibility"]        = "Buff Visibility",
+    ["options.general.group.Buffing"]           = "Buffing Timers",
+    ["options.general.group.Visibility"]        = "Show Categories",
 
     ["options.short.ArgentumDawn"]              = "Warn about reputation items",
     ["options.short.AutoCrusaderAura"]          = "Suggest crusader aura",
@@ -117,7 +117,7 @@ local function bomLanguage_English()
     ["options.long.OpenLootable"]               = "Open lootable items in the bags",
     ["options.long.PreventPVPTag"]              = "Skip buffing PvP targets when your PvP is off",
     ["options.long.ReplaceSingle"]              = "Replace single buff with group buffs",
-    ["options.long.ResGhost"]                   = "Attempt to resurrect ghosts",
+    ["options.long.ResGhost"]                   = "Attempt to resurrect ghosts in hopes that the body is reachable (no distance check)",
     ["options.long.SameZone"]                   = "Watch only when in same zone",
     ["options.long.ScanInRestArea"]             = "Scan buffs in rest areas (city and inn)",
     ["options.long.ScanInStealth"]              = "Scan buffs in stealth",

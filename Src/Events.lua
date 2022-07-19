@@ -315,7 +315,7 @@ end
 local function Event_SpellsChanged()
   spellSetupModule:SetupAvailableSpells()
   BOM.SetForceUpdate("event Spells Changed 1")
-  spellButtonsTabModule.spellTabsCreatedFlag = false
+  --spellButtonsTabModule.spellTabsCreatedFlag = false
 
   --BOM.OptionsInsertSpells()
   spellButtonsTabModule:UpdateSpellsTab("event Spells Changed")

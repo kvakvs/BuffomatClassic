@@ -215,157 +215,6 @@ function buffomatModule:OptionsUpdate()
   --BOM.legacyOptions.DoCancel()
 end
 
---local function bom_add_checkbox(Var, Init)
---  BOM.legacyOptions.AddCheckBox(BOM.SharedState, Var, Init, L["options.short." .. Var])
---end
-
---local function bom_add_editbox(Var, Init, width)
---  --Options:AddEditBox(DB,Var,Init,TXTLeft,width,widthLeft,onlynumbers,tooltip,suggestion)
---  BOM.legacyOptions.AddEditBox(BOM.SharedState, Var, Init, L["Ebox" .. Var], 50, width or 150, true)
---end
-
---local function bom_add_editbox_str(Var, Init, width)
---  --Options:AddEditBox(DB,Var,Init,TXTLeft,width,widthLeft,onlynumbers,tooltip,suggestion)
---  BOM.legacyOptions.AddEditBox(BOM.SharedState, Var, Init, L["Ebox" .. Var], 50, width or 150, false)
---end
-
---local function bom_options_add_main_panel()
---  local opt = BOM.legacyOptions
---  opt.AddPanel(constModule.TOC_TITLE, false, true)
---  opt.AddVersion('Version |cff00c0ff' .. constModule.TOC_VERSION .. "|r")
---
---  opt.AddCheckBox(BOM.SharedState.Minimap, "visible", true, L["options.short.ShowMinimapButton"])
---  opt.AddCheckBox(BOM.SharedState.Minimap, "lock", false, L["options.short.LockMinimapButton"])
---  opt.AddCheckBox(BOM.SharedState.Minimap, "lockDistance", false, L["options.short.LockMinimapButtonDistance"])
---  opt.AddSpace()
---  opt.AddCheckBox(BOM.CharacterState, "UseProfiles", false, L["options.short.UseProfiles"])
---  opt.AddSpace()
---
---  for i, set in ipairs(optionsPopupModule.BehaviourSettings) do
---    bom_add_checkbox(set[1], set[2])
---  end
---
---  opt.AddSpace()
---  bom_add_editbox_str("UIWindowScale", 1, 350)
---  bom_add_editbox("MinBuff", 3, 350)
---  bom_add_editbox("MinBlessing", 3, 350)
---  opt.AddSpace()
---  opt.AddCategory(L.HeaderRenew)
---  opt.Indent(20)
---  bom_add_editbox("Time60", 10)--60 s rebuff in 10 s
---  bom_add_editbox("Time300", 60)--5 m rebuff in 1 min
---  bom_add_editbox("Time600", 120)--10 m rebuff in 2 min
---  bom_add_editbox("Time1800", 300)--30 m rebuff in 5 min
---  bom_add_editbox("Time3600", 300)--60 m rebuff in 5 min
---  opt.Indent(-20)
---  opt.AddSpace()
---  opt.AddButton(L.BtnSettingsSpells, BOM.ShowSpellSettings)
---end
-
---local function bom_options_add_localization_panel()
---  local opt = BOM.legacyOptions
---
---  opt.AddPanel(L["HeaderCustomLocales"], false, true)
---  opt.SetScale(0.85)
---  opt.AddText(L["MsgLocalRestart"])
---  opt.AddSpace()
---
---  local locales = BOM.locales.enEN
---  local t = {}
---
---  for key, value in pairs(locales) do
---    table.insert(t, key)
---  end
---
---  table.sort(t)
---
---  for i, key in ipairs(t) do
---    local col = L[key] ~= locales[key] and "|cffffffff" or "|cffff4040"
---    local txt = L[key .. "_org"] ~= "[" .. key .. "_org]" and L[key .. "_org"] or L[key]
---
---    opt.AddEditBox(
---            BOM.SharedState.CustomLocales,
---            key,
---            "",
---            col .. "[" .. key .. "]",
---            450, 200,
---            false,
---            locales[key],
---            txt)
---  end
---
---  opt.SetScale(1)
---end
-
---local function bom_options_add_about_panel()
---  local opt = BOM.legacyOptions
---
---  local panel = opt.AddPanel(L.PanelAbout, false, true)
---  panel:SetHyperlinksEnabled(true);
---  panel:SetScript("OnHyperlinkEnter", BOM.EnterHyperlink)
---  panel:SetScript("OnHyperlinkLeave", BOM.LeaveHyperlink)
---
---  local function bom_add_text(txt)
---    opt.AddText(txt)
---  end
---
---  opt.AddCategory("|cFFFF1C1C" .. GetAddOnMetadata(TOCNAME, "Title")
---          .. " " .. GetAddOnMetadata(TOCNAME, "Version")
---          .. " by " .. GetAddOnMetadata(TOCNAME, "Author"))
---  opt.Indent(10)
---  opt.AddText(GetAddOnMetadata(TOCNAME, "Notes"))
---  opt.Indent(-10)
---
---  opt.AddCategory(L["HeaderInfo"])
---  opt.Indent(10)
---  opt.AddText(L["AboutInfo"], -20)
---  opt.Indent(-10)
---
---  opt.AddCategory(L["HeaderUsage"])
---  opt.Indent(10)
---  opt.AddText(L["AboutUsage"], -20)
---  opt.Indent(-10)
---
---  opt.AddCategory(L["HeaderSlashCommand"])
---  opt.Indent(10)
---  opt.AddText(L["AboutSlashCommand"], -20)
---  BOM.Tool.PrintSlashCommand(nil, nil, bom_add_text)
---  opt.Indent(-10)
---
---  opt.AddCategory(L["HeaderCredits"])
---  opt.Indent(10)
---  opt.AddText(L["AboutCredits"], -20)
---  opt.Indent(-10)
---
---  opt.AddCategory(L.HeaderSupportedSpells)
---  opt.Indent(20)
---
---  for i, spell in ipairs(BOM.AllBuffomatSpells) do
---    if type(spell) == "table" then
---      spell.optionText = opt.AddText("<placeholder>")
---    else
---      opt.Indent(-10)
---      if LOCALIZED_CLASS_NAMES_MALE[spell] then
---        opt.AddCategory(LOCALIZED_CLASS_NAMES_MALE[spell])
---      else
---        opt.AddCategory(L["Header_" .. spell])
---      end
---      opt.Indent(10)
---    end
---  end
---
---  opt.Indent(-10)
---  opt.AddCategory(L["Header_CANCELBUFF"])
---  opt.Indent(10)
---
---  for i, spell in ipairs(BOM.CancelBuffs) do
---    spell.optionText = opt.AddText("<placeholder>")
---  end
---
---  opt.Indent(-10)
---  opt.AddCategory(" ")
---end
-
 function buffomatModule:OptionsInit()
   LibStub("AceConfig-3.0"):RegisterOptionsTable(
           constModule.SHORT_TITLE, optionsModule:CreateOptionsTable(), { })
@@ -377,50 +226,7 @@ function buffomatModule:OptionsInit()
   self.optionsFrames.general.default = function()
     optionsModule:ResetDefaultOptions()
   end
-
-  --local newDoOk = function()
-  --  BOM.legacyOptions.DoOk()
-  --  BOM.OptionsUpdate()
-  --end
-  --local newDoCancel = function()
-  --  BOM.legacyOptions.DoCancel()
-  --  BOM.OptionsUpdate()
-  --end
-  --local newDoDefault = function()
-  --  BOM.legacyOptions.DoDefault()
-  --  BOM.SharedState.Minimap.position = 50
-  --  BOM.ResetWindow()
-  --  BOM.OptionsUpdate()
-  --end
-  --
-  --BOM.legacyOptions.Init(newDoOk, newDoCancel, newDoDefault)
-
-  --bom_options_add_main_panel()
-  --bom_options_add_localization_panel()
-  --bom_options_add_about_panel()
 end
-
------Update spell list in options, called from Event_SpellsChanged
---function BOM.OptionsInsertSpells()
---  for i, spell in ipairs(BOM.AllBuffomatSpells) do
---    if type(spell) == "table" and spell.optionText then
---      if spell.groupId then
---        BOM.legacyOptions.EditText(spell.optionText,
---                (spell.singleLink or spell.single) .. " / " .. (spell.groupLink or spell.group))
---      else
---        BOM.legacyOptions.EditText(spell.optionText,
---                (spell.singleLink or spell.single or spell.ConfigID))
---      end
---    end
---  end
---
---  for i, spell in ipairs(BOM.CancelBuffs) do
---    if spell.optionText then
---      BOM.legacyOptions.EditText(spell.optionText,
---              (spell.singleLink or spell.single or spell.ConfigID))
---    end
---  end
-----end
 
 ---ChooseProfile
 ---BOM profile selection, using 'auto' by default
@@ -859,12 +665,31 @@ end
 
 BOM.PlayerBuffs = {}
 
+---@class BomUnitAuraResult
+---@field name string The name of the spell or effect of the debuff. This is the name shown in yellow when you mouse over the icon
+---@field icon string The path to the icon file
+---@field count number The number of times the debuff has been applied to the target. Returns 0 for any debuff which doesn't stack.
+---@field debuffType string The type of the debuff: Magic, Disease, Poison, Curse, or nothing for those with out a type
+---@field duration number The full duration of the debuff in seconds
+---@field expirationTime number The time in seconds (like what returns GetTime()) when the aura will expire.
+---@field source string
+---@field isStealable boolean 1 or nil depending on if the aura can be spellstolen
+---@field nameplateShowPersonal boolean
+---@field spellId number
+---@field canApplyAura boolean
+---@field isBossDebuff boolean
+---@field castByPlayer boolean
+---@field nameplateShowAll boolean
+---@field timeMod
+
+
 ---Handles UnitAura WOW API call.
 ---For spells that are tracked by Buffomat the data is also stored in BOM.PlayerBuffs
 ---@param unitId string
 ---@param buffIndex number Index of buff/debuff slot starts 1 max 40?
 ---@param filter string Filter string like "HELPFUL", "PLAYER", "RAID"... etc
-function BOM.UnitAura(unitId, buffIndex, filter)
+---@return BomUnitAuraResult
+function buffomatModule:UnitAura(unitId, buffIndex, filter)
   local name, icon, count, debuffType, duration, expirationTime, source, isStealable
   , nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, castByPlayer
   , nameplateShowAll, timeMod = UnitAura(unitId, buffIndex, filter)
@@ -900,8 +725,21 @@ function BOM.UnitAura(unitId, buffIndex, filter)
 
   end
 
-  return name, icon, count, debuffType, duration, expirationTime, source, isStealable,
-  nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, castByPlayer, nameplateShowAll, timeMod
+  return { name                  = name,
+           icon                  = icon,
+           count                 = count,
+           debuffType            = debuffType,
+           duration              = duration,
+           expirationTime        = expirationTime,
+           source                = source,
+           isStealable           = isStealable,
+           nameplateShowPersonal = nameplateShowPersonal,
+           spellId               = spellId,
+           canApplyAura          = canApplyAura,
+           isBossDebuff          = isBossDebuff,
+           castByPlayer          = castByPlayer,
+           nameplateShowAll      = nameplateShowAll,
+           timeMod               = timeMod }
 end
 
 buffomatModule.autoHelper = "open"
@@ -1048,12 +886,12 @@ function BOM.DebugBuffs(dest)
   --isStealable, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff,
   --castByPlayer, nameplateShowAll, timeMod
   for buffIndex = 1, 40 do
-    local name, icon, count, debuffType, duration, expirationTime, source,
-    isStealable, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff,
-    castByPlayer, nameplateShowAll, timeMod = BOM.UnitAura(dest, buffIndex, "HELPFUL")
+    local unitAura = buffomatModule:UnitAura(dest, buffIndex, "HELPFUL")
 
-    if name or icon or count or debuffType then
-      print("Help:", name, spellId, duration, expirationTime, source, (expirationTime or 0) - GetTime())
+    if unitAura.name or unitAura.icon or unitAura.count or unitAura.debuffType then
+      print("Help:", unitAura.name, unitAura.spellId, unitAura.duration,
+              unitAura.expirationTime, unitAura.source,
+              (unitAura.expirationTime or 0) - GetTime())
     end
   end -- for 40 buffs
 end

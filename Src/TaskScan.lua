@@ -912,12 +912,12 @@ function taskScanModule:CheckChangesAndUpdateSpelltab()
 end
 
 ---@param party table<number, BomUnit> - the party
----@param player_member BomUnit - the player
-function taskScanModule:ForceUpdate(party, player_member)
+---@param playerUnit BomUnit - the player
+function taskScanModule:ForceUpdate(party, playerUnit)
   self:ActivateSelectedTracking()
 
   -- Get the running aura and the running seal
-  self:GetActiveAuraAndSeal(player_member)
+  self:GetActiveAuraAndSeal(playerUnit)
 
   -- Check changes to auras and seals and update the spell tab
   self:CheckChangesAndUpdateSpelltab()
@@ -929,7 +929,7 @@ function taskScanModule:ForceUpdate(party, player_member)
   -- For each selected spell check the targets
   ---@param spell BomSpellDef
   for i, spell in ipairs(BOM.SelectedSpells) do
-    someoneIsDead = self:UpdateSpellTargets(party, spell, player_member, someoneIsDead)
+    someoneIsDead = self:UpdateSpellTargets(party, spell, playerUnit, someoneIsDead)
   end
 
   taskScanModule.saveSomeoneIsDead = someoneIsDead
@@ -1407,7 +1407,7 @@ end
 ---@param target string Insert this text into macro where [@player] target text would go
 ---@return string, string {cast_button_title, bag_macro_command}
 function taskScanModule:AddConsumableSelfbuff(spell, playerMember, castButtonTitle, macroCommand, target)
-  local haveItemOffCD, bag, slot, count = bomHasItem(spell.items, true)
+  local haveItemOffCD, bag, slot, count = self:HasItem(spell.items, true)
   count = count or 0
 
   local taskText = _t("TASK_USE")

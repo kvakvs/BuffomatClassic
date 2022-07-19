@@ -154,7 +154,7 @@ function optionsModule:CreateOptionsTable()
     args = {
       generalOptions     = {
         type = "group",
-        name = _t("options.general.group.General"),
+        name = "1. ".._t("options.general.group.General"),
         args = {
           autoOpen              = self:TemplateCheckbox("AutoOpen"),
           useProfiles           = self:TemplateCheckbox("UseProfiles", BOM.CharacterState),
@@ -170,7 +170,7 @@ function optionsModule:CreateOptionsTable()
       },
       scanOptions        = {
         type = "group",
-        name = _t("options.general.group.Scan"),
+        name = "2. ".._t("options.general.group.Scan"),
         args = {
           scanInRestArea   = self:TemplateCheckbox("ScanInRestArea"),
           scanInStealth    = self:TemplateCheckbox("ScanInStealth"),
@@ -183,7 +183,7 @@ function optionsModule:CreateOptionsTable()
       },
       autoActionOptions  = {
         type = "group",
-        name = _t("options.general.group.AutoActions"),
+        name = "3. ".._t("options.general.group.AutoActions"),
         args = {
           autoCrusaderAura   = self:TemplateCheckbox("AutoCrusaderAura"),
           autoDismount       = self:TemplateCheckbox("AutoDismount"),
@@ -194,7 +194,7 @@ function optionsModule:CreateOptionsTable()
       },
       convenienceOptions = {
         type = "group",
-        name = _t("options.general.group.Convenience"),
+        name = "4. ".._t("options.general.group.Convenience"),
         args = {
           preventPVPTag          = self:TemplateCheckbox("PreventPVPTag"),
           deathBlock             = self:TemplateCheckbox("DeathBlock"),
@@ -216,7 +216,7 @@ function optionsModule:CreateOptionsTable()
       }, -- end convenience options
       buffingOptions     = {
         type = "group",
-        name = _t("options.general.group.Buffing"),
+        name = "5. ".._t("options.general.group.Buffing"),
         args = {
           minBuff        = self:TemplateRange("MinBuff", 1, 5, 1),
           minBlessing    = self:TemplateRange("MinBlessing", 1, 40, 1),
@@ -229,7 +229,7 @@ function optionsModule:CreateOptionsTable()
       }, -- end buffing options
       visibilityOptions  = {
         type = "group",
-        name = _t("options.general.group.Visibility"),
+        name = "6. ".._t("options.general.group.Visibility"),
         args = {
           categories = self:TemplateMultiselect(
                   "VisibleCategories",
