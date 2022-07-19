@@ -18,7 +18,7 @@ BOM.Class = BOM.Class or {}
 ---@field DeathBlock boolean Don't cast group buffs, when somebody is dead
 ---@field DisableInRestArea boolean Hide BOM and clear tasks if in resting area ZZZ/city or inn
 ---@field DontUseConsumables boolean Prevent use of consumables
----@field HideSomeoneIsDrinking boolean Hide 'someone is drinking' message
+---@field SomeoneIsDrinking string When someone is drinking low-prio - Show as a comment; hide - no show; show - Show as a task and show buffomat window
 ---@field ActivateBomOnSpiritTap number Activate Buffomat while Priest talent 'Spirit tap' is active and mana is below X%
 ---@field InInstance boolean Buff while in an instance
 ---@field InPVP boolean Buff while in PvP instance

@@ -4,6 +4,11 @@ local BOM = BuffomatAddon ---@type BuffomatAddon
 ---@class BomSharedStateModule
 local sharedStateModule = BuffomatModule.New("SharedState") ---@type BomSharedStateModule
 
+--- Values to use when the saved data is evolving with an update, and the key doesn't exist
+sharedStateModule.defaults = {
+  SomeoneIsDrinking = "low-prio",
+}
+
 ---@class BomMinimapSettings
 ---@field visible boolean
 ---@field lock boolean
@@ -47,7 +52,7 @@ local sharedStateModule = BuffomatModule.New("SharedState") ---@type BomSharedSt
 ---@field OpenLootable boolean
 ---@field SelfFirst boolean
 ---@field DontUseConsumables boolean
----@field HideSomeoneIsDrinking boolean
+---@field SomeoneIsDrinking string "low-prio" - Show as a comment; "hide" - no show; "show" - Show as a task and show buffomat window
 ---@field ActivateBomOnSpiritTap number Percent mana to deactivate Buffomat if Spirit Tap is active for a priest
 ---@field MinBuff number
 ---@field MinBlessing number
@@ -70,6 +75,10 @@ function sharedStateModule:New(init)
   tab.CustomLocales = tab.CustomLocales or {}
   tab.CustomSpells = tab.CustomSpells or {}
   tab.CustomCancelBuff = tab.CustomCancelBuff or {}
+
+  -- Upgrades from older versions (SomeoneIsDrinking was renamed from HideSomeoneIsDrinking)
+  tab.HideSomeoneIsDrinking = nil -- delete old key
+  tab.SomeoneIsDrinking = tab.SomeoneIsDrinking or self.defaults.SomeoneIsDrinking
 
   --setmetatable(tab, sharedStateClass)
   return tab
@@ -111,7 +120,7 @@ function sharedStateModule:Defaults()
     OpenLootable           = true,
     SelfFirst              = true,
     DontUseConsumables     = false,
-    HideSomeoneIsDrinking  = true,
+    SomeoneIsDrinking      = self.defaults.SomeoneIsDrinking,
     ActivateBomOnSpiritTap = 90,
     ----------------------
     MinBuff                = 3,

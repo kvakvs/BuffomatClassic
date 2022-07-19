@@ -57,7 +57,7 @@ function optionsModule:TemplateCheckbox(name, dict, key, notify)
   }
 end
 
----@param values table|function
+---@param values table|function Key is sent to the setter, value is the string displayed
 ---@param dict table|nil
 ---@param key string|nil
 ---@param notifyFn function|nil Call this with (key, value) on option change
@@ -82,6 +82,37 @@ function optionsModule:TemplateMultiselect(name, values, dict, notifyFn, setFn, 
     end,
     get    = getFn or function(state, key)
       return dict[key] == true
+    end,
+  }
+end
+
+---@param values table|function Key is sent to the setter, value is the string displayed
+---@param dict table|nil
+---@param key string|nil
+---@param style string|nil "dropdown" or "radio"
+---@param notifyFn function|nil Call this with (key, value) on option change
+function optionsModule:TemplateSelect(name, values, style, dict, notifyFn, setFn, getFn)
+  self.optionsOrder = self.optionsOrder + 1
+
+  dict = dict or BOM.SharedState
+
+  return {
+    desc   = _t("options.long." .. name),
+    name   = _t("options.short." .. name),
+    order  = self.optionsOrder,
+    style  = style or "dropdown",
+    type   = "select",
+    values = values,
+    width  = 2.0,
+
+    set    = setFn or function(info, value)
+      dict[name] = value
+      if notifyFn then
+        notifyFn(value)
+      end
+    end,
+    get    = getFn or function(info)
+      return dict[name]
     end,
   }
 end
@@ -215,7 +246,11 @@ function optionsModule:CreateConvenienceOptionsTable()
       openLootable           = self:TemplateCheckbox("OpenLootable"),
       selfFirst              = self:TemplateCheckbox("SelfFirst"),
       dontUseConsumables     = self:TemplateCheckbox("DontUseConsumables"),
-      hideSomeoneIsDrinking  = self:TemplateCheckbox("HideSomeoneIsDrinking"),
+      someoneIsDrinking      = self:TemplateSelect("SomeoneIsDrinking", {
+        ["hide"]     = _t("options.convenience.SomeoneIsDrinking.Hide"),
+        ["low-prio"] = _t("options.convenience.SomeoneIsDrinking.LowPrio"),
+        ["show"]     = _t("options.convenience.SomeoneIsDrinking.Show"),
+      }, "dropdown"),
       activateBomOnSpiritTap = self:TemplateRange("ActivateBomOnSpiritTap", 0, 100, 10),
     },
   }

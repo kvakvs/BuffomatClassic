@@ -1912,6 +1912,26 @@ function taskScanModule:MountedCrusaderAuraPrompt()
   return false -- continue scanning spells
 end
 
+function taskScanModule:SomeoneIsDrinking()
+  if BOM.SharedState.SomeoneIsDrinking ~= "hide" then
+    local count = BOM.drinkingPersonCount
+
+    if count > 1 then
+      if BOM.SharedState.SomeoneIsDrinking == "low-prio" then
+        tasklist:LowPrioComment(string.format(_t("InfoMultipleDrinking"), count))
+      else
+        tasklist:Comment(string.format(_t("InfoMultipleDrinking"), count))
+      end
+    elseif count > 0 then
+      if BOM.SharedState.SomeoneIsDrinking == "low-prio" then
+        tasklist:LowPrioComment(_t("InfoSomeoneIsDrinking"))
+      else
+        tasklist:Comment(_t("InfoSomeoneIsDrinking"))
+      end
+    end
+  end
+end
+
 function taskScanModule:UpdateScan_Scan()
   local party, playerMember = BOM.GetPartyMembers()
 
@@ -1964,13 +1984,7 @@ function taskScanModule:UpdateScan_Scan()
     self:CheckMissingWeaponEnchantments(playerMember) -- if option to warn is enabled
 
     ---Check if someone has drink buff, print an info message
-    if not BOM.SharedState.HideSomeoneIsDrinking then
-      if BOM.drinkingPersonCount > 1 then
-        tasklist:Comment(string.format(_t("InfoMultipleDrinking"), BOM.drinkingPersonCount))
-      elseif BOM.drinkingPersonCount > 0 then
-        tasklist:Comment(_t("InfoSomeoneIsDrinking"))
-      end
-    end
+    self:SomeoneIsDrinking()
 
     castButtonTitle, macroCommand = self:CheckItemsAndContainers(
             playerMember, castButtonTitle, macroCommand)

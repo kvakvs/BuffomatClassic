@@ -2,13 +2,14 @@ local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BuffomatAddon
 
 ---@class BomOptionsPopupModule
----@field behaviourSettings table<number, table> A list of {Key name, Default} for 'Profile' settings
+-- -@field behaviourSettings table<number, table> A list of {Key name, Default} for 'Profile' settings
 local optionsPopupModule = BuffomatModule.New("OptionsPopup") ---@type BomOptionsPopupModule
 
 local buffomatModule = BuffomatModule.Import("Buffomat") ---@type BomBuffomatModule
 local constModule = BuffomatModule.Import("Const") ---@type BomConstModule
 local spellDefModule = BuffomatModule.Import("SpellDef") ---@type BomSpellDefModule
 
+---@deprecated See options.lua, and defaults in sharedState.lua and characterState.lua
 optionsPopupModule.behaviourSettings = {
   { "AutoOpen", true },
   { "ScanInRestArea", false },
@@ -39,7 +40,7 @@ optionsPopupModule.behaviourSettings = {
   { "SelfFirst", false },
   { "DontUseConsumables", false },
   { "SlowerHardware", false },
-  { "HideSomeoneIsDrinking", false },
+  { "SomeoneIsDrinking", false },
 }
 
 local _t = BuffomatModule.Import("Languages") ---@type BomLanguagesModule
