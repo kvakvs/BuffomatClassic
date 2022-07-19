@@ -1,7 +1,7 @@
 local TOCNAME, _ = ...
 
 ---@class BomBuffomatModule
-local buffomatModule = BuffomatModule.DeclareModule("Buffomat") ---@type BomBuffomatModule
+local buffomatModule = BuffomatModule.New("Buffomat") ---@type BomBuffomatModule
 
 local _t = BuffomatModule.Import("Languages") ---@type BomLanguagesModule
 local allSpellsModule = BuffomatModule.Import("AllSpells") ---@type BomAllSpellsModule
@@ -9,7 +9,7 @@ local constModule = BuffomatModule.Import("Const") ---@type BomConstModule
 local eventsModule = BuffomatModule.Import("Events") ---@type BomEventsModule
 local itemCacheModule = BuffomatModule.Import("ItemCache") ---@type BomItemCacheModule
 local languagesModule = BuffomatModule.Import("Languages") ---@type BomLanguagesModule
-local managedUiModule = BuffomatModule.DeclareModule("Ui/MyButton") ---@type BomUiMyButtonModule
+local managedUiModule = BuffomatModule.New("Ui/MyButton") ---@type BomUiMyButtonModule
 local optionsModule = BuffomatModule.Import("Options") ---@type BomOptionsModule
 local optionsPopupModule = BuffomatModule.Import("OptionsPopup") ---@type BomOptionsPopupModule
 local spellButtonsTabModule = BuffomatModule.Import("Ui/SpellButtonsTab") ---@type BomSpellButtonsTabModule

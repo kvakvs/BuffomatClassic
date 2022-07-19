@@ -2,7 +2,7 @@ local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BuffomatAddon
 
 ---@class BomUiMyButtonModule
-local managedUiModule = BuffomatModule.DeclareModule("Ui/MyButton") ---@type BomUiMyButtonModule
+local managedUiModule = BuffomatModule.New("Ui/MyButton") ---@type BomUiMyButtonModule
 
 local ONIcon = "|TInterface\\RAIDFRAME\\ReadyCheck-Ready:0:0:0:0:64:64:4:60:4:60|t"
 local OFFIcon = "|TInterface\\RAIDFRAME\\ReadyCheck-NotReady:0:0:0:0:64:64:4:60:4:60|t"

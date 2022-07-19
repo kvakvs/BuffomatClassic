@@ -1,7 +1,7 @@
 local TOCNAME, _ = ...
 
 ---@class BomConstModule
-local constModule = BuffomatModule.DeclareModule("Const") ---@type BomConstModule
+local constModule = BuffomatModule.New("Const") ---@type BomConstModule
 
 constModule.TOC_VERSION = GetAddOnMetadata(TOCNAME, "Version") --used for display in options
 constModule.TOC_TITLE = GetAddOnMetadata(TOCNAME, "Title") -- Longer title like "Buffomat Classic TBC"

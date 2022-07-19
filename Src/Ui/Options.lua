@@ -2,7 +2,7 @@ local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BuffomatAddon
 
 ---@class BomOptionsModule
-local optionsModule = BuffomatModule.DeclareModule("Options") ---@type BomOptionsModule
+local optionsModule = BuffomatModule.New("Options") ---@type BomOptionsModule
 optionsModule.optionsOrder = 0
 
 local _t = BuffomatModule.Import("Languages") ---@type BomLanguagesModule

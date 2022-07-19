@@ -2,7 +2,7 @@ local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BuffomatAddon
 
 ---@class BomToolboxModule
-local toolboxModule = BuffomatModule.DeclareModule("Toolbox") ---@type BomToolboxModule
+local toolboxModule = BuffomatModule.New("Toolbox") ---@type BomToolboxModule
 local _t = BuffomatModule.Import("Languages") ---@type BomLanguagesModule
 
 local L = setmetatable(

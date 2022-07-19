@@ -2,7 +2,7 @@ local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BuffomatAddon
 
 ---@class BomTaskModule
-local taskModule = BuffomatModule.DeclareModule("Task") ---@type BomTaskModule
+local taskModule = BuffomatModule.New("Task") ---@type BomTaskModule
 
 BOM.Class = BOM.Class or {}
 

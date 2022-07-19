@@ -3,7 +3,7 @@ local BOM = BuffomatAddon ---@type BuffomatAddon
 
 ---@class BomUnitCacheModule
 ---@field unitCache table<string, BomUnit>
-local unitCacheModule = BuffomatModule.DeclareModule("UnitCache") ---@type BomUnitCacheModule
+local unitCacheModule = BuffomatModule.New("UnitCache") ---@type BomUnitCacheModule
 unitCacheModule.unitCache = {}
 
 ---@type BomUnit

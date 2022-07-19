@@ -2,7 +2,7 @@ local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BuffomatAddon
 
 ---@class BomSpellCacheModule
-local spellCacheModule = BuffomatModule.DeclareModule("SpellCache") ---@type BomSpellCacheModule
+local spellCacheModule = BuffomatModule.New("SpellCache") ---@type BomSpellCacheModule
 ---@type table<number|string, BomSpellCacheElement> Stores arg to results mapping for GetItemInfo
 spellCacheModule.cache = {}
 

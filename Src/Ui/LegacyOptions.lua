@@ -2,7 +2,7 @@ local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BuffomatAddon
 
 ---@class BomLegacyOptionsModule
-local legacyOptionsModule = BuffomatModule.DeclareModule("Ui/LegacyOptions") ---@type BomLegacyOptionsModule
+local legacyOptionsModule = BuffomatModule.New("Ui/LegacyOptions") ---@type BomLegacyOptionsModule
 
 BOM.legacyOptions = BOM.legacyOptions or {}
 local Options = BOM.legacyOptions

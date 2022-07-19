@@ -5,7 +5,7 @@ local BOM = BuffomatAddon ---@type BuffomatAddon
 ---@class BomSpellButtonsTabModule
 ---@field spellTabsCreatedFlag boolean True if spells tab is created and filled
 ---@field categoryLabels table<string, BomLegacyControl> Collection of category labels indexed per category name
-local spellButtonsTabModule = BuffomatModule.DeclareModule("Ui/SpellButtonsTab") ---@type BomSpellButtonsTabModule
+local spellButtonsTabModule = BuffomatModule.New("Ui/SpellButtonsTab") ---@type BomSpellButtonsTabModule
 spellButtonsTabModule.categoryLabels = {}
 
 local buffRowModule = BuffomatModule.Import("Ui/BuffRow") ---@type BomBuffRowModule
@@ -13,7 +13,7 @@ local _t = BuffomatModule.Import("Languages") ---@type BomLanguagesModule
 local allSpellsModule = BuffomatModule.Import("AllSpells") ---@type BomAllSpellsModule
 local buffomatModule = BuffomatModule.Import("Buffomat") ---@type BomBuffomatModule
 local itemCacheModule = BuffomatModule.Import("ItemCache") ---@type BomItemCacheModule
-local managedUiModule = BuffomatModule.DeclareModule("Ui/MyButton") ---@type BomUiMyButtonModule
+local managedUiModule = BuffomatModule.New("Ui/MyButton") ---@type BomUiMyButtonModule
 local optionsPopupModule = BuffomatModule.Import("OptionsPopup") ---@type BomOptionsPopupModule
 local rowBuilderModule = BuffomatModule.Import("RowBuilder") ---@type BomRowBuilderModule
 local spellCacheModule = BuffomatModule.Import("SpellCache") ---@type BomSpellCacheModule

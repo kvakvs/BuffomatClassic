@@ -2,7 +2,7 @@ local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BuffomatAddon
 
 ---@class BomSpellSetupModule
-local spellSetupModule = BuffomatModule.DeclareModule("SpellSetup") ---@type BomSpellSetupModule
+local spellSetupModule = BuffomatModule.New("SpellSetup") ---@type BomSpellSetupModule
 
 local constModule = BuffomatModule.Import("Const") ---@type BomConstModule
 local itemCacheModule = BuffomatModule.Import("ItemCache") ---@type BomItemCacheModule

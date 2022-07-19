@@ -12,7 +12,7 @@ function BuffomatModule:NewModule()
 end
 
 ---@param name string
-function BuffomatModule.DeclareModule(name)
+function BuffomatModule.New(name)
   if (not moduleIndex[name]) then
     moduleIndex[name] = BuffomatModule:NewModule()
     return moduleIndex[name]
@@ -21,7 +21,7 @@ function BuffomatModule.DeclareModule(name)
   return moduleIndex[name] -- found
 end
 
-BuffomatModule.Import = BuffomatModule.DeclareModule
+BuffomatModule.Import = BuffomatModule.New
 
 ---For each known module call function by fnName and optional context will be
 ---passed as 1st argument, can be ignored (defaults to nil)

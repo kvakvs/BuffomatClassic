@@ -3,7 +3,7 @@ local BOM = BuffomatAddon ---@type BuffomatAddon
 
 ---@class BomOptionsPopupModule
 ---@field behaviourSettings table<number, table> A list of {Key name, Default} for 'Profile' settings
-local optionsPopupModule = BuffomatModule.DeclareModule("OptionsPopup") ---@type BomOptionsPopupModule
+local optionsPopupModule = BuffomatModule.New("OptionsPopup") ---@type BomOptionsPopupModule
 
 local constModule = BuffomatModule.Import("Const") ---@type BomConstModule
 local spellDefModule = BuffomatModule.Import("SpellDef") ---@type BomSpellDefModule
@@ -65,6 +65,28 @@ local function bomOpenOptions()
   LibStub("AceConfigDialog-3.0"):Open(constModule.SHORT_TITLE)
 end
 
+---Populate the [⚙] popup menu: Submenu "Quick Options"
+---@deprecated
+function optionsPopupModule:PopupQuickOptions()
+  BOM.PopupDynamic:SubMenu(L["popup.QuickSettings"], "subSettings")
+
+  for i, set in ipairs(self.behaviourSettings) do
+    BOM.PopupDynamic:AddItem(self:MakeSettingsRow(BOM.SharedState, set[1]))
+  end
+
+  -- -------------------------------------------
+  -- Watch in Raid group -> 1 2 3 4 5 6 7 8
+  -- -------------------------------------------
+  BOM.PopupDynamic:AddItem()
+  BOM.PopupDynamic:SubMenu(L["HeaderWatchGroup"], "subGroup")
+
+  for i = 1, 8 do
+    BOM.PopupDynamic:AddItem(i, "keep", BomCharacterState.WatchGroup, i)
+  end
+
+  BOM.PopupDynamic:SubMenu()
+end
+
 ---Populate the [⚙] popup menu
 function optionsPopupModule:Setup(control, minimap)
   local name = (control:GetName() or "nil") .. (minimap and "Minimap" or "Normal")
@@ -118,23 +140,7 @@ function optionsPopupModule:Setup(control, minimap)
   end
 
   BOM.PopupDynamic:AddItem()
-  --BOM.PopupDynamic:SubMenu(L["popup.QuickSettings"], "subSettings")
-  --
-  --for i, set in ipairs(self.behaviourSettings) do
-  --  BOM.PopupDynamic:AddItem(self:MakeSettingsRow(BOM.SharedState, set[1]))
-  --end
-  --
-  ---- -------------------------------------------
-  ---- Watch in Raid group -> 1 2 3 4 5 6 7 8
-  ---- -------------------------------------------
-  --BOM.PopupDynamic:AddItem()
-  --BOM.PopupDynamic:SubMenu(L["HeaderWatchGroup"], "subGroup")
-  --
-  --for i = 1, 8 do
-  --  BOM.PopupDynamic:AddItem(i, "keep", BomCharacterState.WatchGroup, i)
-  --end
-  --
-  --BOM.PopupDynamic:SubMenu()
+  --self:PopupQuickOptions()
   BOM.PopupDynamic:AddItem(L.BtnSettings, false, bomOpenOptions, 1)
 
   BOM.PopupDynamic:Show(control or "cursor", 0, 0)

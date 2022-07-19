@@ -4,7 +4,7 @@ local BOM = BuffomatAddon ---@type BuffomatAddon
 ---@class BomAllSpellsModule
 ---@field buffCategories table<number, string> Category names for buffs
 ---@field allBuffs table<number, BomSpellDef> All buffs, same as BOM.AllBuffomatSpells for convenience
-local allSpellsModule = BuffomatModule.DeclareModule("AllSpells") ---@type BomAllSpellsModule
+local allSpellsModule = BuffomatModule.New("AllSpells") ---@type BomAllSpellsModule
 
 local spellCacheModule = BuffomatModule.Import("SpellCache") ---@type BomSpellCacheModule
 local itemCacheModule = BuffomatModule.Import("ItemCache") ---@type BomItemCacheModule

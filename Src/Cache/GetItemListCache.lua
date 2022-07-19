@@ -2,7 +2,7 @@ local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BuffomatAddon
 
 ---@class BomItemListCacheModule
-local itemListCacheModule = BuffomatModule.DeclareModule("ItemListCache") ---@type BomItemListCacheModule
+local itemListCacheModule = BuffomatModule.New("ItemListCache") ---@type BomItemListCacheModule
 
 BOM.WipeCachedItems = true
 

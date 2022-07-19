@@ -2,7 +2,7 @@ local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BuffomatAddon
 
 ---@class BomLanguagesModule
-local languagesModule = BuffomatModule.DeclareModule("Languages") ---@type BomLanguagesModule
+local languagesModule = BuffomatModule.New("Languages") ---@type BomLanguagesModule
 
 local L = setmetatable({}, { __index = function(t, k)
   if BOM.L and BOM.L[k] then
