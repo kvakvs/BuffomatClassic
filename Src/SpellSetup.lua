@@ -1,11 +1,12 @@
 local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BuffomatAddon
 
----@class BomSpellSetupModule
-local spellSetupModule = BuffomatModule.New("SpellSetup") ---@type BomSpellSetupModule
-
+local buffomatModule = BuffomatModule.Import("Buffomat") ---@type BomBuffomatModule
 local constModule = BuffomatModule.Import("Const") ---@type BomConstModule
 local itemCacheModule = BuffomatModule.Import("ItemCache") ---@type BomItemCacheModule
+
+---@class BomSpellSetupModule
+local spellSetupModule = BuffomatModule.New("SpellSetup") ---@type BomSpellSetupModule
 
 local L = setmetatable({}, { __index = function(t, k)
   if BOM.L and BOM.L[k] then
@@ -43,11 +44,11 @@ local function bomSetup_MaybeAddCustomSpells()
 
   bomSpellsImportedFromConfig = true
 
-  for x, entry in ipairs(BomSharedState.CustomSpells) do
+  for x, entry in ipairs(buffomatModule.shared.CustomSpells) do
     tinsert(BOM.AllBuffomatSpells, BOM.Tool.CopyTable(entry))
   end
 
-  for x, entry in ipairs(BomSharedState.CustomCancelBuff) do
+  for x, entry in ipairs(buffomatModule.shared.CustomCancelBuff) do
     tinsert(BOM.CancelBuffs, BOM.Tool.CopyTable(entry))
   end
 end

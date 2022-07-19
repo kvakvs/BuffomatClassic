@@ -1,10 +1,13 @@
 local TOCNAME, _ = ...
 
 ---@class BomBuffomatModule
+---@field shared BomSharedState Refers to BomSharedState global
+---@field character BomCharacterState Refers to BomCharacterState global
 local buffomatModule = BuffomatModule.New("Buffomat") ---@type BomBuffomatModule
 
 local _t = BuffomatModule.Import("Languages") ---@type BomLanguagesModule
 local allSpellsModule = BuffomatModule.Import("AllSpells") ---@type BomAllSpellsModule
+local characterStateModule = BuffomatModule.Import("CharacterState") ---@type BomCharacterStateModule
 local constModule = BuffomatModule.Import("Const") ---@type BomConstModule
 local eventsModule = BuffomatModule.Import("Events") ---@type BomEventsModule
 local itemCacheModule = BuffomatModule.Import("ItemCache") ---@type BomItemCacheModule
@@ -12,6 +15,7 @@ local languagesModule = BuffomatModule.Import("Languages") ---@type BomLanguages
 local managedUiModule = BuffomatModule.New("Ui/MyButton") ---@type BomUiMyButtonModule
 local optionsModule = BuffomatModule.Import("Options") ---@type BomOptionsModule
 local optionsPopupModule = BuffomatModule.Import("OptionsPopup") ---@type BomOptionsPopupModule
+local sharedStateModule = BuffomatModule.Import("SharedState") ---@type BomSharedStateModule
 local spellButtonsTabModule = BuffomatModule.Import("Ui/SpellButtonsTab") ---@type BomSpellButtonsTabModule
 local spellCacheModule = BuffomatModule.Import("SpellCache") ---@type BomSpellCacheModule
 local taskScanModule = BuffomatModule.Import("TaskScan") ---@type BomTaskScanModule
@@ -231,7 +235,7 @@ end
 ---ChooseProfile
 ---BOM profile selection, using 'auto' by default
 ---@param profile table
-function BOM.ChooseProfile (profile)
+function buffomatModule.ChooseProfile(profile)
   if profile == nil or profil == "" or profile == "auto" then
     BOM.ForceProfile = nil
     BOM:Print("Set profile to auto")
@@ -257,7 +261,7 @@ function buffomatModule:UpdateBuffTabText()
   local t = BomC_MainWindow.Tabs[1]
 
   for i = 1, 8 do
-    if BomCharacterState.WatchGroup[i] then
+    if self.character.WatchGroup[i] then
       selectedGroups = selectedGroups + 1
     end
   end
@@ -281,7 +285,7 @@ function buffomatModule:UpdateBuffTabText()
   -- Build comma-separated group list to buff: "G1,2,3,5"...
   local groups = ""
   for i = 1, 8 do
-    if BomCharacterState.WatchGroup[i] then
+    if self.character.WatchGroup[i] then
       --If we are adding number i, and previous (i-1) is in the string
       local prev = tostring(i - 1)
       local prev_range = "-" .. tostring(i - 1)
@@ -380,9 +384,49 @@ function buffomatModule:InitUI()
   toolboxModule:SelectTab(BomC_MainWindow, 1)
 end
 
+function buffomatModule:InitGlobalStates()
+  BomSharedState = sharedStateModule:New(BomSharedState) ---@type BomSharedState
+  buffomatModule.shared = BomSharedState
+
+  BomCharacterState = characterStateModule:New(BomCharacterState) ---@type BomCharacterState
+  buffomatModule.character = BomCharacterState
+
+  if self.character.Duration then
+    self.shared.Duration = self.character.Duration
+    self.character.Duration = nil
+  elseif not self.shared.Duration then
+    self.shared.Duration = {}
+  end
+
+  if not self.character[BOM.ALL_PROFILES[1]] then
+    self.character[BOM.ALL_PROFILES[1]] = {
+      ["CancelBuff"] = self.character.CancelBuff,
+      ["Spell"]      = self.character.Spell,
+      ["LastAura"]   = self.character.LastAura,
+      ["LastSeal"]   = self.character.LastSeal,
+    }
+    self.character.CancelBuff = nil
+    self.character.Spell = nil
+    self.character.LastAura = nil
+    self.character.LastSeal = nil
+  end
+
+  for i, each_profile in ipairs(BOM.ALL_PROFILES) do
+    if not self.character[each_profile] then
+      self.character[each_profile] = {}
+    end
+  end
+
+  BOM.SharedState = self.shared
+  BOM.CharacterState = self.character
+  BOM.CurrentProfile = self.character[BOM.ALL_PROFILES[1]]
+end
+
 ---Called from event handler on Addon Loaded event
 ---Execution start here
 function BuffomatAddon:Init()
+  buffomatModule:InitGlobalStates()
+
   languagesModule:SetupTranslations()
   allSpellsModule:SetupSpells()
   allSpellsModule:SetupCancelBuffs()
@@ -396,53 +440,6 @@ function BuffomatAddon:Init()
   --    db[var] = init
   --  end
   --end
-
-  ---@type table - returns value if not nil, otherwise returns empty table
-  local init_val = function(v)
-    if not v then
-      return {}
-    else
-      return v
-    end
-  end
-
-  BomSharedState = init_val(BomSharedState)
-  BomSharedState.Minimap = init_val(BomSharedState.Minimap)
-  BomSharedState.SpellGreatherEqualThan = init_val(BomSharedState.SpellGreatherEqualThan)
-  BomSharedState.CustomLocales = init_val(BomSharedState.CustomLocales)
-  BomSharedState.CustomSpells = init_val(BomSharedState.CustomSpells)
-  BomSharedState.CustomCancelBuff = init_val(BomSharedState.CustomCancelBuff)
-  BomCharacterState = init_val(BomCharacterState) ---@type BomCharacterState
-
-  if BomCharacterState.Duration then
-    BomSharedState.Duration = BomCharacterState.Duration
-    BomCharacterState.Duration = nil
-  elseif not BomSharedState.Duration then
-    BomSharedState.Duration = {}
-  end
-
-  if not BomCharacterState[BOM.ALL_PROFILES[1]] then
-    BomCharacterState[BOM.ALL_PROFILES[1]] = {
-      ["CancelBuff"] = BomCharacterState.CancelBuff,
-      ["Spell"]      = BomCharacterState.Spell,
-      ["LastAura"]   = BomCharacterState.LastAura,
-      ["LastSeal"]   = BomCharacterState.LastSeal,
-    }
-    BomCharacterState.CancelBuff = nil
-    BomCharacterState.Spell = nil
-    BomCharacterState.LastAura = nil
-    BomCharacterState.LastSeal = nil
-  end
-
-  for i, each_profile in ipairs(BOM.ALL_PROFILES) do
-    if not BomCharacterState[each_profile] then
-      BomCharacterState[each_profile] = {}
-    end
-  end
-
-  BOM.SharedState = BomSharedState
-  BOM.CharacterState = BomCharacterState
-  BOM.CurrentProfile = BomCharacterState[BOM.ALL_PROFILES[1]]
 
   languagesModule:LocalizationInit()
 
@@ -513,10 +510,10 @@ function BuffomatAddon:Init()
   buffomatModule:InitUI()
 
   -- Which groups are watched by the buff scanner - save in character state
-  if not BomCharacterState.WatchGroup then
-    BomCharacterState.WatchGroup = {}
+  if not buffomatModule.character.WatchGroup then
+    buffomatModule.character.WatchGroup = {}
     for i = 1, 8 do
-      BomCharacterState.WatchGroup[i] = true
+      buffomatModule.character.WatchGroup[i] = true
     end
   end
 

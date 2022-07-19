@@ -8,10 +8,10 @@ local BOM = BuffomatAddon ---@type BuffomatAddon
 local spellButtonsTabModule = BuffomatModule.New("Ui/SpellButtonsTab") ---@type BomSpellButtonsTabModule
 spellButtonsTabModule.categoryLabels = {}
 
-local buffRowModule = BuffomatModule.Import("Ui/BuffRow") ---@type BomBuffRowModule
 local _t = BuffomatModule.Import("Languages") ---@type BomLanguagesModule
 local allSpellsModule = BuffomatModule.Import("AllSpells") ---@type BomAllSpellsModule
 local buffomatModule = BuffomatModule.Import("Buffomat") ---@type BomBuffomatModule
+local buffRowModule = BuffomatModule.Import("Ui/BuffRow") ---@type BomBuffRowModule
 local itemCacheModule = BuffomatModule.Import("ItemCache") ---@type BomItemCacheModule
 local managedUiModule = BuffomatModule.New("Ui/MyButton") ---@type BomUiMyButtonModule
 local optionsPopupModule = BuffomatModule.Import("OptionsPopup") ---@type BomOptionsPopupModule
@@ -165,7 +165,7 @@ function spellButtonsTabModule:AddGroupScanSelector(rowBuilder)
     end
 
     rowBuilder:ChainToTheRight(nil, self.spellSettingsFrames[i], 2)
-    self.spellSettingsFrames[i]:SetVariable(BomCharacterState.WatchGroup, i)
+    self.spellSettingsFrames[i]:SetVariable(buffomatModule.character.WatchGroup, i)
     self.spellSettingsFrames[i]:SetText(i)
     BOM.Tool.TooltipText(self.spellSettingsFrames[i], string.format(_t("TooltipGroup"), i))
     self.spellSettingsFrames[i]:Show()
@@ -193,7 +193,7 @@ end
 ---@return boolean
 -- TODO: Move this to spelldef
 function spellButtonsTabModule:CategoryIsHidden(category)
-  return BomCharacterState.BuffCategoriesHidden[category] == true
+  return buffomatModule.character.BuffCategoriesHidden[category] == true
 end
 
 ---Creates a row
@@ -328,7 +328,7 @@ function spellButtonsTabModule:CreateTab(playerIsHorde)
   local rowBuilder = rowBuilderModule:new()
   local _, selfClass, _ = UnitClass("player")
 
-  BomCharacterState.BuffCategoriesHidden = BomCharacterState.BuffCategoriesHidden or {}
+  buffomatModule.character.BuffCategoriesHidden = buffomatModule.character.BuffCategoriesHidden or {}
 
   for j, cat in ipairs(allSpellsModule.buffCategories) do
     if not self:CategoryIsHidden(cat) then

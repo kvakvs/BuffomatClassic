@@ -134,8 +134,8 @@ function taskScanModule:MaybeResetWatchGroups()
     local need_to_report = false
 
     for i = 1, 8 do
-      if not BomCharacterState.WatchGroup[i] then
-        BomCharacterState.WatchGroup[i] = true
+      if not buffomatModule.character.WatchGroup[i] then
+        buffomatModule.character.WatchGroup[i] = true
         spellButtonsTabModule.spellSettingsFrames[i]:SetState(true)
         need_to_report = true
       end
@@ -376,7 +376,7 @@ function taskScanModule:UpdateSpellTargets(party, spell, playerMember, someoneIs
 
       elseif blessing_name[member.name] == nil then
         if blessingSpell.Class[member.class]
-                and (not IsInRaid() or BomCharacterState.WatchGroup[member.group])
+                and (not IsInRaid() or buffomatModule.character.WatchGroup[member.group])
                 and not blessingSpell.SelfCast then
           ok = true
         end
@@ -433,7 +433,7 @@ function taskScanModule:UpdateSpellTargets(party, spell, playerMember, someoneIs
       local profileSpell = BOM.CurrentProfile.Spell[spell.ConfigID]
 
       if profileSpell.Class[member.class]
-              and (not IsInRaid() or BomCharacterState.WatchGroup[member.group])
+              and (not IsInRaid() or buffomatModule.character.WatchGroup[member.group])
               and not profileSpell.SelfCast then
         ok = true
       end

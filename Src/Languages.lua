@@ -1,6 +1,8 @@
 local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BuffomatAddon
 
+local buffomatModule = BuffomatModule.Import("Buffomat") ---@type BomBuffomatModule
+
 ---@class BomLanguagesModule
 local languagesModule = BuffomatModule.New("Languages") ---@type BomLanguagesModule
 
@@ -975,8 +977,8 @@ function languagesModule:SetupTranslations()
 end
 
 function languagesModule:LocalizationInit()
-  if BomSharedState and BomSharedState.CustomLocales then
-    for key, value in pairs(BomSharedState.CustomLocales) do
+  if buffomatModule.shared and buffomatModule.shared.CustomLocales then
+    for key, value in pairs(buffomatModule.shared.CustomLocales) do
       if value ~= nil and value ~= "" then
         BOM.L[key .. "_org"] = BOM.L[key]
         BOM.L[key] = value

@@ -5,6 +5,7 @@ local BOM = BuffomatAddon ---@type BuffomatAddon
 local optionsModule = BuffomatModule.New("Options") ---@type BomOptionsModule
 optionsModule.optionsOrder = 0
 
+local buffomatModule = BuffomatModule.Import("Buffomat") ---@type BomBuffomatModule
 local _t = BuffomatModule.Import("Languages") ---@type BomLanguagesModule
 local allSpellsModule = BuffomatModule.Import("AllSpells") ---@type BomAllSpellsModule
 
@@ -244,14 +245,14 @@ function optionsModule:CreateVisibilityOptionsTable()
       categories = self:TemplateMultiselect(
               "VisibleCategories",
               allSpellsModule:GetBuffCategories(), -- all categories ordered
-              BomCharacterState.BuffCategoriesHidden, -- settings table
+              buffomatModule.character.BuffCategoriesHidden, -- settings table
               nil,
               function(state, key, value)
-                BomCharacterState.BuffCategoriesHidden[key] = not value -- invert
+                buffomatModule.character.BuffCategoriesHidden[key] = not value -- invert
                 BOM.OnSpellsChanged()
               end,
               function(state, key)
-                return BomCharacterState.BuffCategoriesHidden[key] ~= true -- invert
+                return buffomatModule.character.BuffCategoriesHidden[key] ~= true -- invert
               end
       ),
     } -- end args

@@ -20,19 +20,20 @@ Src/Const/AllSpells.lua
 Src/Const/SpellIds.lua
 Src/Const/ItemIds.lua
 
-Src/Classes/Control.lua
 Src/Classes/Buff.lua
 Src/Classes/BuffClass.lua
 Src/Classes/BuffomatTranslations.lua
-Src/Classes/Member.lua
-Src/Classes/RowBuilder.lua
-Src/Classes/SpellDef.lua
-Src/Classes/Profile.lua
-Src/Classes/Macro.lua
 Src/Classes/CharacterState.lua
-Src/Classes/Task.lua
-Src/Classes/MemberBuffTarget.lua
+Src/Classes/Control.lua
 Src/Classes/GroupBuffTarget.lua
+Src/Classes/Macro.lua
+Src/Classes/Member.lua
+Src/Classes/MemberBuffTarget.lua
+Src/Classes/Profile.lua
+Src/Classes/RowBuilder.lua
+Src/Classes/SharedState.lua
+Src/Classes/SpellDef.lua
+Src/Classes/Task.lua
 Src/Classes/TaskList.lua
 
 Src/Cache/GetItemCache.lua
@@ -40,22 +41,22 @@ Src/Cache/GetSpellCache.lua
 Src/Cache/GetItemListCache.lua
 Src/Cache/MemberCache.lua
 
-Src/Ui/UiButton.lua
 Src/Ui/BuffRow.lua
+Src/Ui/LegacyManagedButton.lua
 Src/Ui/LegacyOptions.lua
+Src/Ui/ManagedUi.lua
+Src/Ui/MinimapButton.lua
 Src/Ui/Options.lua
 Src/Ui/OptionsPopup.lua
-Src/Ui/MinimapButton.lua
 Src/Ui/SpellButtonsTab.lua
-Src/Ui/LegacyManagedButton.lua
-Src/Ui/ManagedUi.lua
+Src/Ui/UiButton.lua
 
 Src/Events.lua
-Src/Toolbox.lua
 Src/Languages.lua
-Src/Toolbox.lua
-Src/TaskScan.lua
 Src/SpellSetup.lua
+Src/TaskScan.lua
+Src/Toolbox.lua
+Src/Toolbox.lua
 
 Src/Ui/Buffomat.xml
 
