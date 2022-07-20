@@ -1,5 +1,5 @@
 local TOCNAME, _ = ...
-local BOM = BuffomatAddon ---@type BuffomatAddon
+local BOM = BuffomatAddon ---@type BomAddon
 
 ---@class BomOptionsModule
 local optionsModule = BuffomatModule.New("Options") ---@type BomOptionsModule
@@ -35,7 +35,7 @@ end
 function optionsModule:TemplateCheckbox(name, dict, key, notify)
   self.optionsOrder = self.optionsOrder + 1
 
-  dict = dict or BOM.SharedState
+  dict = dict or buffomatModule.shared
   key = key or name
 
   return {
@@ -64,7 +64,7 @@ end
 function optionsModule:TemplateMultiselect(name, values, dict, notifyFn, setFn, getFn)
   self.optionsOrder = self.optionsOrder + 1
 
-  dict = dict or BOM.SharedState
+  dict = dict or buffomatModule.shared
 
   return {
     name   = _t("options.short." .. name),
@@ -94,7 +94,7 @@ end
 function optionsModule:TemplateSelect(name, values, style, dict, notifyFn, setFn, getFn)
   self.optionsOrder = self.optionsOrder + 1
 
-  dict = dict or BOM.SharedState
+  dict = dict or buffomatModule.shared
 
   return {
     desc   = _t("options.long." .. name),
@@ -123,7 +123,7 @@ end
 function optionsModule:TemplateInput(type, name, dict, key, notify)
   self.optionsOrder = self.optionsOrder + 1
 
-  dict = dict or BOM.SharedState
+  dict = dict or buffomatModule.shared
   key = key or name
 
   return {
@@ -153,7 +153,7 @@ end
 function optionsModule:TemplateRange(name, rangeFrom, rangeTo, step, dict, key, notify)
   self.optionsOrder = self.optionsOrder + 1
 
-  dict = dict or BOM.SharedState
+  dict = dict or buffomatModule.shared
   key = key or name
 
   return {
@@ -184,14 +184,14 @@ function optionsModule:CreateGeneralOptionsTable()
     name = "1. " .. _t("options.general.group.General"),
     args = {
       autoOpen              = self:TemplateCheckbox("AutoOpen"),
-      useProfiles           = self:TemplateCheckbox("UseProfiles", BOM.CharacterState),
+      useProfiles           = self:TemplateCheckbox("UseProfiles", buffomatModule.character),
       slowerHardware        = self:TemplateCheckbox("SlowerHardware"),
       minimapButtonShow     = self:TemplateCheckbox(
-              "ShowMinimapButton", BOM.SharedState.Minimap, "visible"),
+              "ShowMinimapButton", buffomatModule.shared.Minimap, "visible"),
       minimapButtonLock     = self:TemplateCheckbox(
-              "LockMinimapButton", BOM.SharedState.Minimap, "lock"),
+              "LockMinimapButton", buffomatModule.shared.Minimap, "lock"),
       minimapButtonLockDist = self:TemplateCheckbox(
-              "LockMinimapButtonDistance", BOM.SharedState.Minimap, "lockDistance"),
+              "LockMinimapButtonDistance", buffomatModule.shared.Minimap, "lockDistance"),
       uiWindowScale         = self:TemplateInput("float", "UIWindowScale"),
     }
   }

@@ -1,10 +1,14 @@
 local TOCNAME, _ = ...
-local BOM = BuffomatAddon ---@type BuffomatAddon
+local BOM = BuffomatAddon ---@type BomAddon
 
 ---@class BomUnitCacheModule
 ---@field unitCache table<string, BomUnit>
 local unitCacheModule = BuffomatModule.New("UnitCache") ---@type BomUnitCacheModule
 unitCacheModule.unitCache = {}
+
+local buffomatModule = BuffomatModule.Import("Buffomat") ---@type BomBuffomatModule
+local unitModule = BuffomatModule.Import("Unit") ---@type BomUnitModule
+local toolboxModule = BuffomatModule.Import("Toolbox") ---@type BomToolboxModule
 
 ---@type BomUnit
 local bomPlayerMemberCache --Copy of player info dict
@@ -12,11 +16,11 @@ local bomPlayerMemberCache --Copy of player info dict
 ---@type table<number, BomUnit>
 local bomPartyCache --Copy of party members, a dict of Member's
 
----@return BomUnit
 ---@param unitid string Player name or special name like "raidpet#"
 ---@param nameGroup string|number
 ---@param nameRole string MAINTANK?
-local function bomGetMember(unitid, nameGroup, nameRole, specialName)
+---@return BomUnit
+function unitCacheModule:GetUnit(unitid, nameGroup, nameRole, specialName)
   local name, _unitRealm = UnitFullName(unitid)
   if name == nil then
     return nil
@@ -50,19 +54,17 @@ local function bomGetMember(unitid, nameGroup, nameRole, specialName)
 
   if specialName then
     -- do not cache just construct
-    local member = BOM.Class.Member:new({})
-    member:Construct(unitid, name, group, class, link, isTank)
-    return member
+    local unit1 = unitModule:New({})
+    unit1:Construct(unitid, name, group, class, link, isTank)
+    return unit1
   else
     -- store in cache
-    unitCacheModule.unitCache[unitid] = unitCacheModule.unitCache[unitid] or BOM.Class.Member:new({})
-    local member = unitCacheModule.unitCache[unitid]
-    member:Construct(unitid, name, group, class, link, isTank)
-    return member
+    unitCacheModule.unitCache[unitid] = unitCacheModule.unitCache[unitid] or unitModule:New({})
+    local unit2 = unitCacheModule.unitCache[unitid]
+    unit2:Construct(unitid, name, group, class, link, isTank)
+    return unit2
   end
 end
-
-BOM.GetMember = bomGetMember
 
 ---@return number Party size including pets
 local function bomGetPartySize()
@@ -98,48 +100,48 @@ local function bomGetPartySize()
   return count
 end
 
+---@param playerUnit BomUnit
 ---@return table, BomUnit
----@param player_member BomUnit
-local function bomGet5manPartyMembers(player_member)
+function unitCacheModule:Get5manPartyMembers(playerUnit)
   local name_group = {}
   local name_role = {}
   local party = {}
-  local member ---@type BomUnit
+  local partyMember ---@type BomUnit
 
   for groupIndex = 1, 4 do
-    member = bomGetMember("party" .. groupIndex)
+    partyMember = self:GetUnit("party" .. groupIndex)
 
-    if member then
-      tinsert(party, member)
+    if partyMember then
+      tinsert(party, partyMember)
     end
 
-    member = bomGetMember("partypet" .. groupIndex, nil, nil, true)
+    partyMember = self:GetUnit("partypet" .. groupIndex, nil, nil, true)
 
-    if member then
-      member.owner = bomGetMember("party" .. groupIndex)
-      member.class = "pet"
-      tinsert(party, member)
+    if partyMember then
+      partyMember.owner = self:GetUnit("party" .. groupIndex)
+      partyMember.class = "pet"
+      tinsert(party, partyMember)
     end
   end
 
-  player_member = bomGetMember("player")
-  tinsert(party, player_member)
+  playerUnit = self:GetUnit("player")
+  tinsert(party, playerUnit)
 
-  member = bomGetMember("pet", nil, nil, true)
+  partyMember = self:GetUnit("pet", nil, nil, true)
 
-  if member then
-    member.owner = bomGetMember("player")
-    member.class = "pet"
-    tinsert(party, member)
+  if partyMember then
+    partyMember.owner = self:GetUnit("player")
+    partyMember.class = "pet"
+    tinsert(party, partyMember)
   end
 
-  return party, player_member
+  return party, playerUnit
 end
 
 ---For when player is in raid, retrieve all 40 raid members
----@param player_member BomUnit
+---@param playerUnit BomUnit
 ---@return table, BomUnit
-local function bomGet40manRaidMembers(player_member)
+function unitCacheModule:Get40manRaidMembers(playerUnit)
   local name_group = {}
   local name_role = {}
   local party = {}
@@ -156,31 +158,31 @@ local function bomGet40manRaidMembers(player_member)
   end
 
   for raid_index = 1, 40 do
-    local member = bomGetMember("raid" .. raid_index, name_group, name_role)
+    local raidMember = self:GetUnit("raid" .. raid_index, name_group, name_role)
 
-    if member then
-      if UnitIsUnit(member.unitId, "player") then
-        player_member = member
+    if raidMember then
+      if UnitIsUnit(raidMember.unitId, "player") then
+        playerUnit = raidMember
       end
-      tinsert(party, member)
+      tinsert(party, raidMember)
 
-      member = bomGetMember("raidpet" .. raid_index, name_group, nil, true)
-      if member then
-        member.owner = bomGetMember("raid" .. raid_index, name_group, name_role)
-        member.class = "pet"
-        tinsert(party, member)
+      raidMember = self:GetUnit("raidpet" .. raid_index, name_group, nil, true)
+      if raidMember then
+        raidMember.owner = self:GetUnit("raid" .. raid_index, name_group, name_role)
+        raidMember.class = "pet"
+        tinsert(party, raidMember)
       end
     end
   end
-  return party, player_member
+  return party, playerUnit
 end
 
 ---Retrieve a table with party members
 ---@return table<number, BomUnit>, BomUnit {Party, Player}
-function BOM.GetPartyMembers()
+function unitCacheModule:GetPartyMembers()
   -- and buffs
   local party ---@type table<number, BomUnit>
-  local player_member --- @type BomUnit
+  local playerUnit --- @type BomUnit
   BOM.drinkingPersonCount = 0
 
   -- check if stored party is correct!
@@ -201,35 +203,35 @@ function BOM.GetPartyMembers()
 
       if ok then
         party = bomPartyCache
-        player_member = bomPlayerMemberCache
+        playerUnit = bomPlayerMemberCache
       end
     end
   end
 
   -- read party data
-  if party == nil or player_member == nil then
+  if party == nil or playerUnit == nil then
     if IsInRaid() then
-      party, player_member = bomGet40manRaidMembers(player_member)
+      party, playerUnit = self:Get40manRaidMembers(playerUnit)
     else
-      party, player_member = bomGet5manPartyMembers(player_member)
+      party, playerUnit = self:Get5manPartyMembers(playerUnit)
     end
 
-    if BOM.SharedState.BuffTarget
+    if buffomatModule.shared.BuffTarget
             and UnitExists("target")
             and UnitCanCooperate("player", "target") --is friendly
             and UnitIsPlayer("target") --is friendly player
             and not UnitPlayerOrPetInParty("target") --out of party or raid
             and not UnitPlayerOrPetInRaid("target")
     then
-      local member = bomGetMember("target")
-      if member then
-        member.group = 9 --move them outside of 8 buff groups
-        tinsert(party, member)
+      local targetedUnit = self:GetUnit("target")
+      if targetedUnit then
+        targetedUnit.group = 9 --move them outside of 8 buff groups
+        tinsert(party, targetedUnit)
       end
     end
 
     bomPartyCache = party
-    bomPlayerMemberCache = player_member
+    bomPlayerMemberCache = playerUnit
 
     -- Cleanup BOM.PlayerBuffs
     for name, val in pairs(BOM.PlayerBuffs) do
@@ -269,21 +271,21 @@ function BOM.GetPartyMembers()
             or BOM.DeclineHasResurrection
     then
       member.hasResurrection = false
-      member.distance = BOM.Tool.UnitDistanceSquared(member.unitId)
+      member.distance = toolboxModule:UnitDistanceSquared(member.unitId)
     else
       member.hasResurrection = UnitHasIncomingResurrection(member.unitId)
               or member.hasResurrection
     end
 
     if BOM.ForceUpdate then
-      member:ForceUpdateBuffs(player_member)
+      member:ForceUpdateBuffs(playerUnit)
     end -- if force update
   end -- for all in party
 
   -- weapon-buffs
   -- Clear old
-  local OldMainHandBuff = player_member.MainHandBuff
-  local OldOffHandBuff = player_member.OffHandBuff
+  local OldMainHandBuff = playerUnit.MainHandBuff
+  local OldOffHandBuff = playerUnit.OffHandBuff
 
   local hasMainHandEnchant, mainHandExpiration, mainHandCharges, mainHandEnchantID
   , hasOffHandEnchant, offHandExpiration, offHandCharges, offHandEnchantId = GetWeaponEnchantInfo()
@@ -299,15 +301,15 @@ function BOM.GetPartyMembers()
       duration = 300
     end
 
-    player_member.buffs[configId] = BOM.Class.Buff:new(
+    playerUnit.knownBuffs[configId] = BOM.Class.Buff:new(
             configId,
             duration,
             GetTime() + mainHandExpiration / 1000,
             "player",
             true)
-    player_member.MainHandBuff = configId
+    playerUnit.MainHandBuff = configId
   else
-    player_member.MainHandBuff = nil
+    playerUnit.MainHandBuff = nil
   end
 
   if hasOffHandEnchant
@@ -322,27 +324,27 @@ function BOM.GetPartyMembers()
       duration = 300
     end
 
-    player_member.buffs[-configId] = BOM.Class.Buff:new(
+    playerUnit.knownBuffs[-configId] = BOM.Class.Buff:new(
             -configId,
             duration,
             GetTime() + offHandExpiration / 1000,
             "player",
             true)
 
-    player_member.OffHandBuff = configId
+    playerUnit.OffHandBuff = configId
   else
-    player_member.OffHandBuff = nil
+    playerUnit.OffHandBuff = nil
   end
 
-  if OldMainHandBuff ~= player_member.MainHandBuff then
+  if OldMainHandBuff ~= playerUnit.MainHandBuff then
     BOM.SetForceUpdate("MainHandBuff Changed")
   end
 
-  if OldOffHandBuff ~= player_member.OffHandBuff then
+  if OldOffHandBuff ~= playerUnit.OffHandBuff then
     BOM.SetForceUpdate("OffhandBuffChanged")
   end
 
   BOM.DeclineHasResurrection = false
 
-  return party, player_member
+  return party, playerUnit
 end

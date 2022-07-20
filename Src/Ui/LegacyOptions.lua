@@ -1,5 +1,5 @@
 local TOCNAME, _ = ...
-local BOM = BuffomatAddon ---@type BuffomatAddon
+local BOM = BuffomatAddon ---@type BomAddon
 
 ---@class BomLegacyOptionsModule
 local legacyOptionsModule = BuffomatModule.New("Ui/LegacyOptions") ---@type BomLegacyOptionsModule

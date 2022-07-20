@@ -1,17 +1,15 @@
 --TODO: Rename to Unit.lua
 local TOCNAME, _ = ...
-local BOM = BuffomatAddon ---@type BuffomatAddon
+local BOM = BuffomatAddon ---@type BomAddon
 
----@class BomMemberModule
-local memberModule = BuffomatModule.New("Member") ---@type BomMemberModule
+---@class BomUnitModule
+local unitModule = BuffomatModule.New("Unit") ---@type BomUnitModule
 
 local buffomatModule = BuffomatModule.Import("Buffomat") ---@type BomBuffomatModule
 
-BOM.Class = BOM.Class or {}
-
 ---@class BomUnit
----@field buffs table<number, Buff> Buffs on player keyed by spell id, only buffs supported by Buffomat are stored
----@field buffExists table<number, boolean> Availability of all auras even those not supported by BOM, by id, no extra detail stored
+---@field knownBuffs table<number, Buff> Buffs on player keyed by spell id, only buffs supported by Buffomat are stored
+---@field allBuffs table<number, boolean> Availability of all auras even those not supported by BOM, by id, no extra detail stored
 ---@field class string
 ---@field distance number
 ---@field group number Raid group number (9 if temporary moved out of the raid by BOM)
@@ -30,33 +28,28 @@ BOM.Class = BOM.Class or {}
 ---@field OffHandBuff number|nil Temporary enchant on off-hand
 ---@field unitId string
 
----@type BomUnit
-BOM.Class.Member = {}
-BOM.Class.Member.__index = BOM.Class.Member
+local unitClass = {} ---@type BomUnit
+unitClass.__index = unitClass
 
-local M_CLASS_TAG = "member"
-
-function BOM.Class.Member:new(fields)
+---@return BomUnit
+function unitModule:New(fields)
   fields = fields or {}
-  setmetatable(fields, BOM.Class.Member)
-  fields.t = M_CLASS_TAG
+  setmetatable(fields, unitClass)
   return fields
 end
 
 ---Force updates buffs for one party member
----@param player_member BomUnit
----@param self BomUnit
-function BOM.Class.Member:ForceUpdateBuffs(player_member)
-
-  self.isPlayer = (self == player_member)
+---@param playerUnit BomUnit
+function unitClass:ForceUpdateBuffs(playerUnit)
+  self.isPlayer = (self == playerUnit)
   self.isDead = UnitIsDeadOrGhost(self.unitId) and not UnitIsFeignDeath(self.unitId)
   self.isGhost = UnitIsGhost(self.unitId)
   self.isConnected = UnitIsConnected(self.unitId)
 
   self.NeedBuff = true
 
-  wipe(self.buffs)
-  wipe(self.buffExists)
+  wipe(self.knownBuffs)
+  wipe(self.allBuffs)
 
   BOM.SomeBodyGhost = BOM.SomeBodyGhost or self.isGhost
 
@@ -74,7 +67,7 @@ function BOM.Class.Member:ForceUpdateBuffs(player_member)
       local unitAura = buffomatModule:UnitAura(self.unitId, buffIndex, "HELPFUL")
 
       if unitAura.spellId then
-        self.buffExists[unitAura.spellId] = true -- save all buffids even those not supported
+        self.allBuffs[unitAura.spellId] = true -- save all buffids even those not supported
         if tContains(BOM.AllDrink, unitAura.spellId) then
           BOM.drinkingPersonCount = BOM.drinkingPersonCount + 1
         end
@@ -85,7 +78,7 @@ function BOM.Class.Member:ForceUpdateBuffs(player_member)
       if spellId then
         -- Skip members who have a buff on the global ignore list - example phaseshifted imps
         if tContains(BOM.BuffIgnoreAll, spellId) then
-          wipe(self.buffs)
+          wipe(self.knownBuffs)
           self.NeedBuff = false
           break
         end
@@ -101,7 +94,7 @@ function BOM.Class.Member:ForceUpdateBuffs(player_member)
         if tContains(BOM.AllSpellIds, spellId) then
           local configKey = BOM.SpellIdtoConfig[spellId]
 
-          self.buffs[configKey] = BOM.Class.Buff:new(
+          self.knownBuffs[configKey] = BOM.Class.Buff:new(
                   spellId,
                   unitAura.duration,
                   unitAura.expirationTime,
@@ -120,7 +113,7 @@ end
 ---@param class string
 ---@param link string
 ---@param isTank boolean
-function BOM.Class.Member:Construct(unitid, name, group, class, link, isTank)
+function unitClass:Construct(unitid, name, group, class, link, isTank)
   self.distance = 100000
   self.unitId = unitid
   self.name = name
@@ -129,14 +122,18 @@ function BOM.Class.Member:Construct(unitid, name, group, class, link, isTank)
   self.class = class
   self.link = link
   self.isTank = isTank
-  self.buffs = self.buffs or {}
-  self.buffExists = self.buffExists or {}
+  self.knownBuffs = self.knownBuffs or {}
+  self.allBuffs = self.allBuffs or {}
 end
 
-function BOM.Class.Member.GetDistance(self)
+function unitClass:GetDistance()
   return self.distance
 end
 
-function BOM.Class.Member.GetText(self)
+function unitClass:HaveBuff(id)
+  return self.knownBuffs[id] ~= nil or self.allBuffs[id] ~= nil
+end
+
+function unitClass:GetText()
   return self.link or self.name
 end

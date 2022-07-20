@@ -1,6 +1,6 @@
 ---| Module contains code to update the already selected spells in tabs
 local TOCNAME, _ = ...
-local BOM = BuffomatAddon ---@type BuffomatAddon
+local BOM = BuffomatAddon ---@type BomAddon
 
 ---@class BomSpellButtonsTabModule
 ---@field spellTabsCreatedFlag boolean True if spells tab is created and filled
@@ -557,7 +557,7 @@ function spellButtonsTabModule:UpdateSelectedSpell(spell)
           or spell.type == "aura"
           or spell.type == "seal") and spell.needForm == nil
   then
-    if (spell.type == "tracking" and BOM.CharacterState.LastTracking == spell.trackingIconId) or
+    if (spell.type == "tracking" and buffomatModule.character.LastTracking == spell.trackingIconId) or
             (spell.type == "aura" and spell.ConfigID == BOM.CurrentProfile.LastAura) or
             (spell.type == "seal" and spell.ConfigID == BOM.CurrentProfile.LastSeal) then
       spell.frames.Set:SetState(true)

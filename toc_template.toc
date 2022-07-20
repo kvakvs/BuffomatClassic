@@ -27,8 +27,8 @@ Src/Classes/CharacterState.lua
 Src/Classes/Control.lua
 Src/Classes/GroupBuffTarget.lua
 Src/Classes/Macro.lua
-Src/Classes/Member.lua
-Src/Classes/MemberBuffTarget.lua
+Src/Classes/Unit.lua
+Src/Classes/UnitBuffTarget.lua
 Src/Classes/Profile.lua
 Src/Classes/RowBuilder.lua
 Src/Classes/SharedState.lua
@@ -39,7 +39,7 @@ Src/Classes/TaskList.lua
 Src/Cache/GetItemCache.lua
 Src/Cache/GetSpellCache.lua
 Src/Cache/GetItemListCache.lua
-Src/Cache/MemberCache.lua
+Src/Cache/UnitCache.lua
 
 Src/Ui/BuffRow.lua
 Src/Ui/LegacyManagedButton.lua

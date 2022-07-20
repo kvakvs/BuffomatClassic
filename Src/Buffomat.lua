@@ -22,7 +22,7 @@ local taskScanModule = BuffomatModule.Import("TaskScan") ---@type BomTaskScanMod
 local toolboxModule = BuffomatModule.Import("Toolbox") ---@type BomToolboxModule
 
 ---global, visible from XML files and from script console and chat commands
----@class BuffomatAddon
+---@class BomAddon
 ---@field ALL_PROFILES table<string> Lists all buffomat profile names (group, solo... etc)
 ---@field RESURRECT_CLASS table<string> Classes who can resurrect others
 ---@field MANA_CLASSES table<string> Classes with mana resource
@@ -46,8 +46,8 @@ local toolboxModule = BuffomatModule.Import("Toolbox") ---@type BomToolboxModule
 ---@field Carrot table Equipped Riding trinket: Spell to and zone ids to check
 ---@field CheckForError boolean Used by error suppression code
 ---@field CurrentProfile BomProfile Current profile from CharacterState.Profiles
----@field CharacterState BomCharacterState Copy of state only for the current character, with separate states per profile
----@field SharedState BomProfile Copy of state shared with all accounts
+-- -@field CharacterState BomCharacterState Copy of state only for the current character, with separate states per profile
+-- -@field SharedState BomProfile Copy of state shared with all accounts
 ---@field DeclineHasResurrection boolean Set to true on combat start, stop, holding Alt, cleared on party update
 ---@field EnchantToSpell table<number, number> Reverse-maps enchant ids back to spells
 ---@field ForceTracking number|nil Defines icon id for enforced tracking
@@ -156,7 +156,7 @@ local toolboxModule = BuffomatModule.Import("Toolbox") ---@type BomToolboxModule
 ---@field PopupDynamic BomPopupDynamic
 
 BuffomatAddon = LibStub("AceAddon-3.0"):NewAddon(
-        "Buffomat", "AceConsole-3.0", "AceEvent-3.0") ---@type BuffomatAddon
+        "Buffomat", "AceConsole-3.0", "AceEvent-3.0") ---@type BomAddon
 local BOM = BuffomatAddon
 
 --- Addon is running on Classic TBC client
@@ -240,7 +240,7 @@ function buffomatModule.ChooseProfile(profile)
     BOM.ForceProfile = nil
     BOM:Print("Set profile to auto")
 
-  elseif BOM.CharacterState[profile] then
+  elseif self.character[profile] then
     BOM.ForceProfile = profile
     BOM:Print("Set profile to " .. profile)
 
@@ -324,7 +324,7 @@ function BOM.CreateSingleBuffButton(parent_frame)
             true)
     BOM.QuickSingleBuff:SetPoint("BOTTOMLEFT", parent_frame, "BOTTOMRIGHT", -18, 0);
     BOM.QuickSingleBuff:SetPoint("BOTTOMRIGHT", parent_frame, "BOTTOMRIGHT", -2, 12);
-    BOM.QuickSingleBuff:SetVariable(BOM.SharedState, "NoGroupBuff")
+    BOM.QuickSingleBuff:SetVariable(buffomatModule.shared, "NoGroupBuff")
     BOM.QuickSingleBuff:SetOnClick(BOM.MyButtonOnClick)
     BOM.Tool.TooltipText(
             BOM.QuickSingleBuff,
@@ -352,7 +352,7 @@ function buffomatModule:InitUI()
   BOM.PopupDynamic = toolboxModule:CreatePopup(buffomatModule.OptionsUpdate)
 
   BOM.MinimapButton.Init(
-          BOM.SharedState.Minimap,
+          self.shared.Minimap,
           constModule.BOM_BEAR_ICON_FULLPATH,
           function(self, button)
             if button == "LeftButton" then
@@ -417,8 +417,8 @@ function buffomatModule:InitGlobalStates()
     end
   end
 
-  BOM.SharedState = self.shared
-  BOM.CharacterState = self.character
+  --BOM.SharedState = self.shared
+  --BOM.CharacterState = self.character
   BOM.CurrentProfile = self.character[BOM.ALL_PROFILES[1]]
 end
 
@@ -445,8 +445,8 @@ function BuffomatAddon:Init()
 
   do
     -- addon window position
-    local x, y = BOM.SharedState.X, BOM.SharedState.Y
-    local w, h = BOM.SharedState.Width, BOM.SharedState.Height
+    local x, y = buffomatModule.shared.X, buffomatModule.shared.Y
+    local w, h = buffomatModule.shared.Width, buffomatModule.shared.Height
 
     if not x or not y or not w or not h then
       BOM.SaveWindowPosition()
@@ -560,17 +560,17 @@ local function bomDownGrade()
     local level = UnitLevel(BOM.CastFailedSpellTarget.unitId)
 
     if level ~= nil and level > -1 then
-      if BOM.SharedState.SpellGreatherEqualThan[BOM.CastFailedSpellId] == nil
-              or BOM.SharedState.SpellGreatherEqualThan[BOM.CastFailedSpellId] < level
+      if buffomatModule.shared.SpellGreatherEqualThan[BOM.CastFailedSpellId] == nil
+              or buffomatModule.shared.SpellGreatherEqualThan[BOM.CastFailedSpellId] < level
       then
-        BOM.SharedState.SpellGreatherEqualThan[BOM.CastFailedSpellId] = level
+        buffomatModule.shared.SpellGreatherEqualThan[BOM.CastFailedSpellId] = level
         BOM.FastUpdateTimer()
         BOM.SetForceUpdate("Downgrade")
         BOM:Print(string.format(_t("MsgDownGrade"),
                 BOM.CastFailedSpell.singleText,
                 BOM.CastFailedSpellTarget.name))
 
-      elseif BOM.SharedState.SpellGreatherEqualThan[BOM.CastFailedSpellId] >= level then
+      elseif buffomatModule.shared.SpellGreatherEqualThan[BOM.CastFailedSpellId] >= level then
         BOM.AddMemberToSkipList()
       end
     else
@@ -627,7 +627,7 @@ function buffomatModule.UpdateTimer()
   buffomatModule.fpsCheck = buffomatModule.fpsCheck + 1
 
   local updateTimerLimit = buffomatModule.updateTimerLimit
-  if BOM.SharedState.SlowerHardware then
+  if buffomatModule.shared.SlowerHardware then
     updateTimerLimit = buffomatModule.slowerhardwareUpdateTimerLimit
   end
 
@@ -695,11 +695,11 @@ function buffomatModule:UnitAura(unitId, buffIndex, filter)
 
     if source ~= nil and source ~= "" and UnitIsUnit(source, "player") then
       if UnitIsUnit(unitId, "player") and duration ~= nil and duration > 0 then
-        BOM.SharedState.Duration[name] = duration
+        self.shared.Duration[name] = duration
       end
 
       if duration == nil or duration == 0 then
-        duration = BOM.SharedState.Duration[name] or 0
+        duration = self.shared.Duration[name] or 0
       end
 
       if duration > 0 and (expirationTime == nil or expirationTime == 0) then
@@ -756,7 +756,7 @@ function BOM.ShowWindow(tab)
   if not InCombatLockdown() then
     if not BOM.WindowVisible() then
       BomC_MainWindow:Show()
-      BomC_MainWindow:SetScale(tonumber(BOM.SharedState.UIWindowScale) or 1.0)
+      BomC_MainWindow:SetScale(tonumber(buffomatModule.shared.UIWindowScale) or 1.0)
       buffomatModule.autoHelper = "KeepOpen"
     else
       BOM.BtnClose()
@@ -782,18 +782,18 @@ function buffomatModule:ToggleWindow()
 end
 
 function BOM.AutoOpen()
-  if not InCombatLockdown() and BOM.SharedState.AutoOpen then
+  if not InCombatLockdown() and buffomatModule.shared.AutoOpen then
     if not BOM.WindowVisible() and buffomatModule.autoHelper == "open" then
       buffomatModule.autoHelper = "close"
       BomC_MainWindow:Show()
-      BomC_MainWindow:SetScale(tonumber(BOM.SharedState.UIWindowScale) or 1.0)
+      BomC_MainWindow:SetScale(tonumber(buffomatModule.shared. UIWindowScale) or 1.0)
       toolboxModule:SelectTab(BomC_MainWindow, 1)
     end
   end
 end
 
 function BOM.AutoClose(x)
-  if not InCombatLockdown() and BOM.SharedState.AutoOpen then
+  if not InCombatLockdown() and buffomatModule.shared.AutoOpen then
     if BOM.WindowVisible() then
       if buffomatModule.autoHelper == "close" then
         BomC_MainWindow:Hide()
@@ -806,7 +806,7 @@ function BOM.AutoClose(x)
 end
 
 function BOM.AllowAutOpen()
-  if not InCombatLockdown() and BOM.SharedState.AutoOpen then
+  if not InCombatLockdown() and buffomatModule.shared.AutoOpen then
     if buffomatModule.autoHelper == "KeepClose" then
       buffomatModule.autoHelper = "open"
     end
@@ -814,10 +814,10 @@ function BOM.AllowAutOpen()
 end
 
 function BOM.SaveWindowPosition()
-  BOM.SharedState.X = BomC_MainWindow:GetLeft()
-  BOM.SharedState.Y = BomC_MainWindow:GetTop()
-  BOM.SharedState.Width = BomC_MainWindow:GetWidth()
-  BOM.SharedState.Height = BomC_MainWindow:GetHeight()
+  buffomatModule.shared.X = BomC_MainWindow:GetLeft()
+  buffomatModule.shared.Y = BomC_MainWindow:GetTop()
+  buffomatModule.shared.Width = BomC_MainWindow:GetWidth()
+  buffomatModule.shared.Height = BomC_MainWindow:GetHeight()
 end
 
 function BOM.ResetWindow()
@@ -870,7 +870,7 @@ end
 function BOM.DebugBuffs(dest)
   dest = dest or "player"
 
-  print("LastTracking:", BOM.CharacterState.LastTracking, " ")
+  print("LastTracking:", buffomatModule.character.LastTracking, " ")
   print("ForceTracking:", BOM.ForceTracking, " ")
   print("ActivAura:", BOM.ActivAura, " ")
   print("LastAura:", BOM.CurrentProfile.LastAura, " ")

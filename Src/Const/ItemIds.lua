@@ -1,6 +1,6 @@
 --- Item IDS given reasonable names
 local TOCNAME, _ = ...
-local BOM = BuffomatAddon ---@type BuffomatAddon
+local BOM = BuffomatAddon ---@type BomAddon
 
 ---@class BomItemIdsModule
 local itemIdsModule = BuffomatModule.New("ItemIds") ---@type BomItemIdsModule

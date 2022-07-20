@@ -1,9 +1,10 @@
 local TOCNAME, _ = ...
-local BOM = BuffomatAddon ---@type BuffomatAddon
+local BOM = BuffomatAddon ---@type BomAddon
 
 ---@class BomEventsModule
 local eventsModule = BuffomatModule.New("Events") ---@type BomEventsModule
 
+local buffomatModule = BuffomatModule.Import("Buffomat") ---@type BomBuffomatModule
 local constModule = BuffomatModule.Import("Const") ---@type BomConstModule
 local allSpellsModule = BuffomatModule.Import("AllSpells") ---@type BomAllSpellsModule
 local spellButtonsTabModule = BuffomatModule.Import("Ui/SpellButtonsTab") ---@type BomSpellButtonsTabModule
@@ -143,7 +144,7 @@ local function Event_PLAYER_TARGET_CHANGED()
     BOM.lastTarget = nil
   end
 
-  if not BOM.SharedState.BuffTarget then
+  if not buffomatModule.shared.BuffTarget then
     return
   end
 
@@ -179,7 +180,7 @@ local function Event_COMBAT_LOG_EVENT_UNFILTERED()
       --print("dead",destName)
       BOM.SetForceUpdate("Evt UNIT_DIED")
 
-    elseif BOM.SharedState.Duration[spellName] then
+    elseif buffomatModule.shared.Duration[spellName] then
       if bit.band(sourceFlags, COMBATLOG_OBJECT_AFFILIATION_MINE) > 0 then
         if event == "SPELL_CAST_SUCCESS" then
 
@@ -215,7 +216,7 @@ end
 ---@param message table
 local function Event_UI_ERROR_MESSAGE(errorType, message)
   if tContains(eventsModule.ERR_NOT_STANDING, message) then
-    if BOM.SharedState.AutoStand then
+    if buffomatModule.shared.AutoStand then
       UIErrorsFrame:Clear()
       DoEmote("STAND")
     end
@@ -223,16 +224,16 @@ local function Event_UI_ERROR_MESSAGE(errorType, message)
   elseif tContains(eventsModule.ERR_IS_MOUNTED, message) then
     local flying = false -- prevent dismount in flight, OUCH!
     if BOM.TBC then
-      flying = IsFlying() and not BOM.SharedState.AutoDismountFlying
+      flying = IsFlying() and not buffomatModule.shared.AutoDismountFlying
     end
     if not flying then
-      if BOM.SharedState.AutoDismount then
+      if buffomatModule.shared.AutoDismount then
         UIErrorsFrame:Clear()
         Dismount()
       end
     end
 
-  elseif BOM.SharedState.AutoDisTravel
+  elseif buffomatModule.shared.AutoDisTravel
           and tContains(eventsModule.ERR_IS_SHAPESHIFT, message)
           and BOM.CancelShapeShift() then
     UIErrorsFrame:Clear()

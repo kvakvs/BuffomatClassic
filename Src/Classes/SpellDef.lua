@@ -1,9 +1,10 @@
 local TOCNAME, _ = ...
-local BOM = BuffomatAddon ---@type BuffomatAddon
+local BOM = BuffomatAddon ---@type BomAddon
 
 ---@class BomSpellDefModule
 local spellDefModule = BuffomatModule.New("SpellDef") ---@type BomSpellDefModule
 
+local buffomatModule = BuffomatModule.Import("Buffomat") ---@type BomBuffomatModule
 local spellCacheModule = BuffomatModule.Import("SpellCache") ---@type BomSpellCacheModule
 local itemCacheModule = BuffomatModule.Import("ItemCache") ---@type BomItemCacheModule
 local buffRowModule = BuffomatModule.Import("Ui/BuffRow") ---@type BomBuffRowModule
@@ -73,13 +74,13 @@ BOM.Class = BOM.Class or {}
 ---@field isScanned boolean
 ---@field Class table
 ---@field ConfigID number Spell id of level 60 spell used as key everywhere else
----@field DeathGroup table<string, boolean> Group/class members who might be dead but their class needs this buff
 ---@field Enable boolean Whether buff is to be watched
 ---@field ExcludedTarget table<string> List of target names to never buff
 ---@field ForcedTarget table<string> List of extra targets to buff
 ---@field frames BomBuffRowFrames Dynamic list of controls associated with this spell in the UI
----@field NeedGroup table List of group members who might need group version of this buff
----@field NeedMember table<number, BomUnit> List of group members who might need this buff
+---@field GroupsHaveDead table<string, boolean> Group/class members who might be dead but their class needs this buff
+---@field GroupsNeedBuff table List of group members who might need group version of this buff
+---@field UnitsNeedBuff table<number, BomUnit> List of group members who might need this buff
 ---@field SelfCast boolean
 ---@field SkipList table If spell cast failed, contains recently failed targets
 ---@field trackingIconId number Numeric id for the tracking texture icon
@@ -293,7 +294,7 @@ end
 
 ---@param class_name string
 function spellDefClass:IncrementNeedGroupBuff(class_name)
-  self.NeedGroup[class_name] = (self.NeedGroup[class_name] or 0) + 1
+  self.GroupsNeedBuff[class_name] = (self.GroupsNeedBuff[class_name] or 0) + 1
 end
 
 ---@param spell_id number
@@ -303,7 +304,7 @@ function spellDefModule:GetProfileSpell(spell_id, profile_name)
   if profile_name == nil then
     spell = BOM.CurrentProfile.Spell[spell_id]
   else
-    local profile = BOM.CharacterState[profile_name]
+    local profile = buffomatModule.character[profile_name]
     if profile == nil then
       return nil
     end
@@ -366,7 +367,7 @@ end
 function spellDefClass:HaveIgnoredBuffs(unit)
   if type(self.ignoreIfHaveBuff) == "table" then
     for _i, spellId in ipairs(self.ignoreIfHaveBuff) do
-      if unit.buffs[spellId] ~= nil or unit.buffExists[spellId] ~= nil then
+      if unit.knownBuffs[spellId] ~= nil or unit.allBuffs[spellId] ~= nil then
         return true
       end
     end

@@ -1,5 +1,5 @@
 local TOCNAME, _ = ...
-local BOM = BuffomatAddon ---@type BuffomatAddon
+local BOM = BuffomatAddon ---@type BomAddon
 
 ---@class BomOptionsPopupModule
 -- -@field behaviourSettings table<number, table> A list of {Key name, Default} for 'Profile' settings
@@ -73,7 +73,7 @@ function optionsPopupModule:PopupQuickOptions()
   BOM.PopupDynamic:SubMenu(L["popup.QuickSettings"], "subSettings")
 
   for i, set in ipairs(self.behaviourSettings) do
-    BOM.PopupDynamic:AddItem(self:MakeSettingsRow(BOM.SharedState, set[1]))
+    BOM.PopupDynamic:AddItem(self:MakeSettingsRow(buffomatModule.shared, set[1]))
   end
 
   -- -------------------------------------------
@@ -100,9 +100,12 @@ function optionsPopupModule:Setup(control, minimap)
   if minimap then
     BOM.PopupDynamic:AddItem(L.BtnOpen, false, BOM.ShowWindow)
     BOM.PopupDynamic:AddItem()
-    BOM.PopupDynamic:AddItem(_t("options.short.ShowMinimapButton"), false, BOM.SharedState.Minimap, "visible")
-    BOM.PopupDynamic:AddItem(_t("options.short.LockMinimapButton"), false, BOM.SharedState.Minimap, "lock")
-    BOM.PopupDynamic:AddItem(_t("options.short.LockMinimapButtonDistance"), false, BOM.SharedState.Minimap, "lockDistance")
+    BOM.PopupDynamic:AddItem(_t("options.short.ShowMinimapButton"), false,
+            buffomatModule.shared.Minimap, "visible")
+    BOM.PopupDynamic:AddItem(_t("options.short.LockMinimapButton"), false,
+            buffomatModule.shared.Minimap, "lock")
+    BOM.PopupDynamic:AddItem(_t("options.short.LockMinimapButtonDistance"), false,
+            buffomatModule.shared.Minimap, "lockDistance")
     BOM.PopupDynamic:AddItem()
   end
 
@@ -110,9 +113,9 @@ function optionsPopupModule:Setup(control, minimap)
   -- Use Profiles checkbox and submenu
   -- --------------------------------------------
   BOM.PopupDynamic:AddItem(L["options.short.UseProfiles"], false,
-          BOM.CharacterState, "UseProfiles")
+          buffomatModule.character, "UseProfiles")
 
-  if BOM.CharacterState.UseProfiles then
+  if buffomatModule.character.UseProfiles then
     BOM.PopupDynamic:SubMenu(L["HeaderProfiles"], "subProfiles")
     BOM.PopupDynamic:AddItem(L["profile_auto"], false,
             buffomatModule.ChooseProfile, "auto")

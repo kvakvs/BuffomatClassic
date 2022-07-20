@@ -1,86 +1,74 @@
 local TOCNAME, _ = ...
-local BOM = BuffomatAddon ---@type BuffomatAddon
+local BOM = BuffomatAddon ---@type BomAddon
 
 ---@class BomTaskListModule
 local taskListModule = BuffomatModule.New("TaskList") ---@type BomTaskListModule
 
-BOM.Class = BOM.Class or {}
+local taskModule = BuffomatModule.Import("Task") ---@type BomTaskModule
 
----@class TaskList
----@field tasks table<number, Task> This potentially becomes a macro action on the buff bu
+---@class BomTaskList
+---@field tasks table<number, BomTask> This potentially becomes a macro action on the buff bu
 ---@field comments table<number, string>
 ---@field lowPrioComments table<number, string>
 
----@type TaskList
-BOM.Class.TaskList = {}
-BOM.Class.TaskList.__index = BOM.Class.TaskList
+---@type BomTaskList
+local taskListClass = {}
+taskListClass.__index = taskListClass
 
-local CLASS_TAG = "task_list"
+---@return BomTaskList
+function taskListModule:New()
+  local fields = {} ---@type BomTaskList
+  setmetatable(fields, taskListClass)
 
-function BOM.Class.TaskList:new()
-  local fields = {
-    t               = CLASS_TAG,
-    tasks           = {},
-    comments        = {},
-    lowPrioComments = {},
-  }
-  setmetatable(fields, BOM.Class.TaskList)
+  fields.tasks = {}
+  fields.comments = {}
+  fields.lowPrioComments = {}
+
   return fields
 end
 
 ---Adds a text line to display in the message frame. The line is stored in DisplayCache
----@param self TaskList
----@param action_text string Text to display (target of the action) with icon and color
----@param action_link string Text to display if inactive (just text)
----@param extra_text string Text to display (extra comment)
+---@param actionText string Text to display (target of the action) with icon and color
+---@param actionLink string Text to display if inactive (just text)
+---@param extraText string Text to display (extra comment)
 ---@param target BomUnit Distance to the party member, or group (if string)
----@param is_info boolean Whether the text is info text or a cast
+---@param isInfo boolean Whether the text is info text or a cast
 ---@param prio number|nil Priority, a constant from BOM.TaskPriority
-function BOM.Class.TaskList.Add(self, action_link, action_text, extra_text,
-                                target, is_info, prio)
-  local new_task = BOM.Class.Task:new("",
-          action_link, action_text,
-          extra_text, target, is_info, prio)
+function taskListClass:Add(actionLink, actionText, extraText,
+                           target, isInfo, prio)
+  local new_task = taskModule:New(
+          "", actionLink, actionText, extraText, target, isInfo, prio)
   tinsert(self.tasks, new_task)
 end
 
 ---Adds a text line to display in the message frame. The line is stored in DisplayCache
----@param self TaskList
----@param action_link string Text to display (target of the action) with icon and color
----@param action_text string|nil Text to display if inactive (just text). Nil to use action_link
----@param prefix_text string Text to display before spell (a verb?)
----@param extra_text string Text to display (extra comment)
+---@param actionLink string Text to display (target of the action) with icon and color
+---@param actionText string|nil Text to display if inactive (just text). Nil to use action_link
+---@param prefixText string Text to display before spell (a verb?)
+---@param extraText string Text to display (extra comment)
 ---@param target BomUnit Distance to the party member, or group (if string)
----@param _is_info boolean Whether the text is info text or a cast
+---@param isInfo boolean Whether the text is info text or a cast
 ---@param prio number|nil Priority, a constant from BOM.TaskPriority
-function BOM.Class.TaskList.AddWithPrefix(self, prefix_text,
-                                          action_link, action_text, extra_text,
-                                          target, is_info, prio)
-  local new_task = BOM.Class.Task:new(prefix_text,
-          action_link, action_text, extra_text, target, is_info, prio)
-  tinsert(self.tasks, new_task)
+function taskListClass:AddWithPrefix(prefixText,
+                                     actionLink, actionText, extraText,
+                                     target, isInfo, prio)
+  local newTask = taskModule:New(
+          prefixText, actionLink, actionText, extraText, target, isInfo, prio)
+  tinsert(self.tasks, newTask)
 end
 
 ---Add a comment text which WILL auto open buffomat window when it is displayed
----@param self TaskList
-function BOM.Class.TaskList:Comment(text)
+function taskListClass:Comment(text)
   tinsert(self.comments, text)
 end
 
 ---Add a comment text which WILL NOT auto open buffomat window and will display in grey
----@param self TaskList
-function BOM.Class.TaskList:LowPrioComment(text)
+function taskListClass:LowPrioComment(text)
   tinsert(self.lowPrioComments, text)
 end
 
----@param self TaskList
-function BOM.Class.TaskList:Comment(text)
-  tinsert(self.comments, text)
-end
-
 ---Clear the cached text, and clear the message frame
----@param self TaskList
-function BOM.Class.TaskList.Clear(self)
+function taskListClass:Clear()
   BomC_ListTab_MessageFrame:Clear()
   wipe(self.tasks)
   wipe(self.comments)
@@ -103,15 +91,16 @@ end
 
 ---Unload the contents of DisplayInfo cache into BomC_ListTab_MessageFrame
 ---The messages (tasks) are sorted
----@param self TaskList
-function BOM.Class.TaskList.Display(self)
-  BomC_ListTab_MessageFrame:Clear()
+function taskListClass:Display()
+  local taskFrame = BomC_ListTab_MessageFrame
+  taskFrame:Clear()
+
   --table.sort(bom_cast_messages, function(a, b)
   --  return a[2] > b[2] or (a[2] == b[2] and a[1] > b[1])
   --end)
 
   -- update distances if the players have moved
-  ---@param task Task
+  ---@param task BomTask
   for i, task in ipairs(self.tasks) do
     -- Refresh the copy of distance value
     if task.t == "memberBuffTarget" or task.t == "groupBuffTarget" then
@@ -122,22 +111,22 @@ function BOM.Class.TaskList.Display(self)
   table.sort(self.tasks, bomCompareGroupsOrMembers)
 
   for i, text in ipairs(self.lowPrioComments) do
-    BomC_ListTab_MessageFrame:AddMessage(BOM.Color("aaaaaa", text))
+    taskFrame:AddMessage(BOM.Color("aaaaaa", text))
   end
 
   for i, text in ipairs(self.comments) do
-    BomC_ListTab_MessageFrame:AddMessage(text)
+    taskFrame:AddMessage(text)
   end
 
   for i, task in ipairs(self.tasks) do
     if task.distance > 43 * 43 then
-      BomC_ListTab_MessageFrame:AddMessage(task:FormatTextInactive(BOM.L.ERR_RANGE))
+      taskFrame:AddMessage(task:FormatDisabledRed(BOM.L.ERR_RANGE))
     end
   end
 
   for i, task in ipairs(self.tasks) do
     if task.distance <= 43 * 43 then
-      BomC_ListTab_MessageFrame:AddMessage(task:FormatText())
+      taskFrame:AddMessage(task:Format())
     end
   end
 end

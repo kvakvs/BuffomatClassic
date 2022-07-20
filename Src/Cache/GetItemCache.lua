@@ -1,5 +1,5 @@
 local TOCNAME, _ = ...
-local BOM = BuffomatAddon ---@type BuffomatAddon
+local BOM = BuffomatAddon ---@type BomAddon
 
 ---@class BomItemCacheModule
 ---@field cache table<number|string, BomItemCacheElement> Stores arg to results mapping for GetItemInfo

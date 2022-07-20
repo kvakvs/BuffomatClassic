@@ -1,5 +1,5 @@
 local TOCNAME, _ = ...
-local BOM = BuffomatAddon ---@type BuffomatAddon
+local BOM = BuffomatAddon ---@type BomAddon
 
 ---@class BomTexturesModule
 local texturesModule = BuffomatModule.New("Textures") ---@type BomTexturesModule

@@ -1,5 +1,5 @@
 local TOCNAME, _ = ...
-local BOM = BuffomatAddon ---@type BuffomatAddon
+local BOM = BuffomatAddon ---@type BomAddon
 
 local buffomatModule = BuffomatModule.Import("Buffomat") ---@type BomBuffomatModule
 local constModule = BuffomatModule.Import("Const") ---@type BomConstModule
@@ -61,8 +61,8 @@ local function bomSetup_ResetCaches()
   BOM.SpellIdIsSingle = {}
   BOM.ConfigToSpell = {}
 
-  BOM.SharedState.Cache = BOM.SharedState.Cache or {}
-  BOM.SharedState.Cache.Item2 = BOM.SharedState.Cache.Item2 or {}
+  buffomatModule.shared.Cache = buffomatModule.shared.Cache or {}
+  buffomatModule.shared.Cache.Item2 = buffomatModule.shared.Cache.Item2 or {}
 end
 
 local function bomSetup_CancelBuffs()
@@ -87,9 +87,9 @@ local function bomSetup_CancelBuffs()
     BOM.Tool.iMerge(BOM.AllSpellIds, spell.singleFamily)
 
     for j, profil in ipairs(BOM.ALL_PROFILES) do
-      if BOM.CharacterState[profil].CancelBuff[spell.ConfigID] == nil then
-        BOM.CharacterState[profil].CancelBuff[spell.ConfigID] = {}
-        BOM.CharacterState[profil].CancelBuff[spell.ConfigID].Enable = spell.default or false
+      if buffomatModule.character[profil].CancelBuff[spell.ConfigID] == nil then
+        buffomatModule.character[profil].CancelBuff[spell.ConfigID] = {}
+        buffomatModule.character[profil].CancelBuff[spell.ConfigID].Enable = spell.default or false
       end
     end
   end
@@ -105,9 +105,9 @@ local function bomSetup_EachSpell_Consumable(add, spell)
     if (not item_info
             or not item_info.itemName
             or not item_info.itemLink
-            or not item_info.itemIcon) and BOM.SharedState.Cache.Item2[spell.item]
+            or not item_info.itemIcon) and buffomatModule.shared.Cache.Item2[spell.item]
     then
-      item_info = BOM.SharedState.Cache.Item2[spell.item]
+      item_info = buffomatModule.shared.Cache.Item2[spell.item]
 
     elseif (not item_info
             or not item_info.itemName
@@ -127,7 +127,7 @@ local function bomSetup_EachSpell_Consumable(add, spell)
       spell.Icon = item_info.itemIcon
       spell.isScanned = true
 
-      BOM.SharedState.Cache.Item2[spell.item] = item_info
+      buffomatModule.shared.Cache.Item2[spell.item] = item_info
     else
       --BOM:Print("Item not found! Spell=" .. tostring(spell.singleId)
       --      .. " Item=" .. tostring(spell.item))
@@ -138,7 +138,7 @@ local function bomSetup_EachSpell_Consumable(add, spell)
         local name = item:GetItemName()
         local link = item:GetItemLink()
         local icon = item:GetItemIcon()
-        BOM.SharedState.Cache.Item2[spell.item] = { itemName = name,
+        buffomatModule.shared.Cache.Item2[spell.item] = { itemName = name,
                                                     itemLink = link,
                                                     itemIcon = icon }
       end)
@@ -210,9 +210,9 @@ local function bomSetup_EachSpell_SetupNonConsumable(spell)
     if not spell.isInfo
             and not spell.isConsumable
             and spell.singleDuration
-            and BOM.SharedState.Duration[spellInfo.name] == nil
+            and buffomatModule.shared.Duration[spellInfo.name] == nil
             and IsSpellKnown(spell.singleId) then
-      BOM.SharedState.Duration[spellInfo.name] = spell.singleDuration
+      buffomatModule.shared.Duration[spellInfo.name] = spell.singleDuration
     end
   end -- spell info returned success
 end
@@ -227,10 +227,10 @@ local function bomSetup_EachSpell_SetupGroupBuff(spell)
     spell.groupLink = bomFormatSpellLink(spellInfo)
 
     if spell.groupDuration
-            and BOM.SharedState.Duration[spellInfo.name] == nil
+            and buffomatModule.shared.Duration[spellInfo.name] == nil
             and IsSpellKnown(spell.groupId)
     then
-      BOM.SharedState.Duration[spellInfo.name] = spell.groupDuration
+      buffomatModule.shared.Duration[spellInfo.name] = spell.groupDuration
     end
   end
 end
@@ -250,11 +250,11 @@ local function bomSetup_EachSpell_Add(spell)
   --setDefaultValues!
   for j, eachProfile in ipairs(BOM.ALL_PROFILES) do
     ---@type BomSpellDef
-    local profileSpell = BOM.CharacterState[eachProfile].Spell[spell.ConfigID]
+    local profileSpell = buffomatModule.character[eachProfile].Spell[spell.ConfigID]
 
     if profileSpell == nil then
-      BOM.CharacterState[eachProfile].Spell[spell.ConfigID] = {}
-      profileSpell = BOM.CharacterState[eachProfile].Spell[spell.ConfigID]
+      buffomatModule.character[eachProfile].Spell[spell.ConfigID] = {}
+      profileSpell = buffomatModule.character[eachProfile].Spell[spell.ConfigID]
 
       profileSpell.Class = profileSpell.Class or {}
       profileSpell.ForcedTarget = profileSpell.ForcedTarget or {}
@@ -350,9 +350,9 @@ end
 ---Scan all spells known to Buffomat and see if they are available to the player
 function spellSetupModule:SetupAvailableSpells()
   for i, profil in ipairs(BOM.ALL_PROFILES) do
-    BOM.CharacterState[profil].Spell = BOM.CharacterState[profil].Spell or {}
-    BOM.CharacterState[profil].CancelBuff = BOM.CharacterState[profil].CancelBuff or {}
-    BOM.CharacterState[profil].Spell[constModule.BLESSING_ID] = BOM.CharacterState[profil].Spell[constModule.BLESSING_ID] or {}
+    buffomatModule.character[profil].Spell = buffomatModule.character[profil].Spell or {}
+    buffomatModule.character[profil].CancelBuff = buffomatModule.character[profil].CancelBuff or {}
+    buffomatModule.character[profil].Spell[constModule.BLESSING_ID] = buffomatModule.character[profil].Spell[constModule.BLESSING_ID] or {}
   end
 
   bomSetup_MaybeAddCustomSpells()

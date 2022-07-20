@@ -1,6 +1,6 @@
 --- Spell IDS given reasonable names
 local TOCNAME, _ = ...
-local BOM = BuffomatAddon ---@type BuffomatAddon
+local BOM = BuffomatAddon ---@type BomAddon
 
 ---@class BomSpellIdsModule
 local spellIdsModule = BuffomatModule.New("SpellIds") ---@type BomSpellIdsModule

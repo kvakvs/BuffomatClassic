@@ -1,11 +1,12 @@
 # Changelog
 
-## Buffomat Classic and TBC 2022.7
+## Buffomat Classic and TBC 2022.7.1
 
 - Page in Options which allows Visibility selection for buff categories.
   Invisible categories are not scanned, even if they're checked.
 - Skip mage Intellect buff if K'iru's Song of Victory is up in SWP or the
   island.
+- Hunter pet food buff broken and fixed.
 
 ## Buffomat Classic and TBC 2022.5.5
 

@@ -1,8 +1,10 @@
 local TOCNAME, _ = ...
-local BOM = BuffomatAddon ---@type BuffomatAddon
+local BOM = BuffomatAddon ---@type BomAddon
 
 ---@class BomGroupBuffTargetModule
 local groupBuffTargetModule = BuffomatModule.New("GroupBuffTarget") ---@type BomGroupBuffTargetModule
+
+local toolboxModule = BuffomatModule.Import("Toolbox") ---@type BomToolboxModule
 
 BOM.Class = BOM.Class or {}
 
@@ -38,9 +40,9 @@ function BOM.Class.GroupBuffTarget.GetDistance(self)
       local rName = "raid" .. raidIndex
 
       if subgroup == self.groupIndex and UnitExists(rName) and UnitIsConnected(rName) then
-        local memberDistance = BOM.Tool.UnitDistanceSquared(rName)
-        if memberDistance < nearestDist then
-          nearestDist = memberDistance
+        local unitDistance = toolboxModule:UnitDistanceSquared(rName)
+        if unitDistance < nearestDist then
+          nearestDist = unitDistance
           nearestCount = nearestCount + 1
         end
       end
@@ -50,9 +52,9 @@ function BOM.Class.GroupBuffTarget.GetDistance(self)
     for partyIndex = 1, 4 do
       local pName = "party" .. partyIndex
       if UnitExists(pName) and UnitIsConnected(pName) then -- skip offlines and missing
-        local memberDistance = BOM.Tool.UnitDistanceSquared(pName)
-        if not UnitIsDead(pName) and memberDistance < nearestDist then
-          nearestDist = memberDistance
+        local unitDistance = toolboxModule:UnitDistanceSquared(pName)
+        if not UnitIsDead(pName) and unitDistance < nearestDist then
+          nearestDist = unitDistance
           nearestCount = nearestCount + 1
         end
       end

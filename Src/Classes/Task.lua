@@ -1,12 +1,10 @@
 local TOCNAME, _ = ...
-local BOM = BuffomatAddon ---@type BuffomatAddon
+local BOM = BuffomatAddon ---@type BomAddon
 
 ---@class BomTaskModule
 local taskModule = BuffomatModule.New("Task") ---@type BomTaskModule
 
-BOM.Class = BOM.Class or {}
-
----@class Task
+---@class BomTask
 --- @field distance string|boolean Unit name or group number as string, to calculate whether player is in range to perform the task. Boolean true for no distance check.
 --- @field prefix_text string The message to show before the spell
 --- @field action_text string The message to display if inactive: spell name
@@ -22,42 +20,40 @@ BOM.TaskPriority = {
   GroupBuff    = 100,
 }
 
----@type Task
-BOM.Class.Task = {}
-BOM.Class.Task.__index = BOM.Class.Task
+local taskClass = {} ---@type BomTask
+taskClass.__index = taskClass
 
-local CLASS_TAG = "task_item"
-
----Creates a new TaskListItem
+--Creates a new TaskListItem
 ---@param priority number|nil Sorting priority to display
 ---@param target BomUnit|GroupBuffTarget Unit to calculate distance to or boolean true
----@param action_text string
----@param action_link string
----@param prefix_text string
----@param extra_text string
-function BOM.Class.Task:new(prefix_text, action_link, action_text, extra_text,
+---@param actionText string
+---@param actionLink string
+---@param prefixText string
+---@param extraText string
+function taskModule:New(prefixText, actionLink, actionText, extraText,
                             target, isInfo, priority)
   local distance = target:GetDistance()
-  local fields = {
-    t           = CLASS_TAG,
-    action_link = action_link or "",
-    action_text = action_text or action_link,
-    prefix_text = prefix_text or "",
-    extra_text  = extra_text or "",
-    target      = target,
-    distance    = distance, -- scan member distance or nearest party member
-    priority    = priority or BOM.TaskPriority.Default,
-    isInfo      = isInfo,
-  }
-  setmetatable(fields, BOM.Class.Task)
+  local fields = {}  ---@type BomTask
+  setmetatable(fields, taskClass)
+
+  fields.action_link = actionLink or ""
+  fields.action_text = actionText or actionLink
+  fields.prefix_text = prefixText or ""
+  fields.extra_text = extraText or ""
+  fields.target = target
+  fields.distance = distance -- scan member distance or nearest party member
+  fields.priority = priority or BOM.TaskPriority.Default
+  fields.isInfo = isInfo
+
   return fields
 end
 
+-- TODO move to const module
 local bomGray = "777777"
 local bomRed = "cc4444"
 local bomBleakRed = "bb5555"
 
-function BOM.Class.Task.FormatText(self)
+function taskClass:Format()
   local target = self.target:GetText() .. " "
   if self.isInfo then
     target = ""
@@ -69,7 +65,7 @@ function BOM.Class.Task.FormatText(self)
           BOM.Color(bomGray, self.extra_text))
 end
 
-function BOM.Class.Task.FormatTextInactive(self, reason)
+function taskClass:FormatDisabledRed(reason)
   local target = self.target:GetText() .. " "
   if self.isInfo then
     target = ""

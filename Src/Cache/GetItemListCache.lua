@@ -1,8 +1,9 @@
 local TOCNAME, _ = ...
-local BOM = BuffomatAddon ---@type BuffomatAddon
+local BOM = BuffomatAddon ---@type BomAddon
 
 ---@class BomItemListCacheModule
 local itemListCacheModule = BuffomatModule.New("ItemListCache") ---@type BomItemListCacheModule
+local buffomatModule = BuffomatModule.Import("Buffomat") ---@type BomBuffomatModule
 
 BOM.WipeCachedItems = true
 
@@ -42,7 +43,7 @@ function BOM.GetItemList()
           end
         end
 
-        if lootable and BOM.SharedState.OpenLootable then
+        if lootable and buffomatModule.shared.OpenLootable then
           local locked = false
 
           for i, text in ipairs(BOM.Tool.ScanToolTip("SetBagItem", bag, slot)) do

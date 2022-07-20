@@ -1,5 +1,5 @@
 local TOCNAME, _ = ...
-local BOM = BuffomatAddon ---@type BuffomatAddon
+local BOM = BuffomatAddon ---@type BomAddon
 
 ---@class BomToolboxModule
 local toolboxModule = BuffomatModule.New("Toolbox") ---@type BomToolboxModule
@@ -276,7 +276,7 @@ end
 
 local TOO_FAR = 1000000
 
-function Tool.UnitDistanceSquared(uId)
+function toolboxModule:UnitDistanceSquared(uId)
   --partly copied from DBM
   --    * Paul Emmerich (Tandanu @ EU-Aegwynn) (DBM-Core)
   --    * Martin Verges (Nitram @ EU-Azshara) (DBM-GUI)
