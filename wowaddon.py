@@ -20,6 +20,10 @@ UI_VERSION_CLASSIC_TBC = '20504'  # patch 2.5.4 Phase 4 and 5 TBC
 BOM_NAME_CLASSIC_TBC = 'BuffomatClassicTBC'  # Directory and zip name
 BOM_TITLE_CLASSIC_TBC = "Buffomat Classic TBC"  # Title field in TOC
 
+UI_VERSION_CLASSIC_WOTLK = '30400'  # patch 3.4.0 WotLK
+BOM_NAME_CLASSIC_WOTLK = 'BuffomatClassicWotLK'  # Directory and zip name
+BOM_TITLE_CLASSIC_WOTLK = "Buffomat Classic WotLK"  # Title field in TOC
+
 COPY_DIRS = ['Src', 'Ace3']
 COPY_FILES = ['Bindings.xml', 'CHANGELOG.md', 'embeds.xml',
               'LICENSE.txt', 'README.md', 'README.Deutsch.txt']
@@ -37,6 +41,9 @@ class BuildTool:
         self.create_toc(dst=f'{BOM_NAME_CLASSIC_TBC}.toc',
                         ui_version=UI_VERSION_CLASSIC_TBC,
                         title=BOM_TITLE_CLASSIC_TBC)
+        self.create_toc(dst=f'{BOM_NAME_CLASSIC_WOTLK}.toc',
+                        ui_version=UI_VERSION_CLASSIC_WOTLK,
+                        title=BOM_TITLE_CLASSIC_WOTLK)
 
     def do_install(self, toc_name: str):
         self.copy_files.append(f'{toc_name}.toc')
@@ -115,8 +122,8 @@ def main():
              'name.')
 
     parser.add_argument(
-        '--version', choices=['classic', 'tbc'],
-        help='The version to copy or zip, classic or TBC')
+        '--version', choices=['classic', 'tbc', 'wotlk'],
+        help='The version to copy or zip: classic, TBC or WotLK')
 
     parser.add_argument(
         'command', choices=['help', 'zip', 'install'],
@@ -130,15 +137,19 @@ def main():
         bt = BuildTool(args)
         if args.version == 'classic':
             bt.do_install(toc_name=BOM_NAME_CLASSIC)
-        else:
+        elif args.version == "tbc":
             bt.do_install(toc_name=BOM_NAME_CLASSIC_TBC)
+        elif args.version == "wotlk":
+            bt.do_install(toc_name=BOM_NAME_CLASSIC_WOTLK)
 
     elif args.command == 'zip':
         bt = BuildTool(args)
         if args.version == 'classic':
             bt.do_zip(toc_name=BOM_NAME_CLASSIC)
-        else:
+        elif args.version == 'tbc':
             bt.do_zip(toc_name=BOM_NAME_CLASSIC_TBC)
+        elif args.version == "wotlk":
+            bt.do_zip(toc_name=BOM_NAME_CLASSIC_WOTLK)
     else:
         parser.print_help()
 

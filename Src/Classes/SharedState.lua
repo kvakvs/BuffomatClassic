@@ -115,7 +115,7 @@ function sharedStateModule:Defaults()
     Carrot                 = true,
     MainHand               = false,
     SecondaryHand          = false,
-    UseRank                = false,
+    UseRank                = true,
     BuffTarget             = false,
     OpenLootable           = true,
     SelfFirst              = true,

@@ -8,7 +8,7 @@ local unitModule = BuffomatModule.New("Unit") ---@type BomUnitModule
 local buffomatModule = BuffomatModule.Import("Buffomat") ---@type BomBuffomatModule
 
 ---@class BomUnit
----@field knownBuffs table<number, Buff> Buffs on player keyed by spell id, only buffs supported by Buffomat are stored
+---@field knownBuffs table<number, BomUnitBuff> Buffs on player keyed by spell id, only buffs supported by Buffomat are stored
 ---@field allBuffs table<number, boolean> Availability of all auras even those not supported by BOM, by id, no extra detail stored
 ---@field class string
 ---@field distance number

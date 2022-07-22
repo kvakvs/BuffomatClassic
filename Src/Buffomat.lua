@@ -34,8 +34,8 @@ local toolboxModule = BuffomatModule.Import("Toolbox") ---@type BomToolboxModule
 ---@field EnchantList table<number, table<number>> Spell ids mapping to enchant ids
 ---@field CancelBuffs table<number, BomSpellDef> All spells to be canceled on detection
 ---@field ItemCache table<number, BomItemCacheElement> Precreated precached items
----@field ActivAura nil|number Spell id of aura if an unique aura was casted (only one can be active)
----@field ActivSeal nil|number Spell id of weapon seal, if an seal-type temporary enchant was used (only one can be active)
+---@field ActivePaladinAura nil|number Spell id of aura if an unique aura was casted (only one can be active)
+---@field ActivePaladinSeal nil|number Spell id of weapon seal, if an seal-type temporary enchant was used (only one can be active)
 ---
 ---@field ForceProfile string|nil Nil will choose profile name automatically, otherwise this profile will be used
 ---@field ArgentumDawn table Equipped AD trinket: Spell to and zone ids to check
@@ -763,7 +763,7 @@ function BOM.ShowWindow(tab)
     end
     toolboxModule:SelectTab(BomC_MainWindow, tab or 1)
   else
-    BOM:Print(_t("ActionInCombatError"))
+    BOM:Print(_t("message.ShowHideInCombat"))
   end
 end
 
@@ -872,9 +872,9 @@ function BOM.DebugBuffs(dest)
 
   print("LastTracking:", buffomatModule.character.LastTracking, " ")
   print("ForceTracking:", BOM.ForceTracking, " ")
-  print("ActivAura:", BOM.ActivAura, " ")
+  print("ActivAura:", BOM.ActivePaladinAura, " ")
   print("LastAura:", BOM.CurrentProfile.LastAura, " ")
-  print("ActivSeal:", BOM.ActivSeal, " ")
+  print("ActivSeal:", BOM.ActivePaladinSeal, " ")
   print("LastSeal:", BOM.CurrentProfile.LastSeal, " ")
   print("Shapeshift:", GetShapeshiftFormID(), " ")
   print("Weaponenchantment:", GetWeaponEnchantInfo())

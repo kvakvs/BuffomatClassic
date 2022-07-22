@@ -24,7 +24,7 @@ local L = setmetatable(
         })
 
 local BOM_ALL_CLASSES = { "WARRIOR", "MAGE", "ROGUE", "DRUID", "HUNTER", "PRIEST", "WARLOCK",
-                          "SHAMAN", "PALADIN" }
+                          "SHAMAN", "PALADIN", "DEATHKNIGHT" }
 local BOM_NO_CLASS = { }
 
 ---Classes which have a resurrection ability
@@ -38,11 +38,11 @@ BOM.MANA_CLASSES = BOM_MANA_CLASSES --used in TaskScan.lua
 BOM.CLASSIC_ERA = "Classic"
 BOM.TBC_ERA = "TBC"
 
-local BOM_MELEE_CLASSES = { "WARRIOR", "ROGUE", "DRUID", "SHAMAN", "PALADIN" }
-local BOM_SHADOW_CLASSES = { "PRIEST", "WARLOCK" }
+local BOM_MELEE_CLASSES = { "WARRIOR", "ROGUE", "DRUID", "SHAMAN", "PALADIN", "DEATHKNIGHT" }
+local BOM_SHADOW_CLASSES = { "PRIEST", "WARLOCK", "DEATHKNIGHT" }
 local BOM_FIRE_CLASSES = { "MAGE", "WARLOCK", "SHAMAN", "HUNTER" }
-local BOM_FROST_CLASSES = { "MAGE", "SHAMAN" }
-local BOM_PHYSICAL_CLASSES = { "HUNTER", "ROGUE", "SHAMAN", "WARRIOR", "DRUID", "PALADIN" }
+local BOM_FROST_CLASSES = { "MAGE", "SHAMAN", "DEATHKNIGHT" }
+local BOM_PHYSICAL_CLASSES = { "HUNTER", "ROGUE", "SHAMAN", "WARRIOR", "DRUID", "PALADIN", "DEATHKNIGHT" }
 
 local DURATION_1H = 3600
 local DURATION_30M = 1800
@@ -1568,6 +1568,13 @@ function allSpellsModule:SetupConstants()
   self.TBC_PHYS_ELIXIR = "tbcPhysElixir"
   self.TBC_SPELL_ELIXIR = "tbcSpellElixir"
   self.TBC_ELIXIR = "tbcElixir"
+
+  self.WOTLK_PHYS_FOOD = "wotlkPhysicalFood"
+  self.WOTLK_SPELL_FOOD = "wotlkSpellFood"
+  self.WOTLK_FOOD = "wotlkFood"
+  self.WOTLK_PHYS_ELIXIR = "wotlkPhysElixir"
+  self.WOTLK_SPELL_ELIXIR = "wotlkSpellElixir"
+  self.WOTLK_ELIXIR = "wotlkElixir"
 
   self.SCROLL = "scroll"
   self.WEAPON_ENCHANTMENT = "weaponEnchantment"

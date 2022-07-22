@@ -1,10 +1,10 @@
-local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BomAddon
 
 ---@class BomTaskScanModule
 local taskScanModule = BuffomatModule.New("TaskScan") ---@type BomTaskScanModule
 
 local _t = BuffomatModule.Import("Languages") ---@type BomLanguagesModule
+local buffChecksModule = BuffomatModule.Import("BuffChecks") ---@type BomBuffChecksModule
 local buffomatModule = BuffomatModule.Import("Buffomat") ---@type BomBuffomatModule
 local buffTargetModule = BuffomatModule.Import("UnitBuffTarget") ---@type BomUnitBuffTargetModule
 local constModule = BuffomatModule.Import("Const") ---@type BomConstModule
@@ -74,61 +74,6 @@ end
 
 ---@type table<string, CachedItem>
 BOM.CachedHasItems = {}
-
----Check whether the player has item
--- TODO: Can move into Buffomat main operation class together with item cache?
----@param list table - the item?
----@param cd boolean - respect the cooldown?
----@return boolean, number|nil, number|nil, number {HasItem, Bag, Slot, Count}
-function taskScanModule:HasItem(list, cd)
-  if list == nil then
-    return true, nil, nil, 1 -- spell.items is nil, no items required
-  end
-
-  local key = list[1] .. (cd and "CD" or "")
-  local cachedItem = BOM.CachedHasItems[key]
-
-  if not cachedItem then
-    BOM.CachedHasItems[key] = {}
-    cachedItem = BOM.CachedHasItems[key]
-    cachedItem.a = false
-    cachedItem.d = 0
-
-    for bag = BACKPACK_CONTAINER, NUM_BAG_SLOTS do
-      for slot = 1, GetContainerNumSlots(bag) do
-        local icon, itemCount, locked, quality, readable, lootable, itemLink
-        , isFiltered, noValue, itemID = GetContainerItemInfo(bag, slot)
-
-        if tContains(list, itemID) then
-          if cd then
-            cachedItem.a, cachedItem.b, cachedItem.c = true, bag, slot
-            cachedItem.d = cachedItem.d + itemCount
-
-          else
-            cachedItem.a = true
-            return true
-          end
-        end
-      end
-    end
-  end
-
-  if cd and cachedItem.b and cachedItem.c then
-    local startTime, _, _ = GetContainerItemCooldown(cachedItem.b, cachedItem.c)
-    if (startTime or 0) == 0 then
-      return cachedItem.a, cachedItem.b, cachedItem.c, cachedItem.d
-    else
-      return false, cachedItem.b, cachedItem.c, cachedItem.d
-    end
-  end
-
-  return cachedItem.a
-end
-
----Unused
---local function bom_spell_link_from_spell(spell)
---  return bomFormatSpellLink(BOM.GetSpellInfo(spell))
---end
 
 ---If player just left the raid or party, reset watched frames to "watch all 8"
 function taskScanModule:MaybeResetWatchGroups()
@@ -224,27 +169,6 @@ function taskScanModule:TimeCheck(expirationTime, maxDuration)
   return false
 end
 
----@param spellId number
----@param playerUnit BomUnit
----@return boolean Whether the pet is missing spellId in buffs
-function taskScanModule:HunterPetNeedsBuff(spellId, playerUnit)
-  if not BOM.TBC then
-    return false -- pre-TBC this did not exist
-  end
-
-  local pet = unitCacheModule:GetUnit("pet")
-  if not pet then
-    return false -- no pet - no problem
-  end
-
-  pet:ForceUpdateBuffs(playerUnit)
-  if pet:HaveBuff(spellId) then
-    return false -- have pet, have buff
-  end
-
-  return true
-end
-
 ---Check for party, spell and player, which targets that spell goes onto
 ---Update spell.NeedMember, spell.NeedGroup and spell.DeathGroup
 ---@param party table<number, BomUnit> - the party
@@ -253,256 +177,52 @@ end
 ---@return boolean someoneIsDead
 function taskScanModule:UpdateSpellTargets(party, spell, playerUnit)
   local someoneIsDead = false
+  local thisBuffOnPlayer = playerUnit.knownBuffs[spell.ConfigID]
+  spell:ResetBuffTargets()
 
-  spell.UnitsNeedBuff = spell.UnitsNeedBuff or {}
-  spell.UnitsHaveBetterBuff = spell.UnitsHaveBetterBuff or {}
-  spell.GroupsNeedBuff = spell.GroupsNeedBuff or {}
-  --spell.GroupsHaveBetterBuff = spell.GroupsHaveBetterBuff or {}
-  spell.GroupsHaveDead = spell.GroupsHaveDead or {}
-
-  local isPlayerBuff = playerUnit.knownBuffs[spell.ConfigID]
-
-  wipe(spell.GroupsNeedBuff)
-  --wipe(spell.GroupsHaveBetterBuff)
-  wipe(spell.GroupsHaveDead)
-  wipe(spell.UnitsNeedBuff)
-  wipe(spell.UnitsHaveBetterBuff)
-
+  -- Save skipped unit and do nothing
   if spell:DoesUnitHaveBetterBuffs(playerUnit) then
-    -- Save skipped unit and do nothing
     tinsert(spell.UnitsHaveBetterBuff, playerUnit)
-
   elseif not spellDefModule:IsSpellEnabled(spell.ConfigID) then
     --nothing, the spell is not enabled!
-
   elseif spellButtonsTabModule:CategoryIsHidden(spell.category) then
     --nothing, the category is not showing!
-
   elseif spell.type == "weapon" then
-    local weaponSpell = spellDefModule:GetProfileSpell(spell.ConfigID)
-
-    if (weaponSpell.MainHandEnable and playerUnit.MainHandBuff == nil)
-            or (weaponSpell.OffHandEnable and playerUnit.OffHandBuff == nil)
-    then
-      tinsert(spell.UnitsNeedBuff, playerUnit)
-    end
-
-  elseif spell.tbcHunterPetBuff then
+    buffChecksModule:PlayerNeedsWeaponBuff(spell, playerUnit, party, someoneIsDead)
     -- NOTE: This must go before spell.IsConsumable clause
     -- For TBC hunter pet buffs we check if the pet is missing the buff
     -- but then the hunter must consume it
-    if self:HunterPetNeedsBuff(spell.singleId, playerUnit) then
-      tinsert(spell.UnitsNeedBuff, playerUnit) -- add player to buff list, because player must consume it
-    end
-
+  elseif spell.tbcHunterPetBuff then
+    buffChecksModule:HunterPetNeedsBuff(spell, playerUnit, party, someoneIsDead)
   elseif spell.isConsumable then
-    if not isPlayerBuff then
-      tinsert(spell.UnitsNeedBuff, playerUnit)
-    end
-
+    buffChecksModule:PlayerNeedsConsumable(spell, playerUnit, party, someoneIsDead)
   elseif spell.isInfo then
-    for i, partyMember in ipairs(party) do
-      local partyMemberBuff = partyMember.knownBuffs[spell.ConfigID]
-
-      if partyMemberBuff then
-        tinsert(spell.UnitsNeedBuff, partyMember)
-
-        if partyMember.isPlayer then
-          spell.buffSource = partyMemberBuff.source
-        end
-
-        if UnitIsUnit("player", partyMemberBuff.source or "") then
-          BOM.ItemListTarget[spell.ConfigID] = partyMember.name
-        end
-
-      end
-    end
+    buffChecksModule:PartyNeedsInfoBuff(spell, playerUnit, party, someoneIsDead)
   elseif spell.isOwn then
-    if not playerUnit.isDead then
-      if spell.lockIfHaveItem then
-        if IsSpellKnown(spell.singleId) and not (self:HasItem(spell.lockIfHaveItem)) then
-          tinsert(spell.UnitsNeedBuff, playerUnit)
-        end
-      elseif not (isPlayerBuff
-              and self:TimeCheck(isPlayerBuff.expirationTime, isPlayerBuff.duration))
-      then
-        tinsert(spell.UnitsNeedBuff, playerUnit)
-      end
-    end
-
+    buffChecksModule:PlayerNeedsSelfBuff(spell, playerUnit, party, someoneIsDead)
   elseif spell.type == "resurrection" then
-    for i, member in ipairs(party) do
-      if member.isDead
-              and not member.hasResurrection
-              and member.isConnected
-              and member.class ~= "pet"
-              and (not buffomatModule.shared.SameZone or member.isSameZone) then
-        tinsert(spell.UnitsNeedBuff, member)
-      end
-    end
-
+    buffChecksModule:DeadNeedsResurrection(spell, playerUnit, party, someoneIsDead)
   elseif spell.type == "tracking" then
-    -- Special handling: Having find herbs and find ore will be ignored if
-    -- in cat form and track humanoids is enabled
-    if (spell.singleId == BOM.SpellId.FindHerbs or
-            spell.singleId == BOM.SpellId.FindMinerals)
-            and GetShapeshiftFormID() == CAT_FORM
-            and spellDefModule:IsSpellEnabled(BOM.SpellId.Druid.TrackHumanoids) then
-      -- Do nothing - ignore herbs and minerals in catform if enabled track humanoids
-    elseif not self:IsTrackingActive(spell)
-            and (BOM.ForceTracking == nil
-            or BOM.ForceTracking == spell.trackingIconId)
-    then
-      --print("Need tracking: ", spell.singleId)
-      tinsert(spell.UnitsNeedBuff, playerUnit)
-    end
-
+    buffChecksModule:PlayerNeedsTracking(spell, playerUnit, party, someoneIsDead)
   elseif spell.type == "aura" then
-    if BOM.ActivAura ~= spell.ConfigID
-            and (BOM.CurrentProfile.LastAura == nil or BOM.CurrentProfile.LastAura == spell.ConfigID)
-    then
-      tinsert(spell.UnitsNeedBuff, playerUnit)
-    end
-
+    buffChecksModule:PaladinNeedsAura(spell, playerUnit, party, someoneIsDead)
   elseif spell.type == "seal" then
-    if BOM.ActivSeal ~= spell.ConfigID
-            and (BOM.CurrentProfile.LastSeal == nil or BOM.CurrentProfile.LastSeal == spell.ConfigID)
-    then
-      tinsert(spell.UnitsNeedBuff, playerUnit)
-    end
-
+    buffChecksModule:PaladinNeedsSeal(spell, playerUnit, party, someoneIsDead)
   elseif spell.isBlessing then
-    for i, partyMember in ipairs(party) do
-      local ok = false
-      local notGroup = false
-      local blessing_name = spellDefModule:GetProfileSpell(constModule.BLESSING_ID)
-      local blessingSpell = spellDefModule:GetProfileSpell(spell.ConfigID)
-
-      if blessing_name[partyMember.name] == spell.ConfigID
-              or (partyMember.isTank
-              and blessingSpell.Class["tank"]
-              and not blessingSpell.SelfCast)
-      then
-        ok = true
-        notGroup = true
-
-      elseif blessing_name[partyMember.name] == nil then
-        if blessingSpell.Class[partyMember.class]
-                and (not IsInRaid() or buffomatModule.character.WatchGroup[partyMember.group])
-                and not blessingSpell.SelfCast then
-          ok = true
-        end
-        if blessingSpell.SelfCast
-                and UnitIsUnit(partyMember.unitId, "player") then
-          ok = true
-        end
-      end
-
-      if blessingSpell.ForcedTarget[partyMember.name] then
-        ok = true
-      end
-      if blessingSpell.ExcludedTarget[partyMember.name] then
-        ok = false
-      end
-
-      if partyMember.NeedBuff
-              and ok
-              and partyMember.isConnected
-              and (not buffomatModule.shared.SameZone or partyMember.isSameZone) then
-        local found = false
-        local member_buff = partyMember.knownBuffs[spell.ConfigID]
-
-        if partyMember.isDead then
-          if partyMember.group ~= 9 and partyMember.class ~= "pet" then
-            someoneIsDead = true
-            spell.GroupsHaveDead[partyMember.class] = true
-          end
-
-        elseif member_buff then
-          found = self:TimeCheck(member_buff.expirationTime, member_buff.duration)
-        end
-
-        if not found then
-          tinsert(spell.UnitsNeedBuff, partyMember)
-          if not notGroup then
-            spell:IncrementNeedGroupBuff(partyMember.class)
-          end
-        elseif not notGroup
-                and buffomatModule.shared.ReplaceSingle
-                and member_buff
-                and member_buff.isSingle then
-          spell:IncrementNeedGroupBuff(partyMember.class)
-        end
-
-      end
-    end
-
+    someoneIsDead = buffChecksModule:PartyNeedsPaladinBlessing(spell, playerUnit, party, someoneIsDead)
   else
-    --spells
-    for i, partyMember in ipairs(party) do
-      local ok = false
-      ---@type BomSpellDef
-      local profileSpell = BOM.CurrentProfile.Spell[spell.ConfigID]
-
-      if profileSpell.Class[partyMember.class]
-              and (not IsInRaid() or buffomatModule.character.WatchGroup[partyMember.group])
-              and not profileSpell.SelfCast then
-        ok = true
-      end
-      if profileSpell.SelfCast
-              and UnitIsUnit(partyMember.unitId, "player") then
-        ok = true
-      end
-      if partyMember.isTank and profileSpell.Class["tank"]
-              and not profileSpell.SelfCast then
-        ok = true
-      end
-      if profileSpell.ForcedTarget[partyMember.name] then
-        ok = true
-      end
-      if profileSpell.ExcludedTarget[partyMember.name] then
-        ok = false
-      end
-
-      if partyMember.NeedBuff
-              and ok
-              and partyMember.isConnected
-              and (not buffomatModule.shared.SameZone
-              or (partyMember.isSameZone
-              or partyMember.class == "pet" and partyMember.owner.isSameZone)) then
-        local found = false
-        local partyMemberBuff = partyMember.knownBuffs[spell.ConfigID]
-
-        if partyMember.isDead then
-          someoneIsDead = true
-          spell.GroupsHaveDead[partyMember.group] = true
-
-        elseif partyMemberBuff then
-          found = self:TimeCheck(partyMemberBuff.expirationTime, partyMemberBuff.duration)
-        end
-
-        if not found then
-          tinsert(spell.UnitsNeedBuff, partyMember)
-          spell.GroupsNeedBuff[partyMember.group] = (spell.GroupsNeedBuff[partyMember.group] or 0) + 1
-        elseif buffomatModule.shared.ReplaceSingle
-                and partyMemberBuff
-                and partyMemberBuff.isSingle
-        then
-          spell.GroupsNeedBuff[partyMember.group] = (spell.GroupsNeedBuff[partyMember.group] or 0) + 1
-        end
-      end -- if needbuff and connected and samezone
-    end -- for all in party
+    buffChecksModule:PartyNeedsBuff(spell, playerUnit, party, someoneIsDead)
   end
 
   -- Check Spell CD
   if spell.hasCD and #spell.UnitsNeedBuff > 0 then
     local startTime, duration = GetSpellCooldown(spell.singleId)
     if duration ~= 0 then
-      wipe(spell.GroupsNeedBuff)
-      wipe(spell.UnitsNeedBuff)
-      wipe(spell.GroupsHaveDead)
+      -- The buff spell is still not ready
+      spell:ResetBuffTargets()
       startTime = startTime + duration
 
+      -- Check next time when the cooldown is up, or sooner
       if BOM.MinTimer > startTime then
         BOM.MinTimer = startTime
       end
@@ -588,12 +308,16 @@ function taskScanModule:UpdateMacro(member, spellId, command)
   macro:UpdateMacro()
 end
 
-function taskScanModule:GetGroupInRange(SpellName, party, groupNb, spell)
+---@param spellName string
+---@param party table<number, BomUnit>
+---@param groupIndex number
+---@param spell BomSpellDef
+function taskScanModule:GetGroupInRange(spellName, party, groupIndex, spell)
   local minDist
   local ret
   for i, member in ipairs(party) do
-    if member.group == groupNb then
-      if not (IsSpellInRange(SpellName, member.unitId) == 1 or member.isDead) then
+    if member.group == groupIndex then
+      if not (IsSpellInRange(spellName, member.unitId) == 1 or member.isDead) then
         if member.distance > 2000 then
           return nil
         end
@@ -639,15 +363,15 @@ function taskScanModule:GetClassInRange(spellName, party, class, spell)
 end
 
 ---@class BomScan_NextCastSpell
----@field Spell BomSpellDef
----@field Link string|nil
----@field Member string|nil
----@field SpellId number|nil
+---@field spell BomSpellDef
+---@field spellLink string|nil
+---@field targetUnit string|nil
+---@field spellId number|nil
 ---@field manaCost number
-local next_cast_spell = {}
+local nextCastSpell = {} ---@type BomScan_NextCastSpell
 
 ---@type number
-local bomCurrentPlayerMana
+local bomCurrentPlayerMana = 0
 
 ---@param link string Clickable spell link with icon
 ---@param inactiveText string Spell name as text
@@ -683,49 +407,49 @@ function taskScanModule:QueueSpell(cost, id, link, member, spell)
   if not spell.type == "resurrection" and member.isDead then
     -- Cannot cast resurrections on deads
     return
-  elseif next_cast_spell.Spell and spell.type ~= "tracking" then
-    if next_cast_spell.Spell.type == "tracking" then
+  elseif nextCastSpell.spell and spell.type ~= "tracking" then
+    if nextCastSpell.spell.type == "tracking" then
       return
     elseif spell.type == "resurrection" then
       --------------------
       -- If resurrection
       --------------------
-      if next_cast_spell.Spell.type == "resurrection" then
-        if (tContains(BOM.RESURRECT_CLASS, next_cast_spell.Member.class) and not tContains(BOM.RESURRECT_CLASS, member.class))
-                or (tContains(BOM.MANA_CLASSES, next_cast_spell.Member.class) and not tContains(BOM.MANA_CLASSES, member.class))
-                or (not next_cast_spell.Member.isGhost and member.isGhost)
-                or (next_cast_spell.Member.distance < member.distance) then
+      if nextCastSpell.spell.type == "resurrection" then
+        if (tContains(BOM.RESURRECT_CLASS, nextCastSpell.targetUnit.class) and not tContains(BOM.RESURRECT_CLASS, member.class))
+                or (tContains(BOM.MANA_CLASSES, nextCastSpell.targetUnit.class) and not tContains(BOM.MANA_CLASSES, member.class))
+                or (not nextCastSpell.targetUnit.isGhost and member.isGhost)
+                or (nextCastSpell.targetUnit.distance < member.distance) then
           return
         end
       end
     else
       if (buffomatModule.shared.SelfFirst
-              and next_cast_spell.Member.isPlayer and not member.isPlayer)
-              or (next_cast_spell.Member.group ~= 9 and member.group == 9) then
+              and nextCastSpell.targetUnit.isPlayer and not member.isPlayer)
+              or (nextCastSpell.targetUnit.group ~= 9 and member.group == 9) then
         return
       elseif (not buffomatModule.shared.SelfFirst
-              or (next_cast_spell.Member.isPlayer == member.isPlayer))
-              and ((next_cast_spell.Member.group == 9) == (member.group == 9))
-              and next_cast_spell.manaCost > cost then
+              or (nextCastSpell.targetUnit.isPlayer == member.isPlayer))
+              and ((nextCastSpell.targetUnit.group == 9) == (member.group == 9))
+              and nextCastSpell.manaCost > cost then
         return
       end
     end
   end
 
-  next_cast_spell.manaCost = cost
-  next_cast_spell.SpellId = id
-  next_cast_spell.Link = link
-  next_cast_spell.Member = member
-  next_cast_spell.Spell = spell
+  nextCastSpell.manaCost = cost
+  nextCastSpell.spellId = id
+  nextCastSpell.spellLink = link
+  nextCastSpell.targetUnit = member
+  nextCastSpell.spell = spell
 end
 
 ---Cleares the spell from `cast` global
 function taskScanModule:ClearNextCastSpell()
-  next_cast_spell.manaCost = -1
-  next_cast_spell.SpellId = nil
-  next_cast_spell.Member = nil
-  next_cast_spell.Spell = nil
-  next_cast_spell.Link = nil
+  nextCastSpell.manaCost = -1
+  nextCastSpell.spellId = nil
+  nextCastSpell.targetUnit = nil
+  nextCastSpell.spell = nil
+  nextCastSpell.spellLink = nil
 end
 
 ---Run checks to see if BOM should not be scanning buffs
@@ -736,16 +460,16 @@ function taskScanModule:IsActive(playerUnit)
 
   -- Cancel buff tasks if in combat (ALWAYS FIRST CHECK)
   if InCombatLockdown() then
-    return false, _t("InactiveReason_InCombat")
+    return false, _t("castButton.inactive.InCombat")
   end
 
   if UnitIsDeadOrGhost("player") then
-    return false, _t("InactiveReason_PlayerDead")
+    return false, _t("castButton.inactive.IsDead")
   end
 
   if instance_type == "pvp" or instance_type == "arena" then
     if not buffomatModule.shared.InPVP then
-      return false, _t("InactiveReason_PvpZone")
+      return false, _t("castButton.inactive.PvpZone")
     end
 
   elseif instance_type == "party"
@@ -753,27 +477,30 @@ function taskScanModule:IsActive(playerUnit)
           or instance_type == "scenario"
   then
     if not buffomatModule.shared.InInstance then
-      return false, _t("InactiveReason_Instance")
+      return false, _t("castButton.inactive.Instance")
     end
   else
     if not buffomatModule.shared.InWorld then
-      return false, _t("InactiveReason_OpenWorld")
+      return false, _t("castButton.inactive.OpenWorld")
     end
   end
 
   -- Cancel buff tasks if is in a resting area, and option to scan is not set
   if not buffomatModule.shared.ScanInRestArea and IsResting() then
-    return false, _t("InactiveReason_RestArea")
+    return false, _t("castButton.inactive.RestArea")
   end
 
-  -- Cancel buff task scan while mounted
+  -- Cancel buff task scan while mounted or on taxi
+  if UnitOnTaxi("player") then
+    return false, _t("castButton.inactive.Taxi")
+  end
   if not buffomatModule.shared.ScanWhileMounted and IsMounted() then
-    return false, _t("InactiveReason_Mounted")
+    return false, _t("castButton.inactive.Mounted")
   end
 
   -- Cancel buff tasks if is in stealth, and option to scan is not set
   if not buffomatModule.shared.ScanInStealth and IsStealthed() then
-    return false, _t("InactiveReason_IsStealthed")
+    return false, _t("castButton.inactive.IsStealth")
   end
 
   -- Cancel buff tasks if is in stealth, and option to scan is not set
@@ -782,17 +509,15 @@ function taskScanModule:IsActive(playerUnit)
   local currentMana = bomCurrentPlayerMana or UnitPower("player", 0)
   if playerUnit.allBuffs[BOM.SpellId.Priest.SpiritTap]
           and currentMana < UnitPowerMax("player", 0) * spiritTapManaPercent then
-    return false, _t("InactiveReason_SpiritTap")
+    return false, _t("castButton.inactive.PriestSpiritTap")
   end
 
   -- Having auto crusader aura enabled and Paladin class, and aura other than
   -- Crusader will block this check temporarily
   if self:IsFlying() and not self:IsMountedAndCrusaderAuraRequired() then
     -- prevent dismount in flight, OUCH!
-    return false, _t("MsgFlying")
+    return false, _t("castButton.inactive.Flying")
 
-  elseif UnitOnTaxi("player") then
-    return false, _t("MsgOnTaxi")
   end
 
   return true, nil
@@ -861,8 +586,8 @@ end
 ---@param playerUnit BomUnit
 function taskScanModule:GetActiveAuraAndSeal(playerUnit)
   --find activ aura / seal
-  BOM.ActivAura = nil
-  BOM.ActivSeal = nil
+  BOM.ActivePaladinAura = nil
+  BOM.ActivePaladinSeal = nil
 
   ---@param spell BomSpellDef
   for i, spell in ipairs(BOM.SelectedSpells) do
@@ -870,18 +595,18 @@ function taskScanModule:GetActiveAuraAndSeal(playerUnit)
 
     if player_buff then
       if spell.type == "aura" then
-        if (BOM.ActivAura == nil and BOM.LastAura == spell.ConfigID)
+        if (BOM.ActivePaladinAura == nil and BOM.LastAura == spell.ConfigID)
                 or UnitIsUnit(player_buff.source, "player")
         then
           if self:TimeCheck(player_buff.expirationTime, player_buff.duration) then
-            BOM.ActivAura = spell.ConfigID
+            BOM.ActivePaladinAura = spell.ConfigID
           end
         end
 
       elseif spell.type == "seal" then
         if UnitIsUnit(player_buff.source, "player") then
           if self:TimeCheck(player_buff.expirationTime, player_buff.duration) then
-            BOM.ActivSeal = spell.ConfigID
+            BOM.ActivePaladinSeal = spell.ConfigID
           end
         end
       end -- if is aura
@@ -895,7 +620,7 @@ function taskScanModule:CheckChangesAndUpdateSpelltab()
   for i, spell in ipairs(BOM.SelectedSpells) do
     if spell.type == "aura" then
       if spellDefModule:IsSpellEnabled(spell.ConfigID) then
-        if BOM.ActivAura == spell.ConfigID
+        if BOM.ActivePaladinAura == spell.ConfigID
                 and BOM.CurrentProfile.LastAura ~= spell.ConfigID then
           BOM.CurrentProfile.LastAura = spell.ConfigID
           spellButtonsTabModule:UpdateSpellsTab("ForceUp4")
@@ -910,7 +635,7 @@ function taskScanModule:CheckChangesAndUpdateSpelltab()
 
     elseif spell.type == "seal" then
       if spellDefModule:IsSpellEnabled(spell.ConfigID) then
-        if BOM.ActivSeal == spell.ConfigID
+        if BOM.ActivePaladinSeal == spell.ConfigID
                 and BOM.CurrentProfile.LastSeal ~= spell.ConfigID then
           BOM.CurrentProfile.LastSeal = spell.ConfigID
           spellButtonsTabModule:UpdateSpellsTab("ForceUp6")
@@ -960,7 +685,7 @@ function taskScanModule:CancelBuffs(playerUnit)
       local player_buff = playerUnit.buffs[spell.ConfigID]
 
       if player_buff then
-        BOM:Print(string.format(_t("MsgCancelBuff"),
+        BOM:Print(string.format(_t("message.CancelBuff"),
                 spell.singleLink or spell.singleText,
                 UnitName(player_buff.source or "") or ""))
         self:CancelBuff(spell.singleFamily)
@@ -977,7 +702,7 @@ function taskScanModule:WhisperExpired(spell)
     local name = UnitName(spell.buffSource or "")
 
     if name then
-      local msg = string.format(_t("MsgSpellExpired"), spell.single)
+      local msg = string.format(_t("message.BuffExpired"), spell.single)
       SendChatMessage(msg, "WHISPER", nil, name)
 
       BOM:Print(msg, "WHISPER", nil, name)
@@ -1038,7 +763,7 @@ end
 function taskScanModule:AddBlessing(spell, party, playerMember, inRange)
   local ok, bag, slot, count
   if spell.reagentRequired then
-    ok, bag, slot, count = self:HasItem(spell.reagentRequired, true)
+    ok, bag, slot, count = buffChecksModule:HasItem(spell.reagentRequired, true)
   end
 
   if type(count) == "number" then
@@ -1161,7 +886,7 @@ function taskScanModule:AddBuff(spell, party, playerMember, inRange)
   local ok, bag, slot, count
 
   if spell.reagentRequired then
-    ok, bag, slot, count = self:HasItem(spell.reagentRequired, true)
+    ok, bag, slot, count = buffChecksModule:HasItem(spell.reagentRequired, true)
   end
 
   if type(count) == "number" then
@@ -1192,7 +917,7 @@ function taskScanModule:AddBuff(spell, party, playerMember, inRange)
         then
           -- Text: Group 5 [Spell Name]
           tasklist:AddWithPrefix(
-                  _t("BUFF_CLASS_GROUPBUFF"),
+                  _t("task.type.GroupBuff"),
                   spell.groupLink or spell.groupText,
                   spell.singleText,
                   "",
@@ -1204,7 +929,7 @@ function taskScanModule:AddBuff(spell, party, playerMember, inRange)
         else
           -- Text: Group 5 [Spell Name]
           tasklist:AddWithPrefix(
-                  _t("BUFF_CLASS_GROUPBUFF"),
+                  _t("task.type.GroupBuff"),
                   spell.groupLink or spell.groupText,
                   spell.singleText,
                   "",
@@ -1246,7 +971,7 @@ function taskScanModule:AddBuff(spell, party, playerMember, inRange)
       elseif unitIsInRange then
         -- Text: Target [Spell Name]
         tasklist:AddWithPrefix(
-                _t("BUFF_CLASS_REGULAR"),
+                _t("task.type.RegularBuff"),
                 spell.singleLink or spell.singleText,
                 spell.singleText,
                 "",
@@ -1257,7 +982,7 @@ function taskScanModule:AddBuff(spell, party, playerMember, inRange)
       else
         -- Text: Target "SpellName"
         tasklist:AddWithPrefix(
-                _t("BUFF_CLASS_REGULAR"),
+                _t("task.type.RegularBuff"),
                 spell.singleLink or spell.singleText,
                 spell.singleText,
                 "",
@@ -1312,7 +1037,7 @@ function taskScanModule:AddResurrection(spell, playerUnit, inRange)
         inRange = true
         -- Text: Target [Spell Name]
         tasklist:AddWithPrefix(
-                _t("TASK_CLASS_RESURRECT"),
+                _t("task.type.Resurrect"),
                 spell.singleLink or spell.singleText,
                 spell.singleText,
                 "",
@@ -1322,7 +1047,7 @@ function taskScanModule:AddResurrection(spell, playerUnit, inRange)
       else
         -- Text: Range Target "SpellName"
         tasklist:AddWithPrefix(
-                _t("TASK_CLASS_RESURRECT"),
+                _t("task.type.Resurrect"),
                 spell.singleLink or spell.singleText,
                 spell.singleText,
                 "",
@@ -1360,7 +1085,7 @@ function taskScanModule:AddSelfbuff(spell, playerMember)
             _t("TASK_CAST"),
             spell.singleLink or spell.singleText,
             spell.singleText,
-            _t("BUFF_CLASS_SELF_ONLY"),
+            _t("task.target.SelfOnly"),
             buffTargetModule:FromSelf(playerMember),
             false)
 
@@ -1372,7 +1097,7 @@ function taskScanModule:AddSelfbuff(spell, playerMember)
             _t("TASK_CAST"),
             spell.singleLink or spell.singleText,
             spell.singleText,
-            _t("BUFF_CLASS_SELF_ONLY"),
+            _t("task.target.SelfOnly"),
             buffTargetModule:FromSelf(playerMember),
             true)
   end
@@ -1428,7 +1153,7 @@ end
 ---@param target string Insert this text into macro where [@player] target text would go
 ---@return string, string {cast_button_title, bag_macro_command}
 function taskScanModule:AddConsumableSelfbuff(spell, playerMember, castButtonTitle, macroCommand, target)
-  local haveItemOffCD, bag, slot, count = self:HasItem(spell.items, true)
+  local haveItemOffCD, bag, slot, count = buffChecksModule:HasItem(spell.items, true)
   count = count or 0
 
   local taskText = _t("TASK_USE")
@@ -1444,7 +1169,7 @@ function taskScanModule:AddConsumableSelfbuff(spell, playerMember, castButtonTit
               taskText,
               self:FormatItemBuffText(bag, slot, count),
               nil,
-              _t("BUFF_CONSUMABLE_REMINDER"),
+              _t("task.hint.HoldShiftConsumable"),
               buffTargetModule:FromSelf(playerMember),
               true)
     else
@@ -1492,7 +1217,7 @@ end
 function taskScanModule:AddConsumableWeaponBuff(spell, playerMember,
                                                 castButtonTitle, macroCommand)
   -- count - reagent count remaining for the spell
-  local have_item, bag, slot, count = self:HasItem(spell.items, true)
+  local have_item, bag, slot, count = buffChecksModule:HasItem(spell.items, true)
   count = count or 0
 
   if have_item then
@@ -1512,7 +1237,7 @@ function taskScanModule:AddConsumableWeaponBuff(spell, playerMember,
         tasklist:Add(
                 offhand_message(),
                 nil,
-                "(" .. _t("TooltipOffHand") .. ") " .. _t("BUFF_CONSUMABLE_REMINDER"),
+                "(" .. _t("TooltipOffHand") .. ") " .. _t("task.hint.HoldShiftConsumable"),
                 buffTargetModule:FromSelf(playerMember),
                 true)
       else
@@ -1541,7 +1266,7 @@ function taskScanModule:AddConsumableWeaponBuff(spell, playerMember,
         tasklist:Add(
                 mainhand_message(),
                 nil,
-                "(" .. _t("TooltipMainHand") .. ") " .. _t("BUFF_CONSUMABLE_REMINDER"),
+                "(" .. _t("TooltipMainHand") .. ") " .. _t("task.hint.HoldShiftConsumable"),
                 buffTargetModule:FromSelf(playerMember),
                 true)
       else
@@ -1565,7 +1290,7 @@ function taskScanModule:AddConsumableWeaponBuff(spell, playerMember,
       tasklist:Add(
               spell.singleText .. "x" .. count,
               nil,
-              _t("TASK_CLASS_MISSING_CONSUM"),
+              _t("task.type.MissingConsumable"),
               buffTargetModule:FromSelf(playerMember),
               true)
     else
@@ -1756,7 +1481,7 @@ function taskScanModule:CheckItemsAndContainers(playerMember, cast_button_title,
     if ok then
       local extra_msg = "" -- tell user they need to hold Alt or something
       if buffomatModule.shared.DontUseConsumables and not IsModifierKeyDown() then
-        extra_msg = _t("BUFF_CONSUMABLE_REMINDER")
+        extra_msg = _t("task.hint.HoldShiftConsumable")
       end
 
       macro_command = (target and ("/target " .. target .. "/n") or "")
@@ -1768,7 +1493,7 @@ function taskScanModule:CheckItemsAndContainers(playerMember, cast_button_title,
       tasklist:Add(
               cast_button_title,
               nil,
-              "(" .. _t("MsgOpenContainer") .. ") " .. extra_msg,
+              "(" .. _t("task.UseOrOpen") .. ") " .. extra_msg,
               buffTargetModule:FromSelf(playerMember),
               true)
 
@@ -1852,7 +1577,7 @@ function taskScanModule:ScanOneSpell(spell, playerMember, party, inRange,
                 _t("TASK_ACTIVATE"),
                 spell.singleLink or spell.singleText,
                 spell.singleText,
-                _t("BUFF_CLASS_TRACKING"),
+                _t("task.type.Tracking"),
                 buffTargetModule:FromSelf(playerMember),
                 false)
       end
@@ -1920,7 +1645,7 @@ function taskScanModule:MountedCrusaderAuraPrompt()
             _t("TASK_CAST"),
             spell.singleLink or spell.singleText,
             spell.singleText,
-            _t("BUFF_CLASS_SELF_ONLY"),
+            _t("task.target.SelfOnly"),
             buffTargetModule:FromSelf(playerMember),
             false)
 
@@ -2024,35 +1749,35 @@ function taskScanModule:UpdateScan_Scan()
 
   if BOM.PlayerCasting == "cast" then
     --Print player is busy (casting normal spell)
-    self:CastButton(_t("MsgBusy"), false)
+    self:CastButton(_t("castButton.Busy"), false)
     self:UpdateMacro()
 
   elseif BOM.PlayerCasting == "channel" then
     --Print player is busy (casting channeled spell)
-    self:CastButton(_t("MsgBusyChanneling"), false)
+    self:CastButton(_t("castButton.BusyChanneling"), false)
     self:UpdateMacro()
 
-  elseif next_cast_spell.Member and next_cast_spell.SpellId then
+  elseif nextCastSpell.targetUnit and nextCastSpell.spellId then
     --Next cast is already defined - update the button text
-    self:CastButton(next_cast_spell.Link, true)
-    self:UpdateMacro(next_cast_spell.Member, next_cast_spell.SpellId)
+    self:CastButton(nextCastSpell.spellLink, true)
+    self:UpdateMacro(nextCastSpell.targetUnit, nextCastSpell.spellId)
 
-    local cdtest = GetSpellCooldown(next_cast_spell.SpellId) or 0
+    local cdtest = GetSpellCooldown(nextCastSpell.spellId) or 0
 
     if cdtest ~= 0 then
-      BOM.CheckCoolDown = next_cast_spell.SpellId
+      BOM.CheckCoolDown = nextCastSpell.spellId
       BomC_ListTab_Button:Disable()
     else
       BomC_ListTab_Button:Enable()
     end
 
-    BOM.CastFailedSpell = next_cast_spell.Spell
-    BOM.CastFailedSpellTarget = next_cast_spell.Member
+    BOM.CastFailedSpell = nextCastSpell.spell
+    BOM.CastFailedSpellTarget = nextCastSpell.targetUnit
   else
     if #tasklist.tasks == 0 then
       --If don't have any strings to display, and nothing to do -
       --Clear the cast button
-      self:CastButton(_t("MsgNothingToDo"), true)
+      self:CastButton(_t("castButton.NothingToDo"), true)
 
       for spellIndex, spell in ipairs(BOM.SelectedSpells) do
         if #spell.SkipList > 0 then
@@ -2175,7 +1900,7 @@ function BOM.DoCancelBuffs()
     if BOM.CurrentProfile.CancelBuff[spell.ConfigID].Enable
             and taskScanModule:CancelBuff(spell.singleFamily)
     then
-      BOM:Print(string.format(_t("MsgCancelBuff"), spell.singleLink or spell.singleText,
+      BOM:Print(string.format(_t("message.CancelBuff"), spell.singleLink or spell.singleText,
               UnitName(BOM.CancelBuffSource) or ""))
     end
   end

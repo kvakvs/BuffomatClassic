@@ -3,7 +3,7 @@
 #
 ## Interface: ${UI_VERSION}
 ## Title: ${ADDON_TITLE}
-## Notes: Semi-automatic buff and resurrection bot, compatible with Burning Crusade Classic
+## Notes: Semi-automatic buff and resurrection bot, compatible with Classic, TBC, and WotLK Classic
 ## Version: ${VERSION}
 ## Author: kvakvs; by GPI/Erytheia-Razorfen
 ## DefaultState: enabled
@@ -55,6 +55,7 @@ Src/Events.lua
 Src/Languages.lua
 Src/SpellSetup.lua
 Src/TaskScan.lua
+Src/BuffChecks.lua
 Src/Toolbox.lua
 Src/Toolbox.lua
 

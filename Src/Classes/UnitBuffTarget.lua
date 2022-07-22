@@ -46,7 +46,7 @@ end
 
 function buffTargetClass:GetText()
   if self.unitName == "player" then
-    return BOM.Color("999999", BOM.L.SELF)
+    return BOM.Color("999999", BOM.L["task.target.Self"])
   end
   return self.link or self.unitName
 end

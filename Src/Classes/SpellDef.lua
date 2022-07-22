@@ -110,6 +110,12 @@ function spellDefModule:new(singleId, fields)
   newSpell.ForcedTarget = {}
   newSpell.ExcludedTarget = {}
 
+  newSpell.UnitsNeedBuff = {}
+  newSpell.UnitsHaveBetterBuff = {}
+  newSpell.GroupsNeedBuff = {}
+  --newSpell.GroupsHaveBetterBuff = {}
+  newSpell.GroupsHaveDead = {}
+
   return newSpell
 end
 
@@ -372,6 +378,14 @@ function spellDefClass:DoesUnitHaveBetterBuffs(unit)
     end
   end
   return false
+end
+
+function spellDefClass:ResetBuffTargets()
+  wipe(self.GroupsNeedBuff)
+  --wipe(self.GroupsHaveBetterBuff)
+  wipe(self.GroupsHaveDead)
+  wipe(self.UnitsNeedBuff)
+  wipe(self.UnitsHaveBetterBuff)
 end
 
 ---@param iconReadyFn function|nil Call with result when icon value is ready

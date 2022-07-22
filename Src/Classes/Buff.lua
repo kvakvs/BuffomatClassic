@@ -6,14 +6,14 @@ local buffModule = BuffomatModule.New("Buff") ---@type BomBuffModule
 
 BOM.Class = BOM.Class or {}
 
----@class Buff
+---@class BomUnitBuff
 ---@field singleId number Spell id also serving as key
 ---@field duration number
 ---@field expirationTime number
 ---@field source string Unit/player who gave this buff
 ---@field isSingle boolean
 
----@type Buff
+---@type BomUnitBuff
 BOM.Class.Buff = {}
 BOM.Class.Buff.__index = BOM.Class.Buff
 
@@ -23,7 +23,7 @@ BOM.Class.Buff.__index = BOM.Class.Buff
 ---@param expirationTime number
 ---@param source string
 ---@param isSingle boolean
----@return Buff
+---@return BomUnitBuff
 function BOM.Class.Buff:new(singleId, duration, expirationTime, source, isSingle)
   local fields = {
     singleId       = singleId,
