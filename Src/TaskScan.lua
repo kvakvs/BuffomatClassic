@@ -248,22 +248,31 @@ end
 ---Check for party, spell and player, which targets that spell goes onto
 ---Update spell.NeedMember, spell.NeedGroup and spell.DeathGroup
 ---@param party table<number, BomUnit> - the party
----@param spell BomSpellDef - the spell to update
----@param playerUnit BomUnit - the player
----@param someoneIsDead boolean - the flag that buffing cannot continue while someone is dead
+---@param spell BomSpellDef the spell to update
+---@param playerUnit BomUnit the player
 ---@return boolean someoneIsDead
-function taskScanModule:UpdateSpellTargets(party, spell, playerUnit, someoneIsDead)
+function taskScanModule:UpdateSpellTargets(party, spell, playerUnit)
+  local someoneIsDead = false
+
   spell.UnitsNeedBuff = spell.UnitsNeedBuff or {}
+  spell.UnitsHaveBetterBuff = spell.UnitsHaveBetterBuff or {}
   spell.GroupsNeedBuff = spell.GroupsNeedBuff or {}
+  --spell.GroupsHaveBetterBuff = spell.GroupsHaveBetterBuff or {}
   spell.GroupsHaveDead = spell.GroupsHaveDead or {}
 
   local isPlayerBuff = playerUnit.knownBuffs[spell.ConfigID]
 
   wipe(spell.GroupsNeedBuff)
-  wipe(spell.UnitsNeedBuff)
+  --wipe(spell.GroupsHaveBetterBuff)
   wipe(spell.GroupsHaveDead)
+  wipe(spell.UnitsNeedBuff)
+  wipe(spell.UnitsHaveBetterBuff)
 
-  if not spellDefModule:IsSpellEnabled(spell.ConfigID) then
+  if spell:DoesUnitHaveBetterBuffs(playerUnit) then
+    -- Save skipped unit and do nothing
+    tinsert(spell.UnitsHaveBetterBuff, playerUnit)
+
+  elseif not spellDefModule:IsSpellEnabled(spell.ConfigID) then
     --nothing, the spell is not enabled!
 
   elseif spellButtonsTabModule:CategoryIsHidden(spell.category) then
@@ -292,8 +301,6 @@ function taskScanModule:UpdateSpellTargets(party, spell, playerUnit, someoneIsDe
     end
 
   elseif spell.isInfo then
-    spell.playerActiv = false
-
     for i, partyMember in ipairs(party) do
       local partyMemberBuff = partyMember.knownBuffs[spell.ConfigID]
 
@@ -301,8 +308,6 @@ function taskScanModule:UpdateSpellTargets(party, spell, playerUnit, someoneIsDe
         tinsert(spell.UnitsNeedBuff, partyMember)
 
         if partyMember.isPlayer then
-          spell.playerActiv = true
-          spell.wasPlayerActiv = true
           spell.buffSource = partyMemberBuff.source
         end
 
@@ -939,7 +944,7 @@ function taskScanModule:ForceUpdate(party, playerUnit)
   -- For each selected spell check the targets
   ---@param spell BomSpellDef
   for i, spell in ipairs(BOM.SelectedSpells) do
-    someoneIsDead = self:UpdateSpellTargets(party, spell, playerUnit, someoneIsDead)
+    someoneIsDead = self:UpdateSpellTargets(party, spell, playerUnit)
   end
 
   taskScanModule.saveSomeoneIsDead = someoneIsDead
@@ -1088,6 +1093,13 @@ function taskScanModule:AddBlessing(spell, party, playerMember, inRange)
     end -- for all classes
   end
 
+  -- SINGLE BUFF (Ignored because better buff is found)
+  for _k, unitHasBetter in ipairs(spell.UnitsHaveBetterBuff) do
+    tasklist:LowPrioComment(string.format(_t("tasklist.IgnoredBuffOn"),
+            unitHasBetter.name, spell.singleText))
+    -- Leave message that the target has a better or ignored buff
+  end
+
   -- SINGLE BUFF
   for _j, unitNeedsBuff in ipairs(spell.UnitsNeedBuff) do
     if not unitNeedsBuff.isDead
@@ -1220,21 +1232,18 @@ function taskScanModule:AddBuff(spell, party, playerMember, inRange)
       end
 
       local add = ""
-      local profile_spell = spellDefModule:GetProfileSpell(spell.ConfigID)
+      local profileBuff = spellDefModule:GetProfileSpell(spell.ConfigID)
 
-      if profile_spell.ForcedTarget[unitNeedsBuff.name] then
+      if profileBuff.ForcedTarget[unitNeedsBuff.name] then
         add = string.format(constModule.PICTURE_FORMAT, BOM.ICON_TARGET_ON)
       end
 
-      local is_in_range = (IsSpellInRange(spell.singleText, unitNeedsBuff.unitId) == 1)
+      local unitIsInRange = (IsSpellInRange(spell.singleText, unitNeedsBuff.unitId) == 1)
               and not tContains(spell.SkipList, unitNeedsBuff.name)
 
-      if spell:HaveIgnoredBuffs(unitNeedsBuff) then
-        tasklist:LowPrioComment(string.format(_t("tasklist.IgnoredBuffOn"), unitNeedsBuff.name, spell.singleText))
-        -- Leave message that the target has a better or ignored buff
-      elseif self:PreventPvpTagging(spell.singleLink, spell.singleText, unitNeedsBuff) then
+      if self:PreventPvpTagging(spell.singleLink, spell.singleText, unitNeedsBuff) then
         -- Nothing, prevent poison function has already added the text
-      elseif is_in_range then
+      elseif unitIsInRange then
         -- Text: Target [Spell Name]
         tasklist:AddWithPrefix(
                 _t("BUFF_CLASS_REGULAR"),

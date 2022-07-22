@@ -1026,6 +1026,10 @@ function allSpellsModule:SetupPhysicalDpsConsumables(spells, enchants)
             singleDuration = DURATION_30M, })
                 :Category(self.SCROLL)
 
+  spellDefModule:addBuff(spells, 12177, --Scroll of Spirit IV
+          { item           = 10306, isConsumable = true, default = false, consumableTarget = "player",
+            singleDuration = DURATION_30M, playerClass = BOM_MANA_CLASSES })
+                :Category(self.SCROLL)
   spellDefModule:addBuff(spells, 33080, --Scroll of Spirit V
           { item           = 27501, isConsumable = true, default = false, consumableTarget = "player",
             singleDuration = DURATION_30M, playerClass = BOM_MANA_CLASSES },

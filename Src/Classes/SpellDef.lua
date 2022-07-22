@@ -66,7 +66,7 @@ BOM.Class = BOM.Class or {}
 ---@field singleFamily table<number> Family of single buff spell ids which are mutually exclusive
 ---@field singleId number Spell id for single buff
 ---@field singleMana number Mana cost
----@field ignoreIfHaveBuff table<number> If these auras are present on target, the buff is not queued
+---@field ignoreIfBetterBuffs table<number> If these auras are present on target, the buff is not queued
 ---@field section string Custom section to begin new spells group in the row builder
 ---
 ---Fields created dynamically while the addon is running
@@ -79,20 +79,19 @@ BOM.Class = BOM.Class or {}
 ---@field ForcedTarget table<string> List of extra targets to buff
 ---@field frames BomBuffRowFrames Dynamic list of controls associated with this spell in the UI
 ---@field GroupsHaveDead table<string, boolean> Group/class members who might be dead but their class needs this buff
----@field GroupsNeedBuff table List of group members who might need group version of this buff
+---@field GroupsNeedBuff table List of groups who might need this buff
+---@field GroupsHaveBetterBuff table List of groups who have better version of this buff
 ---@field UnitsNeedBuff table<number, BomUnit> List of group members who might need this buff
+---@field UnitsHaveBetterBuff table<number, BomUnit> List of group members who might need this buff but won't get it because they have better
 ---@field SelfCast boolean
 ---@field SkipList table If spell cast failed, contains recently failed targets
 ---@field trackingIconId number Numeric id for the tracking texture icon
 ---@field trackingSpellName string For tracking spells, contains string name for the spell
 ---@field shapeshiftFormId number Check this shapeshift form to know whether spell is already casted
 ---@field optionText string Used to create sections in spell list in the options page
----@field playerActiv boolean
----@field wasPlayerActiv boolean
 ---@field buffSource string Unit/player who gave this buff
 
----@type BomSpellDef
-local spellDefClass = {}
+local spellDefClass = {} ---@type BomSpellDef
 spellDefClass.__index = spellDefClass
 
 ---Creates a new SpellDef
@@ -270,8 +269,8 @@ end
 
 ---@return BomSpellDef
 function spellDefClass:IgnoreIfHaveBuff(spellId)
-  self.ignoreIfHaveBuff = self.ignoreIfHaveBuff or {}
-  tinsert(self.ignoreIfHaveBuff, spellId)
+  self.ignoreIfBetterBuffs = self.ignoreIfBetterBuffs or {}
+  tinsert(self.ignoreIfBetterBuffs, spellId)
   return self
 end
 
@@ -364,9 +363,9 @@ function spellDefClass:IsItem()
 end
 
 ---@param unit BomUnit
-function spellDefClass:HaveIgnoredBuffs(unit)
-  if type(self.ignoreIfHaveBuff) == "table" then
-    for _i, spellId in ipairs(self.ignoreIfHaveBuff) do
+function spellDefClass:DoesUnitHaveBetterBuffs(unit)
+  if type(self.ignoreIfBetterBuffs) == "table" then
+    for _i, spellId in ipairs(self.ignoreIfBetterBuffs) do
       if unit.knownBuffs[spellId] ~= nil or unit.allBuffs[spellId] ~= nil then
         return true
       end
