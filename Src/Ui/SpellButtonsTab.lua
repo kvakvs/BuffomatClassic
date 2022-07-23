@@ -55,7 +55,7 @@ spellButtonsTabModule.spellSettingsFrames = {}
 ---Add some clickable elements to Spell Tab row with all classes
 ---@param rowBuilder BomRowBuilder The structure used for building button rows
 ---@param playerIsHorde boolean Whether we are the horde
----@param spell BomSpellDef The spell currently being displayed
+---@param spell BomBuffDefinition The spell currently being displayed
 function spellButtonsTabModule:AddSpellRow_ClassSelector(rowBuilder, playerIsHorde, spell, profileSpell)
   local tooltip1 = BOM.FormatTexture(BOM.ICON_SELF_CAST_ON) .. " - " .. _t("TooltipSelfCastCheckbox_Self") .. "|n"
           .. BOM.FormatTexture(BOM.ICON_SELF_CAST_OFF) .. " - " .. _t("TooltipSelfCastCheckbox_Party")
@@ -105,7 +105,7 @@ function spellButtonsTabModule:AddSpellRow_ClassSelector(rowBuilder, playerIsHor
 end
 
 ---Add a row with spell cancel buttons
----@param spell BomSpellDef - The spell to be canceled
+---@param spell BomBuffDefinition - The spell to be canceled
 ---@param rowBuilder BomRowBuilder The structure used for building button rows
 ---@return {dy, prev_control}
 function spellButtonsTabModule:AddSpellCancelRow(spell, rowBuilder)
@@ -198,7 +198,7 @@ end
 
 ---Creates a row
 ---@param playerIsHorde boolean Whether we're the horde
----@param spell BomSpellDef Spell we're adding now
+---@param spell BomBuffDefinition Spell we're adding now
 ---@param rowBuilder BomRowBuilder The structure used for building button rows
 ---@param playerClass string Character class
 function spellButtonsTabModule:AddSpellRow(rowBuilder, playerIsHorde, spell, playerClass)
@@ -394,7 +394,7 @@ function spellButtonsTabModule:ForceTargetsTooltipText(spell)
           spell.ForcedTarget or {})
 end
 
----@param spell BomSpellDef
+---@param spell BomBuffDefinition
 function spellButtonsTabModule:UpdateForcecastTooltip(button, spell)
   local tooltip_force_targets = self:ForceTargetsTooltipText(spell)
   BOM.Tool.TooltipText(
@@ -411,7 +411,7 @@ function spellButtonsTabModule:ExcludeTargetsTooltip(spell)
           spell.ExcludedTarget or {})
 end
 
----@param spell BomSpellDef
+---@param spell BomBuffDefinition
 function spellButtonsTabModule:UpdateExcludeTargetsTooltip(button, spell)
   local tooltip_exclude_targets = self:ExcludeTargetsTooltip(spell)
   BOM.Tool.TooltipText(
@@ -446,7 +446,7 @@ function spellButtonsTabModule:AddCategoryRow(catId, rowBuilder)
   rowBuilder.dy = 4 -- step down a little
 end
 
----@param spell BomSpellDef
+---@param spell BomBuffDefinition
 function spellButtonsTabModule:UpdateSelectedSpell(spell)
   -- temp fix
   if not spell.frames.Enable then
@@ -454,7 +454,7 @@ function spellButtonsTabModule:UpdateSelectedSpell(spell)
   end
 
   -- the pointer to spell in current BOM profile
-  ---@type BomSpellDef
+  ---@type BomBuffDefinition
   local profileSpell = BOM.CurrentProfile.Spell[spell.buffId]
   spell.frames.Enable:SetVariable(profileSpell, "Enable")
 

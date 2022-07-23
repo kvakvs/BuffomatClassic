@@ -233,12 +233,12 @@ function Tool.ScanToolTip(what, ...)
   return TextList
 end
 
-function Tool.CopyTable(from, to)
+function toolboxModule:CopyTable(from, to)
   -- "to" must be a table (possibly empty)
   to = to or {}
   for k, v in pairs(from) do
     if type(v) == "table" then
-      to[k] = Tool.CopyTable(v)
+      to[k] = self:CopyTable(v)
     else
       to[k] = v
     end

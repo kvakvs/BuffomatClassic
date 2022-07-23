@@ -8,7 +8,7 @@ local allSpellsModule = BuffomatModule.Import("AllSpells") ---@type BomAllSpells
 local spellDefModule = BuffomatModule.Import("SpellDef") ---@type BomSpellDefModule
 
 ---Add WARLOCK spells
----@param spells table<string, BomSpellDef>
+---@param spells table<string, BomBuffDefinition>
 ---@param enchants table<string, table<number>>
 function warlockModule:SetupWarlockSpells(spells, enchants)
   spellDefModule:createAndRegisterBuff(spells, 5697, -- Unending Breath
@@ -68,7 +68,7 @@ function warlockModule:SetupWarlockSpells(spells, enchants)
                                  BOM.SpellId.Warlock.CreateFirestone6,
                                  BOM.SpellId.Warlock.CreateFirestone7 },
             })    :ClassOnly("WARLOCK")
-                  :Category(allSpellsModule.WEAPON_ENCHANTMENT)
+                  :Category(allSpellsModule.CLASS_WEAPON_ENCHANTMENT)
     spellDefModule:createAndRegisterBuff(spells, 60220, -- Firestone
             { item    = 41174, isConsumable = true, type = "weapon",
               items   = { BOM.ItemId.Warlock.Firestone1,
@@ -80,7 +80,7 @@ function warlockModule:SetupWarlockSpells(spells, enchants)
                           BOM.ItemId.Warlock.Firestone7 },
               default = false, singleDuration = allSpellsModule.DURATION_1H,
             })    :ClassOnly("WARLOCK")
-                  :Category(allSpellsModule.WEAPON_ENCHANTMENT)
+                  :Category(allSpellsModule.CLASS_WEAPON_ENCHANTMENT)
     enchants[60220] = { 3609, 3610, 3611, 3612, 3597, 3613, 3614 } -- WotLK: Firestone 1-7
   else
     -- in WotLK firestone becomes a 5-charges conjured weapon enchantment item
@@ -110,7 +110,7 @@ function warlockModule:SetupWarlockSpells(spells, enchants)
                                  BOM.SpellId.Warlock.CreateSpellstone5,
                                  BOM.SpellId.Warlock.CreateSpellstone6 }
             })    :ClassOnly("WARLOCK")
-                  :Category(allSpellsModule.WEAPON_ENCHANTMENT)
+                  :Category(allSpellsModule.CLASS_WEAPON_ENCHANTMENT)
     spellDefModule:createAndRegisterBuff(spells, 55194, -- Spellstone
             { item    = BOM.ItemId.Warlock.Spellstone6, isConsumable = true, type = "weapon",
               items   = { BOM.ItemId.Warlock.Spellstone1,
@@ -121,7 +121,7 @@ function warlockModule:SetupWarlockSpells(spells, enchants)
                           BOM.ItemId.Warlock.Spellstone6 },
               default = false, singleDuration = allSpellsModule.DURATION_1H,
             })    :ClassOnly("WARLOCK")
-                  :Category(allSpellsModule.WEAPON_ENCHANTMENT)
+                  :Category(allSpellsModule.CLASS_WEAPON_ENCHANTMENT)
     enchants[55194] = {
       3615, 3616, 3617, 3618, 3619, 3620
     } -- WotLK: Spellstone 1-6 enchantIds

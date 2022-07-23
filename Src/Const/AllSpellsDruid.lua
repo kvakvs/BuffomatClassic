@@ -8,7 +8,7 @@ local allSpellsModule = BuffomatModule.Import("AllSpells") ---@type BomAllSpells
 local spellDefModule = BuffomatModule.Import("SpellDef") ---@type BomSpellDefModule
 
 ---Add DRUID spells
----@param spells table<string, BomSpellDef>
+---@param spells table<string, BomBuffDefinition>
 ---@param enchants table<string, table<number>>
 function druidModule:SetupDruidSpells(spells, enchants)
   spellDefModule:createAndRegisterBuff(spells, 9885, --Gift/Mark of the Wild | Gabe/Mal der Wildniss

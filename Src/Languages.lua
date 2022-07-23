@@ -54,6 +54,7 @@ local function bomLanguage_English()
     ["Category_wotlkElixir"]                          = "Other Elixirs (WotLK)",
     ["Category_scroll"]                               = "Scrolls",
     ["Category_weaponEnchantment"]                    = "Weapon Enchantments",
+    ["Category_classWeaponEnchantment"]               = "Class Enchantments",
     ["Category_none"]                                 = "Uncategorized",
 
     ["options.OptionsTitle"]                          = "Buffomat",

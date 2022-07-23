@@ -8,7 +8,7 @@ local allSpellsModule = BuffomatModule.Import("AllSpells") ---@type BomAllSpells
 local spellDefModule = BuffomatModule.Import("SpellDef") ---@type BomSpellDefModule
 
 ---Add SHAMAN spells
----@param spells table<string, BomSpellDef>
+---@param spells table<string, BomBuffDefinition>
 ---@param enchants table<string, table<number>>
 function shamanModule:SetupShamanSpells(spells, enchants)
   local duration = allSpellsModule.TbcOrClassic(allSpellsModule.DURATION_20M, allSpellsModule.DURATION_10M)
@@ -22,7 +22,7 @@ function shamanModule:SetupShamanSpells(spells, enchants)
                              58785, 58789, 58790 } } -- WotLK: Flametongue Weapon 8-10
   )             :Seal()
                 :ClassOnly("SHAMAN")
-                :Category(allSpellsModule.CLASS)
+                :Category(allSpellsModule.CLASS_WEAPON_ENCHANTMENT)
   enchants[16342] = { 3, 4, 5, 523, 1665, 1666, -- Flametongue 1-6
                       2634, -- TBC: Flametongue 7
                       3779, 3780, 3781 } -- WotLK: Flametongue 8-10
@@ -35,7 +35,7 @@ function shamanModule:SetupShamanSpells(spells, enchants)
                              58794, 58795, 58796 } } -- WotLK: Frostbrand Weapon 7-9
   )             :Seal()
                 :ClassOnly("SHAMAN")
-                :Category(allSpellsModule.CLASS)
+                :Category(allSpellsModule.CLASS_WEAPON_ENCHANTMENT)
   enchants[16356] = { 2, 12, 524, 1667, 1668, -- Frostbrand
                       2635, -- TBC: Frostbrand 6
                       3782, 3783, 3784 } -- WotLK: Frostbrand 7-9
@@ -47,7 +47,7 @@ function shamanModule:SetupShamanSpells(spells, enchants)
                              25479, 25485 } } -- TBC: Ranks 8-9
   )             :Seal()
                 :ClassOnly("SHAMAN")
-                :Category(allSpellsModule.CLASS)
+                :Category(allSpellsModule.CLASS_WEAPON_ENCHANTMENT)
 
   -- Note: in TBC all enchantIds for rockbiter have changed
   enchants[16316] = { 1, 6, 29, 503, 504, 683, 1663, 1664, -- Rockbiter, also 504 some special +80 Rockbiter?
@@ -63,7 +63,7 @@ function shamanModule:SetupShamanSpells(spells, enchants)
                              58801, 58803, 58804 } } -- WotLK: Windfury Weapon 6-8
   )             :Seal()
                 :ClassOnly("SHAMAN")
-                :Category(allSpellsModule.CLASS)
+                :Category(allSpellsModule.CLASS_WEAPON_ENCHANTMENT)
   enchants[16362] = { 283, 284, 525, 1669, -- Windfury 1-4
                       2636, -- TBC: Windfury 5
                       3785, 3786, 3787 } -- WotLK: Windfury 6-8

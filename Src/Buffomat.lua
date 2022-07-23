@@ -30,9 +30,9 @@ local toolboxModule = BuffomatModule.Import("Toolbox") ---@type BomToolboxModule
 ---@field TBC_ERA string Constant for era classification of a consumable
 ---@field locales BuffomatTranslations (same as BOM.L)
 ---@field L BuffomatTranslations (same as BOM.locales)
----@field AllBuffomatSpells table<number, BomSpellDef> All spells known to Buffomat
+---@field AllBuffomatBuffs table<number, BomBuffDefinition> All spells known to Buffomat
 ---@field EnchantList table<number, table<number>> Spell ids mapping to enchant ids
----@field CancelBuffs table<number, BomSpellDef> All spells to be canceled on detection
+---@field CancelBuffs table<number, BomBuffDefinition> All spells to be canceled on detection
 ---@field ItemCache table<number, BomItemCacheElement> Precreated precached items
 ---@field ActivePaladinAura nil|number Spell id of aura if an unique aura was casted (only one can be active)
 ---@field ActivePaladinSeal nil|number Spell id of weapon seal, if an seal-type temporary enchant was used (only one can be active)
@@ -61,7 +61,7 @@ local toolboxModule = BuffomatModule.Import("Toolbox") ---@type BomToolboxModule
 ---@field ManaLimit number Player max mana
 ---@field PartyUpdateNeeded boolean Requests player party update
 ---@field PlayerCasting string|nil Indicates that the player is currently casting (updated in event handlers)
----@field SelectedSpells table<number, BomSpellDef>
+---@field SelectedSpells table<number, BomBuffDefinition>
 ---@field cancelForm table<number, number> Spell ids which cancel shapeshift form
 ---@field SpellIdIsSingle table<number, boolean> Whether spell ids are single buffs
 ---@field SpellIdtoConfig table<number, number> Maps spell ids to the key id of spell in the AllSpells

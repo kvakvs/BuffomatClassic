@@ -8,6 +8,8 @@ local itemCacheModule = BuffomatModule.Import("ItemCache") ---@type BomItemCache
 ---@class BomSpellSetupModule
 local spellSetupModule = BuffomatModule.New("SpellSetup") ---@type BomSpellSetupModule
 
+local toolboxModule = BuffomatModule.Import("Toolbox") ---@type BomToolboxModule
+
 local L = setmetatable({}, { __index = function(t, k)
   if BOM.L and BOM.L[k] then
     return BOM.L[k]
@@ -17,12 +19,12 @@ local L = setmetatable({}, { __index = function(t, k)
 end })
 
 ---Flag set to true when custom spells and cancel-spells were imported from the config
-local bomSpellsImportedFromConfig = false
+local bomBuffsImportedFromConfig = false
 
 ---Formats a spell icon + spell name as a link
 -- TODO: Move to SpellDef class
 ---@param spellInfo BomSpellCacheElement spell info from the cache via BOM.GetSpellInfo
-local function bomFormatSpellLink(spellInfo)
+function spellSetupModule:FormatSpellLink(spellInfo)
   if spellInfo == nil then
     return "NIL SPELL"
   end
@@ -37,24 +39,24 @@ local function bomFormatSpellLink(spellInfo)
           .. "|r|h"
 end
 
-local function bomSetup_MaybeAddCustomSpells()
-  if bomSpellsImportedFromConfig then
+function spellSetupModule:Setup_MaybeAddCustomSpells()
+  if bomBuffsImportedFromConfig then
     return
   end
 
-  bomSpellsImportedFromConfig = true
+  bomBuffsImportedFromConfig = true
 
   for x, entry in ipairs(buffomatModule.shared.CustomSpells) do
-    tinsert(BOM.AllBuffomatSpells, BOM.Tool.CopyTable(entry))
+    tinsert(BOM.AllBuffomatBuffs, toolboxModule:CopyTable(entry))
   end
 
   for x, entry in ipairs(buffomatModule.shared.CustomCancelBuff) do
-    tinsert(BOM.CancelBuffs, BOM.Tool.CopyTable(entry))
+    tinsert(BOM.CancelBuffs, toolboxModule:CopyTable(entry))
   end
 end
 
-local function bomSetup_ResetCaches()
-  BOM.SelectedSpells = {} ---@type table<number, BomSpellDef>
+function spellSetupModule:Setup_ResetCaches()
+  BOM.SelectedSpells = {} ---@type table<number, BomBuffDefinition>
   BOM.cancelForm = {}
   BOM.AllSpellIds = {}
   BOM.SpellIdtoConfig = {}
@@ -65,7 +67,7 @@ local function bomSetup_ResetCaches()
   buffomatModule.shared.Cache.Item2 = buffomatModule.shared.Cache.Item2 or {}
 end
 
-local function bomSetup_CancelBuffs()
+function spellSetupModule:Setup_CancelBuffs()
   for i, spell in ipairs(BOM.CancelBuffs) do
     -- save "buffId"
     --spell.buffId = spell.buffId or spell.singleId
@@ -81,7 +83,7 @@ local function bomSetup_CancelBuffs()
 
     spell.singleText = spell_info.name
     spell_info.rank = GetSpellSubtext(spell.singleId) or ""
-    spell.singleLink = bomFormatSpellLink(spell_info)
+    spell.singleLink = self:FormatSpellLink(spell_info)
     spell.spellIcon = spell_info.icon
 
     BOM.Tool.iMerge(BOM.AllSpellIds, spell.singleFamily)
@@ -95,9 +97,9 @@ local function bomSetup_CancelBuffs()
   end
 end
 
----@param spell BomSpellDef
+---@param spell BomBuffDefinition
 ---@param add boolean
-local function bomSetup_EachSpell_Consumable(add, spell)
+function spellSetupModule:Setup_EachSpell_Consumable(add, spell)
   -- call results are cached if they are successful, should not be a performance hit
   local item_info = BOM.GetItemInfo(spell.item)
 
@@ -154,8 +156,8 @@ local function bomSetup_EachSpell_Consumable(add, spell)
   return add
 end
 
----@param spell BomSpellDef
-local function bomSetup_EachSpell_CacheUpdate(spell)
+---@param spell BomBuffDefinition
+function spellSetupModule:Setup_EachSpell_CacheUpdate(spell)
   -- get highest rank and store SpellID=buffId
   if spell.singleFamily then
     for sindex, sID in ipairs(spell.singleFamily) do
@@ -192,15 +194,15 @@ local function bomSetup_EachSpell_CacheUpdate(spell)
   end
 end
 
----@param spell BomSpellDef
-local function bomSetup_EachSpell_SetupNonConsumable(spell)
+---@param spell BomBuffDefinition
+function spellSetupModule:Setup_EachSpell_SetupNonConsumable(spell)
   -- Load spell info and save some good fields for later use
   local spellInfo = BOM.GetSpellInfo(spell.singleId)
 
   if spellInfo ~= nil then
     spell.singleText = spellInfo.name
     spellInfo.rank = GetSpellSubtext(spell.singleId) or ""
-    spell.singleLink = bomFormatSpellLink(spellInfo)
+    spell.singleLink = self:FormatSpellLink(spellInfo)
     spell.spellIcon = spellInfo.icon
 
     if spell.type == "tracking" then
@@ -218,14 +220,14 @@ local function bomSetup_EachSpell_SetupNonConsumable(spell)
   end -- spell info returned success
 end
 
----@param spell BomSpellDef
-local function bomSetup_EachSpell_SetupGroupBuff(spell)
+---@param spell BomBuffDefinition
+function spellSetupModule:Setup_EachSpell_SetupGroupBuff(spell)
   local spellInfo = BOM.GetSpellInfo(spell.groupId)
 
   if spellInfo ~= nil then
     spell.groupText = spellInfo.name
     spellInfo.rank = GetSpellSubtext(spell.groupId) or ""
-    spell.groupLink = bomFormatSpellLink(spellInfo)
+    spell.groupLink = self:FormatSpellLink(spellInfo)
 
     if spell.groupDuration
             and buffomatModule.shared.Duration[spellInfo.name] == nil
@@ -237,8 +239,8 @@ local function bomSetup_EachSpell_SetupGroupBuff(spell)
 end
 
 ---Adds a spell to the palette of spells to configure and use, for each profile
----@param spell BomSpellDef
-local function bomSetup_EachSpell_Add(spell)
+---@param spell BomBuffDefinition
+function spellSetupModule:Setup_EachSpell_Add(spell)
   tinsert(BOM.SelectedSpells, spell)
   BOM.Tool.iMerge(BOM.AllSpellIds, spell.singleFamily, spell.groupFamily,
           spell.singleId, spell.groupId)
@@ -250,7 +252,7 @@ local function bomSetup_EachSpell_Add(spell)
 
   --setDefaultValues!
   for j, eachProfile in ipairs(BOM.ALL_PROFILES) do
-    ---@type BomSpellDef
+    ---@type BomBuffDefinition
     local profileSpell = buffomatModule.character[eachProfile].Spell[spell.buffId]
 
     if profileSpell == nil then
@@ -286,65 +288,65 @@ end
 
 ---For each spell known to Buffomat check whether the player can use it and the
 ---category where it will go. Build mapping tables to quickly find spells
----@param spell BomSpellDef
-local function bomSetup_EachSpell(spell)
-  spell.SkipList = {}
-  BOM.ConfigToSpell[spell.buffId] = spell
+---@param buff BomBuffDefinition
+function spellSetupModule:Setup_EachBuff(buff)
+  buff.SkipList = {}
+  BOM.ConfigToSpell[buff.buffId] = buff
 
-  bomSetup_EachSpell_CacheUpdate(spell)
+  self:Setup_EachSpell_CacheUpdate(buff)
 
   -- GetSpellNames and set default duration
-  if spell.singleId and not spell.isConsumable then
-    bomSetup_EachSpell_SetupNonConsumable(spell)
+  if buff.singleId and not buff.isConsumable then
+    self:Setup_EachSpell_SetupNonConsumable(buff)
   end
 
-  if spell.groupId then
-    bomSetup_EachSpell_SetupGroupBuff(spell)
+  if buff.groupId then
+    self:Setup_EachSpell_SetupGroupBuff(buff)
   end
 
   -- has Spell? Manacost?
   local add = false
 
   -- Add single buffs which are known
-  if IsSpellKnown(spell.singleId) then
+  if IsSpellKnown(buff.singleId) then
     add = true
-    spell.singleMana = 0
-    local cost = GetSpellPowerCost(spell.singleText)
+    buff.singleMana = 0
+    local cost = GetSpellPowerCost(buff.singleText)
 
     if type(cost) == "table" then
       for j = 1, #cost do
         if cost[j] and cost[j].name == "MANA" then
-          spell.singleMana = cost[j].cost or 0
+          buff.singleMana = cost[j].cost or 0
         end
       end
     end
   end
 
   -- Add group buffs which are known
-  if spell.groupText and IsSpellKnown(spell.groupId) then
+  if buff.groupText and IsSpellKnown(buff.groupId) then
     add = true
-    spell.groupMana = 0
-    local cost = GetSpellPowerCost(spell.groupText)
+    buff.groupMana = 0
+    local cost = GetSpellPowerCost(buff.groupText)
 
     if type(cost) == "table" then
       for j = 1, #cost do
         if cost[j] and cost[j].name == "MANA" then
-          spell.groupMana = cost[j].cost or 0
+          buff.groupMana = cost[j].cost or 0
         end
       end
     end
   end
 
-  if spell.isConsumable then
-    add = bomSetup_EachSpell_Consumable(add, spell)
+  if buff.isConsumable then
+    add = self:Setup_EachSpell_Consumable(add, buff)
   end
 
-  if spell.isInfo then
+  if buff.isInfo then
     add = true
   end
 
   if add then
-    bomSetup_EachSpell_Add(spell)
+    self:Setup_EachSpell_Add(buff)
   end -- if spell is OK to be added
 end
 
@@ -356,23 +358,23 @@ function spellSetupModule:SetupAvailableSpells()
     buffomatModule.character[profil].Spell[constModule.BLESSING_ID] = buffomatModule.character[profil].Spell[constModule.BLESSING_ID] or {}
   end
 
-  bomSetup_MaybeAddCustomSpells()
+  self:Setup_MaybeAddCustomSpells()
 
   --Spells selected for the current class/settings/profile etc
-  bomSetup_ResetCaches()
+  self:Setup_ResetCaches()
 
   if BOM.ArgentumDawn.Link == nil
           or BOM.Carrot.Link == nil then
     do
-      BOM.ArgentumDawn.Link = bomFormatSpellLink(BOM.GetSpellInfo(BOM.ArgentumDawn.spell))
-      BOM.Carrot.Link = bomFormatSpellLink(BOM.GetSpellInfo(BOM.Carrot.spell))
+      BOM.ArgentumDawn.Link = self:FormatSpellLink(BOM.GetSpellInfo(BOM.ArgentumDawn.spell))
+      BOM.Carrot.Link = self:FormatSpellLink(BOM.GetSpellInfo(BOM.Carrot.spell))
     end
   end
 
-  bomSetup_CancelBuffs()
+  self:Setup_CancelBuffs()
 
-  ---@param spell BomSpellDef
-  for i, spell in ipairs(BOM.AllBuffomatSpells) do
-    bomSetup_EachSpell(spell)
+  ---@param buff BomBuffDefinition
+  for _i, buff in ipairs(BOM.AllBuffomatBuffs) do
+    self:Setup_EachBuff(buff)
   end -- for all BOM-supported spells
 end

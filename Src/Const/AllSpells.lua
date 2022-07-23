@@ -3,7 +3,7 @@ local BOM = BuffomatAddon ---@type BomAddon
 
 ---@class BomAllSpellsModule
 ---@field buffCategories table<number, string> Category names for buffs
----@field allBuffs table<number, BomSpellDef> All buffs, same as BOM.AllBuffomatSpells for convenience
+---@field allBuffs table<number, BomBuffDefinition> All buffs, same as BOM.AllBuffomatSpells for convenience
 local allSpellsModule = BuffomatModule.New("AllSpells") ---@type BomAllSpellsModule
 
 local _t = BuffomatModule.Import("Languages") ---@type BomLanguagesModule
@@ -17,6 +17,9 @@ local shamanModule = BuffomatModule.Import("AllSpellsShaman") ---@type BomAllSpe
 local warlockModule = BuffomatModule.Import("AllSpellsWarlock") ---@type BomAllSpellsWarlockModule
 local hunterModule = BuffomatModule.Import("AllSpellsHunter") ---@type BomAllSpellsHunterModule
 local paladinModule = BuffomatModule.Import("AllSpellsPaladin") ---@type BomAllSpellsPaladinModule
+local warriorModule = BuffomatModule.Import("AllSpellsWarrior") ---@type BomAllSpellsWarriorModule
+local rogueModule = BuffomatModule.Import("AllSpellsRogue") ---@type BomAllSpellsRogueModule
+local deathknightModule = BuffomatModule.Import("AllSpellsDeathknight") ---@type BomAllSpellsDeathknightModule
 
 local L = setmetatable(
         {},
@@ -86,126 +89,48 @@ local function tbcOrClassic(tbc, classic)
 end
 allSpellsModule.TbcOrClassic = tbcOrClassic
 
----Add WARRIOR spells
-function allSpellsModule:SetupWarriorSpells(spells, enchants)
-  local warriorOnly = { playerClass = "WARRIOR" }
-
-  spellDefModule:createAndRegisterBuff(spells, 25289, --Battle Shout
-          { isOwn        = true, default = true, default = false,
-            singleFamily = { 6673, 5242, 6192, 11549, 11550, 11551, 25289, -- Ranks 1-7
-                             2048 } }, -- TBC: Rank 8
-          warriorOnly)
-                :Category(self.CLASS)
-  spellDefModule:createAndRegisterBuff(spells, 2457, --Battle Stance
-          { isOwn = true, default = true, default = false, singleId = 2457, shapeshiftFormId = 17 },
-          warriorOnly)
-                :Category(self.CLASS)
-  spellDefModule:createAndRegisterBuff(spells, 71, --Defensive Stance
-          { isOwn = true, default = true, default = false, singleId = 71, shapeshiftFormId = 18 },
-          warriorOnly)
-                :Category(self.CLASS)
-  spellDefModule:createAndRegisterBuff(spells, 2458, --Berserker Stance
-          { isOwn = true, default = true, default = false, singleId = 2458, shapeshiftFormId = 19 },
-          warriorOnly)
-                :Category(self.CLASS)
-end
-
----Add ROGUE spells
----@param spells table<string, BomSpellDef>
----@param enchants table<string, table<number>>
-function allSpellsModule:SetupRogueSpells(spells, enchants)
-  local duration = tbcOrClassic(DURATION_1H, DURATION_30M) -- TBC: Poisons become 1 hour
-
-  spellDefModule:createAndRegisterBuff(spells, 25351, --Deadly Poison
-          { item         = tbcOrClassic(22054, 20844),
-            items        = { 22054, 22053, -- TBC: Deadly Poison
-                             20844, 8985, 8984, 2893, 2892 },
-            isConsumable = true, type = "weapon", duration = duration, default = false },
-          { playerClass = "ROGUE", minLevel = 2 })
-                :Category(self.CLASS)
-  enchants[25351] = { 2643, 2642, -- TBC: Deadly Poison
-                      2630, 627, 626, 8, 7 } --Deadly Poison
-
-  spellDefModule:createAndRegisterBuff(spells, 11399, --Mind-numbing Poison
-          { item     = 9186, items = { 9186, 6951, 5237 }, isConsumable = true, type = "weapon",
-            duration = duration, default = false },
-          { playerClass = "ROGUE", minLevel = 24 })
-                :Category(self.CLASS)
-  enchants[11399] = { 643, 23, 35 } --Mind-numbing Poison
-
-  spellDefModule:createAndRegisterBuff(spells, 11340, --Instant Poison
-          { item         = tbcOrClassic(21927, 8928),
-            items        = { 21927, -- TBC: Instant Poison
-                             8928, 8927, 8926, 6950, 6949, 6947 },
-            isConsumable = true, type = "weapon", duration = duration, default = false },
-          { playerClass = "ROGUE", minLevel = 20 })
-                :Category(self.CLASS)
-  enchants[11340] = { 2641, -- TBC: Instant Poison
-                      625, 624, 623, 325, 324, 323 } --Instant Poison
-
-  spellDefModule:createAndRegisterBuff(spells, 13227, --Wound Poison
-          { item         = tbcOrClassic(22055, 10922),
-            items        = { 22055, -- TBC: Wound Poison
-                             10922, 10921, 10920, 10918 },
-            isConsumable = true, type = "weapon", duration = duration, default = false },
-          { playerClass = "ROGUE", minLevel = 32 })
-                :Category(self.CLASS)
-  enchants[13227] = { 2644, -- TBC: Wound Poison
-                      706, 705, 704, 703 } --Wound Poison
-
-  spellDefModule:createAndRegisterBuff(spells, 11202, --Crippling Poison
-          { item     = 3776, items = { 3776, 3775 }, isConsumable = true, type = "weapon",
-            duration = duration, default = false },
-          { playerClass = "ROGUE", minLevel = 20 })
-                :Category(self.CLASS)
-  enchants[11202] = { 603, 22 } --Crippling Poison
-
-  spellDefModule:createAndRegisterBuff(spells, 26785, --TBC: Anesthetic Poison
-          { item         = 21835, items = { 21835 },
-            isConsumable = true, type = "weapon", duration = duration, default = false },
-          { playerClass = "ROGUE", minLevel = 68 })
-                :ShowInTBC()
-                :Category(self.CLASS)
-  enchants[26785] = { 2640, } --TBC: Anesthetic Poison
+--- From 2 choices return TBC if BOM.IsTBC is true, otherwise return classic
+function allSpellsModule.ExpansionChoice(classic, tbc, wotlk)
+  if BOM.HaveWotLK then
+    return wotlk
+  end
+  if BOM.HaveTBC then
+    return tbc
+  end
+  return classic
 end
 
 ---Add RESOURCE TRACKING spells
----@param spells table<string, BomSpellDef>
+---@param spells table<string, BomBuffDefinition>
 ---@param enchants table<string, table<number>>
 function allSpellsModule:SetupTrackingSpells(spells, enchants)
-  tinsert(spells,
-          spellDefModule:New(BOM.SpellId.FindHerbs, -- Find Herbs / kräuter
-                  { type = "tracking", default = true })
-                        :Category(self.TRACKING)
-  )
-  tinsert(spells,
-          spellDefModule:New(BOM.SpellId.FindMinerals, -- Find Minerals / erz
-                  { type = "tracking", default = true })
-                        :Category(self.TRACKING)
-  )
-  tinsert(spells,
-          spellDefModule:New(2481, -- Find Treasure / Schatzsuche / Zwerge
-                  { type = "tracking", default = true })
-                        :Category(self.TRACKING)
-  )
-  tinsert(spells,
-          spellDefModule:New(43308, -- Find Fish (TBC daily quest reward)
-                  { type = "tracking", default = false })
-                        :Category(self.TRACKING)
-  )
+  spells[BOM.SpellId.FindHerbs] = spellDefModule:New(BOM.SpellId.FindHerbs, -- Find Herbs / kräuter
+          { type = "tracking", default = true
+          })                                    :Category(self.TRACKING)
+
+  spells[BOM.SpellId.FindMinerals] = spellDefModule:New(BOM.SpellId.FindMinerals, -- Find Minerals / erz
+          { type = "tracking", default = true
+          })                                       :Category(self.TRACKING)
+  spells[2481] = spellDefModule:New(2481, -- Find Treasure / Schatzsuche / Zwerge
+          { type = "tracking", default = true })
+                               :Category(self.TRACKING)
+
+  spells[43308] = spellDefModule:New(43308, -- Find Fish (TBC daily quest reward)
+          { type = "tracking", default = false })
+                                :Category(self.TRACKING)
 
   return spells
 end
 
 ---MISC spells applicable to every class
----@param spells table<string, BomSpellDef>
+---@param spells table<string, BomBuffDefinition>
 ---@param enchants table<string, table<number>>
 function allSpellsModule:SetupMiscSpells(spells, enchants)
   return spells
 end
 
 ---ITEMS, applicable to most of the classes, self buffs, containers to open etc
----@param spells table<string, BomSpellDef>
+---@param spells table<string, BomBuffDefinition>
 ---@param enchants table<string, table<number>>
 function allSpellsModule:SetupPhysicalDpsBattleElixirs(spells, enchants)
   spellDefModule:createAndRegisterBuff(spells, 28497, --TBC: Elixir of Major Agility +35 AGI +20 CRIT
@@ -235,7 +160,7 @@ function allSpellsModule:SetupPhysicalDpsBattleElixirs(spells, enchants)
 end
 
 ---ITEMS, applicable to most of the classes, self buffs, containers to open etc
----@param spells table<string, BomSpellDef>
+---@param spells table<string, BomBuffDefinition>
 ---@param enchants table<string, table<number>>
 function allSpellsModule:SetupPhysicalDpsConsumables(spells, enchants)
   spellDefModule:createAndRegisterBuff(spells, 17538, --Elixir of the Mongoose
@@ -386,7 +311,7 @@ function allSpellsModule:SetupPhysicalDpsConsumables(spells, enchants)
 end
 
 ---ITEMS, applicable to most of the classes, self buffs, containers to open etc
----@param spells table<string, BomSpellDef>
+---@param spells table<string, BomBuffDefinition>
 ---@param enchants table<string, table<number>>
 function allSpellsModule:SetupCasterBattleElixirs(spells, enchants)
   -- Not visible in Classic
@@ -463,7 +388,7 @@ function allSpellsModule:SetupCasterBattleElixirs(spells, enchants)
 end
 
 ---ITEMS, applicable to most of the classes, self buffs, containers to open etc
----@param spells table<string, BomSpellDef>
+---@param spells table<string, BomBuffDefinition>
 ---@param enchants table<string, table<number>>
 function allSpellsModule:SetupCasterGuardianElixirs(spells, enchants)
   spellDefModule:classicConsumable(spells, 11396, 9179, --Elixir of Greater Intellect +25
@@ -482,7 +407,7 @@ function allSpellsModule:SetupCasterGuardianElixirs(spells, enchants)
                 :ElixirType(self.ELIX_GUARDIAN)
 end
 
----@param spells table<string, BomSpellDef>
+---@param spells table<string, BomBuffDefinition>
 ---@param enchants table<string, table<number>>
 function allSpellsModule:SetupCasterConsumables(spells, enchants)
   spellDefModule:classicConsumable(spells, 18194, 13931, --Nightfin Soup +8Mana/5
@@ -531,7 +456,7 @@ function allSpellsModule:SetupCasterConsumables(spells, enchants)
   enchants[28898] = { 2685 } --Blessed Wizard Oil
 end
 
----@param spells table<string, BomSpellDef>
+---@param spells table<string, BomBuffDefinition>
 ---@param enchants table<string, table<number>>
 function allSpellsModule:SetupBattleElixirs(spells, enchants)
   -- Sunwell only
@@ -539,7 +464,7 @@ function allSpellsModule:SetupBattleElixirs(spells, enchants)
   --        { item = 34537, isConsumable = true, default = false }))
 end
 
----@param spells table<string, BomSpellDef>
+---@param spells table<string, BomBuffDefinition>
 ---@param enchants table<string, table<number>>
 function allSpellsModule:SetupGuardianElixirs(spells, enchants)
   spellDefModule:tbcConsumable(spells, 33726, 28104) --TBC: Elixir of Mastery +15 all stats
@@ -647,7 +572,7 @@ function allSpellsModule:SetupGuardianElixirs(spells, enchants)
                 :ElixirType(self.ELIX_GUARDIAN)
 end
 
----@param spells table<string, BomSpellDef>
+---@param spells table<string, BomBuffDefinition>
 ---@param enchants table<string, table<number>>
 function allSpellsModule:SetupItemSpells(spells, enchants)
   spellDefModule:classicConsumable(spells, 15233, 11564, --Crystal Ward
@@ -663,7 +588,7 @@ function allSpellsModule:SetupItemSpells(spells, enchants)
                 :Category(self.CLASSIC_BUFF)
 end
 
----@param spells table<string, BomSpellDef>
+---@param spells table<string, BomBuffDefinition>
 ---@param enchants table<string, table<number>>
 function allSpellsModule:SetupFood(spells, enchants)
   --
@@ -731,7 +656,7 @@ function allSpellsModule:SetupFood(spells, enchants)
                 :Category(self.TBC_SPELL_FOOD)
 end
 
----@param spells table<string, BomSpellDef>
+---@param spells table<string, BomBuffDefinition>
 ---@param enchants table<string, table<number>>
 function allSpellsModule:SetupFlasks(spells, enchants)
   spellDefModule:tbcConsumable(spells, 28540, 22866, --TBC: Flask of Pure Death +80 SHADOW +80 FIRE +80 FROST
@@ -841,10 +766,13 @@ function allSpellsModule:SetupConstantsCategories()
 
   self.SCROLL = "scroll"
   self.WEAPON_ENCHANTMENT = "weaponEnchantment"
+  self.CLASS_WEAPON_ENCHANTMENT = "classWeaponEnchantment"
 
   -- Categories ordered for display
   self.buffCategories = {
-    self.CLASS, self.BLESSING, self.SEAL, self.AURA,
+    self.CLASS,
+    self.CLASS_WEAPON_ENCHANTMENT,
+    self.BLESSING, self.SEAL, self.AURA,
     self.PET,
     self.TRACKING,
 
@@ -905,56 +833,61 @@ function allSpellsModule:GetBuffCategories()
   return result
 end
 
----All spells known to Buffomat
----Note: you can add your own spell in the "WTF\Account\<accountname>\SavedVariables\buffOmat.lua"
----table CustomSpells
----@return table<number, BomSpellDef> All known spells table (all spells to be scanned)
-function allSpellsModule:SetupSpells()
-  local spells = {} ---@type table<number, BomSpellDef>
-  local enchants = {} ---@type table<number, table<number>>
-  self:SetupConstants()
-
-  priestModule:SetupPriestSpells(spells, enchants)
-  druidModule:SetupDruidSpells(spells, enchants)
-  mageModule:SetupMageSpells(spells, enchants)
-  shamanModule:SetupShamanSpells(spells, enchants)
-  warlockModule:SetupWarlockSpells(spells, enchants)
-  hunterModule:SetupHunterSpells(spells, enchants)
-  paladinModule:SetupPaladinSpells(spells, enchants)
-  self:SetupWarriorSpells(spells, enchants)
-  self:SetupRogueSpells(spells, enchants)
-  --self:SetupDeathKnightSpells(spells, enchants)
-
-  self:SetupTrackingSpells(spells, enchants)
-  self:SetupMiscSpells(spells, enchants)
-
-  self:SetupPhysicalDpsConsumables(spells, enchants)
-  self:SetupPhysicalDpsBattleElixirs(spells, enchants)
-  self:SetupCasterConsumables(spells, enchants)
-  self:SetupCasterBattleElixirs(spells, enchants)
-  self:SetupCasterGuardianElixirs(spells, enchants)
-  self:SetupBattleElixirs(spells, enchants)
-  self:SetupGuardianElixirs(spells, enchants)
-  self:SetupFlasks(spells, enchants)
-
-  self:SetupItemSpells(spells, enchants)
-  self:SetupFood(spells, enchants)
-
+---@param allBuffs table<number, BomBuffDefinition> Input list of all buffs
+---@return table<number, BomBuffDefinition> Filtered list
+function allSpellsModule:ApplyPostLimitations(allBuffs)
   -- Apply post-limitations (added with :Limitation() functions on spell construction)
-  local eliminatedSpells = {}
-  for _i, buff in ipairs(spells) do
+  local result = {}
+
+  for _i, buff in ipairs(allBuffs) do
     if spellDefModule:CheckLimitations(buff, buff.limitations) then
-      table.insert(eliminatedSpells, buff.buffId)
+      tinsert(result, buff)
     end
     buff.limitations = nil -- do not need to store this
   end
-  -- Eliminate marked spells
-  for _j, buffId in ipairs(eliminatedSpells) do
-    spells[buffId] = nil
-  end
+
+  return result
+end
+
+---All spells known to Buffomat
+---Note: you can add your own spell in the "WTF\Account\<accountname>\SavedVariables\buffOmat.lua"
+---table CustomSpells
+---@return table<number, BomBuffDefinition> All known spells table (all spells to be scanned)
+function allSpellsModule:SetupSpells()
+  local allBuffs = {} ---@type table<number, BomBuffDefinition>
+  local enchants = {} ---@type table<number, table<number>>
+  self:SetupConstants()
+
+  priestModule:SetupPriestSpells(allBuffs, enchants)
+  druidModule:SetupDruidSpells(allBuffs, enchants)
+  mageModule:SetupMageSpells(allBuffs, enchants)
+  shamanModule:SetupShamanSpells(allBuffs, enchants)
+  warlockModule:SetupWarlockSpells(allBuffs, enchants)
+  hunterModule:SetupHunterSpells(allBuffs, enchants)
+  paladinModule:SetupPaladinSpells(allBuffs, enchants)
+  warriorModule:SetupWarriorSpells(allBuffs, enchants)
+  rogueModule:SetupRogueSpells(allBuffs, enchants)
+  deathknightModule:SetupDeathknightSpells(allBuffs, enchants)
+
+  self:SetupTrackingSpells(allBuffs, enchants)
+  self:SetupMiscSpells(allBuffs, enchants)
+
+  self:SetupPhysicalDpsConsumables(allBuffs, enchants)
+  self:SetupPhysicalDpsBattleElixirs(allBuffs, enchants)
+  self:SetupCasterConsumables(allBuffs, enchants)
+  self:SetupCasterBattleElixirs(allBuffs, enchants)
+  self:SetupCasterGuardianElixirs(allBuffs, enchants)
+  self:SetupBattleElixirs(allBuffs, enchants)
+  self:SetupGuardianElixirs(allBuffs, enchants)
+  self:SetupFlasks(allBuffs, enchants)
+
+  self:SetupItemSpells(allBuffs, enchants)
+  self:SetupFood(allBuffs, enchants)
+
+  allBuffs = self:ApplyPostLimitations(allBuffs) --filter the list and make new shorter list
 
   --Preload items!
-  for x, spell in ipairs(spells) do
+  for x, spell in ipairs(allBuffs) do
     if spell.isConsumable and spell.item then
       BOM.GetItemInfo(spell.item)
     end
@@ -967,8 +900,8 @@ function allSpellsModule:SetupSpells()
     end
   end
 
-  self.allBuffs = spells
-  BOM.AllBuffomatSpells = spells
+  self.allBuffs = allBuffs
+  BOM.AllBuffomatBuffs = allBuffs
   BOM.EnchantList = enchants
 end
 
@@ -1033,7 +966,7 @@ BOM.ItemListSpell = {
 }
 BOM.ItemListTarget = {}
 
----@return table<number, BomSpellDef>
+---@return table<number, BomBuffDefinition>
 function allSpellsModule:SetupCancelBuffs()
   -- Note: you can add your own spell in the "WTF\Account\<accountname>\SavedVariables\buffOmat.lua"
   -- table CustomCancelBuff
@@ -1091,7 +1024,7 @@ BOM.AllDrink = {
 
 ---For all spells database load data for spellids and items
 function allSpellsModule:LoadItemsAndSpells()
-  for _id, buffDef in pairs(BOM.AllBuffomatSpells) do
+  for _id, buffDef in pairs(BOM.AllBuffomatBuffs) do
     if type(buffDef.singleText) == "number" then
       spellCacheModule:LoadSpell(buffDef.singleText)
     end

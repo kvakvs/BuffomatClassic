@@ -9,7 +9,7 @@ local spellDefModule = BuffomatModule.Import("SpellDef") ---@type BomSpellDefMod
 local constModule = BuffomatModule.Import("Const") ---@type BomConstModule
 
 ---Checks whether a tracking spell is now active
----@param spell BomSpellDef The tracking spell which might have tracking enabled
+---@param spell BomBuffDefinition The tracking spell which might have tracking enabled
 function buffChecksModule:IsTrackingActive(spell)
   if BOM.IsTBC then
     for i = 1, GetNumTrackingTypes() do
@@ -110,7 +110,7 @@ function buffChecksModule:HasItem(list, cd)
   return cachedItem.a
 end
 
----@param spell BomSpellDef the spell to update
+---@param spell BomBuffDefinition the spell to update
 ---@param playerUnit BomUnit the player
 function buffChecksModule:PlayerNeedsWeaponBuff(spell, playerUnit)
   local weaponSpell = spellDefModule:GetProfileSpell(spell.buffId)
@@ -122,7 +122,7 @@ function buffChecksModule:PlayerNeedsWeaponBuff(spell, playerUnit)
   end
 end
 
----@param spell BomSpellDef
+---@param spell BomBuffDefinition
 ---@param playerUnit BomUnit
 function buffChecksModule:HunterPetNeedsBuff(spell, playerUnit, _party)
   if not BOM.IsTBC then
@@ -142,7 +142,7 @@ function buffChecksModule:HunterPetNeedsBuff(spell, playerUnit, _party)
   tinsert(spell.UnitsNeedBuff, playerUnit) -- add player to buff list, because player must consume it
 end
 
----@param spell BomSpellDef
+---@param spell BomBuffDefinition
 ---@param playerUnit BomUnit
 function buffChecksModule:PlayerNeedsConsumable(spell, playerUnit, _party)
   if not playerUnit.knownBuffs[spell.buffId] then
@@ -151,7 +151,7 @@ function buffChecksModule:PlayerNeedsConsumable(spell, playerUnit, _party)
 
 end
 
----@param spell BomSpellDef
+---@param spell BomBuffDefinition
 ---@param playerUnit BomUnit
 ---@param party table<number, BomUnit>
 function buffChecksModule:PartyNeedsInfoBuff(spell, playerUnit, party)
@@ -172,7 +172,7 @@ function buffChecksModule:PartyNeedsInfoBuff(spell, playerUnit, party)
   end
 end
 
----@param spell BomSpellDef
+---@param spell BomBuffDefinition
 ---@param playerUnit BomUnit
 ---@param party table<number, BomUnit>
 function buffChecksModule:PlayerNeedsSelfBuff(spell, playerUnit, party)
@@ -194,7 +194,7 @@ function buffChecksModule:PlayerNeedsSelfBuff(spell, playerUnit, party)
   end
 end
 
----@param spell BomSpellDef
+---@param spell BomBuffDefinition
 ---@param playerUnit BomUnit
 ---@param party table<number, BomUnit>
 function buffChecksModule:DeadNeedsResurrection(spell, playerUnit, party)
@@ -209,7 +209,7 @@ function buffChecksModule:DeadNeedsResurrection(spell, playerUnit, party)
   end
 end
 
----@param spell BomSpellDef
+---@param spell BomBuffDefinition
 ---@param playerUnit BomUnit
 ---@param party table<number, BomUnit>
 function buffChecksModule:PlayerNeedsTracking(spell, playerUnit, party)
@@ -228,7 +228,7 @@ function buffChecksModule:PlayerNeedsTracking(spell, playerUnit, party)
   end
 end
 
----@param spell BomSpellDef
+---@param spell BomBuffDefinition
 ---@param playerUnit BomUnit
 ---@param party table<number, BomUnit>
 function buffChecksModule:PaladinNeedsAura(spell, playerUnit, party)
@@ -240,7 +240,7 @@ function buffChecksModule:PaladinNeedsAura(spell, playerUnit, party)
   end
 end
 
----@param spell BomSpellDef
+---@param spell BomBuffDefinition
 ---@param playerUnit BomUnit
 ---@param party table<number, BomUnit>
 function buffChecksModule:PaladinNeedsSeal(spell, playerUnit, party)
@@ -252,7 +252,7 @@ function buffChecksModule:PaladinNeedsSeal(spell, playerUnit, party)
   end
 end
 
----@param spell BomSpellDef
+---@param spell BomBuffDefinition
 ---@param playerUnit BomUnit
 ---@param party table<number, BomUnit>
 ---@param someoneIsDead boolean
@@ -326,7 +326,7 @@ function buffChecksModule:PartyNeedsPaladinBlessing(spell, playerUnit, party, so
   return someoneIsDead
 end
 
----@param spell BomSpellDef
+---@param spell BomBuffDefinition
 ---@param playerUnit BomUnit
 ---@param party table<number, BomUnit>
 ---@param someoneIsDead boolean
@@ -334,7 +334,7 @@ function buffChecksModule:PartyNeedsBuff(spell, playerUnit, party, someoneIsDead
   --spells
   for i, partyMember in ipairs(party) do
     local ok = false
-    ---@type BomSpellDef
+    ---@type BomBuffDefinition
     local profileSpell = BOM.CurrentProfile.Spell[spell.buffId]
 
     if profileSpell.Class[partyMember.class]

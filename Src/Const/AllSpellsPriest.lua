@@ -7,7 +7,7 @@ local allSpellsModule = BuffomatModule.Import("AllSpells") ---@type BomAllSpells
 local spellDefModule = BuffomatModule.Import("SpellDef") ---@type BomSpellDefModule
 
 ---Add PRIEST spells
----@param spells table<string, BomSpellDef>
+---@param spells table<string, BomBuffDefinition>
 ---@param enchants table<string, table<number>>
 function priestModule:SetupPriestSpells(spells, enchants)
   spellDefModule:createAndRegisterBuff(spells, 10938, -- Fortitude / Seelenstärke

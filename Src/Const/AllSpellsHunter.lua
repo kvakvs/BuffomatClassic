@@ -8,7 +8,7 @@ local allSpellsModule = BuffomatModule.Import("AllSpells") ---@type BomAllSpells
 local spellDefModule = BuffomatModule.Import("SpellDef") ---@type BomSpellDefModule
 
 ---Add HUNTER spells
----@param spells table<string, BomSpellDef>
+---@param spells table<string, BomBuffDefinition>
 ---@param enchants table<string, table<number>>
 function hunterModule:SetupHunterSpells(spells, enchants)
   spellDefModule:createAndRegisterBuff(spells, 20906, -- Trueshot Aura

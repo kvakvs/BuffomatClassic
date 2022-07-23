@@ -60,7 +60,7 @@ function buffRowClass:CreateEnableCheckbox(tooltip)
 end
 
 ---@return BomControlModule Created or pre-existing status on/off image
----@param spell BomSpellDef
+---@param spell BomBuffDefinition
 function buffRowClass:CreateStatusCheckboxImage(spell)
   if self.Set == nil then
     self.Set = managedUiModule:CreateMyButtonSecure(
@@ -73,7 +73,7 @@ function buffRowClass:CreateStatusCheckboxImage(spell)
   return self.Enable
 end
 
----@param spell BomSpellDef
+---@param spell BomBuffDefinition
 function buffRowClass:CreateInfoIcon(spell)
   if self.info == nil then
     self.info = managedUiModule:CreateManagedButton(

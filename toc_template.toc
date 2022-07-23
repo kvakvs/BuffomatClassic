@@ -24,6 +24,9 @@ Src/Const/AllSpellsShaman.lua
 Src/Const/AllSpellsWarlock.lua
 Src/Const/AllSpellsHunter.lua
 Src/Const/AllSpellsPaladin.lua
+Src/Const/AllSpellsWarrior.lua
+Src/Const/AllSpellsRogue.lua
+Src/Const/AllSpellsDeathknight.lua
 Src/Const/SpellIds.lua
 Src/Const/ItemIds.lua
 

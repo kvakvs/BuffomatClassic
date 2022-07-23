@@ -8,7 +8,7 @@ local allSpellsModule = BuffomatModule.Import("AllSpells") ---@type BomAllSpells
 local spellDefModule = BuffomatModule.Import("SpellDef") ---@type BomSpellDefModule
 
 ---Add PALADIN spells
----@param spells table<string, BomSpellDef>
+---@param spells table<string, BomBuffDefinition>
 ---@param enchants table<string, table<number>>
 function paladinModule:SetupPaladinSpells(spells, enchants)
   spellDefModule:createAndRegisterBuff(spells, 25780, --Righteous Fury, same in TBC

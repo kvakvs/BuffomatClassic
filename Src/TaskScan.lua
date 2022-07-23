@@ -98,7 +98,7 @@ function taskScanModule:MaybeResetWatchGroups()
 end
 
 ---Tries to activate tracking described by `spell`
----@param spell BomSpellDef The tracking spell to activate
+---@param spell BomBuffDefinition The tracking spell to activate
 ---@param value boolean Whether tracking should be enabled
 function taskScanModule:SetTracking(spell, value)
   if BOM.IsTBC then
@@ -120,7 +120,7 @@ end
 ---Check for party, spell and player, which targets that spell goes onto
 ---Update spell.NeedMember, spell.NeedGroup and spell.DeathGroup
 ---@param party table<number, BomUnit> - the party
----@param spell BomSpellDef the spell to update
+---@param spell BomBuffDefinition the spell to update
 ---@param playerUnit BomUnit the player
 ---@return boolean someoneIsDead
 function taskScanModule:UpdateSpellTargets(party, spell, playerUnit)
@@ -259,7 +259,7 @@ end
 ---@param spellName string
 ---@param party table<number, BomUnit>
 ---@param groupIndex number
----@param spell BomSpellDef
+---@param spell BomBuffDefinition
 function taskScanModule:GetGroupInRange(spellName, party, groupIndex, spell)
   local minDist
   local ret
@@ -284,7 +284,7 @@ end
 ---@param spellName string
 ---@param party table<number, BomUnit>
 ---@param class string
----@param spell BomSpellDef
+---@param spell BomBuffDefinition
 function taskScanModule:GetClassInRange(spellName, party, class, spell)
   local minDist
   local ret
@@ -311,7 +311,7 @@ function taskScanModule:GetClassInRange(spellName, party, class, spell)
 end
 
 ---@class BomScan_NextCastSpell
----@field spell BomSpellDef
+---@field spell BomBuffDefinition
 ---@field spellLink string|nil
 ---@field targetUnit string|nil
 ---@field spellId number|nil
@@ -346,7 +346,7 @@ end
 ---@param id number Spell id to capture
 ---@param link string Spell link for a picture
 ---@param member BomUnit player to benefit from the spell
----@param spell BomSpellDef the spell to be added
+---@param spell BomBuffDefinition the spell to be added
 function taskScanModule:QueueSpell(cost, id, link, member, spell)
   if cost > bomCurrentPlayerMana then
     return -- ouch
@@ -501,7 +501,7 @@ function taskScanModule:ActivateSelectedTracking()
   --reset tracking
   BOM.ForceTracking = nil
 
-  ---@param spell BomSpellDef
+  ---@param spell BomBuffDefinition
   for i, spell in ipairs(BOM.SelectedSpells) do
     if spell.type == "tracking" then
       if spellDefModule:IsSpellEnabled(spell.buffId) then
@@ -537,7 +537,7 @@ function taskScanModule:GetActiveAuraAndSeal(playerUnit)
   BOM.ActivePaladinAura = nil
   BOM.ActivePaladinSeal = nil
 
-  ---@param spell BomSpellDef
+  ---@param spell BomBuffDefinition
   for i, spell in ipairs(BOM.SelectedSpells) do
     local player_buff = playerUnit.knownBuffs[spell.buffId]
 
@@ -564,7 +564,7 @@ end
 
 function taskScanModule:CheckChangesAndUpdateSpelltab()
   --reset aura/seal
-  ---@param spell BomSpellDef
+  ---@param spell BomBuffDefinition
   for i, spell in ipairs(BOM.SelectedSpells) do
     if spell.type == "aura" then
       if spellDefModule:IsSpellEnabled(spell.buffId) then
@@ -615,7 +615,7 @@ function taskScanModule:ForceUpdate(party, playerUnit)
   local someoneIsDead = false -- the flag that buffing cannot continue while someone is dead
 
   -- For each selected spell check the targets
-  ---@param spell BomSpellDef
+  ---@param spell BomBuffDefinition
   for i, spell in ipairs(BOM.SelectedSpells) do
     someoneIsDead = self:UpdateSpellTargets(party, spell, playerUnit)
   end
@@ -704,7 +704,7 @@ function taskScanModule:FormatItemBuffText(bag, slot, count)
 end
 
 ---Add a paladin blessing
----@param spell BomSpellDef - spell to cast
+---@param spell BomBuffDefinition - spell to cast
 ---@param party table<number, BomUnit> - the party
 ---@param playerMember table - player
 ---@param inRange boolean - spell target is in range
@@ -826,7 +826,7 @@ function taskScanModule:AddBlessing(spell, party, playerMember, inRange)
 end
 
 ---Add a generic buff of some sorts, or a group buff
----@param spell BomSpellDef - spell to cast
+---@param spell BomBuffDefinition - spell to cast
 ---@param party table<number, BomUnit> - the party
 ---@param playerMember BomUnit - player
 ---@param inRange boolean - spell target is in range
@@ -944,7 +944,7 @@ function taskScanModule:AddBuff(spell, party, playerMember, inRange)
 end
 
 ---Adds a display text for a weapon buff
----@param spell BomSpellDef the spell to cast
+---@param spell BomBuffDefinition the spell to cast
 ---@param playerUnit BomUnit the player
 ---@param inRange boolean value for range check
 ---@return table (bag_title string, bag_command string)
@@ -1017,7 +1017,7 @@ function taskScanModule:AddResurrection(spell, playerUnit, inRange)
 end
 
 ---Adds a display text for a self buff or tracking or seal/weapon self-enchant
----@param spell BomSpellDef - the spell to cast
+---@param spell BomBuffDefinition - the spell to cast
 ---@param playerMember BomUnit - the player
 function taskScanModule:AddSelfbuff(spell, playerMember)
   if spell.requiresWarlockPet then
@@ -1052,7 +1052,7 @@ function taskScanModule:AddSelfbuff(spell, playerMember)
 end
 
 ---Adds a summon spell to the tasks
----@param spell BomSpellDef - the spell to cast
+---@param spell BomBuffDefinition - the spell to cast
 ---@param playerMember BomUnit
 function taskScanModule:AddSummonSpell(spell, playerMember)
   if spell.sacrificeAuraIds then
@@ -1094,7 +1094,7 @@ function taskScanModule:AddSummonSpell(spell, playerMember)
 end
 
 ---Adds a display text for a weapon buff
----@param spell BomSpellDef - the spell to cast
+---@param spell BomBuffDefinition - the spell to cast
 ---@param playerMember table - the player
 ---@param castButtonTitle string - if not empty, is item name from the bag
 ---@param macroCommand string - console command to use item from the bag
@@ -1157,7 +1157,7 @@ function taskScanModule:AddConsumableSelfbuff(spell, playerMember, castButtonTit
 end
 
 ---Adds a display text for a weapon buff created by a consumable item
----@param spell BomSpellDef - the spell to cast
+---@param spell BomBuffDefinition - the spell to cast
 ---@param playerMember table - the player
 ---@param castButtonTitle string - if not empty, is item name from the bag
 ---@param macroCommand string - console command to use item from the bag
@@ -1250,7 +1250,7 @@ function taskScanModule:AddConsumableWeaponBuff(spell, playerMember,
 end
 
 ---Adds a display text for a weapon buff created by a spell (shamans and paladins)
----@param spell BomSpellDef - the spell to cast
+---@param spell BomBuffDefinition - the spell to cast
 ---@param playerMember BomUnit - the player
 ---@param castButtonTitle string - if not empty, is item name from the bag
 ---@param macroCommand string - console command to use item from the bag
@@ -1456,7 +1456,7 @@ function taskScanModule:CheckItemsAndContainers(playerMember, cast_button_title,
   return cast_button_title, macro_command
 end
 
----@param spell BomSpellDef
+---@param spell BomBuffDefinition
 ---@param playerMember BomUnit
 ---@param party table<number, BomUnit>
 ---@param inRange boolean
