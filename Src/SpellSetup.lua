@@ -54,7 +54,7 @@ local function bomSetup_MaybeAddCustomSpells()
 end
 
 local function bomSetup_ResetCaches()
-  BOM.SelectedSpells = {}
+  BOM.SelectedSpells = {} ---@type table<number, BomSpellDef>
   BOM.cancelForm = {}
   BOM.AllSpellIds = {}
   BOM.SpellIdtoConfig = {}
@@ -67,12 +67,12 @@ end
 
 local function bomSetup_CancelBuffs()
   for i, spell in ipairs(BOM.CancelBuffs) do
-    -- save "ConfigID"
-    --spell.ConfigID = spell.ConfigID or spell.singleId
+    -- save "buffId"
+    --spell.buffId = spell.buffId or spell.singleId
 
     if spell.singleFamily then
       for sindex, sID in ipairs(spell.singleFamily) do
-        BOM.SpellIdtoConfig[sID] = spell.ConfigID
+        BOM.SpellIdtoConfig[sID] = spell.buffId
       end
     end
 
@@ -87,9 +87,9 @@ local function bomSetup_CancelBuffs()
     BOM.Tool.iMerge(BOM.AllSpellIds, spell.singleFamily)
 
     for j, profil in ipairs(BOM.ALL_PROFILES) do
-      if buffomatModule.character[profil].CancelBuff[spell.ConfigID] == nil then
-        buffomatModule.character[profil].CancelBuff[spell.ConfigID] = {}
-        buffomatModule.character[profil].CancelBuff[spell.ConfigID].Enable = spell.default or false
+      if buffomatModule.character[profil].CancelBuff[spell.buffId] == nil then
+        buffomatModule.character[profil].CancelBuff[spell.buffId] = {}
+        buffomatModule.character[profil].CancelBuff[spell.buffId].Enable = spell.default or false
       end
     end
   end
@@ -154,11 +154,12 @@ local function bomSetup_EachSpell_Consumable(add, spell)
   return add
 end
 
+---@param spell BomSpellDef
 local function bomSetup_EachSpell_CacheUpdate(spell)
-  -- get highest rank and store SpellID=ConfigID
+  -- get highest rank and store SpellID=buffId
   if spell.singleFamily then
     for sindex, sID in ipairs(spell.singleFamily) do
-      BOM.SpellIdtoConfig[sID] = spell.ConfigID
+      BOM.SpellIdtoConfig[sID] = spell.buffId
       BOM.SpellIdIsSingle[sID] = true
       BOM.ConfigToSpell[sID] = spell
 
@@ -169,14 +170,14 @@ local function bomSetup_EachSpell_CacheUpdate(spell)
   end
 
   if spell.singleId then
-    BOM.SpellIdtoConfig[spell.singleId] = spell.ConfigID
+    BOM.SpellIdtoConfig[spell.singleId] = spell.buffId
     BOM.SpellIdIsSingle[spell.singleId] = true
     BOM.ConfigToSpell[spell.singleId] = spell
   end
 
   if spell.groupFamily then
     for sindex, sID in ipairs(spell.groupFamily) do
-      BOM.SpellIdtoConfig[sID] = spell.ConfigID
+      BOM.SpellIdtoConfig[sID] = spell.buffId
       BOM.ConfigToSpell[sID] = spell
 
       if IsSpellKnown(sID) then
@@ -186,7 +187,7 @@ local function bomSetup_EachSpell_CacheUpdate(spell)
   end
 
   if spell.groupId then
-    BOM.SpellIdtoConfig[spell.groupId] = spell.ConfigID
+    BOM.SpellIdtoConfig[spell.groupId] = spell.buffId
     BOM.ConfigToSpell[spell.groupId] = spell
   end
 end
@@ -250,11 +251,11 @@ local function bomSetup_EachSpell_Add(spell)
   --setDefaultValues!
   for j, eachProfile in ipairs(BOM.ALL_PROFILES) do
     ---@type BomSpellDef
-    local profileSpell = buffomatModule.character[eachProfile].Spell[spell.ConfigID]
+    local profileSpell = buffomatModule.character[eachProfile].Spell[spell.buffId]
 
     if profileSpell == nil then
-      buffomatModule.character[eachProfile].Spell[spell.ConfigID] = {}
-      profileSpell = buffomatModule.character[eachProfile].Spell[spell.ConfigID]
+      buffomatModule.character[eachProfile].Spell[spell.buffId] = {}
+      profileSpell = buffomatModule.character[eachProfile].Spell[spell.buffId]
 
       profileSpell.Class = profileSpell.Class or {}
       profileSpell.ForcedTarget = profileSpell.ForcedTarget or {}
@@ -288,7 +289,7 @@ end
 ---@param spell BomSpellDef
 local function bomSetup_EachSpell(spell)
   spell.SkipList = {}
-  BOM.ConfigToSpell[spell.ConfigID] = spell
+  BOM.ConfigToSpell[spell.buffId] = spell
 
   bomSetup_EachSpell_CacheUpdate(spell)
 

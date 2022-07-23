@@ -6,6 +6,7 @@ local BOM = BuffomatAddon ---@type BomAddon
 local unitModule = BuffomatModule.New("Unit") ---@type BomUnitModule
 
 local buffomatModule = BuffomatModule.Import("Buffomat") ---@type BomBuffomatModule
+local buffModule = BuffomatModule.Import("Buff") ---@type BomBuffModule
 
 ---@class BomUnit
 ---@field knownBuffs table<number, BomUnitBuff> Buffs on player keyed by spell id, only buffs supported by Buffomat are stored
@@ -94,7 +95,7 @@ function unitClass:ForceUpdateBuffs(playerUnit)
         if tContains(BOM.AllSpellIds, spellId) then
           local configKey = BOM.SpellIdtoConfig[spellId]
 
-          self.knownBuffs[configKey] = BOM.Class.Buff:new(
+          self.knownBuffs[configKey] = buffModule:New(
                   spellId,
                   unitAura.duration,
                   unitAura.expirationTime,

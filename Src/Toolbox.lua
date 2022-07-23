@@ -888,7 +888,7 @@ local CopyPastText
 local function bom_create_copypaste()
   local frame
 
-  if BOM.TBC then
+  if BOM.IsTBC then
     frame = CreateFrame("Frame", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate")
   else
     frame = CreateFrame("Frame", nil, UIParent)

@@ -159,13 +159,14 @@ BuffomatAddon = LibStub("AceAddon-3.0"):NewAddon(
         "Buffomat", "AceConsole-3.0", "AceEvent-3.0") ---@type BomAddon
 local BOM = BuffomatAddon
 
---- Addon is running on Classic TBC client
----@type boolean
-BOM.TBC = WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC
-
---- Addon is running on Classic "Vanilla" client: Means Classic Era and its seasons like SoM
----@type boolean
+local _, _, _, tocversion = GetBuildInfo()
 BOM.IsClassic = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
+
+BOM.IsTBC = WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC
+BOM.HaveTBC = BOM.IsClassic or BOM.IsTBC
+
+BOM.IsWotLK = (tocversion >= 30000 and tocversion <= 39999) -- TODO: change to WOTLK detection via WOW_PROJECT_..._CLASSIC
+BOM.HaveWotLK = BOM.IsClassic or BOM.IsTBC or BOM.IsWotLK
 
 ---Print a text with "BomDebug: " prefix in the game chat window
 ---@param t string

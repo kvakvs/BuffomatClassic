@@ -28,7 +28,7 @@ BOM.ALL_PROFILES = { "solo", "group", "raid", "battleground" }
 local tasklist ---@type BomTaskList
 
 function taskScanModule:IsFlying()
-  if BOM.TBC then
+  if BOM.IsTBC then
     return IsFlying() and not buffomatModule.shared.AutoDismountFlying
   end
   return false
@@ -97,28 +97,11 @@ function taskScanModule:MaybeResetWatchGroups()
   end
 end
 
----Checks whether a tracking spell is now active
----@param spell BomSpellDef The tracking spell which might have tracking enabled
-function taskScanModule:IsTrackingActive(spell)
-  if BOM.TBC then
-    for i = 1, GetNumTrackingTypes() do
-      local _name, _texture, active, _category, _nesting, spellId = GetTrackingInfo(i)
-      if spellId == spell.singleId then
-        return active
-      end
-    end
-    -- not found
-    return false
-  else
-    return GetTrackingTexture() == spell.trackingIconId
-  end
-end
-
 ---Tries to activate tracking described by `spell`
 ---@param spell BomSpellDef The tracking spell to activate
 ---@param value boolean Whether tracking should be enabled
 function taskScanModule:SetTracking(spell, value)
-  if BOM.TBC then
+  if BOM.IsTBC then
     for i = 1, GetNumTrackingTypes() do
       local name, texture, active, _category, _nesting, spellId = GetTrackingInfo(i)
       if spellId == spell.singleId then
@@ -134,41 +117,6 @@ function taskScanModule:SetTracking(spell, value)
   end
 end
 
----@param expirationTime number Buff expiration time
----@param maxDuration number Max buff duration
-function taskScanModule:TimeCheck(expirationTime, maxDuration)
-  if expirationTime == nil
-          or maxDuration == nil
-          or expirationTime == 0
-          or maxDuration == 0 then
-    return true
-  end
-
-  local remainingTimeTrigger
-
-  if maxDuration <= 60 then
-    remainingTimeTrigger = buffomatModule.shared.Time60 or 10
-  elseif maxDuration <= 300 then
-    remainingTimeTrigger = buffomatModule.shared.Time300 or 90
-  elseif maxDuration <= 600 then
-    remainingTimeTrigger = buffomatModule.shared.Time600 or 120
-  elseif maxDuration <= 1800 then
-    remainingTimeTrigger = buffomatModule.shared.Time1800 or 180
-  else
-    remainingTimeTrigger = buffomatModule.shared.Time3600 or 180
-  end
-
-  if remainingTimeTrigger + GetTime() < expirationTime then
-    expirationTime = expirationTime - remainingTimeTrigger
-    if expirationTime < BOM.MinTimer then
-      BOM.MinTimer = expirationTime
-    end
-    return true
-  end
-
-  return false
-end
-
 ---Check for party, spell and player, which targets that spell goes onto
 ---Update spell.NeedMember, spell.NeedGroup and spell.DeathGroup
 ---@param party table<number, BomUnit> - the party
@@ -177,13 +125,13 @@ end
 ---@return boolean someoneIsDead
 function taskScanModule:UpdateSpellTargets(party, spell, playerUnit)
   local someoneIsDead = false
-  local thisBuffOnPlayer = playerUnit.knownBuffs[spell.ConfigID]
+  local thisBuffOnPlayer = playerUnit.knownBuffs[spell.buffId]
   spell:ResetBuffTargets()
 
   -- Save skipped unit and do nothing
   if spell:DoesUnitHaveBetterBuffs(playerUnit) then
     tinsert(spell.UnitsHaveBetterBuff, playerUnit)
-  elseif not spellDefModule:IsSpellEnabled(spell.ConfigID) then
+  elseif not spellDefModule:IsSpellEnabled(spell.buffId) then
     --nothing, the spell is not enabled!
   elseif spellButtonsTabModule:CategoryIsHidden(spell.category) then
     --nothing, the category is not showing!
@@ -556,14 +504,14 @@ function taskScanModule:ActivateSelectedTracking()
   ---@param spell BomSpellDef
   for i, spell in ipairs(BOM.SelectedSpells) do
     if spell.type == "tracking" then
-      if spellDefModule:IsSpellEnabled(spell.ConfigID) then
+      if spellDefModule:IsSpellEnabled(spell.buffId) then
         if spell.needForm ~= nil then
           if GetShapeshiftFormID() == spell.needForm
                   and BOM.ForceTracking ~= spell.trackingIconId then
             BOM.ForceTracking = spell.trackingIconId
             spellButtonsTabModule:UpdateSpellsTab("ForceUp1")
           end
-        elseif self:IsTrackingActive(spell)
+        elseif buffChecksModule:IsTrackingActive(spell)
                 and buffomatModule.character.LastTracking ~= spell.trackingIconId then
           buffomatModule.character.LastTracking = spell.trackingIconId
           spellButtonsTabModule:UpdateSpellsTab("ForceUp2")
@@ -591,22 +539,22 @@ function taskScanModule:GetActiveAuraAndSeal(playerUnit)
 
   ---@param spell BomSpellDef
   for i, spell in ipairs(BOM.SelectedSpells) do
-    local player_buff = playerUnit.knownBuffs[spell.ConfigID]
+    local player_buff = playerUnit.knownBuffs[spell.buffId]
 
     if player_buff then
       if spell.type == "aura" then
-        if (BOM.ActivePaladinAura == nil and BOM.LastAura == spell.ConfigID)
+        if (BOM.ActivePaladinAura == nil and BOM.LastAura == spell.buffId)
                 or UnitIsUnit(player_buff.source, "player")
         then
-          if self:TimeCheck(player_buff.expirationTime, player_buff.duration) then
-            BOM.ActivePaladinAura = spell.ConfigID
+          if buffChecksModule:TimeCheck(player_buff.expirationTime, player_buff.duration) then
+            BOM.ActivePaladinAura = spell.buffId
           end
         end
 
       elseif spell.type == "seal" then
         if UnitIsUnit(player_buff.source, "player") then
-          if self:TimeCheck(player_buff.expirationTime, player_buff.duration) then
-            BOM.ActivePaladinSeal = spell.ConfigID
+          if buffChecksModule:TimeCheck(player_buff.expirationTime, player_buff.duration) then
+            BOM.ActivePaladinSeal = spell.buffId
           end
         end
       end -- if is aura
@@ -619,14 +567,14 @@ function taskScanModule:CheckChangesAndUpdateSpelltab()
   ---@param spell BomSpellDef
   for i, spell in ipairs(BOM.SelectedSpells) do
     if spell.type == "aura" then
-      if spellDefModule:IsSpellEnabled(spell.ConfigID) then
-        if BOM.ActivePaladinAura == spell.ConfigID
-                and BOM.CurrentProfile.LastAura ~= spell.ConfigID then
-          BOM.CurrentProfile.LastAura = spell.ConfigID
+      if spellDefModule:IsSpellEnabled(spell.buffId) then
+        if BOM.ActivePaladinAura == spell.buffId
+                and BOM.CurrentProfile.LastAura ~= spell.buffId then
+          BOM.CurrentProfile.LastAura = spell.buffId
           spellButtonsTabModule:UpdateSpellsTab("ForceUp4")
         end
       else
-        if BOM.CurrentProfile.LastAura == spell.ConfigID
+        if BOM.CurrentProfile.LastAura == spell.buffId
                 and BOM.CurrentProfile.LastAura ~= nil then
           BOM.CurrentProfile.LastAura = nil
           spellButtonsTabModule:UpdateSpellsTab("ForceUp5")
@@ -634,14 +582,14 @@ function taskScanModule:CheckChangesAndUpdateSpelltab()
       end -- if currentprofile.spell.enable
 
     elseif spell.type == "seal" then
-      if spellDefModule:IsSpellEnabled(spell.ConfigID) then
-        if BOM.ActivePaladinSeal == spell.ConfigID
-                and BOM.CurrentProfile.LastSeal ~= spell.ConfigID then
-          BOM.CurrentProfile.LastSeal = spell.ConfigID
+      if spellDefModule:IsSpellEnabled(spell.buffId) then
+        if BOM.ActivePaladinSeal == spell.buffId
+                and BOM.CurrentProfile.LastSeal ~= spell.buffId then
+          BOM.CurrentProfile.LastSeal = spell.buffId
           spellButtonsTabModule:UpdateSpellsTab("ForceUp6")
         end
       else
-        if BOM.CurrentProfile.LastSeal == spell.ConfigID
+        if BOM.CurrentProfile.LastSeal == spell.buffId
                 and BOM.CurrentProfile.LastSeal ~= nil then
           BOM.CurrentProfile.LastSeal = nil
           spellButtonsTabModule:UpdateSpellsTab("ForceUp7")
@@ -679,10 +627,10 @@ end
 ---@param playerUnit BomUnit
 function taskScanModule:CancelBuffs(playerUnit)
   for i, spell in ipairs(BOM.CancelBuffs) do
-    if BOM.CurrentProfile.CancelBuff[spell.ConfigID].Enable
+    if BOM.CurrentProfile.CancelBuff[spell.buffId].Enable
             and not spell.OnlyCombat
     then
-      local player_buff = playerUnit.buffs[spell.ConfigID]
+      local player_buff = playerUnit.buffs[spell.buffId]
 
       if player_buff then
         BOM:Print(string.format(_t("message.CancelBuff"),
@@ -957,7 +905,7 @@ function taskScanModule:AddBuff(spell, party, playerMember, inRange)
       end
 
       local add = ""
-      local profileBuff = spellDefModule:GetProfileSpell(spell.ConfigID)
+      local profileBuff = spellDefModule:GetProfileSpell(spell.buffId)
 
       if profileBuff.ForcedTarget[unitNeedsBuff.name] then
         add = string.format(constModule.PICTURE_FORMAT, BOM.ICON_TARGET_ON)
@@ -1223,7 +1171,7 @@ function taskScanModule:AddConsumableWeaponBuff(spell, playerMember,
   if have_item then
     -- Have item, display the cast message and setup the cast button
     local texture, _, _, _, _, _, item_link, _, _, _ = GetContainerItemInfo(bag, slot)
-    local profile_spell = spellDefModule:GetProfileSpell(spell.ConfigID)
+    local profile_spell = spellDefModule:GetProfileSpell(spell.buffId)
 
     if profile_spell.OffHandEnable
             and playerMember.OffHandBuff == nil then
@@ -1312,7 +1260,7 @@ function taskScanModule:AddWeaponEnchant(spell, playerMember,
   local block_offhand_enchant = false -- set to true to block temporarily
 
   local _, self_class, _ = UnitClass("player")
-  if BOM.TBC and self_class == "SHAMAN" then
+  if BOM.IsTBC and self_class == "SHAMAN" then
     -- Special handling for TBC shamans, you cannot specify slot for enchants,
     -- and it goes into main then offhand
     local has_mh, _mh_expire, _mh_charges, _mh_enchantid, has_oh, _oh_expire
@@ -1328,7 +1276,7 @@ function taskScanModule:AddWeaponEnchant(spell, playerMember,
     end
   end
 
-  local profile_spell = spellDefModule:GetProfileSpell(spell.ConfigID)
+  local profile_spell = spellDefModule:GetProfileSpell(spell.buffId)
 
   if profile_spell.MainHandEnable
           and playerMember.MainHandBuff == nil then
@@ -1616,14 +1564,14 @@ end
 ---@return boolean, string, string {in_range, cast_button_title, macro_command}
 function taskScanModule:ScanSelectedSpells(playerMember, party, inRange, castButtonTitle, macroCommand)
   for _, spell in ipairs(BOM.SelectedSpells) do
-    local profile_spell = spellDefModule:GetProfileSpell(spell.ConfigID)
+    local profile_spell = spellDefModule:GetProfileSpell(spell.buffId)
 
     if spell.isInfo and profile_spell.Whisper then
       self:WhisperExpired(spell)
     end
 
     -- if spell is enabled and we're in the correct shapeshift form
-    if spellDefModule:IsSpellEnabled(spell.ConfigID)
+    if spellDefModule:IsSpellEnabled(spell.buffId)
             and (spell.needForm == nil or GetShapeshiftFormID() == spell.needForm) then
       inRange, castButtonTitle, macroCommand = self:ScanOneSpell(
               spell, playerMember, party, inRange, castButtonTitle, macroCommand)
@@ -1897,7 +1845,7 @@ function BOM.DoCancelBuffs()
   end
 
   for i, spell in ipairs(BOM.CancelBuffs) do
-    if BOM.CurrentProfile.CancelBuff[spell.ConfigID].Enable
+    if BOM.CurrentProfile.CancelBuff[spell.buffId].Enable
             and taskScanModule:CancelBuff(spell.singleFamily)
     then
       BOM:Print(string.format(_t("message.CancelBuff"), spell.singleLink or spell.singleText,

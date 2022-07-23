@@ -40,7 +40,7 @@ local function bomDoBlessingOnClick(self)
   for i, spell in ipairs(BOM.SelectedSpells) do
     if spell.isBlessing then
       -- TODO: use spell instead of BOM.CurrentProfile.Spell[]
-      BOM.CurrentProfile.Spell[spell.ConfigID].Class[self._privat_Var] = false
+      BOM.CurrentProfile.Spell[spell.buffId].Class[self._privat_Var] = false
     end
   end
   self._privat_DB[self._privat_Var] = saved
@@ -74,7 +74,7 @@ function spellButtonsTabModule:AddSpellRow_ClassSelector(rowBuilder, playerIsHor
     spell.frames[class]:SetVariable(profileSpell.Class, class)
     rowBuilder:ChainToTheRight(nil, spell.frames[class], 0)
 
-    if not BOM.TBC and (-- if not TBC hide paladin for horde, hide shaman for alliance
+    if not BOM.IsTBC and (-- if not TBC hide paladin for horde, hide shaman for alliance
             (playerIsHorde and class == "PALADIN") or (not playerIsHorde and class == "SHAMAN")) then
       spell.frames[class]:Hide()
     else
@@ -115,7 +115,7 @@ function spellButtonsTabModule:AddSpellCancelRow(spell, rowBuilder)
 
   local enableCheckbox = spell.frames:CreateEnableCheckbox(_t("TooltipEnableBuffCancel"))
   rowBuilder:ChainToTheRight(infoIcon, enableCheckbox, 7)
-  enableCheckbox:SetVariable(BOM.CurrentProfile.CancelBuff[spell.ConfigID], "Enable")
+  enableCheckbox:SetVariable(BOM.CurrentProfile.CancelBuff[spell.buffId], "Enable")
   enableCheckbox:Show()
 
   --Add "Only before combat" text label
@@ -206,7 +206,7 @@ function spellButtonsTabModule:AddSpellRow(rowBuilder, playerIsHorde, spell, pla
   local infoIcon = spell.frames:CreateInfoIcon(spell)
   rowBuilder:PositionAtNewRow(infoIcon, 0, 7)
 
-  local profileSpell = spellDefModule:GetProfileSpell(spell.ConfigID)
+  local profileSpell = spellDefModule:GetProfileSpell(spell.buffId)
 
   -- Add a checkbox [x]
   local enableCheckbox = spell.frames:CreateEnableCheckbox(_t("TooltipEnableSpell"))
@@ -285,7 +285,7 @@ function spellButtonsTabModule:AddSpellRow(rowBuilder, playerIsHorde, spell, pla
     spell.frames.ExcludeButton:Show()
 
     for ci, class in ipairs(BOM.Tool.Classes) do
-      if not BOM.TBC and -- if not TBC, hide paladin for horde, hide shaman for alliance
+      if not BOM.IsTBC and -- if not TBC, hide paladin for horde, hide shaman for alliance
               ((playerIsHorde and class == "PALADIN") or (not playerIsHorde and class == "SHAMAN")) then
         spell.frames[class]:Hide()
       else
@@ -455,7 +455,7 @@ function spellButtonsTabModule:UpdateSelectedSpell(spell)
 
   -- the pointer to spell in current BOM profile
   ---@type BomSpellDef
-  local profileSpell = BOM.CurrentProfile.Spell[spell.ConfigID]
+  local profileSpell = BOM.CurrentProfile.Spell[spell.buffId]
   spell.frames.Enable:SetVariable(profileSpell, "Enable")
 
   if spell:HasClasses() then
@@ -558,8 +558,8 @@ function spellButtonsTabModule:UpdateSelectedSpell(spell)
           or spell.type == "seal") and spell.needForm == nil
   then
     if (spell.type == "tracking" and buffomatModule.character.LastTracking == spell.trackingIconId) or
-            (spell.type == "aura" and spell.ConfigID == BOM.CurrentProfile.LastAura) or
-            (spell.type == "seal" and spell.ConfigID == BOM.CurrentProfile.LastSeal) then
+            (spell.type == "aura" and spell.buffId == BOM.CurrentProfile.LastAura) or
+            (spell.type == "seal" and spell.buffId == BOM.CurrentProfile.LastSeal) then
       spell.frames.Set:SetState(true)
     else
       spell.frames.Set:SetState(false)
@@ -623,7 +623,7 @@ function spellButtonsTabModule:UpdateSpellsTab(caller)
   end -- all spells
 
   for _i, spell in ipairs(BOM.CancelBuffs) do
-    spell.frames.Enable:SetVariable(BOM.CurrentProfile.CancelBuff[spell.ConfigID], "Enable")
+    spell.frames.Enable:SetVariable(BOM.CurrentProfile.CancelBuff[spell.buffId], "Enable")
   end
 
   --Create small SINGLE-BUFF toggle to the right of [Cast <spell>]

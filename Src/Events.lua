@@ -223,7 +223,7 @@ local function Event_UI_ERROR_MESSAGE(errorType, message)
 
   elseif tContains(eventsModule.ERR_IS_MOUNTED, message) then
     local flying = false -- prevent dismount in flight, OUCH!
-    if BOM.TBC then
+    if BOM.IsTBC then
       flying = IsFlying() and not buffomatModule.shared.AutoDismountFlying
     end
     if not flying then

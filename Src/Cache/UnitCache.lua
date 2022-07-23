@@ -6,6 +6,7 @@ local BOM = BuffomatAddon ---@type BomAddon
 local unitCacheModule = BuffomatModule.New("UnitCache") ---@type BomUnitCacheModule
 unitCacheModule.unitCache = {}
 
+local buffModule = BuffomatModule.Import("Buff") ---@type BomBuffModule
 local buffomatModule = BuffomatModule.Import("Buffomat") ---@type BomBuffomatModule
 local unitModule = BuffomatModule.Import("Unit") ---@type BomUnitModule
 local toolboxModule = BuffomatModule.Import("Toolbox") ---@type BomToolboxModule
@@ -292,22 +293,22 @@ function unitCacheModule:GetPartyMembers()
 
   if hasMainHandEnchant and mainHandEnchantID
           and BOM.EnchantToSpell[mainHandEnchantID] then
-    local configId = BOM.EnchantToSpell[mainHandEnchantID]
+    local enchantBuffId = BOM.EnchantToSpell[mainHandEnchantID]
     local duration
 
-    if BOM.ConfigToSpell[ConfigID] and BOM.ConfigToSpell[ConfigID].singleDuration then
-      duration = BOM.ConfigToSpell[ConfigID].singleDuration
+    if BOM.ConfigToSpell[enchantBuffId] and BOM.ConfigToSpell[enchantBuffId].singleDuration then
+      duration = BOM.ConfigToSpell[enchantBuffId].singleDuration
     else
       duration = 300
     end
 
-    playerUnit.knownBuffs[configId] = BOM.Class.Buff:new(
-            configId,
+    playerUnit.knownBuffs[enchantBuffId] = buffModule:New(
+            enchantBuffId,
             duration,
             GetTime() + mainHandExpiration / 1000,
             "player",
             true)
-    playerUnit.MainHandBuff = configId
+    playerUnit.MainHandBuff = enchantBuffId
   else
     playerUnit.MainHandBuff = nil
   end
@@ -315,23 +316,23 @@ function unitCacheModule:GetPartyMembers()
   if hasOffHandEnchant
           and offHandEnchantId
           and BOM.EnchantToSpell[offHandEnchantId] then
-    local configId = BOM.EnchantToSpell[offHandEnchantId]
+    local enchantBuffId = BOM.EnchantToSpell[offHandEnchantId]
     local duration
 
-    if BOM.ConfigToSpell[ConfigID] and BOM.ConfigToSpell[ConfigID].singleDuration then
-      duration = BOM.ConfigToSpell[ConfigID].singleDuration
+    if BOM.ConfigToSpell[enchantBuffId] and BOM.ConfigToSpell[enchantBuffId].singleDuration then
+      duration = BOM.ConfigToSpell[enchantBuffId].singleDuration
     else
       duration = 300
     end
 
-    playerUnit.knownBuffs[-configId] = BOM.Class.Buff:new(
-            -configId,
+    playerUnit.knownBuffs[-enchantBuffId] = buffModule:New(
+            -enchantBuffId,
             duration,
             GetTime() + offHandExpiration / 1000,
             "player",
             true)
 
-    playerUnit.OffHandBuff = configId
+    playerUnit.OffHandBuff = enchantBuffId
   else
     playerUnit.OffHandBuff = nil
   end

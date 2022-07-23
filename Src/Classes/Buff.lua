@@ -1,10 +1,7 @@
-local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BomAddon
 
 ---@class BomBuffModule
 local buffModule = BuffomatModule.New("Buff") ---@type BomBuffModule
-
-BOM.Class = BOM.Class or {}
 
 ---@class BomUnitBuff
 ---@field singleId number Spell id also serving as key
@@ -13,9 +10,8 @@ BOM.Class = BOM.Class or {}
 ---@field source string Unit/player who gave this buff
 ---@field isSingle boolean
 
----@type BomUnitBuff
-BOM.Class.Buff = {}
-BOM.Class.Buff.__index = BOM.Class.Buff
+local buffClass = {} ---@type BomUnitBuff
+buffClass.__index = buffClass
 
 ---Creates a new Buff
 ---@param singleId number Spell id also serving as key
@@ -24,7 +20,7 @@ BOM.Class.Buff.__index = BOM.Class.Buff
 ---@param source string
 ---@param isSingle boolean
 ---@return BomUnitBuff
-function BOM.Class.Buff:new(singleId, duration, expirationTime, source, isSingle)
+function buffModule:New(singleId, duration, expirationTime, source, isSingle)
   local fields = {
     singleId       = singleId,
     duration       = duration,
@@ -32,7 +28,7 @@ function BOM.Class.Buff:new(singleId, duration, expirationTime, source, isSingle
     source         = source,
     isSingle       = isSingle
   }
-  setmetatable(fields, BOM.Class.Buff)
+  setmetatable(fields, buffClass)
   return fields
 end
 
