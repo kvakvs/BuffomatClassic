@@ -18,6 +18,8 @@ BOM.Class = BOM.Class or {}
 ---@field hideInWotLK boolean
 ---@field playerRace string
 ---@field playerClass string|table<number, string> Collection of classes for this spell, or classname
+---@field maxLevel number Hide the spell if player is above this level (to deprecate old spells)
+---@field hideIfSpellKnown number Hide the spell if spellId is in their spellbook
 
 ---
 --- A class describing a spell in available spells collection
@@ -227,6 +229,14 @@ function spellDefModule:CheckLimitations(spell, limitations)
     end
   end -- if playerclass check
 
+  if type(limitations.maxLevel) == "number" and limitations.maxLevel > UnitLevel("player") then
+    return false -- too old
+  end
+
+  if type(limitations.hideIfSpellKnown) == "number" and IsSpellKnown(limitations.hideIfSpellKnown) then
+    return false -- know a blocker spell, a better version like ice armor/frost armor pair
+  end
+
   return true
 end
 
@@ -255,7 +265,7 @@ end
 ---@return BomSpellDef
 function spellDefModule:createAndRegisterBuff(dst, buffSpellId, fields,
                                               limitations, modifications, extraText)
-  local spell = spellDefModule:New(buffSpellId, fields)
+  local spell = self:New(buffSpellId, fields)
 
   if spell.buffId > 0 and self:CheckLimitations(spell, limitations) then
     self:CheckModifications(spell, modifications)
@@ -290,21 +300,42 @@ function spellDefClass:Category(cat)
 end
 
 ---@return BomSpellDef
-function spellDefClass:ShowInTBC(value)
-  self.limitations.showInTBC = value
+---@param level number
+function spellDefClass:MaxLevel(level)
+  self.limitations.maxLevel = level
   return self
 end
 
 ---@return BomSpellDef
-function spellDefClass:ShowInWotLK(value)
-  self.limitations.showInTBC = value
-  self.limitations.showInWotLK = value
+---@param spellId number Do not show spell if a better spell of different spell group is available
+function spellDefClass:HideIfSpellKnown(spellId)
+  self.limitations.hideIfSpellKnown = spellId
   return self
 end
 
 ---@return BomSpellDef
-function spellDefClass:HideInWotLK(value)
-  self.limitations.hideInWotLK = value
+function spellDefClass:ShowInTBC()
+  self.limitations.showInTBC = true
+  return self
+end
+
+---@return BomSpellDef
+function spellDefClass:ShowInWotLK()
+  self.limitations.showInTBC = true
+  self.limitations.showInWotLK = true
+  return self
+end
+
+---@return BomSpellDef
+function spellDefClass:HideInWotLK()
+  self.limitations.hideInWotLK = true
+  return self
+end
+
+---@return BomSpellDef
+---@param classNames table<number,string> Class names to use as the default targets (user can modify)
+function spellDefClass:DefaultTargetClasses(classNames)
+  self.targetClasses = classNames
   return self
 end
 

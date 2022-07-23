@@ -8,6 +8,7 @@ local allSpellsModule = BuffomatModule.New("AllSpells") ---@type BomAllSpellsMod
 
 local _t = BuffomatModule.Import("Languages") ---@type BomLanguagesModule
 local itemCacheModule = BuffomatModule.Import("ItemCache") ---@type BomItemCacheModule
+local priestModule = BuffomatModule.Import("AllSpellsPriest") ---@type BomAllSpellsPriestModule
 local mageModule = BuffomatModule.Import("AllSpellsMage") ---@type BomAllSpellsMageModule
 local spellCacheModule = BuffomatModule.Import("SpellCache") ---@type BomSpellCacheModule
 local spellDefModule = BuffomatModule.Import("SpellDef") ---@type BomSpellDefModule
@@ -77,94 +78,6 @@ local function tbcOrClassic(tbc, classic)
     return tbc
   end
   return classic
-end
-
----Add PRIEST spells
----@param spells table<string, BomSpellDef>
----@param enchants table<string, table<number>>
-function allSpellsModule:SetupPriestSpells(spells, enchants)
-  local priestOnly = { playerClass = "PRIEST" }
-
-  spellDefModule:createAndRegisterBuff(spells, 10938, -- Fortitude / Seelenstärke
-          { groupId        = 21562, default = true,
-            singleFamily   = { 1243, 1244, 1245, 2791, 10937, 10938, -- Ranks 1-6
-                               25389 }, -- TBC: Rank 7
-            groupFamily    = { 21562, 21564, -- Ranks 1-2
-                               25392 }, -- TBC: Rank 3
-            singleDuration = DURATION_30M, groupDuration = DURATION_1H, reagentRequired = { 17028, 17029 },
-            targetClasses  = BOM_ALL_CLASSES })
-                :Category(self.CLASS)
-
-  BOM.SpellDef_PrayerOfSpirit = function()
-    return spellDefModule:New(14819, -- Divine Spirit / Prayer of Spirit / Willenstärke
-            { groupId        = 27681, default = true,
-              singleFamily   = { 14752, 14818, 14819, 27841, -- Ranks 1-4
-                                 25312 }, -- TBC: Rank 5
-              groupFamily    = { 27681, -- Rank 1
-                                 32999 }, --- TBC: Rank 2
-              singleDuration = DURATION_30M, groupDuration = DURATION_1H, reagentRequired = { 17028, 17029 },
-              targetClasses  = BOM_MANA_CLASSES })
-                         :Category(self.CLASS)
-  end
-  tinsert(spells, BOM.SpellDef_PrayerOfSpirit())
-
-  spellDefModule:createAndRegisterBuff(spells, 10958, --Shadow Protection / Prayer of Shadow / Schattenschutz
-          { groupId         = 27683, default = false, singleDuration = DURATION_10M, groupDuration = 1200,
-            singleFamily    = { 976, 10957, 10958, -- Ranks 1-3
-                                25433 }, -- TBC: Rank 4
-            groupFamily     = { 27683, -- Rank 1
-                                39374 }, -- TBC: Rank 2
-            reagentRequired = { 17028, 17029 }, targetClasses = BOM_ALL_CLASSES },
-          priestOnly)
-                :Category(self.CLASS)
-  spellDefModule:createAndRegisterBuff(spells, 6346, -- Fear Ward
-          { default = false, singleDuration = DURATION_10M, hasCD = true, targetClasses = BOM_ALL_CLASSES })
-                :Category(self.CLASS)
-
-  BOM.SpellDef_PW_Shield = function()
-    return spellDefModule:New(10901, -- Power Word: Shield / Powerword:Shild
-            { default        = false,
-              singleFamily   = { 17, 592, 600, 3747, 6065, 6066, 10898, 10899, 10900, 10901, -- Ranks 1-10
-                                 25217, 25218 }, -- TBC: Ranks 11-12
-              singleDuration = 30, hasCD = true, targetClasses = { } })
-                         :Category(self.CLASS)
-  end
-  tinsert(spells, BOM.SpellDef_PW_Shield())
-
-  spellDefModule:createAndRegisterBuff(spells, 19266, -- Touch of Weakness / Berührung der Schwäche
-          { default      = true, isOwn = true,
-            singleFamily = { 2652, 19261, 19262, 19264, 19265, 19266, -- Ranks 1-6
-                             25461 } }, -- TBC: Rank 7
-          priestOnly)
-                :Category(self.CLASS)
-  spellDefModule:createAndRegisterBuff(spells, 10952, -- Inner Fire / inneres Feuer
-          { default      = true, isOwn = true,
-            singleFamily = { 588, 7128, 602, 1006, 10951, 10952, -- Ranks 1-6
-                             25431 } }, -- TBC: Rank 7
-          priestOnly)
-                :Category(self.CLASS)
-  spellDefModule:createAndRegisterBuff(spells, 19312, -- Shadowguard
-          { default      = true, isOwn = true,
-            singleFamily = { 18137, 19308, 19309, 19310, 19311, 19312, -- Ranks 1-6
-                             25477 } }, -- TBC: Rank 7
-          priestOnly)
-                :Category(self.CLASS)
-  spellDefModule:createAndRegisterBuff(spells, 19293, -- Elune's Grace
-          { default      = true, isOwn = true,
-            singleFamily = { 2651, -- Rank 1 also TBC: The only rank
-                             19289, 19291, 19292, 19293 } }, -- Ranks 2-5 (non-TBC)
-          priestOnly)
-                :Category(self.CLASS)
-  spellDefModule:createAndRegisterBuff(spells, 15473, -- Shadow Form
-          { default = false, isOwn = true },
-          priestOnly)
-                :Category(self.CLASS)
-  spellDefModule:createAndRegisterBuff(spells, 20770, -- Resurrection / Auferstehung
-          { cancelForm   = true, type = "resurrection", default = true,
-            singleFamily = { 2006, 2010, 10880, 10881, 20770, -- Ranks 1-5
-                             25435 } }, -- TBC: Rank 6
-          priestOnly)
-                :Category(self.CLASS)
 end
 
 ---Add DRUID spells
@@ -1552,7 +1465,7 @@ function allSpellsModule:SetupSpells()
   local enchants = {} ---@type table<number, table<number>>
   self:SetupConstants()
 
-  self:SetupPriestSpells(spells, enchants)
+  priestModule:SetupPriestSpells(spells, enchants)
   self:SetupDruidSpells(spells, enchants)
   mageModule:SetupMageSpells(spells, enchants)
   self:SetupShamanSpells(spells, enchants)

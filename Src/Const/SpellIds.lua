@@ -11,8 +11,9 @@ BOM.SpellId = {}
 -- BOM.SpellId.Food = {33264}
 
 BOM.SpellId.Mage = {}
-BOM.SpellId.Mage.ConjureManaRuby = 10054
+BOM.SpellId.Mage.ConjureManaSapphire = 42985
 BOM.SpellId.Mage.ConjureManaEmerald = 27101
+BOM.SpellId.Mage.ConjureManaRuby = 10054
 BOM.SpellId.Mage.ConjureManaCitrine = 10053
 BOM.SpellId.Mage.ConjureManaJade = 3552
 BOM.SpellId.Mage.ConjureManaAgate = 759

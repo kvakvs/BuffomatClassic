@@ -9,6 +9,7 @@ BOM.ItemId = {}
 
 BOM.ItemId.Mage = {}
 
+BOM.ItemId.Mage.ManaSapphire = 33312
 BOM.ItemId.Mage.ManaEmerald = 22044
 BOM.ItemId.Mage.ManaRuby = 8008
 BOM.ItemId.Mage.ManaCitrine = 8007
