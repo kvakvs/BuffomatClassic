@@ -131,21 +131,15 @@ function spellDefModule:New(singleId, fields)
 end
 
 function spellDefModule:tbcConsumable(dst, singleId, itemId, limitations, extraText, extraFields)
-  if not BOM.HaveTBC then
-    return spellDefModule:New(0, {}) -- dummy spelldef to not crash following setters
-  end
   return self:genericConsumable(dst, singleId, itemId, limitations, extraText, extraFields)
              :ShowInTBC()
 end
 
-function spellDefModule:wotlkConsumable(dst, singleId, itemId, limitations,
-                                        extraText, extraFields)
-  if not BOM.HaveWotLK then
-    return spellDefModule:New(0, {}) -- dummy spelldef to not crash following setters
-  end
-  return self:genericConsumable(dst, singleId, itemId, limitations, extraText, extraFields)
-             :ShowInWotLK()
-end
+--function spellDefModule:wotlkConsumable(dst, singleId, itemId, limitations,
+--                                        extraText, extraFields)
+--  return self:genericConsumable(dst, singleId, itemId, limitations, extraText, extraFields)
+--             :ShowInWotLK()
+--end
 
 ---@param dst table<BomBuffDefinition>
 ---@param singleId number

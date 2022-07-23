@@ -14,6 +14,11 @@ function elixirsModule:SetupElixirs(buffs, enchantments)
   self:_SetupBattleCasterElixirs(buffs, enchantments)
   self:_SetupBattlePhysicalElixirs(buffs, enchantments)
   self:_SetupGuardianElixirs(buffs, enchantments)
+
+  self:_SetupBattleElixirsWotLK(buffs, enchantments)
+  self:_SetupBattleCasterElixirsWotLK(buffs, enchantments)
+  self:_SetupBattlePhysicalElixirsWotLK(buffs, enchantments)
+  self:_SetupGuardianElixirsWotLK(buffs, enchantments)
 end
 
 ---@param buffs table<string, BomBuffDefinition> A list of buffs (not dictionary)
@@ -116,6 +121,44 @@ function elixirsModule:_SetupBattlePhysicalElixirs(buffs, enchantments)
             onlyUsableFor = allBuffsModule.BOM_PHYSICAL_CLASSES, })
                 :ShowInTBC()
                 :Category(allBuffsModule.TBC_PHYS_ELIXIR)
+                :ElixirType(allBuffsModule.ELIX_BATTLE)
+end
+
+---@param buffs table<string, BomBuffDefinition> A list of buffs (not dictionary)
+---@param enchantments table<number, table<number>> Key is spell id, value is list of enchantment ids
+function elixirsModule:_SetupBattleCasterElixirsWotLK(buffs, enchantments)
+  spellDefModule:tbcConsumable(buffs, 33721, 40070) -- WotLK: Spellpower Elixir +58 SPELL
+                :ClassOnly(allBuffsModule.BOM_SPELL_CLASSES)
+                :Category(allBuffsModule.WOTLK_SPELL_ELIXIR)
+                :ElixirType(allBuffsModule.ELIX_BATTLE)
+end
+
+---@param buffs table<string, BomBuffDefinition> A list of buffs (not dictionary)
+---@param enchantments table<number, table<number>> Key is spell id, value is list of enchantment ids
+function elixirsModule:_SetupBattlePhysicalElixirsWotLK(buffs, enchantments)
+  spellDefModule:tbcConsumable(buffs, 60344, 44329) -- WotLK: Elixir of Expertise +45
+                :ClassOnly(allBuffsModule.BOM_MELEE_CLASSES)
+                :Category(allBuffsModule.WOTLK_PHYS_ELIXIR)
+                :ElixirType(allBuffsModule.ELIX_BATTLE)
+  spellDefModule:tbcConsumable(buffs, 60341, 44327) -- WotLK: Elixir of Deadly Strikes +45 Crit
+                :ClassOnly(allBuffsModule.BOM_PHYSICAL_CLASSES)
+                :Category(allBuffsModule.WOTLK_PHYS_ELIXIR)
+                :ElixirType(allBuffsModule.ELIX_BATTLE)
+  spellDefModule:tbcConsumable(buffs, 53746, 40068) -- WotLK: Wrath Elixir +90 AP
+                :ClassOnly(allBuffsModule.BOM_PHYSICAL_CLASSES)
+                :Category(allBuffsModule.WOTLK_PHYS_ELIXIR)
+                :ElixirType(allBuffsModule.ELIX_BATTLE)
+  spellDefModule:tbcConsumable(buffs, 60345, 44330) -- WotLK: Elixir of Armor Piercing +45 ARP
+                :ClassOnly(allBuffsModule.BOM_PHYSICAL_CLASSES)
+                :Category(allBuffsModule.WOTLK_PHYS_ELIXIR)
+                :ElixirType(allBuffsModule.ELIX_BATTLE)
+  spellDefModule:tbcConsumable(buffs, 28497, 39666) -- WotLK: Elixir of Mighty Agility +45 AGI
+                :ClassOnly(allBuffsModule.BOM_PHYSICAL_CLASSES)
+                :Category(allBuffsModule.WOTLK_PHYS_ELIXIR)
+                :ElixirType(allBuffsModule.ELIX_BATTLE)
+  spellDefModule:tbcConsumable(buffs, 53748, 40073) -- WotLK: Elixir of Mighty Strength +50 STR
+                :ClassOnly(allBuffsModule.BOM_MELEE_CLASSES)
+                :Category(allBuffsModule.WOTLK_PHYS_ELIXIR)
                 :ElixirType(allBuffsModule.ELIX_BATTLE)
 end
 
@@ -243,4 +286,37 @@ function elixirsModule:_SetupGuardianElixirs(buffs, enchantments)
                   :Category(allBuffsModule.TBC_ELIXIR)
                   :ElixirType(allBuffsModule.ELIX_GUARDIAN)
   end
+end
+
+---@param buffs table<string, BomBuffDefinition> A list of buffs (not dictionary)
+---@param enchantments table<number, table<number>> Key is spell id, value is list of enchantment ids
+function elixirsModule:_SetupGuardianElixirsWotLK(buffs, enchantments)
+  spellDefModule:genericConsumable(buffs, 53747, 40072) --WotLK: Elixir of Spirit +50
+                :ShowInWotLK()
+                :ClassOnly(allBuffsModule.BOM_MANA_CLASSES)
+                :Category(allBuffsModule.WOTLK_SPELL_ELIXIR)
+                :ElixirType(allBuffsModule.ELIX_GUARDIAN)
+  spellDefModule:genericConsumable(buffs, 53764, 40109) --WotLK: Elixir of Mighty Mageblood +30 MP5
+                :ShowInWotLK()
+                :ClassOnly(allBuffsModule.BOM_MANA_CLASSES)
+                :Category(allBuffsModule.WOTLK_SPELL_ELIXIR)
+                :ElixirType(allBuffsModule.ELIX_GUARDIAN)
+end
+
+
+---@param buffs table<string, BomBuffDefinition> A list of buffs (not dictionary)
+---@param enchantments table<number, table<number>> Key is spell id, value is list of enchantment ids
+function elixirsModule:_SetupBattleElixirsWotLK(buffs, enchantments)
+  spellDefModule:genericConsumable(buffs, 53749, 40076) --WotLK: Guru's Elixir +20 All Stats
+                :ShowInWotLK()
+                :Category(allBuffsModule.WOTLK_ELIXIR)
+                :ElixirType(allBuffsModule.ELIX_GUARDIAN)
+  spellDefModule:genericConsumable(buffs, 60346, 44331) --WotLK: Elixir of Lightning Speed +45 Haste
+                :ShowInWotLK()
+                :Category(allBuffsModule.WOTLK_ELIXIR)
+                :ElixirType(allBuffsModule.ELIX_BATTLE)
+  spellDefModule:genericConsumable(buffs, 60340, 44325) --WotLK: Elixir of Accuracy +45 HIT
+                :ShowInWotLK()
+                :Category(allBuffsModule.WOTLK_ELIXIR)
+                :ElixirType(allBuffsModule.ELIX_BATTLE)
 end

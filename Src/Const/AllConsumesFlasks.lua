@@ -19,91 +19,119 @@ end
 ---@param buffs table<string, BomBuffDefinition> A list of buffs (not dictionary)
 ---@param enchantments table<number, table<number>> Key is spell id, value is list of enchantment ids
 function flasksModule:_SetupFlasksClassic(buffs, enchantments)
-  spellDefModule:classicConsumable(buffs, 17628, 13512, --Flask of Supreme Power +70 SPELL
-          { playerClass = allBuffsModule.BOM_MANA_CLASSES })
-                :Category(allBuffsModule.CLASSIC_SPELL_ELIXIR)
+  spellDefModule:classicConsumable(buffs, 17628, 13512) --Flask of Supreme Power +70 SPELL
+                :ClassOnly(allBuffsModule.BOM_SPELL_CLASSES)
+                :Category(allBuffsModule.CLASSIC_FLASK)
                 :ElixirType(allBuffsModule.ELIX_FLASK)
 
-  spellDefModule:classicConsumable(buffs, 17626, 13510, --Flask of the Titans +400 HP
-          nil)
-                :Category(allBuffsModule.CLASSIC_ELIXIR)
+  spellDefModule:classicConsumable(buffs, 17626, 13510) --Flask of the Titans +400 HP
+                :Category(allBuffsModule.CLASSIC_FLASK)
                 :ElixirType(allBuffsModule.ELIX_FLASK)
 
-  spellDefModule:classicConsumable(buffs, 17627, 13511, --Flask of Distilled Wisdom +65 INT
-          { playerClass = allBuffsModule.BOM_MANA_CLASSES })
-                :Category(allBuffsModule.CLASSIC_SPELL_ELIXIR)
+  spellDefModule:classicConsumable(buffs, 17627, 13511) --Flask of Distilled Wisdom +65 INT
+                :ClassOnly(allBuffsModule.BOM_MANA_CLASSES)
+                :Category(allBuffsModule.CLASSIC_FLASK)
                 :ElixirType(allBuffsModule.ELIX_FLASK)
 
-  spellDefModule:classicConsumable(buffs, 17629, 13513, --Flask of Chromatic Resistance
-          nil)
-                :Category(allBuffsModule.CLASSIC_ELIXIR)
+  spellDefModule:classicConsumable(buffs, 17629, 13513) --Flask of Chromatic Resistance
+                :Category(allBuffsModule.CLASSIC_FLASK)
                 :ElixirType(allBuffsModule.ELIX_FLASK)
 end
 
 ---@param buffs table<string, BomBuffDefinition> A list of buffs (not dictionary)
 ---@param enchantments table<number, table<number>> Key is spell id, value is list of enchantment ids
 function flasksModule:_SetupFlasksTBC(buffs, enchantments)
-  spellDefModule:tbcConsumable(buffs, 28540, 22866, --TBC: Flask of Pure Death +80 SHADOW +80 FIRE +80 FROST
-          { playerClass = allBuffsModule.BOM_MANA_CLASSES })
-                :Category(allBuffsModule.TBC_SPELL_ELIXIR)
+  spellDefModule:tbcConsumable(buffs, 28540, 22866) --TBC: Flask of Pure Death +80 SHADOW +80 FIRE +80 FROST
+                :ShowInTBC()
+                :ClassOnly(allBuffsModule.BOM_SPELL_CLASSES)
+                :Category(allBuffsModule.TBC_FLASK)
                 :ElixirType(allBuffsModule.ELIX_FLASK)
 
-  spellDefModule:tbcConsumable(buffs, 28521, 22861, --TBC: Flask of Blinding Light +80 ARC +80 HOLY +80 NATURE
-          { playerClass = allBuffsModule.BOM_MANA_CLASSES })
-                :Category(allBuffsModule.TBC_SPELL_ELIXIR)
+  spellDefModule:genericConsumable(buffs, 28521, 22861) --TBC: Flask of Blinding Light +80 ARC +80 HOLY +80 NATURE
+                :ShowInTBC()
+                :ClassOnly(allBuffsModule.BOM_SPELL_CLASSES)
+                :Category(allBuffsModule.TBC_FLASK)
                 :ElixirType(allBuffsModule.ELIX_FLASK)
 
-  spellDefModule:tbcConsumable(buffs, 28520, 22854, --TBC: Flask of Relentless Assault +120 AP
-          { playerClass = allBuffsModule.BOM_PHYSICAL_CLASSES })
-                :Category(allBuffsModule.TBC_PHYS_ELIXIR)
+  spellDefModule:genericConsumable(buffs, 28520, 22854) --TBC: Flask of Relentless Assault +120 AP
+                :ShowInTBC()
+                :ClassOnly(allBuffsModule.BOM_PHYSICAL_CLASSES)
+                :Category(allBuffsModule.TBC_FLASK)
                 :ElixirType(allBuffsModule.ELIX_FLASK)
 
-  spellDefModule:tbcConsumable(buffs, 28518, 22851) --TBC: Flask of Fortification +500 HP +10 DEF RATING
-                :Category(allBuffsModule.TBC_ELIXIR)
+  spellDefModule:genericConsumable(buffs, 28518, 22851) --TBC: Flask of Fortification +500 HP +10 DEF RATING
+                :ShowInTBC()
+                :Category(allBuffsModule.TBC_FLASK)
                 :ElixirType(allBuffsModule.ELIX_FLASK)
 
-  spellDefModule:tbcConsumable(buffs, 28519, 22853) --TBC: Flask of Mighty Restoration +25 MP/5
-                :Category(allBuffsModule.TBC_SPELL_ELIXIR)
+  spellDefModule:genericConsumable(buffs, 28519, 22853) --TBC: Flask of Mighty Restoration +25 MP/5
+                :ShowInTBC()
+                :Category(allBuffsModule.TBC_FLASK)
                 :ElixirType(allBuffsModule.ELIX_FLASK)
 
-  spellDefModule:tbcConsumable(buffs, 42735, 33208) --TBC: Flask of Chromatic Wonder +35 ALL RESIST +18 ALL STATS
-                :Category(allBuffsModule.TBC_ELIXIR)
+  spellDefModule:genericConsumable(buffs, 42735, 33208) --TBC: Flask of Chromatic Wonder +35 ALL RESIST +18 ALL STATS
+                :ShowInTBC()
+                :Category(allBuffsModule.TBC_FLASK)
                 :ElixirType(allBuffsModule.ELIX_FLASK)
 
   --
   -- Shattrath Flasks...
   --
-  spellDefModule:tbcConsumable(buffs, 46837, 35716, --TBC: Shattrath Flask of Pure Death +80 SHADOW +80 FIRE +80 FROST
+  spellDefModule:genericConsumable(buffs, 46837, 35716) --TBC: Shattrath Flask of Pure Death +80 SHADOW +80 FIRE +80 FROST
+                :ShowInTBC()
+                :ClassOnly(allBuffsModule.BOM_SPELL_CLASSES)
+                :Category(allBuffsModule.TBC_FLASK)
+                :ElixirType(allBuffsModule.ELIX_FLASK)
+
+  spellDefModule:genericConsumable(buffs, 46839, 35717) --TBC: Shattrath Flask of Blinding Light +80 ARC +80 HOLY +80 NATURE
+                :ShowInTBC()
+                :ClassOnly(allBuffsModule.BOM_SPELL_CLASSES)
+                :Category(allBuffsModule.TBC_FLASK)
+                :ElixirType(allBuffsModule.ELIX_FLASK)
+
+  spellDefModule:genericConsumable(buffs, 41608, 32901) --TBC: Shattrath Flask of Relentless Assault +120 AP
+                :ShowInTBC()
+                :ClassOnly(allBuffsModule.PHYSICAL_CLASSES)
+                :Category(allBuffsModule.TBC_FLASK)
+                :ElixirType(allBuffsModule.ELIX_FLASK)
+
+  spellDefModule:genericConsumable(buffs, 41609, 32898) --TBC: Shattrath Flask of Fortification +500 HP +10 DEF RATING
+                :ShowInTBC()
+                :Category(allBuffsModule.TBC_FLASK)
+                :ElixirType(allBuffsModule.ELIX_FLASK)
+
+  spellDefModule:genericConsumable(buffs, 41610, 32899) --TBC: Shattrath Flask of Mighty Restoration +25 MP/5
+                :ShowInTBC()
+                :Category(allBuffsModule.TBC_FLASK)
+                :ElixirType(allBuffsModule.ELIX_FLASK)
+
+  spellDefModule:genericConsumable(buffs, 41611, 32900, --TBC: Shattrath Flask of Supreme Power +70 SPELL
           { playerClass = allBuffsModule.BOM_MANA_CLASSES })
-                :Category(allBuffsModule.TBC_SPELL_ELIXIR)
-                :ElixirType(allBuffsModule.ELIX_FLASK)
-
-  spellDefModule:tbcConsumable(buffs, 46839, 35717, --TBC: Shattrath Flask of Blinding Light +80 ARC +80 HOLY +80 NATURE
-          { playerClass = allBuffsModule.BOM_MANA_CLASSES })
-                :Category(allBuffsModule.TBC_SPELL_ELIXIR)
-                :ElixirType(allBuffsModule.ELIX_FLASK)
-
-  spellDefModule:tbcConsumable(buffs, 41608, 32901, --TBC: Shattrath Flask of Relentless Assault +120 AP
-          { playerClass = allBuffsModule.PHYSICAL_CLASSES })
-                :Category(allBuffsModule.TBC_PHYS_ELIXIR)
-                :ElixirType(allBuffsModule.ELIX_FLASK)
-
-  spellDefModule:tbcConsumable(buffs, 41609, 32898) --TBC: Shattrath Flask of Fortification +500 HP +10 DEF RATING
-                :Category(allBuffsModule.TBC_ELIXIR)
-                :ElixirType(allBuffsModule.ELIX_FLASK)
-
-  spellDefModule:tbcConsumable(buffs, 41610, 32899) --TBC: Shattrath Flask of Mighty Restoration +25 MP/5
-                :Category(allBuffsModule.TBC_SPELL_ELIXIR)
-                :ElixirType(allBuffsModule.ELIX_FLASK)
-
-  spellDefModule:tbcConsumable(buffs, 41611, 32900, --TBC: Shattrath Flask of Supreme Power +70 SPELL
-          { playerClass = allBuffsModule.BOM_MANA_CLASSES })
-                :Category(allBuffsModule.TBC_SPELL_ELIXIR)
+                :ShowInTBC()
+                :Category(allBuffsModule.TBC_FLASK)
                 :ElixirType(allBuffsModule.ELIX_FLASK)
 end
 
 ---@param buffs table<string, BomBuffDefinition> A list of buffs (not dictionary)
 ---@param enchantments table<number, table<number>> Key is spell id, value is list of enchantment ids
 function flasksModule:_SetupFlasksWotLK(buffs, enchantments)
-
+  spellDefModule:genericConsumable(buffs, 53760, 46377) --WotLK: Flask of Endless Rage +180 AP
+                :ClassOnly(allBuffsModule.PHYSICAL_CLASSES)
+                :ShowInWotLK()
+                :Category(allBuffsModule.WOTLK_FLASK)
+                :ElixirType(allBuffsModule.ELIX_FLASK)
+  spellDefModule:genericConsumable(buffs, 53755, 46376) --WotLK: Flask of the Frost Wyrm +125 Spell
+                :ShowInWotLK()
+                :ClassOnly(allBuffsModule.BOM_SPELL_CLASSES)
+                :Category(allBuffsModule.WOTLK_FLASK)
+                :ElixirType(allBuffsModule.ELIX_FLASK)
+  spellDefModule:genericConsumable(buffs, 53758, 46379) --WotLK: Flask of the Stoneblood +1300 HP
+                :ShowInWotLK()
+                :Category(allBuffsModule.WOTLK_FLASK)
+                :ElixirType(allBuffsModule.ELIX_FLASK)
+  spellDefModule:genericConsumable(buffs, 54212, 46378) --WotLK: Flask of Pure Mojo +45 MP5
+                :ShowInWotLK()
+                :ClassOnly(allBuffsModule.BOM_MANA_CLASSES)
+                :Category(allBuffsModule.WOTLK_FLASK)
+                :ElixirType(allBuffsModule.ELIX_FLASK)
 end

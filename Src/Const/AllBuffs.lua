@@ -55,6 +55,10 @@ local BOM_MANA_CLASSES = { "HUNTER", "WARLOCK", "MAGE", "DRUID", "SHAMAN", "PRIE
 BOM.MANA_CLASSES = BOM_MANA_CLASSES --used in TaskScan.lua
 allBuffsModule.BOM_MANA_CLASSES = BOM_MANA_CLASSES
 
+---Classes which deal spell damage
+local BOM_SPELL_CLASSES = { "WARLOCK", "MAGE", "DRUID", "SHAMAN", "PRIEST", "PALADIN", "DEATHKNIGHT", "HUNTER" }
+allBuffsModule.BOM_SPELL_CLASSES = BOM_SPELL_CLASSES
+
 ---@deprecated
 BOM.CLASSIC_ERA = "Classic"
 ---@deprecated
@@ -172,6 +176,7 @@ function allBuffsModule:SetupConstantsCategories()
   self.CLASSIC_BUFF = "classicBuff"
   self.CLASSIC_SPELL_ELIXIR = "classicSpellElixir"
   self.CLASSIC_ELIXIR = "classicElixir"
+  self.CLASSIC_FLASK = "classicFlask"
 
   self.TBC_PHYS_FOOD = "tbcPhysicalFood"
   self.TBC_SPELL_FOOD = "tbcSpellFood"
@@ -179,6 +184,7 @@ function allBuffsModule:SetupConstantsCategories()
   self.TBC_PHYS_ELIXIR = "tbcPhysElixir"
   self.TBC_SPELL_ELIXIR = "tbcSpellElixir"
   self.TBC_ELIXIR = "tbcElixir"
+  self.TBC_FLASK = "tbcFlask"
 
   self.WOTLK_PHYS_FOOD = "wotlkPhysicalFood"
   self.WOTLK_SPELL_FOOD = "wotlkSpellFood"
@@ -186,6 +192,7 @@ function allBuffsModule:SetupConstantsCategories()
   self.WOTLK_PHYS_ELIXIR = "wotlkPhysElixir"
   self.WOTLK_SPELL_ELIXIR = "wotlkSpellElixir"
   self.WOTLK_ELIXIR = "wotlkElixir"
+  self.WOTLK_FLASK = "wotlkFlask"
 
   self.SCROLL = "scroll"
   self.WEAPON_ENCHANTMENT = "weaponEnchantment"
@@ -199,28 +206,31 @@ function allBuffsModule:SetupConstantsCategories()
     self.PET,
     self.TRACKING,
 
-    self.CLASSIC_PHYS_ELIXIR,
-    self.CLASSIC_PHYS_BUFF,
-    self.CLASSIC_SPELL_ELIXIR,
-    self.CLASSIC_ELIXIR,
-    self.CLASSIC_BUFF,
-    self.CLASSIC_PHYS_FOOD,
-    self.CLASSIC_SPELL_FOOD,
-    self.CLASSIC_FOOD,
+    self.WOTLK_PHYS_ELIXIR,
+    self.WOTLK_SPELL_ELIXIR,
+    self.WOTLK_ELIXIR,
+    self.WOTLK_FLASK,
+    self.WOTLK_PHYS_FOOD,
+    self.WOTLK_SPELL_FOOD,
+    self.WOTLK_FOOD,
 
     self.TBC_PHYS_ELIXIR,
     self.TBC_SPELL_ELIXIR,
     self.TBC_ELIXIR,
+    self.TBC_FLASK,
     self.TBC_PHYS_FOOD,
     self.TBC_SPELL_FOOD,
     self.TBC_FOOD,
 
-    self.WOTLK_PHYS_ELIXIR,
-    self.WOTLK_SPELL_ELIXIR,
-    self.WOTLK_ELIXIR,
-    self.WOTLK_PHYS_FOOD,
-    self.WOTLK_SPELL_FOOD,
-    self.WOTLK_FOOD,
+    self.CLASSIC_PHYS_ELIXIR,
+    self.CLASSIC_PHYS_BUFF,
+    self.CLASSIC_SPELL_ELIXIR,
+    self.CLASSIC_ELIXIR,
+    self.CLASSIC_FLASK,
+    self.CLASSIC_BUFF,
+    self.CLASSIC_PHYS_FOOD,
+    self.CLASSIC_SPELL_FOOD,
+    self.CLASSIC_FOOD,
 
     self.SCROLL, self.WEAPON_ENCHANTMENT,
 
