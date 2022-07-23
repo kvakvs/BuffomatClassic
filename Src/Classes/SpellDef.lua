@@ -25,7 +25,7 @@ BOM.Class = BOM.Class or {}
 --- A class describing a spell in available spells collection
 ---
 ---@class BomSpellDef
----@field limitations BomSpellLimitations
+---@field limitations BomSpellLimitations Temporary field for post-filtering on spell list creation, later zeroed
 ---@field category string|nil Group by this field and use special translation table to display headers
 ---@field elixirType string|nil Use this for elixir mutual exclusions on elixirs
 ---@field targetClasses table<string> List of target classes which are shown as toggle boxes to enable cast per class
@@ -117,6 +117,7 @@ function spellDefModule:New(singleId, fields)
   newSpell.frames = buffRowModule:New() -- spell buttons from the UI go here
   newSpell.buffId = singleId
   newSpell.singleId = singleId
+  newSpell.limitations = {}
 
   newSpell.ForcedTarget = {}
   newSpell.ExcludedTarget = {}
@@ -126,8 +127,6 @@ function spellDefModule:New(singleId, fields)
   newSpell.GroupsNeedBuff = {}
   --newSpell.GroupsHaveBetterBuff = {}
   newSpell.GroupsHaveDead = {}
-
-  newSpell.limitations = {}
 
   return newSpell
 end
@@ -215,19 +214,17 @@ function spellDefModule:CheckLimitations(spell, limitations)
     end
   end
 
-  if limitations.playerClass then
-    if type(limitations.playerClass) == "table" then
-      -- Fail if val is a table and player class is not in it
-      if not tContains(limitations.playerClass, playerClass) then
-        return false
-      end
-    else
-      -- Fail if val is not equal to the player class
-      if limitations.playerClass ~= playerClass then
-        return false
-      end
+  if type(limitations.playerClass) == "table" then
+    -- Fail if val is a table and player class is not in it
+    if not tContains(limitations.playerClass, playerClass) then
+      return false
     end
-  end -- if playerclass check
+  else
+    -- Fail if val is not equal to the player class
+    if limitations.playerClass ~= playerClass then
+      return false
+    end
+  end
 
   if type(limitations.maxLevel) == "number" and limitations.maxLevel > UnitLevel("player") then
     return false -- too old
@@ -269,7 +266,6 @@ function spellDefModule:createAndRegisterBuff(dst, buffSpellId, fields,
 
   if spell.buffId > 0
           and self:CheckLimitations(spell, limitations) -- Limitations passed as arg here
-          and self:CheckLimitations(spell, spell.limitations) -- Limitations set via :Function() modifiers
   then
     tinsert(dst, spell)
   end
@@ -319,6 +315,13 @@ end
 function spellDefClass:ShowInTBC()
   self.limitations.showInTBC = true
   self.limitations.showInWotLK = true
+  return self
+end
+
+---@return BomSpellDef
+function spellDefClass:HideInTBC()
+  self.limitations.hideInTBC = true
+  self.limitations.hideInWotLK = true
   return self
 end
 

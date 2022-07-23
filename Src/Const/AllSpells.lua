@@ -16,6 +16,7 @@ local druidModule = BuffomatModule.Import("AllSpellsDruid") ---@type BomAllSpell
 local shamanModule = BuffomatModule.Import("AllSpellsShaman") ---@type BomAllSpellsShamanModule
 local warlockModule = BuffomatModule.Import("AllSpellsWarlock") ---@type BomAllSpellsWarlockModule
 local hunterModule = BuffomatModule.Import("AllSpellsHunter") ---@type BomAllSpellsHunterModule
+local paladinModule = BuffomatModule.Import("AllSpellsPaladin") ---@type BomAllSpellsPaladinModule
 
 local L = setmetatable(
         {},
@@ -84,228 +85,6 @@ local function tbcOrClassic(tbc, classic)
   return classic
 end
 allSpellsModule.TbcOrClassic = tbcOrClassic
-
----Add PALADIN spells
----@param spells table<string, BomSpellDef>
----@param enchants table<string, table<number>>
-function allSpellsModule:SetupPaladinSpells(spells, enchants)
-  local paladinOnly = { playerClass = "PALADIN" }
-
-  spellDefModule:createAndRegisterBuff(spells, 25780, --Righteous Fury, same in TBC
-          { isOwn = true, default = false })
-                :Category(self.CLASS)
-
-  local blessing_duration = tbcOrClassic(DURATION_10M, DURATION_5M)
-  local greater_blessing_duration = tbcOrClassic(DURATION_15M, DURATION_30M)
-
-  --
-  -- LESSER BLESSINGS
-
-  spellDefModule:createAndRegisterBuff(spells, 20217, --Blessing of Kings
-          { groupFamily    = { 25898 }, isBlessing = true, default = false,
-            singleDuration = blessing_duration,
-            targetClasses  = { "MAGE", "HUNTER", "WARLOCK" } },
-          paladinOnly)
-                :IgnoreIfHaveBuff(25898) -- Greater Kings
-                :Category(self.BLESSING)
-
-  spellDefModule:createAndRegisterBuff(spells, 19979, -- Blessing of Light
-          { singleFamily   = { 19977, 19978, 19979, -- Ranks 1-3
-                               27144 }, -- TBC: Rank 4
-            isBlessing     = true, default = false,
-            singleDuration = blessing_duration, groupDuration = greater_blessing_duration,
-            targetClasses  = BOM_NO_CLASS },
-          paladinOnly)
-                :IgnoreIfHaveBuff(21177) -- Greater Light
-                :Category(self.BLESSING)
-
-  spellDefModule:createAndRegisterBuff(spells, 25291, --Blessing of Might
-          { isBlessing     = true, default = true,
-            singleFamily   = { 19740, 19834, 19835, 19836, 19837, 19838, 25291, -- Ranks 1-7
-                               27140 }, -- TBC: Rank 8
-            singleDuration = blessing_duration, targetClasses = BOM_PHYSICAL_CLASSES }, paladinOnly)
-                :IgnoreIfHaveBuff(25782) -- Greater Might
-                :IgnoreIfHaveBuff(25916) -- Greater Might
-                :IgnoreIfHaveBuff(27141) -- Greater Might
-                :Category(self.BLESSING)
-
-  spellDefModule:createAndRegisterBuff(spells, 1038, --Blessing of Salvation
-          { isBlessing    = true, default = false, singleDuration = blessing_duration,
-            targetClasses = BOM_NO_CLASS, },
-          paladinOnly)
-                :IgnoreIfHaveBuff(25895) -- Greater Salv
-                :Category(self.BLESSING)
-
-  spellDefModule:createAndRegisterBuff(spells, 25290, --Blessing of Wisdom
-          { isBlessing     = true, default = false,
-            singleFamily   = { 19742, 19850, 19852, 19853, 19854, 25290, -- Ranks 1-6
-                               27142 }, -- TBC: Rank 7
-            singleDuration = blessing_duration, groupDuration = greater_blessing_duration,
-            targetClasses  = { "DRUID", "SHAMAN", "PRIEST", "PALADIN" } },
-          paladinOnly)
-                :Category(self.BLESSING)
-
-  spellDefModule:createAndRegisterBuff(spells, 20914, --Blessing of Sanctuary
-          { isBlessing      = true, default = false,
-            singleFamily    = { 20911, 20912, 20913, 20914, -- Ranks 1-4
-                                27168 }, -- TBC: Rank 5
-            reagentRequired = { BOM.ItemId.Paladin.SymbolOfKings },
-            singleDuration  = blessing_duration, groupDuration = greater_blessing_duration,
-            targetClasses   = BOM_NO_CLASS },
-          paladinOnly)
-                :Category(self.BLESSING)
-  --
-  -- GREATER BLESSINGS
-  --
-  spellDefModule:createAndRegisterBuff(spells, 25898, --Greater Blessing of Kings
-          { isBlessing      = true, default = true, singleDuration = greater_blessing_duration,
-            reagentRequired = { BOM.ItemId.Paladin.SymbolOfKings },
-            targetClasses   = { "MAGE", "HUNTER", "WARLOCK" }, },
-          paladinOnly)
-                :Category(self.BLESSING)
-
-  spellDefModule:createAndRegisterBuff(spells, 25890, -- Greater Blessing of Light
-          { singleFamily    = { 25890, -- Greater Rank 1
-                                27145 }, -- TBC: Greater Rank 2
-            isBlessing      = true, default = false,
-            reagentRequired = { BOM.ItemId.Paladin.SymbolOfKings }, singleDuration = greater_blessing_duration,
-            targetClasses   = BOM_NO_CLASS },
-          paladinOnly)
-                :Category(self.BLESSING)
-
-  spellDefModule:createAndRegisterBuff(spells, 25916, --Greater Blessing of Might
-          { isBlessing      = true, default = false,
-            singleFamily    = { 25782, 25916, -- Greater Ranks 1-2
-                                27141 }, -- TBC: Greater Rank 3
-            singleDuration  = greater_blessing_duration,
-            reagentRequired = { BOM.ItemId.Paladin.SymbolOfKings },
-            targetClasses   = { "WARRIOR", "ROGUE" } },
-          paladinOnly)
-                :Category(self.BLESSING)
-
-  spellDefModule:createAndRegisterBuff(spells, 25895, --Greater Blessing of Salvation
-          { singleFamily    = { 25895 }, isBlessing = true, default = false,
-            singleDuration  = greater_blessing_duration,
-            reagentRequired = { BOM.ItemId.Paladin.SymbolOfKings },
-            targetClasses   = BOM_NO_CLASS },
-          paladinOnly)
-                :Category(self.BLESSING)
-
-  spellDefModule:createAndRegisterBuff(spells, 25918, --Greater Blessing of Wisdom
-          { isBlessing      = true, default = false,
-            singleFamily    = { 25894, 25918, -- Greater Ranks 1-2
-                                27143 }, -- TBC: Greater Rank 3
-            singleDuration  = greater_blessing_duration,
-            reagentRequired = { BOM.ItemId.Paladin.SymbolOfKings },
-            targetClasses   = { "DRUID", "SHAMAN", "PRIEST", "PALADIN" } },
-          paladinOnly)
-                :Category(self.BLESSING)
-
-  spellDefModule:createAndRegisterBuff(spells, 25899, --Greater Blessing of Sanctuary
-          { isBlessing      = true, default = false,
-            singleFamily    = { 25899, -- Greater Rank 1
-                                27169 }, -- TBC: Greater Rank 2
-            singleDuration  = greater_blessing_duration,
-            reagentRequired = { BOM.ItemId.Paladin.SymbolOfKings },
-            targetClasses   = BOM_NO_CLASS },
-          paladinOnly)
-                :Category(self.BLESSING)
-
-  -- END blessings ------
-  --
-  -- ----------------------------------
-  --
-  spellDefModule:createAndRegisterBuff(spells, 10293, -- Devotion Aura
-          { type         = "aura", default = false,
-            singleFamily = { 465, 10290, 643, 10291, 1032, 10292, 10293, -- Rank 1-7
-                             27149 } }, -- TBC: Rank 8
-          paladinOnly)
-                :Category(self.AURA)
-  spellDefModule:createAndRegisterBuff(spells, 10301, -- Retribution Aura
-          { type         = "aura", default = true,
-            singleFamily = { 7294, 10298, 10299, 10300, 10301, -- Ranks 1-5
-                             27150 } }, -- TBC: Rank 6
-          paladinOnly)
-                :Category(self.AURA)
-  spellDefModule:createAndRegisterBuff(spells, 19746, --Concentration Aura
-          { type = "aura", default = false },
-          paladinOnly)
-                :Category(self.AURA)
-  spellDefModule:createAndRegisterBuff(spells, 19896, -- Shadow Resistance Aura
-          { type = "aura", default = false, singleFamily = { 19876, 19895, 19896, -- Rank 1-3
-                                                             27151 } }, -- TBC: Rank 4
-          paladinOnly)
-                :Category(self.AURA)
-  spellDefModule:createAndRegisterBuff(spells, 19898, -- Frost Resistance Aura
-          { type = "aura", default = false, singleFamily = { 19888, 19897, 19898, -- Rank 1-3
-                                                             27152 } }, -- TBC: Rank 4
-          paladinOnly)
-                :Category(self.AURA)
-  spellDefModule:createAndRegisterBuff(spells, 19900, -- Fire Resistance Aura
-          { type = "aura", default = false, singleFamily = { 19891, 19899, 19900, -- Rank 1-3
-                                                             27153 } }, -- TBC: Rank 4
-          paladinOnly)
-                :Category(self.AURA)
-  spellDefModule:createAndRegisterBuff(spells, 20218, --Sanctity Aura
-          { type = "aura", default = false },
-          paladinOnly)
-                :Category(self.AURA)
-
-  BOM.CrusaderAuraSpell = spellDefModule:createAndRegisterBuff(
-          spells, BOM.SpellId.Paladin.CrusaderAura, --TBC: Crusader Aura
-          { type       = "aura", default = false, extraText = _t("CRUSADER_AURA_COMMENT"),
-            singleMana = 0 },
-          paladinOnly)
-                                        :Category(self.AURA)
-
-  --
-  -- ----------------------------------
-  --
-  spellDefModule:createAndRegisterBuff(spells, 20773, -- Redemption / Auferstehung
-          { type = "resurrection", default = true, singleFamily = { 7328, 10322, 10324, 20772, 20773 } }, paladinOnly)
-                :Category(self.CLASS)
-
-  spellDefModule:createAndRegisterBuff(spells, 20164, -- Sanctity seal
-          { type = "seal", default = false }, paladinOnly)
-                :Category(self.SEAL) -- classic only
-
-  spellDefModule:createAndRegisterBuff(spells, 5502, -- Sense undead
-          { type = "tracking", default = false }, paladinOnly)
-                :Category(self.TRACKING)
-
-  spellDefModule:createAndRegisterBuff(spells, 20165, -- Seal of Light
-          { type         = "seal", default = false,
-            singleFamily = { 20165, 20347, 20348, 20349, -- Ranks 1-4
-                             27160 } }, -- TBC: Rank 5
-          paladinOnly)
-                :Category(self.SEAL)
-  spellDefModule:createAndRegisterBuff(spells, 20154, -- Seal of Righteousness
-          { type         = "seal", default = false,
-            singleFamily = { 20154, 20287, 20288, 20289, 20290, 20291, 20292, 20293, -- Ranks 1-8
-                             27155 } }, -- TBC: Seal rank 9
-          paladinOnly)
-                :Category(self.SEAL)
-  spellDefModule:createAndRegisterBuff(spells, 20166, -- Seal of Wisdom
-          { type = "seal", default = false },
-          paladinOnly)
-                :Category(self.SEAL)
-  spellDefModule:createAndRegisterBuff(spells, 348704, -- TBC: Seal of Vengeance
-          { type         = "seal", default = false,
-            singleFamily = { 31801, -- TBC: level 70 spell for Blood Elf
-                             348704 } }, -- TBC: Base spell for the alliance races
-          paladinOnly)
-                :Category(self.SEAL)
-  spellDefModule:createAndRegisterBuff(spells, 348700, -- TBC: Seal of the Martyr (Draenei, Dwarf, Human)
-          { type = "seal", default = false },
-          paladinOnly)
-                :Category(self.SEAL)
-  spellDefModule:createAndRegisterBuff(spells, 31892, -- TBC: Seal of Blood
-          { type         = "seal", default = false,
-            singleFamily = { 31892, -- TBC: Base Blood Elf spell
-                             38008 } }, -- TBC: Alliance version???
-          paladinOnly)
-                :Category(self.SEAL)
-end
 
 ---Add WARRIOR spells
 function allSpellsModule:SetupWarriorSpells(spells, enchants)
@@ -1065,7 +844,9 @@ function allSpellsModule:SetupConstantsCategories()
 
   -- Categories ordered for display
   self.buffCategories = {
-    self.CLASS, self.BLESSING, self.AURA, self.PET, self.TRACKING, self.SEAL,
+    self.CLASS, self.BLESSING, self.SEAL, self.AURA,
+    self.PET,
+    self.TRACKING,
 
     self.CLASSIC_PHYS_ELIXIR,
     self.CLASSIC_PHYS_BUFF,
@@ -1139,7 +920,7 @@ function allSpellsModule:SetupSpells()
   shamanModule:SetupShamanSpells(spells, enchants)
   warlockModule:SetupWarlockSpells(spells, enchants)
   hunterModule:SetupHunterSpells(spells, enchants)
-  self:SetupPaladinSpells(spells, enchants)
+  paladinModule:SetupPaladinSpells(spells, enchants)
   self:SetupWarriorSpells(spells, enchants)
   self:SetupRogueSpells(spells, enchants)
   --self:SetupDeathKnightSpells(spells, enchants)
@@ -1158,6 +939,19 @@ function allSpellsModule:SetupSpells()
 
   self:SetupItemSpells(spells, enchants)
   self:SetupFood(spells, enchants)
+
+  -- Apply post-limitations (added with :Limitation() functions on spell construction)
+  local eliminatedSpells = {}
+  for _i, buff in ipairs(spells) do
+    if spellDefModule:CheckLimitations(buff, buff.limitations) then
+      table.insert(eliminatedSpells, buff.buffId)
+    end
+    buff.limitations = nil -- do not need to store this
+  end
+  -- Eliminate marked spells
+  for _j, buffId in ipairs(eliminatedSpells) do
+    spells[buffId] = nil
+  end
 
   --Preload items!
   for x, spell in ipairs(spells) do
