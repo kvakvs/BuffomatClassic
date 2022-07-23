@@ -6,7 +6,7 @@ local eventsModule = BuffomatModule.New("Events") ---@type BomEventsModule
 
 local buffomatModule = BuffomatModule.Import("Buffomat") ---@type BomBuffomatModule
 local constModule = BuffomatModule.Import("Const") ---@type BomConstModule
-local allSpellsModule = BuffomatModule.Import("AllSpells") ---@type BomAllSpellsModule
+local allBuffsModule = BuffomatModule.Import("AllBuffs") ---@type BomAllBuffsModule
 local spellButtonsTabModule = BuffomatModule.Import("Ui/SpellButtonsTab") ---@type BomSpellButtonsTabModule
 local spellSetupModule = BuffomatModule.Import("SpellSetup") ---@type BomSpellSetupModule
 local taskScanModule = BuffomatModule.Import("TaskScan") ---@type BomTaskScanModule
@@ -121,7 +121,7 @@ local oneTimeLoadItemsAndSpells = false
 local function Event_LoadingStop()
   if not oneTimeLoadItemsAndSpells then
     oneTimeLoadItemsAndSpells = true
-    allSpellsModule:LoadItemsAndSpells()
+    allBuffsModule:LoadItemsAndSpells()
   end
 
   BOM.LoadingScreenTimeOut = GetTime() + constModule.LOADING_SCREEN_TIMEOUT

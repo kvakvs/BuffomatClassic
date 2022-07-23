@@ -185,6 +185,7 @@ end
 
 local _, playerClass, _ = UnitClass("player")
 
+--TODO: Belongs to `BomBuffDefinition`
 ---@param limitations BomSpellLimitations
 function spellDefModule:CheckLimitations(spell, limitations)
   -- empty limitations return true

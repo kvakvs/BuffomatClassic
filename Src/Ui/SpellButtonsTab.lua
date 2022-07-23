@@ -9,7 +9,7 @@ local spellButtonsTabModule = BuffomatModule.New("Ui/SpellButtonsTab") ---@type 
 spellButtonsTabModule.categoryLabels = {}
 
 local _t = BuffomatModule.Import("Languages") ---@type BomLanguagesModule
-local allSpellsModule = BuffomatModule.Import("AllSpells") ---@type BomAllSpellsModule
+local allBuffsModule = BuffomatModule.Import("AllBuffs") ---@type BomAllBuffsModule
 local buffomatModule = BuffomatModule.Import("Buffomat") ---@type BomBuffomatModule
 local buffRowModule = BuffomatModule.Import("Ui/BuffRow") ---@type BomBuffRowModule
 local itemCacheModule = BuffomatModule.Import("ItemCache") ---@type BomItemCacheModule
@@ -330,7 +330,7 @@ function spellButtonsTabModule:CreateTab(playerIsHorde)
 
   buffomatModule.character.BuffCategoriesHidden = buffomatModule.character.BuffCategoriesHidden or {}
 
-  for j, cat in ipairs(allSpellsModule.buffCategories) do
+  for j, cat in ipairs(allBuffsModule.buffCategories) do
     if not self:CategoryIsHidden(cat) then
       for i, spell in ipairs(BOM.SelectedSpells) do
         if spell.category ~= cat
@@ -428,7 +428,7 @@ function spellButtonsTabModule:CategoryLabel(catId)
   return L["Category_" .. catId]
 end
 
----Takes a category id from allSpellsModule constants, and adds a nice text title
+---Takes a category id from allBuffsModule constants, and adds a nice text title
 ---with localised category name
 ---@param rowBuilder BomRowBuilder
 function spellButtonsTabModule:AddCategoryRow(catId, rowBuilder)
@@ -578,7 +578,7 @@ function spellButtonsTabModule:ClearTab()
   wipe(self.categoryLabels)
 
   --BomC_SpellTab_Scroll_Child
-  for _i, spell in ipairs(allSpellsModule.allBuffs) do
+  for _i, spell in ipairs(allBuffsModule.allBuffs) do
     for _j, frame in ipairs(spell.frames) do
       frame:Hide()
       frame:SetParent(nil)
@@ -616,7 +616,7 @@ function spellButtonsTabModule:UpdateSpellsTab(caller)
     elseif type(spell.onlyUsableFor) == "table"
             and not tContains(spell.onlyUsableFor, playerClass) then
       -- skip not usable
-      --elseif tContains(allSpellsModule.buffCategories, spell.category) then
+      --elseif tContains(allBuffsModule.buffCategories, spell.category) then
     else
       self:UpdateSelectedSpell(spell)
     end

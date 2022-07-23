@@ -4,7 +4,7 @@ local BOM = BuffomatAddon ---@type BomAddon
 local warriorModule = BuffomatModule.New("AllSpellsWarrior") ---@type BomAllSpellsWarriorModule
 
 local _t = BuffomatModule.Import("Languages") ---@type BomLanguagesModule
-local allSpellsModule = BuffomatModule.Import("AllSpells") ---@type BomAllSpellsModule
+local allBuffsModule = BuffomatModule.Import("AllBuffs") ---@type BomAllBuffsModule
 local spellDefModule = BuffomatModule.Import("SpellDef") ---@type BomSpellDefModule
 
 ---Add WARRIOR spells
@@ -15,17 +15,17 @@ function warriorModule:SetupWarriorSpells(spells, enchants)
                              2048, -- TBC: Battle Shout 8
                              47436 } -- WotLK: Battle Shout 9
           })    :ClassOnly("WARRIOR")
-                :Category(allSpellsModule.CLASS)
+                :Category(allBuffsModule.CLASS)
   spellDefModule:createAndRegisterBuff(spells, 2457, --Battle Stance
           { isOwn = true, default = true, default = false, singleId = 2457, shapeshiftFormId = 17
           })    :ClassOnly("WARRIOR")
-                :Category(allSpellsModule.CLASS)
+                :Category(allBuffsModule.CLASS)
   spellDefModule:createAndRegisterBuff(spells, 71, --Defensive Stance
           { isOwn = true, default = true, default = false, singleId = 71, shapeshiftFormId = 18
           })    :ClassOnly("WARRIOR")
-                :Category(allSpellsModule.CLASS)
+                :Category(allBuffsModule.CLASS)
   spellDefModule:createAndRegisterBuff(spells, 2458, --Berserker Stance
           { isOwn = true, default = true, default = false, singleId = 2458, shapeshiftFormId = 19
           })    :ClassOnly("WARRIOR")
-                :Category(allSpellsModule.CLASS)
+                :Category(allBuffsModule.CLASS)
 end

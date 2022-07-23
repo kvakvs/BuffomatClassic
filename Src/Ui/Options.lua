@@ -7,7 +7,7 @@ optionsModule.optionsOrder = 0
 
 local buffomatModule = BuffomatModule.Import("Buffomat") ---@type BomBuffomatModule
 local _t = BuffomatModule.Import("Languages") ---@type BomLanguagesModule
-local allSpellsModule = BuffomatModule.Import("AllSpells") ---@type BomAllSpellsModule
+local allBuffsModule = BuffomatModule.Import("AllBuffs") ---@type BomAllBuffsModule
 
 function optionsModule:ValueToText(type, value)
   if type == "string" then
@@ -279,7 +279,7 @@ function optionsModule:CreateVisibilityOptionsTable()
     args = {
       categories = self:TemplateMultiselect(
               "VisibleCategories",
-              allSpellsModule:GetBuffCategories(), -- all categories ordered
+              allBuffsModule:GetBuffCategories(), -- all categories ordered
               buffomatModule.character.BuffCategoriesHidden, -- settings table
               nil,
               function(state, key, value)

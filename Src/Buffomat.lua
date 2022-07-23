@@ -6,7 +6,7 @@ local TOCNAME, _ = ...
 local buffomatModule = BuffomatModule.New("Buffomat") ---@type BomBuffomatModule
 
 local _t = BuffomatModule.Import("Languages") ---@type BomLanguagesModule
-local allSpellsModule = BuffomatModule.Import("AllSpells") ---@type BomAllSpellsModule
+local allBuffsModule = BuffomatModule.Import("AllBuffs") ---@type BomAllBuffsModule
 local characterStateModule = BuffomatModule.Import("CharacterState") ---@type BomCharacterStateModule
 local constModule = BuffomatModule.Import("Const") ---@type BomConstModule
 local eventsModule = BuffomatModule.Import("Events") ---@type BomEventsModule
@@ -429,8 +429,8 @@ function BuffomatAddon:Init()
   buffomatModule:InitGlobalStates()
 
   languagesModule:SetupTranslations()
-  allSpellsModule:SetupSpells()
-  allSpellsModule:SetupCancelBuffs()
+  allBuffsModule:SetupSpells()
+  allBuffsModule:SetupCancelBuffs()
   --BOM.SetupItemCache()
   taskScanModule:SetupTasklist()
 
