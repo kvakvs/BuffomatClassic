@@ -240,20 +240,20 @@ function spellDefModule:CheckLimitations(spell, limitations)
   return true
 end
 
----@param spell BomSpellDef
----@param modifications table<function>
-function spellDefModule:CheckModifications(spell, modifications)
-  -- empty modifications do not change the spell
-  if modifications == nil or modifications == { } then
-    return true
-  end
-
-  for _, mod in ipairs(modifications) do
-    if mod == "shamanEnchant" then
-      spell:ShamanEnchant()
-    end
-  end
-end
+-----@param spell BomSpellDef
+-----@param modifications table<function>
+--function spellDefModule:CheckModifications(spell, modifications)
+--  -- empty modifications do not change the spell
+--  if modifications == nil or modifications == { } then
+--    return true
+--  end
+--
+--  for _, mod in ipairs(modifications) do
+--    if mod == "shamanEnchant" then
+--      spell:ShamanEnchant()
+--    end
+--  end
+--end
 
 ---Create a spelldef if the limitations apply and add to the table.
 ---Only check permanent limitations here like minlevel, TBC, or player class.
@@ -268,7 +268,7 @@ function spellDefModule:createAndRegisterBuff(dst, buffSpellId, fields,
   local spell = self:New(buffSpellId, fields)
 
   if spell.buffId > 0 and self:CheckLimitations(spell, limitations) then
-    self:CheckModifications(spell, modifications)
+    --self:CheckModifications(spell, modifications)
     tinsert(dst, spell)
   end
 
@@ -287,7 +287,7 @@ end
 
 function spellDefClass:ShamanEnchant()
   -- for before TBC make this a seal spell, for TBC do not modify
-  if not BOM.IsTBC then
+  if not BOM.HaveTBC then
     self.type = "seal"
   end
   return self

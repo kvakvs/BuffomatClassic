@@ -13,6 +13,7 @@ local spellDefModule = BuffomatModule.Import("SpellDef") ---@type BomSpellDefMod
 local priestModule = BuffomatModule.Import("AllSpellsPriest") ---@type BomAllSpellsPriestModule
 local mageModule = BuffomatModule.Import("AllSpellsMage") ---@type BomAllSpellsMageModule
 local druidModule = BuffomatModule.Import("AllSpellsDruid") ---@type BomAllSpellsDruidModule
+local shamanModule = BuffomatModule.Import("AllSpellsShaman") ---@type BomAllSpellsShamanModule
 
 local L = setmetatable(
         {},
@@ -75,86 +76,12 @@ allSpellsModule.DURATION_5M = DURATION_5M
 
 --- From 2 choices return TBC if BOM.IsTBC is true, otherwise return classic
 local function tbcOrClassic(tbc, classic)
-  if BOM.IsTBC then
+  if BOM.HaveTBC then
     return tbc
   end
   return classic
 end
-
----Add SHAMAN spells
----@param spells table<string, BomSpellDef>
----@param enchants table<string, table<number>>
-function allSpellsModule:SetupShamanSpells(spells, enchants)
-  local duration = tbcOrClassic(DURATION_20M, DURATION_10M)
-  local enchant_duration = tbcOrClassic(DURATION_30M, DURATION_5M) -- TBC: Shaman enchants become 30min
-  local shamanOnly = { playerClass = "SHAMAN" }
-
-  spellDefModule:createAndRegisterBuff(spells, 16342, --Flametongue Weapon
-          { type         = "weapon", isOwn = true, isConsumable = false,
-            default      = false, singleDuration = enchant_duration,
-            singleFamily = { 8024, 8027, 8030, 16339, 16341, 16342, -- Ranks 1-6
-                             25489 } }, -- TBC: Rank 7
-          shamanOnly,
-          { "shamanEnchant" })
-                :Category(self.CLASS)
-  enchants[16342] = { 3, 4, 5, 523, 1665, 1666, --Flametongue
-                      2634 } --TBC: Flametongue 7
-
-  spellDefModule:createAndRegisterBuff(spells, 16356, --Frostbrand Weapon
-          { type         = "weapon", isOwn = true, isConsumable = false,
-            default      = false, singleDuration = enchant_duration,
-            singleFamily = { 8033, 8038, 10456, 16355, 16356, -- Ranks 1-5
-                             25500 } }, -- TBC: Rank 6
-          shamanOnly,
-          { "shamanEnchant" })
-                :Category(self.CLASS)
-  enchants[16356] = { 2, 12, 524, 1667, 1668, -- Frostbrand
-                      2635 } -- TBC: Frostbrand 6
-
-  spellDefModule:createAndRegisterBuff(spells, 16316, --Rockbiter Weapon
-          { type         = "weapon", isOwn = true, isConsumable = false,
-            default      = false, singleDuration = enchant_duration,
-            singleFamily = { 8017, 8018, 8019, 10399, 16314, 16315, 16316, -- Ranks 1-7
-                             25479, 25485 } }, -- TBC: Ranks 8-9
-          shamanOnly,
-          { "shamanEnchant" })
-                :Category(self.CLASS)
-  -- Note: in TBC all enchantIds for rockbiter have changed
-  enchants[16316] = { 1, 6, 29, 503, 504, 683, 1663, 1664, -- Rockbiter, also 504 some special +80 Rockbiter?
-                      3040, -- rockbiter 7
-                      3023, 3026, 3028, 3031, 3034, 3037, 3040, -- TBC: Rockbiter 1-7
-                      2632, 2633 } -- TBC: Rockbiter 8-9
-
-  spellDefModule:createAndRegisterBuff(spells, 16362, --Windfury Weapon
-          { type         = "weapon", isOwn = true, isConsumable = false,
-            default      = false, singleDuration = enchant_duration,
-            singleFamily = { 8232, 8235, 10486, 16362, -- Ranks 1-4
-                             25505 } }, -- TBC: Rank 5
-          shamanOnly,
-          { "shamanEnchant" })
-                :Category(self.CLASS)
-  enchants[16362] = { 283, 284, 525, 1669, -- Windfury 1-4
-                      2636 } -- TBC: Windfury 5
-
-  spellDefModule:createAndRegisterBuff(spells, 10432, -- Lightning Shield / Blitzschlagschild
-          { default      = false, isOwn = true, duration = duration,
-            singleFamily = { 324, 325, 905, 945, 8134, 10431, 10432, -- Ranks 1-7
-                             25469, 25472 } }, -- TBC: Ranks 8-9
-          shamanOnly)
-                :Category(self.CLASS)
-
-  spellDefModule:createAndRegisterBuff(spells, 33736, -- TBC: Water Shield 1, 2
-          { isOwn = true, default = true, duration = duration, singleFamily = { 24398, 33736 } },
-          { playerClass = "SHAMAN" })
-                :ShowInTBC()
-                :Category(self.CLASS)
-
-  spellDefModule:createAndRegisterBuff(spells, 20777, -- Ancestral Spirit / Auferstehung
-          { type         = "resurrection", default = true,
-            singleFamily = { 2008, 20609, 20610, 20776, 20777 } },
-          shamanOnly)
-                :Category(self.CLASS)
-end
+allSpellsModule.TbcOrClassic = tbcOrClassic
 
 ---Add WARLOCK spells
 ---@param spells table<string, BomSpellDef>
@@ -1421,12 +1348,13 @@ function allSpellsModule:SetupSpells()
   priestModule:SetupPriestSpells(spells, enchants)
   druidModule:SetupDruidSpells(spells, enchants)
   mageModule:SetupMageSpells(spells, enchants)
-  self:SetupShamanSpells(spells, enchants)
+  shamanModule:SetupShamanSpells(spells, enchants)
   self:SetupWarlockSpells(spells, enchants)
   self:SetupHunterSpells(spells, enchants)
   self:SetupPaladinSpells(spells, enchants)
   self:SetupWarriorSpells(spells, enchants)
   self:SetupRogueSpells(spells, enchants)
+  --self:SetupDeathKnightSpells(spells, enchants)
 
   self:SetupTrackingSpells(spells, enchants)
   self:SetupMiscSpells(spells, enchants)
