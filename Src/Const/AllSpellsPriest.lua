@@ -52,13 +52,13 @@ function priestModule:SetupPriestSpells(spells, enchants)
                                 48170 }, -- WotLK: Prayer of Shadow Protection 3
             reagentRequired = { 17028, 17029,
                                 44615 }  -- WotLK: Devout Candle
-          })    :DefaultTargetClasses(allSpellsModule.BOM_ALL_CLASSES)
+          })    :DefaultTargetClasses(allSpellsModule.ALL_CLASSES)
                 :Category(allSpellsModule.CLASS)
                 :ClassOnly("PRIEST")
 
   spellDefModule:createAndRegisterBuff(spells, 6346, -- Fear Ward
           { default = false, singleDuration = allSpellsModule.DURATION_10M, hasCD = true,
-          })    :DefaultTargetClasses(allSpellsModule.BOM_ALL_CLASSES)
+          })    :DefaultTargetClasses(allSpellsModule.ALL_CLASSES)
                 :Category(allSpellsModule.CLASS)
                 :ClassOnly("PRIEST")
 

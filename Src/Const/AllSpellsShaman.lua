@@ -20,7 +20,7 @@ function shamanModule:SetupShamanSpells(spells, enchants)
             singleFamily = { 8024, 8027, 8030, 16339, 16341, 16342, -- Flametongue Weapon 1-6
                              25489, -- TBC: Flametongue Weapon 7
                              58785, 58789, 58790 } } -- WotLK: Flametongue Weapon 8-10
-  )             :ShamanEnchant()
+  )             :Seal()
                 :ClassOnly("SHAMAN")
                 :Category(allSpellsModule.CLASS)
   enchants[16342] = { 3, 4, 5, 523, 1665, 1666, -- Flametongue 1-6
@@ -33,7 +33,7 @@ function shamanModule:SetupShamanSpells(spells, enchants)
             singleFamily = { 8033, 8038, 10456, 16355, 16356, -- Frostbrand Weapon 1-5
                              25500, -- TBC: Frostbrand Weapon 6
                              58794, 58795, 58796 } } -- WotLK: Frostbrand Weapon 7-9
-  )             :ShamanEnchant()
+  )             :Seal()
                 :ClassOnly("SHAMAN")
                 :Category(allSpellsModule.CLASS)
   enchants[16356] = { 2, 12, 524, 1667, 1668, -- Frostbrand
@@ -45,7 +45,7 @@ function shamanModule:SetupShamanSpells(spells, enchants)
             default      = false, singleDuration = enchantmentDuration,
             singleFamily = { 8017, 8018, 8019, 10399, 16314, 16315, 16316, -- Ranks 1-7
                              25479, 25485 } } -- TBC: Ranks 8-9
-  )             :ShamanEnchant()
+  )             :Seal()
                 :ClassOnly("SHAMAN")
                 :Category(allSpellsModule.CLASS)
 
@@ -61,7 +61,7 @@ function shamanModule:SetupShamanSpells(spells, enchants)
             singleFamily = { 8232, 8235, 10486, 16362, -- Windfury Weapon 1-4
                              25505, -- TBC: Windfury Weapon 5
                              58801, 58803, 58804 } } -- WotLK: Windfury Weapon 6-8
-  )             :ShamanEnchant()
+  )             :Seal()
                 :ClassOnly("SHAMAN")
                 :Category(allSpellsModule.CLASS)
   enchants[16362] = { 283, 284, 525, 1669, -- Windfury 1-4

@@ -267,8 +267,10 @@ function spellDefModule:createAndRegisterBuff(dst, buffSpellId, fields,
                                               limitations, modifications, extraText)
   local spell = self:New(buffSpellId, fields)
 
-  if spell.buffId > 0 and self:CheckLimitations(spell, limitations) then
-    --self:CheckModifications(spell, modifications)
+  if spell.buffId > 0
+          and self:CheckLimitations(spell, limitations) -- Limitations passed as arg here
+          and self:CheckLimitations(spell, spell.limitations) -- Limitations set via :Function() modifiers
+  then
     tinsert(dst, spell)
   end
 
@@ -285,7 +287,7 @@ function spellDefModule:conjureItem(spellId, itemId)
             singleFamily   = { spellId } })
 end
 
-function spellDefClass:ShamanEnchant()
+function spellDefClass:Seal()
   -- for before TBC make this a seal spell, for TBC do not modify
   if not BOM.HaveTBC then
     self.type = "seal"

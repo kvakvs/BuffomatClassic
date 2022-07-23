@@ -22,7 +22,7 @@ function druidModule:SetupDruidSpells(spells, enchants)
             singleDuration  = allSpellsModule.DURATION_30M, groupDuration = allSpellsModule.DURATION_1H,
             reagentRequired = { 17021, 17026,
                                 44605 }, -- WotLK: Wild Spineleaf
-          })    :DefaultTargetClasses(allSpellsModule.BOM_ALL_CLASSES)
+          })    :DefaultTargetClasses(allSpellsModule.ALL_CLASSES)
                 :ClassOnly("DRUID")
                 :Category(allSpellsModule.CLASS)
   spellDefModule:createAndRegisterBuff(spells, 9910, --Thorns | Dornen

@@ -20,6 +20,19 @@ BOM.SpellId.Mage.ConjureManaAgate = 759
 
 BOM.SpellId.Warlock = {}
 BOM.SpellId.Warlock.DemonicSacrifice = 18788
+BOM.SpellId.Warlock.CreateSpellstone6 = 47888 -- WotLK
+BOM.SpellId.Warlock.CreateSpellstone5 = 47886 -- WotLK
+BOM.SpellId.Warlock.CreateSpellstone4 = 28172
+BOM.SpellId.Warlock.CreateSpellstone3 = 17728
+BOM.SpellId.Warlock.CreateSpellstone2 = 17727
+BOM.SpellId.Warlock.CreateSpellstone1 = 2362
+BOM.SpellId.Warlock.CreateFirestone1 = 6366
+BOM.SpellId.Warlock.CreateFirestone2 = 17951
+BOM.SpellId.Warlock.CreateFirestone3 = 17952
+BOM.SpellId.Warlock.CreateFirestone4 = 17953
+BOM.SpellId.Warlock.CreateFirestone5 = 27250
+BOM.SpellId.Warlock.CreateFirestone6 = 60219
+BOM.SpellId.Warlock.CreateFirestone7 = 60220
 
 BOM.SpellId.Priest = {}
 BOM.SpellId.Priest.SpiritTap = 15271
