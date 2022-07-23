@@ -22,6 +22,7 @@ Src/Const/AllSpellsPriest.lua
 Src/Const/AllSpellsDruid.lua
 Src/Const/AllSpellsShaman.lua
 Src/Const/AllSpellsWarlock.lua
+Src/Const/AllSpellsHunter.lua
 Src/Const/SpellIds.lua
 Src/Const/ItemIds.lua
 

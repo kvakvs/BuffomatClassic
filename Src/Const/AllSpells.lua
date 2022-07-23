@@ -15,6 +15,7 @@ local mageModule = BuffomatModule.Import("AllSpellsMage") ---@type BomAllSpellsM
 local druidModule = BuffomatModule.Import("AllSpellsDruid") ---@type BomAllSpellsDruidModule
 local shamanModule = BuffomatModule.Import("AllSpellsShaman") ---@type BomAllSpellsShamanModule
 local warlockModule = BuffomatModule.Import("AllSpellsWarlock") ---@type BomAllSpellsWarlockModule
+local hunterModule = BuffomatModule.Import("AllSpellsHunter") ---@type BomAllSpellsHunterModule
 
 local L = setmetatable(
         {},
@@ -83,86 +84,6 @@ local function tbcOrClassic(tbc, classic)
   return classic
 end
 allSpellsModule.TbcOrClassic = tbcOrClassic
-
----Add HUNTER spells
----@param spells table<string, BomSpellDef>
----@param enchants table<string, table<number>>
-function allSpellsModule:SetupHunterSpells(spells, enchants)
-  local hunterOnly = { playerClass = "HUNTER" }
-
-  spellDefModule:createAndRegisterBuff(spells, 20906, -- Trueshot Aura
-          { isOwn        = true, default = true,
-            singleFamily = { 19506, 20905, 20906, -- Ranks 1-3
-                             27066 } }, -- TBC: Rank 4
-          hunterOnly)
-                :Category(self.AURA)
-
-  spellDefModule:createAndRegisterBuff(spells, 25296, --Aspect of the Hawk
-          { type         = "aura", default = true,
-            singleFamily = { 13165, 14318, 14319, 14320, 14321, 14322, 25296, -- Rank 1-7
-                             27044 } }, -- TBC: Rank 8
-          hunterOnly)
-                :Category(self.CLASS)
-  spellDefModule:createAndRegisterBuff(spells, 13163, --Aspect of the monkey
-          { type = "aura", default = false },
-          hunterOnly)
-                :Category(self.CLASS)
-  spellDefModule:createAndRegisterBuff(spells, 34074, -- TBC: Aspect of the Viper
-          { type = "aura", default = false },
-          { playerClass = "HUNTER" })
-                :ShowInTBC()
-                :Category(self.CLASS)
-  spellDefModule:createAndRegisterBuff(spells, 20190, --Aspect of the wild
-          { type         = "aura", default = false,
-            singleFamily = { 20043, 20190, -- Ranks 1-2
-                             27045 } }, -- TBC: Rank 3
-          hunterOnly)
-                :Category(self.AURA)
-  spellDefModule:createAndRegisterBuff(spells, 5118, --Aspect of the Cheetah
-          { type = "aura", default = false }, hunterOnly)
-                :Category(self.CLASS)
-  spellDefModule:createAndRegisterBuff(spells, 13159, --Aspect of the pack
-          { type = "aura", default = false }, hunterOnly)
-                :Category(self.AURA)
-  spellDefModule:createAndRegisterBuff(spells, 13161, -- Aspect of the beast
-          { type = "aura", default = false }, hunterOnly)
-                :Category(self.CLASS)
-
-  spellDefModule:createAndRegisterBuff(spells, 1494, -- Track Beast
-          { type = "tracking", default = false }, hunterOnly)
-                :Category(self.TRACKING)
-  spellDefModule:createAndRegisterBuff(spells, 19878, -- Track Demon
-          { type = "tracking", default = false }, hunterOnly)
-                :Category(self.TRACKING)
-  spellDefModule:createAndRegisterBuff(spells, 19879, -- Track Dragonkin
-          { type = "tracking", default = false }, hunterOnly)
-                :Category(self.TRACKING)
-  spellDefModule:createAndRegisterBuff(spells, 19880, -- Track Elemental
-          { type = "tracking", default = false }, hunterOnly)
-                :Category(self.TRACKING)
-  spellDefModule:createAndRegisterBuff(spells, 19883, -- Track Humanoids
-          { type = "tracking", default = false }, hunterOnly)
-                :Category(self.TRACKING)
-  spellDefModule:createAndRegisterBuff(spells, 19882, -- Track Giants / riesen
-          { type = "tracking", default = false }, hunterOnly)
-                :Category(self.TRACKING)
-  spellDefModule:createAndRegisterBuff(spells, 19884, -- Track Undead
-          { type = "tracking", default = false }, hunterOnly)
-                :Category(self.TRACKING)
-  spellDefModule:createAndRegisterBuff(spells, 19885, -- Track Hidden / verborgenes
-          { type = "tracking", default = false }, hunterOnly)
-                :Category(self.TRACKING)
-
-  -- TODO: Do not use tbc_consumable function, add new flags for pet-buff
-  spellDefModule:tbcConsumable(spells, 43771, 33874,
-          hunterOnly, "Pet buff +Str",
-          { tbcHunterPetBuff = true }) --TBC: Kibler's Bits +20 STR/20 SPI for hunter pet
-                :Category(self.PET)
-  spellDefModule:tbcConsumable(spells, 33272, 27656,
-          hunterOnly, "Pet buff +Stamina",
-          { tbcHunterPetBuff = true }) --TBC: Sporeling Snack +20 STAM/20 SPI for hunter pet
-                :Category(self.PET)
-end
 
 ---Add PALADIN spells
 ---@param spells table<string, BomSpellDef>
@@ -1217,7 +1138,7 @@ function allSpellsModule:SetupSpells()
   mageModule:SetupMageSpells(spells, enchants)
   shamanModule:SetupShamanSpells(spells, enchants)
   warlockModule:SetupWarlockSpells(spells, enchants)
-  self:SetupHunterSpells(spells, enchants)
+  hunterModule:SetupHunterSpells(spells, enchants)
   self:SetupPaladinSpells(spells, enchants)
   self:SetupWarriorSpells(spells, enchants)
   self:SetupRogueSpells(spells, enchants)
