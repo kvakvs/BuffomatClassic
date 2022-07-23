@@ -1,8 +1,8 @@
 local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BomAddon
 
----@class BomSpellDefModule
-local spellDefModule = BuffomatModule.New("SpellDef") ---@type BomSpellDefModule
+---@class BomBuffDefinitionModule
+local buffDefModule = BuffomatModule.New("BuffDefinition") ---@type BomBuffDefinitionModule
 
 local buffomatModule = BuffomatModule.Import("Buffomat") ---@type BomBuffomatModule
 local spellCacheModule = BuffomatModule.Import("SpellCache") ---@type BomSpellCacheModule
@@ -12,9 +12,9 @@ local buffRowModule = BuffomatModule.Import("Ui/BuffRow") ---@type BomBuffRowMod
 BOM.Class = BOM.Class or {}
 
 ---@class BomSpellLimitations
----@field showInTBC boolean
+---@field requireTBC boolean
 ---@field hideInTBC boolean
----@field showInWotLK boolean
+---@field requireWotLK boolean
 ---@field hideInWotLK boolean
 ---@field playerRace string
 ---@field playerClass string|table<number, string> Collection of classes for this spell, or classname
@@ -108,7 +108,7 @@ spellDefClass.__index = spellDefClass
 ---@param singleId number Spell id also serving as buffId key
 ---@param fields BomBuffDefinition Other fields
 ---@return BomBuffDefinition
-function spellDefModule:New(singleId, fields)
+function buffDefModule:New(singleId, fields)
   local newSpell = fields or {} ---@type BomBuffDefinition
   setmetatable(newSpell, spellDefClass)
 
@@ -130,12 +130,12 @@ function spellDefModule:New(singleId, fields)
   return newSpell
 end
 
-function spellDefModule:tbcConsumable(dst, singleId, itemId, limitations, extraText, extraFields)
+function buffDefModule:tbcConsumable(dst, singleId, itemId, limitations, extraText, extraFields)
   return self:genericConsumable(dst, singleId, itemId, limitations, extraText, extraFields)
-             :ShowInTBC()
+             :RequireTBC()
 end
 
---function spellDefModule:wotlkConsumable(dst, singleId, itemId, limitations,
+--function buffDefModule:wotlkConsumable(dst, singleId, itemId, limitations,
 --                                        extraText, extraFields)
 --  return self:genericConsumable(dst, singleId, itemId, limitations, extraText, extraFields)
 --             :ShowInWotLK()
@@ -147,8 +147,8 @@ end
 ---@param limitations BomSpellLimitations Add extra conditions, if not nil
 ---@param extraText string Add extra text to the right if not nil
 ---@return BomBuffDefinition
-function spellDefModule:genericConsumable(dst, singleId, itemId, limitations,
-                                          extraText, extraFields)
+function buffDefModule:genericConsumable(dst, singleId, itemId, limitations,
+                                         extraText, extraFields)
   local fields = extraFields or {} ---@type BomBuffDefinition
   fields.isConsumable = true
   fields.default = false
@@ -164,7 +164,7 @@ function spellDefModule:genericConsumable(dst, singleId, itemId, limitations,
     fields.extraText = extraText
   end
 
-  return spellDefModule:createAndRegisterBuff(dst, singleId, fields, limitations)
+  return buffDefModule:createAndRegisterBuff(dst, singleId, fields, limitations)
 end
 
 ---@param dst table<BomBuffDefinition>
@@ -173,7 +173,7 @@ end
 ---@param limitations BomSpellLimitations Add extra conditions, if not nil
 ---@param extraText string Add extra text to the right if not nil
 ---@return BomBuffDefinition
-function spellDefModule:classicConsumable(dst, singleId, itemId, limitations, extraText)
+function buffDefModule:classicConsumable(dst, singleId, itemId, limitations, extraText)
   return self:genericConsumable(dst, singleId, itemId, limitations, extraText)
 end
 
@@ -181,20 +181,20 @@ local _, playerClass, _ = UnitClass("player")
 
 --TODO: Belongs to `BomBuffDefinition`
 ---@param limitations BomSpellLimitations
-function spellDefModule:CheckLimitations(spell, limitations)
+function buffDefModule:CheckLimitations(spell, limitations)
   -- empty limitations return true
   if limitations == nil or limitations == { } then
     return true
   end
 
-  if limitations.showInTBC == true and not BOM.HaveTBC then
+  if limitations.requireTBC == true and not BOM.HaveTBC then
     return false
   end
   if limitations.hideInTBC == true and BOM.HaveTBC then
     return false
   end
 
-  if limitations.showInWotLK == true and not BOM.HaveWotLK then
+  if limitations.requireWotLK == true and not BOM.HaveWotLK then
     return false
   end
   if limitations.hideInWotLK == true and BOM.HaveWotLK then
@@ -243,8 +243,8 @@ end
 ---@param limitations BomSpellLimitations Check these conditions to skip adding the spell. Permanent conditions only like minlevel or class
 ---@param modifications table<function> Check these conditions and maybe modify the spelldef.
 ---@return BomBuffDefinition
-function spellDefModule:createAndRegisterBuff(dst, buffSpellId, fields,
-                                              limitations, modifications, extraText)
+function buffDefModule:createAndRegisterBuff(dst, buffSpellId, fields,
+                                             limitations, modifications, extraText)
   local spell = self:New(buffSpellId, fields)
 
   if self:CheckLimitations(spell, limitations) -- Limitations passed as arg here
@@ -253,13 +253,13 @@ function spellDefModule:createAndRegisterBuff(dst, buffSpellId, fields,
     return spell
   end
 
-  return spellDefModule:New(0, {}) -- limitations check failed
+  return buffDefModule:New(0, {}) -- limitations check failed
 end
 
 ---@param spellId number
 ---@param itemId number
-function spellDefModule:conjureItem(spellId, itemId)
-  return spellDefModule:New(spellId,
+function buffDefModule:conjureItem(spellId, itemId)
+  return buffDefModule:New(spellId,
           { isOwn          = true,
             default        = true,
             lockIfHaveItem = { itemId },
@@ -295,9 +295,8 @@ function spellDefClass:HideIfSpellKnown(spellId)
 end
 
 ---@return BomBuffDefinition
-function spellDefClass:ShowInTBC()
-  self.limitations.showInTBC = true
-  self.limitations.showInWotLK = true
+function spellDefClass:RequireTBC()
+  self.limitations.requireTBC = true
   return self
 end
 
@@ -309,8 +308,8 @@ function spellDefClass:HideInTBC()
 end
 
 ---@return BomBuffDefinition
-function spellDefClass:ShowInWotLK()
-  self.limitations.showInWotLK = true
+function spellDefClass:RequireWotLK()
+  self.limitations.requireWotLK = true
   return self
 end
 
@@ -365,7 +364,7 @@ end
 
 ---@param spell_id number
 ---@param profile_name string|nil
-function spellDefModule:GetProfileSpell(spell_id, profile_name)
+function buffDefModule:GetProfileSpell(spell_id, profile_name)
   local spell
   if profile_name == nil then
     spell = BOM.CurrentProfile.Spell[spell_id]
@@ -384,8 +383,8 @@ end
 ---@param spell_id number
 ---@return boolean
 ---@param profile_name string|nil
-function spellDefModule:IsSpellEnabled(spell_id, profile_name)
-  local spell = spellDefModule:GetProfileSpell(spell_id, profile_name)
+function buffDefModule:IsSpellEnabled(spell_id, profile_name)
+  local spell = buffDefModule:GetProfileSpell(spell_id, profile_name)
   if spell == nil then
     return false
   end

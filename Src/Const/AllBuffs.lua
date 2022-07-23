@@ -9,7 +9,7 @@ local allBuffsModule = BuffomatModule.New("AllBuffs") ---@type BomAllBuffsModule
 local _t = BuffomatModule.Import("Languages") ---@type BomLanguagesModule
 local itemCacheModule = BuffomatModule.Import("ItemCache") ---@type BomItemCacheModule
 local spellCacheModule = BuffomatModule.Import("SpellCache") ---@type BomSpellCacheModule
-local spellDefModule = BuffomatModule.Import("SpellDef") ---@type BomSpellDefModule
+local buffDefModule = BuffomatModule.Import("BuffDefinition") ---@type BomBuffDefinitionModule
 local priestModule = BuffomatModule.Import("AllSpellsPriest") ---@type BomAllSpellsPriestModule
 local mageModule = BuffomatModule.Import("AllSpellsMage") ---@type BomAllSpellsMageModule
 local druidModule = BuffomatModule.Import("AllSpellsDruid") ---@type BomAllSpellsDruidModule
@@ -114,18 +114,18 @@ end
 ---@param buffs table<string, BomBuffDefinition>
 ---@param enchantments table<string, table<number>>
 function allBuffsModule:SetupTrackingSpells(buffs, enchantments)
-  buffs[BOM.SpellId.FindHerbs] = spellDefModule:New(BOM.SpellId.FindHerbs, -- Find Herbs / kräuter
+  buffs[BOM.SpellId.FindHerbs] = buffDefModule:New(BOM.SpellId.FindHerbs, -- Find Herbs / kräuter
           { type = "tracking", default = true
           })                                   :Category(self.TRACKING)
 
-  buffs[BOM.SpellId.FindMinerals] = spellDefModule:New(BOM.SpellId.FindMinerals, -- Find Minerals / erz
+  buffs[BOM.SpellId.FindMinerals] = buffDefModule:New(BOM.SpellId.FindMinerals, -- Find Minerals / erz
           { type = "tracking", default = true
           })                                      :Category(self.TRACKING)
-  buffs[2481] = spellDefModule:New(2481, -- Find Treasure / Schatzsuche / Zwerge
+  buffs[2481] = buffDefModule:New(2481, -- Find Treasure / Schatzsuche / Zwerge
           { type = "tracking", default = true })
                               :Category(self.TRACKING)
 
-  buffs[43308] = spellDefModule:New(43308, -- Find Fish (TBC daily quest reward)
+  buffs[43308] = buffDefModule:New(43308, -- Find Fish (TBC daily quest reward)
           { type = "tracking", default = false })
                                :Category(self.TRACKING)
 
@@ -141,15 +141,15 @@ end
 ---@param buffs table<string, BomBuffDefinition>
 ---@param enchantments table<string, table<number>>
 function allBuffsModule:SetupCasterConsumables(buffs, enchantments)
-  spellDefModule:classicConsumable(buffs, 18194, 13931, --Nightfin Soup +8Mana/5
+  buffDefModule:classicConsumable(buffs, 18194, 13931, --Nightfin Soup +8Mana/5
           { playerClass = BOM_MANA_CLASSES })
                 :Category(self.CLASSIC_SPELL_FOOD)
 
-  spellDefModule:classicConsumable(buffs, 19710, 12218, --Monster Omelette
+  buffDefModule:classicConsumable(buffs, 19710, 12218, --Monster Omelette
           { playerClass = BOM_MANA_CLASSES })
                 :Category(self.CLASSIC_SPELL_FOOD)
 
-  spellDefModule:createAndRegisterBuff(buffs, 18141, --Blessed Sunfruit Juice +10 SPIRIT
+  buffDefModule:createAndRegisterBuff(buffs, 18141, --Blessed Sunfruit Juice +10 SPIRIT
           { item          = 13813, isConsumable = true, default = false,
             onlyUsableFor = BOM_MANA_CLASSES, })
                 :Category(self.CLASSIC_SPELL_FOOD)
@@ -159,10 +159,10 @@ end
 ---@param buffs table<string, BomBuffDefinition>
 ---@param enchantments table<string, table<number>>
 function allBuffsModule:SetupGuardianElixirs(buffs, enchantments)
-  spellDefModule:classicConsumable(buffs, 22730, 18254, --Runn Tum Tuber Surprise
+  buffDefModule:classicConsumable(buffs, 22730, 18254, --Runn Tum Tuber Surprise
           nil)
                 :Category(self.CLASSIC_SPELL_FOOD)
-  spellDefModule:classicConsumable(buffs, 25661, 21023, --Dirge's Kickin' Chimaerok Chops x
+  buffDefModule:classicConsumable(buffs, 25661, 21023, --Dirge's Kickin' Chimaerok Chops x
           nil)
                 :Category(self.CLASSIC_FOOD)
 end
@@ -274,7 +274,7 @@ function allBuffsModule:ApplyPostLimitations(allBuffs)
   local result = {}
 
   for _i, buff in ipairs(allBuffs) do
-    if spellDefModule:CheckLimitations(buff, buff.limitations) then
+    if buffDefModule:CheckLimitations(buff, buff.limitations) then
       tinsert(result, buff)
     end
     buff.limitations = nil -- do not need to store this
@@ -413,12 +413,12 @@ function allBuffsModule:SetupCancelBuffs()
   do
     local _, class, _ = UnitClass("unit")
     if class == "HUNTER" then
-      tinsert(s, spellDefModule:New(5118, --Aspect of the Cheetah/of the pack
+      tinsert(s, buffDefModule:New(5118, --Aspect of the Cheetah/of the pack
               { OnlyCombat = true, default = true, singleFamily = { 5118, 13159 } }))
     end
 
     if (UnitFactionGroup("player")) ~= "Horde" or BOM.IsTBC then
-      tinsert(s, spellDefModule:New(1038, --Blessing of Salvation
+      tinsert(s, buffDefModule:New(1038, --Blessing of Salvation
               { default = false, singleFamily = { 1038, 25895 } }))
     end
   end

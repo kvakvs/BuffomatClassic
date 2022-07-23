@@ -5,7 +5,7 @@ local buffChecksModule = BuffomatModule.New("BuffChecks") ---@type BomBuffChecks
 
 local buffomatModule = BuffomatModule.Import("Buffomat") ---@type BomBuffomatModule
 local unitCacheModule = BuffomatModule.Import("UnitCache") ---@type BomUnitCacheModule
-local spellDefModule = BuffomatModule.Import("SpellDef") ---@type BomSpellDefModule
+local buffDefModule = BuffomatModule.Import("BuffDefinition") ---@type BomBuffDefinitionModule
 local constModule = BuffomatModule.Import("Const") ---@type BomConstModule
 
 ---Checks whether a tracking spell is now active
@@ -113,7 +113,7 @@ end
 ---@param spell BomBuffDefinition the spell to update
 ---@param playerUnit BomUnit the player
 function buffChecksModule:PlayerNeedsWeaponBuff(spell, playerUnit)
-  local weaponSpell = spellDefModule:GetProfileSpell(spell.buffId)
+  local weaponSpell = buffDefModule:GetProfileSpell(spell.buffId)
 
   if (weaponSpell.MainHandEnable and playerUnit.MainHandBuff == nil)
           or (weaponSpell.OffHandEnable and playerUnit.OffHandBuff == nil)
@@ -218,7 +218,7 @@ function buffChecksModule:PlayerNeedsTracking(spell, playerUnit, party)
   if (spell.singleId == BOM.SpellId.FindHerbs or
           spell.singleId == BOM.SpellId.FindMinerals)
           and GetShapeshiftFormID() == CAT_FORM
-          and spellDefModule:IsSpellEnabled(BOM.SpellId.Druid.TrackHumanoids) then
+          and buffDefModule:IsSpellEnabled(BOM.SpellId.Druid.TrackHumanoids) then
     -- Do nothing - ignore herbs and minerals in catform if enabled track humanoids
 
   elseif not self:IsTrackingActive(spell)
@@ -261,8 +261,8 @@ function buffChecksModule:PartyNeedsPaladinBlessing(spell, playerUnit, party, so
   for i, partyMember in ipairs(party) do
     local ok = false
     local notGroup = false
-    local blessing_name = spellDefModule:GetProfileSpell(constModule.BLESSING_ID)
-    local blessingSpell = spellDefModule:GetProfileSpell(spell.buffId)
+    local blessing_name = buffDefModule:GetProfileSpell(constModule.BLESSING_ID)
+    local blessingSpell = buffDefModule:GetProfileSpell(spell.buffId)
 
     if blessing_name[partyMember.name] == spell.buffId
             or (partyMember.isTank

@@ -5,7 +5,7 @@ local foodModule = BuffomatModule.New("AllConsumesFood") ---@type BomAllConsumes
 
 local _t = BuffomatModule.Import("Languages") ---@type BomLanguagesModule
 local allBuffsModule = BuffomatModule.Import("AllBuffs") ---@type BomAllBuffsModule
-local spellDefModule = BuffomatModule.Import("SpellDef") ---@type BomSpellDefModule
+local buffDefModule = BuffomatModule.Import("BuffDefinition") ---@type BomBuffDefinitionModule
 
 ---@param buffs table<string, BomBuffDefinition>
 ---@param enchantments table<string, table<number>>
@@ -26,15 +26,15 @@ end
 ---@param buffs table<string, BomBuffDefinition>
 ---@param enchantments table<string, table<number>>
 function foodModule:_SetupMiscFoodTBC(buffs, enchantments)
-  spellDefModule:tbcConsumable(buffs, 33257, { 33052, 27667 }, --Well Fed +30 STA +20 SPI
+  buffDefModule:tbcConsumable(buffs, 33257, { 33052, 27667 }, --Well Fed +30 STA +20 SPI
           nil, _t("TooltipSimilarFoods"))
                 :Category(self.TBC_FOOD)
 
-  spellDefModule:tbcConsumable(buffs, 35254, { 27651, 30155, 27662, 33025 }, --Well Fed +20 STA +20 SPI
+  buffDefModule:tbcConsumable(buffs, 35254, { 27651, 30155, 27662, 33025 }, --Well Fed +20 STA +20 SPI
           nil, _t("TooltipSimilarFoods"))
                 :Category(self.TBC_FOOD)
 
-  spellDefModule:tbcConsumable(buffs, 41030, 32721, --Skyguard Rations: Well Fed +15 STA +15 SPI
+  buffDefModule:tbcConsumable(buffs, 41030, 32721, --Skyguard Rations: Well Fed +15 STA +15 SPI
           { playerClass = BOM_MANA_CLASSES })
                 :Category(self.TBC_FOOD)
 end
@@ -43,23 +43,23 @@ end
 ---@param enchantments table<string, table<number>>
 function foodModule:_SetupPhysicalFoodTBC(buffs, enchantments)
   -- Warp Burger, Grilled Mudfish, ...
-  spellDefModule:tbcConsumable(buffs, 33261, { 27659, 30358, 27664, 33288, 33293 }, --Well Fed +20 AGI +20 SPI
+  buffDefModule:tbcConsumable(buffs, 33261, { 27659, 30358, 27664, 33288, 33293 }, --Well Fed +20 AGI +20 SPI
           { playerClass = BOM_PHYSICAL_CLASSES }, _t("TooltipSimilarFoods"))
                 :Category(self.TBC_PHYS_FOOD)
 
-  spellDefModule:tbcConsumable(buffs, 43764, 33872, --Spicy Hot Talbuk: Well Fed +20 HITRATING +20 SPI
+  buffDefModule:tbcConsumable(buffs, 43764, 33872, --Spicy Hot Talbuk: Well Fed +20 HITRATING +20 SPI
           { playerClass = BOM_PHYSICAL_CLASSES })
                 :Category(self.TBC_PHYS_FOOD)
 
-  spellDefModule:tbcConsumable(buffs, 33256, { 27658, 30359 }, -- Well Fed +20 STR +20 SPI
+  buffDefModule:tbcConsumable(buffs, 33256, { 27658, 30359 }, -- Well Fed +20 STR +20 SPI
           { playerClass = BOM_MELEE_CLASSES }, _t("TooltipSimilarFoods"))
                 :Category(self.TBC_PHYS_FOOD)
 
-  spellDefModule:tbcConsumable(buffs, 33259, 27655,
+  buffDefModule:tbcConsumable(buffs, 33259, 27655,
           { playerClass = BOM_PHYSICAL_CLASSES }) --Ravager Dog: Well Fed +40 AP +20 SPI
                 :Category(self.TBC_PHYS_FOOD)
 
-  spellDefModule:tbcConsumable(buffs, 46899, 35563, --Charred Bear Kabobs +24 AP
+  buffDefModule:tbcConsumable(buffs, 46899, 35563, --Charred Bear Kabobs +24 AP
           { playerClass = BOM_PHYSICAL_CLASSES })
                 :Category(self.TBC_PHYS_FOOD)
 
@@ -68,16 +68,16 @@ end
 ---@param buffs table<string, BomBuffDefinition>
 ---@param enchantments table<string, table<number>>
 function foodModule:_SetupCasterFoodTBC(buffs, enchantments)
-  spellDefModule:tbcConsumable(buffs, 33263, { 27657, 31673, 27665, 30361 }, --Well Fed +23 SPELL +20 SPI
+  buffDefModule:tbcConsumable(buffs, 33263, { 27657, 31673, 27665, 30361 }, --Well Fed +23 SPELL +20 SPI
           { playerClass = BOM_MANA_CLASSES },
           _t("TooltipSimilarFoods"))
                 :Category(self.TBC_SPELL_FOOD)
 
-  spellDefModule:tbcConsumable(buffs, 33265, 27663, --Blackened Sporefish: Well Fed +8 MP5 +20 STA
+  buffDefModule:tbcConsumable(buffs, 33265, 27663, --Blackened Sporefish: Well Fed +8 MP5 +20 STA
           { playerClass = BOM_MANA_CLASSES })
                 :Category(self.TBC_SPELL_FOOD)
 
-  spellDefModule:tbcConsumable(buffs, 33268, { 27666, 30357 }, --Golden Fish Sticks: Well Fed +44 HEAL +20 SPI
+  buffDefModule:tbcConsumable(buffs, 33268, { 27666, 30357 }, --Golden Fish Sticks: Well Fed +44 HEAL +20 SPI
           { playerClass = BOM_MANA_CLASSES },
           _t("TooltipSimilarFoods"))
                 :Category(self.TBC_SPELL_FOOD)
@@ -86,13 +86,13 @@ end
 ---@param buffs table<string, BomBuffDefinition>
 ---@param enchantments table<string, table<number>>
 function foodModule:_SetupPhysicalFoodClassic(buffs, enchantments)
-  spellDefModule:createAndRegisterBuff(buffs, 18192, --Grilled Squid +10 Agility
+  buffDefModule:createAndRegisterBuff(buffs, 18192, --Grilled Squid +10 Agility
           { item = 13928, isConsumable = true, default = false, onlyUsableFor = BOM_PHYSICAL_CLASSES, })
                 :Category(self.CLASSIC_PHYS_FOOD)
-  spellDefModule:createAndRegisterBuff(buffs, 24799, --Smoked Desert Dumplings +Strength
+  buffDefModule:createAndRegisterBuff(buffs, 24799, --Smoked Desert Dumplings +Strength
           { item = 20452, isConsumable = true, default = false, onlyUsableFor = BOM_PHYSICAL_CLASSES, })
                 :Category(self.CLASSIC_PHYS_FOOD)
-  spellDefModule:classicConsumable(buffs, 18125, 13810, --Blessed Sunfruit +STR
+  buffDefModule:classicConsumable(buffs, 18125, 13810, --Blessed Sunfruit +STR
           { playerClass = BOM_MELEE_CLASSES })
                 :Category(self.CLASSIC_PHYS_FOOD)
 end

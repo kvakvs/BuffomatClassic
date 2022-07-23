@@ -17,7 +17,7 @@ local managedUiModule = BuffomatModule.New("Ui/MyButton") ---@type BomUiMyButton
 local optionsPopupModule = BuffomatModule.Import("OptionsPopup") ---@type BomOptionsPopupModule
 local rowBuilderModule = BuffomatModule.Import("RowBuilder") ---@type BomRowBuilderModule
 local spellCacheModule = BuffomatModule.Import("SpellCache") ---@type BomSpellCacheModule
-local spellDefModule = BuffomatModule.Import("SpellDef") ---@type BomSpellDefModule
+local buffDefModule = BuffomatModule.Import("BuffDefinition") ---@type BomBuffDefinitionModule
 local spellSetupModule = BuffomatModule.Import("SpellSetup") ---@type BomSpellSetupModule
 local toolboxModule = BuffomatModule.Import("Toolbox") ---@type BomToolboxModule
 local uiButtonModule = BuffomatModule.Import("Ui/UiButton") ---@type BomUiButtonModule
@@ -206,7 +206,7 @@ function spellButtonsTabModule:AddSpellRow(rowBuilder, playerIsHorde, spell, pla
   local infoIcon = spell.frames:CreateInfoIcon(spell)
   rowBuilder:PositionAtNewRow(infoIcon, 0, 7)
 
-  local profileSpell = spellDefModule:GetProfileSpell(spell.buffId)
+  local profileSpell = buffDefModule:GetProfileSpell(spell.buffId)
 
   -- Add a checkbox [x]
   local enableCheckbox = spell.frames:CreateEnableCheckbox(_t("TooltipEnableSpell"))

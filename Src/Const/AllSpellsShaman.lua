@@ -5,7 +5,7 @@ local shamanModule = BuffomatModule.New("AllSpellsShaman") ---@type BomAllSpells
 
 --local _t = BuffomatModule.Import("Languages") ---@type BomLanguagesModule
 local allBuffsModule = BuffomatModule.Import("AllBuffs") ---@type BomAllBuffsModule
-local spellDefModule = BuffomatModule.Import("SpellDef") ---@type BomSpellDefModule
+local buffDefModule = BuffomatModule.Import("BuffDefinition") ---@type BomBuffDefinitionModule
 
 ---Add SHAMAN spells
 ---@param spells table<string, BomBuffDefinition>
@@ -14,7 +14,7 @@ function shamanModule:SetupShamanSpells(spells, enchants)
   local duration = allBuffsModule.TbcOrClassic(allBuffsModule.DURATION_20M, allBuffsModule.DURATION_10M)
   local enchantmentDuration = allBuffsModule.TbcOrClassic(allBuffsModule.DURATION_30M, allBuffsModule.DURATION_5M) -- TBC: Shaman enchants become 30min
 
-  spellDefModule:createAndRegisterBuff(spells, 16342, -- Flametongue Weapon
+  buffDefModule:createAndRegisterBuff(spells, 16342, -- Flametongue Weapon
           { type         = "weapon", isOwn = true, isConsumable = false,
             default      = false, singleDuration = enchantmentDuration,
             singleFamily = { 8024, 8027, 8030, 16339, 16341, 16342, -- Flametongue Weapon 1-6
@@ -27,7 +27,7 @@ function shamanModule:SetupShamanSpells(spells, enchants)
                       2634, -- TBC: Flametongue 7
                       3779, 3780, 3781 } -- WotLK: Flametongue 8-10
 
-  spellDefModule:createAndRegisterBuff(spells, 16356, -- Frostbrand Weapon
+  buffDefModule:createAndRegisterBuff(spells, 16356, -- Frostbrand Weapon
           { type         = "weapon", isOwn = true, isConsumable = false,
             default      = false, singleDuration = enchantmentDuration,
             singleFamily = { 8033, 8038, 10456, 16355, 16356, -- Frostbrand Weapon 1-5
@@ -40,7 +40,7 @@ function shamanModule:SetupShamanSpells(spells, enchants)
                       2635, -- TBC: Frostbrand 6
                       3782, 3783, 3784 } -- WotLK: Frostbrand 7-9
 
-  spellDefModule:createAndRegisterBuff(spells, 16316, -- Rockbiter Weapon (Classic and TBC)
+  buffDefModule:createAndRegisterBuff(spells, 16316, -- Rockbiter Weapon (Classic and TBC)
           { type         = "weapon", isOwn = true, isConsumable = false,
             default      = false, singleDuration = enchantmentDuration,
             singleFamily = { 8017, 8018, 8019, 10399, 16314, 16315, 16316, -- Ranks 1-7
@@ -55,7 +55,7 @@ function shamanModule:SetupShamanSpells(spells, enchants)
                       3023, 3026, 3028, 3031, 3034, 3037, 3040, -- TBC: Rockbiter 1-7
                       2632, 2633 } -- TBC: Rockbiter 8-9
 
-  spellDefModule:createAndRegisterBuff(spells, 16362, -- Windfury Weapon
+  buffDefModule:createAndRegisterBuff(spells, 16362, -- Windfury Weapon
           { type         = "weapon", isOwn = true, isConsumable = false,
             default      = false, singleDuration = enchantmentDuration,
             singleFamily = { 8232, 8235, 10486, 16362, -- Windfury Weapon 1-4
@@ -68,7 +68,7 @@ function shamanModule:SetupShamanSpells(spells, enchants)
                       2636, -- TBC: Windfury 5
                       3785, 3786, 3787 } -- WotLK: Windfury 6-8
 
-  spellDefModule:createAndRegisterBuff(spells, 10432, -- Lightning Shield / Blitzschlagschild
+  buffDefModule:createAndRegisterBuff(spells, 10432, -- Lightning Shield / Blitzschlagschild
           { default      = false, isOwn = true, duration = duration,
             singleFamily = { 324, 325, 905, 945, 8134, 10431, 10432, -- Lightning Shield 1-7
                              25469, 25472, -- TBC: Lightning Shield 8-9
@@ -76,16 +76,16 @@ function shamanModule:SetupShamanSpells(spells, enchants)
   )             :ClassOnly("SHAMAN")
                 :Category(allBuffsModule.CLASS)
 
-  spellDefModule:createAndRegisterBuff(spells, 33736, -- TBC: Water Shield 1, 2
+  buffDefModule:createAndRegisterBuff(spells, 33736, -- TBC: Water Shield 1, 2
           { isOwn        = true, default = true, duration = duration,
             singleFamily = { 52127, 52129, 52131, 52134, 52136, 52138, -- WotLK: Water Shield 1-6
                              24398, 33736, -- TBC: Water Shield 1-2, or WotLK: Water Shield 7-8
                              57960 } -- WotLK: Water Shield 9
           })    :ClassOnly("SHAMAN")
-                :ShowInTBC()
+                :RequireTBC()
                 :Category(allBuffsModule.CLASS)
 
-  spellDefModule:createAndRegisterBuff(spells, 20777, -- Ancestral Spirit / Auferstehung
+  buffDefModule:createAndRegisterBuff(spells, 20777, -- Ancestral Spirit / Auferstehung
           { type         = "resurrection", default = true,
             singleFamily = { 2008, 20609, 20610, 20776, 20777, -- Ancestral Spirit 1-5
                              25590, -- TBC: Ancestral Spirit 6

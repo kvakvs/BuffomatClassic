@@ -48,7 +48,7 @@ Src/Classes/UnitBuffTarget.lua
 Src/Classes/Profile.lua
 Src/Classes/RowBuilder.lua
 Src/Classes/SharedState.lua
-Src/Classes/SpellDef.lua
+Src/Classes/BuffDefinition.lua
 Src/Classes/Task.lua
 Src/Classes/TaskList.lua
 

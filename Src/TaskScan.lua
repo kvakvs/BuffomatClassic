@@ -9,7 +9,7 @@ local buffomatModule = BuffomatModule.Import("Buffomat") ---@type BomBuffomatMod
 local buffTargetModule = BuffomatModule.Import("UnitBuffTarget") ---@type BomUnitBuffTargetModule
 local constModule = BuffomatModule.Import("Const") ---@type BomConstModule
 local spellButtonsTabModule = BuffomatModule.Import("Ui/SpellButtonsTab") ---@type BomSpellButtonsTabModule
-local spellDefModule = BuffomatModule.Import("SpellDef") ---@type BomSpellDefModule
+local buffDefModule = BuffomatModule.Import("BuffDefinition") ---@type BomBuffDefinitionModule
 local taskListModule = BuffomatModule.Import("TaskList") ---@type BomTaskListModule
 local unitCacheModule = BuffomatModule.Import("UnitCache") ---@type BomUnitCacheModule
 
@@ -131,7 +131,7 @@ function taskScanModule:UpdateSpellTargets(party, spell, playerUnit)
   -- Save skipped unit and do nothing
   if spell:DoesUnitHaveBetterBuffs(playerUnit) then
     tinsert(spell.UnitsHaveBetterBuff, playerUnit)
-  elseif not spellDefModule:IsSpellEnabled(spell.buffId) then
+  elseif not buffDefModule:IsSpellEnabled(spell.buffId) then
     --nothing, the spell is not enabled!
   elseif spellButtonsTabModule:CategoryIsHidden(spell.category) then
     --nothing, the category is not showing!
@@ -504,7 +504,7 @@ function taskScanModule:ActivateSelectedTracking()
   ---@param spell BomBuffDefinition
   for i, spell in ipairs(BOM.SelectedSpells) do
     if spell.type == "tracking" then
-      if spellDefModule:IsSpellEnabled(spell.buffId) then
+      if buffDefModule:IsSpellEnabled(spell.buffId) then
         if spell.needForm ~= nil then
           if GetShapeshiftFormID() == spell.needForm
                   and BOM.ForceTracking ~= spell.trackingIconId then
@@ -567,7 +567,7 @@ function taskScanModule:CheckChangesAndUpdateSpelltab()
   ---@param spell BomBuffDefinition
   for i, spell in ipairs(BOM.SelectedSpells) do
     if spell.type == "aura" then
-      if spellDefModule:IsSpellEnabled(spell.buffId) then
+      if buffDefModule:IsSpellEnabled(spell.buffId) then
         if BOM.ActivePaladinAura == spell.buffId
                 and BOM.CurrentProfile.LastAura ~= spell.buffId then
           BOM.CurrentProfile.LastAura = spell.buffId
@@ -582,7 +582,7 @@ function taskScanModule:CheckChangesAndUpdateSpelltab()
       end -- if currentprofile.spell.enable
 
     elseif spell.type == "seal" then
-      if spellDefModule:IsSpellEnabled(spell.buffId) then
+      if buffDefModule:IsSpellEnabled(spell.buffId) then
         if BOM.ActivePaladinSeal == spell.buffId
                 and BOM.CurrentProfile.LastSeal ~= spell.buffId then
           BOM.CurrentProfile.LastSeal = spell.buffId
@@ -788,7 +788,7 @@ function taskScanModule:AddBlessing(spell, party, playerMember, inRange)
       end
 
       local add = ""
-      local blessing_name = spellDefModule:GetProfileSpell(constModule.BLESSING_ID)
+      local blessing_name = buffDefModule:GetProfileSpell(constModule.BLESSING_ID)
       if blessing_name[unitNeedsBuff.name] ~= nil then
         add = string.format(constModule.PICTURE_FORMAT, BOM.ICON_TARGET_ON)
       end
@@ -905,7 +905,7 @@ function taskScanModule:AddBuff(spell, party, playerMember, inRange)
       end
 
       local add = ""
-      local profileBuff = spellDefModule:GetProfileSpell(spell.buffId)
+      local profileBuff = buffDefModule:GetProfileSpell(spell.buffId)
 
       if profileBuff.ForcedTarget[unitNeedsBuff.name] then
         add = string.format(constModule.PICTURE_FORMAT, BOM.ICON_TARGET_ON)
@@ -1171,7 +1171,7 @@ function taskScanModule:AddConsumableWeaponBuff(spell, playerMember,
   if have_item then
     -- Have item, display the cast message and setup the cast button
     local texture, _, _, _, _, _, item_link, _, _, _ = GetContainerItemInfo(bag, slot)
-    local profile_spell = spellDefModule:GetProfileSpell(spell.buffId)
+    local profile_spell = buffDefModule:GetProfileSpell(spell.buffId)
 
     if profile_spell.OffHandEnable
             and playerMember.OffHandBuff == nil then
@@ -1276,7 +1276,7 @@ function taskScanModule:AddWeaponEnchant(spell, playerMember,
     end
   end
 
-  local profile_spell = spellDefModule:GetProfileSpell(spell.buffId)
+  local profile_spell = buffDefModule:GetProfileSpell(spell.buffId)
 
   if profile_spell.MainHandEnable
           and playerMember.MainHandBuff == nil then
@@ -1564,14 +1564,14 @@ end
 ---@return boolean, string, string {in_range, cast_button_title, macro_command}
 function taskScanModule:ScanSelectedSpells(playerMember, party, inRange, castButtonTitle, macroCommand)
   for _, spell in ipairs(BOM.SelectedSpells) do
-    local profile_spell = spellDefModule:GetProfileSpell(spell.buffId)
+    local profile_spell = buffDefModule:GetProfileSpell(spell.buffId)
 
     if spell.isInfo and profile_spell.Whisper then
       self:WhisperExpired(spell)
     end
 
     -- if spell is enabled and we're in the correct shapeshift form
-    if spellDefModule:IsSpellEnabled(spell.buffId)
+    if buffDefModule:IsSpellEnabled(spell.buffId)
             and (spell.needForm == nil or GetShapeshiftFormID() == spell.needForm) then
       inRange, castButtonTitle, macroCommand = self:ScanOneSpell(
               spell, playerMember, party, inRange, castButtonTitle, macroCommand)

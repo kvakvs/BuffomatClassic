@@ -163,10 +163,10 @@ local _, _, _, tocversion = GetBuildInfo()
 BOM.IsClassic = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
 
 BOM.IsTBC = WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC
-BOM.HaveTBC = BOM.IsClassic or BOM.IsTBC
+BOM.HaveTBC = BOM.IsWotLK or BOM.IsTBC
 
 BOM.IsWotLK = (tocversion >= 30000 and tocversion <= 39999) -- TODO: change to WOTLK detection via WOW_PROJECT_..._CLASSIC
-BOM.HaveWotLK = BOM.IsClassic or BOM.IsTBC or BOM.IsWotLK
+BOM.HaveWotLK = BOM.IsWotLK
 
 ---Print a text with "BomDebug: " prefix in the game chat window
 ---@param t string

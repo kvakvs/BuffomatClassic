@@ -7,7 +7,7 @@ local optionsPopupModule = BuffomatModule.New("OptionsPopup") ---@type BomOption
 
 local buffomatModule = BuffomatModule.Import("Buffomat") ---@type BomBuffomatModule
 local constModule = BuffomatModule.Import("Const") ---@type BomConstModule
-local spellDefModule = BuffomatModule.Import("SpellDef") ---@type BomSpellDefModule
+local buffDefModule = BuffomatModule.Import("BuffDefinition") ---@type BomBuffDefinitionModule
 
 ---@deprecated See options.lua, and defaults in sharedState.lua and characterState.lua
 optionsPopupModule.behaviourSettings = {
@@ -137,7 +137,7 @@ function optionsPopupModule:Setup(control, minimap)
     if not spell.isConsumable then
       BOM.PopupDynamic:AddItem(spell.singleLink or spell.singleText,
               "keep",
-              spellDefModule:GetProfileSpell(spell.buffId),
+              buffDefModule:GetProfileSpell(spell.buffId),
               "Enable")
     end
   end

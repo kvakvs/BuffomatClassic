@@ -5,19 +5,19 @@ local warlockModule = BuffomatModule.New("AllSpellsWarlock") ---@type BomAllSpel
 
 --local _t = BuffomatModule.Import("Languages") ---@type BomLanguagesModule
 local allBuffsModule = BuffomatModule.Import("AllBuffs") ---@type BomAllBuffsModule
-local spellDefModule = BuffomatModule.Import("SpellDef") ---@type BomSpellDefModule
+local buffDefModule = BuffomatModule.Import("BuffDefinition") ---@type BomBuffDefinitionModule
 
 ---Add WARLOCK spells
 ---@param spells table<string, BomBuffDefinition>
 ---@param enchants table<string, table<number>>
 function warlockModule:SetupWarlockSpells(spells, enchants)
-  spellDefModule:createAndRegisterBuff(spells, 5697, -- Unending Breath
+  buffDefModule:createAndRegisterBuff(spells, 5697, -- Unending Breath
           { default = false, singleDuration = allBuffsModule.DURATION_10M,
           })    :ClassOnly("WARLOCK")
                 :DefaultTargetClasses(allBuffsModule.BOM_ALL_CLASSES)
                 :Category(allBuffsModule.CLASS)
 
-  spellDefModule:createAndRegisterBuff(spells, 132, -- Detect Greater Invisibility | Große Unsichtbarkeit entdecken
+  buffDefModule:createAndRegisterBuff(spells, 132, -- Detect Greater Invisibility | Große Unsichtbarkeit entdecken
           { default        = false,
             singleFamily   = { 132, -- Detect Invisibility
                                2970, 11743 }, -- Some other stuff
@@ -26,22 +26,22 @@ function warlockModule:SetupWarlockSpells(spells, enchants)
                 :DefaultTargetClasses(allBuffsModule.BOM_ALL_CLASSES)
                 :Category(allBuffsModule.CLASS)
 
-  spellDefModule:createAndRegisterBuff(spells, 28610, -- Shadow Ward / Schattenzauberschutz
+  buffDefModule:createAndRegisterBuff(spells, 28610, -- Shadow Ward / Schattenzauberschutz
           { isOwn        = true, default = false,
             singleFamily = { 6229, 11739, 11740, 28610, -- Shadow Ward 1-4
                              47890, 47891 } -- WotLK: Shadow Ward 5-6
           })    :ClassOnly("WARLOCK")
                 :Category(allBuffsModule.CLASS)
 
-  spellDefModule:createAndRegisterBuff(spells, 28176, -- TBC: Fel Armor
+  buffDefModule:createAndRegisterBuff(spells, 28176, -- TBC: Fel Armor
           { isOwn        = true, default = false,
             singleFamily = { 28176, 28189, -- TBC: Fel Armor 1-2
                              47892, 47893 } -- WotLK: Fel Armor 3-4
           })    :ClassOnly("WARLOCK")
-                :ShowInTBC()
+                :RequireTBC()
                 :Category(allBuffsModule.CLASS)
 
-  spellDefModule:createAndRegisterBuff(spells, 11735, -- Demon Skin / Demon Armor
+  buffDefModule:createAndRegisterBuff(spells, 11735, -- Demon Skin / Demon Armor
           { isOwn        = true, default = false,
             singleFamily = { 687, 696, -- Demon Skin 1-2
                              706, 1086, 11733, 11734, 11735, -- Demon Armor 5
@@ -51,7 +51,7 @@ function warlockModule:SetupWarlockSpells(spells, enchants)
                 :Category(allBuffsModule.CLASS)
 
   if BOM.HaveWotLK then
-    spellDefModule:createAndRegisterBuff(spells, BOM.SpellId.Warlock.CreateFirestone7, -- Create Firesone
+    buffDefModule:createAndRegisterBuff(spells, BOM.SpellId.Warlock.CreateFirestone7, -- Create Firesone
             { isOwn          = true, default = true,
               lockIfHaveItem = { BOM.ItemId.Warlock.Firestone1,
                                  BOM.ItemId.Warlock.Firestone2,
@@ -69,7 +69,7 @@ function warlockModule:SetupWarlockSpells(spells, enchants)
                                  BOM.SpellId.Warlock.CreateFirestone7 },
             })    :ClassOnly("WARLOCK")
                   :Category(allBuffsModule.CLASS_WEAPON_ENCHANTMENT)
-    spellDefModule:createAndRegisterBuff(spells, 60220, -- Firestone
+    buffDefModule:createAndRegisterBuff(spells, 60220, -- Firestone
             { item    = 41174, isConsumable = true, type = "weapon",
               items   = { BOM.ItemId.Warlock.Firestone1,
                           BOM.ItemId.Warlock.Firestone2,
@@ -84,7 +84,7 @@ function warlockModule:SetupWarlockSpells(spells, enchants)
     enchants[60220] = { 3609, 3610, 3611, 3612, 3597, 3613, 3614 } -- WotLK: Firestone 1-7
   else
     -- in WotLK firestone becomes a 5-charges conjured weapon enchantment item
-    spellDefModule:createAndRegisterBuff(spells, 17953, -- Firestone
+    buffDefModule:createAndRegisterBuff(spells, 17953, -- Firestone
             { isOwn          = true, default = false,
               lockIfHaveItem = { 1254, 13699, 13700, 13701,
                                  22128 }, -- TBC: Master Firestone
@@ -95,7 +95,7 @@ function warlockModule:SetupWarlockSpells(spells, enchants)
   end
 
   if BOM.HaveWotLK then
-    spellDefModule:createAndRegisterBuff(spells, BOM.SpellId.Warlock.CreateSpellstone6, -- Conjure Mana Stone (Max Rank)
+    buffDefModule:createAndRegisterBuff(spells, BOM.SpellId.Warlock.CreateSpellstone6, -- Conjure Mana Stone (Max Rank)
             { isOwn          = true, default = true,
               lockIfHaveItem = { BOM.ItemId.Warlock.Spellstone1,
                                  BOM.ItemId.Warlock.Spellstone2,
@@ -111,7 +111,7 @@ function warlockModule:SetupWarlockSpells(spells, enchants)
                                  BOM.SpellId.Warlock.CreateSpellstone6 }
             })    :ClassOnly("WARLOCK")
                   :Category(allBuffsModule.CLASS_WEAPON_ENCHANTMENT)
-    spellDefModule:createAndRegisterBuff(spells, 55194, -- Spellstone
+    buffDefModule:createAndRegisterBuff(spells, 55194, -- Spellstone
             { item    = BOM.ItemId.Warlock.Spellstone6, isConsumable = true, type = "weapon",
               items   = { BOM.ItemId.Warlock.Spellstone1,
                           BOM.ItemId.Warlock.Spellstone2,
@@ -127,7 +127,7 @@ function warlockModule:SetupWarlockSpells(spells, enchants)
     } -- WotLK: Spellstone 1-6 enchantIds
   else
     -- in WotLK spellstone becomes a 5-charges conjured weapon enchantment item
-    spellDefModule:createAndRegisterBuff(spells, 17728, -- Spellstone
+    buffDefModule:createAndRegisterBuff(spells, 17728, -- Spellstone
             { isOwn          = true, default = false,
               lockIfHaveItem = { 5522, 13602, 13603, -- "normal", Greater, Major Spellstone
                                  22646 }, -- TBC: Master Spellstone
@@ -137,7 +137,7 @@ function warlockModule:SetupWarlockSpells(spells, enchants)
                   :Category(allBuffsModule.CLASS)
   end
 
-  spellDefModule:createAndRegisterBuff(spells, 11730, -- Healthstone
+  buffDefModule:createAndRegisterBuff(spells, 11730, -- Healthstone
           { isOwn          = true, default = true,
             lockIfHaveItem = { 5512, 19005, 19004,
                                5511, 19007, 19006,
@@ -153,7 +153,7 @@ function warlockModule:SetupWarlockSpells(spells, enchants)
           })    :ClassOnly("WARLOCK")
                 :Category(allBuffsModule.CLASS)
 
-  spellDefModule:createAndRegisterBuff(spells, 20757, --Soulstone
+  buffDefModule:createAndRegisterBuff(spells, 20757, --Soulstone
           { isOwn          = true, default = true,
             lockIfHaveItem = { 5232, 16892, 16893, 16895, 16896,
                                22116, -- TBC: Master Soulstone
@@ -164,7 +164,7 @@ function warlockModule:SetupWarlockSpells(spells, enchants)
           })    :ClassOnly("WARLOCK")
                 :Category(allBuffsModule.CLASS)
 
-  spellDefModule:createAndRegisterBuff(spells, 5500, --Sense Demons
+  buffDefModule:createAndRegisterBuff(spells, 5500, --Sense Demons
           { type = "tracking", default = false
           })    :ClassOnly("WARLOCK")
                 :Category(self.TRACKING)
@@ -172,24 +172,24 @@ function warlockModule:SetupWarlockSpells(spells, enchants)
   ------------------------
   -- Pet Management
   ------------------------
-  spellDefModule:createAndRegisterBuff(spells, BOM.SpellId.Warlock.DemonicSacrifice, -- Demonic Sacrifice
+  buffDefModule:createAndRegisterBuff(spells, BOM.SpellId.Warlock.DemonicSacrifice, -- Demonic Sacrifice
           { isOwn = true, default = true, requiresWarlockPet = true }
   )             :ClassOnly("WARLOCK")
                 :HideInWotLK()
                 :Category(allBuffsModule.PET)
-  spellDefModule:createAndRegisterBuff(spells, 19028, -- TBC: Soul Link, talent spell 19028, gives buff 25228
+  buffDefModule:createAndRegisterBuff(spells, 19028, -- TBC: Soul Link, talent spell 19028, gives buff 25228
           { isOwn              = true, default = true, singleFamily = { 19028, 25228 },
             requiresWarlockPet = true
           })    :ClassOnly("WARLOCK")
                 :Category(allBuffsModule.PET)
 
-  spellDefModule:createAndRegisterBuff(spells, 688, --Summon Imp
+  buffDefModule:createAndRegisterBuff(spells, 688, --Summon Imp
           { type           = "summon", default = true, isOwn = true,
             creatureFamily = "Imp", creatureType = "Demon", sacrificeAuraIds = { 18789 }
           })    :ClassOnly("WARLOCK")
                 :Category(allBuffsModule.PET)
 
-  spellDefModule:createAndRegisterBuff(spells, 697, --Summon Voidwalker
+  buffDefModule:createAndRegisterBuff(spells, 697, --Summon Voidwalker
           { type             = "summon", default = false, isOwn = true,
             reagentRequired  = { BOM.ItemId.Warlock.SoulShard },
             creatureFamily   = "Voidwalker", creatureType = "Demon",
@@ -197,28 +197,28 @@ function warlockModule:SetupWarlockSpells(spells, enchants)
           })    :ClassOnly("WARLOCK")
                 :Category(allBuffsModule.PET)
 
-  spellDefModule:createAndRegisterBuff(spells, 712, --Summon Succubus
+  buffDefModule:createAndRegisterBuff(spells, 712, --Summon Succubus
           { type            = "summon", default = false, isOwn = true,
             reagentRequired = { BOM.ItemId.Warlock.SoulShard },
             creatureFamily  = "Succubus", creatureType = "Demon", sacrificeAuraIds = { 18791 }
           })    :ClassOnly("WARLOCK")
                 :Category(allBuffsModule.PET)
 
-  spellDefModule:createAndRegisterBuff(spells, 713, --Summon Incubus (TBC)
+  buffDefModule:createAndRegisterBuff(spells, 713, --Summon Incubus (TBC)
           { type            = "summon", default = false, isOwn = true,
             reagentRequired = { BOM.ItemId.Warlock.SoulShard },
             creatureFamily  = "Incubus", creatureType = "Demon", sacrificeAuraIds = { 18791 }
           })    :ClassOnly("WARLOCK")
                 :Category(allBuffsModule.PET)
 
-  spellDefModule:createAndRegisterBuff(spells, 691, --Summon Felhunter
+  buffDefModule:createAndRegisterBuff(spells, 691, --Summon Felhunter
           { type            = "summon", default = false, isOwn = true,
             reagentRequired = { BOM.ItemId.Warlock.SoulShard },
             creatureFamily  = "Felhunter", creatureType = "Demon", sacrificeAuraIds = { 18792 }
           })    :ClassOnly("WARLOCK")
                 :Category(allBuffsModule.PET)
 
-  spellDefModule:createAndRegisterBuff(spells, 30146, --Summon Felguard
+  buffDefModule:createAndRegisterBuff(spells, 30146, --Summon Felguard
           { type            = "summon", default = false, isOwn = true,
             reagentRequired = { BOM.ItemId.Warlock.SoulShard },
             creatureFamily  = "Felguard", creatureType = "Demon", sacrificeAuraIds = { 35701 }

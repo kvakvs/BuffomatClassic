@@ -4,14 +4,14 @@ local BOM = BuffomatAddon ---@type BomAddon
 local mageModule = BuffomatModule.New("AllSpellsMage") ---@type BomAllSpellsMageModule
 
 local allBuffsModule = BuffomatModule.Import("AllBuffs") ---@type BomAllBuffsModule
-local spellDefModule = BuffomatModule.Import("SpellDef") ---@type BomSpellDefModule
+local buffDefModule = BuffomatModule.Import("BuffDefinition") ---@type BomBuffDefinitionModule
 
 ---Add MAGE spells
 ---@param spells table<string, BomBuffDefinition>
 ---@param enchants table<string, table<number>>
 function mageModule:SetupMageSpells(spells, enchants)
   BOM.SpellDef_ArcaneIntelligence = function()
-    return spellDefModule:New(10157, --Arcane Intellect | Brilliance
+    return buffDefModule:New(10157, --Arcane Intellect | Brilliance
             { singleFamily    = { 1459, 1460, 1461, 10156, 10157, -- Ranks 1-5
                                   27126, -- TBC: Rank 6
                                   42995, 61024 }, -- WotLK: Arcane Intellect 7; Dalaran Intellect
@@ -27,7 +27,7 @@ function mageModule:SetupMageSpells(spells, enchants)
   end
   tinsert(spells, BOM.SpellDef_ArcaneIntelligence())
 
-  spellDefModule:createAndRegisterBuff(spells, 10174, --Dampen Magic
+  buffDefModule:createAndRegisterBuff(spells, 10174, --Dampen Magic
           { default      = false, singleDuration = allBuffsModule.DURATION_10M,
             singleFamily = { 604, 8450, 8451, 10173, 10174, -- Ranks 1-5
                              33944, -- TBC: Rank 6
@@ -35,7 +35,7 @@ function mageModule:SetupMageSpells(spells, enchants)
                 :DefaultTargetClasses(allBuffsModule.BOM_NO_CLASSES)
                 :ClassOnly("MAGE")
                 :Category(allBuffsModule.CLASS)
-  spellDefModule:createAndRegisterBuff(spells, 10170, --Amplify Magic
+  buffDefModule:createAndRegisterBuff(spells, 10170, --Amplify Magic
           { default      = false, singleDuration = allBuffsModule.DURATION_10M,
             singleFamily = { 1008, 8455, 10169, 10170, -- Ranks 1-4
                              27130, 33946, -- TBC: Ranks 5-6
@@ -43,7 +43,7 @@ function mageModule:SetupMageSpells(spells, enchants)
                 :DefaultTargetClasses(allBuffsModule.BOM_NO_CLASSES)
                 :ClassOnly("MAGE")
                 :Category(allBuffsModule.CLASS)
-  spellDefModule:createAndRegisterBuff(spells, 10220, -- Ice Armor / eisrüstung
+  buffDefModule:createAndRegisterBuff(spells, 10220, -- Ice Armor / eisrüstung
           { type         = "seal", default = false,
             singleFamily = { 168, 7300, 7301, -- Frost Armor 1-3
                              7302, 7320, 10219, 10220, -- Ice Armor 1-4
@@ -51,27 +51,27 @@ function mageModule:SetupMageSpells(spells, enchants)
                              43008 } }) -- WotLK: Ice Armor 6
                 :ClassOnly("MAGE")
                 :Category(allBuffsModule.CLASS)
-  spellDefModule:createAndRegisterBuff(spells, 11426, -- Ice Barrier
+  buffDefModule:createAndRegisterBuff(spells, 11426, -- Ice Barrier
           { type         = "seal", default = false, singleDuration = 60,
             singleFamily = { 11426, 13031, 13032, 13033, -- Ice Barrier 1-4
                              27134, 33405, -- TBC: Ice Barrier 5, 6
                              43038, 43039 } }) -- WotLK: Ice Barrier 7
                 :ClassOnly("MAGE")
                 :Category(allBuffsModule.CLASS)
-  spellDefModule:createAndRegisterBuff(spells, 30482, -- TBC: Molten Armor
+  buffDefModule:createAndRegisterBuff(spells, 30482, -- TBC: Molten Armor
           { type         = "seal", default = false,
             singleFamily = { 30482, -- TBC: Molten Armor 1
                              43045, 43046 } }) -- WotLK: Molten Armor 2, 3
                 :ClassOnly("MAGE")
                 :Category(allBuffsModule.CLASS)
-  spellDefModule:createAndRegisterBuff(spells, 22783, -- Mage Armor / magische rüstung
+  buffDefModule:createAndRegisterBuff(spells, 22783, -- Mage Armor / magische rüstung
           { type         = "seal", default = false,
             singleFamily = { 6117, 22782, 22783, -- Mage Armor 1-3
                              27125, -- TBC: Mage Armor 4
                              43023, 43024 } }) -- WotLK: Mage Armor 5, 6
                 :ClassOnly("MAGE")
                 :Category(allBuffsModule.CLASS)
-  spellDefModule:createAndRegisterBuff(spells, 10193, --Mana Shield | Manaschild - unabhängig von allen.
+  buffDefModule:createAndRegisterBuff(spells, 10193, --Mana Shield | Manaschild - unabhängig von allen.
           { isOwn        = true, default = false, singleDuration = 60,
             singleFamily = { 1463, 8494, 8495, 10191, 10192, 10193, -- Mana Shield 1-6
                              27131, -- TBC: Mana Shield 7
@@ -85,26 +85,26 @@ function mageModule:SetupMageSpells(spells, enchants)
     -- Conjure separate mana gems of 3 kinds
     -- For WotLK only 1 mana gem can be owned
     tinsert(spells,
-            spellDefModule:conjureItem(BOM.SpellId.Mage.ConjureManaEmerald, BOM.ItemId.Mage.ManaEmerald)
+            buffDefModule:conjureItem(BOM.SpellId.Mage.ConjureManaEmerald, BOM.ItemId.Mage.ManaEmerald)
                           :ClassOnly("MAGE")
                           :Category(allBuffsModule.CLASS)
     )
     tinsert(spells,
-            spellDefModule:conjureItem(BOM.SpellId.Mage.ConjureManaRuby, BOM.ItemId.Mage.ManaRuby)
+            buffDefModule:conjureItem(BOM.SpellId.Mage.ConjureManaRuby, BOM.ItemId.Mage.ManaRuby)
                           :ClassOnly("MAGE")
                           :Category(allBuffsModule.CLASS)
     )
     if playerLevel <= 68 then
       -- Players > 68 will not be interested in Citrine
       tinsert(spells,
-              spellDefModule:conjureItem(BOM.SpellId.Mage.ConjureManaCitrine, BOM.ItemId.Mage.ManaCitrine)
+              buffDefModule:conjureItem(BOM.SpellId.Mage.ConjureManaCitrine, BOM.ItemId.Mage.ManaCitrine)
                             :ClassOnly("MAGE")
                             :Category(allBuffsModule.CLASS)
       )
     end
   else
     -- For < 58 - Have generic conjuration of 1 gem (only max rank)
-    spellDefModule:createAndRegisterBuff(spells, BOM.SpellId.Mage.ConjureManaEmerald, -- Conjure Mana Stone (Max Rank)
+    buffDefModule:createAndRegisterBuff(spells, BOM.SpellId.Mage.ConjureManaEmerald, -- Conjure Mana Stone (Max Rank)
             { isOwn          = true, default = true,
               lockIfHaveItem = { BOM.ItemId.Mage.ManaSapphire,
                                  BOM.ItemId.Mage.ManaAgate,
