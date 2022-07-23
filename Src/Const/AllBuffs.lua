@@ -132,41 +132,6 @@ function allBuffsModule:SetupTrackingSpells(buffs, enchantments)
   return buffs
 end
 
----ITEMS, applicable to most of the classes, self buffs, containers to open etc
----@param buffs table<string, BomBuffDefinition>
----@param enchantments table<string, table<number>>
-function allBuffsModule:SetupCasterBattleElixirs(buffs, enchantments)
-end
-
----@param buffs table<string, BomBuffDefinition>
----@param enchantments table<string, table<number>>
-function allBuffsModule:SetupCasterConsumables(buffs, enchantments)
-  buffDefModule:classicConsumable(buffs, 18194, 13931, --Nightfin Soup +8Mana/5
-          { playerClass = BOM_MANA_CLASSES })
-                :Category(self.CLASSIC_SPELL_FOOD)
-
-  buffDefModule:classicConsumable(buffs, 19710, 12218, --Monster Omelette
-          { playerClass = BOM_MANA_CLASSES })
-                :Category(self.CLASSIC_SPELL_FOOD)
-
-  buffDefModule:createAndRegisterBuff(buffs, 18141, --Blessed Sunfruit Juice +10 SPIRIT
-          { item          = 13813, isConsumable = true, default = false,
-            onlyUsableFor = BOM_MANA_CLASSES, })
-                :Category(self.CLASSIC_SPELL_FOOD)
-
-end
-
----@param buffs table<string, BomBuffDefinition>
----@param enchantments table<string, table<number>>
-function allBuffsModule:SetupGuardianElixirs(buffs, enchantments)
-  buffDefModule:classicConsumable(buffs, 22730, 18254, --Runn Tum Tuber Surprise
-          nil)
-                :Category(self.CLASSIC_SPELL_FOOD)
-  buffDefModule:classicConsumable(buffs, 25661, 21023, --Dirge's Kickin' Chimaerok Chops x
-          nil)
-                :Category(self.CLASSIC_FOOD)
-end
-
 function allBuffsModule:SetupConstantsCategories()
   self.CLASSIC_PHYS_FOOD = "classicPhysicalFood"
   self.CLASSIC_SPELL_FOOD = "classicSpellFood"

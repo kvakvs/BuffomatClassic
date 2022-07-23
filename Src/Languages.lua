@@ -41,7 +41,7 @@ local function bomLanguage_English()
     ["Category_classicSpellElixir"]                   = "Spell Elixirs (Classic)",
     ["Category_classicBuff"]                          = "Buffs (Classic)",
     ["Category_classicElixir"]                        = "Elixirs (Classic)",
-    ["Category_classicFlask"]                          = "Flasks (Classic)",
+    ["Category_classicFlask"]                         = "Flasks (Classic)",
 
     ["Category_tbcPhysicalFood"]                      = "Physical Food (TBC)",
     ["Category_tbcSpellFood"]                         = "Spell Food (TBC)",
@@ -49,7 +49,7 @@ local function bomLanguage_English()
     ["Category_tbcPhysElixir"]                        = "Physical Elixirs (TBC)",
     ["Category_tbcSpellElixir"]                       = "Spell Elixirs (TBC)",
     ["Category_tbcElixir"]                            = "Other Elixirs (TBC)",
-    ["Category_tbcFlask"]                            = "Flasks (TBC)",
+    ["Category_tbcFlask"]                             = "Flasks (TBC)",
 
     ["Category_wotlkPhysicalFood"]                    = "Physical Food (WotLK)",
     ["Category_wotlkSpellFood"]                       = "Spell Food (WotLK)",
@@ -57,7 +57,7 @@ local function bomLanguage_English()
     ["Category_wotlkPhysElixir"]                      = "Physical Elixirs (WotLK)",
     ["Category_wotlkSpellElixir"]                     = "Spell Elixirs (WotLK)",
     ["Category_wotlkElixir"]                          = "Other Elixirs (WotLK)",
-    ["Category_wotlkFlask"]                          = "Flasks (WotLK)",
+    ["Category_wotlkFlask"]                           = "Flasks (WotLK)",
 
     ["Category_scroll"]                               = "Scrolls",
     ["Category_weaponEnchantment"]                    = "Weapon Enchantments",
@@ -268,6 +268,15 @@ local function bomLanguage_English()
     TooltipIncludesAllRanks                           = "Any buff of this type",
     TooltipSimilar                                    = "Any similar",
     TooltipSimilarFoods                               = "Any similar food",
+    ["tooltip.food.stamina"]                          = "+Stam",
+    ["tooltip.food.healing"]                          = "+Heal",
+    ["tooltip.food.spell"]                            = "+Spell",
+    ["tooltip.food.mp5"]                              = "+Mana/5",
+    ["tooltip.food.agility"]                          = "+Agi",
+    ["tooltip.food.hit"]                              = "+Hit",
+    ["tooltip.food.strength"]                         = "+Str",
+    ["tooltip.food.attackPower"]                      = "+Attack",
+    ["tooltip.food.spirit"]                           = "+Spirit",
 
     TabBuff                                           = "Buff",
     TabDoNotBuff                                      = "Do not buff",

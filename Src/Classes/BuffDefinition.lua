@@ -334,6 +334,13 @@ function spellDefClass:ClassOnly(className)
 end
 
 ---@return BomBuffDefinition
+---@param text string
+function spellDefClass:ExtraText(text)
+  self.extraText = text
+  return self
+end
+
+---@return BomBuffDefinition
 function spellDefClass:IgnoreIfHaveBuff(spellId)
   self.ignoreIfBetterBuffs = self.ignoreIfBetterBuffs or {}
   tinsert(self.ignoreIfBetterBuffs, spellId)
