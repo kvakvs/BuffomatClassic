@@ -8,10 +8,11 @@ local allSpellsModule = BuffomatModule.New("AllSpells") ---@type BomAllSpellsMod
 
 local _t = BuffomatModule.Import("Languages") ---@type BomLanguagesModule
 local itemCacheModule = BuffomatModule.Import("ItemCache") ---@type BomItemCacheModule
-local priestModule = BuffomatModule.Import("AllSpellsPriest") ---@type BomAllSpellsPriestModule
-local mageModule = BuffomatModule.Import("AllSpellsMage") ---@type BomAllSpellsMageModule
 local spellCacheModule = BuffomatModule.Import("SpellCache") ---@type BomSpellCacheModule
 local spellDefModule = BuffomatModule.Import("SpellDef") ---@type BomSpellDefModule
+local priestModule = BuffomatModule.Import("AllSpellsPriest") ---@type BomAllSpellsPriestModule
+local mageModule = BuffomatModule.Import("AllSpellsMage") ---@type BomAllSpellsMageModule
+local druidModule = BuffomatModule.Import("AllSpellsDruid") ---@type BomAllSpellsDruidModule
 
 local L = setmetatable(
         {},
@@ -78,54 +79,6 @@ local function tbcOrClassic(tbc, classic)
     return tbc
   end
   return classic
-end
-
----Add DRUID spells
----@param spells table<string, BomSpellDef>
----@param enchants table<string, table<number>>
-function allSpellsModule:SetupDruidSpells(spells, enchants)
-  local druidOnly = { playerClass = "DRUID" }
-
-  spellDefModule:createAndRegisterBuff(spells, 9885, --Gift/Mark of the Wild | Gabe/Mal der Wildniss
-          { groupId         = 21849, cancelForm = true, default = true,
-            singleFamily    = { 1126, 5232, 6756, 5234, 8907, 9884, 9885, -- Ranks 1-7
-                                26990 }, -- TBC: Rank 8
-            groupFamily     = { 21849, 21850, -- Ranks 1-2
-                                26991 }, -- TBC: Rank 3
-            singleDuration  = DURATION_30M, groupDuration = DURATION_1H,
-            reagentRequired = { 17021, 17026 }, targetClasses = BOM_ALL_CLASSES },
-          druidOnly)
-                :Category(self.CLASS)
-  spellDefModule:createAndRegisterBuff(spells, 9910, --Thorns | Dornen
-          { cancelForm     = false, default = false,
-            singleFamily   = { 467, 782, 1075, 8914, 9756, 9910, -- Ranks 1-6
-                               26992 }, -- TBC: Rank 7
-            singleDuration = DURATION_10M, targetClasses = BOM_MELEE_CLASSES },
-          druidOnly)
-                :Category(self.CLASS)
-  spellDefModule:createAndRegisterBuff(spells, 16864, --Omen of Clarity
-          { isOwn = true, cancelForm = true, default = true },
-          druidOnly)
-                :Category(self.CLASS)
-  spellDefModule:createAndRegisterBuff(spells, 17329, -- Nature's Grasp | Griff der Natur
-          { isOwn        = true, cancelForm = true, default = false,
-            hasCD        = true, requiresOutdoors = true,
-            singleFamily = { 16689, 16810, 16811, 16812, 16813, 17329, -- Rank 1-6
-                             27009 } }, -- TBC: Rank 7
-          druidOnly)
-                :Category(self.CLASS)
-  spellDefModule:createAndRegisterBuff(spells, 33891, --TBC: Tree of life
-          { isOwn = true, default = true, default = false, singleId = 33891, shapeshiftFormId = 2 },
-          { playerClass = "DRUID" })
-                :ShowInTBC()
-                :Category(self.CLASS)
-
-  -- Special code: This will disable herbalism and mining tracking in Cat Form
-  spellDefModule:createAndRegisterBuff(spells, BOM.SpellId.Druid.TrackHumanoids, -- Track Humanoids (Cat Form)
-          { type      = "tracking", needForm = CAT_FORM, default = true,
-            extraText = _t("SpellLabel_TrackHumanoids") },
-          druidOnly)
-                :Category(self.TRACKING)
 end
 
 ---Add SHAMAN spells
@@ -1466,7 +1419,7 @@ function allSpellsModule:SetupSpells()
   self:SetupConstants()
 
   priestModule:SetupPriestSpells(spells, enchants)
-  self:SetupDruidSpells(spells, enchants)
+  druidModule:SetupDruidSpells(spells, enchants)
   mageModule:SetupMageSpells(spells, enchants)
   self:SetupShamanSpells(spells, enchants)
   self:SetupWarlockSpells(spells, enchants)

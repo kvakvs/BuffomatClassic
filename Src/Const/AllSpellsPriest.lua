@@ -10,8 +10,6 @@ local spellDefModule = BuffomatModule.Import("SpellDef") ---@type BomSpellDefMod
 ---@param spells table<string, BomSpellDef>
 ---@param enchants table<string, table<number>>
 function priestModule:SetupPriestSpells(spells, enchants)
-  local priestOnly = { playerClass = "PRIEST" }
-
   spellDefModule:createAndRegisterBuff(spells, 10938, -- Fortitude / Seelenstärke
           { groupId         = 21562, default = true,
             singleFamily    = { 1243, 1244, 1245, 2791, 10937, 10938, -- Power Word: Fortitude 1-6
@@ -111,7 +109,7 @@ function priestModule:SetupPriestSpells(spells, enchants)
   spellDefModule:createAndRegisterBuff(spells, 20770, -- Resurrection / Auferstehung
           { cancelForm   = true, type = "resurrection", default = true,
             singleFamily = { 2006, 2010, 10880, 10881, 20770, -- Resurrection 1-5
-                             25435 , -- TBC: Resurrection 6
+                             25435, -- TBC: Resurrection 6
                              48171 }, -- WotLK: Resurrection 7
           })    :ClassOnly("PRIEST")
                 :Category(allSpellsModule.CLASS)

@@ -19,6 +19,7 @@ Src/Const/Textures.lua
 Src/Const/AllSpells.lua
 Src/Const/AllSpellsMage.lua
 Src/Const/AllSpellsPriest.lua
+Src/Const/AllSpellsDruid.lua
 Src/Const/SpellIds.lua
 Src/Const/ItemIds.lua
 

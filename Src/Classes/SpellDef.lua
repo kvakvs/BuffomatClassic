@@ -316,12 +316,12 @@ end
 ---@return BomSpellDef
 function spellDefClass:ShowInTBC()
   self.limitations.showInTBC = true
+  self.limitations.showInWotLK = true
   return self
 end
 
 ---@return BomSpellDef
 function spellDefClass:ShowInWotLK()
-  self.limitations.showInTBC = true
   self.limitations.showInWotLK = true
   return self
 end
