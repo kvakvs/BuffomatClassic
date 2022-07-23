@@ -20,7 +20,7 @@ function rogueModule:SetupRogueSpells(spells, enchants)
                              43232, 43233 }, -- WotLK: Deadly Poison 8-9
             isConsumable = true, type = "weapon", duration = duration, default = false },
           { minLevel = 2 }
-  )             :ClassOnly("ROGUE")
+  )             :RequirePlayerClass("ROGUE")
                 :Category(allBuffsModule.CLASS_WEAPON_ENCHANTMENT)
   enchants[25351] = { 2643, 2642, -- TBC: Deadly Poison
                       2630, 627, 626, 8, 7 } --Deadly Poison
@@ -30,7 +30,7 @@ function rogueModule:SetupRogueSpells(spells, enchants)
             duration = duration, default = false },
           { minLevel = 24 }
   )             :HideInWotLK()
-                :ClassOnly("ROGUE")
+                :RequirePlayerClass("ROGUE")
                 :Category(allBuffsModule.CLASS_WEAPON_ENCHANTMENT)
   enchants[11399] = { 643, 23, 35 } --Mind-numbing Poison
 
@@ -41,7 +41,7 @@ function rogueModule:SetupRogueSpells(spells, enchants)
                              43230, 43231 }, -- WotLK: Instant Poison 8-9
             isConsumable = true, type = "weapon", duration = duration, default = false },
           { minLevel = 20 }
-  )             :ClassOnly("ROGUE")
+  )             :RequirePlayerClass("ROGUE")
                 :Category(allBuffsModule.CLASS_WEAPON_ENCHANTMENT)
   enchants[11340] = { 2641, -- TBC: Instant Poison
                       625, 624, 623, 325, 324, 323 } --Instant Poison
@@ -52,7 +52,7 @@ function rogueModule:SetupRogueSpells(spells, enchants)
                              10922, 10921, 10920, 10918 },
             isConsumable = true, type = "weapon", duration = duration, default = false },
           { minLevel = 32 }
-  )             :ClassOnly("ROGUE")
+  )             :RequirePlayerClass("ROGUE")
                 :Category(allBuffsModule.CLASS_WEAPON_ENCHANTMENT)
   enchants[13227] = { 2644, -- TBC: Wound Poison
                       706, 705, 704, 703 } --Wound Poison
@@ -62,7 +62,7 @@ function rogueModule:SetupRogueSpells(spells, enchants)
             duration = duration, default = false },
           { minLevel = 20 }
   )             :HideInWotLK()
-                :ClassOnly("ROGUE")
+                :RequirePlayerClass("ROGUE")
                 :Category(allBuffsModule.CLASS_WEAPON_ENCHANTMENT)
   enchants[11202] = { 603, 22 } --Crippling Poison
 
@@ -70,7 +70,7 @@ function rogueModule:SetupRogueSpells(spells, enchants)
           { item         = 21835, items = { 21835 },
             isConsumable = true, type = "weapon", duration = duration, default = false },
           { minLevel = 68 }
-  )             :ClassOnly("ROGUE")
+  )             :RequirePlayerClass("ROGUE")
                 :RequireTBC()
                 :Category(allBuffsModule.CLASS_WEAPON_ENCHANTMENT)
   enchants[26785] = { 2640, } --TBC: Anesthetic Poison

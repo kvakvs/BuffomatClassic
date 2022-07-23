@@ -14,14 +14,14 @@ function deathknightModule:SetupDeathknightSpells(spells, enchants)
   -- TODO: Tag presence buffs and exclude other buffs from the same family when clicking the UI
   buffDefModule:createAndRegisterBuff(spells, 48266, -- Blood Presence
           { isOwn = true, default = true, default = false, singleId = 48266, shapeshiftFormId = 1
-          })    :ClassOnly("DEATHKNIGHT")
+          })    :RequirePlayerClass("DEATHKNIGHT")
                 :Category(allBuffsModule.CLASS)
   buffDefModule:createAndRegisterBuff(spells, 48263, -- Frost Presence
           { isOwn = true, default = true, default = false, singleId = 48263, shapeshiftFormId = 2
-          })    :ClassOnly("DEATHKNIGHT")
+          })    :RequirePlayerClass("DEATHKNIGHT")
                 :Category(allBuffsModule.CLASS)
   buffDefModule:createAndRegisterBuff(spells, 48265, -- Unholy Presence
           { isOwn = true, default = true, default = false, singleId = 48265, shapeshiftFormId = 3
-          })    :ClassOnly("DEATHKNIGHT")
+          })    :RequirePlayerClass("DEATHKNIGHT")
                 :Category(allBuffsModule.CLASS)
 end

@@ -21,7 +21,7 @@ function shamanModule:SetupShamanSpells(spells, enchants)
                              25489, -- TBC: Flametongue Weapon 7
                              58785, 58789, 58790 } } -- WotLK: Flametongue Weapon 8-10
   )             :Seal()
-                :ClassOnly("SHAMAN")
+                :RequirePlayerClass("SHAMAN")
                 :Category(allBuffsModule.CLASS_WEAPON_ENCHANTMENT)
   enchants[16342] = { 3, 4, 5, 523, 1665, 1666, -- Flametongue 1-6
                       2634, -- TBC: Flametongue 7
@@ -34,7 +34,7 @@ function shamanModule:SetupShamanSpells(spells, enchants)
                              25500, -- TBC: Frostbrand Weapon 6
                              58794, 58795, 58796 } } -- WotLK: Frostbrand Weapon 7-9
   )             :Seal()
-                :ClassOnly("SHAMAN")
+                :RequirePlayerClass("SHAMAN")
                 :Category(allBuffsModule.CLASS_WEAPON_ENCHANTMENT)
   enchants[16356] = { 2, 12, 524, 1667, 1668, -- Frostbrand
                       2635, -- TBC: Frostbrand 6
@@ -46,7 +46,7 @@ function shamanModule:SetupShamanSpells(spells, enchants)
             singleFamily = { 8017, 8018, 8019, 10399, 16314, 16315, 16316, -- Ranks 1-7
                              25479, 25485 } } -- TBC: Ranks 8-9
   )             :Seal()
-                :ClassOnly("SHAMAN")
+                :RequirePlayerClass("SHAMAN")
                 :Category(allBuffsModule.CLASS_WEAPON_ENCHANTMENT)
 
   -- Note: in TBC all enchantIds for rockbiter have changed
@@ -62,7 +62,7 @@ function shamanModule:SetupShamanSpells(spells, enchants)
                              25505, -- TBC: Windfury Weapon 5
                              58801, 58803, 58804 } } -- WotLK: Windfury Weapon 6-8
   )             :Seal()
-                :ClassOnly("SHAMAN")
+                :RequirePlayerClass("SHAMAN")
                 :Category(allBuffsModule.CLASS_WEAPON_ENCHANTMENT)
   enchants[16362] = { 283, 284, 525, 1669, -- Windfury 1-4
                       2636, -- TBC: Windfury 5
@@ -73,7 +73,7 @@ function shamanModule:SetupShamanSpells(spells, enchants)
             singleFamily = { 324, 325, 905, 945, 8134, 10431, 10432, -- Lightning Shield 1-7
                              25469, 25472, -- TBC: Lightning Shield 8-9
                              49280, 49281 } } -- WotLK: Lightning Shield 10-11
-  )             :ClassOnly("SHAMAN")
+  )             :RequirePlayerClass("SHAMAN")
                 :Category(allBuffsModule.CLASS)
 
   buffDefModule:createAndRegisterBuff(spells, 33736, -- TBC: Water Shield 1, 2
@@ -81,7 +81,7 @@ function shamanModule:SetupShamanSpells(spells, enchants)
             singleFamily = { 52127, 52129, 52131, 52134, 52136, 52138, -- WotLK: Water Shield 1-6
                              24398, 33736, -- TBC: Water Shield 1-2, or WotLK: Water Shield 7-8
                              57960 } -- WotLK: Water Shield 9
-          })    :ClassOnly("SHAMAN")
+          })    :RequirePlayerClass("SHAMAN")
                 :RequireTBC()
                 :Category(allBuffsModule.CLASS)
 
@@ -90,6 +90,6 @@ function shamanModule:SetupShamanSpells(spells, enchants)
             singleFamily = { 2008, 20609, 20610, 20776, 20777, -- Ancestral Spirit 1-5
                              25590, -- TBC: Ancestral Spirit 6
                              49277 } -- WotLK: Ancestral Spirit 7
-          })    :ClassOnly("SHAMAN")
+          })    :RequirePlayerClass("SHAMAN")
                 :Category(allBuffsModule.CLASS)
 end

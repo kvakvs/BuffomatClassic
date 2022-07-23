@@ -328,7 +328,7 @@ end
 
 ---@return BomBuffDefinition
 ---@param className table<number,string>|string The class name or table of class names
-function spellDefClass:ClassOnly(className)
+function spellDefClass:RequirePlayerClass(className)
   self.limitations.playerClass = className
   return self
 end

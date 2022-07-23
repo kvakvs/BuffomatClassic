@@ -23,7 +23,7 @@ function druidModule:SetupDruidSpells(spells, enchants)
             reagentRequired = { 17021, 17026,
                                 44605 }, -- WotLK: Wild Spineleaf
           })    :DefaultTargetClasses(allBuffsModule.BOM_ALL_CLASSES)
-                :ClassOnly("DRUID")
+                :RequirePlayerClass("DRUID")
                 :Category(allBuffsModule.CLASS)
   buffDefModule:createAndRegisterBuff(spells, 9910, --Thorns | Dornen
           { cancelForm     = false, default = false,
@@ -31,12 +31,12 @@ function druidModule:SetupDruidSpells(spells, enchants)
                                26992, -- TBC: Thorns 7
                                53307 }, -- WotLK: Thorns 8
             singleDuration = allBuffsModule.DURATION_10M,
-          })    :DefaultTargetClasses(allBuffsModule.BOM_MELEE_CLASSES)
-                :ClassOnly("DRUID")
+          })    :DefaultTargetClasses(allBuffsModule.MELEE_CLASSES)
+                :RequirePlayerClass("DRUID")
                 :Category(allBuffsModule.CLASS)
   buffDefModule:createAndRegisterBuff(spells, 16864, --Omen of Clarity
           { isOwn = true, cancelForm = true, default = true
-          })    :ClassOnly("DRUID")
+          })    :RequirePlayerClass("DRUID")
                 :Category(allBuffsModule.CLASS)
   buffDefModule:createAndRegisterBuff(spells, 17329, -- Nature's Grasp | Griff der Natur
           { isOwn        = true, cancelForm = true, default = false,
@@ -44,11 +44,11 @@ function druidModule:SetupDruidSpells(spells, enchants)
             singleFamily = { 16689, 16810, 16811, 16812, 16813, 17329, -- Nature's Grasp 1-6
                              27009, -- TBC: Nature's Grasp 7
                              53312 } -- WotLK: Nature's Grasp 8
-          })    :ClassOnly("DRUID")
+          })    :RequirePlayerClass("DRUID")
                 :Category(allBuffsModule.CLASS)
   buffDefModule:createAndRegisterBuff(spells, 33891, --TBC: Tree of life
           { isOwn = true, default = true, default = false, singleId = 33891, shapeshiftFormId = 2
-          })    :ClassOnly("DRUID")
+          })    :RequirePlayerClass("DRUID")
                 :RequireTBC() -- Requires TBC and up
                 :Category(allBuffsModule.CLASS)
 
@@ -56,13 +56,13 @@ function druidModule:SetupDruidSpells(spells, enchants)
   buffDefModule:createAndRegisterBuff(spells, BOM.SpellId.Druid.TrackHumanoids, -- Track Humanoids (Cat Form)
           { type      = "tracking", needForm = CAT_FORM, default = true,
             extraText = _t("SpellLabel_TrackHumanoids")
-          })    :ClassOnly("DRUID")
+          })    :RequirePlayerClass("DRUID")
                 :Category(self.TRACKING)
 
   buffDefModule:createAndRegisterBuff(spells, 50763, -- Revive (WotLK)
           { cancelForm   = true, type = "resurrection", default = true,
             singleFamily = { 50769, 50768, 50767, 50766, 50765, 50764, 50763 }, -- WotLK: Revive 1-7
           })    :RequireWotLK()
-                :ClassOnly("DRUID")
+                :RequirePlayerClass("DRUID")
                 :Category(allBuffsModule.CLASS)
 end

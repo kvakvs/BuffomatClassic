@@ -32,29 +32,29 @@ function scrollsModule:_SetupScrollsAgility(buffs, enchantments)
   -- WotLK
   --
   self:AddScroll(buffs, 58451, 43464) -- WotLK: Scroll of Agility 8
-      :ClassOnly(allBuffsModule.BOM_PHYSICAL_CLASSES)
+      :RequirePlayerClass(allBuffsModule.PHYSICAL_CLASSES)
       :RequireWotLK()
   self:AddScroll(buffs, 58450, 43463) -- WotLK: Scroll of Agility 7
-      :ClassOnly(allBuffsModule.BOM_PHYSICAL_CLASSES)
+      :RequirePlayerClass(allBuffsModule.PHYSICAL_CLASSES)
       :RequireWotLK()
   self:AddScroll(buffs, 43194, 33457) -- WotLK: Scroll of Agility 6
-      :ClassOnly(allBuffsModule.BOM_PHYSICAL_CLASSES)
+      :RequirePlayerClass(allBuffsModule.PHYSICAL_CLASSES)
       :RequireWotLK()
 
   --
   -- TBC
   --
   self:AddScroll(buffs, 33077, 27498) -- TBC: Scroll of Agility 5
-      :ClassOnly(allBuffsModule.BOM_PHYSICAL_CLASSES)
+      :RequirePlayerClass(allBuffsModule.PHYSICAL_CLASSES)
       :RequireTBC()
 
   --
   -- Classic
   --
   self:AddScroll(buffs, 12174, 10309) -- Scroll of Agility 4
-      :ClassOnly(allBuffsModule.BOM_PHYSICAL_CLASSES)
+      :RequirePlayerClass(allBuffsModule.PHYSICAL_CLASSES)
   self:AddScroll(buffs, 8117, 4425) -- Scroll of Agility 3
-      :ClassOnly(allBuffsModule.BOM_PHYSICAL_CLASSES)
+      :RequirePlayerClass(allBuffsModule.PHYSICAL_CLASSES)
 end
 
 ---@param buffs table<string, BomBuffDefinition> A list of buffs (not dictionary)
@@ -64,29 +64,29 @@ function scrollsModule:_SetupScrollsStrength(buffs, enchantments)
   -- WotLK
   --
   self:AddScroll(buffs, 58449, 43466) -- WotLK: Scroll of Strength 8
-      :ClassOnly(allBuffsModule.BOM_MELEE_CLASSES)
+      :RequirePlayerClass(allBuffsModule.MELEE_CLASSES)
       :RequireWotLK()
   self:AddScroll(buffs, 58448, 43465) -- WotLK: Scroll of Strength 7
-      :ClassOnly(allBuffsModule.BOM_MELEE_CLASSES)
+      :RequirePlayerClass(allBuffsModule.MELEE_CLASSES)
       :RequireWotLK()
   self:AddScroll(buffs, 43199, 33462) -- WotLK: Scroll of Strength 6
-      :ClassOnly(allBuffsModule.BOM_MELEE_CLASSES)
+      :RequirePlayerClass(allBuffsModule.MELEE_CLASSES)
       :RequireWotLK()
 
   --
   -- TBC
   --
   self:AddScroll(buffs, 33082, 27503) -- TBC: Scroll of Strength 5
-      :ClassOnly(allBuffsModule.BOM_MELEE_CLASSES)
+      :RequirePlayerClass(allBuffsModule.MELEE_CLASSES)
       :RequireTBC()
 
   --
   -- Classic
   --
   self:AddScroll(buffs, 12179, 10310) -- Scroll of Strength 4
-      :ClassOnly(allBuffsModule.BOM_MELEE_CLASSES)
+      :RequirePlayerClass(allBuffsModule.MELEE_CLASSES)
   self:AddScroll(buffs, 8120, 4426) -- Scroll of Strength 3
-      :ClassOnly(allBuffsModule.BOM_MELEE_CLASSES)
+      :RequirePlayerClass(allBuffsModule.MELEE_CLASSES)
 end
 
 ---@param buffs table<string, BomBuffDefinition> A list of buffs (not dictionary)
@@ -120,26 +120,26 @@ function scrollsModule:_SetupScrollsSpirit(buffs, enchantments)
   -- WotLK
   --
   self:AddScroll(buffs, 48104, 37098) -- WotLK: Scroll of Spirit 8
-      :ClassOnly(allBuffsModule.BOM_MANA_CLASSES)
+      :RequirePlayerClass(allBuffsModule.MANA_CLASSES)
       :RequireWotLK()
   self:AddScroll(buffs, 48103, 37097) -- WotLK: Scroll of Spirit 7
-      :ClassOnly(allBuffsModule.BOM_MANA_CLASSES)
+      :RequirePlayerClass(allBuffsModule.MANA_CLASSES)
       :RequireWotLK()
   self:AddScroll(buffs, 43197, 33460) -- WotLK: Scroll of Spirit 6
-      :ClassOnly(allBuffsModule.BOM_MANA_CLASSES)
+      :RequirePlayerClass(allBuffsModule.MANA_CLASSES)
       :RequireWotLK()
 
   --
   -- TBC
   --
   self:AddScroll(buffs, 33080, 27501) -- TBC: Scroll of Spirit 5
-      :ClassOnly(allBuffsModule.BOM_MANA_CLASSES)
+      :RequirePlayerClass(allBuffsModule.MANA_CLASSES)
       :RequireTBC()
   --
   -- Classic
   --
   self:AddScroll(buffs, 12177, 10306) -- Scroll of Spirit 4
-      :ClassOnly(allBuffsModule.BOM_MANA_CLASSES)
+      :RequirePlayerClass(allBuffsModule.MANA_CLASSES)
 end
 
 ---@param buffs table<string, BomBuffDefinition> A list of buffs (not dictionary)

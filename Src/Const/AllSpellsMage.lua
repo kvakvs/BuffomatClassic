@@ -20,8 +20,8 @@ function mageModule:SetupMageSpells(spells, enchants)
                                   61316 }, -- WotLK: Dalaran Brilliance Rank 3
               default         = true, singleDuration = allBuffsModule.DURATION_30M, groupDuration = allBuffsModule.DURATION_1H,
               reagentRequired = { 17020 } })
-                         :DefaultTargetClasses(allBuffsModule.BOM_MANA_CLASSES)
-                         :ClassOnly("MAGE")
+                         :DefaultTargetClasses(allBuffsModule.MANA_CLASSES)
+                         :RequirePlayerClass("MAGE")
                          :IgnoreIfHaveBuff(46302) -- Kiru's Song of Victory (Sunwell)
                          :Category(allBuffsModule.CLASS)
   end
@@ -33,7 +33,7 @@ function mageModule:SetupMageSpells(spells, enchants)
                              33944, -- TBC: Rank 6
                              43015 } }) -- WotLK: Dampen Magic 7
                 :DefaultTargetClasses(allBuffsModule.BOM_NO_CLASSES)
-                :ClassOnly("MAGE")
+                :RequirePlayerClass("MAGE")
                 :Category(allBuffsModule.CLASS)
   buffDefModule:createAndRegisterBuff(spells, 10170, --Amplify Magic
           { default      = false, singleDuration = allBuffsModule.DURATION_10M,
@@ -41,7 +41,7 @@ function mageModule:SetupMageSpells(spells, enchants)
                              27130, 33946, -- TBC: Ranks 5-6
                              43017 } }) -- WotLK: Amplify Magic 7
                 :DefaultTargetClasses(allBuffsModule.BOM_NO_CLASSES)
-                :ClassOnly("MAGE")
+                :RequirePlayerClass("MAGE")
                 :Category(allBuffsModule.CLASS)
   buffDefModule:createAndRegisterBuff(spells, 10220, -- Ice Armor / eisrüstung
           { type         = "seal", default = false,
@@ -49,34 +49,34 @@ function mageModule:SetupMageSpells(spells, enchants)
                              7302, 7320, 10219, 10220, -- Ice Armor 1-4
                              27124, -- TBC: Ice Armor 5
                              43008 } }) -- WotLK: Ice Armor 6
-                :ClassOnly("MAGE")
+                :RequirePlayerClass("MAGE")
                 :Category(allBuffsModule.CLASS)
   buffDefModule:createAndRegisterBuff(spells, 11426, -- Ice Barrier
           { type         = "seal", default = false, singleDuration = 60,
             singleFamily = { 11426, 13031, 13032, 13033, -- Ice Barrier 1-4
                              27134, 33405, -- TBC: Ice Barrier 5, 6
                              43038, 43039 } }) -- WotLK: Ice Barrier 7
-                :ClassOnly("MAGE")
+                :RequirePlayerClass("MAGE")
                 :Category(allBuffsModule.CLASS)
   buffDefModule:createAndRegisterBuff(spells, 30482, -- TBC: Molten Armor
           { type         = "seal", default = false,
             singleFamily = { 30482, -- TBC: Molten Armor 1
                              43045, 43046 } }) -- WotLK: Molten Armor 2, 3
-                :ClassOnly("MAGE")
+                :RequirePlayerClass("MAGE")
                 :Category(allBuffsModule.CLASS)
   buffDefModule:createAndRegisterBuff(spells, 22783, -- Mage Armor / magische rüstung
           { type         = "seal", default = false,
             singleFamily = { 6117, 22782, 22783, -- Mage Armor 1-3
                              27125, -- TBC: Mage Armor 4
                              43023, 43024 } }) -- WotLK: Mage Armor 5, 6
-                :ClassOnly("MAGE")
+                :RequirePlayerClass("MAGE")
                 :Category(allBuffsModule.CLASS)
   buffDefModule:createAndRegisterBuff(spells, 10193, --Mana Shield | Manaschild - unabhängig von allen.
           { isOwn        = true, default = false, singleDuration = 60,
             singleFamily = { 1463, 8494, 8495, 10191, 10192, 10193, -- Mana Shield 1-6
                              27131, -- TBC: Mana Shield 7
                              43019, 43020 } }) -- WotLK: Mana Shield 8, 9
-                :ClassOnly("MAGE")
+                :RequirePlayerClass("MAGE")
                 :Category(allBuffsModule.CLASS)
 
   local playerLevel = UnitLevel("player")
@@ -86,19 +86,19 @@ function mageModule:SetupMageSpells(spells, enchants)
     -- For WotLK only 1 mana gem can be owned
     tinsert(spells,
             buffDefModule:conjureItem(BOM.SpellId.Mage.ConjureManaEmerald, BOM.ItemId.Mage.ManaEmerald)
-                          :ClassOnly("MAGE")
+                          :RequirePlayerClass("MAGE")
                           :Category(allBuffsModule.CLASS)
     )
     tinsert(spells,
             buffDefModule:conjureItem(BOM.SpellId.Mage.ConjureManaRuby, BOM.ItemId.Mage.ManaRuby)
-                          :ClassOnly("MAGE")
+                          :RequirePlayerClass("MAGE")
                           :Category(allBuffsModule.CLASS)
     )
     if playerLevel <= 68 then
       -- Players > 68 will not be interested in Citrine
       tinsert(spells,
               buffDefModule:conjureItem(BOM.SpellId.Mage.ConjureManaCitrine, BOM.ItemId.Mage.ManaCitrine)
-                            :ClassOnly("MAGE")
+                            :RequirePlayerClass("MAGE")
                             :Category(allBuffsModule.CLASS)
       )
     end
@@ -118,7 +118,7 @@ function mageModule:SetupMageSpells(spells, enchants)
                                  BOM.SpellId.Mage.ConjureManaRuby,
                                  BOM.SpellId.Mage.ConjureManaEmerald,
                                  BOM.SpellId.Mage.ConjureManaSapphire, } })
-                  :ClassOnly("MAGE")
+                  :RequirePlayerClass("MAGE")
                   :Category(allBuffsModule.CLASS)
   end
 end

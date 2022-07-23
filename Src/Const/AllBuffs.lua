@@ -46,35 +46,25 @@ allBuffsModule.BOM_ALL_CLASSES = BOM_ALL_CLASSES
 allBuffsModule.BOM_NO_CLASSES = BOM_NO_CLASS
 
 ---Classes which have a resurrection ability
-local BOM_RESURRECT_CLASSES = { "SHAMAN", "PRIEST", "PALADIN" }
-BOM.RESURRECT_CLASS = BOM_RESURRECT_CLASSES --used in TaskScan.lua
-allBuffsModule.BOM_RESURRECT_CLASSES = BOM_RESURRECT_CLASSES
-
----Classes which have mana bar
-local BOM_MANA_CLASSES = { "HUNTER", "WARLOCK", "MAGE", "DRUID", "SHAMAN", "PRIEST", "PALADIN" }
-BOM.MANA_CLASSES = BOM_MANA_CLASSES --used in TaskScan.lua
-allBuffsModule.BOM_MANA_CLASSES = BOM_MANA_CLASSES
-
----Classes which deal spell damage
-local BOM_SPELL_CLASSES = { "WARLOCK", "MAGE", "DRUID", "SHAMAN", "PRIEST", "PALADIN", "DEATHKNIGHT", "HUNTER" }
-allBuffsModule.BOM_SPELL_CLASSES = BOM_SPELL_CLASSES
-
----@deprecated
-BOM.CLASSIC_ERA = "Classic"
----@deprecated
-BOM.IsTBC_ERA = "TBC"
-
-local BOM_MELEE_CLASSES = { "WARRIOR", "ROGUE", "DRUID", "SHAMAN", "PALADIN", "DEATHKNIGHT" }
-local BOM_SHADOW_CLASSES = { "PRIEST", "WARLOCK", "DEATHKNIGHT" }
-local BOM_FIRE_CLASSES = { "MAGE", "WARLOCK", "SHAMAN", "HUNTER" }
-local BOM_FROST_CLASSES = { "MAGE", "SHAMAN", "DEATHKNIGHT" }
-local BOM_PHYSICAL_CLASSES = { "HUNTER", "ROGUE", "SHAMAN", "WARRIOR", "DRUID", "PALADIN", "DEATHKNIGHT" }
-
-allBuffsModule.BOM_MELEE_CLASSES = BOM_MELEE_CLASSES
-allBuffsModule.BOM_SHADOW_CLASSES = BOM_SHADOW_CLASSES
-allBuffsModule.BOM_FIRE_CLASSES = BOM_FIRE_CLASSES
-allBuffsModule.BOM_FROST_CLASSES = BOM_FROST_CLASSES
-allBuffsModule.BOM_PHYSICAL_CLASSES = BOM_PHYSICAL_CLASSES
+local RESURRECT_CLASSES = { "SHAMAN", "PRIEST", "PALADIN", "DRUID" } -- Druid in WotLK
+BOM.RESURRECT_CLASS = RESURRECT_CLASSES --used in TaskScan.lua
+allBuffsModule.RESURRECT_CLASSES = RESURRECT_CLASSES
+--- Classes which have mana bar and benefit from mp/5 and spirit
+local MANA_CLASSES = { "HUNTER", "WARLOCK", "MAGE", "DRUID", "SHAMAN", "PRIEST", "PALADIN" }
+BOM.MANA_CLASSES = MANA_CLASSES --used in TaskScan.lua
+allBuffsModule.MANA_CLASSES = MANA_CLASSES
+--- Classes which deal spell damage
+allBuffsModule.SPELL_CLASSES = { "WARLOCK", "MAGE", "DRUID", "SHAMAN", "PRIEST", "PALADIN", "DEATHKNIGHT", "HUNTER" }
+--- Classes which hit with weapons or claws
+allBuffsModule.MELEE_CLASSES = { "WARRIOR", "ROGUE", "DRUID", "SHAMAN", "PALADIN", "DEATHKNIGHT" }
+--- Classes capable of dealing shadow damage
+allBuffsModule.SHADOW_CLASSES = { "PRIEST", "WARLOCK", "DEATHKNIGHT" }
+--- Classes capable of dealing fire damage
+allBuffsModule.FIRE_CLASSES = { "MAGE", "WARLOCK", "SHAMAN", "HUNTER" }
+--- Classes capable of dealing frost damage
+allBuffsModule.FROST_CLASSES = { "MAGE", "SHAMAN", "DEATHKNIGHT" }
+--- Classes dealing physical ranged or melee damage
+allBuffsModule.PHYSICAL_CLASSES = { "HUNTER", "ROGUE", "SHAMAN", "WARRIOR", "DRUID", "PALADIN", "DEATHKNIGHT" }
 
 local DURATION_1H = 3600
 local DURATION_30M = 1800

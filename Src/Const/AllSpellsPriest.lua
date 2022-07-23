@@ -23,7 +23,7 @@ function priestModule:SetupPriestSpells(spells, enchants)
                                 44615 }  -- WotLK: Devout Candle
           })    :DefaultTargetClasses(allBuffsModule.BOM_ALL_CLASSES)
                 :Category(allBuffsModule.CLASS)
-                :ClassOnly("PRIEST")
+                :RequirePlayerClass("PRIEST")
 
   BOM.SpellDef_PrayerOfSpirit = function()
     return buffDefModule:New(14819, -- Divine Spirit / Prayer of Spirit / Willenstärke
@@ -37,7 +37,7 @@ function priestModule:SetupPriestSpells(spells, enchants)
               singleDuration  = allBuffsModule.DURATION_30M, groupDuration = allBuffsModule.DURATION_1H,
               reagentRequired = { 17028, 17029,
                                   44615 }  -- WotLK: Devout Candle
-            })           :DefaultTargetClasses(allBuffsModule.BOM_MANA_CLASSES)
+            })           :DefaultTargetClasses(allBuffsModule.MANA_CLASSES)
                          :Category(allBuffsModule.CLASS)
   end
   tinsert(spells, BOM.SpellDef_PrayerOfSpirit())
@@ -54,13 +54,13 @@ function priestModule:SetupPriestSpells(spells, enchants)
                                 44615 }  -- WotLK: Devout Candle
           })    :DefaultTargetClasses(allBuffsModule.BOM_ALL_CLASSES)
                 :Category(allBuffsModule.CLASS)
-                :ClassOnly("PRIEST")
+                :RequirePlayerClass("PRIEST")
 
   buffDefModule:createAndRegisterBuff(spells, 6346, -- Fear Ward
           { default = false, singleDuration = allBuffsModule.DURATION_10M, hasCD = true,
           })    :DefaultTargetClasses(allBuffsModule.BOM_ALL_CLASSES)
                 :Category(allBuffsModule.CLASS)
-                :ClassOnly("PRIEST")
+                :RequirePlayerClass("PRIEST")
 
   BOM.SpellDef_PW_Shield = function()
     return buffDefModule:New(10901, -- Power Word: Shield / Powerword:Shild
@@ -79,7 +79,7 @@ function priestModule:SetupPriestSpells(spells, enchants)
             singleFamily = { 2652, 19261, 19262, 19264, 19265, 19266, -- Ranks 1-6
                              25461 } -- TBC: Rank 7
           })    :Category(allBuffsModule.CLASS)
-                :ClassOnly("PRIEST")
+                :RequirePlayerClass("PRIEST")
 
   buffDefModule:createAndRegisterBuff(spells, 10952, -- Inner Fire / inneres Feuer
           { default      = true, isOwn = true,
@@ -87,30 +87,30 @@ function priestModule:SetupPriestSpells(spells, enchants)
                              25431, -- TBC: Inner Fire 7
                              48040, 48168 }, -- WotLK: Inner Fire 8-9
           })    :Category(allBuffsModule.CLASS)
-                :ClassOnly("PRIEST")
+                :RequirePlayerClass("PRIEST")
 
   buffDefModule:createAndRegisterBuff(spells, 19312, -- Shadowguard (Clasic and TBC only)
           { default      = true, isOwn = true,
             singleFamily = { 18137, 19308, 19309, 19310, 19311, 19312, -- Ranks 1-6
                              25477 }, -- TBC: Rank 7
           })    :Category(allBuffsModule.CLASS)
-                :ClassOnly("PRIEST")
+                :RequirePlayerClass("PRIEST")
 
   buffDefModule:createAndRegisterBuff(spells, 19293, -- Elune's Grace (Clasic and TBC only)
           { default      = true, isOwn = true,
             singleFamily = { 2651, -- Rank 1 also TBC: The only rank
                              19289, 19291, 19292, 19293 }, -- Ranks 2-5 (non-TBC)
-          })    :ClassOnly("PRIEST")
+          })    :RequirePlayerClass("PRIEST")
                 :Category(allBuffsModule.CLASS)
   buffDefModule:createAndRegisterBuff(spells, 15473, -- Shadow Form
           { default = false, isOwn = true,
-          })    :ClassOnly("PRIEST")
+          })    :RequirePlayerClass("PRIEST")
                 :Category(allBuffsModule.CLASS)
   buffDefModule:createAndRegisterBuff(spells, 20770, -- Resurrection / Auferstehung
           { cancelForm   = true, type = "resurrection", default = true,
             singleFamily = { 2006, 2010, 10880, 10881, 20770, -- Resurrection 1-5
                              25435, -- TBC: Resurrection 6
                              48171 }, -- WotLK: Resurrection 7
-          })    :ClassOnly("PRIEST")
+          })    :RequirePlayerClass("PRIEST")
                 :Category(allBuffsModule.CLASS)
 end
