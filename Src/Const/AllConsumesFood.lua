@@ -77,7 +77,7 @@ end
 function foodModule:_SetupCasterFoodTBC(buffs, enchantments)
   buffDefModule:tbcConsumable(buffs, 33263, { 27657, 31673, 27665, 30361 }) -- Well Fed +23 SPELL +20 SPI
                :RequireTBC()
-               :RequirePlayerClass(allBuffsModule.MANA_CLASSES)
+               :RequirePlayerClass(allBuffsModule.SPELL_CLASSES)
                :ExtraText(_t("tooltip.buff.spellPower"))
                :Category(allBuffsModule.TBC_SPELL_FOOD)
   buffDefModule:genericConsumable(buffs, 33265, 27663) -- Blackened Sporefish: Well Fed +8 MP5 +20 STA
@@ -89,6 +89,12 @@ function foodModule:_SetupCasterFoodTBC(buffs, enchantments)
                :RequireTBC()
                :ExtraText(_t("tooltip.buff.healing"))
                :RequirePlayerClass(allBuffsModule.MANA_CLASSES)
+               :Category(allBuffsModule.TBC_SPELL_FOOD)
+  buffDefModule:genericConsumable(buffs, 33268, 33825) -- Skullfish Soup +20 Spell Crit/20 Spirit
+               :RequireTBC()
+               :IgnoreIfHaveBuff(43706) -- Drinking 240 mana/second
+               :ExtraText(_t("tooltip.buff.spellCrit"))
+               :RequirePlayerClass(allBuffsModule.SPELL_CLASSES)
                :Category(allBuffsModule.TBC_SPELL_FOOD)
 end
 

@@ -260,6 +260,7 @@ function englishModule:Translations()
     ["tooltip.buff.mp5"]                              = "+Mana/5",
     ["tooltip.buff.resilience"]                       = "+Resil",
     ["tooltip.buff.spellPower"]                       = "+Spell",
+    ["tooltip.buff.spellCrit"]                        = "+Spell Crit",
     ["tooltip.buff.spirit"]                           = "+Spirit",
     ["tooltip.buff.stamina"]                          = "+Stam",
     ["tooltip.buff.strength"]                         = "+Str",

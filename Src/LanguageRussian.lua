@@ -186,6 +186,7 @@ function russianModule:Translations()
     ["tooltip.buff.mp5"]                        = "+Мана/5",
     ["tooltip.buff.resilience"]                 = "+Устойч.",
     ["tooltip.buff.spellPower"]                 = "+Заклинания",
+    ["tooltip.buff.spellCrit"]                 = "+Крит заклинаний",
     ["tooltip.buff.spirit"]                     = "+Дух",
     ["tooltip.buff.stamina"]                    = "+Выносл.",
     ["tooltip.buff.strength"]                   = "+Сила",
