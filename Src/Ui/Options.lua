@@ -192,7 +192,12 @@ function optionsModule:CreateGeneralOptionsTable()
               "LockMinimapButton", buffomatModule.shared.Minimap, "lock"),
       minimapButtonLockDist = self:TemplateCheckbox(
               "LockMinimapButtonDistance", buffomatModule.shared.Minimap, "lockDistance"),
-      uiWindowScale         = self:TemplateInput("float", "UIWindowScale"),
+      --uiWindowScale         = self:TemplateInput("float", "UIWindowScale"),
+      uiWindowScale         = self:TemplateRange(
+              "UIWindowScale", 0.35, 2.0, 0.05,
+              buffomatModule.shared, "UIWindowScale",
+              function(_key, val) buffomatModule:SetWindowScale(val) end
+      ),
     }
   }
 end

@@ -6,9 +6,4 @@
 _TBC_BlizzardInterfaceCode/*
 
 # Generated files, do not add
-Buffomat-Classic.toc
-Buffomat-BCC.toc
-
-BuffomatClassic.toc
-BuffomatClassicTBC.toc
-BuffomatClassicWotLK.toc
+BuffomatClassic*.toc

@@ -751,11 +751,15 @@ function BOM.HideWindow()
   end
 end
 
+function buffomatModule:SetWindowScale(s)
+  BomC_MainWindow:SetScale(s)
+end
+
 function BOM.ShowWindow(tab)
   if not InCombatLockdown() then
     if not BOM.WindowVisible() then
       BomC_MainWindow:Show()
-      BomC_MainWindow:SetScale(tonumber(buffomatModule.shared.UIWindowScale) or 1.0)
+      buffomatModule:SetWindowScale(tonumber(buffomatModule.shared.UIWindowScale) or 1.0)
       buffomatModule.autoHelper = "KeepOpen"
     else
       BOM.BtnClose()

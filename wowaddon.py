@@ -12,17 +12,12 @@ import zipfile
 
 VERSION = '2022.7.1'  # year.month.build_num
 
-UI_VERSION_CLASSIC = '11403'  # patch 1.14.3
 BOM_NAME_CLASSIC = 'BuffomatClassic'  # Directory and zip name
 BOM_TITLE_CLASSIC = "Buffomat Classic"  # Title field in TOC
 
+UI_VERSION_CLASSIC = '11403'  # patch 1.14.3
 UI_VERSION_CLASSIC_TBC = '20504'  # patch 2.5.4 Phase 4 and 5 TBC
-BOM_NAME_CLASSIC_TBC = 'BuffomatClassicTBC'  # Directory and zip name
-BOM_TITLE_CLASSIC_TBC = "Buffomat Classic TBC"  # Title field in TOC
-
 UI_VERSION_CLASSIC_WOTLK = '30400'  # patch 3.4.0 WotLK
-BOM_NAME_CLASSIC_WOTLK = 'BuffomatClassicWotLK'  # Directory and zip name
-BOM_TITLE_CLASSIC_WOTLK = "Buffomat Classic WotLK"  # Title field in TOC
 
 COPY_DIRS = ['Src', 'Ace3']
 COPY_FILES = ['Bindings.xml', 'CHANGELOG.md', 'embeds.xml',
@@ -35,18 +30,20 @@ class BuildTool:
         self.version = VERSION
         self.copy_dirs = COPY_DIRS[:]
         self.copy_files = COPY_FILES[:]
-        self.create_toc(dst=f'{BOM_NAME_CLASSIC}.toc',
+        self.create_toc(dst=f'{BOM_NAME_CLASSIC}-Classic.toc',
                         ui_version=UI_VERSION_CLASSIC,
                         title=BOM_TITLE_CLASSIC)
-        self.create_toc(dst=f'{BOM_NAME_CLASSIC_TBC}.toc',
+        self.create_toc(dst=f'{BOM_NAME_CLASSIC}-BCC.toc',
                         ui_version=UI_VERSION_CLASSIC_TBC,
-                        title=BOM_TITLE_CLASSIC_TBC)
-        self.create_toc(dst=f'{BOM_NAME_CLASSIC_WOTLK}.toc',
+                        title=BOM_TITLE_CLASSIC)
+        self.create_toc(dst=f'{BOM_NAME_CLASSIC}-WOTLKC.toc',
                         ui_version=UI_VERSION_CLASSIC_WOTLK,
-                        title=BOM_TITLE_CLASSIC_WOTLK)
+                        title=BOM_TITLE_CLASSIC)
 
     def do_install(self, toc_name: str):
-        self.copy_files.append(f'{toc_name}.toc')
+        self.copy_files.append(f'{toc_name}-Classic.toc')
+        self.copy_files.append(f'{toc_name}-BCC.toc')
+        self.copy_files.append(f'{toc_name}-WOTLKC.toc')
         dst_path = f'{self.args.dst}/{toc_name}'
 
         if os.path.isdir(dst_path):
@@ -78,8 +75,10 @@ class BuildTool:
                 zip.write(file, f'{toc_name}/{file}')
 
     def do_zip(self, toc_name: str):
-        self.copy_files.append(f'{toc_name}.toc')
-        zip_name = f'{self.args.dst}/{toc_name}-{self.version}.zip'
+        self.copy_files.append(f'{toc_name}-Classic.toc')
+        self.copy_files.append(f'{toc_name}-BCC.toc')
+        self.copy_files.append(f'{toc_name}-WOTLKC.toc')
+        zip_name = f'{self.args.dst}/{toc_name}-{VERSION}.zip'
 
         with zipfile.ZipFile(zip_name, "w", zipfile.ZIP_DEFLATED,
                              allowZip64=True) as zip_file:
@@ -97,15 +96,16 @@ class BuildTool:
         # Call: git rev-parse HEAD
         p = subprocess.check_output(
             ["git", "rev-parse", "HEAD"])
-        hash = str(p).rstrip("\\n'").lstrip("b'")
-        return hash[:8]
+        hash1 = str(p).rstrip("\\n'").lstrip("b'")
+        return hash1[:8]
 
-    def create_toc(self, dst: str, ui_version: str, title: str):
-        hash = BuildTool.git_hash()
+    @staticmethod
+    def create_toc(dst: str, ui_version: str, title: str):
+        hash1 = BuildTool.git_hash()
 
         template = open('toc_template.toc', "rt").read()
         template = template.replace('${UI_VERSION}', ui_version)
-        template = template.replace('${VERSION}', f'{VERSION}-{hash}')
+        template = template.replace('${VERSION}', f'{VERSION}-{hash1}')
         template = template.replace('${ADDON_TITLE}', title)
 
         with open(dst, "wt") as out_f:
@@ -135,21 +135,11 @@ def main():
 
     if args.command == 'install':
         bt = BuildTool(args)
-        if args.version == 'classic':
-            bt.do_install(toc_name=BOM_NAME_CLASSIC)
-        elif args.version == "tbc":
-            bt.do_install(toc_name=BOM_NAME_CLASSIC_TBC)
-        elif args.version == "wotlk":
-            bt.do_install(toc_name=BOM_NAME_CLASSIC_WOTLK)
+        bt.do_install(toc_name=BOM_NAME_CLASSIC)
 
     elif args.command == 'zip':
         bt = BuildTool(args)
-        if args.version == 'classic':
-            bt.do_zip(toc_name=BOM_NAME_CLASSIC)
-        elif args.version == 'tbc':
-            bt.do_zip(toc_name=BOM_NAME_CLASSIC_TBC)
-        elif args.version == "wotlk":
-            bt.do_zip(toc_name=BOM_NAME_CLASSIC_WOTLK)
+        bt.do_zip(toc_name=BOM_NAME_CLASSIC)
     else:
         parser.print_help()
 

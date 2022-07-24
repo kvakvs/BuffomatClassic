@@ -210,7 +210,7 @@ function englishModule:Translations()
     ["options.long.Time600"]                          = "Refresh buffs with total duration <=10 min, if remaining less than",
     ["options.long.Time1800"]                         = "Refresh buffs with total duration <=30 min, if remaining less than",
     ["options.long.Time3600"]                         = "Refresh buffs with total duration <=60 min, if remaining less than",
-    ["options.long.UIWindowScale"]                    = "UI scale (default 1; Hide and show Buffomat to apply)",
+    ["options.long.UIWindowScale"]                    = "User interface scale, make your Buffomat larger or smaller (default 1.0)",
     ["options.long.MinBuff"]                          = "Number of missing buffs required to use a group buff",
     ["options.long.MinBlessing"]                      = "Number of missing blessing required to use a greater blessing",
 
