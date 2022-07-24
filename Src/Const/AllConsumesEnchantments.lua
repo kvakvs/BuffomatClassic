@@ -19,33 +19,36 @@ end
 ---@param buffs table<string, BomBuffDefinition> A list of buffs (not dictionary)
 ---@param enchantments table<number, table<number>> Key is spell id, value is list of enchantment ids
 function enchantmentsModule:_SetupCasterEnchantments(buffs, enchantments)
-  if BOM.IsTBC then
-    buffDefModule:createAndRegisterBuff(buffs, 28017, --Superior Wizard Oil +42 SPELL
-            { item = 22522, items = { 22522 }, isConsumable = true,
-              type = "weapon", duration = allBuffsModule.DURATION_1H, default = false
-            })   :RequirePlayerClass(allBuffsModule.MANA_CLASSES)
-                 :Category(allBuffsModule.WEAPON_ENCHANTMENT)
-  end
-
+  --if BOM.HaveTBC then
+  --  buffDefModule:createAndRegisterBuff(buffs, 28017, --Superior Wizard Oil +42 SPELL
+  --          { item = 22522, items = { 22522 }, isConsumable = true,
+  --            type = "weapon", duration = allBuffsModule.DURATION_1H, default = false
+  --          })   :RequirePlayerClass(allBuffsModule.SPELL_CLASSES)
+  --               :Category(allBuffsModule.WEAPON_ENCHANTMENT)
+  --end
   buffDefModule:createAndRegisterBuff(buffs, 25123, --Minor, Lesser, Brilliant Mana Oil
           { item     = 20748, isConsumable = true, type = "weapon",
             items    = { 20748, 20747, 20745, -- Minor, Lesser, Brilliant Mana Oil
-                         22521 }, -- TBC: Superior Mana Oil
+                         22521, -- TBC: Superior Mana Oil
+                         36899 }, -- WotLK: Exceptional Mana Oil
             duration = allBuffsModule.DURATION_30M, default = false
           })   :RequirePlayerClass(allBuffsModule.MANA_CLASSES)
                :Category(allBuffsModule.WEAPON_ENCHANTMENT)
-  enchantments[25123] = { 2624, 2625, 2629, -- Minor, Lesser, Brilliant Mana Oil (enchant)
-                          2677 } -- TBC: Superior Mana Oil (enchant)
+  enchantments[25123] = { 2624, 2625, 2629, -- Minor, Lesser, Brilliant Mana Oil (enchantment)
+                          2677, -- TBC: Superior Mana Oil (enchantment)
+                          3298 } -- WotLK: Exceptional Mana Oil (enchantment)
 
   buffDefModule:createAndRegisterBuff(buffs, 25122, -- Wizard Oil
           { item     = 20749, isConsumable = true, type = "weapon",
             items    = { 20749, 20746, 20744, 20750, --Minor, Lesser, "regular", Brilliant Wizard Oil
-                         22522 }, -- TBC: Superior Wizard Oil
+                         22522, -- TBC: Superior Wizard Oil
+                         36900 }, -- WotLK: Exceptional Wizard Oil
             duration = allBuffsModule.DURATION_30M, default = false
-          })   :RequirePlayerClass(allBuffsModule.MANA_CLASSES)
+          })   :RequirePlayerClass(allBuffsModule.SPELL_CLASSES)
                :Category(allBuffsModule.WEAPON_ENCHANTMENT)
-  enchantments[25122] = { 2623, 2626, 2627, 2628, --Minor, Lesser, "regular", Brilliant Wizard Oil (enchant)
-                          2678 }, -- TBC: Superior Wizard Oil (enchant)
+  enchantments[25122] = { 2623, 2626, 2627, 2628, --Minor, Lesser, "regular", Brilliant Wizard Oil (enchantment)
+                          2678, -- TBC: Superior Wizard Oil (enchantment)
+                          3299 } -- WotLK: Exceptional Wizard Oil (enchantment)
 
   buffDefModule:createAndRegisterBuff(buffs, 28898, --Blessed Wizard Oil
           { item     = 23123, isConsumable = true, type = "weapon",

@@ -3,6 +3,44 @@ local russianModule = BuffomatModule.New("LanguageRussian") ---@type BomLanguage
 
 function russianModule:Translations()
   return {
+    ["Category_class"]                          = "Бафы вашего класса",
+    ["Category_classBlessing"]                  = "Благословения",
+    ["Category_pet"]                            = "Питомец",
+    ["Category_tracking"]                       = "Поиск вокруг",
+    ["Category_aura"]                           = "Ауры",
+    ["Category_seal"]                           = "Печати",
+
+    ["Category_classicPhysicalFood"]            = "Еда для физ. атак (Classic)",
+    ["Category_classicSpellFood"]               = "Еда для заклинаний (Classic)",
+    ["Category_classicFood"]                    = "Прочая еда (Classic)",
+    ["Category_classicPhysElixir"]              = "Эликсиры для физ. атак (Classic)",
+    ["Category_classicPhysBuff"]                = "Бафы для физ. атак (Classic)",
+    ["Category_classicSpellElixir"]             = "Эликсиры для заклинаний (Classic)",
+    ["Category_classicBuff"]                    = "Бафы (Classic)",
+    ["Category_classicElixir"]                  = "Эликсиры (Classic)",
+    ["Category_classicFlask"]                   = "Настои (Classic)",
+
+    ["Category_tbcPhysicalFood"]                = "Еда для физ. атак (TBC)",
+    ["Category_tbcSpellFood"]                   = "Еда для заклинаний (TBC)",
+    ["Category_tbcFood"]                        = "Прочая еда (TBC)",
+    ["Category_tbcPhysElixir"]                  = "Эликсиры для физ. атак (TBC)",
+    ["Category_tbcSpellElixir"]                 = "Эликсиры для заклинаний (TBC)",
+    ["Category_tbcElixir"]                      = "Эликсиры (TBC)",
+    ["Category_tbcFlask"]                       = "Настои (TBC)",
+
+    ["Category_wotlkPhysicalFood"]              = "Еда для физ. атак (WotLK)",
+    ["Category_wotlkSpellFood"]                 = "Еда для заклинаний (WotLK)",
+    ["Category_wotlkFood"]                      = "Прочая еда (WotLK)",
+    ["Category_wotlkPhysElixir"]                = "Эликсиры для физ. атак (WotLK)",
+    ["Category_wotlkSpellElixir"]               = "Эликсиры для заклинаний (WotLK)",
+    ["Category_wotlkElixir"]                    = "Эликсиры (WotLK)",
+    ["Category_wotlkFlask"]                     = "Настои (WotLK)",
+
+    ["Category_scroll"]                         = "Свитки",
+    ["Category_weaponEnchantment"]              = "Временные зачарования оружия",
+    ["Category_classWeaponEnchantment"]         = "Зачарования вашего класса",
+    ["Category_none"]                           = "Прочее",
+
     CHAT_MSG_PREFIX                             = "Бафомёт: ", --префикс в чате
     Buffomat                                    = "Бафомёт", --шапка окна аддона
     AboutInfo                                   = "Выносливость! Интеллект! Дух! - Это звучит знакомо? "

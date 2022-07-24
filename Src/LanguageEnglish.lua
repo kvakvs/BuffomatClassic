@@ -253,6 +253,7 @@ function englishModule:Translations()
     ["tooltip.buff.frostResist"]                      = "+FrostRes",
     ["tooltip.buff.healing"]                          = "+Heal",
     ["tooltip.buff.hit"]                              = "+Hit",
+    ["tooltip.buff.intellect"]                        = "+Int",
     ["tooltip.buff.maxHealth"]                        = "+Max HP",
     ["tooltip.buff.mp5"]                              = "+Mana/5",
     ["tooltip.buff.resilience"]                       = "+Resil",
