@@ -3,6 +3,44 @@ local chineseModule = BuffomatModule.New("LanguageChinese") ---@type BomLanguage
 
 function chineseModule:Translations()
   return {
+    ["Category_class"]                                = "职业增益",
+    ["Category_classBlessing"]                        = "祝福",
+    ["Category_pet"]                                  = "宠物",
+    ["Category_tracking"]                             = "追踪",
+    ["Category_aura"]                                 = "光环",
+    ["Category_seal"]                                 = "Seals",
+
+    ["Category_classicPhysicalFood"]                  = "物理食物 (经典)",
+    ["Category_classicSpellFood"]                     = "法系食物 (经典)",
+    ["Category_classicFood"]                          = "其他食物 (经典)",
+    ["Category_classicPhysElixir"]                    = "物理药剂 (经典)",
+    ["Category_classicPhysBuff"]                      = "物理增益 (经典)",
+    ["Category_classicSpellElixir"]                   = "法系药剂 (经典)",
+    ["Category_classicBuff"]                          = "增益 (经典)",
+    ["Category_classicElixir"]                        = "增益药剂 (经典)",
+    ["Category_classicFlask"]                         = "合剂 (经典)",
+
+    ["Category_tbcPhysicalFood"]                      = "物理食物 (TBC)",
+    ["Category_tbcSpellFood"]                         = "法系食物 (TBC)",
+    ["Category_tbcFood"]                              = "其他食物 (TBC)",
+    ["Category_tbcPhysElixir"]                        = "物理药剂 (TBC)",
+    ["Category_tbcSpellElixir"]                       = "法系药剂 (TBC)",
+    ["Category_tbcElixir"]                            = "增益药剂 (TBC)",
+    ["Category_tbcFlask"]                             = "合剂 (TBC)",
+
+    ["Category_wotlkPhysicalFood"]                    = "物理食物 (WLK)",
+    ["Category_wotlkSpellFood"]                       = "法系食物 (WLK)",
+    ["Category_wotlkFood"]                            = "其他食物 (WLK)",
+    ["Category_wotlkPhysElixir"]                      = "物理药剂 (WLK)",
+    ["Category_wotlkSpellElixir"]                     = "法系药剂 (WLK)",
+    ["Category_wotlkElixir"]                          = "增益药剂 (WLK)",
+    ["Category_wotlkFlask"]                           = "合剂 (WLK)",
+
+    ["Category_scroll"]                               = "卷轴",
+    ["Category_weaponEnchantment"]                    = "武器附魔",
+    ["Category_classWeaponEnchantment"]               = "武器附魔(副)",
+    ["Category_none"]                                 = "未分类",
+    
     ["options.OptionsTitle"]                    = "Buffomat",
 
     ["options.general.group.AutoActions"]       = "自动操作",
