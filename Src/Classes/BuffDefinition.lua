@@ -167,16 +167,6 @@ function buffDefModule:genericConsumable(dst, singleId, itemId, limitations,
   return buffDefModule:createAndRegisterBuff(dst, singleId, fields, limitations)
 end
 
----@param dst table<BomBuffDefinition>
----@param singleId number
----@param itemId number
----@param limitations BomSpellLimitations Add extra conditions, if not nil
----@param extraText string Add extra text to the right if not nil
----@return BomBuffDefinition
-function buffDefModule:classicConsumable(dst, singleId, itemId, limitations, extraText)
-  return self:genericConsumable(dst, singleId, itemId, limitations, extraText)
-end
-
 local _, playerClass, _ = UnitClass("player")
 
 --TODO: Belongs to `BomBuffDefinition`
@@ -316,6 +306,12 @@ end
 ---@return BomBuffDefinition
 function spellDefClass:HideInWotLK()
   self.limitations.hideInWotLK = true
+  return self
+end
+
+---@return BomBuffDefinition
+function spellDefClass:HunterPetFood()
+  self.tbcHunterPetBuff = true
   return self
 end
 

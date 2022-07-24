@@ -19,24 +19,24 @@ end
 ---@param buffs table<string, BomBuffDefinition> A list of buffs (not dictionary)
 ---@param enchantments table<number, table<number>> Key is spell id, value is list of enchantment ids
 function flasksModule:_SetupFlasksClassic(buffs, enchantments)
-  buffDefModule:classicConsumable(buffs, 17628, 13512) --Flask of Supreme Power +70 SPELL
+  buffDefModule:genericConsumable(buffs, 17628, 13512) --Flask of Supreme Power +70 SPELL
                :RequirePlayerClass(allBuffsModule.SPELL_CLASSES)
                :ExtraText(_t("tooltip.buff.spellPower"))
                :Category(allBuffsModule.CLASSIC_FLASK)
                :ElixirType(allBuffsModule.ELIX_FLASK)
 
-  buffDefModule:classicConsumable(buffs, 17626, 13510) --Flask of the Titans +400 HP
+  buffDefModule:genericConsumable(buffs, 17626, 13510) --Flask of the Titans +400 HP
                :ExtraText(_t("tooltip.buff.maxHealth"))
                :Category(allBuffsModule.CLASSIC_FLASK)
                :ElixirType(allBuffsModule.ELIX_FLASK)
 
-  buffDefModule:classicConsumable(buffs, 17627, 13511) --Flask of Distilled Wisdom +65 INT
+  buffDefModule:genericConsumable(buffs, 17627, 13511) --Flask of Distilled Wisdom +65 INT
                :RequirePlayerClass(allBuffsModule.MANA_CLASSES)
                :ExtraText(_t("tooltip.buff.intellect"))
                :Category(allBuffsModule.CLASSIC_FLASK)
                :ElixirType(allBuffsModule.ELIX_FLASK)
 
-  buffDefModule:classicConsumable(buffs, 17629, 13513) --Flask of Chromatic Resistance
+  buffDefModule:genericConsumable(buffs, 17629, 13513) --Flask of Chromatic Resistance
                :ExtraText(_t("tooltip.buff.allResist"))
                :Category(allBuffsModule.CLASSIC_FLASK)
                :ElixirType(allBuffsModule.ELIX_FLASK)

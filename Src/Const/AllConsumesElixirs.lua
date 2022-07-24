@@ -229,35 +229,35 @@ function elixirsModule:_SetupGuardianElixirsClassic(buffs, enchantments)
                :RequirePlayerClass(allBuffsModule.MANA_CLASSES)
                :Category(allBuffsModule.TBC_SPELL_ELIXIR)
                :ElixirType(allBuffsModule.ELIX_GUARDIAN)
-  buffDefModule:classicConsumable(buffs, 3593, 3825) --Elixir of Fortitude
+  buffDefModule:genericConsumable(buffs, 3593, 3825) --Elixir of Fortitude
                :Category(allBuffsModule.CLASSIC_ELIXIR)
                :ElixirType(allBuffsModule.ELIX_GUARDIAN)
-  buffDefModule:classicConsumable(buffs, 11348, 13445) --Elixir of Superior Defense
+  buffDefModule:genericConsumable(buffs, 11348, 13445) --Elixir of Superior Defense
                :Category(allBuffsModule.CLASSIC_ELIXIR)
                :ElixirType(allBuffsModule.ELIX_GUARDIAN)
-  buffDefModule:classicConsumable(buffs, 24361, 20004) --Major Troll's Blood Potion
+  buffDefModule:genericConsumable(buffs, 24361, 20004) --Major Troll's Blood Potion
                :Category(allBuffsModule.CLASSIC_ELIXIR)
                :ElixirType(allBuffsModule.ELIX_GUARDIAN)
-  buffDefModule:classicConsumable(buffs, 11371, 9088) --Gift of Arthas
+  buffDefModule:genericConsumable(buffs, 11371, 9088) --Gift of Arthas
                :Category(allBuffsModule.CLASSIC_ELIXIR)
                :ElixirType(allBuffsModule.ELIX_GUARDIAN)
-  buffDefModule:classicConsumable(buffs, 17549, 13461) --Greater Arcane Protection Potion
+  buffDefModule:genericConsumable(buffs, 17549, 13461) --Greater Arcane Protection Potion
                :HideInTBC() -- Becomes a 2-min potion buff
                :Category(allBuffsModule.CLASSIC_ELIXIR)
                :ElixirType(allBuffsModule.ELIX_GUARDIAN)
-  buffDefModule:classicConsumable(buffs, 17543, 13457) --Greater Fire Protection Potion
+  buffDefModule:genericConsumable(buffs, 17543, 13457) --Greater Fire Protection Potion
                :HideInTBC() -- Becomes a 2-min potion buff
                :Category(allBuffsModule.CLASSIC_ELIXIR)
                :ElixirType(allBuffsModule.ELIX_GUARDIAN)
-  buffDefModule:classicConsumable(buffs, 17544, 13456) --Greater Frost Protection Potion
+  buffDefModule:genericConsumable(buffs, 17544, 13456) --Greater Frost Protection Potion
                :HideInTBC() -- Becomes a 2-min potion buff
                :Category(allBuffsModule.CLASSIC_ELIXIR)
                :ElixirType(allBuffsModule.ELIX_GUARDIAN)
-  buffDefModule:classicConsumable(buffs, 17546, 13458) --Greater Nature Protection Potion
+  buffDefModule:genericConsumable(buffs, 17546, 13458) --Greater Nature Protection Potion
                :HideInTBC() -- Becomes a 2-min potion buff
                :Category(allBuffsModule.CLASSIC_ELIXIR)
                :ElixirType(allBuffsModule.ELIX_GUARDIAN)
-  buffDefModule:classicConsumable(buffs, 17548, 13459) --Greater Shadow Protection Potion
+  buffDefModule:genericConsumable(buffs, 17548, 13459) --Greater Shadow Protection Potion
                :HideInTBC() -- Becomes a 2-min potion buff
                :Category(allBuffsModule.CLASSIC_ELIXIR)
                :ElixirType(allBuffsModule.ELIX_GUARDIAN)

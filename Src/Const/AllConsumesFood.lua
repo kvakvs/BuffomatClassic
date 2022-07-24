@@ -10,17 +10,17 @@ local buffDefModule = BuffomatModule.Import("BuffDefinition") ---@type BomBuffDe
 ---@param buffs table<string, BomBuffDefinition>
 ---@param enchantments table<string, table<number>>
 function foodModule:SetupFood(buffs, enchantments)
-  self:_SetupPhysicalFoodClassic(buffs, enchantments)
-  self:_SetupPhysicalFoodTBC(buffs, enchantments)
-  --self:_SetupPhysicalFoodWotLK(buffs, enchantments)
-
   self:_SetupCasterFoodClassic(buffs, enchantments)
-  self:_SetupCasterFoodTBC(buffs, enchantments)
-  --self:_SetupCasterFoodWotLK(buffs, enchantments)
-
+  self:_SetupPhysicalFoodClassic(buffs, enchantments)
   self:_SetupMiscFoodClassic(buffs, enchantments)
+
+  self:_SetupCasterFoodTBC(buffs, enchantments)
+  self:_SetupPhysicalFoodTBC(buffs, enchantments)
   self:_SetupMiscFoodTBC(buffs, enchantments)
-  --self:_SetupMiscFoodWotLK(buffs, enchantments)
+
+  self:_SetupCasterFoodWotLK(buffs, enchantments)
+  self:_SetupPhysicalFoodWotLK(buffs, enchantments)
+  self:_SetupMiscFoodWotLK(buffs, enchantments)
 end
 
 ---@param buffs table<string, BomBuffDefinition>
@@ -95,11 +95,11 @@ end
 ---@param buffs table<string, BomBuffDefinition>
 ---@param enchantments table<string, table<number>>
 function foodModule:_SetupCasterFoodClassic(buffs, enchantments)
-  buffDefModule:classicConsumable(buffs, 18194, 13931) -- Nightfin Soup +8Mana/5
+  buffDefModule:genericConsumable(buffs, 18194, 13931) -- Nightfin Soup +8Mana/5
                :ExtraText(_t("tooltip.buff.mp5"))
                :RequirePlayerClass(allBuffsModule.MANA_CLASSES)
                :Category(allBuffsModule.CLASSIC_SPELL_FOOD)
-  buffDefModule:classicConsumable(buffs, 19710, 12218) -- Monster Omelette
+  buffDefModule:genericConsumable(buffs, 19710, 12218) -- Monster Omelette
                :ExtraText(_t("tooltip.buff.spirit"))
                :RequirePlayerClass(allBuffsModule.MANA_CLASSES)
                :Category(allBuffsModule.CLASSIC_SPELL_FOOD)
@@ -108,14 +108,14 @@ function foodModule:_SetupCasterFoodClassic(buffs, enchantments)
                :ExtraText(_t("tooltip.buff.spirit"))
                :RequirePlayerClass(allBuffsModule.MANA_CLASSES)
                :Category(allBuffsModule.CLASSIC_SPELL_FOOD)
-  buffDefModule:classicConsumable(buffs, 22730, 18254) --Runn Tum Tuber Surprise
+  buffDefModule:genericConsumable(buffs, 22730, 18254) --Runn Tum Tuber Surprise
                :Category(allBuffsModule.CLASSIC_SPELL_FOOD)
 end
 
 ---@param buffs table<string, BomBuffDefinition>
 ---@param enchantments table<string, table<number>>
 function foodModule:_SetupMiscFoodClassic(buffs, enchantments)
-  buffDefModule:classicConsumable(buffs, 25661, 21023) -- Dirge's Kickin' Chimaerok Chops x
+  buffDefModule:genericConsumable(buffs, 25661, 21023) -- Dirge's Kickin' Chimaerok Chops x
                :Category(allBuffsModule.CLASSIC_FOOD)
 end
 
@@ -130,7 +130,182 @@ function foodModule:_SetupPhysicalFoodClassic(buffs, enchantments)
           { item = 20452, isConsumable = true, default = false })
                :RequirePlayerClass(allBuffsModule.PHYSICAL_CLASSES)
                :Category(allBuffsModule.CLASSIC_PHYS_FOOD)
-  buffDefModule:classicConsumable(buffs, 18125, 13810) --Blessed Sunfruit +STR
+  buffDefModule:genericConsumable(buffs, 18125, 13810) --Blessed Sunfruit +STR
                :RequirePlayerClass(allBuffsModule.MELEE_CLASSES)
                :Category(allBuffsModule.CLASSIC_PHYS_FOOD)
+end
+
+---@param buffs table<string, BomBuffDefinition>
+---@param enchantments table<string, table<number>>
+function foodModule:_SetupCasterFoodWotLK(buffs, enchantments)
+  buffDefModule:genericConsumable(buffs, 53284, 42779) -- Steaming Chicken Soup +25 Stam/25 Spi
+               :RequireWotLK()
+               :ExtraText(_t("tooltip.buff.spirit"))
+               :Category(allBuffsModule.WOTLK_SPELL_FOOD)
+  buffDefModule:genericConsumable(buffs, 57365, 42998) -- Cuttlesteak 40 Spirit/40 Stam
+               :RequireWotLK()
+               :ExtraText(_t("tooltip.buff.spirit"))
+               :RequirePlayerClass(allBuffsModule.SPELL_CLASSES)
+               :IgnoreIfHaveBuff(BOM.SpellId.WotlkFood80) -- [Food] While eating Cuttlesteak
+               :Category(allBuffsModule.WOTLK_SPELL_FOOD)
+  --
+  -- Spell Power Food
+  --
+  buffDefModule:genericConsumable(buffs, 57139, 34749) -- Shoveltusk Steak +35 Spell/30 Stam
+               :RequireWotLK()
+               :ExtraText(_t("tooltip.buff.spellPower"))
+               :RequirePlayerClass(allBuffsModule.SPELL_CLASSES)
+               :IgnoreIfHaveBuff(BOM.SpellId.WotlkFood80) -- [Food] While eating Shoveltusk Steak
+               :Category(allBuffsModule.WOTLK_SPELL_FOOD)
+  buffDefModule:genericConsumable(buffs, 57097, { 34763, 34749 }) -- Smoked Salmon +35 Spell/40 Stam
+               :RequireWotLK()
+               :ExtraText(_t("tooltip.buff.spellPower") .. " " .. _t("tooltip.food.multipleFoodItems"))
+               :RequirePlayerClass(allBuffsModule.SPELL_CLASSES)
+               :IgnoreIfHaveBuff(BOM.SpellId.WotlkFood80) -- [Food] While eating Smoked Salmon
+               :Category(allBuffsModule.WOTLK_SPELL_FOOD)
+  buffDefModule:genericConsumable(buffs, 57327, { 34755, 34767 }) -- Tender Shoveltusk Steak/Firecracker Salmon +46 Spell/40 Stam
+               :RequireWotLK()
+               :ExtraText(_t("tooltip.buff.spellPower") .. " " .. _t("tooltip.food.multipleFoodItems"))
+               :RequirePlayerClass(allBuffsModule.SPELL_CLASSES)
+               :IgnoreIfHaveBuff(BOM.SpellId.WotlkFood80) -- [Food] While eating Tender Shoveltusk Steak/Firecracker Salmon
+               :Category(allBuffsModule.WOTLK_SPELL_FOOD)
+  --
+  -- Mana per 5 Food
+  --
+  buffDefModule:genericConsumable(buffs, 57107, { 34765, 34752 }) -- Pickled Fangtooth/Rhino Dogs +15 mp5/40 Stam
+               :RequireWotLK()
+               :ExtraText(_t("tooltip.buff.mp5") .. " " .. _t("tooltip.food.multipleFoodItems"))
+               :RequirePlayerClass(allBuffsModule.SPELL_CLASSES)
+               :IgnoreIfHaveBuff(BOM.SpellId.WotlkFood80) -- [Food] While eating Pickled Fangtooth/Rhino Dogs
+               :Category(allBuffsModule.WOTLK_SPELL_FOOD)
+  buffDefModule:genericConsumable(buffs, 57334, { 34758, 42993 }) -- Mighty Rhino Dogs/Spicy Fried Herring +20 mp5/40 Stam
+               :RequireWotLK()
+               :ExtraText(_t("tooltip.buff.mp5") .. " " .. _t("tooltip.food.multipleFoodItems"))
+               :RequirePlayerClass(allBuffsModule.SPELL_CLASSES)
+               :IgnoreIfHaveBuff(BOM.SpellId.WotlkFood80) -- [Food] While eating Mighty Rhino Dogs/Spicy Fried Herring
+               :Category(allBuffsModule.WOTLK_SPELL_FOOD)
+end
+
+---@param buffs table<string, BomBuffDefinition>
+---@param enchantments table<string, table<number>>
+function foodModule:_SetupPhysicalFoodWotLK(buffs, enchantments)
+  --
+  -- Strength Food
+  --
+  buffDefModule:genericConsumable(buffs, 57371, 43000) -- Dragonfin Filet +40 Str/40 Stam
+               :RequireWotLK()
+               :ExtraText(_t("tooltip.buff.strength"))
+               :RequirePlayerClass(allBuffsModule.MELEE_CLASSES)
+               :IgnoreIfHaveBuff(BOM.SpellId.WotlkFood80) -- [Food] While eating Dragonfin Filet
+               :Category(allBuffsModule.WOTLK_PHYS_FOOD)
+  --
+  -- Agility Food
+  --
+  buffDefModule:genericConsumable(buffs, 57367, 42999) -- Blackened Dragonfin +40 Agi/40 Stam
+               :RequireWotLK()
+               :ExtraText(_t("tooltip.buff.agility"))
+               :RequirePlayerClass(allBuffsModule.PHYSICAL_CLASSES)
+               :IgnoreIfHaveBuff(BOM.SpellId.WotlkFood80) -- [Food] While eating Blackened Dragonfin
+               :Category(allBuffsModule.WOTLK_PHYS_FOOD)
+  --
+  -- Attack Power Food
+  --
+  buffDefModule:genericConsumable(buffs, 57111, 34748) -- Mammoth Meal +60 AP/30 Stam
+               :RequireWotLK()
+               :ExtraText(_t("tooltip.buff.attackPower"))
+               :RequirePlayerClass(allBuffsModule.PHYSICAL_CLASSES)
+               :IgnoreIfHaveBuff(BOM.SpellId.WotlkFood80) -- [Food] While eating Mammoth Meal
+               :Category(allBuffsModule.WOTLK_PHYS_FOOD)
+  buffDefModule:genericConsumable(buffs, 57079, 34762) -- Grilled Sculpin +60 AP/40 Stam
+               :RequireWotLK()
+               :ExtraText(_t("tooltip.buff.attackPower"))
+               :RequirePlayerClass(allBuffsModule.PHYSICAL_CLASSES)
+               :IgnoreIfHaveBuff(BOM.SpellId.WotlkFood80) -- [Food] While eating Grilled Sculpin
+               :Category(allBuffsModule.WOTLK_PHYS_FOOD)
+  buffDefModule:genericConsumable(buffs, 57325, { 34762, 34766 }) -- Mega Mammoth Meal/Poached Northern Sculpin +80 AP/40 Stam
+               :RequireWotLK()
+               :ExtraText(_t("tooltip.buff.attackPower") .. " " .. _t("tooltip.food.multipleFoodItems"))
+               :RequirePlayerClass(allBuffsModule.PHYSICAL_CLASSES)
+               :IgnoreIfHaveBuff(BOM.SpellId.WotlkFood80) -- [Food] While eating Mega Mammoth Meal/Poached Northern Sculpin
+               :Category(allBuffsModule.WOTLK_PHYS_FOOD)
+  --
+  -- Expertise Food
+  --
+  buffDefModule:genericConsumable(buffs, 57356, 42994) -- Rhinolicious Wormsteak +40 Expert/40 Stam
+               :RequireWotLK()
+               :ExtraText(_t("tooltip.buff.attackPower"))
+               :RequirePlayerClass(allBuffsModule.PHYSICAL_CLASSES)
+               :IgnoreIfHaveBuff(BOM.SpellId.WotlkFood80) -- [Food] While eating Rhinolicious Wormsteak
+               :Category(allBuffsModule.WOTLK_PHYS_FOOD)
+  --
+  -- Armor Pen Food
+  --
+  buffDefModule:genericConsumable(buffs, 57358, 42995) -- Hearty Rhino +40 Armor Pen/40 Stam
+               :RequireWotLK()
+               :ExtraText(_t("tooltip.buff.armorPenetration"))
+               :RequirePlayerClass(allBuffsModule.PHYSICAL_CLASSES)
+               :IgnoreIfHaveBuff(BOM.SpellId.WotlkFood80) -- [Food] While eating Hearty Rhino
+               :Category(allBuffsModule.WOTLK_PHYS_FOOD)
+end
+
+---@param buffs table<string, BomBuffDefinition>
+---@param enchantments table<string, table<number>>
+function foodModule:_SetupMiscFoodWotLK(buffs, enchantments)
+  --
+  -- Haste Food
+  --
+  buffDefModule:genericConsumable(buffs, 57288, 34751) -- Roasted Worg +30 Haste/30 Stam
+               :RequireWotLK()
+               :ExtraText(_t("tooltip.buff.haste"))
+               :IgnoreIfHaveBuff(BOM.SpellId.WotlkFood80) -- [Food] While eating Roasted Worg
+               :Category(allBuffsModule.WOTLK_FOOD)
+  buffDefModule:genericConsumable(buffs, 57102, 42942) -- Baked Manta Ray +30 Haste/40 Stam
+               :RequireWotLK()
+               :ExtraText(_t("tooltip.buff.haste"))
+               :IgnoreIfHaveBuff(BOM.SpellId.WotlkFood80) -- [Food] While eating Baked Manta Ray
+               :Category(allBuffsModule.WOTLK_FOOD)
+  buffDefModule:genericConsumable(buffs, 57332, { 34757, 34769 }) -- Very Burnt Worg/Imperial Manta Steak +40 Haste/40 Stam
+               :RequireWotLK()
+               :ExtraText(_t("tooltip.buff.haste") .. " " .. _t("tooltip.food.multipleFoodItems"))
+               :IgnoreIfHaveBuff(BOM.SpellId.WotlkFood80) -- [Food] While eating Very Burnt Worg/Imperial Manta Steak
+               :Category(allBuffsModule.WOTLK_FOOD)
+  --
+  -- HIT Food
+  --
+  buffDefModule:genericConsumable(buffs, 57360, { 34751, 42996 }) -- Worg Tartare/Snapper Extreme +40 Hit/40 Stam
+               :RequireWotLK()
+               :ExtraText(_t("tooltip.buff.hit") .. " " .. _t("tooltip.food.multipleFoodItems"))
+               :IgnoreIfHaveBuff(BOM.SpellId.WotlkFood80) -- [Food] While eating Worg Tartare/Snapper Extreme
+               :Category(allBuffsModule.WOTLK_FOOD)
+  --
+  -- Crit Food
+  --
+  buffDefModule:genericConsumable(buffs, 57286, 34750) -- Worm Delight 30 Crit/30 Stam
+               :RequireWotLK()
+               :ExtraText(_t("tooltip.buff.crit"))
+               :IgnoreIfHaveBuff(BOM.SpellId.WotlkFood80) -- [Food] While eating Worm Delight
+               :Category(allBuffsModule.WOTLK_FOOD)
+  buffDefModule:genericConsumable(buffs, 57100, 34764) -- Poached Nettlefish 30 Crit/40 Stam
+               :RequireWotLK()
+               :ExtraText(_t("tooltip.buff.crit"))
+               :IgnoreIfHaveBuff(BOM.SpellId.WotlkFood80) -- [Food] While eating Poached Nettlefish
+               :Category(allBuffsModule.WOTLK_FOOD)
+  buffDefModule:genericConsumable(buffs, 57329, { 34768, 34756 }) -- Spicy Blue Nettlefish/Spiced Worm Burger +40 Crit/40 Stam
+               :RequireWotLK()
+               :ExtraText(_t("tooltip.buff.crit") .. " " .. _t("tooltip.food.multipleFoodItems"))
+               :IgnoreIfHaveBuff(BOM.SpellId.WotlkFood80) -- [Food] While eating Spicy Blue Nettlefish/Spiced Worm Burger
+               :Category(allBuffsModule.WOTLK_FOOD)
+  --
+  -- Combo Meals
+  --
+  buffDefModule:genericConsumable(buffs, 57294, { 43268, 34753 }) -- Dalaran Clam Chowder/Great Feast +60 ATK/+35 Spell/+30 Stam
+               :RequireWotLK()
+               :ExtraText(_t("tooltip.buff.comboMealWotlk") .. " " .. _t("tooltip.food.multipleFoodItems"))
+               :IgnoreIfHaveBuff(BOM.SpellId.WotlkFood80) -- [Food] While eating Dalaran Clam Chowder/Great Feast
+               :Category(allBuffsModule.WOTLK_FOOD)
+  buffDefModule:genericConsumable(buffs, 57399, 43015) -- Fish Feast +80 ATK/+46 Spell/+40 Stam
+               :RequireWotLK()
+               :ExtraText(_t("tooltip.buff.comboMealWotlk") .. " " .. _t("tooltip.food.multipleFoodItems"))
+               :IgnoreIfHaveBuff(BOM.SpellId.WotlkFood80) -- [Food] While eating Fish Feast
+               :Category(allBuffsModule.WOTLK_FOOD)
 end

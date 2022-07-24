@@ -7,6 +7,8 @@ local spellIdsModule = BuffomatModule.New("SpellIds") ---@type BomSpellIdsModule
 
 BOM.SpellId = {}
 
+BOM.SpellId.WotlkFood80 = 45548
+
 -- Spell ids in this list hide food buffs from the task list
 -- BOM.SpellId.Food = {33264}
 
