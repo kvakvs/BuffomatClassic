@@ -10,7 +10,7 @@ import subprocess
 import sys
 import zipfile
 
-VERSION = '2022.7.1'  # year.month.build_num
+VERSION = '2022.7.2'  # year.month.build_num
 
 BOM_NAME_CLASSIC = 'BuffomatClassic'  # Directory and zip name
 BOM_TITLE_CLASSIC = "Buffomat Classic"  # Title field in TOC
@@ -30,6 +30,9 @@ class BuildTool:
         self.version = VERSION
         self.copy_dirs = COPY_DIRS[:]
         self.copy_files = COPY_FILES[:]
+        self.create_toc(dst=f'{BOM_NAME_CLASSIC}.toc',
+                        ui_version=UI_VERSION_CLASSIC,
+                        title=BOM_TITLE_CLASSIC)
         self.create_toc(dst=f'{BOM_NAME_CLASSIC}-Classic.toc',
                         ui_version=UI_VERSION_CLASSIC,
                         title=BOM_TITLE_CLASSIC)
@@ -41,6 +44,7 @@ class BuildTool:
                         title=BOM_TITLE_CLASSIC)
 
     def do_install(self, toc_name: str):
+        self.copy_files.append(f'{toc_name}.toc')
         self.copy_files.append(f'{toc_name}-Classic.toc')
         self.copy_files.append(f'{toc_name}-BCC.toc')
         self.copy_files.append(f'{toc_name}-WOTLKC.toc')
@@ -64,17 +68,28 @@ class BuildTool:
 
     @staticmethod
     def do_zip_add_dir(zip: zipfile.ZipFile, dir: str, toc_name: str):
+        """ Add a directory to the zipfile, inside TOC_NAME/... subdir """
         for file in os.listdir(dir):
             file = dir + "/" + file
             print(f'ZIP: Directory {file}/')
             if os.path.isdir(file):
-                BuildTool.do_zip_add_dir(zip,
-                                         dir=file,
-                                         toc_name=toc_name)
+                BuildTool.do_zip_add_dir(zip, dir=file, toc_name=toc_name)
             else:
                 zip.write(file, f'{toc_name}/{file}')
 
+    @staticmethod
+    def do_zip_add_root_dir(zip: zipfile.ZipFile, dir: str, toc_name: str):
+        """ Add a directory to the root of the zip file """
+        for file in os.listdir(dir):
+            file = dir + "/" + file
+            print(f'ZIP: Directory {file}/')
+            if os.path.isdir(file):
+                BuildTool.do_zip_add_root_dir(zip, dir=file, toc_name=toc_name)
+            else:
+                zip.write(file, file)
+
     def do_zip(self, toc_name: str):
+        self.copy_files.append(f'{toc_name}.toc')
         self.copy_files.append(f'{toc_name}-Classic.toc')
         self.copy_files.append(f'{toc_name}-BCC.toc')
         self.copy_files.append(f'{toc_name}-WOTLKC.toc')
@@ -82,10 +97,11 @@ class BuildTool:
 
         with zipfile.ZipFile(zip_name, "w", zipfile.ZIP_DEFLATED,
                              allowZip64=True) as zip_file:
+            # Add deprecation addon to zip
+            BuildTool.do_zip_add_root_dir(zip_file, dir="BuffomatClassicTBC", toc_name=toc_name)
+
             for input_dir in self.copy_dirs:
-                BuildTool.do_zip_add_dir(zip_file,
-                                         dir=input_dir,
-                                         toc_name=toc_name)
+                BuildTool.do_zip_add_dir(zip_file, dir=input_dir, toc_name=toc_name)
 
             for input_f in self.copy_files:
                 print(f'ZIP: File {input_f}')

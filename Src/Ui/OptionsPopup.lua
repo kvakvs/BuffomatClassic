@@ -57,7 +57,7 @@ local L = setmetatable(
         })
 
 ---Makes a tuple to pass to the menubuilder to display a settings checkbox in popup menu
----@param db table - BomSharedState reference to read settings from it
+---@param db table - BuffomatShared reference to read settings from it
 ---@param var string Variable name from optionsPopupModule.BehaviourSettings
 function optionsPopupModule:MakeSettingsRow(db, var)
   return L["options.short." .. var], false, db, var

@@ -4,7 +4,8 @@ local BOM = BuffomatAddon ---@type BomAddon
 ---@class BomUiMinimapButtonModule
 local uiMinimapButtonModule = BuffomatModule.New("Ui/MinimapButton") ---@type BomUiMinimapButtonModule
 
-BOM.MinimapButton = BOM.MinimapButton or {}
+---@class BomMinimapButton
+BOM.MinimapButton = BOM.MinimapButton or {} ---@type BomMinimapButton
 local minimapButtonClass = BOM.MinimapButton
 
 ---Change minimap button texture position slightly

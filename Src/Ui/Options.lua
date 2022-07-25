@@ -187,7 +187,14 @@ function optionsModule:CreateGeneralOptionsTable()
       useProfiles           = self:TemplateCheckbox("UseProfiles", buffomatModule.character),
       slowerHardware        = self:TemplateCheckbox("SlowerHardware"),
       minimapButtonShow     = self:TemplateCheckbox(
-              "ShowMinimapButton", buffomatModule.shared.Minimap, "visible"),
+              "ShowMinimapButton", buffomatModule.shared.Minimap, "visible",
+              function(key, value)
+                if value then
+                  BOM.MinimapButton.Show()
+                else
+                  BOM.MinimapButton.Hide()
+                end
+              end),
       minimapButtonLock     = self:TemplateCheckbox(
               "LockMinimapButton", buffomatModule.shared.Minimap, "lock"),
       minimapButtonLockDist = self:TemplateCheckbox(
@@ -196,7 +203,9 @@ function optionsModule:CreateGeneralOptionsTable()
       uiWindowScale         = self:TemplateRange(
               "UIWindowScale", 0.35, 2.0, 0.05,
               buffomatModule.shared, "UIWindowScale",
-              function(_key, val) buffomatModule:SetWindowScale(val) end
+              function(_key, val)
+                buffomatModule:SetWindowScale(val)
+              end
       ),
     }
   }

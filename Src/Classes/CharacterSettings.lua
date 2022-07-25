@@ -1,10 +1,10 @@
 local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BomAddon
 
----@class BomCharacterStateModule
-local characterStateModule = BuffomatModule.New("CharacterState") ---@type BomCharacterStateModule
+---@class BomCharacterSettingsModule
+local characterSettingsModule = BuffomatModule.New("CharacterSettings") ---@type BomCharacterSettingsModule
 
----@class BomCharacterState Current character state snapshots per profile
+---@class BomCharacterSettings Current character state snapshots per profile
 ---@field Spell table<number, BomBuffDefinition>
 ---@field Duration table<string, number> Remaining aura duration on SELF, keyed with buff names
 ---@field LastTracking number Icon id for the last active tracking (not relevant in TBC?)
@@ -15,13 +15,13 @@ local characterStateModule = BuffomatModule.New("CharacterState") ---@type BomCh
 ---@field BuffCategoriesHidden table<string, boolean> True if category is hidden (control in options)
 ---@field WatchGroup table<string, boolean> True to watch buffs in group 1..8
 
----@type BomCharacterState
+---@type BomCharacterSettings
 local characterStateClass = {}
 characterStateClass.__index = characterStateClass
 
----@param init BomCharacterState
----@return BomCharacterState
-function characterStateModule:New(init)
+---@param init BomCharacterSettings
+---@return BomCharacterSettings
+function characterSettingsModule:New(init)
   local tab = init or self:Defaults()
   tab.Spell = tab.Spell or {}
   tab.Duration = tab.Duration or {}
@@ -36,7 +36,7 @@ function characterStateModule:New(init)
   return tab
 end
 
----@return BomCharacterState
-function characterStateModule:Defaults()
+---@return BomCharacterSettings
+function characterSettingsModule:Defaults()
   return {}
 end

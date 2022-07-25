@@ -1,11 +1,11 @@
 local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BomAddon
 
----@class BomSharedStateModule
-local sharedStateModule = BuffomatModule.New("SharedState") ---@type BomSharedStateModule
+---@class BomSharedSettingsModule
+local sharedSettingsModule = BuffomatModule.New("SharedSettings") ---@type BomSharedSettingsModule
 
 --- Values to use when the saved data is evolving with an update, and the key doesn't exist
-sharedStateModule.defaults = {
+sharedSettingsModule.defaults = {
   SomeoneIsDrinking = "low-prio",
 }
 
@@ -16,7 +16,7 @@ sharedStateModule.defaults = {
 ---@field position number
 ---@field distance number
 
----@class BomSharedState Current character state snapshots per profile
+---@class BomSharedSettings Current character state snapshots per profile
 ---@field Minimap BomMinimapSettings
 ---@field SpellGreatherEqualThan table
 ---@field CustomLocales table
@@ -62,13 +62,13 @@ sharedStateModule.defaults = {
 ---@field Time1800 number
 ---@field Time3600 number
 
----@type BomSharedState
+---@type BomSharedSettings
 local sharedStateClass = {}
 sharedStateClass.__index = sharedStateClass
 
----@param init BomSharedState
----@return BomSharedState
-function sharedStateModule:New(init)
+---@param init BomSharedSettings
+---@return BomSharedSettings
+function sharedSettingsModule:New(init)
   local tab = init or self:Defaults()
   tab.Minimap = tab.Minimap or {}
   tab.SpellGreatherEqualThan = tab.SpellGreatherEqualThan or {}
@@ -84,8 +84,8 @@ function sharedStateModule:New(init)
   return tab
 end
 
----@return BomSharedState
-function sharedStateModule:Defaults()
+---@return BomSharedSettings
+function sharedSettingsModule:Defaults()
   return {
     UIWindowScale          = 1,
     AutoOpen               = true,

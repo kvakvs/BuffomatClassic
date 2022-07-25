@@ -7,8 +7,8 @@
 ## Version: ${VERSION}
 ## Author: kvakvs; original by GPI/Erytheia-Razorfen
 ## DefaultState: enabled
-## SavedVariables: BomSharedState
-## SavedVariablesPerCharacter: BomCharacterState
+## SavedVariables: BuffomatShared
+## SavedVariablesPerCharacter: BuffomatCharacter
 
 embeds.xml
 Src/Module.lua
@@ -39,7 +39,7 @@ Src/Const/ItemIds.lua
 Src/Classes/Buff.lua
 Src/Classes/BuffClass.lua
 Src/Classes/BuffomatTranslations.lua
-Src/Classes/CharacterState.lua
+Src/Classes/CharacterSettings.lua
 Src/Classes/Control.lua
 Src/Classes/GroupBuffTarget.lua
 Src/Classes/Macro.lua
@@ -47,7 +47,7 @@ Src/Classes/Unit.lua
 Src/Classes/UnitBuffTarget.lua
 Src/Classes/Profile.lua
 Src/Classes/RowBuilder.lua
-Src/Classes/SharedState.lua
+Src/Classes/SharedSettings.lua
 Src/Classes/BuffDefinition.lua
 Src/Classes/Task.lua
 Src/Classes/TaskList.lua

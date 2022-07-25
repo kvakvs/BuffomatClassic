@@ -1,13 +1,13 @@
 local TOCNAME, _ = ...
 
 ---@class BomBuffomatModule
----@field shared BomSharedState Refers to BomSharedState global
----@field character BomCharacterState Refers to BomCharacterState global
+---@field shared BomSharedSettings Refers to BuffomatShared global
+---@field character BomCharacterSettings Refers to BuffomatCharacter global
 local buffomatModule = BuffomatModule.New("Buffomat") ---@type BomBuffomatModule
 
 local _t = BuffomatModule.Import("Languages") ---@type BomLanguagesModule
 local allBuffsModule = BuffomatModule.Import("AllBuffs") ---@type BomAllBuffsModule
-local characterStateModule = BuffomatModule.Import("CharacterState") ---@type BomCharacterStateModule
+local characterStateModule = BuffomatModule.Import("CharacterSettings") ---@type BomCharacterSettingsModule
 local constModule = BuffomatModule.Import("Const") ---@type BomConstModule
 local eventsModule = BuffomatModule.Import("Events") ---@type BomEventsModule
 local itemCacheModule = BuffomatModule.Import("ItemCache") ---@type BomItemCacheModule
@@ -15,7 +15,7 @@ local languagesModule = BuffomatModule.Import("Languages") ---@type BomLanguages
 local managedUiModule = BuffomatModule.New("Ui/MyButton") ---@type BomUiMyButtonModule
 local optionsModule = BuffomatModule.Import("Options") ---@type BomOptionsModule
 local optionsPopupModule = BuffomatModule.Import("OptionsPopup") ---@type BomOptionsPopupModule
-local sharedStateModule = BuffomatModule.Import("SharedState") ---@type BomSharedStateModule
+local sharedStateModule = BuffomatModule.Import("SharedSettings") ---@type BomSharedSettingsModule
 local spellButtonsTabModule = BuffomatModule.Import("Ui/SpellButtonsTab") ---@type BomSpellButtonsTabModule
 local spellCacheModule = BuffomatModule.Import("SpellCache") ---@type BomSpellCacheModule
 local taskScanModule = BuffomatModule.Import("TaskScan") ---@type BomTaskScanModule
@@ -384,11 +384,19 @@ function buffomatModule:InitUI()
 end
 
 function buffomatModule:InitGlobalStates()
-  BomSharedState = sharedStateModule:New(BomSharedState) ---@type BomSharedState
-  buffomatModule.shared = BomSharedState
+  local loadedShared = BomSharedState or BuffomatShared -- Upgrade from legacy Buffomat State if found
+  if BomSharedState then
+    BomSharedState = nil -- reset after reimport
+  end
+  BuffomatShared = sharedStateModule:New(loadedShared) ---@type BomSharedSettings
+  buffomatModule.shared = BuffomatShared
 
-  BomCharacterState = characterStateModule:New(BomCharacterState) ---@type BomCharacterState
-  buffomatModule.character = BomCharacterState
+  local loadedChar = BomCharacterState or BuffomatCharacter -- Upgrade from legacy Buffomat State if found
+  if BomCharacterState then
+    BomCharacterState = nil -- reset after reimport
+  end
+  BuffomatCharacter = characterStateModule:New(loadedChar) ---@type BomCharacterSettings
+  buffomatModule.character = BuffomatCharacter
 
   if self.character.Duration then
     self.shared.Duration = self.character.Duration

@@ -1,21 +1,25 @@
 # Changelog
 
-## Buffomat Classic and TBC 2022.7.1
+## Buffomat Classic 2022.7.2
 
-- All versions of addon are now merged into one, and you should delete (either 
-  automatically or manually the old "Buffomat Classic TBC")
+- Installing 7.2 or newer addon will also install a dummy addon named "BuffomatClassicTBC" which deactivates the old TBC
+  version of the addon and allows reimporting of the old settings.
+
+## Buffomat Classic 2022.7.1
+
+- All versions of addon are now merged into one, and you should delete (either automatically or manually the old "
+  Buffomat Classic TBC")
 - A big new wave of updates for Wrath of the Lich King:
-  - New class spell ranks
-  - New elixirs
-  - New food
-  - New weapon enchantments
-- A new page in Options which allows Visibility selection for buff categories.
-  Invisible categories are not scanned, even if they're checked.
-- Skip mage Intellect buff if K'iru's Song of Victory is up in SWP or the
-  island. Same for group buffs (Arcane Brilliance)
+    - New class spell ranks
+    - New elixirs
+    - New food
+    - New weapon enchantments
+- A new page in Options which allows Visibility selection for buff categories. Invisible categories are not scanned,
+  even if they're checked.
+- Skip mage Intellect buff if K'iru's Song of Victory is up in SWP or the island. Same for group buffs (Arcane
+  Brilliance)
 - Hunter pet food buff was broken and fixed.
-- (Known problem) on First start spell tab can look empty, do a `/reload` one 
-  time.
+- (Known problem) on First start spell tab can look empty, do a `/reload` one time.
 
 ## Buffomat Classic and TBC 2022.5.5
 
