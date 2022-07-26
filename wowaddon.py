@@ -10,10 +10,10 @@ import subprocess
 import sys
 import zipfile
 
-VERSION = '2022.7.2'  # year.month.build_num
+VERSION = '2022.7.3'  # year.month.build_num
 
-BOM_NAME_CLASSIC = 'BuffomatClassic'  # Directory and zip name
-BOM_TITLE_CLASSIC = "Buffomat Classic"  # Title field in TOC
+ADDON_NAME_CLASSIC = 'BuffomatClassic'  # Directory and zip name
+ADDON_TITLE_CLASSIC = "Buffomat Classic"  # Title field in TOC
 
 UI_VERSION_CLASSIC = '11403'  # patch 1.14.3
 UI_VERSION_CLASSIC_TBC = '20504'  # patch 2.5.4 Phase 4 and 5 TBC
@@ -30,18 +30,18 @@ class BuildTool:
         self.version = VERSION
         self.copy_dirs = COPY_DIRS[:]
         self.copy_files = COPY_FILES[:]
-        self.create_toc(dst=f'{BOM_NAME_CLASSIC}.toc',
+        self.create_toc(dst=f'{ADDON_NAME_CLASSIC}.toc',
                         ui_version=UI_VERSION_CLASSIC,
-                        title=BOM_TITLE_CLASSIC)
-        self.create_toc(dst=f'{BOM_NAME_CLASSIC}-Classic.toc',
+                        title=ADDON_TITLE_CLASSIC)
+        self.create_toc(dst=f'{ADDON_NAME_CLASSIC}-Classic.toc',
                         ui_version=UI_VERSION_CLASSIC,
-                        title=BOM_TITLE_CLASSIC)
-        self.create_toc(dst=f'{BOM_NAME_CLASSIC}-BCC.toc',
+                        title=ADDON_TITLE_CLASSIC)
+        self.create_toc(dst=f'{ADDON_NAME_CLASSIC}-BCC.toc',
                         ui_version=UI_VERSION_CLASSIC_TBC,
-                        title=BOM_TITLE_CLASSIC)
-        self.create_toc(dst=f'{BOM_NAME_CLASSIC}-WOTLKC.toc',
+                        title=ADDON_TITLE_CLASSIC)
+        self.create_toc(dst=f'{ADDON_NAME_CLASSIC}-WOTLKC.toc',
                         ui_version=UI_VERSION_CLASSIC_WOTLK,
-                        title=BOM_TITLE_CLASSIC)
+                        title=ADDON_TITLE_CLASSIC)
 
     def do_install(self, toc_name: str):
         self.copy_files.append(f'{toc_name}.toc')
@@ -98,7 +98,7 @@ class BuildTool:
         with zipfile.ZipFile(zip_name, "w", zipfile.ZIP_DEFLATED,
                              allowZip64=True) as zip_file:
             # Add deprecation addon to zip
-            BuildTool.do_zip_add_root_dir(zip_file, dir="BuffomatClassicTBC", toc_name=toc_name)
+            BuildTool.do_zip_add_root_dir(zip_file, dir=f"{ADDON_NAME_CLASSIC}TBC", toc_name=toc_name)
 
             for input_dir in self.copy_dirs:
                 BuildTool.do_zip_add_dir(zip_file, dir=input_dir, toc_name=toc_name)
@@ -151,11 +151,11 @@ def main():
 
     if args.command == 'install':
         bt = BuildTool(args)
-        bt.do_install(toc_name=BOM_NAME_CLASSIC)
+        bt.do_install(toc_name=ADDON_NAME_CLASSIC)
 
     elif args.command == 'zip':
         bt = BuildTool(args)
-        bt.do_zip(toc_name=BOM_NAME_CLASSIC)
+        bt.do_zip(toc_name=ADDON_NAME_CLASSIC)
     else:
         parser.print_help()
 

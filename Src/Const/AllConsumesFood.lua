@@ -78,6 +78,7 @@ function foodModule:_SetupCasterFoodTBC(buffs, enchantments)
   buffDefModule:tbcConsumable(buffs, 33263, { 27657, 31673, 27665, 30361 }) -- Well Fed +23 SPELL +20 SPI
                :RequireTBC()
                :RequirePlayerClass(allBuffsModule.SPELL_CLASSES)
+               :IgnoreIfHaveBuff(33264)
                :ExtraText(_t("tooltip.buff.spellPower"))
                :Category(allBuffsModule.TBC_SPELL_FOOD)
   buffDefModule:genericConsumable(buffs, 33265, 27663) -- Blackened Sporefish: Well Fed +8 MP5 +20 STA

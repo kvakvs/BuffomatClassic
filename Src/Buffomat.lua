@@ -384,14 +384,14 @@ function buffomatModule:InitUI()
 end
 
 function buffomatModule:InitGlobalStates()
-  local loadedShared = BomSharedState or BuffomatShared -- Upgrade from legacy Buffomat State if found
+  local loadedShared = (BomSharedState or BuffomatShared) or {} -- Upgrade from legacy Buffomat State if found
   if BomSharedState then
     BomSharedState = nil -- reset after reimport
   end
   BuffomatShared = sharedStateModule:New(loadedShared) ---@type BomSharedSettings
   buffomatModule.shared = BuffomatShared
 
-  local loadedChar = BomCharacterState or BuffomatCharacter -- Upgrade from legacy Buffomat State if found
+  local loadedChar = (BomCharacterState or BuffomatCharacter) or {} -- Upgrade from legacy Buffomat State if found
   if BomCharacterState then
     BomCharacterState = nil -- reset after reimport
   end
