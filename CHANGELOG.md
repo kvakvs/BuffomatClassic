@@ -1,6 +1,6 @@
 # Changelog
 
-## Buffomat Classic 2022.7.2
+## Buffomat Classic 2022.7.3
 
 - Installing 7.2 or newer addon will also install a dummy addon named "BuffomatClassicTBC" which deactivates the old TBC
   version of the addon and allows reimporting of the old settings.
