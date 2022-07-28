@@ -1,7 +1,8 @@
 # Changelog
 
-## Buffomat Classic 2022.7.3
+## Buffomat Classic 2022.7.4
 
+- [WotLK] Rogue poison ranks updated
 - Installing 7.2 or newer addon will also install a dummy addon named "BuffomatClassicTBC" which deactivates the old TBC
   version of the addon and allows reimporting of the old settings.
 
