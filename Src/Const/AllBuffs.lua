@@ -400,9 +400,9 @@ BOM.AllDrink = {
   1133, -- level 35 drink
   1135, -- level 45 drink
   1137, 29007, 43154, 24355, 25696, 43155, 26261, -- level 55 drink
-  10250, 22734, -- level 65 drink
-  34291, -- level 70 drink
-  27089, 43706, 46755, -- level 75 drink
+  10250, 22734, -- TBC: level 65 drink
+  34291, -- TBC: level 70 drink
+  27089, 43706, 46755, -- TBC? level 75 drink
 }
 
 ---For all spells database load data for spellids and items

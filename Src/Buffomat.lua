@@ -23,6 +23,8 @@ local toolboxModule = BuffomatModule.Import("Toolbox") ---@type BomToolboxModule
 
 ---global, visible from XML files and from script console and chat commands
 ---@class BomAddon
+---@field ForceUpdate boolean Set to true to force recheck buffs on timer
+---@field ForceUpdateSpellsTab boolean Set to true to force clear and rebuild spells tab. This activity is throttled to 1 per second
 ---@field ALL_PROFILES table<string> Lists all buffomat profile names (group, solo... etc)
 ---@field RESURRECT_CLASS table<string> Classes who can resurrect others
 ---@field MANA_CLASSES table<string> Classes with mana resource
@@ -202,9 +204,6 @@ function BOM.ScrollMessage(self, delta)
 end
 
 function BOM.SetForceUpdate(reason)
-  --if reason ~= nil then
-  --  BOM.Dbg("Set force update: " .. reason)
-  --end
   BOM.ForceUpdate = true
 end
 

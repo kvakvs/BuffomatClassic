@@ -592,12 +592,15 @@ spellButtonsTabModule.lastFullRebuild = 0
 spellButtonsTabModule.LIMIT_FULL_REBUILD_PER = 1.0 -- no more than 1 per second
 
 --- Do not run more often than every 1 second
-function spellButtonsTabModule:ThrottleRebuildSpellTab()
+function spellButtonsTabModule:ClearRebuildSpellButtonsTab()
   local now = GetTime()
   if now - self.lastFullRebuild > self.LIMIT_FULL_REBUILD_PER then
     self.lastFullRebuild = now
+    BOM.ForceUpdateSpellsTab = false
     self:ClearTab()
     self:CreateTab(UnitFactionGroup("player") == "Horde")
+  else
+    BOM.ForceUpdateSpellsTab = true
   end
 end
 
@@ -614,7 +617,7 @@ function spellButtonsTabModule:UpdateSpellsTab(caller)
     return
   end
 
-  self:ThrottleRebuildSpellTab()
+  self:ClearRebuildSpellButtonsTab()
 
   local _className, playerClass, _classId = UnitClass("player")
 

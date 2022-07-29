@@ -3,7 +3,9 @@
 ## Buffomat Classic 2022.7.5
 
 - Throttled rebuild frequency of abilities/buffs tab to max 1 per second. This 
-  seems to have triggered lags in battlegrounds and raids.
+  seems to have triggered lags in battlegrounds and raids. Being throttled at a 
+  wrong time means that we must update as soon as the throttle allows, so the update 
+  is performed asap after the cooldown window.
 
 ## Buffomat Classic 2022.7.4
 

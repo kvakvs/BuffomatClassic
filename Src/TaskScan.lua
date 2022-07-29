@@ -1813,9 +1813,11 @@ end -- end function bomUpdateScan_PreCheck()
 ---and what would be their priority?
 ---@param from string Debug value to trace the caller of this function
 function taskScanModule:UpdateScan(from)
-  --BOM.Tool.Profile("UpdScan " .. from, function()
+  if BOM.ForceUpdateSpellsTab then
+    spellButtonsTabModule:ClearRebuildSpellButtonsTab()
+  end
+
   self:UpdateScan_PreCheck(from)
-  --end)
 end
 
 ---If a spell cast failed, the member is temporarily added to skip list, to
