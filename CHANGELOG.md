@@ -1,5 +1,10 @@
 # Changelog
 
+## Buffomat Classic 2022.7.5
+
+- Throttled rebuild frequency of abilities/buffs tab to max 1 per second. This 
+  seems to have triggered lags in battlegrounds and raids.
+
 ## Buffomat Classic 2022.7.4
 
 - [WotLK] Rogue poison ranks updated
