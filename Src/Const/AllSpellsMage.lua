@@ -6,6 +6,8 @@ local mageModule = BuffomatModule.New("AllSpellsMage") ---@type BomAllSpellsMage
 local allBuffsModule = BuffomatModule.Import("AllBuffs") ---@type BomAllBuffsModule
 local buffDefModule = BuffomatModule.Import("BuffDefinition") ---@type BomBuffDefinitionModule
 
+local isWotlk = string.byte(GetBuildInfo(), 1) == 51
+
 ---Add MAGE spells
 ---@param spells table<string, BomBuffDefinition>
 ---@param enchants table<string, table<number>>
@@ -79,10 +81,10 @@ function mageModule:SetupMageSpells(spells, enchants)
                 :RequirePlayerClass("MAGE")
                 :Category(allBuffsModule.CLASS)
 
-  local playerLevel = UnitLevel("player")
+  --local playerLevel = UnitLevel("player")
 
-  if playerLevel >= 58 and playerLevel < 77 then
-    -- Conjure separate mana gems of 3 kinds
+  if not isWotlk then
+    -- Conjure separate mana gems of X kinds
     -- For WotLK only 1 mana gem can be owned
     tinsert(spells,
             buffDefModule:conjureItem(BOM.SpellId.Mage.ConjureManaEmerald, BOM.ItemId.Mage.ManaEmerald)
@@ -94,16 +96,29 @@ function mageModule:SetupMageSpells(spells, enchants)
                           :RequirePlayerClass("MAGE")
                           :Category(allBuffsModule.CLASS)
     )
-    if playerLevel <= 68 then
-      -- Players > 68 will not be interested in Citrine
+    tinsert(spells,
+            buffDefModule:conjureItem(BOM.SpellId.Mage.ConjureManaCitrine, BOM.ItemId.Mage.ManaCitrine)
+                          :RequirePlayerClass("MAGE")
+                          :Category(allBuffsModule.CLASS)
+    )
+    --if playerLevel <= 68 then
+      -- Players > 68 will not be interested in Mana Jade
       tinsert(spells,
-              buffDefModule:conjureItem(BOM.SpellId.Mage.ConjureManaCitrine, BOM.ItemId.Mage.ManaCitrine)
+              buffDefModule:conjureItem(BOM.SpellId.Mage.ConjureManaJade, BOM.ItemId.Mage.ManaJade)
                             :RequirePlayerClass("MAGE")
                             :Category(allBuffsModule.CLASS)
       )
-    end
+    --end
+    --if playerLevel <= 58 then
+      -- Players > 58 will not be interested in Mana Agate
+      tinsert(spells,
+              buffDefModule:conjureItem(BOM.SpellId.Mage.ConjureManaAgate, BOM.ItemId.Mage.ManaAgate)
+                            :RequirePlayerClass("MAGE")
+                            :Category(allBuffsModule.CLASS)
+      )
+    --end
   else
-    -- For < 58 - Have generic conjuration of 1 gem (only max rank)
+    -- For WOTLK - Have generic conjuration of 1 gem (only max rank)
     buffDefModule:createAndRegisterBuff(spells, BOM.SpellId.Mage.ConjureManaEmerald, -- Conjure Mana Stone (Max Rank)
             { isOwn          = true, default = true,
               lockIfHaveItem = { BOM.ItemId.Mage.ManaSapphire,
