@@ -6,6 +6,7 @@ local warlockModule = BuffomatModule.New("AllSpellsWarlock") ---@type BomAllSpel
 --local _t = BuffomatModule.Import("Languages") ---@type BomLanguagesModule
 local allBuffsModule = BuffomatModule.Import("AllBuffs") ---@type BomAllBuffsModule
 local buffDefModule = BuffomatModule.Import("BuffDefinition") ---@type BomBuffDefinitionModule
+local spellIdsModule = BuffomatModule.Import("SpellIds") ---@type BomSpellIdsModule
 
 ---Add WARLOCK spells
 ---@param spells table<string, BomBuffDefinition>
@@ -51,7 +52,7 @@ function warlockModule:SetupWarlockSpells(spells, enchants)
                 :Category(allBuffsModule.CLASS)
 
   if BOM.HaveWotLK then
-    buffDefModule:createAndRegisterBuff(spells, BOM.SpellId.Warlock.CreateFirestone7, -- Create Firesone
+    buffDefModule:createAndRegisterBuff(spells, spellIdsModule.Warlock_CreateFirestone7, -- Create Firesone
             { isOwn          = true, default = true,
               lockIfHaveItem = { BOM.ItemId.Warlock.Firestone1,
                                  BOM.ItemId.Warlock.Firestone2,
@@ -60,13 +61,13 @@ function warlockModule:SetupWarlockSpells(spells, enchants)
                                  BOM.ItemId.Warlock.Firestone5,
                                  BOM.ItemId.Warlock.Firestone6,
                                  BOM.ItemId.Warlock.Firestone7 },
-              singleFamily   = { BOM.SpellId.Warlock.CreateFirestone1,
-                                 BOM.SpellId.Warlock.CreateFirestone2,
-                                 BOM.SpellId.Warlock.CreateFirestone3,
-                                 BOM.SpellId.Warlock.CreateFirestone4,
-                                 BOM.SpellId.Warlock.CreateFirestone5,
-                                 BOM.SpellId.Warlock.CreateFirestone6,
-                                 BOM.SpellId.Warlock.CreateFirestone7 },
+              singleFamily   = { spellIdsModule.Warlock_CreateFirestone1,
+                                 spellIdsModule.Warlock_CreateFirestone2,
+                                 spellIdsModule.Warlock_CreateFirestone3,
+                                 spellIdsModule.Warlock_CreateFirestone4,
+                                 spellIdsModule.Warlock_CreateFirestone5,
+                                 spellIdsModule.Warlock_CreateFirestone6,
+                                 spellIdsModule.Warlock_CreateFirestone7 },
             })    :RequirePlayerClass("WARLOCK")
                   :Category(allBuffsModule.CLASS_WEAPON_ENCHANTMENT)
     buffDefModule:createAndRegisterBuff(spells, 60220, -- Firestone
@@ -95,7 +96,7 @@ function warlockModule:SetupWarlockSpells(spells, enchants)
   end
 
   if BOM.HaveWotLK then
-    buffDefModule:createAndRegisterBuff(spells, BOM.SpellId.Warlock.CreateSpellstone6, -- Conjure Mana Stone (Max Rank)
+    buffDefModule:createAndRegisterBuff(spells, spellIdsModule.Warlock_CreateSpellstone6, -- Conjure Mana Stone (Max Rank)
             { isOwn          = true, default = true,
               lockIfHaveItem = { BOM.ItemId.Warlock.Spellstone1,
                                  BOM.ItemId.Warlock.Spellstone2,
@@ -103,12 +104,12 @@ function warlockModule:SetupWarlockSpells(spells, enchants)
                                  BOM.ItemId.Warlock.Spellstone4,
                                  BOM.ItemId.Warlock.Spellstone5,
                                  BOM.ItemId.Warlock.Spellstone6 },
-              singleFamily   = { BOM.SpellId.Warlock.CreateSpellstone1,
-                                 BOM.SpellId.Warlock.CreateSpellstone2,
-                                 BOM.SpellId.Warlock.CreateSpellstone3,
-                                 BOM.SpellId.Warlock.CreateSpellstone4,
-                                 BOM.SpellId.Warlock.CreateSpellstone5,
-                                 BOM.SpellId.Warlock.CreateSpellstone6 }
+              singleFamily   = { spellIdsModule.Warlock_CreateSpellstone1,
+                                 spellIdsModule.Warlock_CreateSpellstone2,
+                                 spellIdsModule.Warlock_CreateSpellstone3,
+                                 spellIdsModule.Warlock_CreateSpellstone4,
+                                 spellIdsModule.Warlock_CreateSpellstone5,
+                                 spellIdsModule.Warlock_CreateSpellstone6 }
             })    :RequirePlayerClass("WARLOCK")
                   :Category(allBuffsModule.CLASS_WEAPON_ENCHANTMENT)
     buffDefModule:createAndRegisterBuff(spells, 55194, -- Spellstone
@@ -172,7 +173,7 @@ function warlockModule:SetupWarlockSpells(spells, enchants)
   ------------------------
   -- Pet Management
   ------------------------
-  buffDefModule:createAndRegisterBuff(spells, BOM.SpellId.Warlock.DemonicSacrifice, -- Demonic Sacrifice
+  buffDefModule:createAndRegisterBuff(spells, spellIdsModule.Warlock_DemonicSacrifice, -- Demonic Sacrifice
           { isOwn = true, default = true, requiresWarlockPet = true }
   )             :RequirePlayerClass("WARLOCK")
                 :HideInWotLK()

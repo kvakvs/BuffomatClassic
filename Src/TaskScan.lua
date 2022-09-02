@@ -3,6 +3,7 @@ local BOM = BuffomatAddon ---@type BomAddon
 ---@class BomTaskScanModule
 local taskScanModule = BuffomatModule.New("TaskScan") ---@type BomTaskScanModule
 
+local spellIdsModule = BuffomatModule.Import("SpellIds") ---@type BomSpellIdsModule
 local _t = BuffomatModule.Import("Languages") ---@type BomLanguagesModule
 local buffChecksModule = BuffomatModule.Import("BuffChecks") ---@type BomBuffChecksModule
 local buffomatModule = BuffomatModule.Import("Buffomat") ---@type BomBuffomatModule
@@ -36,7 +37,7 @@ end
 
 function taskScanModule:IsMountedAndCrusaderAuraRequired()
   return buffomatModule.shared.AutoCrusaderAura -- if setting enabled
-          and IsSpellKnown(BOM.SpellId.Paladin.CrusaderAura) -- and has the spell
+          and IsSpellKnown(spellIdsModule.Paladin_CrusaderAura) -- and has the spell
           and (IsMounted() or self:IsFlying()) -- and flying
           and GetShapeshiftForm() ~= 7 -- and not crusader aura
 end
@@ -455,7 +456,7 @@ function taskScanModule:IsActive(playerUnit)
   -- and current mana is < 90%
   local spiritTapManaPercent = (buffomatModule.shared.ActivateBomOnSpiritTap or 0) * 0.01
   local currentMana = bomCurrentPlayerMana or UnitPower("player", 0)
-  if playerUnit.allBuffs[BOM.SpellId.Priest.SpiritTap]
+  if playerUnit.allBuffs[spellIdsModule.Priest_SpiritTap]
           and currentMana < UnitPowerMax("player", 0) * spiritTapManaPercent then
     return false, _t("castButton.inactive.PriestSpiritTap")
   end
@@ -630,7 +631,7 @@ function taskScanModule:CancelBuffs(playerUnit)
     if BOM.CurrentProfile.CancelBuff[spell.buffId].Enable
             and not spell.OnlyCombat
     then
-      local player_buff = playerUnit.buffs[spell.buffId]
+      local player_buff = playerUnit.knownBuffs[spell.buffId]
 
       if player_buff then
         BOM:Print(string.format(_t("message.CancelBuff"),

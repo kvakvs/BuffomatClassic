@@ -3,6 +3,7 @@ local BOM = BuffomatAddon ---@type BomAddon
 ---@class BomAllSpellsMageModule
 local mageModule = BuffomatModule.New("AllSpellsMage") ---@type BomAllSpellsMageModule
 
+local spellIdsModule = BuffomatModule.Import("SpellIds") ---@type BomSpellIdsModule
 local allBuffsModule = BuffomatModule.Import("AllBuffs") ---@type BomAllBuffsModule
 local buffDefModule = BuffomatModule.Import("BuffDefinition") ---@type BomBuffDefinitionModule
 
@@ -85,26 +86,26 @@ function mageModule:SetupMageSpells(spells, enchants)
     -- Conjure separate mana gems of 3 kinds
     -- For WotLK only 1 mana gem can be owned
     tinsert(spells,
-            buffDefModule:conjureItem(BOM.SpellId.Mage.ConjureManaEmerald, BOM.ItemId.Mage.ManaEmerald)
+            buffDefModule:conjureItem(spellIdsModule.Mage_ConjureManaEmerald, BOM.ItemId.Mage.ManaEmerald)
                           :RequirePlayerClass("MAGE")
                           :Category(allBuffsModule.CLASS)
     )
     tinsert(spells,
-            buffDefModule:conjureItem(BOM.SpellId.Mage.ConjureManaRuby, BOM.ItemId.Mage.ManaRuby)
+            buffDefModule:conjureItem(spellIdsModule.Mage_ConjureManaRuby, BOM.ItemId.Mage.ManaRuby)
                           :RequirePlayerClass("MAGE")
                           :Category(allBuffsModule.CLASS)
     )
     if playerLevel <= 68 then
       -- Players > 68 will not be interested in Citrine
       tinsert(spells,
-              buffDefModule:conjureItem(BOM.SpellId.Mage.ConjureManaCitrine, BOM.ItemId.Mage.ManaCitrine)
+              buffDefModule:conjureItem(spellIdsModule.Mage_ConjureManaCitrine, BOM.ItemId.Mage.ManaCitrine)
                             :RequirePlayerClass("MAGE")
                             :Category(allBuffsModule.CLASS)
       )
     end
   else
     -- For < 58 - Have generic conjuration of 1 gem (only max rank)
-    buffDefModule:createAndRegisterBuff(spells, BOM.SpellId.Mage.ConjureManaEmerald, -- Conjure Mana Stone (Max Rank)
+    buffDefModule:createAndRegisterBuff(spells, spellIdsModule.Mage_ConjureManaEmerald, -- Conjure Mana Stone (Max Rank)
             { isOwn          = true, default = true,
               lockIfHaveItem = { BOM.ItemId.Mage.ManaSapphire,
                                  BOM.ItemId.Mage.ManaAgate,
@@ -112,12 +113,12 @@ function mageModule:SetupMageSpells(spells, enchants)
                                  BOM.ItemId.Mage.ManaCitrine,
                                  BOM.ItemId.Mage.ManaRuby,
                                  BOM.ItemId.Mage.ManaEmerald },
-              singleFamily   = { BOM.SpellId.Mage.ConjureManaAgate,
-                                 BOM.SpellId.Mage.ConjureManaJade,
-                                 BOM.SpellId.Mage.ConjureManaCitrine,
-                                 BOM.SpellId.Mage.ConjureManaRuby,
-                                 BOM.SpellId.Mage.ConjureManaEmerald,
-                                 BOM.SpellId.Mage.ConjureManaSapphire, } })
+              singleFamily   = { spellIdsModule.Mage_ConjureManaAgate,
+                                 spellIdsModule.Mage_ConjureManaJade,
+                                 spellIdsModule.Mage_ConjureManaCitrine,
+                                 spellIdsModule.Mage_ConjureManaRuby,
+                                 spellIdsModule.Mage_ConjureManaEmerald,
+                                 spellIdsModule.Mage_ConjureManaSapphire, } })
                   :RequirePlayerClass("MAGE")
                   :Category(allBuffsModule.CLASS)
   end

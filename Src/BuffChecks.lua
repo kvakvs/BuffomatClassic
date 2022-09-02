@@ -3,10 +3,11 @@ local BOM = BuffomatAddon ---@type BomAddon
 ---@class BomBuffChecksModule
 local buffChecksModule = BuffomatModule.New("BuffChecks") ---@type BomBuffChecksModule
 
-local buffomatModule = BuffomatModule.Import("Buffomat") ---@type BomBuffomatModule
-local unitCacheModule = BuffomatModule.Import("UnitCache") ---@type BomUnitCacheModule
 local buffDefModule = BuffomatModule.Import("BuffDefinition") ---@type BomBuffDefinitionModule
+local buffomatModule = BuffomatModule.Import("Buffomat") ---@type BomBuffomatModule
 local constModule = BuffomatModule.Import("Const") ---@type BomConstModule
+local spellIdsModule = BuffomatModule.Import("SpellIds") ---@type BomSpellIdsModule
+local unitCacheModule = BuffomatModule.Import("UnitCache") ---@type BomUnitCacheModule
 
 ---Checks whether a tracking spell is now active
 ---@param spell BomBuffDefinition The tracking spell which might have tracking enabled
@@ -215,10 +216,10 @@ end
 function buffChecksModule:PlayerNeedsTracking(spell, playerUnit, party)
   -- Special handling: Having find herbs and find ore will be ignored if
   -- in cat form and track humanoids is enabled
-  if (spell.singleId == BOM.SpellId.FindHerbs or
+  if (spell.singleId == spellIdsModule.FindHerbs or
           spell.singleId == BOM.SpellId.FindMinerals)
           and GetShapeshiftFormID() == CAT_FORM
-          and buffDefModule:IsSpellEnabled(BOM.SpellId.Druid.TrackHumanoids) then
+          and buffDefModule:IsSpellEnabled(spellIdsModule.Druid_TrackHumanoids) then
     -- Do nothing - ignore herbs and minerals in catform if enabled track humanoids
 
   elseif not self:IsTrackingActive(spell)

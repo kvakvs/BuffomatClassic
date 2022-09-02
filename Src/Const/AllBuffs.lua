@@ -7,25 +7,26 @@ local BOM = BuffomatAddon ---@type BomAddon
 local allBuffsModule = BuffomatModule.New("AllBuffs") ---@type BomAllBuffsModule
 
 local _t = BuffomatModule.Import("Languages") ---@type BomLanguagesModule
-local itemCacheModule = BuffomatModule.Import("ItemCache") ---@type BomItemCacheModule
-local spellCacheModule = BuffomatModule.Import("SpellCache") ---@type BomSpellCacheModule
 local buffDefModule = BuffomatModule.Import("BuffDefinition") ---@type BomBuffDefinitionModule
-local priestModule = BuffomatModule.Import("AllSpellsPriest") ---@type BomAllSpellsPriestModule
-local mageModule = BuffomatModule.Import("AllSpellsMage") ---@type BomAllSpellsMageModule
-local druidModule = BuffomatModule.Import("AllSpellsDruid") ---@type BomAllSpellsDruidModule
-local shamanModule = BuffomatModule.Import("AllSpellsShaman") ---@type BomAllSpellsShamanModule
-local warlockModule = BuffomatModule.Import("AllSpellsWarlock") ---@type BomAllSpellsWarlockModule
-local hunterModule = BuffomatModule.Import("AllSpellsHunter") ---@type BomAllSpellsHunterModule
-local paladinModule = BuffomatModule.Import("AllSpellsPaladin") ---@type BomAllSpellsPaladinModule
-local warriorModule = BuffomatModule.Import("AllSpellsWarrior") ---@type BomAllSpellsWarriorModule
-local rogueModule = BuffomatModule.Import("AllSpellsRogue") ---@type BomAllSpellsRogueModule
 local deathknightModule = BuffomatModule.Import("AllSpellsDeathknight") ---@type BomAllSpellsDeathknightModule
-local scrollsModule = BuffomatModule.Import("AllConsumesScrolls") ---@type BomAllConsumesScrollsModule
-local enchantmentsModule = BuffomatModule.New("AllConsumesEnchantments") ---@type BomAllConsumesEnchantmentsModule
+local druidModule = BuffomatModule.Import("AllSpellsDruid") ---@type BomAllSpellsDruidModule
 local elixirsModule = BuffomatModule.New("AllConsumesElixirs") ---@type BomAllConsumesElixirsModule
+local enchantmentsModule = BuffomatModule.New("AllConsumesEnchantments") ---@type BomAllConsumesEnchantmentsModule
 local flasksModule = BuffomatModule.New("AllConsumesFlasks") ---@type BomAllConsumesFlasksModule
 local foodModule = BuffomatModule.New("AllConsumesFood") ---@type BomAllConsumesFoodModule
+local hunterModule = BuffomatModule.Import("AllSpellsHunter") ---@type BomAllSpellsHunterModule
+local itemCacheModule = BuffomatModule.Import("ItemCache") ---@type BomItemCacheModule
+local mageModule = BuffomatModule.Import("AllSpellsMage") ---@type BomAllSpellsMageModule
 local otherModule = BuffomatModule.New("AllConsumesOther") ---@type BomAllConsumesOtherModule
+local paladinModule = BuffomatModule.Import("AllSpellsPaladin") ---@type BomAllSpellsPaladinModule
+local priestModule = BuffomatModule.Import("AllSpellsPriest") ---@type BomAllSpellsPriestModule
+local rogueModule = BuffomatModule.Import("AllSpellsRogue") ---@type BomAllSpellsRogueModule
+local scrollsModule = BuffomatModule.Import("AllConsumesScrolls") ---@type BomAllConsumesScrollsModule
+local shamanModule = BuffomatModule.Import("AllSpellsShaman") ---@type BomAllSpellsShamanModule
+local spellCacheModule = BuffomatModule.Import("SpellCache") ---@type BomSpellCacheModule
+local spellIdsModule = BuffomatModule.Import("SpellIds") ---@type BomSpellIdsModule
+local warlockModule = BuffomatModule.Import("AllSpellsWarlock") ---@type BomAllSpellsWarlockModule
+local warriorModule = BuffomatModule.Import("AllSpellsWarrior") ---@type BomAllSpellsWarriorModule
 
 local L = setmetatable(
         {},
@@ -104,7 +105,7 @@ end
 ---@param buffs table<string, BomBuffDefinition>
 ---@param enchantments table<string, table<number>>
 function allBuffsModule:SetupTrackingSpells(buffs, enchantments)
-  buffs[BOM.SpellId.FindHerbs] = buffDefModule:New(BOM.SpellId.FindHerbs, -- Find Herbs / kräuter
+  buffs[spellIdsModule.FindHerbs] = buffDefModule:New(spellIdsModule.FindHerbs, -- Find Herbs / kräuter
           { type = "tracking", default = true
           })                                   :Category(self.TRACKING)
 

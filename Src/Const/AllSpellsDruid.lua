@@ -6,6 +6,7 @@ local druidModule = BuffomatModule.New("AllSpellsDruid") ---@type BomAllSpellsDr
 local _t = BuffomatModule.Import("Languages") ---@type BomLanguagesModule
 local allBuffsModule = BuffomatModule.Import("AllBuffs") ---@type BomAllBuffsModule
 local buffDefModule = BuffomatModule.Import("BuffDefinition") ---@type BomBuffDefinitionModule
+local spellIdsModule = BuffomatModule.Import("SpellIds") ---@type BomSpellIdsModule
 
 ---Add DRUID spells
 ---@param spells table<string, BomBuffDefinition>
@@ -53,7 +54,7 @@ function druidModule:SetupDruidSpells(spells, enchants)
                 :Category(allBuffsModule.CLASS)
 
   -- Special code: This will disable herbalism and mining tracking in Cat Form
-  buffDefModule:createAndRegisterBuff(spells, BOM.SpellId.Druid.TrackHumanoids, -- Track Humanoids (Cat Form)
+  buffDefModule:createAndRegisterBuff(spells, spellIdsModule.Druid_TrackHumanoids, -- Track Humanoids (Cat Form)
           { type      = "tracking", needForm = CAT_FORM, default = true,
             extraText = _t("SpellLabel_TrackHumanoids")
           })    :RequirePlayerClass("DRUID")

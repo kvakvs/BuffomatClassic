@@ -6,6 +6,7 @@ local paladinModule = BuffomatModule.New("AllSpellsPaladin") ---@type BomAllSpel
 local _t = BuffomatModule.Import("Languages") ---@type BomLanguagesModule
 local allBuffsModule = BuffomatModule.Import("AllBuffs") ---@type BomAllBuffsModule
 local buffDefModule = BuffomatModule.Import("BuffDefinition") ---@type BomBuffDefinitionModule
+local spellIdsModule = BuffomatModule.Import("SpellIds") ---@type BomSpellIdsModule
 
 ---Add PALADIN spells
 ---@param spells table<string, BomBuffDefinition>
@@ -187,7 +188,7 @@ function paladinModule:SetupPaladinSpells(spells, enchants)
                 :Category(allBuffsModule.AURA)
 
   BOM.CrusaderAuraSpell = buffDefModule:createAndRegisterBuff(
-          spells, BOM.SpellId.Paladin.CrusaderAura, --TBC: Crusader Aura
+          spells, spellIdsModule.Paladin_CrusaderAura, --TBC: Crusader Aura
           { type       = "aura", default = false, extraText = _t("CRUSADER_AURA_COMMENT"),
             singleMana = 0
           })                            :RequirePlayerClass("PALADIN")
