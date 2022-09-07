@@ -13,8 +13,10 @@ local buffDefModule = BuffomatModule.Import("BuffDefinition") ---@type BomBuffDe
 function scrollsModule:SetupScrolls(buffs, enchantments)
   self:_SetupScrollsAgility(buffs, enchantments)
   self:_SetupScrollsStrength(buffs, enchantments)
-  self:_SetupScrollsProtection(buffs, enchantments)
+  self:_SetupScrollsIntellect(buffs, enchantments)
+  self:_SetupScrollsStamina(buffs, enchantments)
   self:_SetupScrollsSpirit(buffs, enchantments)
+  self:_SetupScrollsProtection(buffs, enchantments)
   self:_SetupInscriptionScrolls(buffs, enchantments)
 end
 
@@ -91,26 +93,59 @@ end
 
 ---@param buffs table<string, BomBuffDefinition> A list of buffs (not dictionary)
 ---@param enchantments table<number, table<number>> Key is spell id, value is list of enchantment ids
-function scrollsModule:_SetupScrollsProtection(buffs, enchantments)
+function scrollsModule:_SetupScrollsIntellect(buffs, enchantments)
   --
   -- WotLK
   --
-  self:AddScroll(buffs, 58453, 43468) -- WotLK: Scroll of Protection 8
+  self:AddScroll(buffs, 48100, 37092) -- WotLK: Scroll of Intellect 8
+      :RequirePlayerClass(allBuffsModule.MANA_CLASSES)
       :RequireWotLK()
-  self:AddScroll(buffs, 58452, 43467) -- WotLK: Scroll of Protection 7
+  self:AddScroll(buffs, 48099, 37091) -- WotLK: Scroll of Intellect 7
+      :RequirePlayerClass(allBuffsModule.MANA_CLASSES)
       :RequireWotLK()
-  self:AddScroll(buffs, 43196, 33459) -- WotLK: Scroll of Protection 6
+  self:AddScroll(buffs, 43195, 33458) -- WotLK: Scroll of Intellect 6
+      :RequirePlayerClass(allBuffsModule.MANA_CLASSES)
       :RequireWotLK()
 
   --
   -- TBC
   --
-  self:AddScroll(buffs, 33079, 27500) -- TBC: Scroll of Protection 5
+  self:AddScroll(buffs, 33078, 27499) -- TBC: Scroll of Intellect 5
+      :RequirePlayerClass(allBuffsModule.MANA_CLASSES)
+      :RequireTBC()
+
+  --
+  -- Classic
+  --
+  self:AddScroll(buffs, 12176, 10308) -- Scroll of Intellect 4
+      :RequirePlayerClass(allBuffsModule.MANA_CLASSES)
+  self:AddScroll(buffs, 8098, 4419) -- Scroll of Intellect 3
+	  :RequirePlayerClass(allBuffsModule.MANA_CLASSES)
+end
+
+---@param buffs table<string, BomBuffDefinition> A list of buffs (not dictionary)
+---@param enchantments table<number, table<number>> Key is spell id, value is list of enchantment ids
+function scrollsModule:_SetupScrollsStamina(buffs, enchantments)
+  --
+  -- WotLK
+  --
+  self:AddScroll(buffs, 48102, 37094) -- WotLK: Scroll of Stamina 8
+      :RequireWotLK()
+  self:AddScroll(buffs, 48101, 37093) -- WotLK: Scroll of Stamina 7
+      :RequireWotLK()
+  self:AddScroll(buffs, 43198, 33461) -- WotLK: Scroll of Stamina 6
+      :RequireWotLK()
+
+  --
+  -- TBC
+  --
+  self:AddScroll(buffs, 33081, 27502) -- TBC: Scroll of Stamina 5
       :RequireTBC()
   --
   -- Classic
   --
-  self:AddScroll(buffs, 12175, 10305) -- Scroll of Protection 4
+  self:AddScroll(buffs, 12178, 10307) -- Scroll of Stamina 4
+  self:AddScroll(buffs, 8101, 4422) -- Scroll of Stamina 3
 end
 
 ---@param buffs table<string, BomBuffDefinition> A list of buffs (not dictionary)
@@ -140,6 +175,33 @@ function scrollsModule:_SetupScrollsSpirit(buffs, enchantments)
   --
   self:AddScroll(buffs, 12177, 10306) -- Scroll of Spirit 4
       :RequirePlayerClass(allBuffsModule.MANA_CLASSES)
+  self:AddScroll(buffs, 8114, 4424) -- Scroll of Spirit 3
+      :RequirePlayerClass(allBuffsModule.MANA_CLASSES)
+end
+
+---@param buffs table<string, BomBuffDefinition> A list of buffs (not dictionary)
+---@param enchantments table<number, table<number>> Key is spell id, value is list of enchantment ids
+function scrollsModule:_SetupScrollsProtection(buffs, enchantments)
+  --
+  -- WotLK
+  --
+  self:AddScroll(buffs, 58453, 43468) -- WotLK: Scroll of Protection 8
+      :RequireWotLK()
+  self:AddScroll(buffs, 58452, 43467) -- WotLK: Scroll of Protection 7
+      :RequireWotLK()
+  self:AddScroll(buffs, 43196, 33459) -- WotLK: Scroll of Protection 6
+      :RequireWotLK()
+
+  --
+  -- TBC
+  --
+  self:AddScroll(buffs, 33079, 27500) -- TBC: Scroll of Protection 5
+      :RequireTBC()
+  --
+  -- Classic
+  --
+  self:AddScroll(buffs, 12175, 10305) -- Scroll of Protection 4
+  self:AddScroll(buffs, 8095, 4421) -- Scroll of Protection 3
 end
 
 ---@param buffs table<string, BomBuffDefinition> A list of buffs (not dictionary)
