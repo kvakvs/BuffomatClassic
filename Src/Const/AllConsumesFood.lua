@@ -91,7 +91,7 @@ function foodModule:_SetupCasterFoodTBC(buffs, enchantments)
                :ExtraText(_t("tooltip.buff.healing"))
                :RequirePlayerClass(allBuffsModule.MANA_CLASSES)
                :Category(allBuffsModule.TBC_SPELL_FOOD)
-  buffDefModule:genericConsumable(buffs, 33268, 33825) -- Skullfish Soup +20 Spell Crit/20 Spirit
+  buffDefModule:genericConsumable(buffs, 43722, 33825) -- Skullfish Soup +20 Spell Crit/20 Spirit
                :RequireTBC()
                :IgnoreIfHaveBuff(43706) -- Drinking 240 mana/second
                :ExtraText(_t("tooltip.buff.spellCrit"))

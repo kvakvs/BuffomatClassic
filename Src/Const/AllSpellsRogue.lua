@@ -65,8 +65,7 @@ function rogueModule:SetupRogueSpells(spells, enchants)
           { item     = 3776, items = { 3776, 3775 }, isConsumable = true, type = "weapon",
             duration = duration, default = false },
           { minLevel = 20 }
-  )            :HideInWotLK()
-               :RequirePlayerClass("ROGUE")
+  )            :RequirePlayerClass("ROGUE")
                :Category(allBuffsModule.CLASS_WEAPON_ENCHANTMENT)
   enchants[11202] = { 603, 22 } --Crippling Poison
 
