@@ -1,5 +1,12 @@
 # Changelog
 
+## Buffomat Classic 2022.9.0
+
+- [WotLK] Tracking herbs/ore feature restored
+- [WotLK] Crippling poison was disabled in WotLK incorrectly
+- [bug] Golden fish sticks had same buff id as (mistakenly) skullfish soup
+- [bug] Script error when choosing a profile
+
 ## Buffomat Classic 2022.7.5
 
 - Throttled rebuild frequency of abilities/buffs tab to max 1 per second. This 

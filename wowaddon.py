@@ -98,7 +98,7 @@ class BuildTool:
         with zipfile.ZipFile(zip_name, "w", zipfile.ZIP_DEFLATED,
                              allowZip64=True) as zip_file:
             # Add deprecation addon to zip
-            BuildTool.do_zip_add_root_dir(zip_file, dir=f"{ADDON_NAME_CLASSIC}TBC", toc_name=toc_name)
+            # BuildTool.do_zip_add_root_dir(zip_file, dir=f"{ADDON_NAME_CLASSIC}TBC", toc_name=toc_name)
 
             for input_dir in self.copy_dirs:
                 BuildTool.do_zip_add_dir(zip_file, dir=input_dir, toc_name=toc_name)

@@ -238,7 +238,7 @@ function buffomatModule.ChooseProfile(profile)
     BOM.ForceProfile = nil
     BOM:Print("Set profile to auto")
 
-  elseif self.character[profile] then
+  elseif buffomatModule.character[profile] then
     BOM.ForceProfile = profile
     BOM:Print("Set profile to " .. profile)
 
