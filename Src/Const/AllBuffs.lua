@@ -105,20 +105,21 @@ end
 ---@param buffs table<string, BomBuffDefinition>
 ---@param enchantments table<string, table<number>>
 function allBuffsModule:SetupTrackingSpells(buffs, enchantments)
-  buffs[spellIdsModule.FindHerbs] = buffDefModule:New(spellIdsModule.FindHerbs, -- Find Herbs / kräuter
-          { type = "tracking", default = true
-          })                                   :Category(self.TRACKING)
-
-  buffs[BOM.SpellId.FindMinerals] = buffDefModule:New(BOM.SpellId.FindMinerals, -- Find Minerals / erz
-          { type = "tracking", default = true
-          })                                      :Category(self.TRACKING)
-  buffs[2481] = buffDefModule:New(2481, -- Find Treasure / Schatzsuche / Zwerge
+  buffDefModule:createAndRegisterBuff(buffs, spellIdsModule.FindHerbs, -- Find Herbs / kräuter
           { type = "tracking", default = true })
-                              :Category(self.TRACKING)
+               :Category(self.TRACKING)
 
-  buffs[43308] = buffDefModule:New(43308, -- Find Fish (TBC daily quest reward)
+  buffDefModule:createAndRegisterBuff(buffs, spellIdsModule.FindMinerals, -- Find Minerals / erz
+          { type = "tracking", default = true })
+               :Category(self.TRACKING)
+
+  buffDefModule:createAndRegisterBuff(buffs, spellIdsModule.FindTreasure, -- Find Treasure / Schatzsuche / Zwerge
+          { type = "tracking", default = true })
+               :Category(self.TRACKING)
+
+  buffDefModule:createAndRegisterBuff(buffs, spellIdsModule.FindFish, -- Find Fish (TBC daily quest reward)
           { type = "tracking", default = false })
-                               :Category(self.TRACKING)
+               :Category(self.TRACKING)
 
   return buffs
 end

@@ -38,4 +38,6 @@ spellIdsModule.Druid_TrackHumanoids = 5225
 spellIdsModule.Paladin_CrusaderAura = 32223
 
 spellIdsModule.FindHerbs = 2383
-BOM.SpellId.FindMinerals = 2580
+spellIdsModule.FindMinerals = 2580
+spellIdsModule.FindTreasure = 2481
+spellIdsModule.FindFish = 43308

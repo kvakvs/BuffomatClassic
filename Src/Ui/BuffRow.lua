@@ -9,7 +9,7 @@ local uiButtonModule = BuffomatModule.Import("Ui/UiButton") ---@type BomUiButton
 
 ---@class BomBuffRowFrames
 ---@field info BomLegacyControl Icon for spell or item which provides the buff
----@field Enable BomLegacyControl Checkbox for enable/disable buff
+---@field checkboxEnable BomLegacyControl Checkbox for enable/disable buff
 ---@field Set BomLegacyControl Status checkbox for tracking/auras/seals
 ---@field SelfCast BomLegacyControl Checkbox toggle to self cast only
 ---@field ForceCastButton BomLegacyControl Button to add/remove from force cast list
@@ -46,17 +46,17 @@ end
 ---@return BomControlModule Created or pre-existing enable checkbox
 ---@param tooltip string
 function buffRowClass:CreateEnableCheckbox(tooltip)
-  if self.Enable == nil then
-    self.Enable = managedUiModule:CreateManagedButton(
+  if self.checkboxEnable == nil then
+    self.checkboxEnable = managedUiModule:CreateManagedButton(
             BomC_SpellTab_Scroll_Child,
             BOM.ICON_OPT_ENABLED,
             BOM.ICON_OPT_DISABLED)
   end
 
-  self.Enable:SetOnClick(BOM.MyButtonOnClick)
-  BOM.Tool.Tooltip(self.Enable, tooltip)
+  self.checkboxEnable:SetOnClick(BOM.MyButtonOnClick)
+  BOM.Tool.Tooltip(self.checkboxEnable, tooltip)
 
-  return self.Enable
+  return self.checkboxEnable
 end
 
 ---@return BomControlModule Created or pre-existing status on/off image
@@ -70,7 +70,7 @@ function buffRowClass:CreateStatusCheckboxImage(spell)
   end
 
   self.Set:SetSpell(spell.singleId)
-  return self.Enable
+  return self.checkboxEnable
 end
 
 ---@param spell BomBuffDefinition

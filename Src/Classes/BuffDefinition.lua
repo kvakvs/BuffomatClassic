@@ -231,19 +231,21 @@ end
 ---@param buffSpellId number The buff spell ID is key in the AllSpells table
 ---@param fields table<string, any>
 ---@param limitations BomSpellLimitations Check these conditions to skip adding the spell. Permanent conditions only like minlevel or class
----@param modifications table<function> Check these conditions and maybe modify the spelldef.
 ---@return BomBuffDefinition
-function buffDefModule:createAndRegisterBuff(dst, buffSpellId, fields,
-                                             limitations, modifications, extraText)
+function buffDefModule:createAndRegisterBuff(dst, buffSpellId, fields, limitations)
   local spell = self:New(buffSpellId, fields)
 
-  if self:CheckLimitations(spell, limitations) -- Limitations passed as arg here
-  then
-    tinsert(dst, spell)
-    return spell
+  if self:CheckLimitations(spell, limitations) then
+    return self:registerBuff(dst, spell)
   end
 
   return buffDefModule:New(0, {}) -- limitations check failed
+end
+
+---@return BomBuffDefinition
+function buffDefModule:registerBuff(dst, spell)
+  tinsert(dst, spell)
+  return spell
 end
 
 ---@param spellId number

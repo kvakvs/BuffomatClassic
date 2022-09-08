@@ -126,7 +126,7 @@ end
 ---@return boolean someoneIsDead
 function taskScanModule:UpdateSpellTargets(party, spell, playerUnit)
   local someoneIsDead = false
-  local thisBuffOnPlayer = playerUnit.knownBuffs[spell.buffId]
+  --local thisBuffOnPlayer = playerUnit.knownBuffs[spell.buffId]
   spell:ResetBuffTargets()
 
   -- Save skipped unit and do nothing

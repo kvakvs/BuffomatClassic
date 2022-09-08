@@ -1,5 +1,5 @@
 ---| Module contains code to update the already selected spells in tabs
-local TOCNAME, _ = ...
+--local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BomAddon
 
 ---@class BomSpellButtonsTabModule
@@ -12,15 +12,15 @@ local _t = BuffomatModule.Import("Languages") ---@type BomLanguagesModule
 local allBuffsModule = BuffomatModule.Import("AllBuffs") ---@type BomAllBuffsModule
 local buffomatModule = BuffomatModule.Import("Buffomat") ---@type BomBuffomatModule
 local buffRowModule = BuffomatModule.Import("Ui/BuffRow") ---@type BomBuffRowModule
-local itemCacheModule = BuffomatModule.Import("ItemCache") ---@type BomItemCacheModule
+--local itemCacheModule = BuffomatModule.Import("ItemCache") ---@type BomItemCacheModule
 local managedUiModule = BuffomatModule.New("Ui/MyButton") ---@type BomUiMyButtonModule
 local optionsPopupModule = BuffomatModule.Import("OptionsPopup") ---@type BomOptionsPopupModule
 local rowBuilderModule = BuffomatModule.Import("RowBuilder") ---@type BomRowBuilderModule
-local spellCacheModule = BuffomatModule.Import("SpellCache") ---@type BomSpellCacheModule
+--local spellCacheModule = BuffomatModule.Import("SpellCache") ---@type BomSpellCacheModule
 local buffDefModule = BuffomatModule.Import("BuffDefinition") ---@type BomBuffDefinitionModule
-local spellSetupModule = BuffomatModule.Import("SpellSetup") ---@type BomSpellSetupModule
+--local spellSetupModule = BuffomatModule.Import("SpellSetup") ---@type BomSpellSetupModule
 local toolboxModule = BuffomatModule.Import("Toolbox") ---@type BomToolboxModule
-local uiButtonModule = BuffomatModule.Import("Ui/UiButton") ---@type BomUiButtonModule
+--local uiButtonModule = BuffomatModule.Import("Ui/UiButton") ---@type BomUiButtonModule
 
 local L = setmetatable(
         {},
@@ -449,14 +449,14 @@ end
 ---@param spell BomBuffDefinition
 function spellButtonsTabModule:UpdateSelectedSpell(spell)
   -- temp fix
-  if not spell.frames.Enable then
+  if not spell.frames.checkboxEnable then
     return
   end
 
   -- the pointer to spell in current BOM profile
   ---@type BomBuffDefinition
   local profileSpell = BOM.CurrentProfile.Spell[spell.buffId]
-  spell.frames.Enable:SetVariable(profileSpell, "Enable")
+  spell.frames.checkboxEnable:SetVariable(profileSpell, "Enable")
 
   if spell:HasClasses() then
     spell.frames.SelfCast:SetVariable(profileSpell, "SelfCast")
@@ -589,7 +589,7 @@ function spellButtonsTabModule:ClearTab()
 end
 
 spellButtonsTabModule.lastFullRebuild = 0
-spellButtonsTabModule.LIMIT_FULL_REBUILD_PER = 1.0 -- no more than 1 per second
+spellButtonsTabModule.LIMIT_FULL_REBUILD_PER = 2.0 -- no more than every 2 seconds
 
 --- Do not run more often than every 1 second
 function spellButtonsTabModule:ClearRebuildSpellButtonsTab()
@@ -634,14 +634,9 @@ function spellButtonsTabModule:UpdateSpellsTab(caller)
   end -- all spells
 
   for _i, spell in ipairs(BOM.CancelBuffs) do
-    spell.frames.Enable:SetVariable(BOM.CurrentProfile.CancelBuff[spell.buffId], "Enable")
+    spell.frames.checkboxEnable:SetVariable(BOM.CurrentProfile.CancelBuff[spell.buffId], "Enable")
   end
 
   --Create small SINGLE-BUFF toggle to the right of [Cast <spell>]
   BOM.CreateSingleBuffButton(BomC_ListTab) --maybe not created yet?
 end
-
--- ---@param from string Caller of this function, for debug purposes
---function BOM.UpdateSpellsTab(from)
---  spellButtonsTabModule:UpdateSpellsTab()
---end

@@ -12,7 +12,7 @@ local unitCacheModule = BuffomatModule.Import("UnitCache") ---@type BomUnitCache
 ---Checks whether a tracking spell is now active
 ---@param spell BomBuffDefinition The tracking spell which might have tracking enabled
 function buffChecksModule:IsTrackingActive(spell)
-  if BOM.IsTBC then
+  if BOM.HaveTBC then
     for i = 1, GetNumTrackingTypes() do
       local _name, _texture, active, _category, _nesting, spellId = GetTrackingInfo(i)
       if spellId == spell.singleId then
@@ -111,21 +111,21 @@ function buffChecksModule:HasItem(list, cd)
   return cachedItem.a
 end
 
----@param spell BomBuffDefinition the spell to update
+---@param buff BomBuffDefinition the spell to update
 ---@param playerUnit BomUnit the player
-function buffChecksModule:PlayerNeedsWeaponBuff(spell, playerUnit)
-  local weaponSpell = buffDefModule:GetProfileSpell(spell.buffId)
+function buffChecksModule:PlayerNeedsWeaponBuff(buff, playerUnit)
+  local weaponSpell = buffDefModule:GetProfileSpell(buff.buffId)
 
   if (weaponSpell.MainHandEnable and playerUnit.MainHandBuff == nil)
           or (weaponSpell.OffHandEnable and playerUnit.OffHandBuff == nil)
   then
-    tinsert(spell.UnitsNeedBuff, playerUnit)
+    tinsert(buff.UnitsNeedBuff, playerUnit)
   end
 end
 
----@param spell BomBuffDefinition
+---@param buff BomBuffDefinition
 ---@param playerUnit BomUnit
-function buffChecksModule:HunterPetNeedsBuff(spell, playerUnit, _party)
+function buffChecksModule:HunterPetNeedsBuff(buff, playerUnit, _party)
   if not BOM.IsTBC then
     return -- pre-TBC this did not exist
   end
@@ -136,108 +136,108 @@ function buffChecksModule:HunterPetNeedsBuff(spell, playerUnit, _party)
   end
 
   pet:ForceUpdateBuffs(playerUnit)
-  if pet:HaveBuff(spell.singleId) then
+  if pet:HaveBuff(buff.singleId) then
     return -- have pet, have buff
   end
 
-  tinsert(spell.UnitsNeedBuff, playerUnit) -- add player to buff list, because player must consume it
+  tinsert(buff.UnitsNeedBuff, playerUnit) -- add player to buff list, because player must consume it
 end
 
----@param spell BomBuffDefinition
+---@param buff BomBuffDefinition
 ---@param playerUnit BomUnit
-function buffChecksModule:PlayerNeedsConsumable(spell, playerUnit, _party)
-  if not playerUnit.knownBuffs[spell.buffId] then
-    tinsert(spell.UnitsNeedBuff, playerUnit)
+function buffChecksModule:PlayerNeedsConsumable(buff, playerUnit, _party)
+  if not playerUnit.knownBuffs[buff.buffId] then
+    tinsert(buff.UnitsNeedBuff, playerUnit)
   end
 
 end
 
----@param spell BomBuffDefinition
+---@param buff BomBuffDefinition
 ---@param playerUnit BomUnit
 ---@param party table<number, BomUnit>
-function buffChecksModule:PartyNeedsInfoBuff(spell, playerUnit, party)
+function buffChecksModule:PartyNeedsInfoBuff(buff, playerUnit, party)
   for _i, partyMember in ipairs(party) do
-    local partyMemberBuff = partyMember.knownBuffs[spell.buffId]
+    local partyMemberBuff = partyMember.knownBuffs[buff.buffId]
 
     if partyMemberBuff then
-      tinsert(spell.UnitsNeedBuff, partyMember)
+      tinsert(buff.UnitsNeedBuff, partyMember)
 
       if partyMember.isPlayer then
-        spell.buffSource = partyMemberBuff.source
+        buff.buffSource = partyMemberBuff.source
       end
 
       if UnitIsUnit("player", partyMemberBuff.source or "") then
-        BOM.ItemListTarget[spell.buffId] = partyMember.name
+        BOM.ItemListTarget[buff.buffId] = partyMember.name
       end
     end
   end
 end
 
----@param spell BomBuffDefinition
+---@param buff BomBuffDefinition
 ---@param playerUnit BomUnit
 ---@param party table<number, BomUnit>
-function buffChecksModule:PlayerNeedsSelfBuff(spell, playerUnit, party)
+function buffChecksModule:PlayerNeedsSelfBuff(buff, playerUnit, party)
   if not playerUnit.isDead then
-    local thisBuffOnPlayer = playerUnit.knownBuffs[spell.buffId]
+    local thisBuffOnPlayer = playerUnit.knownBuffs[buff.buffId]
 
     -- Check if the self-buff includes creating/conjuring an item
-    if spell.lockIfHaveItem then
-      if IsSpellKnown(spell.singleId) and not (self:HasItem(spell.lockIfHaveItem)) then
-        tinsert(spell.UnitsNeedBuff, playerUnit)
+    if buff.lockIfHaveItem then
+      if IsSpellKnown(buff.singleId) and not (self:HasItem(buff.lockIfHaveItem)) then
+        tinsert(buff.UnitsNeedBuff, playerUnit)
       end
 
       -- Else check if the buff is on player and timer is not too short
     elseif not (thisBuffOnPlayer
             and self:TimeCheck(thisBuffOnPlayer.expirationTime, thisBuffOnPlayer.duration))
     then
-      tinsert(spell.UnitsNeedBuff, playerUnit)
+      tinsert(buff.UnitsNeedBuff, playerUnit)
     end
   end
 end
 
----@param spell BomBuffDefinition
+---@param buff BomBuffDefinition
 ---@param playerUnit BomUnit
 ---@param party table<number, BomUnit>
-function buffChecksModule:DeadNeedsResurrection(spell, playerUnit, party)
+function buffChecksModule:DeadNeedsResurrection(buff, playerUnit, party)
   for i, member in ipairs(party) do
     if member.isDead
             and not member.hasResurrection
             and member.isConnected
             and member.class ~= "pet"
             and (not buffomatModule.shared.SameZone or member.isSameZone) then
-      tinsert(spell.UnitsNeedBuff, member)
+      tinsert(buff.UnitsNeedBuff, member)
     end
   end
 end
 
----@param spell BomBuffDefinition
+---@param buff BomBuffDefinition
 ---@param playerUnit BomUnit
 ---@param party table<number, BomUnit>
-function buffChecksModule:PlayerNeedsTracking(spell, playerUnit, party)
+function buffChecksModule:PlayerNeedsTracking(buff, playerUnit, party)
   -- Special handling: Having find herbs and find ore will be ignored if
   -- in cat form and track humanoids is enabled
-  if (spell.singleId == spellIdsModule.FindHerbs or
-          spell.singleId == BOM.SpellId.FindMinerals)
+  if (buff.singleId == spellIdsModule.FindHerbs or
+          buff.singleId == spellIdsModule.FindMinerals)
           and GetShapeshiftFormID() == CAT_FORM
           and buffDefModule:IsSpellEnabled(spellIdsModule.Druid_TrackHumanoids) then
     -- Do nothing - ignore herbs and minerals in catform if enabled track humanoids
 
-  elseif not self:IsTrackingActive(spell)
+  elseif not self:IsTrackingActive(buff)
           and (BOM.ForceTracking == nil
-          or BOM.ForceTracking == spell.trackingIconId) then
-    tinsert(spell.UnitsNeedBuff, playerUnit)
+          or BOM.ForceTracking == buff.trackingIconId) then
+    tinsert(buff.UnitsNeedBuff, playerUnit)
   end
 end
 
----@param spell BomBuffDefinition
+---@param buff BomBuffDefinition
 ---@param playerUnit BomUnit
 ---@param party table<number, BomUnit>
-function buffChecksModule:PaladinNeedsAura(spell, playerUnit, party)
-  if BOM.ActivePaladinAura ~= spell.buffId
+function buffChecksModule:PaladinNeedsAura(buff, playerUnit, party)
+  if BOM.ActivePaladinAura ~= buff.buffId
           and (BOM.CurrentProfile.LastAura == nil
-          or BOM.CurrentProfile.LastAura == spell.buffId)
+          or BOM.CurrentProfile.LastAura == buff.buffId)
   then
-    tinsert(spell.UnitsNeedBuff, playerUnit)
+    tinsert(buff.UnitsNeedBuff, playerUnit)
   end
 end
 
