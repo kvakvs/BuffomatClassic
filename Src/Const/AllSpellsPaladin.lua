@@ -248,4 +248,9 @@ function paladinModule:SetupPaladinSpells(spells, enchants)
                              38008 }  -- TBC: Alliance version???
           })    :RequirePlayerClass("PALADIN")
                 :Category(allBuffsModule.SEAL)
+  buffDefModule:createAndRegisterBuff(spells, 20375, -- TBC/WotLK: Seal of Command
+          { type         = "seal", default = false,
+            singleFamily = { 20375 }
+          })    :RequirePlayerClass("PALADIN")
+                :Category(allBuffsModule.SEAL)
 end

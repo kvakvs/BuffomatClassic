@@ -1,5 +1,9 @@
 # Changelog
 
+## Buffomat Classic 2022.9.1
+
+- [Paladin] Seal of command was missing, now added
+
 ## Buffomat Classic 2022.9.0
 
 - [WotLK] Tracking herbs/ore feature restored
