@@ -1,5 +1,9 @@
 # Changelog
 
+## Buffomat Classic 2022.9.2
+
+- [Shaman] Earthliving Weapon self-enchantment added
+
 ## Buffomat Classic 2022.9.1
 
 - [Paladin] Seal of command was missing, now added

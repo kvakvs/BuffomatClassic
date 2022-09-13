@@ -68,6 +68,15 @@ function shamanModule:SetupShamanSpells(spells, enchants)
                       2636, -- TBC: Windfury 5
                       3785, 3786, 3787 } -- WotLK: Windfury 6-8
 
+  buffDefModule:createAndRegisterBuff(spells, 51730, -- WotLK: Earthliving Weapon
+          { type         = "weapon", isOwn = true, isConsumable = false,
+            default      = false, singleDuration = enchantmentDuration,
+            singleFamily = { 51730, 51988, 51991, 51992, 51993, 51994 } } -- WotLK: Earthliving Weapon 1-6
+  )             :Seal()
+                :RequirePlayerClass("SHAMAN")
+                :Category(allBuffsModule.CLASS_WEAPON_ENCHANTMENT)
+  enchants[51730] = { 3345, 3346, 3347, 3348, 3349, 3350 } -- WotLK: Earthliving 1-6
+
   buffDefModule:createAndRegisterBuff(spells, 10432, -- Lightning Shield / Blitzschlagschild
           { default      = false, isOwn = true, duration = duration,
             singleFamily = { 324, 325, 905, 945, 8134, 10431, 10432, -- Lightning Shield 1-7
