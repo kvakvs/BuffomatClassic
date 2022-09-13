@@ -2,10 +2,11 @@
 
 ## Buffomat Classic 2022.9.2
 
-- [Shaman] Earthliving Weapon self-enchantment added
+- [bug] Performance improvements; Fix to raid lag bug
 
 ## Buffomat Classic 2022.9.1
 
+- [Shaman] Earthliving Weapon self-enchantment added
 - [Paladin] Seal of command was missing, now added
 
 ## Buffomat Classic 2022.9.0

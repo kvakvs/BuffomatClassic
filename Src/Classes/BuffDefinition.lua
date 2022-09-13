@@ -113,7 +113,7 @@ function buffDefModule:New(singleId, fields)
   setmetatable(newSpell, spellDefClass)
 
   newSpell.category = false -- special value no category
-  newSpell.frames = buffRowModule:New() -- spell buttons from the UI go here
+  newSpell.frames = buffRowModule:New(tostring(singleId)) -- spell buttons from the UI go here
   newSpell.buffId = singleId
   newSpell.singleId = singleId
   newSpell.limitations = {}
@@ -456,6 +456,7 @@ end
 ---@param iconReadyFn function|nil Call with result when icon value is ready
 ---@param nameReadyFn function|nil Call with result when name value is ready
 function spellDefClass:RefreshTextAndIcon(iconReadyFn, nameReadyFn)
+  -- TODO: If refresh is in progress and multiple requests come in parallel, that might also be a problem
   if self:IsItem() then
     local itemId = self.item
 

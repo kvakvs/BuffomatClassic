@@ -318,8 +318,7 @@ function BOM.CreateSingleBuffButton(parent_frame)
             parent_frame,
             BOM.ICON_SELF_CAST_ON,
             BOM.ICON_SELF_CAST_OFF,
-            nil, nil, nil, nil,
-            true)
+            nil, nil, nil, nil, nil)
     BOM.QuickSingleBuff:SetPoint("BOTTOMLEFT", parent_frame, "BOTTOMRIGHT", -18, 0);
     BOM.QuickSingleBuff:SetPoint("BOTTOMRIGHT", parent_frame, "BOTTOMRIGHT", -2, 12);
     BOM.QuickSingleBuff:SetVariable(buffomatModule.shared, "NoGroupBuff")

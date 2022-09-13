@@ -198,30 +198,32 @@ local managedUiButtons = {}
 ---@param selCoord table - texcoord for selected
 ---@param unselCoord table - texcoord for unselected
 ---@param disCoord table - texcoord for disabled
----@param unmanaged boolean - set to true to not add button to bom_managed_mybuttons
+---@param uniqueId string|nil - set to nil to not add button to bom_managed_mybuttons, or pass unique id
 ---@return BomLegacyControl
-function managedUiModule:CreateManagedButton(parent, sel, unsel, dis, selCoord, unselCoord, disCoord, unmanaged)
+function managedUiModule:CreateManagedButton(parent, sel, unsel, dis, selCoord, unselCoord, disCoord, uniqueId)
   local newButtonFrame = CreateFrame("frame", nil, parent, "BomC_MyButton")
   BOM.MyButton_OnLoad(newButtonFrame)
   newButtonFrame:SetTextures(sel, unsel, dis, selCoord, unselCoord, disCoord)
 
-  if unmanaged == nil or unmanaged == false then
-    self:ManageControl(newButtonFrame)
-  end
-
+  self:ManageControl(uniqueId, newButtonFrame)
   return newButtonFrame
 end
 
-function managedUiModule:ManageControl(control)
-  tinsert(managedUiButtons, control)
+function managedUiModule:ManageControl(uniqueId, control)
+  if uniqueId then
+    managedUiButtons[uniqueId] = control
+  else
+    table.insert(managedUiButtons, control)
+  end
 end
 
 ---@return BomLegacyControl
-function managedUiModule:CreateMyButtonSecure(parent, sel, unsel, dis, selCoord, unselCoord, disCoord)
+---@param uniqueId string|nil Uniqueid for ManageControl call or nil to keep unmanaged
+function managedUiModule:CreateMyButtonSecure(parent, sel, unsel, dis, selCoord, unselCoord, disCoord, uniqueId)
   local newButton = CreateFrame("Button", nil, parent, "BomC_MyButtonSecure")
   BOM.MyButton_OnLoad(newButton, true)
   newButton:SetTextures(sel, unsel, dis, selCoord, unselCoord, disCoord)
-  self:ManageControl(newButton)
+  self:ManageControl(uniqueId, newButton)
   return newButton
 end
 
