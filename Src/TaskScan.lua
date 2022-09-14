@@ -1336,6 +1336,8 @@ function taskScanModule:CastButton(t, enable)
   else
     BomC_ListTab_Button:Disable()
   end
+
+  self:FadeBuffomatWindow()
 end
 
 ---Check if player has rep items equipped where they should not have them
@@ -1627,6 +1629,18 @@ function taskScanModule:SomeoneIsDrinking()
   end
 end
 
+function taskScanModule:FadeBuffomatWindow()
+  if BomC_ListTab_Button:IsEnabled() then
+    BomC_MainWindow:SetAlpha(1.0)
+  else
+    local fade = buffomatModule.shared.FadeWhenNothingToDo
+    if type(fade) ~= "number" then
+      fade = 0.65
+    end
+    BomC_MainWindow:SetAlpha(fade) -- fade the window, default 65%
+  end
+end
+
 function taskScanModule:UpdateScan_Scan()
   local party, playerMember = unitCacheModule:GetPartyMembers()
 
@@ -1639,6 +1653,7 @@ function taskScanModule:UpdateScan_Scan()
       BOM.CheckForError = false
       BOM.AutoClose()
       BOM.Macro:Clear()
+      self:FadeBuffomatWindow()
       self:CastButton(reasonDisabled, false)
       return
     end
@@ -1689,6 +1704,7 @@ function taskScanModule:UpdateScan_Scan()
   if #tasklist.tasks > 0 or #tasklist.comments > 0 then
     BOM.AutoOpen()
   else
+    self:FadeBuffomatWindow()
     BOM.AutoClose()
   end
 
@@ -1726,14 +1742,13 @@ function taskScanModule:UpdateScan_Scan()
     if #tasklist.tasks == 0 then
       --If don't have any strings to display, and nothing to do -
       --Clear the cast button
-      self:CastButton(_t("castButton.NothingToDo"), true)
+      self:CastButton(_t("castButton.NothingToDo"), false)
 
       for spellIndex, spell in ipairs(BOM.SelectedSpells) do
         if #spell.SkipList > 0 then
           wipe(spell.SkipList)
         end
       end
-
     else
       if someoneIsDead and buffomatModule.shared.DeathBlock then
         self:CastButton(_t("InactiveReason_DeadMember"), false)
@@ -1780,18 +1795,6 @@ function taskScanModule:UpdateScan_PreCheck(from)
   BOM.MinTimer = GetTime() + 36000 -- 10 hours
   tasklist:Clear()
   BOM.RepeatUpdate = false
-
-  -- moved to next stage bomUpdateScan_Scan
-  -- Check whether BOM is disabled due to some option and a matching condition
-  --local isBomActive, reasonDisabled = self:IsActive()
-  --if not isBomActive then
-  --  BOM.ForceUpdate = false
-  --  BOM.CheckForError = false
-  --  BOM.AutoClose()
-  --  BOM.Macro:Clear()
-  --  bomCastButton(reasonDisabled, false)
-  --  return
-  --end
 
   --Choose Profile
   local auto_profile = self:ChooseProfile()

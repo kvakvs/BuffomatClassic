@@ -184,6 +184,13 @@ function optionsModule:CreateGeneralOptionsTable()
     name = "1. " .. _t("options.general.group.General"),
     args = {
       autoOpen              = self:TemplateCheckbox("AutoOpen"),
+      fadeWhenNothingToDo   = self:TemplateRange(
+              "FadeWhenNothingToDo", 0.25, 1.0, 0.05,
+              buffomatModule.shared, "FadeWhenNothingToDo",
+              function(_key, val)
+                BomC_MainWindow:SetAlpha(val)
+              end
+      ),
       useProfiles           = self:TemplateCheckbox("UseProfiles", buffomatModule.character),
       slowerHardware        = self:TemplateCheckbox("SlowerHardware"),
       minimapButtonShow     = self:TemplateCheckbox(

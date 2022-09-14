@@ -50,6 +50,7 @@ function englishModule:Translations()
     ["options.general.group.Buffing"]                 = "Buffing Timers",
     ["options.general.group.Visibility"]              = "Show Categories",
 
+    ["options.short.ActivateBomOnSpiritTap"]          = "Activate on Spirit Tap below mana %",
     ["options.short.ArgentumDawn"]                    = "Warn about reputation items",
     ["options.short.AutoCrusaderAura"]                = "Suggest crusader aura",
     ["options.short.AutoDismount"]                    = "Auto dismount",
@@ -59,7 +60,6 @@ function englishModule:Translations()
     ["options.short.AutoStand"]                       = "Auto stand up",
     ["options.short.BuffTarget"]                      = "Buff target first",
     ["options.short.Carrot"]                          = "Warn about mount items",
-    ["options.short.ActivateBomOnSpiritTap"]          = "Activate on Spirit Tap below mana %",
     ["options.short.DeathBlock"]                      = "Pause if someone is dead",
     ["options.short.DontUseConsumables"]              = "Dont use consumables",
 
@@ -87,10 +87,13 @@ function englishModule:Translations()
     ["options.short.SelfFirst"]                       = "Self first",
     ["options.short.ShowMinimapButton"]               = "Show minimap button",
     ["options.short.SlowerHardware"]                  = "Scan buffs less often",
-    ["options.short.UseRank"]                         = "Use ranked buffs",
     ["options.short.UseProfiles"]                     = "Use profiles",
+    ["options.short.UseRank"]                         = "Use ranked buffs",
     ["options.short.VisibleCategories"]               = "Show buffs (per character setting)",
+    ["options.short.FadeWhenNothingToDo"]             = "Fade Buffomat window when no tasks",
 
+    ["options.long.FadeWhenNothingToDo"]              = "Set Alpha opacity of the Buffomat window when there's nothing to do",
+    ["options.long.ActivateBomOnSpiritTap"]           = "Disable Buffomat if priest 'Spirit tap' is active and player mana is below %",
     ["options.long.ArgentumDawn"]                     = "Remind to unequip Argent Dawn trinket",
     ["options.long.AutoCrusaderAura"]                 = "Paladin: Auto crusader aura when mounted",
     ["options.long.AutoDismount"]                     = "Auto-dismount from the ground mount on cast",
@@ -100,11 +103,9 @@ function englishModule:Translations()
     ["options.long.AutoStand"]                        = "If the character was sitting, Buffomat will stand up the character",
     ["options.long.BuffTarget"]                       = "Also try and buff the current target",
     ["options.long.Carrot"]                           = "Remind to unequip Riding/Flight trinkets",
-    ["options.long.ActivateBomOnSpiritTap"]           = "Disable Buffomat if priest 'Spirit tap' is active and player mana is below %",
     ["options.long.DeathBlock"]                       = "Don't cast group buffs, when somebody is dead",
     ["options.long.DontUseConsumables"]               = "Use consumables only with Shift, Ctrl or Alt",
     ["options.long.GroupBuff"]                        = "Cast group buffs when necessary (extra reagent cost)",
-    ["options.long.SomeoneIsDrinking"]                = "When someone is drinking a message can be shown or hidden",
     ["options.long.InInstance"]                       = "Scan buffs in dungeons and raids",
     ["options.long.InPVP"]                            = "Scan buffs in battlegrounds",
     ["options.long.InWorld"]                          = "Scan buffs in the world and cities",
@@ -126,8 +127,9 @@ function englishModule:Translations()
     ["options.long.ShowMinimapButton"]                = "Show minimap button",
     ["options.long.ShowTBCConsumables"]               = "Show consumables available in TBC",
     ["options.long.SlowerHardware"]                   = "Less frequent buff checks (slow hardware/raid)",
-    ["options.long.UseRank"]                          = "Use spells with ranks",
+    ["options.long.SomeoneIsDrinking"]                = "When someone is drinking a message can be shown or hidden",
     ["options.long.UseProfiles"]                      = "Use profiles based on whether the player is solo, in a group, raid or a battleground",
+    ["options.long.UseRank"]                          = "Use spells with ranks",
     ["options.long.VisibleCategories"]                = "Show a category of buffs in the spells list (per character setting)",
 
     ["tasklist.IgnoredBuffOn"]                        = "Ignored %s: %s", -- when a buff is not listed because a better buff exists

@@ -24,6 +24,7 @@ sharedSettingsModule.defaults = {
 ---@field CustomCancelBuff table Additional cancel spells. Deprecated
 ---@field UIWindowScale number
 ---@field AutoOpen boolean
+---@field FadeWhenNothingToDo boolean Allows Buffomat window to fade when nothing to do
 ---@field UseProfiles boolean
 ---@field SlowerHardware boolean
 ---@field ScanInRestArea boolean
@@ -89,6 +90,7 @@ function sharedSettingsModule:Defaults()
   return {
     UIWindowScale          = 1,
     AutoOpen               = true,
+    FadeWhenNothingToDo    = 1.0,
     UseProfiles            = false,
     SlowerHardware         = false,
     ----------------------
