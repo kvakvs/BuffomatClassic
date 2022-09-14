@@ -45,7 +45,7 @@ local function bomDoBlessingOnClick(self)
   end
   self._privat_DB[self._privat_Var] = saved
 
-  BOM.MyButtonUpdateAll()
+  managedUiModule:UpdateAll()
   buffomatModule:OptionsUpdate()
 end
 
@@ -74,7 +74,7 @@ function spellButtonsTabModule:AddSpellRow_ClassSelector(rowBuilder, playerIsHor
     classToggle:SetVariable(profileSpell.Class, class)
     rowBuilder:ChainToTheRight(nil, classToggle, 0)
 
-    if not BOM.IsTBC and (-- if not TBC hide paladin for horde, hide shaman for alliance
+    if not BOM.HaveTBC and (-- if not TBC hide paladin for horde, hide shaman for alliance
             (playerIsHorde and class == "PALADIN") or (not playerIsHorde and class == "SHAMAN")) then
       classToggle:Hide()
     else
@@ -204,6 +204,10 @@ end
 ---@param rowBuilder BomRowBuilder The structure used for building button rows
 ---@param playerClass string Character class
 function spellButtonsTabModule:AddSpellRow(rowBuilder, playerIsHorde, spell, playerClass)
+  --if self:CategoryIsHidden(spell.category) then
+  --  return -- do not show any controls if spell category is hidden
+  --end
+
   -- Create buff icon with tooltip
   local infoIcon = spell.frames:CreateInfoIcon(spell)
   rowBuilder:PositionAtNewRow(infoIcon, 0, 7)
@@ -232,6 +236,7 @@ function spellButtonsTabModule:AddSpellRow(rowBuilder, playerIsHorde, spell, pla
   end
   --<<------------------------------
 
+  ----------------------------------
   if spell.isInfo and spell.allowWhisper then
     local whisperToggle = spell.frames:CreateWhisperToggle(_t("TooltipWhisperWhenExpired"))
     whisperToggle:SetPoint("TOPLEFT", rowBuilder.prevControl, "TOPRIGHT", rowBuilder.dx, 0)
@@ -239,6 +244,7 @@ function spellButtonsTabModule:AddSpellRow(rowBuilder, playerIsHorde, spell, pla
     rowBuilder:SpaceToTheRight(whisperToggle, 2)
   end
 
+  ----------------------------------
   if spell.type == "weapon" then
     -- Add choices for mainhand & offhand
     local mainhandToggle = spell.frames:CreateMainhandToggle(_t("TooltipMainHand"))
@@ -272,10 +278,6 @@ function spellButtonsTabModule:AddSpellRow(rowBuilder, playerIsHorde, spell, pla
 
   rowBuilder:SpaceToTheRight(buffLabel, 7)
   --<<---------------------------
-
-  if self:CategoryIsHidden(spell.category) then
-    return -- do not show any controls if spell category is hidden
-  end
 
   --infoIcon:Show()
   --enableCheckbox:Show()
@@ -333,22 +335,28 @@ function spellButtonsTabModule:CreateTab(playerIsHorde)
 
   for j, cat in ipairs(allBuffsModule.buffCategories) do
     if not self:CategoryIsHidden(cat) then
-      for i, spell in ipairs(BOM.SelectedSpells) do
-        if spell.category ~= cat
-                or (type(spell.onlyUsableFor) == "table" and not tContains(spell.onlyUsableFor, selfClass)) then
+      for i, spell in ipairs(BOM.SelectedSpells) do -- for all spells known by Buffomat and the player
+        if spell.category ~= cat -- category has changed from the previous row
+                or (type(spell.onlyUsableFor) == "table"
+                and not tContains(spell.onlyUsableFor, selfClass)) then
           -- skip not usable
         else
-          if not rowBuilder.categories[cat] then
+          if not rowBuilder.categories[cat] then -- if category header was not yet added
             rowBuilder.categories[cat] = true
             self:AddCategoryRow(cat, rowBuilder) -- only add once if ever found one in that category
-          else
+          else -- category header was already added
             rowBuilder.dy = 2 -- step down 2 px between rows
           end
 
           self:AddSpellRow(rowBuilder, playerIsHorde, spell, selfClass)
         end -- if category of the spell == cat
       end -- for selected spells
-    end -- if cat is not hidden
+    else -- cat is hidden
+      -- Label for hidden category might still be visible from the time before
+      if self.categoryLabels[cat] then
+        self.categoryLabels[cat]:Hide()
+      end
+    end -- if cat is hidden
   end -- for buff categories
 
   rowBuilder.dy = 12
@@ -377,7 +385,7 @@ function spellButtonsTabModule:GetTargetsTooltipText(prefix, empty_text, name_ta
       if text ~= "" then
         text = text .. ", "
       end
-      text = text .. name
+      text = text .. BOM.Color("ffffff", name)
     end
   end
 
@@ -401,7 +409,7 @@ function spellButtonsTabModule:UpdateForcecastTooltip(button, spell)
   BOM.Tool.TooltipText(
           button,
           _t("TooltipForceCastOnTarget") .. "|n"
-                  .. string.format(_t("FormatToggleTarget"), BOM.lastTarget)
+                  .. string.format(_t("FormatToggleTarget"), BOM.Color("ffffff", BOM.lastTarget))
                   .. tooltip_force_targets)
 end
 
@@ -418,7 +426,7 @@ function spellButtonsTabModule:UpdateExcludeTargetsTooltip(button, spell)
   BOM.Tool.TooltipText(
           button,
           _t("TooltipExcludeTarget") .. "|n"
-                  .. string.format(_t("FormatToggleTarget"), BOM.lastTarget)
+                  .. string.format(_t("FormatToggleTarget"), BOM.Color("ffffff", BOM.lastTarget))
                   .. tooltip_exclude_targets)
 end
 
@@ -507,7 +515,7 @@ function spellButtonsTabModule:UpdateSelectedSpell(spell)
                   .. _t("MessageClearedForced") .. ": " .. lastTarget)
           spellForcedTarget[lastTarget] = nil
         end
-        self:UpdateForcecastTooltip(self, profileSpell)
+        spellButtonsTabModule:UpdateForcecastTooltip(self, profileSpell)
       end)
       -------------------------
       excludeButton:Enable()
@@ -570,42 +578,26 @@ function spellButtonsTabModule:UpdateSelectedSpell(spell)
   end
 end
 
-function spellButtonsTabModule:ClearTab()
-  BOM.HideAllManagedButtons()
+function spellButtonsTabModule:HideAllControls()
+  managedUiModule:HideAllManagedButtons()
 
-  for _j, frame in ipairs(self.categoryLabels) do
+  for cat, frame in ipairs(self.categoryLabels) do
     frame:Hide()
     --frame:SetParent(nil)
     frame:ClearAllPoints()
   end
+
   -- Keep labels hidden
-  wipe(self.categoryLabels)
+  --wipe(self.categoryLabels)
 
   --BomC_SpellTab_Scroll_Child
   for _i, spell in ipairs(allBuffsModule.allBuffs) do
-    for _j, frame in ipairs(spell.frames) do
-      frame:Hide()
-      --frame:SetParent(nil)
-      frame:ClearAllPoints()
+    if self:CategoryIsHidden(spell.category) then
+      spell.frames:Destroy()
+      spell.frames = buffRowModule:New(tostring(spell.singleId))
+    else
+      spell.frames:Hide()
     end
-    -- Keep controls hidden
-    --spell.frames = buffRowModule:New()
-  end
-end
-
-spellButtonsTabModule.lastFullRebuild = 0
-spellButtonsTabModule.LIMIT_FULL_REBUILD_PER = 2.0 -- no more than every 2 seconds
-
---- Do not run more often than every 1 second
-function spellButtonsTabModule:ClearRebuildSpellButtonsTab()
-  local now = GetTime()
-  if now - self.lastFullRebuild > self.LIMIT_FULL_REBUILD_PER then
-    self.lastFullRebuild = now
-    BOM.ForceUpdateSpellsTab = false
-    self:ClearTab()
-    self:CreateTab(UnitFactionGroup("player") == "Horde")
-  else
-    BOM.ForceUpdateSpellsTab = true
   end
 end
 
@@ -622,7 +614,8 @@ function spellButtonsTabModule:UpdateSpellsTab(caller)
     return
   end
 
-  self:ClearRebuildSpellButtonsTab()
+  self:HideAllControls()
+  self:CreateTab(UnitFactionGroup("player") == "Horde")
 
   local _className, playerClass, _classId = UnitClass("player")
 

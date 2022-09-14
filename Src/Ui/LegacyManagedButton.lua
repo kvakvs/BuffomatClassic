@@ -2,7 +2,11 @@ local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BomAddon
 
 ---@class BomUiMyButtonModule
+---@field managed table<string, BomLegacyControl> Contains all MyButtons with uniqueId
+---@field managedWithoutUniqueId table<number, BomLegacyControl> Contains all MyButtons without uniqueId
 local managedUiModule = BuffomatModule.New("Ui/MyButton") ---@type BomUiMyButtonModule
+managedUiModule.managed = {}
+managedUiModule.managedWithoutUniqueId = {}
 
 local ONIcon = "|TInterface\\RAIDFRAME\\ReadyCheck-Ready:0:0:0:0:64:64:4:60:4:60|t"
 local OFFIcon = "|TInterface\\RAIDFRAME\\ReadyCheck-NotReady:0:0:0:0:64:64:4:60:4:60|t"
@@ -186,10 +190,6 @@ function BOM.MyButton_SetSpell(self, spell)
   self:SetAttribute("unit", "player")
 end
 
----Contains all MyButtons
----@type table<string, BomLegacyControl>
-local managedUiButtons = {}
-
 ---Creates small clickable button in the spell tab
 ---@param parent table - UI parent frame
 ---@param sel string - texture for checked / selected
@@ -210,10 +210,10 @@ function managedUiModule:CreateManagedButton(parent, sel, unsel, dis, selCoord, 
 end
 
 function managedUiModule:ManageControl(uniqueId, control)
-  if uniqueId then
-    managedUiButtons[uniqueId] = control
+  if uniqueId ~= nil then
+    self.managed[uniqueId] = control
   else
-    table.insert(managedUiButtons, control)
+    table.insert(self.managedWithoutUniqueId, control)
   end
 end
 
@@ -227,17 +227,25 @@ function managedUiModule:CreateMyButtonSecure(parent, sel, unsel, dis, selCoord,
   return newButton
 end
 
-function BOM.MyButtonUpdateAll()
-  for i, Frame in ipairs(managedUiButtons) do
-    if Frame.SetState then
-      Frame:SetState()
+function managedUiModule:UpdateAll()
+  for uniq, control in pairs(self.managed) do
+    if control.SetState then
+      control:SetState()
+    end
+  end
+  for i, control in ipairs(self.managedWithoutUniqueId) do
+    if control.SetState then
+      control:SetState()
     end
   end
 end
 
 -- Hides all icons and clickable buttons in the spells tab
-function BOM.HideAllManagedButtons()
-  for i, Frame in ipairs(managedUiButtons) do
-    Frame:Hide()
+function managedUiModule:HideAllManagedButtons()
+  for uniq, control in pairs(self.managed) do
+    control:Hide()
+  end
+  for i, control in ipairs(self.managedWithoutUniqueId) do
+    control:Hide()
   end
 end

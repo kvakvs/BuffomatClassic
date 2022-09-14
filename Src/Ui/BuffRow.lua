@@ -45,6 +45,20 @@ function buffRowModule:New(uniqueId)
   return newRow
 end
 
+function buffRowClass:Hide()
+  for _j, frame in ipairs(self) do
+    frame:Hide()
+  end
+end
+
+function buffRowClass:Destroy()
+  for _j, frame in ipairs(self) do
+    frame:Hide()
+    frame:ClearAllPoints()
+    frame:SetParent(nil)
+  end
+end
+
 ---@return BomControlModule Created or pre-existing enable checkbox
 ---@param tooltip string
 function buffRowClass:CreateEnableCheckbox(tooltip)
@@ -198,9 +212,9 @@ function buffRowClass:CreateClassToggle(class, tooltip, onClick)
             BOM.ICON_DISABLED,
             BOM.CLASS_ICONS_ATLAS_TEX_COORD[class],
             nil, nil, self.uniqueId .. "." .. class)
-    self[class]:SetOnClick(onClick)
   end
 
+  self[class]:SetOnClick(onClick)
   BOM.Tool.TooltipText(self[class], tooltip)
   self[class]:Show()
   return self[class]
@@ -217,9 +231,9 @@ function buffRowClass:CreateTankToggle(tooltip, onClick)
             BOM.ICON_DISABLED,
             BOM.ICON_TANK_COORD,
             nil, nil, self.uniqueId .. ".tank")
-    self.tank:SetOnClick(onClick)
   end
 
+  self.tank:SetOnClick(onClick)
   BOM.Tool.TooltipText(self.tank, tooltip)
   self.tank:Show()
   return self.tank
@@ -236,9 +250,9 @@ function buffRowClass:CreatePetToggle(tooltip, onClick)
             BOM.ICON_DISABLED,
             BOM.ICON_PET_COORD,
             nil, nil, self.uniqueId .. ".pet")
-    self.pet:SetOnClick(onClick)
   end
 
+  self.pet:SetOnClick(onClick)
   BOM.Tool.TooltipText(self.pet, tooltip)
   self.pet:Show()
   return self.pet
@@ -252,6 +266,7 @@ function buffRowClass:CreateForceCastToggle(tooltip, spell)
             "ForceCast" .. spell.singleId,
             BomC_SpellTab_Scroll_Child,
             BOM.ICON_TARGET_ON)
+    managedUiModule:ManageControl(self.uniqueId .. ".forceCastToggle", self.toggleForceCast)
     self.toggleForceCast:SetWidth(20);
     self.toggleForceCast:SetHeight(20);
   end
@@ -269,6 +284,7 @@ function buffRowClass:CreateExcludeToggle(tooltip, spell)
             "Exclude" .. spell.singleId,
             BomC_SpellTab_Scroll_Child,
             BOM.ICON_TARGET_EXCLUDE)
+    managedUiModule:ManageControl(self.uniqueId .. ".excludeToggle", self.toggleExclude)
     self.toggleExclude:SetWidth(20);
     self.toggleExclude:SetHeight(20);
   end

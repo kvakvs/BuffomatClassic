@@ -1814,9 +1814,9 @@ end -- end function bomUpdateScan_PreCheck()
 ---and what would be their priority?
 ---@param from string Debug value to trace the caller of this function
 function taskScanModule:UpdateScan(from)
-  if BOM.ForceUpdateSpellsTab then
-    spellButtonsTabModule:ClearRebuildSpellButtonsTab()
-  end
+  --if BOM.ForceUpdateSpellsTab then
+  --spellButtonsTabModule:ClearRebuildSpellButtonsTab()
+  --end
 
   self:UpdateScan_PreCheck(from)
 end
