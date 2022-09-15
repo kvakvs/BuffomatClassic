@@ -79,7 +79,6 @@ Src/TaskScan.lua
 Src/BuffChecks.lua
 Src/Toolbox.lua
 Src/Toolbox.lua
-Src/LibClassicSpecs.lua
 
 Src/Ui/Buffomat.xml
 
