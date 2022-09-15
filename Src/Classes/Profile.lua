@@ -107,8 +107,6 @@ function profileModule:BattlegroundProfile()
   end
 end
 
---local lastSelectedProfile = ""
-
 ---Based on profile settings and current PVE or PVP instance choose the mode
 ---of operation
 ---@return string
@@ -130,11 +128,6 @@ function profileModule:ChooseProfile()
   elseif instanceType == "pvp" or instanceType == "arena" then
     selectedProfile = self:BattlegroundProfile()
   end
-
-  --if selectedProfile ~= lastSelectedProfile then
-    --BOM:Print("Selected profile: " .. _t("profile_" .. selectedProfile))
-    --lastSelectedProfile = selectedProfile
-  --end
 
   return selectedProfile
 end

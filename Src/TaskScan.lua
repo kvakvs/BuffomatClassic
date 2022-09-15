@@ -1775,12 +1775,7 @@ function taskScanModule:UpdateScan_PreCheck(from)
 
   if buffomatModule.currentProfileName ~= selectedProfileName then
     buffomatModule:UseProfile(selectedProfileName)
-
     spellButtonsTabModule:UpdateSpellsTab("UpdateScan1")
-    BomC_MainWindow_Title:SetText(
-            BOM.FormatTexture(constModule.BOM_BEAR_ICON_FULLPATH)
-                    .. " " .. constModule.SHORT_TITLE .. " - "
-                    .. L["profile_" .. selectedProfileName])
     BOM.SetForceUpdate("ProfileChanged")
   end
 

@@ -253,17 +253,23 @@ function buffomatModule.ChooseProfile(profile)
   taskScanModule:UpdateScan("ChooseProfile")
 end
 
-function buffomatModule:UseProfile(profile)
-  if buffomatModule.currentProfileName == profile then
+function buffomatModule:UseProfile(profileName)
+  if buffomatModule.currentProfileName == profileName then
     return
   end
 
-  buffomatModule.currentProfileName = profile
+  buffomatModule.currentProfileName = profileName
 
-  local selectedProfile = self.character[profile] or characterSettingsModule:New()
+  local selectedProfile = self.character[profileName] or characterSettingsModule:New()
   buffomatModule.currentProfile = selectedProfile
 
-  BOM:Print("Using profile " .. _t("profile_" .. profile))
+  BomC_MainWindow_Title:SetText(
+          BOM.FormatTexture(constModule.BOM_BEAR_ICON_FULLPATH)
+                  .. _t("profile_" .. profileName)
+                  -- .. " - " .. constModule.SHORT_TITLE
+  )
+
+  BOM:Print("Using profile " .. _t("profile_" .. profileName))
 end
 
 ---When BomCharacterState.WatchGroup has changed, update the buff tab text to show what's
@@ -373,14 +379,6 @@ function buffomatModule:InitUI()
             end
           end,
           constModule.SHORT_TITLE)
-
-  BomC_MainWindow_Title:SetText(
-          BOM.FormatTexture(constModule.BOM_BEAR_ICON_FULLPATH)
-                  .. " "
-                  .. _t("Buffomat")
-                  .. " - "
-                  .. _t("profile_solo"))
-  --BomC_ListTab_Button:SetText(L["BtnGetMacro"])
 
   buffomatModule:OptionsInit()
   BOM.PartyUpdateNeeded = true
@@ -543,7 +541,6 @@ function BuffomatAddon:OnInitialize()
   -- or setting up slash commands.
   profileModule:Setup()
   buffomatModule:InitGlobalStates()
-  buffomatModule:UseProfile(profileModule:SoloProfile()) -- after initglobalstates
 end
 
 ---AceAddon handler
@@ -562,6 +559,7 @@ function BuffomatAddon:OnEnable()
               optionsPopupModule:Setup(self, true)
             end
           end)
+  buffomatModule:UseProfile(profileModule:SoloProfile())
 end
 
 ---AceAddon handler
