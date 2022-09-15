@@ -13,6 +13,7 @@ local spellButtonsTabModule = BuffomatModule.Import("Ui/SpellButtonsTab") ---@ty
 local buffDefModule = BuffomatModule.Import("BuffDefinition") ---@type BomBuffDefinitionModule
 local taskListModule = BuffomatModule.Import("TaskList") ---@type BomTaskListModule
 local unitCacheModule = BuffomatModule.Import("UnitCache") ---@type BomUnitCacheModule
+local profileModule = BuffomatModule.Import("Profile") ---@type BomProfileModule
 
 local L = setmetatable({}, { __index = function(t, k)
   if BOM.L and BOM.L[k] then
@@ -23,8 +24,6 @@ local L = setmetatable({}, { __index = function(t, k)
 end })
 
 taskScanModule.saveSomeoneIsDead = false
-
-BOM.ALL_PROFILES = { "solo", "group", "raid", "battleground" }
 
 local tasklist ---@type BomTaskList
 
@@ -472,31 +471,6 @@ function taskScanModule:IsActive(playerUnit)
   return true, nil
 end
 
----Based on profile settings and current PVE or PVP instance choose the mode
----of operation
----@return string
-function taskScanModule:ChooseProfile()
-  local in_instance, instance_type = IsInInstance()
-  local auto_profile = "solo"
-
-  if IsInRaid() then
-    auto_profile = "raid"
-  elseif IsInGroup() then
-    auto_profile = "group"
-  end
-
-  -- TODO: Refactor isDisabled into a function, also return reason why is disabled
-  if BOM.ForceProfile then
-    auto_profile = BOM.ForceProfile
-  elseif not buffomatModule.character.UseProfiles then
-    auto_profile = "solo"
-  elseif instance_type == "pvp" or instance_type == "arena" then
-    auto_profile = "battleground"
-  end
-
-  return auto_profile
-end
-
 ---Activate tracking spells
 function taskScanModule:ActivateSelectedTracking()
   --reset tracking
@@ -570,14 +544,14 @@ function taskScanModule:CheckChangesAndUpdateSpelltab()
     if spell.type == "aura" then
       if buffDefModule:IsSpellEnabled(spell.buffId) then
         if BOM.ActivePaladinAura == spell.buffId
-                and BOM.CurrentProfile.LastAura ~= spell.buffId then
-          BOM.CurrentProfile.LastAura = spell.buffId
+                and buffomatModule.currentProfile.LastAura ~= spell.buffId then
+          buffomatModule.currentProfile.LastAura = spell.buffId
           spellButtonsTabModule:UpdateSpellsTab("ForceUp4")
         end
       else
-        if BOM.CurrentProfile.LastAura == spell.buffId
-                and BOM.CurrentProfile.LastAura ~= nil then
-          BOM.CurrentProfile.LastAura = nil
+        if buffomatModule.currentProfile.LastAura == spell.buffId
+                and buffomatModule.currentProfile.LastAura ~= nil then
+          buffomatModule.currentProfile.LastAura = nil
           spellButtonsTabModule:UpdateSpellsTab("ForceUp5")
         end
       end -- if currentprofile.spell.enable
@@ -585,14 +559,14 @@ function taskScanModule:CheckChangesAndUpdateSpelltab()
     elseif spell.type == "seal" then
       if buffDefModule:IsSpellEnabled(spell.buffId) then
         if BOM.ActivePaladinSeal == spell.buffId
-                and BOM.CurrentProfile.LastSeal ~= spell.buffId then
-          BOM.CurrentProfile.LastSeal = spell.buffId
+                and buffomatModule.currentProfile.LastSeal ~= spell.buffId then
+          buffomatModule.currentProfile.LastSeal = spell.buffId
           spellButtonsTabModule:UpdateSpellsTab("ForceUp6")
         end
       else
-        if BOM.CurrentProfile.LastSeal == spell.buffId
-                and BOM.CurrentProfile.LastSeal ~= nil then
-          BOM.CurrentProfile.LastSeal = nil
+        if buffomatModule.currentProfile.LastSeal == spell.buffId
+                and buffomatModule.currentProfile.LastSeal ~= nil then
+          buffomatModule.currentProfile.LastSeal = nil
           spellButtonsTabModule:UpdateSpellsTab("ForceUp7")
         end
       end -- if currentprofile.spell.enable
@@ -628,7 +602,7 @@ end
 ---@param playerUnit BomUnit
 function taskScanModule:CancelBuffs(playerUnit)
   for i, spell in ipairs(BOM.CancelBuffs) do
-    if BOM.CurrentProfile.CancelBuff[spell.buffId].Enable
+    if buffomatModule.currentProfile.CancelBuff[spell.buffId].Enable
             and not spell.OnlyCombat
     then
       local player_buff = playerUnit.knownBuffs[spell.buffId]
@@ -1797,15 +1771,16 @@ function taskScanModule:UpdateScan_PreCheck(from)
   BOM.RepeatUpdate = false
 
   --Choose Profile
-  local auto_profile = self:ChooseProfile()
+  local selectedProfileName = profileModule:ChooseProfile()
 
-  if BOM.CurrentProfile ~= buffomatModule.character[auto_profile] then
-    BOM.CurrentProfile = buffomatModule.character[auto_profile]
+  if buffomatModule.currentProfileName ~= selectedProfileName then
+    buffomatModule:UseProfile(selectedProfileName)
+
     spellButtonsTabModule:UpdateSpellsTab("UpdateScan1")
     BomC_MainWindow_Title:SetText(
             BOM.FormatTexture(constModule.BOM_BEAR_ICON_FULLPATH)
                     .. " " .. constModule.SHORT_TITLE .. " - "
-                    .. L["profile_" .. auto_profile])
+                    .. L["profile_" .. selectedProfileName])
     BOM.SetForceUpdate("ProfileChanged")
   end
 
@@ -1821,6 +1796,7 @@ function taskScanModule:UpdateScan(from)
   --spellButtonsTabModule:ClearRebuildSpellButtonsTab()
   --end
 
+  buffomatModule:UseProfile(profileModule:ChooseProfile())
   self:UpdateScan_PreCheck(from)
 end
 
@@ -1846,12 +1822,12 @@ end
 
 ---On Combat Start go through cancel buffs list and cancel those bufs
 function BOM.DoCancelBuffs()
-  if BOM.SelectedSpells == nil or BOM.CurrentProfile == nil then
+  if BOM.SelectedSpells == nil or buffomatModule.currentProfile == nil then
     return
   end
 
   for i, spell in ipairs(BOM.CancelBuffs) do
-    if BOM.CurrentProfile.CancelBuff[spell.buffId].Enable
+    if buffomatModule.currentProfile.CancelBuff[spell.buffId].Enable
             and taskScanModule:CancelBuff(spell.singleFamily)
     then
       BOM:Print(string.format(_t("message.CancelBuff"), spell.singleLink or spell.singleText,

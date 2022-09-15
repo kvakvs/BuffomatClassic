@@ -234,8 +234,8 @@ end
 ---@param party table<number, BomUnit>
 function buffChecksModule:PaladinNeedsAura(buff, playerUnit, party)
   if BOM.ActivePaladinAura ~= buff.buffId
-          and (BOM.CurrentProfile.LastAura == nil
-          or BOM.CurrentProfile.LastAura == buff.buffId)
+          and (buffomatModule.currentProfile.LastAura == nil
+          or buffomatModule.currentProfile.LastAura == buff.buffId)
   then
     tinsert(buff.UnitsNeedBuff, playerUnit)
   end
@@ -246,8 +246,8 @@ end
 ---@param party table<number, BomUnit>
 function buffChecksModule:PaladinNeedsSeal(spell, playerUnit, party)
   if BOM.ActivePaladinSeal ~= spell.buffId
-          and (BOM.CurrentProfile.LastSeal == nil
-          or BOM.CurrentProfile.LastSeal == spell.buffId)
+          and (buffomatModule.currentProfile.LastSeal == nil
+          or buffomatModule.currentProfile.LastSeal == spell.buffId)
   then
     tinsert(spell.UnitsNeedBuff, playerUnit)
   end
@@ -336,7 +336,7 @@ function buffChecksModule:PartyNeedsBuff(spell, playerUnit, party, someoneIsDead
   for i, partyMember in ipairs(party) do
     local ok = false
     ---@type BomBuffDefinition
-    local profileSpell = BOM.CurrentProfile.Spell[spell.buffId]
+    local profileSpell = buffomatModule.currentProfile.Spell[spell.buffId]
 
     if profileSpell.Class[partyMember.class]
             and (not IsInRaid() or buffomatModule.character.WatchGroup[partyMember.group])

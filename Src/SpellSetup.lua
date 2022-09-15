@@ -9,6 +9,7 @@ local itemCacheModule = BuffomatModule.Import("ItemCache") ---@type BomItemCache
 local spellSetupModule = BuffomatModule.New("SpellSetup") ---@type BomSpellSetupModule
 
 local toolboxModule = BuffomatModule.Import("Toolbox") ---@type BomToolboxModule
+local profileModule = BuffomatModule.Import("Profile") ---@type BomProfileModule
 
 local L = setmetatable({}, { __index = function(t, k)
   if BOM.L and BOM.L[k] then
@@ -88,7 +89,7 @@ function spellSetupModule:Setup_CancelBuffs()
 
     BOM.Tool.iMerge(BOM.AllSpellIds, spell.singleFamily)
 
-    for j, profil in ipairs(BOM.ALL_PROFILES) do
+    for j, profil in ipairs(profileModule.ALL_PROFILES) do
       if buffomatModule.character[profil].CancelBuff[spell.buffId] == nil then
         buffomatModule.character[profil].CancelBuff[spell.buffId] = {}
         buffomatModule.character[profil].CancelBuff[spell.buffId].Enable = spell.default or false
@@ -251,7 +252,7 @@ function spellSetupModule:Setup_EachSpell_Add(spell)
   end
 
   --setDefaultValues!
-  for j, eachProfile in ipairs(BOM.ALL_PROFILES) do
+  for j, eachProfile in ipairs(profileModule.ALL_PROFILES) do
     ---@type BomBuffDefinition
     local profileSpell = buffomatModule.character[eachProfile].Spell[spell.buffId]
 
@@ -352,7 +353,7 @@ end
 
 ---Scan all spells known to Buffomat and see if they are available to the player
 function spellSetupModule:SetupAvailableSpells()
-  for i, profil in ipairs(BOM.ALL_PROFILES) do
+  for i, profil in ipairs(profileModule.ALL_PROFILES) do
     buffomatModule.character[profil].Spell = buffomatModule.character[profil].Spell or {}
     buffomatModule.character[profil].CancelBuff = buffomatModule.character[profil].CancelBuff or {}
     buffomatModule.character[profil].Spell[constModule.BLESSING_ID] = buffomatModule.character[profil].Spell[constModule.BLESSING_ID] or {}

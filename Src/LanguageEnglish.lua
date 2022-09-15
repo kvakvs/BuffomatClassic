@@ -318,10 +318,15 @@ function englishModule:Translations()
     TooltipCastOnTank                                 = "Cast on tanks",
     TooltipCastOnPet                                  = "Cast on pets",
 
+    ["profile.activeProfileMenuTag"]                  = "[active]",
     profile_solo                                      = "Solo",
+    profile_solo_spec2                                = "Solo (Second talents)",
     profile_group                                     = "Group",
+    profile_group_spec2                               = "Group (Second talents)",
     profile_raid                                      = "Raid",
+    profile_raid_spec2                                = "Raid (Second talents)",
     profile_battleground                              = "Battleground",
+    profile_battleground_spec2                        = "Battleground (Second talents)",
     profile_auto                                      = "Automatic",
 
     AboutInfo                                         = "Stamina! Int! Spirit! - Does that sound familiar? Buffomat scans "

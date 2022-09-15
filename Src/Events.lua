@@ -4,6 +4,7 @@ local BOM = BuffomatAddon ---@type BomAddon
 ---@class BomEventsModule
 local eventsModule = BuffomatModule.New("Events") ---@type BomEventsModule
 
+local profileModule = BuffomatModule.Import("Profile") ---@type BomProfileModule
 local buffomatModule = BuffomatModule.Import("Buffomat") ---@type BomBuffomatModule
 local constModule = BuffomatModule.Import("Const") ---@type BomConstModule
 local allBuffsModule = BuffomatModule.Import("AllBuffs") ---@type BomAllBuffsModule
@@ -241,7 +242,7 @@ local function Event_UI_ERROR_MESSAGE(errorType, message)
   elseif not InCombatLockdown() then
     if BOM.CheckForError then
       if message == SPELL_FAILED_LOWLEVEL then
-        bomDownGrade()
+        buffomatModule:DownGrade()
       else
         BOM.AddMemberToSkipList()
       end
@@ -274,6 +275,10 @@ local function Event_PartyChanged()
     end
     eventsModule.isPlayerInParty = inParty
   end
+end
+
+local function Event_TALENT_GROUP_CHANGED(newGroup, oldGroup)
+  buffomatModule:UseProfile(profileModule:ChooseProfile())
 end
 
 local function Event_UNIT_SPELLCAST_errors(unit)
@@ -327,8 +332,8 @@ end
 -- Global accessor to refresh the spells tab
 BOM.OnSpellsChanged = Event_SpellsChanged
 
-local function Event_ADDON_LOADED(arg1)
-end
+--local function Event_ADDON_LOADED(arg1)
+--end
 
 local function Event_GenericUpdate()
   BOM.SetForceUpdate()
@@ -368,6 +373,9 @@ function eventsModule:InitEvents()
   BuffomatAddon:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED", Event_UNIT_SPELLCAST_errors)
   BuffomatAddon:RegisterEvent("UNIT_SPELLCAST_INTERRUPTED", Event_UNIT_SPELLCAST_errors)
   BuffomatAddon:RegisterEvent("UNIT_SPELLCAST_FAILED", Event_UNIT_SPELLCAST_errors)
+
+  -- Dualspec talent switch
+  BuffomatAddon:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED", Event_TALENT_GROUP_CHANGED)
 
   -- TODO for TBC: PLAYER_REGEN_DISABLED / ENABLED is sent before/after the combat and protected frames lock up
 

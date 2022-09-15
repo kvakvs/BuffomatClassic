@@ -210,5 +210,16 @@ function russianModule:Translations()
     TooltipSettingsButton                       = "Открыть меню быстрых настроек и профайлов",
     TooltipCloseButton                          = "Скрыть окно Бафомёта, введите /bom или нажмите кнопку на мини-карте",
     TooltipCastButton                           = "Скастовать заклинание из списка.|nКнопка становится недоступной в бою.|nТакже можно использовать макро (вытащите кнопку Макро сверху на панель заклинаний)|nили привязать клавишу в Настройках - Прочие",
+
+    ["profile.activeProfileMenuTag"]            = "[активный]",
+    profile_solo                                = "Соло",
+    profile_solo_spec2                          = "Соло (Вторая специализация)",
+    profile_group                               = "Группа",
+    profile_group_spec2                         = "Группа (Вторая специализация)",
+    profile_raid                                = "Рейд",
+    profile_raid_spec2                          = "Рейд (Вторая специализация)",
+    profile_battleground                        = "Поле боя",
+    profile_battleground_spec2                  = "Поле боя (вторая специализация)",
+    profile_auto                                = "Авто профиль",
   }
 end

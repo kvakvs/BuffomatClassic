@@ -10,17 +10,14 @@ spellButtonsTabModule.categoryLabels = {}
 
 local _t = BuffomatModule.Import("Languages") ---@type BomLanguagesModule
 local allBuffsModule = BuffomatModule.Import("AllBuffs") ---@type BomAllBuffsModule
+local buffDefModule = BuffomatModule.Import("BuffDefinition") ---@type BomBuffDefinitionModule
 local buffomatModule = BuffomatModule.Import("Buffomat") ---@type BomBuffomatModule
 local buffRowModule = BuffomatModule.Import("Ui/BuffRow") ---@type BomBuffRowModule
---local itemCacheModule = BuffomatModule.Import("ItemCache") ---@type BomItemCacheModule
 local managedUiModule = BuffomatModule.New("Ui/MyButton") ---@type BomUiMyButtonModule
 local optionsPopupModule = BuffomatModule.Import("OptionsPopup") ---@type BomOptionsPopupModule
+local profileModule = BuffomatModule.Import("Profile") ---@type BomProfileModule
 local rowBuilderModule = BuffomatModule.Import("RowBuilder") ---@type BomRowBuilderModule
---local spellCacheModule = BuffomatModule.Import("SpellCache") ---@type BomSpellCacheModule
-local buffDefModule = BuffomatModule.Import("BuffDefinition") ---@type BomBuffDefinitionModule
---local spellSetupModule = BuffomatModule.Import("SpellSetup") ---@type BomSpellSetupModule
 local toolboxModule = BuffomatModule.Import("Toolbox") ---@type BomToolboxModule
---local uiButtonModule = BuffomatModule.Import("Ui/UiButton") ---@type BomUiButtonModule
 
 local L = setmetatable(
         {},
@@ -40,7 +37,7 @@ local function bomDoBlessingOnClick(self)
   for i, spell in ipairs(BOM.SelectedSpells) do
     if spell.isBlessing then
       -- TODO: use spell instead of BOM.CurrentProfile.Spell[]
-      BOM.CurrentProfile.Spell[spell.buffId].Class[self._privat_Var] = false
+      buffomatModule.currentProfile.Spell[spell.buffId].Class[self._privat_Var] = false
     end
   end
   self._privat_DB[self._privat_Var] = saved
@@ -115,7 +112,7 @@ function spellButtonsTabModule:AddSpellCancelRow(spell, rowBuilder)
 
   local enableCheckbox = spell.frames:CreateEnableCheckbox(_t("TooltipEnableBuffCancel"))
   rowBuilder:ChainToTheRight(infoIcon, enableCheckbox, 7)
-  enableCheckbox:SetVariable(BOM.CurrentProfile.CancelBuff[spell.buffId], "Enable")
+  enableCheckbox:SetVariable(buffomatModule.currentProfile.CancelBuff[spell.buffId], "Enable")
   enableCheckbox:Show()
 
   --Add "Only before combat" text label
@@ -466,7 +463,7 @@ function spellButtonsTabModule:UpdateSelectedSpell(spell)
 
   -- the pointer to spell in current BOM profile
   ---@type BomBuffDefinition
-  local profileSpell = BOM.CurrentProfile.Spell[spell.buffId]
+  local profileSpell = buffomatModule.currentProfile.Spell[spell.buffId]
   spell.frames.checkboxEnable:SetVariable(profileSpell, "Enable")
 
   if spell:HasClasses() then
@@ -569,8 +566,8 @@ function spellButtonsTabModule:UpdateSelectedSpell(spell)
           or spell.type == "seal") and spell.needForm == nil
   then
     if (spell.type == "tracking" and buffomatModule.character.LastTracking == spell.trackingIconId) or
-            (spell.type == "aura" and spell.buffId == BOM.CurrentProfile.LastAura) or
-            (spell.type == "seal" and spell.buffId == BOM.CurrentProfile.LastSeal) then
+            (spell.type == "aura" and spell.buffId == buffomatModule.currentProfile.LastAura) or
+            (spell.type == "seal" and spell.buffId == buffomatModule.currentProfile.LastSeal) then
       spell.frames.checkboxSet:SetState(true)
     else
       spell.frames.checkboxSet:SetState(false)
@@ -614,6 +611,7 @@ function spellButtonsTabModule:UpdateSpellsTab(caller)
     return
   end
 
+  buffomatModule:UseProfile(profileModule:ChooseProfile())
   self:HideAllControls()
   self:CreateTab(UnitFactionGroup("player") == "Horde")
 
@@ -632,7 +630,7 @@ function spellButtonsTabModule:UpdateSpellsTab(caller)
   end -- all spells
 
   for _i, spell in ipairs(BOM.CancelBuffs) do
-    spell.frames.checkboxEnable:SetVariable(BOM.CurrentProfile.CancelBuff[spell.buffId], "Enable")
+    spell.frames.checkboxEnable:SetVariable(buffomatModule.currentProfile.CancelBuff[spell.buffId], "Enable")
   end
 
   --Create small SINGLE-BUFF toggle to the right of [Cast <spell>]

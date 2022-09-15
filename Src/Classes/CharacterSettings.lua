@@ -4,6 +4,8 @@ local BOM = BuffomatAddon ---@type BomAddon
 ---@class BomCharacterSettingsModule
 local characterSettingsModule = BuffomatModule.New("CharacterSettings") ---@type BomCharacterSettingsModule
 
+local profileModule = BuffomatModule.Import("Profile") ---@type BomProfileModule
+
 ---@class BomCharacterSettings Current character state snapshots per profile
 ---@field Spell table<number, BomBuffDefinition>
 ---@field Duration table<string, number> Remaining aura duration on SELF, keyed with buff names
@@ -12,6 +14,10 @@ local characterSettingsModule = BuffomatModule.New("CharacterSettings") ---@type
 ---@field group BomProfile
 ---@field raid BomProfile
 ---@field battleground BomProfile
+---@field solo_spec2 BomProfile Alternate talents for WotLK dualspec
+---@field group_spec2 BomProfile Alternate talents for WotLK dualspec
+---@field raid_spec2 BomProfile Alternate talents for WotLK dualspec
+---@field battleground_spec2 BomProfile Alternate talents for WotLK dualspec
 ---@field BuffCategoriesHidden table<string, boolean> True if category is hidden (control in options)
 ---@field WatchGroup table<string, boolean> True to watch buffs in group 1..8
 
@@ -26,10 +32,19 @@ function characterSettingsModule:New(init)
   tab.Spell = tab.Spell or {}
   tab.Duration = tab.Duration or {}
   tab.LastTracking = tab.LastTracking or 0
-  tab.solo = tab.solo or {}
-  tab.group = tab.group or {}
-  tab.raid = tab.raid or {}
-  tab.battleground = tab.battleground or {}
+
+  tab.solo = tab.solo or profileModule:New()
+  tab.group = tab.group or profileModule:New()
+  tab.raid = tab.raid or profileModule:New()
+  tab.battleground = tab.battleground or profileModule:New()
+
+  if BOM.HaveWotLK then
+    tab.solo_spec2 = tab.solo_spec2 or profileModule:New()
+    tab.group_spec2 = tab.group_spec2 or profileModule:New()
+    tab.raid_spec2 = tab.raid_spec2 or profileModule:New()
+    tab.battleground_spec2 = tab.battleground_spec2 or profileModule:New()
+  end
+
   tab.BuffCategoriesHidden = tab.BuffCategoriesHidden or {}
 
   --setmetatable(tab, characterStateClass)

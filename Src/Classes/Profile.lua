@@ -2,9 +2,12 @@ local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BomAddon
 
 ---@class BomProfileModule
-local stateModule = BuffomatModule.New("Profile") ---@type BomProfileModule
+---@field ALL_PROFILES table<number, string>
+local profileModule = BuffomatModule.New("Profile") ---@type BomProfileModule
 
-BOM.Class = BOM.Class or {}
+local buffomatModule = BuffomatModule.Import("Buffomat") ---@type BomBuffomatModule
+local _t = BuffomatModule.Import("Languages") ---@type BomLanguagesModule
+local libClassicSpecsModule = BuffomatModule.Import("LibClassicSpecs") ---@type LibClassicSpecsModule
 
 ---@class BomProfile Snapshot of current options state as selected by the player
 ---Named options: Are addressed by their string name in translations, control names, etc
@@ -38,8 +41,100 @@ BOM.Class = BOM.Class or {}
 ---
 ---@field Cache table<number, table> Caches responses from GetItemInfo() and GetSpellInfo()
 
----@type BomProfile
-BOM.Class.Profile = {}
-BOM.Class.Profile.__index = BOM.Class.Profile
+---@return BomProfile
+function profileModule:New()
+  local profile = {} ---@type BomProfile
+  profile.AutoOpen = true
+  profile.AutoStand = true
+  profile.BuffTarget = true
+  profile.DeathBlock = true
+  profile.DisableInRestArea = true
+  profile.SomeoneIsDrinking = "low-prio"
+  profile.InInstance = true
+  profile.InPVP = true
+  profile.InWorld = true
+  profile.OpenLootable = true
+  profile.ReplaceSingle = true
+  profile.SameZone = true
+  profile.SelfFirst = true
+  return profile
+end
 
-local CLASS_TAG = "buffomat_state"
+function profileModule:Setup()
+  self.GetSpecialization = _G.GetSpecialization or libClassicSpecsModule.GetSpecialization
+
+  if BOM.HaveWotLK or GetSpecialization then
+    self.ALL_PROFILES = {
+      "solo", "solo_spec2",
+      "group", "group_spec2",
+      "raid", "raid_spec2",
+      "battleground", "battleground_spec2"
+    }
+  else
+    self.ALL_PROFILES = { "solo", "group", "raid", "battleground" }
+  end
+end
+
+function profileModule:SoloProfile()
+  if self:GetSpecialization() == 1 then
+    return "solo"
+  else
+    return "solo_spec2"
+  end
+end
+
+function profileModule:GroupProfile()
+  if self:GetSpecialization() == 1 then
+    return "group"
+  else
+    return "group_spec2"
+  end
+end
+
+function profileModule:RaidProfile()
+  if self:GetSpecialization() == 1 then
+    return "raid"
+  else
+    return "raid_spec2"
+  end
+end
+
+function profileModule:BattlegroundProfile()
+  if self:GetSpecialization() == 1 then
+    return "battleground"
+  else
+    return "battleground_spec2"
+  end
+end
+
+--local lastSelectedProfile = ""
+
+---Based on profile settings and current PVE or PVP instance choose the mode
+---of operation
+---@return string
+function profileModule:ChooseProfile()
+  local _inInstance, instanceType = IsInInstance()
+  local selectedProfile = self:SoloProfile()
+
+  if IsInRaid() then
+    selectedProfile = self:RaidProfile()
+  elseif IsInGroup() then
+    selectedProfile = self:GroupProfile()
+  end
+
+  -- TODO: Refactor isDisabled into a function, also return reason why is disabled
+  if BOM.ForceProfile then
+    selectedProfile = BOM.ForceProfile
+  elseif not buffomatModule.character.UseProfiles then
+    selectedProfile = self:SoloProfile()
+  elseif instanceType == "pvp" or instanceType == "arena" then
+    selectedProfile = self:BattlegroundProfile()
+  end
+
+  --if selectedProfile ~= lastSelectedProfile then
+    --BOM:Print("Selected profile: " .. _t("profile_" .. selectedProfile))
+    --lastSelectedProfile = selectedProfile
+  --end
+
+  return selectedProfile
+end

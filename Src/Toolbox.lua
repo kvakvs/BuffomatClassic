@@ -768,7 +768,7 @@ end
 
 -- DataBroker
 local bomDataBroker = false
-function Tool.AddDataBroker(icon, onClick, onTooltipShow, text)
+function toolboxModule:AddDataBroker(icon, onClick, onTooltipShow, text)
   if LibStub ~= nil and bomDataBroker ~= true then
     local Launcher = LibStub('LibDataBroker-1.1', true)
     if Launcher ~= nil then
