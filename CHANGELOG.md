@@ -2,7 +2,10 @@
 
 ## Buffomat Classic 2022.9.2
 
-- [bug] Performance improvements; Fix to raid lag bug
+- [bug] Performance improvements; Fix to raid lag bug is in the testing before 
+  this file is promoted from beta to release
+- [Feature] For WotLK with dual specialization, auto-profiles and profile 
+  selector now recognize second set of talents
 
 ## Buffomat Classic 2022.9.1
 
