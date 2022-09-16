@@ -35,7 +35,7 @@ function chineseModule:Translations()
     ["Category_wotlkPhysElixir"]                      = "物理药剂 (WLK)",
     ["Category_wotlkSpellElixir"]                     = "法系药剂 (WLK)",
     ["Category_wotlkElixir"]                          = "增益 药剂 (WLK)",
-    ["Category_wotlkFlask"]                           = "各级 (WLK)",
+    ["Category_wotlkFlask"]                           = "合剂 (WLK)",
 
     ["Category_scroll"]                               = "卷轴",
     ["Category_weaponEnchantment"]                    = "武器附魔",
