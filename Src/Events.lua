@@ -375,7 +375,9 @@ function eventsModule:InitEvents()
   BuffomatAddon:RegisterEvent("UNIT_SPELLCAST_FAILED", Event_UNIT_SPELLCAST_errors)
 
   -- Dualspec talent switch
-  BuffomatAddon:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED", Event_TALENT_GROUP_CHANGED)
+  if BOM.HaveWotLK then
+    BuffomatAddon:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED", Event_TALENT_GROUP_CHANGED)
+  end
 
   -- TODO for TBC: PLAYER_REGEN_DISABLED / ENABLED is sent before/after the combat and protected frames lock up
 

@@ -73,8 +73,16 @@ function profileModule:Setup()
   end
 end
 
+local function bomGetActiveTalentGroup()
+  if BOM.HaveWotLK then
+    return GetActiveTalentGroup()
+  else
+    return nil
+  end
+end
+
 function profileModule:SoloProfile()
-  local spec = GetActiveTalentGroup()
+  local spec = bomGetActiveTalentGroup()
   if spec == 1 or spec == nil then
     return "solo"
   else
@@ -83,7 +91,7 @@ function profileModule:SoloProfile()
 end
 
 function profileModule:GroupProfile()
-  local spec = GetActiveTalentGroup()
+  local spec = bomGetActiveTalentGroup()
   if spec == 1 or spec == nil then
     return "group"
   else
@@ -92,7 +100,7 @@ function profileModule:GroupProfile()
 end
 
 function profileModule:RaidProfile()
-  local spec = GetActiveTalentGroup()
+  local spec = bomGetActiveTalentGroup()
   if spec == 1 or spec == nil then
     return "raid"
   else
@@ -101,7 +109,7 @@ function profileModule:RaidProfile()
 end
 
 function profileModule:BattlegroundProfile()
-  local spec = GetActiveTalentGroup()
+  local spec = bomGetActiveTalentGroup()
   if spec == 1 or spec == nil then
     return "battleground"
   else

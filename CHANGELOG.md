@@ -1,39 +1,36 @@
 # Changelog
 
-## Buffomat Classic 2022.9.2
+## Buffomat Classic 2022.9.2.2
+- [Fix] Classic compatibility fix
 
+## Buffomat Classic 2022.9.2.1
 - [bug] Performance improvements; Fix to raid lag bug is in the testing before 
   this file is promoted from beta to release
 - [Feature] For WotLK with dual specialization, auto-profiles and profile 
   selector now recognize second set of talents
 
 ## Buffomat Classic 2022.9.1
-
 - [Shaman] Earthliving Weapon self-enchantment added
 - [Paladin] Seal of command was missing, now added
 
 ## Buffomat Classic 2022.9.0
-
 - [WotLK] Tracking herbs/ore feature restored
 - [WotLK] Crippling poison was disabled in WotLK incorrectly
 - [bug] Golden fish sticks had same buff id as (mistakenly) skullfish soup
 - [bug] Script error when choosing a profile
 
 ## Buffomat Classic 2022.7.5
-
 - Throttled rebuild frequency of abilities/buffs tab to max 1 per second. This 
   seems to have triggered lags in battlegrounds and raids. Being throttled at a 
   wrong time means that we must update as soon as the throttle allows, so the update 
   is performed asap after the cooldown window.
 
 ## Buffomat Classic 2022.7.4
-
 - [WotLK] Rogue poison ranks updated
 - Installing 7.2 or newer addon will also install a dummy addon named "BuffomatClassicTBC" which deactivates the old TBC
   version of the addon and allows reimporting of the old settings.
 
 ## Buffomat Classic 2022.7.1
-
 - All versions of addon are now merged into one, and you should delete (either automatically or manually the old "
   Buffomat Classic TBC")
 - A big new wave of updates for Wrath of the Lich King:
@@ -49,11 +46,9 @@
 - (Known problem) on First start spell tab can look empty, do a `/reload` one time.
 
 ## Buffomat Classic and TBC 2022.5.5
-
 - Fix for classic version (script error)
 
 ## Buffomat Classic and TBC 2022.5.1
-
 - Grouped buffs by categories
 - [Bug] Try cache items and spells and update all spells list icons and text
 - Added riding trinket reminder in Arena zones, do not forget your trinkets!
@@ -61,23 +56,19 @@
 - Chinese language update (contributed by nanjuekaien1 @github)
 
 ## Buffomat Classic and TBC 2022.4.1
-
 - Pet zone is now bound to player zone and buffing pets should work again (
   Contributed by @Anonomit on github)
 
 ## Buffomat Classic and TBC 2022.3.4, 3.5
-
 - [Bug] Added AceGUI to embeds.xml, this seems to be required by the options
   page.
 - [Bug] Order of lines in embeds.xml
 - Updated build number for Classic Era (11402)
 
 ## Buffomat Classic and TBC 2022.3.2
-
 - Script error fixed for uninitialized values of remaining durations settings.
 
 ## Buffomat Classic and TBC 2022.3.1
-
 - Shattrath Flasks added.
 - Item/spell info queries refresh spell tabs when they succeed, to fix the old
   problem with missing spell/item names.
