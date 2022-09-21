@@ -1,5 +1,8 @@
 # Changelog
 
+## Buffomat Classic 2022.9.3
+- [Bug] K'iru's song of victory correctly works for priests
+
 ## Buffomat Classic 2022.9.2.2
 - [Fix] Classic compatibility fix
 

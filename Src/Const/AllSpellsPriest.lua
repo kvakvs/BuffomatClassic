@@ -23,6 +23,7 @@ function priestModule:SetupPriestSpells(spells, enchants)
                                 44615 }  -- WotLK: Devout Candle
           })   :DefaultTargetClasses(allBuffsModule.BOM_ALL_CLASSES)
                :Category(allBuffsModule.CLASS)
+               :IgnoreIfHaveBuff(46302) -- Kiru's Song of Victory (Sunwell)
                :RequirePlayerClass("PRIEST")
 
   BOM.SpellDef_PrayerOfSpirit = function()
@@ -117,6 +118,6 @@ function priestModule:SetupPriestSpells(spells, enchants)
           { default      = false, isOwn = true,
             singleFamily = { 15286 }, -- WotLK: Vampiric Embrace
           }, { requireWotLK = true })
-          :RequirePlayerClass("PRIEST")
-          :Category(allBuffsModule.CLASS)
+               :RequirePlayerClass("PRIEST")
+               :Category(allBuffsModule.CLASS)
 end
