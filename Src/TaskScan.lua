@@ -3,17 +3,18 @@ local BOM = BuffomatAddon ---@type BomAddon
 ---@class BomTaskScanModule
 local taskScanModule = BuffomatModule.New("TaskScan") ---@type BomTaskScanModule
 
-local spellIdsModule = BuffomatModule.Import("SpellIds") ---@type BomSpellIdsModule
 local _t = BuffomatModule.Import("Languages") ---@type BomLanguagesModule
 local buffChecksModule = BuffomatModule.Import("BuffChecks") ---@type BomBuffChecksModule
+local buffDefModule = BuffomatModule.Import("BuffDefinition") ---@type BomBuffDefinitionModule
 local buffomatModule = BuffomatModule.Import("Buffomat") ---@type BomBuffomatModule
 local buffTargetModule = BuffomatModule.Import("UnitBuffTarget") ---@type BomUnitBuffTargetModule
 local constModule = BuffomatModule.Import("Const") ---@type BomConstModule
+local groupBuffTargetModule = BuffomatModule.Import("GroupBuffTarget") ---@type BomGroupBuffTargetModule
+local profileModule = BuffomatModule.Import("Profile") ---@type BomProfileModule
 local spellButtonsTabModule = BuffomatModule.Import("Ui/SpellButtonsTab") ---@type BomSpellButtonsTabModule
-local buffDefModule = BuffomatModule.Import("BuffDefinition") ---@type BomBuffDefinitionModule
+local spellIdsModule = BuffomatModule.Import("SpellIds") ---@type BomSpellIdsModule
 local taskListModule = BuffomatModule.Import("TaskList") ---@type BomTaskListModule
 local unitCacheModule = BuffomatModule.Import("UnitCache") ---@type BomUnitCacheModule
-local profileModule = BuffomatModule.Import("Profile") ---@type BomProfileModule
 
 local L = setmetatable({}, { __index = function(t, k)
   if BOM.L and BOM.L[k] then
@@ -721,7 +722,7 @@ function taskScanModule:AddBlessing(spell, party, playerMember, inRange)
                   spell.groupLink or spell.groupText,
                   spell.singleText,
                   "",
-                  BOM.Class.GroupBuffTarget:new(eachClassName),
+                  groupBuffTargetModule:New(eachClassName),
                   false)
           inRange = true
 
@@ -734,7 +735,7 @@ function taskScanModule:AddBlessing(spell, party, playerMember, inRange)
                   spell.groupLink or spell.groupText,
                   spell.singleText,
                   "",
-                  BOM.Class.GroupBuffTarget:new(eachClassName),
+                  groupBuffTargetModule:New(eachClassName),
                   true)
         end
       end -- if needgroup >= minblessing
@@ -844,7 +845,7 @@ function taskScanModule:AddBuff(spell, party, playerMember, inRange)
                   spell.groupLink or spell.groupText,
                   spell.singleText,
                   "",
-                  BOM.Class.GroupBuffTarget:new(groupIndex),
+                  groupBuffTargetModule:New(groupIndex),
                   false)
           inRange = true
 
@@ -856,7 +857,7 @@ function taskScanModule:AddBuff(spell, party, playerMember, inRange)
                   spell.groupLink or spell.groupText,
                   spell.singleText,
                   "",
-                  BOM.Class.GroupBuffTarget:new(groupIndex),
+                  groupBuffTargetModule:New(groupIndex),
                   false)
         end -- if group not nil
       end

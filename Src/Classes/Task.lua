@@ -25,7 +25,7 @@ taskClass.__index = taskClass
 
 --Creates a new TaskListItem
 ---@param priority number|nil Sorting priority to display
----@param target BomUnit|GroupBuffTarget Unit to calculate distance to or boolean true
+---@param target BomUnit|BomGroupBuffTarget Unit to calculate distance to or boolean true
 ---@param actionText string
 ---@param actionLink string
 ---@param prefixText string

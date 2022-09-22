@@ -13,15 +13,19 @@ local buffDefModule = BuffomatModule.Import("BuffDefinition") ---@type BomBuffDe
 function deathknightModule:SetupDeathknightSpells(spells, enchants)
   -- TODO: Tag presence buffs and exclude other buffs from the same family when clicking the UI
   buffDefModule:createAndRegisterBuff(spells, 48266, -- Blood Presence
-          { isOwn = true, default = true, default = false, singleId = 48266, shapeshiftFormId = 1
+          { isOwn = true, default = true, singleId = 48266, shapeshiftFormId = 1
           })    :RequirePlayerClass("DEATHKNIGHT")
                 :Category(allBuffsModule.CLASS)
   buffDefModule:createAndRegisterBuff(spells, 48263, -- Frost Presence
-          { isOwn = true, default = true, default = false, singleId = 48263, shapeshiftFormId = 2
+          { isOwn = true, default = false, singleId = 48263, shapeshiftFormId = 2
           })    :RequirePlayerClass("DEATHKNIGHT")
                 :Category(allBuffsModule.CLASS)
   buffDefModule:createAndRegisterBuff(spells, 48265, -- Unholy Presence
-          { isOwn = true, default = true, default = false, singleId = 48265, shapeshiftFormId = 3
+          { isOwn = true, default = false, singleId = 48265, shapeshiftFormId = 3
           })    :RequirePlayerClass("DEATHKNIGHT")
+                :Category(allBuffsModule.CLASS)
+  buffDefModule:createAndRegisterBuff(spells, 57330, -- Horn of Winter
+          { default = true, singleId = 57330, singleDuration = allBuffsModule.DURATION_2M, isOwn = true })
+                :RequirePlayerClass("DEATHKNIGHT")
                 :Category(allBuffsModule.CLASS)
 end

@@ -6,64 +6,72 @@ local groupBuffTargetModule = BuffomatModule.New("GroupBuffTarget") ---@type Bom
 
 local toolboxModule = BuffomatModule.Import("Toolbox") ---@type BomToolboxModule
 
-BOM.Class = BOM.Class or {}
-
----@class GroupBuffTarget
+---@class BomGroupBuffTarget
 ---@field groupIndex number
+local groupBuffTargetClass = {}
 
----@type GroupBuffTarget
-BOM.Class.GroupBuffTarget = {}
-BOM.Class.GroupBuffTarget.__index = BOM.Class.GroupBuffTarget
+--BOM.Class.GroupBuffTarget = {} ---@type BomGroupBuffTarget
+--BOM.Class.GroupBuffTarget.__index = BOM.Class.GroupBuffTarget
 
-local G_CLASS_TAG = "groupBuffTarget"
-
-function BOM.Class.GroupBuffTarget:new(groupNum)
-  local fields = {}
+---@return BomGroupBuffTarget
+function groupBuffTargetModule:New(groupNum)
+  local fields = {} ---@type BomGroupBuffTarget
   setmetatable(fields, BOM.Class.GroupBuffTarget)
 
-  fields.t = G_CLASS_TAG
   fields.groupIndex = groupNum
-
   return fields
 end
 
 local TOO_FAR = 1000000
 
-function BOM.Class.GroupBuffTarget.GetDistance(self)
+function groupBuffTargetClass:GetDistanceRaid()
   local nearestDist = TOO_FAR
   local nearestCount = 0
 
-  if IsInRaid() then
-    for raidIndex = 1, 40 do
-      local name, rank, subgroup, level, class, fileName
-      , zone, online, isDead, role, isML = GetRaidRosterInfo(raidIndex);
-      local rName = "raid" .. raidIndex
+  for raidIndex = 1, 40 do
+    local name, rank, subgroup, level, class, fileName
+    , zone, online, isDead, role, isML = GetRaidRosterInfo(raidIndex);
+    local rName = "raid" .. raidIndex
 
-      if subgroup == self.groupIndex and UnitExists(rName) and UnitIsConnected(rName) then
-        local unitDistance = toolboxModule:UnitDistanceSquared(rName)
-        if unitDistance < nearestDist then
-          nearestDist = unitDistance
-          nearestCount = nearestCount + 1
-        end
+    if subgroup == self.groupIndex and UnitExists(rName) and UnitIsConnected(rName) then
+      local unitDistance = toolboxModule:UnitDistanceSquared(rName)
+      if unitDistance < nearestDist then
+        nearestDist = unitDistance
+        nearestCount = nearestCount + 1
       end
-    end -- for all raid members, searching for group
-  else
-    -- Search for nearest of 4 party members, who is not myself
-    for partyIndex = 1, 4 do
-      local pName = "party" .. partyIndex
-      if UnitExists(pName) and UnitIsConnected(pName) then -- skip offlines and missing
-        local unitDistance = toolboxModule:UnitDistanceSquared(pName)
-        if not UnitIsDead(pName) and unitDistance < nearestDist then
-          nearestDist = unitDistance
-          nearestCount = nearestCount + 1
-        end
-      end
-    end -- for party members
-  end
+    end
+  end -- for all raid members, searching for group
 
   return nearestDist
 end
 
-function BOM.Class.GroupBuffTarget.GetText(self)
+function groupBuffTargetClass:GetDistanceParty()
+  local nearestDist = TOO_FAR
+  local nearestCount = 0
+
+  -- Search for nearest member of 5man party, that is not myself
+  for partyIndex = 1, 4 do
+    local pName = "party" .. partyIndex
+    if UnitExists(pName) and UnitIsConnected(pName) then -- skip offlines and missing
+      local unitDistance = toolboxModule:UnitDistanceSquared(pName)
+      if not UnitIsDead(pName) and unitDistance < nearestDist then
+        nearestDist = unitDistance
+        nearestCount = nearestCount + 1
+      end
+    end
+  end -- for party members
+
+  return nearestDist
+end
+
+function groupBuffTargetClass:GetDistance()
+  if IsInRaid() then
+    return self:GetDistanceRaid()
+  else
+    return self:GetDistanceParty()
+  end
+end
+
+function groupBuffTargetClass:GetText()
   return string.format(BOM.L.FORMAT_GROUP_NUM, self.groupIndex)
 end

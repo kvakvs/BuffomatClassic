@@ -73,6 +73,7 @@ local DURATION_20M = 1200
 local DURATION_15M = 900
 local DURATION_10M = 600
 local DURATION_5M = 300
+local DURATION_2M = 120
 
 allBuffsModule.DURATION_1H = DURATION_1H
 allBuffsModule.DURATION_30M = DURATION_30M
@@ -80,6 +81,7 @@ allBuffsModule.DURATION_20M = DURATION_20M
 allBuffsModule.DURATION_15M = DURATION_15M
 allBuffsModule.DURATION_10M = DURATION_10M
 allBuffsModule.DURATION_5M = DURATION_5M
+allBuffsModule.DURATION_2M = DURATION_2M
 
 --- From 2 choices return TBC if BOM.IsTBC is true, otherwise return classic
 local function tbcOrClassic(tbc, classic)

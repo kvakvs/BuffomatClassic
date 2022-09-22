@@ -75,8 +75,8 @@ function taskListClass:Clear()
   wipe(self.lowPrioComments)
 end
 
----@param a GroupBuffTarget|BomUnit
----@param b GroupBuffTarget|BomUnit
+---@param a BomGroupBuffTarget|BomUnit
+---@param b BomGroupBuffTarget|BomUnit
 local function bomCompareGroupsOrMembers(a, b)
   if not b then
     return false
