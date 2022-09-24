@@ -273,8 +273,8 @@ function chineseModule:Translations()
     ["tooltip.buff.armorPenetration"]                 = "+护甲值",
     ["tooltip.buff.petStrength"]                      = "宠物 +力量",
 
-    ["tooltip.alcohol.stamina"]                       = "酒 +耐力",
-    ["tooltip.alcohol.spirit"]                        = "酒 +精神",
+    ["tooltip.alcohol.stamina"]                       = "酒+耐力",
+    ["tooltip.alcohol.spirit"]                        = "酒+精神",
 
     TabBuff                                     = "Buff",
     TabDoNotBuff                                = "不要 Buff",
