@@ -1,5 +1,9 @@
 # Changelog
 
+## Buffomat Classic 2022.9.4
+
+- [Death Knight] Horn of Winter; Bone Shield
+
 ## Buffomat Classic 2022.9.3
 - [Bug] K'iru's song of victory correctly works for priests
 

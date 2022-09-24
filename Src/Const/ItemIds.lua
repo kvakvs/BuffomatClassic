@@ -7,6 +7,8 @@ local itemIdsModule = BuffomatModule.New("ItemIds") ---@type BomItemIdsModule
 
 BOM.ItemId = {}
 
+BOM.Item_Deathknight_CorpseDust = 37201
+
 BOM.ItemId.Mage = {}
 
 BOM.ItemId.Mage.ManaSapphire = 33312
