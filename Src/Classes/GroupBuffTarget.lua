@@ -9,6 +9,7 @@ local toolboxModule = BuffomatModule.Import("Toolbox") ---@type BomToolboxModule
 ---@class BomGroupBuffTarget
 ---@field groupIndex number
 local groupBuffTargetClass = {}
+groupBuffTargetClass.__index = groupBuffTargetClass
 
 --BOM.Class.GroupBuffTarget = {} ---@type BomGroupBuffTarget
 --BOM.Class.GroupBuffTarget.__index = BOM.Class.GroupBuffTarget
@@ -16,7 +17,7 @@ local groupBuffTargetClass = {}
 ---@return BomGroupBuffTarget
 function groupBuffTargetModule:New(groupNum)
   local fields = {} ---@type BomGroupBuffTarget
-  setmetatable(fields, BOM.Class.GroupBuffTarget)
+  setmetatable(fields, groupBuffTargetClass)
 
   fields.groupIndex = groupNum
   return fields

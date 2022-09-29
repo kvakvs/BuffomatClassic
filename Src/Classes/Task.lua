@@ -31,8 +31,14 @@ taskClass.__index = taskClass
 ---@param prefixText string
 ---@param extraText string
 function taskModule:New(prefixText, actionLink, actionText, extraText,
-                            target, isInfo, priority)
-  local distance = target:GetDistance()
+                        target, isInfo, priority)
+  local distance
+  if target then
+    distance = target:GetDistance()
+  else
+    distance = 0
+  end
+
   local fields = {}  ---@type BomTask
   setmetatable(fields, taskClass)
 
