@@ -117,7 +117,7 @@ function priestModule:SetupPriestSpells(spells, enchants)
   buffDefModule:createAndRegisterBuff(spells, 15286, -- WotLK: Vampiric Embrace is a buff
           { default      = false, isOwn = true,
             singleFamily = { 15286 }, -- WotLK: Vampiric Embrace
-          }, { requireWotLK = true })
+          })   :RequireWotLK()
                :RequirePlayerClass("PRIEST")
                :Category(allBuffsModule.CLASS)
 end

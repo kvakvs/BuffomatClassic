@@ -1083,7 +1083,7 @@ function Tool.Profile(text, fn)
   local t_end = debugprofilestop()
 
   local duration = t_end - t_start
-  BOM.Dbg(text .. ": " .. tostring(duration))
+  --BOM.Dbg(text .. ": " .. tostring(duration))
 
   return result
 end

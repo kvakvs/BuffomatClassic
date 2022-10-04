@@ -62,7 +62,7 @@ function spellSetupModule:Setup_ResetCaches()
   BOM.AllSpellIds = {}
   BOM.SpellIdtoConfig = {}
   BOM.SpellIdIsSingle = {}
-  BOM.ConfigToSpell = {}
+  BOM.ConfigToSpell = {} ---@type table<number, BomBuffDefinition>
 
   buffomatModule.shared.Cache = buffomatModule.shared.Cache or {}
   buffomatModule.shared.Cache.Item2 = buffomatModule.shared.Cache.Item2 or {}

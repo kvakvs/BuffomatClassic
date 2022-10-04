@@ -183,76 +183,89 @@ function taskScanModule:UpdateSpellTargets(party, spell, playerUnit)
   return someoneIsDead
 end
 
----Updates the BOM macro
----@param member table - next target to buff
----@param spellId number - spell to cast
----@param command string - bag command
-function taskScanModule:UpdateMacro(member, spellId, command)
+--- Clears the Buffomat macro
+---@param command string
+function taskScanModule:WipeMacro(command)
   local macro = BOM.Macro
   macro:Recreate()
   wipe(macro.lines)
 
-  if member and spellId then
-    --Downgrade-Check
-    local spell = BOM.ConfigToSpell[spellId]
-    local rank = ""
-
-    if spell == nil then
-      print("NIL SPELL:", spellId)
-    end
-
-    if buffomatModule.shared.UseRank or member.unitId == "target" then
-      local level = UnitLevel(member.unitId)
-
-      if spell and level ~= nil and level > 0 then
-        local x
-
-        if spell.singleFamily and tContains(spell.singleFamily, spellId) then
-          x = spell.singleFamily
-        elseif spell.groupFamily and tContains(spell.groupFamily, spellId) then
-          x = spell.groupFamily
-        end
-
-        if x then
-          local newSpellId
-
-          for i, id in ipairs(x) do
-            if buffomatModule.shared.SpellGreatherEqualThan[id] == nil
-                    or buffomatModule.shared.SpellGreatherEqualThan[id] < level then
-              newSpellId = id
-            else
-              break
-            end
-            if id == spellId then
-              break
-            end
-          end
-          spellId = newSpellId or spellId
-        end
-      end -- if spell and level
-
-      rank = GetSpellSubtext(spellId) or ""
-
-      if rank ~= "" then
-        rank = "(" .. rank .. ")"
-      end
-    end
-
-    BOM.CastFailedSpellId = spellId
-    local name = GetSpellInfo(spellId)
-
-    if tContains(BOM.cancelForm, spellId) then
-      tinsert(macro.lines, "/cancelform [nocombat]")
-    end
-    tinsert(macro.lines, "/bom _checkforerror")
-    tinsert(macro.lines, "/cast [@" .. member.unitId .. ",nocombat]" .. name .. rank)
-    macro.icon = constModule.MACRO_ICON
-  else
-    if command then
-      tinsert(macro.lines, command)
-    end
-    macro.icon = constModule.MACRO_ICON_DISABLED
+  if command then
+    tinsert(macro.lines, command)
   end
+  macro.icon = constModule.MACRO_ICON_DISABLED
+
+  macro:UpdateMacro()
+end
+
+---Updates the BOM macro
+-- -@param member table - next target to buff
+-- -@param spellId number - spell to cast
+-- -@param command string - bag command
+-- -@param temporaryDownrank boolean Choose previous rank for some spells like Flametongue 10 on offhand
+--function taskScanModule:UpdateMacro(member, spellId, command, temporaryDownrank)
+---@param nextCast BomScan_NextCastSpell
+function taskScanModule:UpdateMacro(nextCast)
+  local macro = BOM.Macro
+  macro:Recreate()
+  wipe(macro.lines)
+
+  --Downgrade-Check
+  local spell = BOM.ConfigToSpell[nextCast.spellId]
+  local rank = ""
+
+  if spell == nil then
+    print("NIL SPELL:", nextCast.spellId)
+  end
+
+  if buffomatModule.shared.UseRank
+          or nextCast.targetUnit.unitId == "target"
+          or nextCast.temporaryDownrank then
+    local level = UnitLevel(nextCast.targetUnit.unitId)
+
+    if spell and level ~= nil and level > 0 then
+      local x
+
+      if spell.singleFamily and tContains(spell.singleFamily, nextCast.spellId) then
+        x = spell.singleFamily
+      elseif spell.groupFamily and tContains(spell.groupFamily, nextCast.spellId) then
+        x = spell.groupFamily
+      end
+
+      if x then
+        local newSpellId
+
+        for i, id in ipairs(x) do
+          if buffomatModule.shared.SpellGreaterEqualThan[id] == nil
+                  or buffomatModule.shared.SpellGreaterEqualThan[id] < level then
+            newSpellId = id
+          else
+            break
+          end
+          if id == nextCast.spellId then
+            break
+          end
+        end
+        nextCast.spellId = newSpellId or nextCast.spellId
+      end
+    end -- if spell and level
+
+    rank = GetSpellSubtext(nextCast.spellId) or ""
+
+    if rank ~= "" then
+      rank = "(" .. rank .. ")"
+    end
+  end
+
+  BOM.CastFailedSpellId = nextCast.spellId
+  local name = GetSpellInfo(nextCast.spellId)
+
+  if tContains(BOM.cancelForm, nextCast.spellId) then
+    tinsert(macro.lines, "/cancelform [nocombat]")
+  end
+  tinsert(macro.lines, "/bom _checkforerror")
+  tinsert(macro.lines, "/cast [@" .. nextCast.targetUnit.unitId .. ",nocombat]" .. name .. rank)
+  macro.icon = constModule.MACRO_ICON
 
   macro:UpdateMacro()
 end
@@ -317,6 +330,7 @@ end
 ---@field targetUnit string|nil
 ---@field spellId number|nil
 ---@field manaCost number
+---@field temporaryDownrank boolean Pick previous rank for certain spells, like Flametongue 10
 local nextCastSpell = {} ---@type BomScan_NextCastSpell
 
 ---@type number
@@ -344,52 +358,54 @@ end
 
 ---Stores a spell with cost/id/spell link to be casted in the `cast` global
 ---@param cost number Resource cost (mana cost)
----@param id number Spell id to capture
+---@param spellId number Spell id to capture
 ---@param link string Spell link for a picture
----@param member BomUnit player to benefit from the spell
----@param spell BomBuffDefinition the spell to be added
-function taskScanModule:QueueSpell(cost, id, link, member, spell)
+---@param targetUnit BomUnit player to benefit from the spell
+---@param buffDef BomBuffDefinition the spell to be added
+---@param temporaryDownrank boolean Pick previous rank for certain spells, like Flametongue 10
+function taskScanModule:QueueSpell(cost, spellId, link, targetUnit, buffDef, temporaryDownrank)
   if cost > bomCurrentPlayerMana then
     return -- ouch
   end
 
-  if not spell.type == "resurrection" and member.isDead then
+  if not buffDef.type == "resurrection" and targetUnit.isDead then
     -- Cannot cast resurrections on deads
     return
-  elseif nextCastSpell.spell and spell.type ~= "tracking" then
+  elseif nextCastSpell.spell and buffDef.type ~= "tracking" then
     if nextCastSpell.spell.type == "tracking" then
       return
-    elseif spell.type == "resurrection" then
+    elseif buffDef.type == "resurrection" then
       --------------------
       -- If resurrection
       --------------------
       if nextCastSpell.spell.type == "resurrection" then
-        if (tContains(BOM.RESURRECT_CLASS, nextCastSpell.targetUnit.class) and not tContains(BOM.RESURRECT_CLASS, member.class))
-                or (tContains(BOM.MANA_CLASSES, nextCastSpell.targetUnit.class) and not tContains(BOM.MANA_CLASSES, member.class))
-                or (not nextCastSpell.targetUnit.isGhost and member.isGhost)
-                or (nextCastSpell.targetUnit.distance < member.distance) then
+        if (tContains(BOM.RESURRECT_CLASS, nextCastSpell.targetUnit.class) and not tContains(BOM.RESURRECT_CLASS, targetUnit.class))
+                or (tContains(BOM.MANA_CLASSES, nextCastSpell.targetUnit.class) and not tContains(BOM.MANA_CLASSES, targetUnit.class))
+                or (not nextCastSpell.targetUnit.isGhost and targetUnit.isGhost)
+                or (nextCastSpell.targetUnit.distance < targetUnit.distance) then
           return
         end
       end
     else
       if (buffomatModule.shared.SelfFirst
-              and nextCastSpell.targetUnit.isPlayer and not member.isPlayer)
-              or (nextCastSpell.targetUnit.group ~= 9 and member.group == 9) then
+              and nextCastSpell.targetUnit.isPlayer and not targetUnit.isPlayer)
+              or (nextCastSpell.targetUnit.group ~= 9 and targetUnit.group == 9) then
         return
       elseif (not buffomatModule.shared.SelfFirst
-              or (nextCastSpell.targetUnit.isPlayer == member.isPlayer))
-              and ((nextCastSpell.targetUnit.group == 9) == (member.group == 9))
+              or (nextCastSpell.targetUnit.isPlayer == targetUnit.isPlayer))
+              and ((nextCastSpell.targetUnit.group == 9) == (targetUnit.group == 9))
               and nextCastSpell.manaCost > cost then
         return
       end
     end
   end
 
+  nextCastSpell.temporaryDownrank = temporaryDownrank
   nextCastSpell.manaCost = cost
-  nextCastSpell.spellId = id
+  nextCastSpell.spellId = spellId
   nextCastSpell.spellLink = link
-  nextCastSpell.targetUnit = member
-  nextCastSpell.spell = spell
+  nextCastSpell.targetUnit = targetUnit
+  nextCastSpell.spell = buffDef
 end
 
 ---Cleares the spell from `cast` global
@@ -399,6 +415,7 @@ function taskScanModule:ClearNextCastSpell()
   nextCastSpell.targetUnit = nil
   nextCastSpell.spell = nil
   nextCastSpell.spellLink = nil
+  nextCastSpell.temporaryDownrank = false
 end
 
 ---Run checks to see if BOM should not be scanning buffs
@@ -764,7 +781,7 @@ function taskScanModule:AddBlessing(spell, party, playerMember, inRange)
       end
 
       local add = ""
-      local blessing_name = buffDefModule:GetProfileSpell(constModule.BLESSING_ID)
+      local blessing_name = buffDefModule:GetProfileBuff(constModule.BLESSING_ID)
       if blessing_name[unitNeedsBuff.name] ~= nil then
         add = string.format(constModule.PICTURE_FORMAT, BOM.ICON_TARGET_ON)
       end
@@ -881,7 +898,7 @@ function taskScanModule:AddBuff(spell, party, playerMember, inRange)
       end
 
       local add = ""
-      local profileBuff = buffDefModule:GetProfileSpell(spell.buffId)
+      local profileBuff = buffDefModule:GetProfileBuff(spell.buffId)
 
       if profileBuff.ForcedTarget[unitNeedsBuff.name] then
         add = string.format(constModule.PICTURE_FORMAT, BOM.ICON_TARGET_ON)
@@ -1147,7 +1164,7 @@ function taskScanModule:AddConsumableWeaponBuff(spell, playerMember,
   if have_item then
     -- Have item, display the cast message and setup the cast button
     local texture, _, _, _, _, _, item_link, _, _, _ = GetContainerItemInfo(bag, slot)
-    local profile_spell = buffDefModule:GetProfileSpell(spell.buffId)
+    local profile_spell = buffDefModule:GetProfileBuff(spell.buffId)
 
     if profile_spell.OffHandEnable
             and playerMember.OffHandBuff == nil then
@@ -1227,67 +1244,77 @@ end
 
 ---Adds a display text for a weapon buff created by a spell (shamans and paladins)
 ---@param spell BomBuffDefinition - the spell to cast
----@param playerMember BomUnit - the player
+---@param playerUnit BomUnit - the player
 ---@param castButtonTitle string - if not empty, is item name from the bag
 ---@param macroCommand string - console command to use item from the bag
 ---@return string, string cast button title and macro command
-function taskScanModule:AddWeaponEnchant(spell, playerMember,
+function taskScanModule:AddWeaponEnchant(spell, playerUnit,
                                          castButtonTitle, macroCommand)
-  local block_offhand_enchant = false -- set to true to block temporarily
+  local blockOffhandEnchant = false -- set to true to block temporarily
 
   local _, self_class, _ = UnitClass("player")
   if BOM.IsTBC and self_class == "SHAMAN" then
     -- Special handling for TBC shamans, you cannot specify slot for enchants,
     -- and it goes into main then offhand
-    local has_mh, _mh_expire, _mh_charges, _mh_enchantid, has_oh, _oh_expire
+    local hasMainhand, _mh_expire, _mh_charges, _mh_enchantid, hasOffhand, _oh_expire
     , _oh_charges, _oh_enchantid = GetWeaponEnchantInfo()
 
-    if not has_mh then
+    if not hasMainhand then
       -- shamans in TBC can't enchant offhand if MH enchant is missing
-      block_offhand_enchant = true
+      blockOffhandEnchant = true
     end
 
-    if has_oh then
-      block_offhand_enchant = true
+    if hasOffhand then
+      blockOffhandEnchant = true
     end
   end
 
-  local profile_spell = buffDefModule:GetProfileSpell(spell.buffId)
+  local profileBuff = buffDefModule:GetProfileBuff(spell.buffId)
 
-  if profile_spell.MainHandEnable
-          and playerMember.MainHandBuff == nil then
-    -- Text: [Spell Name] (Main hand)
-    tasklist:Add(
-            spell.singleLink,
-            spell.singleText,
-            _t("TooltipMainHand"),
-            buffTargetModule:FromSelf(playerMember),
-            false)
-    self:QueueSpell(spell.singleMana, spell.singleId, spell.singleLink,
-            playerMember, spell)
-  end
-
-  if profile_spell.OffHandEnable
-          and playerMember.OffHandBuff == nil then
-    if block_offhand_enchant then
+  -- OFFHAND FIRST
+  -- Because offhand sets a temporaryDownrank flag in nextCastSpell and it somehow doesn't reset when offhand is queued second
+  if profileBuff.OffHandEnable
+          and playerUnit.OffHandBuff == nil then
+    if blockOffhandEnchant then
       -- Text: [Spell Name] (Off-hand) Blocked waiting
       tasklist:Add(
               spell.singleLink,
               spell.singleText,
               _t("TooltipOffHand") .. ": " .. _t("ShamanEnchantBlocked"),
-              buffTargetModule:FromSelf(playerMember),
+              buffTargetModule:FromSelf(playerUnit),
               true)
     else
+      -- Special case is ruled by the option `ShamanFlametongueRanked`
+      -- Flametongue enchant for spellhancement shamans only!
+      local downrank = spell.buffId == 16342 and buffomatModule.shared.ShamanFlametongueRanked
+      local taskText = ""
+      if downrank then
+        taskText = _t("TooltipOffHand") .. ": " .. _t("shaman.flametongueDownranked")
+      else
+        taskText = _t("TooltipOffHand")
+      end
+
       -- Text: [Spell Name] (Off-hand)
-      tasklist:Add(
-              spell.singleLink,
-              spell.singleText,
-              _t("TooltipOffHand"),
-              buffTargetModule:FromSelf(playerMember),
-              false)
-      self:QueueSpell(spell.singleMana, spell.singleId, spell.singleLink,
-              playerMember, spell)
+      -- or:   [Spell Name] (Off-hand) Downranked
+      tasklist:Add(spell.singleLink, spell.singleText, taskText, buffTargetModule:FromSelf(playerUnit), false)
+      local prevRank = spell:FindPreviousRank(spell.singleId)
+      self:QueueSpell(spell.singleMana, prevRank, spell.singleLink,
+              playerUnit, spell, downrank)
     end
+  end
+
+  -- MAINHAND AFTER OFFHAND
+  -- Because offhand sets a temporaryDownrank flag in nextCastSpell and it somehow doesn't reset when offhand is queued second
+  if profileBuff.MainHandEnable
+          and playerUnit.MainHandBuff == nil then
+    -- Text: [Spell Name] (Main hand)
+    tasklist:Add(
+            spell.singleLink,
+            spell.singleText,
+            _t("TooltipMainHand"),
+            buffTargetModule:FromSelf(playerUnit),
+            false)
+    self:QueueSpell(spell.singleMana, spell.singleId, spell.singleLink, playerUnit, spell, false)
   end
 
   return castButtonTitle, macroCommand
@@ -1542,7 +1569,7 @@ end
 ---@return boolean, string, string {in_range, cast_button_title, macro_command}
 function taskScanModule:ScanSelectedSpells(playerMember, party, inRange, castButtonTitle, macroCommand)
   for _, spell in ipairs(BOM.SelectedSpells) do
-    local profile_spell = buffDefModule:GetProfileSpell(spell.buffId)
+    local profile_spell = buffDefModule:GetProfileBuff(spell.buffId)
 
     if spell.isInfo and profile_spell.Whisper then
       self:WhisperExpired(spell)
@@ -1690,17 +1717,17 @@ function taskScanModule:UpdateScan_Scan()
   if BOM.PlayerCasting == "cast" then
     --Print player is busy (casting normal spell)
     self:CastButton(_t("castButton.Busy"), false)
-    self:UpdateMacro()
+    self:WipeMacro()
 
   elseif BOM.PlayerCasting == "channel" then
     --Print player is busy (casting channeled spell)
     self:CastButton(_t("castButton.BusyChanneling"), false)
-    self:UpdateMacro()
+    self:WipeMacro()
 
   elseif nextCastSpell.targetUnit and nextCastSpell.spellId then
     --Next cast is already defined - update the button text
     self:CastButton(nextCastSpell.spellLink, true)
-    self:UpdateMacro(nextCastSpell.targetUnit, nextCastSpell.spellId)
+    self:UpdateMacro(nextCastSpell)
 
     local cdtest = GetSpellCooldown(nextCastSpell.spellId) or 0
 
@@ -1754,7 +1781,7 @@ function taskScanModule:UpdateScan_Scan()
       self:CastButton(castButtonTitle, true)
     end
 
-    self:UpdateMacro(nil, nil, macroCommand)
+    self:WipeMacro(macroCommand)
   end -- if not player casting
 end -- end function bomUpdateScan_Scan()
 

@@ -145,7 +145,7 @@ function optionsPopupModule:Setup(control, minimap)
     if not spell.isConsumable then
       BOM.PopupDynamic:AddItem(spell.singleLink or spell.singleText,
               "keep",
-              buffDefModule:GetProfileSpell(spell.buffId),
+              buffDefModule:GetProfileBuff(spell.buffId),
               "Enable")
     end
   end

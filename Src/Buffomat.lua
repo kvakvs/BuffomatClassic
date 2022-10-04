@@ -573,17 +573,17 @@ function buffomatModule:DownGrade()
     local level = UnitLevel(BOM.CastFailedSpellTarget.unitId)
 
     if level ~= nil and level > -1 then
-      if buffomatModule.shared.SpellGreatherEqualThan[BOM.CastFailedSpellId] == nil
-              or buffomatModule.shared.SpellGreatherEqualThan[BOM.CastFailedSpellId] < level
+      if buffomatModule.shared.SpellGreaterEqualThan[BOM.CastFailedSpellId] == nil
+              or buffomatModule.shared.SpellGreaterEqualThan[BOM.CastFailedSpellId] < level
       then
-        buffomatModule.shared.SpellGreatherEqualThan[BOM.CastFailedSpellId] = level
+        buffomatModule.shared.SpellGreaterEqualThan[BOM.CastFailedSpellId] = level
         BOM.FastUpdateTimer()
         BOM.SetForceUpdate("Downgrade")
         BOM:Print(string.format(_t("MsgDownGrade"),
                 BOM.CastFailedSpell.singleText,
                 BOM.CastFailedSpellTarget.name))
 
-      elseif buffomatModule.shared.SpellGreatherEqualThan[BOM.CastFailedSpellId] >= level then
+      elseif buffomatModule.shared.SpellGreaterEqualThan[BOM.CastFailedSpellId] >= level then
         BOM.AddMemberToSkipList()
       end
     else

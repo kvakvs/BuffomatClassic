@@ -102,8 +102,8 @@ BOM.Class = BOM.Class or {}
 ---@field optionText string Used to create sections in spell list in the options page
 ---@field buffSource string Unit/player who gave this buff
 
-local spellDefClass = {} ---@type BomBuffDefinition
-spellDefClass.__index = spellDefClass
+local buffDefClass = {} ---@type BomBuffDefinition
+buffDefClass.__index = buffDefClass
 
 ---Creates a new SpellDef
 ---@param singleId number Spell id also serving as buffId key
@@ -111,7 +111,7 @@ spellDefClass.__index = spellDefClass
 ---@return BomBuffDefinition
 function buffDefModule:New(singleId, fields)
   local newSpell = fields or {} ---@type BomBuffDefinition
-  setmetatable(newSpell, spellDefClass)
+  setmetatable(newSpell, buffDefClass)
 
   newSpell.category = false -- special value no category
   newSpell.frames = buffRowModule:New(tostring(singleId)) -- spell buttons from the UI go here
@@ -259,7 +259,7 @@ function buffDefModule:conjureItem(spellId, itemId)
             singleFamily   = { spellId } })
 end
 
-function spellDefClass:Seal()
+function buffDefClass:Seal()
   -- for before TBC make this a seal spell, for TBC do not modify
   if not BOM.HaveTBC then
     self.type = "seal"
@@ -268,92 +268,92 @@ function spellDefClass:Seal()
 end
 
 ---@return BomBuffDefinition
-function spellDefClass:Category(cat)
+function buffDefClass:Category(cat)
   self.category = cat
   return self
 end
 
 ---@return BomBuffDefinition
 ---@param level number
-function spellDefClass:MaxLevel(level)
+function buffDefClass:MaxLevel(level)
   self.limitations.maxLevel = level
   return self
 end
 
 ---@return BomBuffDefinition
 ---@param spellId number Do not show spell if a better spell of different spell group is available
-function spellDefClass:HideIfSpellKnown(spellId)
+function buffDefClass:HideIfSpellKnown(spellId)
   self.limitations.hideIfSpellKnown = spellId
   return self
 end
 
 ---@return BomBuffDefinition
-function spellDefClass:RequireTBC()
+function buffDefClass:RequireTBC()
   self.limitations.requireTBC = true
   return self
 end
 
 ---@return BomBuffDefinition
-function spellDefClass:HideInTBC()
+function buffDefClass:HideInTBC()
   self.limitations.hideInTBC = true
   self.limitations.hideInWotLK = true
   return self
 end
 
 ---@return BomBuffDefinition
-function spellDefClass:RequireWotLK()
+function buffDefClass:RequireWotLK()
   self.limitations.requireWotLK = true
   return self
 end
 
 ---@return BomBuffDefinition
-function spellDefClass:HideInWotLK()
+function buffDefClass:HideInWotLK()
   self.limitations.hideInWotLK = true
   return self
 end
 
 ---@return BomBuffDefinition
-function spellDefClass:HunterPetFood()
+function buffDefClass:HunterPetFood()
   self.tbcHunterPetBuff = true
   return self
 end
 
 ---@return BomBuffDefinition
 ---@param classNames table<number,string> Class names to use as the default targets (user can modify)
-function spellDefClass:DefaultTargetClasses(classNames)
+function buffDefClass:DefaultTargetClasses(classNames)
   self.targetClasses = classNames
   return self
 end
 
 ---@return BomBuffDefinition
 ---@param className table<number,string>|string The class name or table of class names
-function spellDefClass:RequirePlayerClass(className)
+function buffDefClass:RequirePlayerClass(className)
   self.limitations.playerClass = className
   return self
 end
 
 ---@return BomBuffDefinition
 ---@param text string
-function spellDefClass:ExtraText(text)
+function buffDefClass:ExtraText(text)
   self.extraText = text
   return self
 end
 
 ---@return BomBuffDefinition
-function spellDefClass:IgnoreIfHaveBuff(spellId)
+function buffDefClass:IgnoreIfHaveBuff(spellId)
   self.ignoreIfBetterBuffs = self.ignoreIfBetterBuffs or {}
   tinsert(self.ignoreIfBetterBuffs, spellId)
   return self
 end
 
 ---@return BomBuffDefinition
-function spellDefClass:ElixirType(elixirType)
+function buffDefClass:ElixirType(elixirType)
   self.elixirType = elixirType
   return self
 end
 
 ---@return boolean Whether the spell allows user to do target class choices
-function spellDefClass:HasClasses()
+function buffDefClass:HasClasses()
   return not (self.isConsumable
           or self.isOwn
           or self.type == "resurrection"
@@ -364,13 +364,13 @@ function spellDefClass:HasClasses()
 end
 
 ---@param class_name string
-function spellDefClass:IncrementNeedGroupBuff(class_name)
+function buffDefClass:IncrementNeedGroupBuff(class_name)
   self.GroupsNeedBuff[class_name] = (self.GroupsNeedBuff[class_name] or 0) + 1
 end
 
 ---@param spellId number
 ---@param profileName string|nil
-function buffDefModule:GetProfileSpell(spellId, profileName)
+function buffDefModule:GetProfileBuff(spellId, profileName)
   if profileName == nil then
     return buffomatModule.currentProfile.Spell[spellId]
     --return allBuffsModule.allBuffs[spellId]
@@ -389,7 +389,7 @@ end
 ---@return boolean
 ---@param profile_name string|nil
 function buffDefModule:IsSpellEnabled(spell_id, profile_name)
-  local spell = buffDefModule:GetProfileSpell(spell_id, profile_name)
+  local spell = buffDefModule:GetProfileBuff(spell_id, profile_name)
   if spell == nil then
     return false
   end
@@ -400,7 +400,7 @@ end
 ---is available. This allows for late loaded icons.
 ---@param iconReadyFn function
 ---@return string|nil
-function spellDefClass:GetIcon(iconReadyFn)
+function buffDefClass:GetIcon(iconReadyFn)
   if self.itemIcon then
     iconReadyFn(self.itemIcon) -- value was ready
     return
@@ -419,7 +419,7 @@ end
 ---immediately if ready, or when ready. This allows for late loaded names.
 ---@param nameReadyFn function
 ---@return string|nil
-function spellDefClass:GetSingleText(nameReadyFn)
+function buffDefClass:GetSingleText(nameReadyFn)
   if self.singleText then
     nameReadyFn(self.singleText)
     return
@@ -428,13 +428,13 @@ function spellDefClass:GetSingleText(nameReadyFn)
   self:RefreshTextAndIcon(nil, nameReadyFn)
 end
 
-function spellDefClass:IsItem()
+function buffDefClass:IsItem()
   -- TODO: self.isConsumable does this too?
   return self.items or self.item
 end
 
 ---@param unit BomUnit
-function spellDefClass:DoesUnitHaveBetterBuffs(unit)
+function buffDefClass:DoesUnitHaveBetterBuffs(unit)
   if type(self.ignoreIfBetterBuffs) == "table" then
     for _i, spellId in ipairs(self.ignoreIfBetterBuffs) do
       if unit.knownBuffs[spellId] ~= nil or unit.allBuffs[spellId] ~= nil then
@@ -445,7 +445,7 @@ function spellDefClass:DoesUnitHaveBetterBuffs(unit)
   return false
 end
 
-function spellDefClass:ResetBuffTargets()
+function buffDefClass:ResetBuffTargets()
   wipe(self.GroupsNeedBuff)
   --wipe(self.GroupsHaveBetterBuff)
   wipe(self.GroupsHaveDead)
@@ -455,7 +455,7 @@ end
 
 ---@param iconReadyFn function|nil Call with result when icon value is ready
 ---@param nameReadyFn function|nil Call with result when name value is ready
-function spellDefClass:RefreshTextAndIcon(iconReadyFn, nameReadyFn)
+function buffDefClass:RefreshTextAndIcon(iconReadyFn, nameReadyFn)
   -- TODO: If refresh is in progress and multiple requests come in parallel, that might also be a problem
   if self:IsItem() then
     local itemId = self.item
@@ -496,4 +496,24 @@ function spellDefClass:RefreshTextAndIcon(iconReadyFn, nameReadyFn)
           end)
 
   -- nil otherwise
+end
+
+---Find previous rank if possible
+---@return number Spell id of previous rank (for certain situations) or spell id unchanged
+function buffDefClass:FindPreviousRank(buffId)
+  if (buffId == 16342 or buffId == 58790) and IsSpellKnown(58790) then
+    -- For Flametongue buffid and if player knows flametongue 10 return flametongue 9
+    return 58789
+  end
+  return buffId
+
+  --local previousRank = spellId
+  --for _i, eachSpellId in ipairs(self.singleFamily) do
+  --  -- Go through spell ranks and return previous as soon as we found the current
+  --  if eachSpellId == spellId then
+  --    return previousRank
+  --  end
+  --  previousRank = eachSpellId
+  --end
+  --return previousRank
 end

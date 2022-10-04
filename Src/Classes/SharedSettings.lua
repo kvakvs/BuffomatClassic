@@ -18,7 +18,7 @@ sharedSettingsModule.defaults = {
 
 ---@class BomSharedSettings Current character state snapshots per profile
 ---@field Minimap BomMinimapSettings
----@field SpellGreatherEqualThan table
+---@field SpellGreaterEqualThan table
 ---@field CustomLocales table
 ---@field CustomSpells table Additional spells from the config file. Deprecated
 ---@field CustomCancelBuff table Additional cancel spells. Deprecated
@@ -72,7 +72,7 @@ sharedStateClass.__index = sharedStateClass
 function sharedSettingsModule:New(init)
   local tab = init or self:Defaults()
   tab.Minimap = tab.Minimap or {}
-  tab.SpellGreatherEqualThan = tab.SpellGreatherEqualThan or {}
+  tab.SpellGreaterEqualThan = tab.SpellGreaterEqualThan or {}
   tab.CustomLocales = tab.CustomLocales or {}
   tab.CustomSpells = tab.CustomSpells or {}
   tab.CustomCancelBuff = tab.CustomCancelBuff or {}
@@ -124,6 +124,7 @@ function sharedSettingsModule:Defaults()
     DontUseConsumables     = false,
     SomeoneIsDrinking      = self.defaults.SomeoneIsDrinking,
     ActivateBomOnSpiritTap = 90,
+    ShamanFlametongueRanked = true,
     ----------------------
     MinBuff                = 3,
     MinBlessing            = 3,

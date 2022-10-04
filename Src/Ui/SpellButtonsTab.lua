@@ -209,7 +209,7 @@ function spellButtonsTabModule:AddSpellRow(rowBuilder, playerIsHorde, spell, pla
   local infoIcon = spell.frames:CreateInfoIcon(spell)
   rowBuilder:PositionAtNewRow(infoIcon, 0, 7)
 
-  local profileSpell = buffDefModule:GetProfileSpell(spell.buffId)
+  local profileSpell = buffDefModule:GetProfileBuff(spell.buffId)
 
   -- Add a checkbox [x]
   local enableCheckbox = spell.frames:CreateEnableCheckbox(_t("TooltipEnableSpell"))

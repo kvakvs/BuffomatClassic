@@ -114,7 +114,7 @@ end
 ---@param buff BomBuffDefinition the spell to update
 ---@param playerUnit BomUnit the player
 function buffChecksModule:PlayerNeedsWeaponBuff(buff, playerUnit)
-  local weaponSpell = buffDefModule:GetProfileSpell(buff.buffId)
+  local weaponSpell = buffDefModule:GetProfileBuff(buff.buffId)
 
   if (weaponSpell.MainHandEnable and playerUnit.MainHandBuff == nil)
           or (weaponSpell.OffHandEnable and playerUnit.OffHandBuff == nil)
@@ -262,8 +262,8 @@ function buffChecksModule:PartyNeedsPaladinBlessing(spell, playerUnit, party, so
   for i, partyMember in ipairs(party) do
     local ok = false
     local notGroup = false
-    local blessing_name = buffDefModule:GetProfileSpell(constModule.BLESSING_ID)
-    local blessingSpell = buffDefModule:GetProfileSpell(spell.buffId)
+    local blessing_name = buffDefModule:GetProfileBuff(constModule.BLESSING_ID)
+    local blessingSpell = buffDefModule:GetProfileBuff(spell.buffId)
 
     if blessing_name[partyMember.name] == spell.buffId
             or (partyMember.isTank
@@ -297,7 +297,7 @@ function buffChecksModule:PartyNeedsPaladinBlessing(spell, playerUnit, party, so
             and partyMember.isConnected
             and (not buffomatModule.shared.SameZone or partyMember.isSameZone) then
       local found = false
-      local member_buff = partyMember.knownBuffs[spell.buffId]
+      local partyMemberBuff = partyMember.knownBuffs[spell.buffId]
 
       if partyMember.isDead then
         if partyMember.group ~= 9 and partyMember.class ~= "pet" then
@@ -305,8 +305,8 @@ function buffChecksModule:PartyNeedsPaladinBlessing(spell, playerUnit, party, so
           spell.GroupsHaveDead[partyMember.class] = true
         end
 
-      elseif member_buff then
-        found = self:TimeCheck(member_buff.expirationTime, member_buff.duration)
+      elseif partyMemberBuff then
+        found = self:TimeCheck(partyMemberBuff.expirationTime, partyMemberBuff.duration)
       end
 
       if not found then
@@ -316,8 +316,8 @@ function buffChecksModule:PartyNeedsPaladinBlessing(spell, playerUnit, party, so
         end
       elseif not notGroup
               and buffomatModule.shared.ReplaceSingle
-              and member_buff
-              and member_buff.isSingle then
+              and partyMemberBuff
+              and partyMemberBuff.isSingle then
         spell:IncrementNeedGroupBuff(partyMember.class)
       end
 

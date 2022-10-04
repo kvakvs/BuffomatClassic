@@ -71,6 +71,14 @@ function russianModule:Translations()
     BtnSettings                                 = "Настройки",
     BtnSettingsSpells                           = "Настройки заклинаний",
 
+    ["options.general.group.AutoActions"]       = "Реакция на события",
+    ["options.general.group.Convenience"]       = "Удобство",
+    ["options.general.group.General"]           = "Общие настройки",
+    ["options.general.group.Scan"]              = "Сканирование",
+    ["options.general.group.Buffing"]           = "Время бафов",
+    ["options.general.group.Visibility"]        = "Скрыть категории",
+    ["options.general.group.Class"]             = "Классы",
+
     ["options.short.ActivateBomOnSpiritTap"]    = "Запретить Бафомёт, при 'Захвате духа' жреца",
     ["options.short.ArgentumDawn"]              = "Не забудьте (снять)экипировать Жетон Серебряного Рассвета",
     ["options.short.AutoOpen"]                  = "Автоматическое открытие/закрытие",
@@ -94,6 +102,7 @@ function russianModule:Translations()
     ["options.short.SomeoneIsDrinking"]         = "Когда кто-то в группе пьёт",
     ["options.short.UseRank"]                   = "Использовать заклинание с рангом",
     ["options.short.FadeWhenNothingToDo"]       = "Делать окно прозрачным, когда нет задач",
+    ["options.short.ShamanFlametongueRanked"]   = "Шаман: Использовать пониженный ранг языков пламени на левой руке",
 
     ["options.long.FadeWhenNothingToDo"]        = "Установить прозрачность окна Бафомёта, если нечего делать",
     ["options.long.ActivateBomOnSpiritTap"]     = "Запретить Бафомёт, если 'Захват духа' жреца активен и мана меньше указанного процента",
@@ -108,6 +117,7 @@ function russianModule:Translations()
     ["options.long.Time3600"]                   = "Освежать баф продолжительностью <=60 мин, если осталось менее",
     ["options.long.Time60"]                     = "Освежать баф продолжительностью <=60 сек, если осталось менее",
     ["options.long.Time600"]                    = "Освежать баф продолжительностью <=10 мин, если осталось менее",
+    ["options.long.ShamanFlametongueRanked"]    = "Шаман: Для spellhancement шаманов использовать язык пламени максимального ранга на правом оружии, и на 1 ранг меньше на левом. Включайте эту опцию, когда скорость атаки обеих рук одинаковая.",
 
     ["options.short.MinBlessing"]               = "Большое благословение, если нуждаются более",
     ["options.short.MinBuff"]                   = "Групповой баф, если нуждаются более",

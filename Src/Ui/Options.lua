@@ -315,6 +315,16 @@ function optionsModule:CreateVisibilityOptionsTable()
   }
 end
 
+function optionsModule:CreateClassOptionsTable()
+  return {
+    type = "group",
+    name = "9. " .. _t("options.general.group.Class"),
+    args = {
+      shamanFlametongueRanked = self:TemplateCheckbox("ShamanFlametongueRanked"),
+    } -- end args
+  }
+end
+
 function optionsModule:CreateOptionsTable()
   self.optionsOrder = 0
 
@@ -327,6 +337,7 @@ function optionsModule:CreateOptionsTable()
       convenienceOptions = self:CreateConvenienceOptionsTable(),
       buffingOptions     = self:CreateBuffingOptionsTable(),
       visibilityOptions  = self:CreateVisibilityOptionsTable(),
+      classOptions  = self:CreateClassOptionsTable(),
     } -- end args
   } -- end
 end

@@ -3,6 +3,8 @@ local englishModule = BuffomatModule.New("LanguageEnglish") ---@type BomLanguage
 
 function englishModule:Translations()
   return {
+    ["shaman.flametongueDownranked"]                  = "One rank down",
+
     ["Category_class"]                                = "Class Buffs",
     ["Category_classBlessing"]                        = "Blessings",
     ["Category_pet"]                                  = "Pet",
@@ -49,6 +51,7 @@ function englishModule:Translations()
     ["options.general.group.Scan"]                    = "Scanning",
     ["options.general.group.Buffing"]                 = "Buffing Timers",
     ["options.general.group.Visibility"]              = "Show Categories",
+    ["options.general.group.Class"]                   = "Class Options",
 
     ["options.short.ActivateBomOnSpiritTap"]          = "Activate on Spirit Tap below mana %",
     ["options.short.ArgentumDawn"]                    = "Warn about reputation items",
@@ -62,6 +65,7 @@ function englishModule:Translations()
     ["options.short.Carrot"]                          = "Warn about mount items",
     ["options.short.DeathBlock"]                      = "Pause if someone is dead",
     ["options.short.DontUseConsumables"]              = "Dont use consumables",
+    ["options.short.ShamanFlametongueRanked"]         = "Shaman: Use downranked Flametongue on offhand",
 
     ["options.short.SomeoneIsDrinking"]               = "When someone is drinking...",
     ["options.convenience.SomeoneIsDrinking.Hide"]    = "Ignore the fact",
@@ -131,6 +135,7 @@ function englishModule:Translations()
     ["options.long.UseProfiles"]                      = "Use profiles based on whether the player is solo, in a group, raid or a battleground",
     ["options.long.UseRank"]                          = "Use spells with ranks",
     ["options.long.VisibleCategories"]                = "Show a category of buffs in the spells list (per character setting)",
+    ["options.long.ShamanFlametongueRanked"]          = "Shaman: For spellhancement shamans use highest rank Flametongue on main hand and down rank on the offhand. Use this when your weapon speeds are matching.",
 
     ["tasklist.IgnoredBuffOn"]                        = "Ignored %s: %s", -- when a buff is not listed because a better buff exists
     ["task.target.Self"]                              = "Self", -- use instead of name when buffing self
