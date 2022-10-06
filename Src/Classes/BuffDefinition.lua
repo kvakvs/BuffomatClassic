@@ -497,23 +497,3 @@ function buffDefClass:RefreshTextAndIcon(iconReadyFn, nameReadyFn)
 
   -- nil otherwise
 end
-
----Find previous rank if possible
----@return number Spell id of previous rank (for certain situations) or spell id unchanged
-function buffDefClass:FindPreviousRank(buffId)
-  if (buffId == 16342 or buffId == 58790) and IsSpellKnown(58790) then
-    -- For Flametongue buffid and if player knows flametongue 10 return flametongue 9
-    return 58789
-  end
-  return buffId
-
-  --local previousRank = spellId
-  --for _i, eachSpellId in ipairs(self.singleFamily) do
-  --  -- Go through spell ranks and return previous as soon as we found the current
-  --  if eachSpellId == spellId then
-  --    return previousRank
-  --  end
-  --  previousRank = eachSpellId
-  --end
-  --return previousRank
-end

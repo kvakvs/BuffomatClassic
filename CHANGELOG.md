@@ -1,9 +1,9 @@
 # Changelog
 
-## Buffomat Classic 2022.9.5
+## Buffomat Classic 2022.9.5.1
 
 - [Shaman] Water Walking, Water Breath now in Buffomat, require no reagent with Wotlk Glyphs
-- [Shaman] Spellhance weapon enchants option (on by default) to enchant offhand with 1 rank lower flametongue.
+- [Shaman] Spellhance weapon enchants option (on by default) to enchant main hand with 1 rank lower flametongue.
 - [Priest] Vampiric Embrace is now a buff.
 
 ## Buffomat Classic 2022.9.4, 4.1

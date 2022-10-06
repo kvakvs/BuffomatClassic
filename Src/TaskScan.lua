@@ -215,7 +215,7 @@ function taskScanModule:UpdateMacro(nextCast)
   local rank = ""
 
   if spell == nil then
-    print("NIL SPELL:", nextCast.spellId)
+    print("Update macro: NIL SPELL for spellid=", nextCast.spellId)
   end
 
   if buffomatModule.shared.UseRank
@@ -259,6 +259,9 @@ function taskScanModule:UpdateMacro(nextCast)
 
   BOM.CastFailedSpellId = nextCast.spellId
   local name = GetSpellInfo(nextCast.spellId)
+  if name == nil then
+    BOM:Print("Update macro: Bad spell spellid=" .. nextCast.spellId)
+  end
 
   if tContains(BOM.cancelForm, nextCast.spellId) then
     tinsert(macro.lines, "/cancelform [nocombat]")
@@ -1243,12 +1246,12 @@ function taskScanModule:AddConsumableWeaponBuff(spell, playerMember,
 end
 
 ---Adds a display text for a weapon buff created by a spell (shamans and paladins)
----@param spell BomBuffDefinition - the spell to cast
+---@param buffDef BomBuffDefinition - the spell to cast
 ---@param playerUnit BomUnit - the player
 ---@param castButtonTitle string - if not empty, is item name from the bag
 ---@param macroCommand string - console command to use item from the bag
 ---@return string, string cast button title and macro command
-function taskScanModule:AddWeaponEnchant(spell, playerUnit,
+function taskScanModule:AddWeaponEnchant(buffDef, playerUnit,
                                          castButtonTitle, macroCommand)
   local blockOffhandEnchant = false -- set to true to block temporarily
 
@@ -1256,8 +1259,8 @@ function taskScanModule:AddWeaponEnchant(spell, playerUnit,
   if BOM.IsTBC and self_class == "SHAMAN" then
     -- Special handling for TBC shamans, you cannot specify slot for enchants,
     -- and it goes into main then offhand
-    local hasMainhand, _mh_expire, _mh_charges, _mh_enchantid, hasOffhand, _oh_expire
-    , _oh_charges, _oh_enchantid = GetWeaponEnchantInfo()
+    local hasMainhand, _mh_expire, _mh_charges, _mh_enchantid, hasOffhand, _oh_expire, _oh_charges, _oh_enchantid
+    = GetWeaponEnchantInfo()
 
     if not hasMainhand then
       -- shamans in TBC can't enchant offhand if MH enchant is missing
@@ -1269,7 +1272,7 @@ function taskScanModule:AddWeaponEnchant(spell, playerUnit,
     end
   end
 
-  local profileBuff = buffDefModule:GetProfileBuff(spell.buffId)
+  local profileBuff = buffDefModule:GetProfileBuff(buffDef.buffId)
 
   -- OFFHAND FIRST
   -- Because offhand sets a temporaryDownrank flag in nextCastSpell and it somehow doesn't reset when offhand is queued second
@@ -1278,28 +1281,17 @@ function taskScanModule:AddWeaponEnchant(spell, playerUnit,
     if blockOffhandEnchant then
       -- Text: [Spell Name] (Off-hand) Blocked waiting
       tasklist:Add(
-              spell.singleLink,
-              spell.singleText,
+              buffDef.singleLink,
+              buffDef.singleText,
               _t("TooltipOffHand") .. ": " .. _t("ShamanEnchantBlocked"),
               buffTargetModule:FromSelf(playerUnit),
               true)
     else
-      -- Special case is ruled by the option `ShamanFlametongueRanked`
-      -- Flametongue enchant for spellhancement shamans only!
-      local downrank = spell.buffId == 16342 and buffomatModule.shared.ShamanFlametongueRanked
-      local taskText = ""
-      if downrank then
-        taskText = _t("TooltipOffHand") .. ": " .. _t("shaman.flametongueDownranked")
-      else
-        taskText = _t("TooltipOffHand")
-      end
-
       -- Text: [Spell Name] (Off-hand)
       -- or:   [Spell Name] (Off-hand) Downranked
-      tasklist:Add(spell.singleLink, spell.singleText, taskText, buffTargetModule:FromSelf(playerUnit), false)
-      local prevRank = spell:FindPreviousRank(spell.singleId)
-      self:QueueSpell(spell.singleMana, prevRank, spell.singleLink,
-              playerUnit, spell, downrank)
+      tasklist:Add(buffDef.singleLink, buffDef.singleText, _t("TooltipOffHand"), buffTargetModule:FromSelf(playerUnit), false)
+      self:QueueSpell(buffDef.singleMana, buffDef.singleId, buffDef.singleLink,
+              playerUnit, buffDef, downrank)
     end
   end
 
@@ -1307,14 +1299,19 @@ function taskScanModule:AddWeaponEnchant(spell, playerUnit,
   -- Because offhand sets a temporaryDownrank flag in nextCastSpell and it somehow doesn't reset when offhand is queued second
   if profileBuff.MainHandEnable
           and playerUnit.MainHandBuff == nil then
+    -- Special case is ruled by the option `ShamanFlametongueRanked`
+    -- Flametongue enchant for spellhancement shamans only!
+    local isDownrank = buffDef.buffId == 16342 and buffomatModule.shared.ShamanFlametongueRanked
+    local taskText = ""
+    if isDownrank then
+      taskText = _t("TooltipMainHand") .. ": " .. _t("shaman.flametongueDownranked")
+    else
+      taskText = _t("TooltipMainHand")
+    end
+
     -- Text: [Spell Name] (Main hand)
-    tasklist:Add(
-            spell.singleLink,
-            spell.singleText,
-            _t("TooltipMainHand"),
-            buffTargetModule:FromSelf(playerUnit),
-            false)
-    self:QueueSpell(spell.singleMana, spell.singleId, spell.singleLink, playerUnit, spell, false)
+    tasklist:Add(buffDef.singleLink, buffDef.singleText, taskText, buffTargetModule:FromSelf(playerUnit), false)
+    self:QueueSpell(buffDef.singleMana, buffDef.singleId, buffDef.singleLink, playerUnit, buffDef, isDownrank)
   end
 
   return castButtonTitle, macroCommand
