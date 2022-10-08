@@ -18,7 +18,7 @@ function mageModule:SetupMageSpells(spells, enchants)
                                   42995, 61024 }, -- WotLK: Arcane Intellect 7; Dalaran Intellect
               groupFamily     = { 23028, -- Brilliance Rank 1
                                   27127, -- TBC: Brillance Rank 2
-                                  61316 }, -- WotLK: Dalaran Brilliance Rank 3
+                                  43002, 61316 }, -- WotLK: Arcane Brilliance Rank 3; Dalaran Brilliance
               default         = true, singleDuration = allBuffsModule.DURATION_30M, groupDuration = allBuffsModule.DURATION_1H,
               reagentRequired = { 17020 } })
                          :DefaultTargetClasses(allBuffsModule.MANA_CLASSES)

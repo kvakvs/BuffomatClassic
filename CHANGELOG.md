@@ -1,5 +1,9 @@
 # Changelog
 
+## Buffomat Classic 2022.9.6
+
+- [Pet] Pet food is now available for all classes not just hunters
+
 ## Buffomat Classic 2022.9.5.1
 
 - [Shaman] Water Walking, Water Breath now in Buffomat, require no reagent with Wotlk Glyphs

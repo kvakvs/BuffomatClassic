@@ -12,7 +12,7 @@ local buffDefModule = BuffomatModule.Import("BuffDefinition") ---@type BomBuffDe
 ---@param enchantments table<string, table<number>>
 function hunterModule:SetupHunterSpells(buffs, enchantments)
   self:_SetupHunterSpellsTBC(buffs, enchantments)
-  self:_SetupHunterSpellsWotLK(buffs, enchantments)
+  self:_SetupPetBuffs(buffs, enchantments)
 end
 
 ---@param buffs table<string, BomBuffDefinition>
@@ -94,28 +94,30 @@ function hunterModule:_SetupHunterSpellsTBC(buffs, enchantments)
           { type = "tracking", default = false
           })   :RequirePlayerClass("HUNTER")
                :Category(allBuffsModule.TRACKING)
+end
 
+---@param buffs table<string, BomBuffDefinition>
+---@param enchantments table<string, table<number>>
+function hunterModule:_SetupPetBuffs(buffs, enchantments)
   -- TODO: Do not use tbc_consumable function, add new flags for pet-buff
-  buffDefModule:genericConsumable(buffs, 43771, 33874)
+  buffDefModule:genericConsumable(buffs, 65247, 33874)
                :RequireTBC()
                :HunterPetFood()
-               :RequirePlayerClass("HUNTER")
                :Category(allBuffsModule.PET)
   buffDefModule:genericConsumable(buffs, 33272, 27656)
                :RequireTBC()
                :HunterPetFood()
                :ExtraText(_t("tooltip.buff.petStrength"))
-               :RequirePlayerClass("HUNTER")
                :Category(allBuffsModule.PET)
-end
-
----@param buffs table<string, BomBuffDefinition>
----@param enchantments table<string, table<number>>
-function hunterModule:_SetupHunterSpellsWotLK(buffs, enchantments)
-  buffDefModule:genericConsumable(buffs, 43771, 43005) -- WotLK: Spiced Mammoth Treats +30 Str/30 Stam for pet
+  buffDefModule:genericConsumable(buffs, 43771, 43005)
                :RequireWotLK()
                :HunterPetFood()
                :ExtraText(_t("tooltip.buff.petStrength"))
-               :RequirePlayerClass("HUNTER")
                :Category(allBuffsModule.PET)
+  --buffDefModule:genericConsumable(buffs, 43771, 43005) -- WotLK: Spiced Mammoth Treats +30 Str/30 Stam for pet
+  --             :RequireWotLK()
+  --             :HunterPetFood()
+  --             :ExtraText(_t("tooltip.buff.petStrength"))
+  --             :RequirePlayerClass("HUNTER")
+  --             :Category(allBuffsModule.PET)
 end

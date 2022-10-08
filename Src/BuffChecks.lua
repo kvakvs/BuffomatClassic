@@ -126,7 +126,7 @@ end
 ---@param buff BomBuffDefinition
 ---@param playerUnit BomUnit
 function buffChecksModule:HunterPetNeedsBuff(buff, playerUnit, _party)
-  if not BOM.IsTBC then
+  if not BOM.HaveTBC then
     return -- pre-TBC this did not exist
   end
 
