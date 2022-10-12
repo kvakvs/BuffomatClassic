@@ -822,13 +822,12 @@ function taskScanModule:AddBlessing(spell, party, playerMember, inRange)
 end
 
 ---Add a generic buff of some sorts, or a group buff
----@param spell BomBuffDefinition - spell to cast
----@param party table<number, BomUnit> - the party
----@param playerMember BomUnit - player
----@param inRange boolean - spell target is in range
-function taskScanModule:AddBuff(spell, party, playerMember, inRange)
+---@param spell BomBuffDefinition The spell to cast
+---@param party table<number, BomUnit> The party
+---@param playerUnit BomUnit The player; TODO: Remove passing this parameter
+---@param inRange boolean Spell target is in range; TODO: Remove passing this parameter
+function taskScanModule:AddBuff(spell, party, playerUnit, inRange)
   local ok, bag, slot, count
-
   if spell.reagentRequired then
     ok, bag, slot, count = buffChecksModule:HasItem(spell.reagentRequired, true)
   end
@@ -844,21 +843,24 @@ function taskScanModule:AddBuff(spell, party, playerMember, inRange)
   ------------------------
   local minBuff = buffomatModule.shared.MinBuff or 3
 
+  if BOM.HaveWotLK then
+    inRange = true -- cast on self to group buff, always in range
+  end
+
   if spell.groupMana ~= nil and not buffomatModule.shared.NoGroupBuff then
     for groupIndex = 1, 8 do
       if spell.GroupsNeedBuff[groupIndex]
               and spell.GroupsNeedBuff[groupIndex] >= minBuff
       then
         BOM.RepeatUpdate = true
-        local Group = self:GetGroupInRange(spell.groupText, spell.UnitsNeedBuff, groupIndex, spell)
+        local groupInRange = self:GetGroupInRange(spell.groupText, spell.UnitsNeedBuff, groupIndex, spell)
 
-        if Group == nil then
-          Group = self:GetGroupInRange(spell.groupText, party, groupIndex, spell)
+        if groupInRange == nil then
+          groupInRange = self:GetGroupInRange(spell.groupText, party, groupIndex, spell)
         end
 
-        if Group ~= nil
-                and (not spell.GroupsHaveDead[groupIndex] or not buffomatModule.shared.DeathBlock)
-        then
+          --if groupInRange ~= nil and (not spell.GroupsHaveDead[groupIndex] or not buffomatModule.shared.DeathBlock) then
+        if (not spell.GroupsHaveDead[groupIndex] or not buffomatModule.shared.DeathBlock) then
           -- Text: Group 5 [Spell Name]
           tasklist:AddWithPrefix(
                   _t("task.type.GroupBuff"),
@@ -869,48 +871,49 @@ function taskScanModule:AddBuff(spell, party, playerMember, inRange)
                   false)
           inRange = true
 
-          self:QueueSpell(spell.groupMana, spell.groupId, spell.groupLink, Group, spell)
-        else
-          -- Text: Group 5 [Spell Name]
-          tasklist:AddWithPrefix(
-                  _t("task.type.GroupBuff"),
-                  spell.groupLink or spell.groupText,
-                  spell.singleText,
-                  "",
-                  groupBuffTargetModule:New(groupIndex),
-                  false)
+          self:QueueSpell(spell.groupMana, spell.groupId, spell.groupLink, groupInRange or playerUnit, spell)
+        --else
+        --  -- Group in range is nil, or someone is dead
+        --  -- Text: Group 5 [Spell Name]
+        --  tasklist:AddWithPrefix(
+        --          _t("task.type.GroupBuff"),
+        --          spell.groupLink or spell.groupText,
+        --          spell.singleText,
+        --          "",
+        --          groupBuffTargetModule:New(groupIndex),
+        --          false)
         end -- if group not nil
       end
     end -- for all 8 groups
-  end
+  end -- if group buff spell costs mana
 
   ------------------------
   -- Add SINGLE BUFF
   ------------------------
-  for _i, unitNeedsBuff in ipairs(spell.UnitsNeedBuff) do
-    if not unitNeedsBuff.isDead
+  for _i, needBuff in ipairs(spell.UnitsNeedBuff) do
+    if not needBuff.isDead
             and spell.singleMana ~= nil
             and (buffomatModule.shared.NoGroupBuff
             or spell.groupMana == nil
-            or unitNeedsBuff.group == 9
-            or spell.GroupsNeedBuff[unitNeedsBuff.group] == nil
-            or spell.GroupsNeedBuff[unitNeedsBuff.group] < minBuff)
+            or needBuff.group == 9
+            or spell.GroupsNeedBuff[needBuff.group] == nil
+            or spell.GroupsNeedBuff[needBuff.group] < minBuff)
     then
-      if not unitNeedsBuff.isPlayer then
+      if not needBuff.isPlayer then
         BOM.RepeatUpdate = true
       end
 
       local add = ""
       local profileBuff = buffDefModule:GetProfileBuff(spell.buffId)
 
-      if profileBuff.ForcedTarget[unitNeedsBuff.name] then
+      if profileBuff.ForcedTarget[needBuff.name] then
         add = string.format(constModule.PICTURE_FORMAT, BOM.ICON_TARGET_ON)
       end
 
-      local unitIsInRange = (IsSpellInRange(spell.singleText, unitNeedsBuff.unitId) == 1)
-              and not tContains(spell.SkipList, unitNeedsBuff.name)
+      local unitIsInRange = (IsSpellInRange(spell.singleText, needBuff.unitId) == 1)
+              and not tContains(spell.SkipList, needBuff.name)
 
-      if self:PreventPvpTagging(spell.singleLink, spell.singleText, unitNeedsBuff) then
+      if self:PreventPvpTagging(spell.singleLink, spell.singleText, needBuff) then
         -- Nothing, prevent poison function has already added the text
       elseif unitIsInRange then
         -- Text: Target [Spell Name]
@@ -919,10 +922,10 @@ function taskScanModule:AddBuff(spell, party, playerMember, inRange)
                 spell.singleLink or spell.singleText,
                 spell.singleText,
                 "",
-                buffTargetModule:FromUnit(unitNeedsBuff),
+                buffTargetModule:FromUnit(needBuff),
                 false)
         inRange = true
-        self:QueueSpell(spell.singleMana, spell.singleId, spell.singleLink, unitNeedsBuff, spell)
+        self:QueueSpell(spell.singleMana, spell.singleId, spell.singleLink, needBuff, spell)
       else
         -- Text: Target "SpellName"
         tasklist:AddWithPrefix(
@@ -930,7 +933,7 @@ function taskScanModule:AddBuff(spell, party, playerMember, inRange)
                 spell.singleLink or spell.singleText,
                 spell.singleText,
                 "",
-                buffTargetModule:FromUnit(unitNeedsBuff),
+                buffTargetModule:FromUnit(needBuff),
                 false)
       end
     end
@@ -1259,8 +1262,7 @@ function taskScanModule:AddWeaponEnchant(buffDef, playerUnit,
   if BOM.IsTBC and self_class == "SHAMAN" then
     -- Special handling for TBC shamans, you cannot specify slot for enchants,
     -- and it goes into main then offhand
-    local hasMainhand, _mh_expire, _mh_charges, _mh_enchantid, hasOffhand, _oh_expire, _oh_charges, _oh_enchantid
-    = GetWeaponEnchantInfo()
+    local hasMainhand, _mh_expire, _mh_charges, _mh_enchantid, hasOffhand, _oh_expire, _oh_charges, _oh_enchantid = GetWeaponEnchantInfo()
 
     if not hasMainhand then
       -- shamans in TBC can't enchant offhand if MH enchant is missing
@@ -1461,7 +1463,7 @@ end
 ---@param spell BomBuffDefinition
 ---@param playerMember BomUnit
 ---@param party table<number, BomUnit>
----@param inRange boolean
+---@param inRange boolean TODO: Remove passing this parameter
 ---@param castButtonTitle string
 ---@param macroCommand string
 ---@return boolean, string, string {in_range, cast_button_title, macro_command}
@@ -1560,10 +1562,10 @@ end
 
 ---@param playerMember BomUnit
 ---@param party table<number, BomUnit>
----@param inRange boolean
+---@param inRange boolean TODO: Remove passing this parameter
 ---@param castButtonTitle string
 ---@param macroCommand string
----@return boolean, string, string {in_range, cast_button_title, macro_command}
+---@return boolean, string, string {inRange, castButtonTitle, macroCommand}
 function taskScanModule:ScanSelectedSpells(playerMember, party, inRange, castButtonTitle, macroCommand)
   for _, spell in ipairs(BOM.SelectedSpells) do
     local profile_spell = buffDefModule:GetProfileBuff(spell.buffId)
@@ -1640,6 +1642,76 @@ function taskScanModule:FadeBuffomatWindow()
   end
 end
 
+function taskScanModule:UpdateScan_Button_Busy()
+  --Print player is busy (casting normal spell)
+  self:CastButton(_t("castButton.Busy"), false)
+  self:WipeMacro()
+end
+
+function taskScanModule:UpdateScan_Button_BusyChanneling()
+  --Print player is busy (casting channeled spell)
+  self:CastButton(_t("castButton.BusyChanneling"), false)
+  self:WipeMacro()
+end
+
+function taskScanModule:UpdateScan_Button_TargetedSpell()
+  --Next cast is already defined - update the button text
+  self:CastButton(nextCastSpell.spellLink, true)
+  self:UpdateMacro(nextCastSpell)
+
+  local cdtest = GetSpellCooldown(nextCastSpell.spellId) or 0
+
+  if cdtest ~= 0 then
+    BOM.CheckCoolDown = nextCastSpell.spellId
+    BomC_ListTab_Button:Disable()
+  else
+    BomC_ListTab_Button:Enable()
+  end
+
+  BOM.CastFailedSpell = nextCastSpell.spell
+  BOM.CastFailedSpellTarget = nextCastSpell.targetUnit
+end
+
+function taskScanModule:UpdateScan_Button_Nothing()
+  --If don't have any strings to display, and nothing to do -
+  --Clear the cast button
+  self:CastButton(_t("castButton.NothingToDo"), false)
+
+  for _i, spell in ipairs(BOM.SelectedSpells) do
+    if #spell.SkipList > 0 then
+      wipe(spell.SkipList)
+    end
+  end
+end
+
+function taskScanModule:UpdateScan_Button_SomeoneIsDead()
+  self:CastButton(_t("InactiveReason_DeadMember"), false)
+end
+
+---@param inRange boolean
+function taskScanModule:UpdateScan_Button_HaveTasks(inRange)
+  if inRange then
+    -- Range is good but cast is not possible
+    --self:CastButton(ERR_OUT_OF_MANA, false)
+    self:CastButton(_t("castButton.CantCastMaybeOOM"), false)
+  else
+    self:CastButton(ERR_SPELL_OUT_OF_RANGE, false)
+    local skipreset = false
+
+    for spellIndex, spell in ipairs(BOM.SelectedSpells) do
+      if #spell.SkipList > 0 then
+        skipreset = true
+        wipe(spell.SkipList)
+      end
+    end
+
+    if skipreset then
+      BOM.FastUpdateTimer()
+      BOM.SetForceUpdate("SkipReset")
+    end
+  end -- if inrange
+end
+
 function taskScanModule:UpdateScan_Scan()
   local party, playerMember = unitCacheModule:GetPartyMembers()
 
@@ -1674,7 +1746,7 @@ function taskScanModule:UpdateScan_Scan()
 
   local macroCommand ---@type string
   local castButtonTitle ---@type string
-  local inRange = false
+  local inRange = false ---@type boolean
 
   -- Cast crusader aura when mounted, without condition. Ignore all other buffs
   if self:MountedCrusaderAuraPrompt() then
@@ -1712,65 +1784,20 @@ function taskScanModule:UpdateScan_Scan()
   BOM.ForceUpdate = false
 
   if BOM.PlayerCasting == "cast" then
-    --Print player is busy (casting normal spell)
-    self:CastButton(_t("castButton.Busy"), false)
-    self:WipeMacro()
-
+    self:UpdateScan_Button_Busy()
   elseif BOM.PlayerCasting == "channel" then
-    --Print player is busy (casting channeled spell)
-    self:CastButton(_t("castButton.BusyChanneling"), false)
-    self:WipeMacro()
-
+    self:UpdateScan_Button_BusyChanneling()
   elseif nextCastSpell.targetUnit and nextCastSpell.spellId then
-    --Next cast is already defined - update the button text
-    self:CastButton(nextCastSpell.spellLink, true)
-    self:UpdateMacro(nextCastSpell)
-
-    local cdtest = GetSpellCooldown(nextCastSpell.spellId) or 0
-
-    if cdtest ~= 0 then
-      BOM.CheckCoolDown = nextCastSpell.spellId
-      BomC_ListTab_Button:Disable()
-    else
-      BomC_ListTab_Button:Enable()
-    end
-
-    BOM.CastFailedSpell = nextCastSpell.spell
-    BOM.CastFailedSpellTarget = nextCastSpell.targetUnit
+    self:UpdateScan_Button_TargetedSpell()
   else
     if #tasklist.tasks == 0 then
-      --If don't have any strings to display, and nothing to do -
-      --Clear the cast button
-      self:CastButton(_t("castButton.NothingToDo"), false)
-
-      for spellIndex, spell in ipairs(BOM.SelectedSpells) do
-        if #spell.SkipList > 0 then
-          wipe(spell.SkipList)
-        end
-      end
+      self:UpdateScan_Button_Nothing()
     else
       if someoneIsDead and buffomatModule.shared.DeathBlock then
-        self:CastButton(_t("InactiveReason_DeadMember"), false)
+        -- Have tasks and someone died and option is set to not buff
+        self:UpdateScan_Button_SomeoneIsDead()
       else
-        if inRange then
-          -- Range is good but cast is not possible
-          self:CastButton(ERR_OUT_OF_MANA, false)
-        else
-          self:CastButton(ERR_SPELL_OUT_OF_RANGE, false)
-          local skipreset = false
-
-          for spellIndex, spell in ipairs(BOM.SelectedSpells) do
-            if #spell.SkipList > 0 then
-              skipreset = true
-              wipe(spell.SkipList)
-            end
-          end
-
-          if skipreset then
-            BOM.FastUpdateTimer()
-            BOM.SetForceUpdate("SkipReset")
-          end
-        end -- if inrange
+        self:UpdateScan_Button_HaveTasks(inRange)
       end -- if somebodydeath and deathblock
     end -- if #display == 0
 

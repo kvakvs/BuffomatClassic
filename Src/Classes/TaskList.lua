@@ -11,8 +11,7 @@ local taskModule = BuffomatModule.Import("Task") ---@type BomTaskModule
 ---@field comments table<number, string>
 ---@field lowPrioComments table<number, string>
 
----@type BomTaskList
-local taskListClass = {}
+local taskListClass = {} ---@type BomTaskList
 taskListClass.__index = taskListClass
 
 ---@return BomTaskList
@@ -36,9 +35,9 @@ end
 ---@param prio number|nil Priority, a constant from BOM.TaskPriority
 function taskListClass:Add(actionLink, actionText, extraText,
                            target, isInfo, prio)
-  local new_task = taskModule:New(
+  local newTask = taskModule:New(
           "", actionLink, actionText, extraText, target, isInfo, prio)
-  tinsert(self.tasks, new_task)
+  tinsert(self.tasks, newTask)
 end
 
 ---Adds a text line to display in the message frame. The line is stored in DisplayCache
@@ -120,7 +119,7 @@ function taskListClass:Display()
 
   for i, task in ipairs(self.tasks) do
     if task.distance > 43 * 43 then
-      taskFrame:AddMessage(task:FormatDisabledRed(BOM.L.ERR_RANGE))
+      taskFrame:AddMessage(task:FormatDisabledRed(BOM.L["task.error.range"]))
     end
   end
 

@@ -150,6 +150,7 @@ function russianModule:Translations()
     ["castButton.inactive.Mounted"]             = "Игрок в седле (откл. в опциях)",
     ["castButton.inactive.IsStealth"]           = "Режим незаметности (откл. в опциях)",
     ["castButton.inactive.IsDead"]              = "Мертв",
+    ["castButton.CantCastMaybeOOM"]             = "Недостаточно маны или другая причина",
     ["message.CancelBuff"]                      = "Отменён баф %s от %s",
     ["message.BuffExpired"]                     = "%s заклинание истекло.",
     ["message.ShowHideInCombat"]                = "Во время боя нельзя показывать или скрывать панели",

@@ -103,7 +103,7 @@ function chineseModule:Translations()
     TASK_TBC_HUNTER_PET_BUFF                    = "对宠物使用",
     TASK_ACTIVATE                               = "启用",
     TASK_UNEQUIP                                = "取下装备",
-    ERR_RANGE                                   = "类别",
+    ["task.error.range"]                        = "类别",
     AD_REPUTATION_REMINDER                      = "银色黎明徽记",
     RIDING_SPEED_REMINDER                       = "骑术/飞行速度饰品",
     OUT_OF_THAT_ITEM                            = "不在背包",

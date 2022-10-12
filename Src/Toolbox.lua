@@ -286,7 +286,7 @@ function Tool.GetRaidIcon(name)
   return ICON_TAG_LIST[x] and Tool.RaidIcon[ICON_TAG_LIST[x]] or name
 end
 
-local TOO_FAR = 1000000
+local TOO_FAR = 1000011 -- special value to find out that the range error originates from this module
 
 function toolboxModule:UnitDistanceSquared(uId)
   --partly copied from DBM

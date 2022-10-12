@@ -115,7 +115,7 @@ end
 ---@param link string
 ---@param isTank boolean
 function unitClass:Construct(unitid, name, group, class, link, isTank)
-  self.distance = 100000
+  self.distance = 1000044 -- special value to find out that the range error originates from this module
   self.unitId = unitid
   self.name = name
   self.group = group
