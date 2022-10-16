@@ -15,6 +15,7 @@ function scrollsModule:SetupScrolls(buffs, enchantments)
   self:_SetupScrollsStrength(buffs, enchantments)
   self:_SetupScrollsProtection(buffs, enchantments)
   self:_SetupScrollsSpirit(buffs, enchantments)
+  self:_SetupScrollsIntellect(buffs, enchantments)
   self:_SetupInscriptionScrolls(buffs, enchantments)
 end
 
@@ -140,6 +141,30 @@ function scrollsModule:_SetupScrollsSpirit(buffs, enchantments)
   --
   self:AddScroll(buffs, 12177, 10306) -- Scroll of Spirit 4
       :RequirePlayerClass(allBuffsModule.MANA_CLASSES)
+end
+
+---@param buffs table<string, BomBuffDefinition> A list of buffs (not dictionary)
+---@param enchantments table<number, table<number>> Key is spell id, value is list of enchantment ids
+function scrollsModule:_SetupScrollsIntellect(buffs, enchantments)
+  --
+  -- WotLK
+  --
+  self:AddScroll(buffs, 48100, 37092) -- WotLK: Scroll of Intellect 8
+      :RequirePlayerClass(allBuffsModule.MANA_CLASSES)
+      :RequireWotLK()
+  self:AddScroll(buffs, 48099, 37091) -- WotLK: Scroll of Intellect 7
+      :RequirePlayerClass(allBuffsModule.MANA_CLASSES)
+      :RequireWotLK()
+  self:AddScroll(buffs, 43195, 33458) -- WotLK: Scroll of Intellect 6
+      :RequirePlayerClass(allBuffsModule.MANA_CLASSES)
+      :RequireWotLK()
+
+  --
+  -- TBC
+  --
+  self:AddScroll(buffs, 33078, 27499) -- TBC: Scroll of Intellect 5
+      :RequirePlayerClass(allBuffsModule.MANA_CLASSES)
+      :RequireTBC()
 end
 
 ---@param buffs table<string, BomBuffDefinition> A list of buffs (not dictionary)

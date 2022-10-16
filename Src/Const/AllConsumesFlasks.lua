@@ -167,4 +167,11 @@ function flasksModule:_SetupFlasksWotLK(buffs, enchantments)
                :RequireWotLK()
                :Category(allBuffsModule.WOTLK_FLASK)
                :ElixirType(allBuffsModule.ELIX_FLASK)
+
+  ---- Alchemist self-flask: Flask of the North 67016...19
+  --buffDefModule:genericConsumable(buffs, 67016, 47499) --WotLK: Flask of the North
+  --             :ExtraText(_t("tooltip.buff.alchemistOnly"))
+  --             :RequireWotLK()
+  --             :Category(allBuffsModule.WOTLK_FLASK)
+  --             :ElixirType(allBuffsModule.ELIX_FLASK)
 end

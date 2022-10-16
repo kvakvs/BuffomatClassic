@@ -1,5 +1,11 @@
 # Changelog
 
+## Buffomat Classic 2022.10.1
+
+- Group buffs will now apply to self, if no group member in range. This needs 
+  to be tested in real raid so will give it some time before promoting to 
+  release.
+
 ## Buffomat Classic 2022.9.6
 
 - [Pet] Pet food is now available for all classes not just hunters
