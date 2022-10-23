@@ -385,11 +385,11 @@ function buffDefModule:GetProfileBuff(spellId, profileName)
 end
 
 ---Returns true whether spell is enabled by the player (has checkbox)
----@param spell_id number
+---@param buffId number The key to the allSpells dictionary
 ---@return boolean
----@param profile_name string|nil
-function buffDefModule:IsSpellEnabled(spell_id, profile_name)
-  local spell = buffDefModule:GetProfileBuff(spell_id, profile_name)
+---@param profileName string|nil
+function buffDefModule:IsBuffEnabled(buffId, profileName)
+  local spell = buffDefModule:GetProfileBuff(buffId, profileName)
   if spell == nil then
     return false
   end
