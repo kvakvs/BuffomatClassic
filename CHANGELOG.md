@@ -1,10 +1,12 @@
 # Changelog
 
-## Buffomat Classic 2022.10.1
+## Buffomat Classic 2022.10.1, -10.2
 
 - Group buffs will now apply to self, if no group member in range. This needs 
   to be tested in real raid so will give it some time before promoting to 
   release.
+- Fixes for group buff range check.
+- Intellect scrolls?
 
 ## Buffomat Classic 2022.9.6
 
