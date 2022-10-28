@@ -25,7 +25,8 @@ function deathknightModule:SetupDeathknightSpells(spells, enchants)
           })   :RequirePlayerClass("DEATHKNIGHT")
                :Category(allBuffsModule.CLASS)
   buffDefModule:createAndRegisterBuff(spells, 57330, -- Horn of Winter
-          { default = true, singleId = 57330, singleDuration = allBuffsModule.DURATION_2M, isOwn = true })
+          { default        = true, singleId = { 57330, 57263 }, -- Rank 1 and 2
+            singleDuration = allBuffsModule.DURATION_2M, isOwn = true })
                :RequirePlayerClass("DEATHKNIGHT")
                :Category(allBuffsModule.CLASS)
   buffDefModule:createAndRegisterBuff(spells, 49222, -- Bone Shield

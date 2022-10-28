@@ -4,6 +4,7 @@
 
 - Spell tab update is now hard limited in frequency to combat the raid lag.
 - Buff scan update is also hard limited in frequency for the same reason.
+- Horn of Winter rank 2 added
 
 ## Buffomat Classic 2022.10.1, -10.2
 
