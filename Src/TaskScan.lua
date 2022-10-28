@@ -1305,7 +1305,7 @@ function taskScanModule:AddConsumableWeaponBuff(spell, playerMember,
               buffTargetModule:FromSelf(playerMember),
               true)
     else
-      BOM.SetForceUpdate("WeaponConsumableBuff display text") -- try rescan?
+      buffomatModule:SetForceUpdate("weaponConsumableBuff") -- try rescan?
     end
   end
 
@@ -1771,7 +1771,7 @@ function taskScanModule:UpdateScan_Button_HaveTasks(inRange)
 
     if skipreset then
       BOM.FastUpdateTimer()
-      BOM.SetForceUpdate("SkipReset")
+      buffomatModule:SetForceUpdate("skipReset")
     end
   end -- if inrange
 end
@@ -1784,7 +1784,7 @@ function taskScanModule:UpdateScan_Scan()
     -- If mounted and crusader aura enabled, then do not do further checks, allow the crusader aura
     local isBomActive, reasonDisabled = self:IsActive(playerMember)
     if not isBomActive then
-      BOM.ForceUpdate = false
+      buffomatModule:ClearForceUpdate()
       BOM.CheckForError = false
       BOM.AutoClose()
       BOM.Macro:Clear()
@@ -1795,7 +1795,7 @@ function taskScanModule:UpdateScan_Scan()
   end
 
   local someoneIsDead = taskScanModule.saveSomeoneIsDead
-  if BOM.ForceUpdate then
+  if next(buffomatModule.forceUpdateRequestedBy) ~= nil then
     someoneIsDead = self:ForceUpdate(playerParty, playerMember)
   end
 
@@ -1844,7 +1844,7 @@ function taskScanModule:UpdateScan_Scan()
 
   tasklist:Display() -- Show all tasks and comments
 
-  BOM.ForceUpdate = false
+  buffomatModule:ClearForceUpdate()
 
   if BOM.PlayerCasting == "cast" then
     self:UpdateScan_Button_Busy()
@@ -1891,7 +1891,7 @@ function taskScanModule:UpdateScan_PreCheck(from)
   if buffomatModule.currentProfileName ~= selectedProfileName then
     buffomatModule:UseProfile(selectedProfileName)
     spellButtonsTabModule:UpdateSpellsTab("UpdateScan1")
-    BOM.SetForceUpdate("ProfileChanged")
+    buffomatModule:SetForceUpdate("profileChanged")
   end
 
   -- All pre-checks passed
@@ -1918,7 +1918,7 @@ function BOM.AddMemberToSkipList()
           and BOM.CastFailedSpellTarget then
     tinsert(BOM.CastFailedSpell.SkipList, BOM.CastFailedSpellTarget.name)
     BOM.FastUpdateTimer()
-    BOM.SetForceUpdate("SkipListMemberAdded")
+    buffomatModule:SetForceUpdate("skipListMemberAdded")
   end
 end
 

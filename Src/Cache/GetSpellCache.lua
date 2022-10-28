@@ -6,6 +6,7 @@ local spellCacheModule = BuffomatModule.New("SpellCache") ---@type BomSpellCache
 ---@type table<number|string, BomSpellCacheElement> Stores arg to results mapping for GetItemInfo
 spellCacheModule.cache = {}
 
+local buffomatModule = BuffomatModule.Import("Buffomat") ---@type BomBuffomatModule
 local buffDefModule = BuffomatModule.Import("BuffDefinition") ---@type BomBuffDefinitionModule
 
 ---@class BomSpellCacheElement
@@ -83,7 +84,7 @@ function spellCacheModule:LoadSpell(spellId, onLoaded)
     cacheSpell.maxRange = maxRange
 
     self.cache[spellId] = cacheSpell
-    BOM.ForceUpdate = true
+    buffomatModule:SetForceUpdate(string.format("sp:%d", spellId))
 
     if onLoaded ~= nil then
       onLoaded(cacheSpell)

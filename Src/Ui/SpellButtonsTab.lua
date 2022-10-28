@@ -5,8 +5,10 @@ local BOM = BuffomatAddon ---@type BomAddon
 ---@class BomSpellButtonsTabModule
 ---@field spellTabsCreatedFlag boolean True if spells tab is created and filled
 ---@field categoryLabels table<string, BomLegacyControl> Collection of category labels indexed per category name
+---@field spellTabUpdateRequestedBy table<number, string> Contains the callers who last requested spells tab update, or nothing
 local spellButtonsTabModule = BuffomatModule.New("Ui/SpellButtonsTab") ---@type BomSpellButtonsTabModule
 spellButtonsTabModule.categoryLabels = {}
+spellButtonsTabModule.spellTabUpdateRequestedBy = {}
 
 local _t = BuffomatModule.Import("Languages") ---@type BomLanguagesModule
 local allBuffsModule = BuffomatModule.Import("AllBuffs") ---@type BomAllBuffsModule
@@ -601,14 +603,27 @@ end
 ---UpdateTab - update spells in one of the spell tabs
 ---BOM.SelectedSpells: table - Spells which were selected for display in Scan function, their
 ---state will be displayed in a spell tab
-function spellButtonsTabModule:UpdateSpellsTab(caller)
+---@return boolean Whether update has happened
+function spellButtonsTabModule:UpdateSpellsTab_Throttled()
+  if next(self.spellTabUpdateRequestedBy) == nil then
+    return false -- nothing to do
+  end
+
+  -- Debug: Print the list who requrested the update
+  --local callers = ""
+  --for _i, caller in ipairs(self.spellTabUpdateRequestedBy) do
+  --  callers = callers .. caller .. "; "
+  --end
+  --BOM:Print("Upd spells tab: " .. callers)
+  wipe(self.spellTabUpdateRequestedBy)
+
   -- InCombat Protection is checked by the caller (Update***Tab)
   if BOM.SelectedSpells == nil then
-    return
+    return false
   end
 
   if InCombatLockdown() then
-    return
+    return false
   end
 
   buffomatModule:UseProfile(profileModule:ChooseProfile())
@@ -635,4 +650,10 @@ function spellButtonsTabModule:UpdateSpellsTab(caller)
 
   --Create small SINGLE-BUFF toggle to the right of [Cast <spell>]
   BOM.CreateSingleBuffButton(BomC_ListTab) --maybe not created yet?
+  return true
+end
+
+---Record the need to update spells tab, but the actual update is called on a timer
+function spellButtonsTabModule:UpdateSpellsTab(caller)
+  table.insert(self.spellTabUpdateRequestedBy, caller)
 end

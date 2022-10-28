@@ -1,5 +1,10 @@
 # Changelog
 
+## Buffomat Classic 2022.10.3
+
+- Spell tab update is now hard limited in frequency to combat the raid lag.
+- Buff scan update is also hard limited in frequency for the same reason.
+
 ## Buffomat Classic 2022.10.1, -10.2
 
 - Group buffs will now apply to self, if no group member in range. This needs 

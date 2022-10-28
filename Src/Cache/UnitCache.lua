@@ -249,7 +249,7 @@ function unitCacheModule:GetPartyMembers()
       end
     end
 
-    BOM.SetForceUpdate("JoinedParty") -- always read all buffs on new party!
+    buffomatModule:SetForceUpdate("joinedParty") -- always read all buffs on new party!
   end
 
   BOM.PartyUpdateNeeded = false
@@ -278,7 +278,7 @@ function unitCacheModule:GetPartyMembers()
               or member.hasResurrection
     end
 
-    if BOM.ForceUpdate then
+    if next(buffomatModule.forceUpdateRequestedBy) ~= nil then
       member:ForceUpdateBuffs(playerUnit)
     end -- if force update
   end -- for all in party
@@ -338,11 +338,11 @@ function unitCacheModule:GetPartyMembers()
   end
 
   if OldMainHandBuff ~= playerUnit.MainHandBuff then
-    BOM.SetForceUpdate("MainHandBuff Changed")
+    buffomatModule:SetForceUpdate("mainHandBuffChanged")
   end
 
   if OldOffHandBuff ~= playerUnit.OffHandBuff then
-    BOM.SetForceUpdate("OffhandBuffChanged")
+    buffomatModule:SetForceUpdate("offhandBuffChanged")
   end
 
   BOM.DeclineHasResurrection = false

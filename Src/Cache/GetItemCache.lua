@@ -6,6 +6,8 @@ local BOM = BuffomatAddon ---@type BomAddon
 local itemCacheModule = BuffomatModule.New("ItemCache") ---@type BomItemCacheModule
 itemCacheModule.cache = {}
 
+local buffomatModule = BuffomatModule.Import("Buffomat") ---@type BomBuffomatModule
+
 ---@class BomItemCacheElement
 ---@field itemName string
 ---@field itemLink string Printable colored clickable item link
@@ -86,7 +88,7 @@ function itemCacheModule:LoadItem(itemId, onLoaded)
     cacheItem.itemSellPrice = itemSellPrice
 
     itemCacheModule.cache[itemId] = cacheItem
-    BOM.ForceUpdate = true
+    buffomatModule:SetForceUpdate(string.format("item%d", itemId))
 
     if onLoaded ~= nil then
       onLoaded(cacheItem)

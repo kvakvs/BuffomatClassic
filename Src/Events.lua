@@ -18,7 +18,7 @@ eventsModule.EVT_COMBAT_START = { "PLAYER_REGEN_DISABLED" }
 eventsModule.EVT_LOADING_SCREEN_START = { "LOADING_SCREEN_ENABLED", "PLAYER_LEAVING_WORLD" }
 eventsModule.EVT_LOADING_SCREEN_END = { "PLAYER_ENTERING_WORLD", "LOADING_SCREEN_DISABLED" }
 
-eventsModule.EVT_UPDATE = {
+eventsModule.GENERIC_UPDATE_EVENTS = {
   "UPDATE_SHAPESHIFT_FORM", "UNIT_AURA", "READY_CHECK",
   "PLAYER_ALIVE", "PLAYER_UNGHOST", "INCOMING_RESURRECT_CHANGED",
   "UNIT_INVENTORY_CHANGED" }
@@ -49,12 +49,6 @@ eventsModule.ERR_IS_SHAPESHIFT = {
   SPELL_FAILED_NOT_SHAPESHIFT, SPELL_NOT_SHAPESHIFTED,
   SPELL_NOT_SHAPESHIFTED_NOSPACE }
 
----Events which might change active state of Buffomat (like rested status change,
----or zone change, etc)
-local function Event_RequestForceUpdate()
-  BOM.ForceUpdate = true
-end
-
 ---Event_TAXIMAP_OPENED
 ---Will dismount player if mounted when opening taxi tab. Will stand and cancel
 ---shapeshift to be able to talk to the taxi NPC.
@@ -74,7 +68,7 @@ local function Event_UNIT_POWER_UPDATE(unitTarget, powerType)
     local actualMana = UnitPower("player", 0) or 0
 
     if maxMana <= actualMana then
-      BOM.SetForceUpdate(nil)
+      buffomatModule:SetForceUpdate("powerUpdate")
     end
   end
 end
@@ -89,7 +83,7 @@ end
 
 ---On combat start will close the UI window and disable the UI. Will cancel the cancelable buffs.
 local function Event_CombatStart()
-  BOM.SetForceUpdate("Evt Combat Start")
+  buffomatModule:SetForceUpdate("combatStart")
   BOM.DeclineHasResurrection = true
   BOM.AutoClose()
   if not InCombatLockdown() then
@@ -101,7 +95,7 @@ end
 
 local function Event_CombatStop()
   BOM.ClearSkip()
-  BOM.SetForceUpdate("Evt Combat Stop")
+  buffomatModule:SetForceUpdate("combatStop")
   BOM.DeclineHasResurrection = true
   BOM.AllowAutOpen()
 end
@@ -126,7 +120,7 @@ local function Event_LoadingStop()
   end
 
   BOM.LoadingScreenTimeOut = GetTime() + constModule.LOADING_SCREEN_TIMEOUT
-  BOM.SetForceUpdate("Evt Loading Stop")
+  buffomatModule:SetForceUpdate("loadingStop")
 end
 
 ---Event_PLAYER_TARGET_CHANGED
@@ -161,7 +155,7 @@ local function Event_PLAYER_TARGET_CHANGED()
 
   if newName ~= BOM.SaveTargetName then
     BOM.SaveTargetName = newName
-    BOM.SetForceUpdate("PlayerTargetChanged")
+    buffomatModule:SetForceUpdate("targetChanged")
     taskScanModule:UpdateScan("PlayerTargetChanged")
   end
 end
@@ -179,7 +173,7 @@ local function Event_COMBAT_LOG_EVENT_UNFILTERED()
       --BOM.PlayerBuffs[destName]=nil -- problem with hunters and fake-deaths!
       --additional check in bom_get_party_members
       --print("dead",destName)
-      BOM.SetForceUpdate("Evt UNIT_DIED")
+      buffomatModule:SetForceUpdate("unitDied")
 
     elseif buffomatModule.shared.Duration[spellName] then
       if bit.band(sourceFlags, COMBATLOG_OBJECT_AFFILIATION_MINE) > 0 then
@@ -256,16 +250,13 @@ end
 --- Should also fire spellbook change event and we handle there
 --local function Event_PLAYER_LEVEL_UP(level)
 --  -- TODO: Rebuild the UI buttons for new spells which appeared due to level up
---  --BOM.SetupSpells()
---  --BOM.ForceUpdate = true
---  --BOM.UpdateScan()
 --end
 
 eventsModule.isPlayerInParty = IsInRaid() or IsInGroup()
 
 local function Event_PartyChanged()
   BOM.PartyUpdateNeeded = true
-  BOM.SetForceUpdate("Evt Party Changed")
+  buffomatModule:SetForceUpdate("partyChanged")
 
   -- if in_party changed from true to false, clear the watch groups
   local inParty = IsInRaid() or IsInGroup()
@@ -284,21 +275,21 @@ end
 local function Event_UNIT_SPELLCAST_errors(unit)
   if UnitIsUnit(unit, "player") then
     BOM.CheckForError = false
-    BOM.SetForceUpdate()
+    buffomatModule:SetForceUpdate("spellcastError")
   end
 end
 
 local function Event_UNIT_SPELLCAST_START(unit)
   if UnitIsUnit(unit, "player") and not BOM.PlayerCasting then
     BOM.PlayerCasting = "cast"
-    BOM.SetForceUpdate()
+    buffomatModule:SetForceUpdate("castStart")
   end
 end
 
 local function Event_UNIT_SPELLCAST_STOP(unit)
   if UnitIsUnit(unit, "player") and BOM.PlayerCasting then
     BOM.PlayerCasting = nil
-    BOM.SetForceUpdate()
+    buffomatModule:SetForceUpdate("castStop")
     BOM.CheckForError = false
   end
 end
@@ -306,27 +297,22 @@ end
 local function Event_UNIT_SPELLCHANNEL_START(unit)
   if UnitIsUnit(unit, "player") and not BOM.PlayerCasting then
     BOM.PlayerCasting = "channel"
-    BOM.SetForceUpdate()
+    buffomatModule:SetForceUpdate("channelStart")
   end
 end
 
 local function Event_UNIT_SPELLCHANNEL_STOP(unit)
   if UnitIsUnit(unit, "player") and BOM.PlayerCasting then
     BOM.PlayerCasting = nil
-    BOM.SetForceUpdate()
+    buffomatModule:SetForceUpdate("channelStop")
     BOM.CheckForError = false
   end
 end
 
 local function Event_SpellsChanged()
   spellSetupModule:SetupAvailableSpells()
-  BOM.SetForceUpdate("event Spells Changed 1")
-  --spellButtonsTabModule.spellTabsCreatedFlag = false
-
-  --BOM.OptionsInsertSpells()
-  spellButtonsTabModule:UpdateSpellsTab("event Spells Changed")
-  BOM.SetForceUpdate("event Spells Changed 2")
-  taskScanModule:UpdateScan("event Spells Changed")
+  buffomatModule:SetForceUpdate("spellsChanged")
+  spellButtonsTabModule:UpdateSpellsTab("spellsChanged")
 end
 
 -- Global accessor to refresh the spells tab
@@ -335,12 +321,12 @@ BOM.OnSpellsChanged = Event_SpellsChanged
 --local function Event_ADDON_LOADED(arg1)
 --end
 
-local function Event_GenericUpdate()
-  BOM.SetForceUpdate()
-end
+--local function Event_GenericUpdate()
+--  buffomatModule:SetForceUpdate("generic")
+--end
 
 local function Event_Bag()
-  BOM.SetForceUpdate()
+  buffomatModule:SetForceUpdate("bagUpdate")
   BOM.WipeCachedItems = true
 
   if BOM.CachedHasItems then
@@ -353,8 +339,12 @@ function eventsModule:InitEvents()
   --BuffomatAddon:RegisterEvent("PLAYER_LEVEL_UP", Event_PLAYER_LEVEL_UP)
 
   -- Events which might change active state of Buffomat
-  BuffomatAddon:RegisterEvent("ZONE_CHANGED", Event_RequestForceUpdate)
-  BuffomatAddon:RegisterEvent("PLAYER_UPDATE_RESTING", Event_RequestForceUpdate)
+  BuffomatAddon:RegisterEvent("ZONE_CHANGED", function()
+    buffomatModule:SetForceUpdate("zoneChanged")
+  end)
+  BuffomatAddon:RegisterEvent("PLAYER_UPDATE_RESTING", function()
+    buffomatModule:SetForceUpdate("restingChanged")
+  end)
 
   BuffomatAddon:RegisterEvent("TAXIMAP_OPENED", Event_TAXIMAP_OPENED)
   --BuffomatAddon:RegisterEvent("ADDON_LOADED", Event_ADDON_LOADED)
@@ -400,8 +390,11 @@ function eventsModule:InitEvents()
   for i, event in ipairs(eventsModule.EVT_PARTY_CHANGED) do
     BuffomatAddon:RegisterEvent(event, Event_PartyChanged)
   end
-  for i, event in ipairs(eventsModule.EVT_UPDATE) do
-    BuffomatAddon:RegisterEvent(event, Event_GenericUpdate)
+  for i, event in ipairs(eventsModule.GENERIC_UPDATE_EVENTS) do
+    local e = event .. ""
+    BuffomatAddon:RegisterEvent(event, function()
+      buffomatModule:SetForceUpdate(e)
+    end)
   end
   for i, event in ipairs(eventsModule.EVT_BAG_CHANGED) do
     BuffomatAddon:RegisterEvent(event, Event_Bag)

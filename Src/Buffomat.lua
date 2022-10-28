@@ -5,7 +5,9 @@
 ---@field character BomCharacterSettings Refers to BuffomatCharacter global
 ---@field currentProfileName string
 ---@field currentProfile BomProfile
+---@field forceUpdateRequestedBy table<string, number> Reasons for force update, with count
 local buffomatModule = BuffomatModule.New("Buffomat") ---@type BomBuffomatModule
+buffomatModule.forceUpdateRequestedBy = {}
 
 local characterSettingsModule = BuffomatModule.New("CharacterSettings") ---@type BomCharacterSettingsModule
 local _t = BuffomatModule.Import("Languages") ---@type BomLanguagesModule
@@ -205,13 +207,17 @@ function BOM.ScrollMessage(self, delta)
   self:ResetAllFadeTimes()
 end
 
-function BOM.SetForceUpdate(reason)
-  BOM.ForceUpdate = true
+function buffomatModule:ClearForceUpdate()
+  wipe(self.forceUpdateRequestedBy)
+end
+
+function buffomatModule:SetForceUpdate(reason)
+  self.forceUpdateRequestedBy[reason] = (self.forceUpdateRequestedBy[reason] or 0) + 1
 end
 
 -- Something changed (buff gained possibly?) update all spells and spell tabs
 function buffomatModule:OptionsUpdate()
-  BOM.SetForceUpdate("OptionsUpdate")
+  buffomatModule:SetForceUpdate("OptionsUpdate")
   taskScanModule:UpdateScan("OptionsUpdate")
   spellButtonsTabModule:UpdateSpellsTab("OptionsUpdate")
   managedUiModule:UpdateAll()
@@ -247,7 +253,7 @@ function buffomatModule.ChooseProfile(profile)
 
   BOM.ClearSkip()
   BOM.PopupDynamic:Wipe()
-  BOM.SetForceUpdate("ChooseProfile")
+  buffomatModule:SetForceUpdate("ChooseProfile")
 
   buffomatModule:UseProfile(profile)
   taskScanModule:UpdateScan("ChooseProfile")
@@ -502,7 +508,7 @@ function BuffomatAddon:Init()
     { "spellbook", _t("SlashSpellBook"), BOM.SetupAvailableSpells },
     { "update", _t("SlashUpdate"),
       function()
-        BOM.SetForceUpdate()
+        buffomatModule:SetForceUpdate("/update")
         taskScanModule:UpdateScan("Macro /bom update")
       end },
     { "updatespellstab", "", spellButtonsTabModule.UpdateSpellsTab },
@@ -578,7 +584,7 @@ function buffomatModule:DownGrade()
       then
         buffomatModule.shared.SpellGreaterEqualThan[BOM.CastFailedSpellId] = level
         BOM.FastUpdateTimer()
-        BOM.SetForceUpdate("Downgrade")
+        buffomatModule:SetForceUpdate("Downgrade")
         BOM:Print(string.format(_t("MsgDownGrade"),
                 BOM.CastFailedSpell.singleText,
                 BOM.CastFailedSpellTarget.name))
@@ -607,9 +613,13 @@ buffomatModule.slowerhardwareUpdateTimerLimit = 1.500
 buffomatModule.BOM_THROTTLE_TIMER_LIMIT = 1.000
 buffomatModule.BOM_THROTTLE_SLOWER_HARDWARE_TIMER_LIMIT = 2.000
 
+buffomatModule.lastSpellsTabUpdate = 0
+
 function buffomatModule.UpdateTimer()
+  local now = GetTime()
+
   if BOM.InLoading and BOM.LoadingScreenTimeOut then
-    if BOM.LoadingScreenTimeOut > GetTime() then
+    if BOM.LoadingScreenTimeOut > now then
       return
     else
       BOM.InLoading = false
@@ -617,21 +627,28 @@ function buffomatModule.UpdateTimer()
     end
   end
 
-  if BOM.MinTimer and BOM.MinTimer < GetTime() then
-    BOM.SetForceUpdate("MinTimer")
+  -- Update spells tab if necessary and update last update time if successful
+  if now - buffomatModule.lastSpellsTabUpdate > 1.0 then
+    if spellButtonsTabModule:UpdateSpellsTab_Throttled() then
+      buffomatModule.lastSpellsTabUpdate = now
+    end
+  end
+
+  if BOM.MinTimer and BOM.MinTimer < now then
+    buffomatModule:SetForceUpdate("MinTimer")
   end
 
   if BOM.CheckCoolDown then
     local cdtest = GetSpellCooldown(BOM.CheckCoolDown)
     if cdtest == 0 then
       BOM.CheckCoolDown = nil
-      BOM.SetForceUpdate("CheckCooldown")
+      buffomatModule:SetForceUpdate("CheckCooldown")
     end
   end
 
   if BOM.ScanModifier and buffomatModule.lastModifierKeyState ~= IsModifierKeyDown() then
     buffomatModule.lastModifierKeyState = IsModifierKeyDown()
-    BOM.SetForceUpdate("ModifierKeyDown")
+    buffomatModule:SetForceUpdate("ModifierKeyDown")
   end
 
   --
@@ -644,24 +661,41 @@ function buffomatModule.UpdateTimer()
     updateTimerLimit = buffomatModule.slowerhardwareUpdateTimerLimit
   end
 
-  if (BOM.ForceUpdate or BOM.RepeatUpdate)
-          and GetTime() - (buffomatModule.lastUpdateTimestamp or 0) > updateTimerLimit
+  local needForceUpdate = next(buffomatModule.forceUpdateRequestedBy) ~= nil
+
+  if (needForceUpdate or BOM.RepeatUpdate)
+          and now - (buffomatModule.lastUpdateTimestamp or 0) > updateTimerLimit
           and InCombatLockdown() == false
   then
-    buffomatModule.lastUpdateTimestamp = GetTime()
+    buffomatModule.lastUpdateTimestamp = now
     buffomatModule.fpsCheck = debugprofilestop()
+
+    -- Debug: Print the callers as reasons to force update
+    --if next(buffomatModule.forceUpdateRequestedBy) then
+    --  local callers = ""
+    --  for caller, count in pairs(buffomatModule.forceUpdateRequestedBy) do
+    --    if count > 1 then
+    --      callers = callers .. string.format("%s:%d; ", caller, count)
+    --    else
+    --      callers = callers .. string.format("%s; ", caller)
+    --    end
+    --  end
+    --  BOM:Print("Update: " .. callers)
+    --end
+    buffomatModule:ClearForceUpdate()
 
     taskScanModule:UpdateScan("Timer")
 
-    -- If updatescan call above took longer than 6 ms, and repeated update, then
-    -- bump the slow alarm counter, once it reaches 6 we consider throttling
-    if (debugprofilestop() - buffomatModule.fpsCheck) > 6 and BOM.RepeatUpdate then
+    -- If updatescan call above took longer than 32 ms, and repeated update, then
+    -- bump the slow alarm counter, once it reaches 32 we consider throttling.
+    -- 1000 ms / 32 ms = 31.25 fps
+    if (debugprofilestop() - buffomatModule.fpsCheck) > 32 and BOM.RepeatUpdate then
       buffomatModule.slowCount = buffomatModule.slowCount + 1
 
       if buffomatModule.slowCount >= 20 and updateTimerLimit < 1 then
         buffomatModule.updateTimerLimit = buffomatModule.BOM_THROTTLE_TIMER_LIMIT
         buffomatModule.slowerhardwareUpdateTimerLimit = buffomatModule.BOM_THROTTLE_SLOWER_HARDWARE_TIMER_LIMIT
-        BOM:Print("Overwhelmed - entering slow mode!")
+        BOM:Print("Overwhelmed - slowing down the scans!")
       end
     else
       buffomatModule.slowCount = 0
@@ -759,7 +793,7 @@ function BOM.HideWindow()
     if BOM.WindowVisible() then
       BomC_MainWindow:Hide()
       buffomatModule.autoHelper = "KeepClose"
-      BOM.SetForceUpdate("HideWindow")
+      buffomatModule:SetForceUpdate("HideWindow")
       taskScanModule:UpdateScan("HideWindow")
     end
   end
@@ -792,7 +826,7 @@ function buffomatModule:ToggleWindow()
   if BomC_MainWindow:IsVisible() then
     BOM.HideWindow()
   else
-    BOM.SetForceUpdate("ToggleWindow")
+    buffomatModule:SetForceUpdate("ToggleWindow")
     taskScanModule:UpdateScan("ToggleWindow")
     BOM.ShowWindow()
   end
