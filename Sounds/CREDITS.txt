@@ -1,0 +1,11 @@
+﻿Mouse Click:
+	Sound Effect by StudioAlivioGlobal from Pixabay
+
+Computer Processing Click:
+	Sound Effect by SamuelFrancisJohnson from Pixabay
+
+Projector Button Push:
+	Sound Effect from Pixabay
+
+bubble-pop-alert, positive-notification, correct-answer-tone, gaming-lock, long-pop:
+	Mixkit.co

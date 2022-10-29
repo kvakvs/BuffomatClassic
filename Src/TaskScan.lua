@@ -1,7 +1,9 @@
 local BOM = BuffomatAddon ---@type BomAddon
 
 ---@class BomTaskScanModule
+---@field taskListSizeBeforeScan number Saved size before scan
 local taskScanModule = BuffomatModule.New("TaskScan") ---@type BomTaskScanModule
+taskScanModule.taskListSizeBeforeScan = 0
 
 local _t = BuffomatModule.Import("Languages") ---@type BomLanguagesModule
 local buffChecksModule = BuffomatModule.Import("BuffChecks") ---@type BomBuffChecksModule
@@ -1776,6 +1778,13 @@ function taskScanModule:UpdateScan_Button_HaveTasks(inRange)
   end -- if inrange
 end
 
+function taskScanModule:PlayTaskSound()
+  local s = buffomatModule.shared.PlaySoundWhenTask
+  if s ~= nil and s ~= "-" then
+    PlaySoundFile("Interface\\AddOns\\BuffomatClassic\\Sounds\\" .. buffomatModule.shared.PlaySoundWhenTask)
+  end
+end
+
 function taskScanModule:UpdateScan_Scan()
   local playerParty, playerMember = unitCacheModule:GetPartyMembers()
 
@@ -1837,6 +1846,10 @@ function taskScanModule:UpdateScan_Scan()
   -- Open Buffomat if any cast tasks were added to the task list
   if #tasklist.tasks > 0 or #tasklist.comments > 0 then
     BOM.AutoOpen()
+    -- to avoid repeating sound, check whether task list before we started had length of 0
+    if self.taskListSizeBeforeScan == 0 then
+      self:PlayTaskSound()
+    end
   else
     self:FadeBuffomatWindow()
     BOM.AutoClose()
@@ -1902,9 +1915,12 @@ end -- end function bomUpdateScan_PreCheck()
 ---and what would be their priority?
 ---@param from string Debug value to trace the caller of this function
 function taskScanModule:UpdateScan(from)
-  --if BOM.ForceUpdateSpellsTab then
-  --spellButtonsTabModule:ClearRebuildSpellButtonsTab()
+  --if from ~= "Timer" then
+    --BOM:Print("updatescan " .. tostring(from) .. " " .. GetTime())
   --end
+
+  -- to avoid re-playing the same sound, only play when task list changes from 0 to some tasks
+  self.taskListSizeBeforeScan = #tasklist.tasks
 
   buffomatModule:UseProfile(profileModule:ChooseProfile())
   self:UpdateScan_PreCheck(from)

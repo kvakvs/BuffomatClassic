@@ -5,9 +5,10 @@ local BOM = BuffomatAddon ---@type BomAddon
 local optionsModule = BuffomatModule.New("Options") ---@type BomOptionsModule
 optionsModule.optionsOrder = 0
 
-local buffomatModule = BuffomatModule.Import("Buffomat") ---@type BomBuffomatModule
 local _t = BuffomatModule.Import("Languages") ---@type BomLanguagesModule
 local allBuffsModule = BuffomatModule.Import("AllBuffs") ---@type BomAllBuffsModule
+local buffomatModule = BuffomatModule.Import("Buffomat") ---@type BomBuffomatModule
+local constModule = BuffomatModule.Import("Const") ---@type BomConstModule
 
 function optionsModule:ValueToText(type, value)
   if type == "string" then
@@ -179,6 +180,11 @@ function optionsModule:TemplateRange(name, rangeFrom, rangeTo, step, dict, key, 
 end
 
 function optionsModule:CreateGeneralOptionsTable()
+  local sounds = {}
+  for i, sound in ipairs(constModule.TASK_NOTIFICATION_SOUNDS) do
+    sounds[sound .. ".mp3"] = sound
+  end
+
   return {
     type = "group",
     name = "1. " .. _t("options.general.group.General"),
@@ -214,6 +220,8 @@ function optionsModule:CreateGeneralOptionsTable()
                 buffomatModule:SetWindowScale(val)
               end
       ),
+      -- Play from Interface/Addons/Buffomat/Sounds/...
+      playSoundWhenTask     = self:TemplateSelect("PlaySoundWhenTask", sounds, "dropdown"),
     }
   }
 end
@@ -337,7 +345,7 @@ function optionsModule:CreateOptionsTable()
       convenienceOptions = self:CreateConvenienceOptionsTable(),
       buffingOptions     = self:CreateBuffingOptionsTable(),
       visibilityOptions  = self:CreateVisibilityOptionsTable(),
-      classOptions  = self:CreateClassOptionsTable(),
+      classOptions       = self:CreateClassOptionsTable(),
     } -- end args
   } -- end
 end

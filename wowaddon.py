@@ -10,7 +10,7 @@ import subprocess
 import sys
 import zipfile
 
-VERSION = '2022.10.3'  # year.month.build_num
+VERSION = '2022.10.4'  # year.month.build_num
 
 ADDON_NAME_CLASSIC = 'BuffomatClassic'  # Directory and zip name
 ADDON_TITLE_CLASSIC = "Buffomat Classic"  # Title field in TOC
@@ -19,7 +19,7 @@ UI_VERSION_CLASSIC = '11403'  # patch 1.14.3
 UI_VERSION_CLASSIC_TBC = '20504'  # patch 2.5.4 Phase 4 and 5 TBC
 UI_VERSION_CLASSIC_WOTLK = '30400'  # patch 3.4.0 WotLK
 
-COPY_DIRS = ['Src', 'Ace3']
+COPY_DIRS = ['Src', 'Ace3', 'Sounds']
 COPY_FILES = ['Bindings.xml', 'CHANGELOG.md', 'embeds.xml',
               'LICENSE.txt', 'README.md', 'README.Deutsch.txt']
 

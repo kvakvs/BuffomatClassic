@@ -217,8 +217,9 @@ end
 
 -- Something changed (buff gained possibly?) update all spells and spell tabs
 function buffomatModule:OptionsUpdate()
-  buffomatModule:SetForceUpdate("OptionsUpdate")
+  buffomatModule:SetForceUpdate("optionsUpdate")
   taskScanModule:UpdateScan("OptionsUpdate")
+
   spellButtonsTabModule:UpdateSpellsTab("OptionsUpdate")
   managedUiModule:UpdateAll()
   BOM.MinimapButton.UpdatePosition()
@@ -253,10 +254,10 @@ function buffomatModule.ChooseProfile(profile)
 
   BOM.ClearSkip()
   BOM.PopupDynamic:Wipe()
-  buffomatModule:SetForceUpdate("ChooseProfile")
+  buffomatModule:SetForceUpdate("profileSelected")
+  taskScanModule:UpdateScan("profileSelected")
 
   buffomatModule:UseProfile(profile)
-  taskScanModule:UpdateScan("ChooseProfile")
 end
 
 function buffomatModule:UseProfile(profileName)
@@ -508,8 +509,8 @@ function BuffomatAddon:Init()
     { "spellbook", _t("SlashSpellBook"), BOM.SetupAvailableSpells },
     { "update", _t("SlashUpdate"),
       function()
-        buffomatModule:SetForceUpdate("/update")
-        taskScanModule:UpdateScan("Macro /bom update")
+        buffomatModule:SetForceUpdate("macro-/update")
+        taskScanModule:UpdateScan("macro-/update")
       end },
     { "updatespellstab", "", spellButtonsTabModule.UpdateSpellsTab },
     { "close", _t("SlashClose"), BOM.HideWindow },
@@ -653,6 +654,7 @@ function buffomatModule.UpdateTimer()
 
   --
   -- Update timers, slow hardware and auto-throttling
+  -- This will trigger update on timer, regardless of other conditions
   --
   buffomatModule.fpsCheck = buffomatModule.fpsCheck + 1
 
@@ -683,8 +685,7 @@ function buffomatModule.UpdateTimer()
     --  BOM:Print("Update: " .. callers)
     --end
     buffomatModule:ClearForceUpdate()
-
-    taskScanModule:UpdateScan("Timer")
+    taskScanModule:UpdateScan("timer")
 
     -- If updatescan call above took longer than 32 ms, and repeated update, then
     -- bump the slow alarm counter, once it reaches 32 we consider throttling.
@@ -793,8 +794,8 @@ function BOM.HideWindow()
     if BOM.WindowVisible() then
       BomC_MainWindow:Hide()
       buffomatModule.autoHelper = "KeepClose"
-      buffomatModule:SetForceUpdate("HideWindow")
-      taskScanModule:UpdateScan("HideWindow")
+      buffomatModule:SetForceUpdate("hideWindow")
+      taskScanModule:UpdateScan("hideWindow")
     end
   end
 end
@@ -826,8 +827,8 @@ function buffomatModule:ToggleWindow()
   if BomC_MainWindow:IsVisible() then
     BOM.HideWindow()
   else
-    buffomatModule:SetForceUpdate("ToggleWindow")
-    taskScanModule:UpdateScan("ToggleWindow")
+    buffomatModule:SetForceUpdate("toggleWindow")
+    taskScanModule:UpdateScan("toggleWindow")
     BOM.ShowWindow()
   end
 end

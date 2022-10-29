@@ -129,6 +129,8 @@ function russianModule:Translations()
     ["options.short.Time60"]                    = "Продолжительность <=60 сек:",
     ["options.short.Time600"]                   = "Продолжительность <=10 мин:",
 
+    ["options.general.sound.None"]              = "- не играть звук -", -- play no sound on task
+
     ["tasklist.IgnoredBuffOn"]                  = "Пропускаем %s: %s", -- when a buff is not listed because a better buff exists
 
     Header_TRACKING                             = "Отслеживание",

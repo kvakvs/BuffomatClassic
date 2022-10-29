@@ -214,6 +214,9 @@ function englishModule:Translations()
     ["options.short.UIWindowScale"]                   = "UI scale",
     ["options.short.MinBuff"]                         = "Missing buffs to use a group buff",
     ["options.short.MinBlessing"]                     = "Blessing targets for a greater blessing",
+    ["options.short.PlaySoundWhenTask"]               = "Play sound when there are buff tasks",
+
+    ["options.general.sound.None"]                    = "- no sound effect -", -- play no sound on task
 
     ["options.long.Time60"]                           = "Refresh buffs with total duration <=60 sec, if remaining less than",
     ["options.long.Time300"]                          = "Refresh buffs with total duration <=5 min, if remaining less than",
@@ -223,6 +226,7 @@ function englishModule:Translations()
     ["options.long.UIWindowScale"]                    = "User interface scale, make your Buffomat larger or smaller (default 1.0)",
     ["options.long.MinBuff"]                          = "Number of missing buffs required to use a group buff",
     ["options.long.MinBlessing"]                      = "Number of missing blessing required to use a greater blessing",
+    ["options.long.PlaySoundWhenTask"]                = "Play sound when task list is not empty",
 
     TooltipSelfCastCheckbox_Self                      = "Self-cast only",
     TooltipSelfCastCheckbox_Party                     = "Buff party and groups in raid",

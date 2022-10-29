@@ -16,3 +16,15 @@ constModule.PICTURE_FORMAT = "|T%s:0|t"
 constModule.MACRO_NAME = "Buff'o'mat"
 constModule.BLESSING_ID = "blessing"
 constModule.LOADING_SCREEN_TIMEOUT = 2
+
+-- Play MP3 from Sounds/ directory when task list is not empty
+constModule.TASK_NOTIFICATION_SOUNDS = {
+  "bubble-pop-up-alert",
+  "computer-processing-short-click",
+  "correct-answer-tone",
+  "gaming-lock",
+  "long-pop",
+  "mouse-click",
+  "positive-notification",
+  "projector-button-push",
+}
