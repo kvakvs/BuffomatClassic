@@ -3,6 +3,8 @@ local BOM = BuffomatAddon ---@type BomAddon
 
 ---@class BomUnitCacheModule
 ---@field unitCache table<string, BomUnit>
+---@field cachedPlayerUnit BomUnit
+---@field cachedParty table<number, BomUnit>
 local unitCacheModule = BuffomatModule.New("UnitCache") ---@type BomUnitCacheModule
 unitCacheModule.unitCache = {}
 
@@ -10,12 +12,6 @@ local buffModule = BuffomatModule.Import("Buff") ---@type BomBuffModule
 local buffomatModule = BuffomatModule.Import("Buffomat") ---@type BomBuffomatModule
 local unitModule = BuffomatModule.Import("Unit") ---@type BomUnitModule
 local toolboxModule = BuffomatModule.Import("Toolbox") ---@type BomToolboxModule
-
----@type BomUnit
-local bomPlayerMemberCache --Copy of player info dict
-
----@type table<number, BomUnit>
-local bomPartyCache --Copy of party members, a dict of Member's
 
 ---@param unitid string Player name or special name like "raidpet#"
 ---@param nameGroup string|number
@@ -188,12 +184,12 @@ function unitCacheModule:GetPartyMembers()
 
   -- check if stored party is correct!
   if not BOM.PartyUpdateNeeded
-          and bomPartyCache ~= nil
-          and bomPlayerMemberCache ~= nil then
+          and self.cachedParty ~= nil
+          and self.cachedPlayerUnit ~= nil then
 
-    if #bomPartyCache == bomGetPartySize() + (BOM.SaveTargetName and 1 or 0) then
+    if #self.cachedParty == bomGetPartySize() + (BOM.SaveTargetName and 1 or 0) then
       local ok = true
-      for i, member in ipairs(bomPartyCache) do
+      for i, member in ipairs(self.cachedParty) do
         local name = (UnitFullName(member.unitId))
 
         if name ~= member.name then
@@ -203,8 +199,8 @@ function unitCacheModule:GetPartyMembers()
       end
 
       if ok then
-        party = bomPartyCache
-        playerUnit = bomPlayerMemberCache
+        party = self.cachedParty
+        playerUnit = self.cachedPlayerUnit
       end
     end
   end
@@ -231,8 +227,8 @@ function unitCacheModule:GetPartyMembers()
       end
     end
 
-    bomPartyCache = party
-    bomPlayerMemberCache = playerUnit
+    self.cachedParty = party
+    self.cachedPlayerUnit = playerUnit
 
     -- Cleanup BOM.PlayerBuffs
     for name, val in pairs(BOM.PlayerBuffs) do
@@ -348,4 +344,9 @@ function unitCacheModule:GetPartyMembers()
   BOM.DeclineHasResurrection = false
 
   return party, playerUnit
+end
+
+function unitCacheModule:ClearCache()
+  self.cachedParty = nil
+  self.cachedPlayerUnit = nil
 end

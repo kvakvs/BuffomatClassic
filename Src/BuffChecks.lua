@@ -52,8 +52,8 @@ function buffChecksModule:TimeCheck(expirationTime, maxDuration)
 
   if remainingTimeTrigger + GetTime() < expirationTime then
     expirationTime = expirationTime - remainingTimeTrigger
-    if expirationTime < BOM.MinTimer then
-      BOM.MinTimer = expirationTime
+    if expirationTime < BOM.nextCooldownDue then
+      BOM.nextCooldownDue = expirationTime
     end
     return true
   end

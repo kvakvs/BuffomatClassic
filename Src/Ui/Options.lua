@@ -222,6 +222,7 @@ function optionsModule:CreateGeneralOptionsTable()
       ),
       -- Play from Interface/Addons/Buffomat/Sounds/...
       playSoundWhenTask     = self:TemplateSelect("PlaySoundWhenTask", sounds, "dropdown"),
+      debugLogging     = self:TemplateCheckbox("DebugLogging"),
     }
   }
 end

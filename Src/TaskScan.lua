@@ -174,8 +174,8 @@ function taskScanModule:UpdateSpellTargets(party, spell, playerUnit)
       startTime = startTime + duration
 
       -- Check next time when the cooldown is up, or sooner
-      if BOM.MinTimer > startTime then
-        BOM.MinTimer = startTime
+      if BOM.nextCooldownDue > startTime then
+        BOM.nextCooldownDue = startTime
       end
 
       someoneIsDead = false
@@ -1479,8 +1479,8 @@ function taskScanModule:CheckItemsAndContainers(playerMember, cast_button_title,
     if item.CD then
       if (item.CD[1] or 0) ~= 0 then
         local ti = item.CD[1] + item.CD[2] - GetTime() + 1
-        if ti < BOM.MinTimer then
-          BOM.MinTimer = ti
+        if ti < BOM.nextCooldownDue then
+          BOM.nextCooldownDue = ti
         end
       elseif item.Link then
         ok = true
@@ -1728,7 +1728,7 @@ function taskScanModule:UpdateScan_Button_TargetedSpell()
   local cdtest = GetSpellCooldown(nextCastSpell.spellId) or 0
 
   if cdtest ~= 0 then
-    BOM.CheckCoolDown = nextCastSpell.spellId
+    BOM.checkCooldown = nextCastSpell.spellId
     BomC_ListTab_Button:Disable()
   else
     BomC_ListTab_Button:Enable()
@@ -1785,31 +1785,16 @@ function taskScanModule:PlayTaskSound()
   end
 end
 
-function taskScanModule:UpdateScan_Scan()
-  local playerParty, playerMember = unitCacheModule:GetPartyMembers()
-
-  -- Check whether BOM is disabled due to some option and a matching condition
-  if not self:IsMountedAndCrusaderAuraRequired() then
-    -- If mounted and crusader aura enabled, then do not do further checks, allow the crusader aura
-    local isBomActive, reasonDisabled = self:IsActive(playerMember)
-    if not isBomActive then
-      buffomatModule:ClearForceUpdate()
-      BOM.CheckForError = false
-      BOM.AutoClose()
-      BOM.Macro:Clear()
-      self:FadeBuffomatWindow()
-      self:CastButton(reasonDisabled, false)
-      return
-    end
-  end
-
+---@param playerParty table<number, BomUnit>
+---@param playerUnit BomUnit
+function taskScanModule:UpdateScan_Scan(playerParty, playerUnit)
   local someoneIsDead = taskScanModule.saveSomeoneIsDead
   if next(buffomatModule.forceUpdateRequestedBy) ~= nil then
-    someoneIsDead = self:ForceUpdate(playerParty, playerMember)
+    someoneIsDead = self:ForceUpdate(playerParty, playerUnit)
   end
 
   -- cancel buffs
-  self:CancelBuffs(playerMember)
+  self:CancelBuffs(playerUnit)
 
   -- fill list and find cast
   bomCurrentPlayerMana = UnitPower("player", 0) or 0 --mana
@@ -1831,16 +1816,16 @@ function taskScanModule:UpdateScan_Scan()
     BOM.ScanModifier = false
 
     inRange, castButtonTitle, macroCommand = self:ScanSelectedSpells(
-            playerMember, playerParty, inRange, castButtonTitle, macroCommand)
+            playerUnit, playerParty, inRange, castButtonTitle, macroCommand)
 
-    self:CheckReputationItems(playerMember)
-    self:CheckMissingWeaponEnchantments(playerMember) -- if option to warn is enabled
+    self:CheckReputationItems(playerUnit)
+    self:CheckMissingWeaponEnchantments(playerUnit) -- if option to warn is enabled
 
     ---Check if someone has drink buff, print an info message
     self:SomeoneIsDrinking()
 
     castButtonTitle, macroCommand = self:CheckItemsAndContainers(
-            playerMember, castButtonTitle, macroCommand)
+            playerUnit, castButtonTitle, macroCommand)
   end
 
   -- Open Buffomat if any cast tasks were added to the task list
@@ -1887,6 +1872,7 @@ end -- end function bomUpdateScan_Scan()
 
 function taskScanModule:UpdateScan_PreCheck(from)
   if BOM.SelectedSpells == nil then
+    BOM:Debug("UpdateScan_PreCheck: BOM.SelectedSpells is nil")
     return
   end
 
@@ -1894,7 +1880,7 @@ function taskScanModule:UpdateScan_PreCheck(from)
     return
   end
 
-  BOM.MinTimer = GetTime() + 36000 -- 10 hours
+  BOM.nextCooldownDue = GetTime() + 36000 -- 10 hours
   tasklist:Clear()
   BOM.RepeatUpdate = false
 
@@ -1903,26 +1889,41 @@ function taskScanModule:UpdateScan_PreCheck(from)
 
   if buffomatModule.currentProfileName ~= selectedProfileName then
     buffomatModule:UseProfile(selectedProfileName)
-    spellButtonsTabModule:UpdateSpellsTab("UpdateScan1")
+    spellButtonsTabModule:UpdateSpellsTab("profileChanged")
     buffomatModule:SetForceUpdate("profileChanged")
   end
 
+  unitCacheModule:ClearCache()
+  local playerParty, playerUnit = unitCacheModule:GetPartyMembers()
+
+  -- Check whether BOM is disabled due to some option and a matching condition
+  if not self:IsMountedAndCrusaderAuraRequired() then
+    -- If mounted and crusader aura enabled, then do not do further checks, allow the crusader aura
+    local isBomActive, reasonDisabled = self:IsActive(playerUnit)
+    if not isBomActive then
+      buffomatModule:ClearForceUpdate()
+      BOM.CheckForError = false
+      BOM.AutoClose()
+      BOM.Macro:Clear()
+      self:FadeBuffomatWindow()
+      self:CastButton(reasonDisabled, false)
+      return
+    end
+  end
+
   -- All pre-checks passed
-  self:UpdateScan_Scan()
+  self:UpdateScan_Scan(playerParty, playerUnit)
 end -- end function bomUpdateScan_PreCheck()
 
 ---Scan the available spells and group members to find who needs the rebuff/res
 ---and what would be their priority?
 ---@param from string Debug value to trace the caller of this function
-function taskScanModule:UpdateScan(from)
-  --if from ~= "Timer" then
-    --BOM:Print("updatescan " .. tostring(from) .. " " .. GetTime())
-  --end
-
+function taskScanModule:ScanNow(from)
   -- to avoid re-playing the same sound, only play when task list changes from 0 to some tasks
   self.taskListSizeBeforeScan = #tasklist.tasks
 
   buffomatModule:UseProfile(profileModule:ChooseProfile())
+
   self:UpdateScan_PreCheck(from)
 end
 

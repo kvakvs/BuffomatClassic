@@ -27,6 +27,9 @@ local toolboxModule = BuffomatModule.Import("Toolbox") ---@type BomToolboxModule
 
 ---global, visible from XML files and from script console and chat commands
 ---@class BomAddon
+---@field ScanModifier boolean Will update buffomat when modifier key is held down
+---@field nextCooldownDue number Set this to next spell cooldown to force update
+---@field checkCooldown number|nil Spell id to check cooldown for
 ---@field ForceUpdate boolean Set to true to force recheck buffs on timer
 -- -@field ForceUpdateSpellsTab boolean Set to true to force clear and rebuild spells tab. This activity is throttled to 1 per second
 ---@field ALL_PROFILES table<string> Lists all buffomat profile names (group, solo... etc)
@@ -40,7 +43,6 @@ local toolboxModule = BuffomatModule.Import("Toolbox") ---@type BomToolboxModule
 ---@field ItemCache table<number, BomItemCacheElement> Precreated precached items
 ---@field ActivePaladinAura nil|number Spell id of aura if an unique aura was casted (only one can be active)
 ---@field ActivePaladinSeal nil|number Spell id of weapon seal, if an seal-type temporary enchant was used (only one can be active)
----
 ---@field ForceProfile string|nil Nil will choose profile name automatically, otherwise this profile will be used
 ---@field ArgentumDawn table Equipped AD trinket: Spell to and zone ids to check
 ---@field BuffExchangeId table<number, table<number>> Combines spell ids of spellrank flavours into main spell id
@@ -76,7 +78,6 @@ local toolboxModule = BuffomatModule.Import("Toolbox") ---@type BomToolboxModule
 ---@field WipeCachedItems boolean Command to reset cached items
 ---@field MinimapButton GPIMinimapButton Minimap button control
 ---@field legacyOptions BomLegacyUiOptions
----
 ---@field ICON_PET string
 ---@field ICON_OPT_ENABLED string
 ---@field ICON_OPT_DISABLED string
@@ -152,9 +153,7 @@ local toolboxModule = BuffomatModule.Import("Toolbox") ---@type BomToolboxModule
 ---@field IconInInstanceOnCoord table<number>
 ---@field IconUseRankOff string
 ---@field IconUseRankOn string
----
 ---@field QuickSingleBuff BomLegacyControl Button for single/group buff toggling next to cast button
----
 ---@field SpellId table<string, table<string, number>> Map of spell name to id
 ---@field ItemId table<string, table<string, number>> Map of item name to id
 ---@field PopupDynamic BomPopupDynamic
@@ -174,8 +173,10 @@ BOM.IsClassic = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
 
 ---Print a text with "BomDebug: " prefix in the game chat window
 ---@param t string
-function BOM.Dbg(t)
-  DEFAULT_CHAT_FRAME:AddMessage(tostring(GetTime()) .. " " .. BOM.Color("883030", "BOM") .. t)
+function BOM:Debug(t)
+  if buffomatModule.shared.DebugLogging then
+    DEFAULT_CHAT_FRAME:AddMessage(tostring(GetTime()) .. " " .. BOM.Color("883030", "BOM") .. t)
+  end
 end
 
 function BOM.Color(hex, text)
@@ -207,7 +208,10 @@ function BOM.ScrollMessage(self, delta)
   self:ResetAllFadeTimes()
 end
 
-function buffomatModule:ClearForceUpdate()
+function buffomatModule:ClearForceUpdate(debugCallerLocation)
+  if debugCallerLocation then
+    BOM:Debug("clearForceUpdate from " .. debugCallerLocation)
+  end
   wipe(self.forceUpdateRequestedBy)
 end
 
@@ -218,7 +222,7 @@ end
 -- Something changed (buff gained possibly?) update all spells and spell tabs
 function buffomatModule:OptionsUpdate()
   buffomatModule:SetForceUpdate("optionsUpdate")
-  taskScanModule:UpdateScan("OptionsUpdate")
+  taskScanModule:ScanNow("OptionsUpdate")
 
   spellButtonsTabModule:UpdateSpellsTab("OptionsUpdate")
   managedUiModule:UpdateAll()
@@ -255,7 +259,7 @@ function buffomatModule.ChooseProfile(profile)
   BOM.ClearSkip()
   BOM.PopupDynamic:Wipe()
   buffomatModule:SetForceUpdate("profileSelected")
-  taskScanModule:UpdateScan("profileSelected")
+  taskScanModule:ScanNow("profileSelected")
 
   buffomatModule:UseProfile(profile)
 end
@@ -510,7 +514,7 @@ function BuffomatAddon:Init()
     { "update", _t("SlashUpdate"),
       function()
         buffomatModule:SetForceUpdate("macro-/update")
-        taskScanModule:UpdateScan("macro-/update")
+        taskScanModule:ScanNow("macro-/update")
       end },
     { "updatespellstab", "", spellButtonsTabModule.UpdateSpellsTab },
     { "close", _t("SlashClose"), BOM.HideWindow },
@@ -605,6 +609,7 @@ buffomatModule.lastUpdateTimestamp = 0
 buffomatModule.lastModifierKeyState = false
 buffomatModule.fpsCheck = 0
 buffomatModule.slowCount = 0
+buffomatModule.SPELLS_TAB_UPDATE_DELAY = 2.0
 
 ---bumped from 0.1 which potentially causes Naxxramas lag?
 ---Checking BOM.SharedState.SlowerHardware will use bom_slowerhardware_update_timer_limit
@@ -616,7 +621,10 @@ buffomatModule.BOM_THROTTLE_SLOWER_HARDWARE_TIMER_LIMIT = 2.000
 
 buffomatModule.lastSpellsTabUpdate = 0
 
-function buffomatModule.UpdateTimer()
+---This runs every frame, do not do any excessive work here
+function buffomatModule.UpdateTimer(elapsed)
+  --if elapsed > 0.1 then BOM:Print("Elapsed: " .. elapsed) end
+
   local now = GetTime()
 
   if BOM.InLoading and BOM.LoadingScreenTimeOut then
@@ -629,21 +637,21 @@ function buffomatModule.UpdateTimer()
   end
 
   -- Update spells tab if necessary and update last update time if successful
-  if now - buffomatModule.lastSpellsTabUpdate > 1.0 then
+  if now - buffomatModule.lastSpellsTabUpdate > buffomatModule.SPELLS_TAB_UPDATE_DELAY then
     if spellButtonsTabModule:UpdateSpellsTab_Throttled() then
       buffomatModule.lastSpellsTabUpdate = now
     end
   end
 
-  if BOM.MinTimer and BOM.MinTimer < now then
-    buffomatModule:SetForceUpdate("MinTimer")
+  if BOM.nextCooldownDue and BOM.nextCooldownDue <= now then
+    buffomatModule:SetForceUpdate("cdDue")
   end
 
-  if BOM.CheckCoolDown then
-    local cdtest = GetSpellCooldown(BOM.CheckCoolDown)
+  if BOM.checkCooldown then
+    local cdtest = GetSpellCooldown(BOM.checkCooldown)
     if cdtest == 0 then
-      BOM.CheckCoolDown = nil
-      buffomatModule:SetForceUpdate("CheckCooldown")
+      BOM.checkCooldown = nil
+      buffomatModule:SetForceUpdate("checkCd")
     end
   end
 
@@ -656,7 +664,7 @@ function buffomatModule.UpdateTimer()
   -- Update timers, slow hardware and auto-throttling
   -- This will trigger update on timer, regardless of other conditions
   --
-  buffomatModule.fpsCheck = buffomatModule.fpsCheck + 1
+  --buffomatModule.fpsCheck = buffomatModule.fpsCheck + 1
 
   local updateTimerLimit = buffomatModule.updateTimerLimit
   if buffomatModule.shared.SlowerHardware then
@@ -673,19 +681,9 @@ function buffomatModule.UpdateTimer()
     buffomatModule.fpsCheck = debugprofilestop()
 
     -- Debug: Print the callers as reasons to force update
-    --if next(buffomatModule.forceUpdateRequestedBy) then
-    --  local callers = ""
-    --  for caller, count in pairs(buffomatModule.forceUpdateRequestedBy) do
-    --    if count > 1 then
-    --      callers = callers .. string.format("%s:%d; ", caller, count)
-    --    else
-    --      callers = callers .. string.format("%s; ", caller)
-    --    end
-    --  end
-    --  BOM:Print("Update: " .. callers)
-    --end
+    -- buffomatModule:PrintCallers("Update: ", buffomatModule.forceUpdateRequestedBy)
     buffomatModule:ClearForceUpdate()
-    taskScanModule:UpdateScan("timer")
+    taskScanModule:ScanNow("timer")
 
     -- If updatescan call above took longer than 32 ms, and repeated update, then
     -- bump the slow alarm counter, once it reaches 32 we consider throttling.
@@ -727,6 +725,19 @@ BOM.PlayerBuffs = {}
 ---@field nameplateShowAll boolean
 ---@field timeMod
 
+function buffomatModule:PrintCallers(prefix, callersCollection)
+  if next(callersCollection) then
+    local callers = ""
+    for caller, count in pairs(callersCollection) do
+      if count > 1 then
+        callers = callers .. string.format("%s:%d; ", caller, count)
+      else
+        callers = callers .. string.format("%s; ", caller)
+      end
+    end
+    BOM:Print(prefix .. callers)
+  end
+end
 
 ---Handles UnitAura WOW API call.
 ---For spells that are tracked by Buffomat the data is also stored in BOM.PlayerBuffs
@@ -795,7 +806,7 @@ function BOM.HideWindow()
       BomC_MainWindow:Hide()
       buffomatModule.autoHelper = "KeepClose"
       buffomatModule:SetForceUpdate("hideWindow")
-      taskScanModule:UpdateScan("hideWindow")
+      taskScanModule:ScanNow("hideWindow")
     end
   end
 end
@@ -828,7 +839,7 @@ function buffomatModule:ToggleWindow()
     BOM.HideWindow()
   else
     buffomatModule:SetForceUpdate("toggleWindow")
-    taskScanModule:UpdateScan("toggleWindow")
+    taskScanModule:ScanNow("toggleWindow")
     BOM.ShowWindow()
   end
 end

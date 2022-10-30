@@ -156,7 +156,7 @@ local function Event_PLAYER_TARGET_CHANGED()
   if newName ~= BOM.SaveTargetName then
     BOM.SaveTargetName = newName
     buffomatModule:SetForceUpdate("targetChanged")
-    taskScanModule:UpdateScan("PlayerTargetChanged")
+    taskScanModule:ScanNow("PlayerTargetChanged")
   end
 end
 

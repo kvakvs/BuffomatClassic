@@ -610,11 +610,7 @@ function spellButtonsTabModule:UpdateSpellsTab_Throttled()
   end
 
   -- Debug: Print the list who requrested the update
-  --local callers = ""
-  --for _i, caller in ipairs(self.spellTabUpdateRequestedBy) do
-  --  callers = callers .. caller .. "; "
-  --end
-  --BOM:Print("Upd spells tab: " .. callers)
+  -- buffomatModule:PrintCallers("Upd spells tab: ", self.spellTabUpdateRequestedBy)
   wipe(self.spellTabUpdateRequestedBy)
 
   -- InCombat Protection is checked by the caller (Update***Tab)

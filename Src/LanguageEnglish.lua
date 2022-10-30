@@ -215,6 +215,7 @@ function englishModule:Translations()
     ["options.short.MinBuff"]                         = "Missing buffs to use a group buff",
     ["options.short.MinBlessing"]                     = "Blessing targets for a greater blessing",
     ["options.short.PlaySoundWhenTask"]               = "Play sound when there are buff tasks",
+    ["options.short.DebugLogging"]                    = "[Developer] Print extra debug messages (noisy!)",
 
     ["options.general.sound.None"]                    = "- no sound effect -", -- play no sound on task
 
@@ -227,6 +228,7 @@ function englishModule:Translations()
     ["options.long.MinBuff"]                          = "Number of missing buffs required to use a group buff",
     ["options.long.MinBlessing"]                      = "Number of missing blessing required to use a greater blessing",
     ["options.long.PlaySoundWhenTask"]                = "Play sound when task list is not empty",
+    ["options.long.DebugLogging"]                     = "For development purposes, output extra messages helping the developer find problems, do not use!",
 
     TooltipSelfCastCheckbox_Self                      = "Self-cast only",
     TooltipSelfCastCheckbox_Party                     = "Buff party and groups in raid",
