@@ -39,6 +39,12 @@ function priestModule:SetupPriestSpells(spells, enchants)
               reagentRequired = { 17028, 17029,
                                   44615 }  -- WotLK: Devout Candle
             })          :DefaultTargetClasses(allBuffsModule.MANA_CLASSES)
+                        :IgnoreIfHaveBuff(46302) -- Kiru's Song of Victory (Sunwell)
+                        :IgnoreIfHaveBuff(54424) -- Fel Intelligence 1 (Wotlk Warlock)
+                        :IgnoreIfHaveBuff(57564) -- Fel Intelligence 2 (Wotlk Warlock)
+                        :IgnoreIfHaveBuff(57565) -- Fel Intelligence 3 (Wotlk Warlock)
+                        :IgnoreIfHaveBuff(57566) -- Fel Intelligence 4 (Wotlk Warlock)
+                        :IgnoreIfHaveBuff(57567) -- Fel Intelligence 5 (Wotlk Warlock)
                         :Category(allBuffsModule.CLASS)
   end
   tinsert(spells, BOM.SpellDef_PrayerOfSpirit())
