@@ -1,5 +1,12 @@
 # Changelog
 
+## Buffomat Classic 2022.11.0
+
+- In WotLK group buffs lost the ability to check whether an unit is within 
+  spell range. I am using single buff spell name for testing range which 
+  results in much shorter but still reliable range checks (30 yd instead of 
+  100+). Keep in mind group buffs also check line of sight.
+
 ## Buffomat Classic 2022.10.4, 10.5
 
 - Spell tab update is now hard limited in frequency to combat the raid lag.

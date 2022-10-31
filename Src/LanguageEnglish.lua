@@ -144,6 +144,7 @@ function englishModule:Translations()
     ["task.target.SelfOnly"]                          = "Self-buff",
     ["task.type.RegularBuff"]                         = "Buff",
     ["task.type.GroupBuff"]                           = "Buff group",
+    ["task.type.GroupBuff.Self"]                      = "Target self",
     ["task.type.Tracking"]                            = "Tracking",
     ["task.type.Reminder"]                            = "Reminder",
     ["task.type.Resurrect"]                           = "Resurrect",

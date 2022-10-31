@@ -5,6 +5,7 @@ local BOM = BuffomatAddon ---@type BomAddon
 local groupBuffTargetModule = BuffomatModule.New("GroupBuffTarget") ---@type BomGroupBuffTargetModule
 
 local toolboxModule = BuffomatModule.Import("Toolbox") ---@type BomToolboxModule
+local _t = BuffomatModule.Import("Languages") ---@type BomLanguagesModule
 
 ---@class BomGroupBuffTarget
 ---@field groupIndex number
@@ -78,5 +79,9 @@ function groupBuffTargetClass:GetDistance()
 end
 
 function groupBuffTargetClass:GetText()
-  return string.format(BOM.L.FORMAT_GROUP_NUM, self.groupIndex)
+  if self.groupIndex == 0 then
+    return _t("task.type.GroupBuff.Self")
+  end
+
+  return string.format(_t("FORMAT_GROUP_NUM"), self.groupIndex)
 end

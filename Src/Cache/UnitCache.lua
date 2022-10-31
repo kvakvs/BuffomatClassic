@@ -100,8 +100,6 @@ end
 ---@param playerUnit BomUnit
 ---@return table, BomUnit
 function unitCacheModule:Get5manPartyMembers(playerUnit)
-  local name_group = {}
-  local name_role = {}
   local party = {}
   local partyMember ---@type BomUnit
 

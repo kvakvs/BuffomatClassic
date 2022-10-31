@@ -132,6 +132,17 @@ function russianModule:Translations()
     ["options.general.sound.None"]              = "- не играть звук -", -- play no sound on task
 
     ["tasklist.IgnoredBuffOn"]                  = "Пропускаем %s: %s", -- when a buff is not listed because a better buff exists
+    ["task.target.Self"]                        = "На себя", -- use instead of name when buffing self
+    ["task.target.SelfOnly"]                    = "Самобаф",
+    ["task.type.RegularBuff"]                   = "Баф",
+    ["task.type.GroupBuff"]                     = "Групповой",
+    ["task.type.GroupBuff.Self"]                = "Групповой (на себя)",
+    ["task.type.Tracking"]                      = "Слежение",
+    ["task.type.Reminder"]                      = "Напоминание",
+    ["task.type.Resurrect"]                     = "Воскрешение",
+    ["task.type.MissingConsumable"]             = "Не хватает", -- deprecated?
+    ["task.type.Consumable"]                    = "Расходник", -- deprecated?
+    ["task.hint.HoldShiftConsumable"]           = "Удерживайте Shift/Ctrl или Alt",
 
     Header_TRACKING                             = "Отслеживание",
     HeaderCredits                               = "Авторы",

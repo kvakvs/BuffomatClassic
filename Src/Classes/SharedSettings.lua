@@ -57,7 +57,7 @@ sharedSettingsModule.defaults = {
 ---@field DontUseConsumables boolean
 ---@field SomeoneIsDrinking string "low-prio" - Show as a comment; "hide" - no show; "show" - Show as a task and show buffomat window
 ---@field ActivateBomOnSpiritTap number Percent mana to deactivate Buffomat if Spirit Tap is active for a priest
----@field MinBuff number
+---@field MinBuff number How many missing buffs to prefer group buff
 ---@field MinBlessing number
 ---@field Time60 number
 ---@field Time300 number
