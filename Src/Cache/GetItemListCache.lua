@@ -1,9 +1,12 @@
 local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BomAddon
 
+---@deprecated Not connected properly to any imports
 ---@class BomItemListCacheModule
-local itemListCacheModule = BuffomatModule.New("ItemListCache") ---@type BomItemListCacheModule
-local buffomatModule = BuffomatModule.Import("Buffomat") ---@type BomBuffomatModule
+local itemListCacheModule = {}
+BomModuleManager.itemListCacheModule = itemListCacheModule
+
+local buffomatModule = BomModuleManager.buffomatModule
 
 BOM.WipeCachedItems = true
 

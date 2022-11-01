@@ -5,13 +5,15 @@ local BOM = BuffomatAddon ---@type BomAddon
 ---@field unitCache table<string, BomUnit>
 ---@field cachedPlayerUnit BomUnit
 ---@field cachedParty table<number, BomUnit>
-local unitCacheModule = BuffomatModule.New("UnitCache") ---@type BomUnitCacheModule
-unitCacheModule.unitCache = {}
+local unitCacheModule = {
+  unitCache = {}
+}
+BomModuleManager.unitCacheModule = unitCacheModule
 
-local buffModule = BuffomatModule.Import("Buff") ---@type BomBuffModule
-local buffomatModule = BuffomatModule.Import("Buffomat") ---@type BomBuffomatModule
-local unitModule = BuffomatModule.Import("Unit") ---@type BomUnitModule
-local toolboxModule = BuffomatModule.Import("Toolbox") ---@type BomToolboxModule
+local buffModule = BomModuleManager.buffModule
+local buffomatModule = BomModuleManager.buffomatModule
+local unitModule = BomModuleManager.unitModule
+local toolboxModule = BomModuleManager.toolboxModule
 
 ---@param unitid string Player name or special name like "raidpet#"
 ---@param nameGroup string|number

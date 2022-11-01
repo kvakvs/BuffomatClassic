@@ -1,12 +1,12 @@
 local BOM = BuffomatAddon ---@type BomAddon
 
 ---@class BomAllSpellsWarlockModule
-local warlockModule = BuffomatModule.New("AllSpellsWarlock") ---@type BomAllSpellsWarlockModule
+local warlockModule = {}
+BomModuleManager.allSpellsWarlockModule = warlockModule
 
---local _t = BuffomatModule.Import("Languages") ---@type BomLanguagesModule
-local allBuffsModule = BuffomatModule.Import("AllBuffs") ---@type BomAllBuffsModule
-local buffDefModule = BuffomatModule.Import("BuffDefinition") ---@type BomBuffDefinitionModule
-local spellIdsModule = BuffomatModule.Import("SpellIds") ---@type BomSpellIdsModule
+local allBuffsModule = BomModuleManager.allBuffsModule
+local buffDefModule = BomModuleManager.buffDefinitionModule
+local spellIdsModule = BomModuleManager.spellIdsModule
 
 ---Add WARLOCK spells
 ---@param spells table<string, BomBuffDefinition>

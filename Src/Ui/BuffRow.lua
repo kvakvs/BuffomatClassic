@@ -2,10 +2,11 @@ local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BomAddon
 
 ---@class BomBuffRowModule
-local buffRowModule = BuffomatModule.New("Ui/BuffRow") ---@type BomBuffRowModule
+local buffRowModule = {}
+BomModuleManager.buffRowModule = buffRowModule
 
-local managedUiModule = BuffomatModule.Import("Ui/MyButton") ---@type BomUiMyButtonModule
-local uiButtonModule = BuffomatModule.Import("Ui/UiButton") ---@type BomUiButtonModule
+local managedUiModule = BomModuleManager.myButtonModule
+local uiButtonModule = BomModuleManager.uiButtonModule
 
 ---@class BomBuffRowFrames
 ---@field uniqueId string Used for ManageControl() calls as prefix
@@ -31,8 +32,7 @@ local uiButtonModule = BuffomatModule.Import("Ui/UiButton") ---@type BomUiButton
 ---@field WARLOCK BomLegacyControl Per class setting for class-specific buffs
 ---@field PALADIN BomLegacyControl Per class setting for class-specific buffs
 ---@field cancelBuffLabel BomControl Text label for buff cancel row (in combat or always)
-
-local buffRowClass = {} ---@type BomBuffRowFrames
+local buffRowClass = {}
 buffRowClass.__index = buffRowClass
 
 ---Creates a new Buff Row UI

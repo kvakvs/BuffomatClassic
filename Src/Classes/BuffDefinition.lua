@@ -2,13 +2,14 @@ local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BomAddon
 
 ---@class BomBuffDefinitionModule
-local buffDefModule = BuffomatModule.New("BuffDefinition") ---@type BomBuffDefinitionModule
+local buffDefModule = {}
+BomModuleManager.buffDefinitionModule = buffDefinitionModule
 
-local buffomatModule = BuffomatModule.Import("Buffomat") ---@type BomBuffomatModule
-local spellCacheModule = BuffomatModule.Import("SpellCache") ---@type BomSpellCacheModule
-local itemCacheModule = BuffomatModule.Import("ItemCache") ---@type BomItemCacheModule
-local buffRowModule = BuffomatModule.Import("Ui/BuffRow") ---@type BomBuffRowModule
-local allBuffsModule = BuffomatModule.Import("AllBuffs") ---@type BomAllBuffsModule
+local buffomatModule = BomModuleManager.buffomatModule
+local spellCacheModule = BomModuleManager.spellCacheModule
+local itemCacheModule = BomModuleManager.itemCacheModule
+local buffRowModule = BomModuleManager.buffRowModule
+local allBuffsModule = BomModuleManager.allBuffsModule
 
 BOM.Class = BOM.Class or {}
 

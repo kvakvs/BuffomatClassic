@@ -1,11 +1,12 @@
 local BOM = BuffomatAddon ---@type BomAddon
 
 ---@class BomAllSpellsDeathknightModule
-local deathknightModule = BuffomatModule.New("AllSpellsDeathknight") ---@type BomAllSpellsDeathknightModule
+local deathknightModule = {}
+BomModuleManager.allSpellsDeathknightModule = deathknightModule
 
-local _t = BuffomatModule.Import("Languages") ---@type BomLanguagesModule
-local allBuffsModule = BuffomatModule.Import("AllBuffs") ---@type BomAllBuffsModule
-local buffDefModule = BuffomatModule.Import("BuffDefinition") ---@type BomBuffDefinitionModule
+local _t = BomModuleManager.languagesModule
+local allBuffsModule = BomModuleManager.allBuffsModule
+local buffDefModule = BomModuleManager.buffDefinitionModule
 
 ---Add DEATH KNIGHT spells
 ---@param spells table<string, BomBuffDefinition>

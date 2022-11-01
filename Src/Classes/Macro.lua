@@ -2,11 +2,13 @@ local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BomAddon
 
 ---@class BomMacroModule
-local macroModule = BuffomatModule.New("Macro") ---@type BomMacroModule
+local macroModule = {}
+BomModuleManager.macroModule = macroModule
 
-local constModule = BuffomatModule.Import("Const") ---@type BomConstModule
-local _t = BuffomatModule.Import("Languages") ---@type BomLanguagesModule
+local constModule = BomModuleManager.constModule
+local _t = BomModuleManager.languagesModule
 
+---@deprecated
 local L = setmetatable({}, { __index = function(t, k)
   if BOM.L and BOM.L[k] then
     return BOM.L[k]

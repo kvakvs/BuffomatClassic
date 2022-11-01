@@ -2,7 +2,8 @@ local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BomAddon
 
 ---@class BomUiMinimapButtonModule
-local uiMinimapButtonModule = BuffomatModule.New("Ui/MinimapButton") ---@type BomUiMinimapButtonModule
+local uiMinimapButtonModule = {}
+BomModuleManager.uiMinimapButtonModule = uiMinimapButtonModule
 
 ---@class BomMinimapButton
 BOM.MinimapButton = BOM.MinimapButton or {} ---@type BomMinimapButton

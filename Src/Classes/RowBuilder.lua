@@ -2,7 +2,8 @@ local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BomAddon
 
 ---@class BomRowBuilderModule
-local rowBuilderModule = BuffomatModule.New("RowBuilder") ---@type BomRowBuilderModule
+local rowBuilderModule = {}
+BomModuleManager.rowBuilderModule = rowBuilderModule
 
 ---@class BomRowBuilder
 ---@field prevControl BomControl|nil Previous control in the row

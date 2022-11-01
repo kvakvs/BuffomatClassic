@@ -2,7 +2,8 @@ local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BomAddon
 
 ---@class BomManagedUiModule
-local managedUiModule = BuffomatModule.New("Ui/ManagedUi") ---@type BomManagedUiModule
+local managedUiModule = {}
+BomModuleManager.managedUiModule = managedUiModule
 
 managedUiModule.ICON_ON = "|TInterface\\RAIDFRAME\\ReadyCheck-Ready:0:0:0:0:64:64:4:60:4:60|t"
 managedUiModule.ICON_OFF = "|TInterface\\RAIDFRAME\\ReadyCheck-NotReady:0:0:0:0:64:64:4:60:4:60|t"

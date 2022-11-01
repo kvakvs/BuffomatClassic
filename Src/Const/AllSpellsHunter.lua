@@ -1,11 +1,12 @@
 local BOM = BuffomatAddon ---@type BomAddon
 
 ---@class BomAllSpellsHunterModule
-local hunterModule = BuffomatModule.New("AllSpellsHunter") ---@type BomAllSpellsHunterModule
+local hunterModule = {}
+BomModuleManager.allSpellsHunterModule = hunterModule
 
-local _t = BuffomatModule.Import("Languages") ---@type BomLanguagesModule
-local allBuffsModule = BuffomatModule.Import("AllBuffs") ---@type BomAllBuffsModule
-local buffDefModule = BuffomatModule.Import("BuffDefinition") ---@type BomBuffDefinitionModule
+local _t = BomModuleManager.languagesModule
+local allBuffsModule = BomModuleManager.allBuffsModule
+local buffDefModule = BomModuleManager.buffDefinitionModule
 
 ---Add HUNTER spells
 ---@param buffs table<string, BomBuffDefinition>

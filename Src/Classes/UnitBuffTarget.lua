@@ -2,9 +2,10 @@ local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BomAddon
 
 ---@class BomUnitBuffTargetModule
-local buffTargetModule = BuffomatModule.New("UnitBuffTarget") ---@type BomUnitBuffTargetModule
+local buffTargetModule = {}
+BomModuleManager.unitBuffTargetModule = unitBuffTargetModule
 
-local toolboxModule = BuffomatModule.Import("Toolbox") ---@type BomToolboxModule
+local toolboxModule = BomModuleManager.toolboxModule
 
 ---@class BomUnitBuffTarget
 ---@field unitName string Just the name

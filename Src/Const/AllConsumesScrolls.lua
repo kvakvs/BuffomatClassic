@@ -1,11 +1,12 @@
 local BOM = BuffomatAddon ---@type BomAddon
 
 ---@class BomAllConsumesScrollsModule
-local scrollsModule = BuffomatModule.New("AllConsumesScrolls") ---@type BomAllConsumesScrollsModule
+local scrollsModule = {}
+BomModuleManager.allConsumesScrollsModule = scrollsModule
 
-local _t = BuffomatModule.Import("Languages") ---@type BomLanguagesModule
-local allBuffsModule = BuffomatModule.Import("AllBuffs") ---@type BomAllBuffsModule
-local buffDefModule = BuffomatModule.Import("BuffDefinition") ---@type BomBuffDefinitionModule
+local _t = BomModuleManager.languagesModule
+local allBuffsModule = BomModuleManager.allBuffsModule
+local buffDefModule = BomModuleManager.buffDefinitionModule
 
 ---SCROLLS
 ---@param buffs table<string, BomBuffDefinition> A list of buffs (not dictionary)

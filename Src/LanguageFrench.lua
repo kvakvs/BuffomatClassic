@@ -1,5 +1,6 @@
 ---@class BomLanguageFrenchModule
-local frenchModule = BuffomatModule.New("LanguageFrench") ---@type BomLanguageFrenchModule
+local frenchModule = {}
+BomModuleManager.languageFrenchModule = frenchModule
 
 function frenchModule:Translations()
   return {

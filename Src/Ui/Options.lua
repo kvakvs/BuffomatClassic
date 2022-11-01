@@ -2,13 +2,15 @@ local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BomAddon
 
 ---@class BomOptionsModule
-local optionsModule = BuffomatModule.New("Options") ---@type BomOptionsModule
-optionsModule.optionsOrder = 0
+local optionsModule = {
+  optionsOrder = 0
+}
+BomModuleManager.optionsModule = optionsModule
 
-local _t = BuffomatModule.Import("Languages") ---@type BomLanguagesModule
-local allBuffsModule = BuffomatModule.Import("AllBuffs") ---@type BomAllBuffsModule
-local buffomatModule = BuffomatModule.Import("Buffomat") ---@type BomBuffomatModule
-local constModule = BuffomatModule.Import("Const") ---@type BomConstModule
+local _t = BomModuleManager.languagesModule
+local allBuffsModule = BomModuleManager.allBuffsModule
+local buffomatModule = BomModuleManager.buffomatModule
+local constModule = BomModuleManager.constModule
 
 function optionsModule:ValueToText(type, value)
   if type == "string" then
@@ -222,7 +224,7 @@ function optionsModule:CreateGeneralOptionsTable()
       ),
       -- Play from Interface/Addons/Buffomat/Sounds/...
       playSoundWhenTask     = self:TemplateSelect("PlaySoundWhenTask", sounds, "dropdown"),
-      debugLogging     = self:TemplateCheckbox("DebugLogging"),
+      debugLogging          = self:TemplateCheckbox("DebugLogging"),
     }
   }
 end

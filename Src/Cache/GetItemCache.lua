@@ -3,10 +3,12 @@ local BOM = BuffomatAddon ---@type BomAddon
 
 ---@class BomItemCacheModule
 ---@field cache table<number|string, BomItemCacheElement> Stores arg to results mapping for GetItemInfo
-local itemCacheModule = BuffomatModule.New("ItemCache") ---@type BomItemCacheModule
-itemCacheModule.cache = {}
+local itemCacheModule = {
+  cache = {}
+}
+BomModuleManager.itemCacheModule = itemCacheModule
 
-local buffomatModule = BuffomatModule.Import("Buffomat") ---@type BomBuffomatModule
+local buffomatModule = BomModuleManager.buffomatModule
 
 ---@class BomItemCacheElement
 ---@field itemName string

@@ -2,15 +2,16 @@ local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BomAddon
 
 ---@class BomEventsModule
-local eventsModule = BuffomatModule.New("Events") ---@type BomEventsModule
+local eventsModule = {}
+BomModuleManager.eventsModule = eventsModule
 
-local profileModule = BuffomatModule.Import("Profile") ---@type BomProfileModule
-local buffomatModule = BuffomatModule.Import("Buffomat") ---@type BomBuffomatModule
-local constModule = BuffomatModule.Import("Const") ---@type BomConstModule
-local allBuffsModule = BuffomatModule.Import("AllBuffs") ---@type BomAllBuffsModule
-local spellButtonsTabModule = BuffomatModule.Import("Ui/SpellButtonsTab") ---@type BomSpellButtonsTabModule
-local spellSetupModule = BuffomatModule.Import("SpellSetup") ---@type BomSpellSetupModule
-local taskScanModule = BuffomatModule.Import("TaskScan") ---@type BomTaskScanModule
+local profileModule = BomModuleManager.profileModule
+local buffomatModule = BomModuleManager.buffomatModule
+local constModule = BomModuleManager.constModule
+local allBuffsModule = BomModuleManager.allBuffsModule
+local spellButtonsTabModule = BomModuleManager.spellButtonsTabModule
+local spellSetupModule = BomModuleManager.spellSetupModule
+local taskScanModule = BomModuleManager.taskScanModule
 
 --"UNIT_POWER_UPDATE","UNIT_SPELLCAST_START","UNIT_SPELLCAST_STOP","PLAYER_STARTED_MOVING","PLAYER_STOPPED_MOVING"
 eventsModule.EVT_COMBAT_STOP = { "PLAYER_REGEN_ENABLED" }

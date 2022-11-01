@@ -2,22 +2,25 @@ local BOM = BuffomatAddon ---@type BomAddon
 
 ---@class BomTaskScanModule
 ---@field taskListSizeBeforeScan number Saved size before scan
-local taskScanModule = BuffomatModule.New("TaskScan") ---@type BomTaskScanModule
-taskScanModule.taskListSizeBeforeScan = 0
+local taskScanModule = {
+  taskListSizeBeforeScan = 0
+}
+BomModuleManager.taskScanModule = taskScanModule
 
-local _t = BuffomatModule.Import("Languages") ---@type BomLanguagesModule
-local buffChecksModule = BuffomatModule.Import("BuffChecks") ---@type BomBuffChecksModule
-local buffDefModule = BuffomatModule.Import("BuffDefinition") ---@type BomBuffDefinitionModule
-local buffomatModule = BuffomatModule.Import("Buffomat") ---@type BomBuffomatModule
-local buffTargetModule = BuffomatModule.Import("UnitBuffTarget") ---@type BomUnitBuffTargetModule
-local constModule = BuffomatModule.Import("Const") ---@type BomConstModule
-local groupBuffTargetModule = BuffomatModule.Import("GroupBuffTarget") ---@type BomGroupBuffTargetModule
-local profileModule = BuffomatModule.Import("Profile") ---@type BomProfileModule
-local spellButtonsTabModule = BuffomatModule.Import("Ui/SpellButtonsTab") ---@type BomSpellButtonsTabModule
-local spellIdsModule = BuffomatModule.Import("SpellIds") ---@type BomSpellIdsModule
-local taskListModule = BuffomatModule.Import("TaskList") ---@type BomTaskListModule
-local unitCacheModule = BuffomatModule.Import("UnitCache") ---@type BomUnitCacheModule
+local _t = BomModuleManager.languagesModule
+local buffChecksModule = BomModuleManager.buffChecksModule
+local buffDefModule = BomModuleManager.buffDefinitionModule
+local buffomatModule = BomModuleManager.buffomatModule
+local buffTargetModule = BomModuleManager.unitBuffTargetModule
+local constModule = BomModuleManager.constModule
+local groupBuffTargetModule = BomModuleManager.groupBuffTargetModule
+local profileModule = BomModuleManager.profileModule
+local spellButtonsTabModule = BomModuleManager.spellButtonsTabModule
+local spellIdsModule = BomModuleManager.spellIdsModule
+local taskListModule = BomModuleManager.taskListModule
+local unitCacheModule = BomModuleManager.unitCacheModule
 
+---@deprecated
 local L = setmetatable({}, { __index = function(t, k)
   if BOM.L and BOM.L[k] then
     return BOM.L[k]

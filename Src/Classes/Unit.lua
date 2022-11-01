@@ -3,10 +3,11 @@ local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BomAddon
 
 ---@class BomUnitModule
-local unitModule = BuffomatModule.New("Unit") ---@type BomUnitModule
+local unitModule = {}
+BomModuleManager.unitModule = unitModule
 
-local buffomatModule = BuffomatModule.Import("Buffomat") ---@type BomBuffomatModule
-local buffModule = BuffomatModule.Import("Buff") ---@type BomBuffModule
+local buffomatModule = BomModuleManager.buffomatModule
+local buffModule = BomModuleManager.buffModule
 
 ---@class BomUnit
 ---@field knownBuffs table<number, BomUnitBuff> Buffs on player keyed by spell id, only buffs supported by Buffomat are stored

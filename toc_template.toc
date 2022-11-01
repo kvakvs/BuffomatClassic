@@ -11,7 +11,7 @@
 ## SavedVariablesPerCharacter: BuffomatCharacter
 
 embeds.xml
-Src/Module.lua
+Src/ModuleManager.lua
 Src/Buffomat.lua
 
 Src/Const/Const.lua
@@ -37,8 +37,6 @@ Src/Const/SpellIds.lua
 Src/Const/ItemIds.lua
 
 Src/Classes/Buff.lua
-Src/Classes/BuffClass.lua
-Src/Classes/BuffomatTranslations.lua
 Src/Classes/CharacterSettings.lua
 Src/Classes/Control.lua
 Src/Classes/GroupBuffTarget.lua

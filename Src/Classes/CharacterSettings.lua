@@ -2,9 +2,10 @@ local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BomAddon
 
 ---@class BomCharacterSettingsModule
-local characterSettingsModule = BuffomatModule.New("CharacterSettings") ---@type BomCharacterSettingsModule
+local characterSettingsModule = {}
+BomModuleManager.characterSettingsModule = characterSettingsModule
 
-local profileModule = BuffomatModule.Import("Profile") ---@type BomProfileModule
+local profileModule = BomModuleManager.profileModule
 
 ---@class BomCharacterSettings Current character state snapshots per profile
 ---@field Spell table<number, BomBuffDefinition>

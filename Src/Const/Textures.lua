@@ -2,7 +2,8 @@ local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BomAddon
 
 ---@class BomTexturesModule
-local texturesModule = BuffomatModule.New("Textures") ---@type BomTexturesModule
+local texturesModule = {}
+BomModuleManager.texturesModule = texturesModule
 
 BOM.ICON_OPT_ENABLED = "Interface\\Buttons\\UI-CheckBox-Check"
 BOM.ICON_OPT_DISABLED = "Interface\\Buttons\\UI-CheckBox-Up"

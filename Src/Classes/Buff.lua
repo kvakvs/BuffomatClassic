@@ -1,7 +1,8 @@
 local BOM = BuffomatAddon ---@type BomAddon
 
 ---@class BomBuffModule
-local buffModule = BuffomatModule.New("Buff") ---@type BomBuffModule
+local buffModule = {}
+BomModuleManager.buffModule = buffModule
 
 ---@class BomUnitBuff
 ---@field singleId number Spell id also serving as key

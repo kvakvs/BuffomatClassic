@@ -4,30 +4,32 @@ local BOM = BuffomatAddon ---@type BomAddon
 ---@class BomAllBuffsModule
 ---@field buffCategories table<number, string> Category names for buffs
 ---@field allBuffs table<number, BomBuffDefinition> All buffs, same as BOM.AllBuffomatSpells for convenience
-local allBuffsModule = BuffomatModule.New("AllBuffs") ---@type BomAllBuffsModule
+local allBuffsModule = {}
+BomModuleManager.allBuffsModule = allBuffsModule
 
-local _t = BuffomatModule.Import("Languages") ---@type BomLanguagesModule
-local buffDefModule = BuffomatModule.Import("BuffDefinition") ---@type BomBuffDefinitionModule
-local deathknightModule = BuffomatModule.Import("AllSpellsDeathknight") ---@type BomAllSpellsDeathknightModule
-local druidModule = BuffomatModule.Import("AllSpellsDruid") ---@type BomAllSpellsDruidModule
-local elixirsModule = BuffomatModule.New("AllConsumesElixirs") ---@type BomAllConsumesElixirsModule
-local enchantmentsModule = BuffomatModule.New("AllConsumesEnchantments") ---@type BomAllConsumesEnchantmentsModule
-local flasksModule = BuffomatModule.New("AllConsumesFlasks") ---@type BomAllConsumesFlasksModule
-local foodModule = BuffomatModule.New("AllConsumesFood") ---@type BomAllConsumesFoodModule
-local hunterModule = BuffomatModule.Import("AllSpellsHunter") ---@type BomAllSpellsHunterModule
-local itemCacheModule = BuffomatModule.Import("ItemCache") ---@type BomItemCacheModule
-local mageModule = BuffomatModule.Import("AllSpellsMage") ---@type BomAllSpellsMageModule
-local otherModule = BuffomatModule.New("AllConsumesOther") ---@type BomAllConsumesOtherModule
-local paladinModule = BuffomatModule.Import("AllSpellsPaladin") ---@type BomAllSpellsPaladinModule
-local priestModule = BuffomatModule.Import("AllSpellsPriest") ---@type BomAllSpellsPriestModule
-local rogueModule = BuffomatModule.Import("AllSpellsRogue") ---@type BomAllSpellsRogueModule
-local scrollsModule = BuffomatModule.Import("AllConsumesScrolls") ---@type BomAllConsumesScrollsModule
-local shamanModule = BuffomatModule.Import("AllSpellsShaman") ---@type BomAllSpellsShamanModule
-local spellCacheModule = BuffomatModule.Import("SpellCache") ---@type BomSpellCacheModule
-local spellIdsModule = BuffomatModule.Import("SpellIds") ---@type BomSpellIdsModule
-local warlockModule = BuffomatModule.Import("AllSpellsWarlock") ---@type BomAllSpellsWarlockModule
-local warriorModule = BuffomatModule.Import("AllSpellsWarrior") ---@type BomAllSpellsWarriorModule
+local _t = BomModuleManager.languagesModule
+local buffDefModule = BomModuleManager.buffDefinitionModule
+local deathknightModule = BomModuleManager.allSpellsDeathknightModule
+local druidModule = BomModuleManager.allSpellsDruidModule
+local elixirsModule = BomModuleManager.allConsumesElixirsModule
+local enchantmentsModule = BomModuleManager.allConsumesEnchantmentsModule
+local flasksModule = BomModuleManager.allConsumesFlasksModule
+local foodModule = BomModuleManager.allConsumesFoodModule
+local hunterModule = BomModuleManager.allSpellsHunterModule
+local itemCacheModule = BomModuleManager.itemCacheModule
+local mageModule = BomModuleManager.allSpellsMageModule
+local otherModule = BomModuleManager.allConsumesOtherModule
+local paladinModule = BomModuleManager.allSpellsPaladinModule
+local priestModule = BomModuleManager.allSpellsPriestModule
+local rogueModule = BomModuleManager.allSpellsRogueModule
+local scrollsModule = BomModuleManager.allConsumesScrollsModule
+local shamanModule = BomModuleManager.allSpellsShamanModule
+local spellCacheModule = BomModuleManager.spellCacheModule
+local spellIdsModule = BomModuleManager.spellIdsModule
+local warlockModule = BomModuleManager.allSpellsWarlockModule
+local warriorModule = BomModuleManager.allSpellsWarriorModule
 
+---@deprecated
 local L = setmetatable(
         {},
         {

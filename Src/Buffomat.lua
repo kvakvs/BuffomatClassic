@@ -6,24 +6,24 @@
 ---@field currentProfileName string
 ---@field currentProfile BomProfile
 ---@field forceUpdateRequestedBy table<string, number> Reasons for force update, with count
-local buffomatModule = BuffomatModule.New("Buffomat") ---@type BomBuffomatModule
-buffomatModule.forceUpdateRequestedBy = {}
+local buffomatModule = { forceUpdateRequestedBy = {} }
+BomModuleManager.buffomatModule = buffomatModule
 
-local characterSettingsModule = BuffomatModule.New("CharacterSettings") ---@type BomCharacterSettingsModule
-local _t = BuffomatModule.Import("Languages") ---@type BomLanguagesModule
-local allBuffsModule = BuffomatModule.Import("AllBuffs") ---@type BomAllBuffsModule
-local characterStateModule = BuffomatModule.Import("CharacterSettings") ---@type BomCharacterSettingsModule
-local constModule = BuffomatModule.Import("Const") ---@type BomConstModule
-local eventsModule = BuffomatModule.Import("Events") ---@type BomEventsModule
-local languagesModule = BuffomatModule.Import("Languages") ---@type BomLanguagesModule
-local managedUiModule = BuffomatModule.New("Ui/MyButton") ---@type BomUiMyButtonModule
-local optionsModule = BuffomatModule.Import("Options") ---@type BomOptionsModule
-local optionsPopupModule = BuffomatModule.Import("OptionsPopup") ---@type BomOptionsPopupModule
-local profileModule = BuffomatModule.Import("Profile") ---@type BomProfileModule
-local sharedStateModule = BuffomatModule.Import("SharedSettings") ---@type BomSharedSettingsModule
-local spellButtonsTabModule = BuffomatModule.Import("Ui/SpellButtonsTab") ---@type BomSpellButtonsTabModule
-local taskScanModule = BuffomatModule.Import("TaskScan") ---@type BomTaskScanModule
-local toolboxModule = BuffomatModule.Import("Toolbox") ---@type BomToolboxModule
+local characterSettingsModule = BomModuleManager.characterSettingsModule
+local _t = BomModuleManager.languagesModule
+local allBuffsModule = BomModuleManager.allBuffsModule
+local characterStateModule = BomModuleManager.characterSettingsModule
+local constModule = BomModuleManager.constModule
+local eventsModule = BomModuleManager.eventsModule
+local languagesModule = BomModuleManager.languagesModule
+local managedUiModule = BomModuleManager.myButtonModule
+local optionsModule = BomModuleManager.optionsModule
+local optionsPopupModule = BomModuleManager.optionsPopupModule
+local profileModule = BomModuleManager.profileModule
+local sharedStateModule = BomModuleManager.sharedSettingsModule
+local spellButtonsTabModule = BomModuleManager.spellButtonsTabModule
+local taskScanModule = BomModuleManager.taskScanModule
+local toolboxModule = BomModuleManager.toolboxModule
 
 ---global, visible from XML files and from script console and chat commands
 ---@class BomAddon
@@ -277,7 +277,7 @@ function buffomatModule:UseProfile(profileName)
   BomC_MainWindow_Title:SetText(
           BOM.FormatTexture(constModule.BOM_BEAR_ICON_FULLPATH)
                   .. _t("profile_" .. profileName)
-                  -- .. " - " .. constModule.SHORT_TITLE
+  -- .. " - " .. constModule.SHORT_TITLE
   )
 
   BOM:Print("Using profile " .. _t("profile_" .. profileName))

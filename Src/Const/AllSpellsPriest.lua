@@ -1,10 +1,11 @@
 local BOM = BuffomatAddon ---@type BomAddon
 
 ---@class BomAllSpellsPriestModule
-local priestModule = BuffomatModule.New("AllSpellsPriest") ---@type BomAllSpellsPriestModule
+local priestModule = {}
+BomModuleManager.allSpellsPriestModule = priestModule
 
-local allBuffsModule = BuffomatModule.Import("AllBuffs") ---@type BomAllBuffsModule
-local buffDefModule = BuffomatModule.Import("BuffDefinition") ---@type BomBuffDefinitionModule
+local allBuffsModule = BomModuleManager.allBuffsModule
+local buffDefModule = BomModuleManager.buffDefinitionModule
 
 ---Add PRIEST spells
 ---@param spells table<string, BomBuffDefinition>

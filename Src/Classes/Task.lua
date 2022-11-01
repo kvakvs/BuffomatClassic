@@ -2,7 +2,8 @@ local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BomAddon
 
 ---@class BomTaskModule
-local taskModule = BuffomatModule.New("Task") ---@type BomTaskModule
+local taskModule = {}
+BomModuleManager.taskModule = taskModule
 
 ---@class BomTask
 --- @field distance string|boolean Unit name or group number as string, to calculate whether player is in range to perform the task. Boolean true for no distance check.

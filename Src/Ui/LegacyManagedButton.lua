@@ -4,9 +4,11 @@ local BOM = BuffomatAddon ---@type BomAddon
 ---@class BomUiMyButtonModule
 ---@field managed table<string, BomLegacyControl> Contains all MyButtons with uniqueId
 ---@field managedWithoutUniqueId table<number, BomLegacyControl> Contains all MyButtons without uniqueId
-local managedUiModule = BuffomatModule.New("Ui/MyButton") ---@type BomUiMyButtonModule
-managedUiModule.managed = {}
-managedUiModule.managedWithoutUniqueId = {}
+local managedUiModule = {
+  managed                = {},
+  managedWithoutUniqueId = {},
+}
+BomModuleManager.myButtonModule = managedUiModule
 
 local ONIcon = "|TInterface\\RAIDFRAME\\ReadyCheck-Ready:0:0:0:0:64:64:4:60:4:60|t"
 local OFFIcon = "|TInterface\\RAIDFRAME\\ReadyCheck-NotReady:0:0:0:0:64:64:4:60:4:60|t"

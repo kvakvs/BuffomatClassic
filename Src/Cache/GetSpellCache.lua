@@ -2,12 +2,12 @@ local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BomAddon
 
 ---@class BomSpellCacheModule
-local spellCacheModule = BuffomatModule.New("SpellCache") ---@type BomSpellCacheModule
----@type table<number|string, BomSpellCacheElement> Stores arg to results mapping for GetItemInfo
-spellCacheModule.cache = {}
+---@field cache table<number|string, BomSpellCacheElement> Stores arg to results mapping for GetItemInfo
+local spellCacheModule = { cache = {} }
+BomModuleManager.spellCacheModule = spellCacheModule
 
-local buffomatModule = BuffomatModule.Import("Buffomat") ---@type BomBuffomatModule
-local buffDefModule = BuffomatModule.Import("BuffDefinition") ---@type BomBuffDefinitionModule
+local buffomatModule = BomModuleManager.buffomatModule
+local buffDefModule = BomModuleManager.buffDefinitionModule
 
 ---@class BomSpellCacheElement
 ---@field name string

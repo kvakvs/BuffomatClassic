@@ -6,21 +6,24 @@ local BOM = BuffomatAddon ---@type BomAddon
 ---@field spellTabsCreatedFlag boolean True if spells tab is created and filled
 ---@field categoryLabels table<string, BomLegacyControl> Collection of category labels indexed per category name
 ---@field spellTabUpdateRequestedBy table<number, string> Contains the callers who last requested spells tab update, or nothing
-local spellButtonsTabModule = BuffomatModule.New("Ui/SpellButtonsTab") ---@type BomSpellButtonsTabModule
-spellButtonsTabModule.categoryLabels = {}
-spellButtonsTabModule.spellTabUpdateRequestedBy = {}
+local spellButtonsTabModule = {
+  categoryLabels            = {},
+  spellTabUpdateRequestedBy = {},
+}
+BomModuleManager.spellButtonsTabModule = spellButtonsTabModule
 
-local _t = BuffomatModule.Import("Languages") ---@type BomLanguagesModule
-local allBuffsModule = BuffomatModule.Import("AllBuffs") ---@type BomAllBuffsModule
-local buffDefModule = BuffomatModule.Import("BuffDefinition") ---@type BomBuffDefinitionModule
-local buffomatModule = BuffomatModule.Import("Buffomat") ---@type BomBuffomatModule
-local buffRowModule = BuffomatModule.Import("Ui/BuffRow") ---@type BomBuffRowModule
-local managedUiModule = BuffomatModule.New("Ui/MyButton") ---@type BomUiMyButtonModule
-local optionsPopupModule = BuffomatModule.Import("OptionsPopup") ---@type BomOptionsPopupModule
-local profileModule = BuffomatModule.Import("Profile") ---@type BomProfileModule
-local rowBuilderModule = BuffomatModule.Import("RowBuilder") ---@type BomRowBuilderModule
-local toolboxModule = BuffomatModule.Import("Toolbox") ---@type BomToolboxModule
+local _t = BomModuleManager.languagesModule
+local allBuffsModule = BomModuleManager.allBuffsModule
+local buffDefModule = BomModuleManager.buffDefinitionModule
+local buffomatModule = BomModuleManager.buffomatModule
+local buffRowModule = BomModuleManager.buffRowModule
+local managedUiModule = BomModuleManager.myButtonModule
+local optionsPopupModule = BomModuleManager.optionsPopupModule
+local profileModule = BomModuleManager.profileModule
+local rowBuilderModule = BomModuleManager.rowBuilderModule
+local toolboxModule = BomModuleManager.toolboxModule
 
+---@deprecated
 local L = setmetatable(
         {},
         {

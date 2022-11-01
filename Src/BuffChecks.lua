@@ -1,13 +1,14 @@
 local BOM = BuffomatAddon ---@type BomAddon
 
 ---@class BomBuffChecksModule
-local buffChecksModule = BuffomatModule.New("BuffChecks") ---@type BomBuffChecksModule
+local buffChecksModule = {}
+BomModuleManager.buffChecksModule = buffChecksModule
 
-local buffDefModule = BuffomatModule.Import("BuffDefinition") ---@type BomBuffDefinitionModule
-local buffomatModule = BuffomatModule.Import("Buffomat") ---@type BomBuffomatModule
-local constModule = BuffomatModule.Import("Const") ---@type BomConstModule
-local spellIdsModule = BuffomatModule.Import("SpellIds") ---@type BomSpellIdsModule
-local unitCacheModule = BuffomatModule.Import("UnitCache") ---@type BomUnitCacheModule
+local buffDefModule = BomModuleManager.buffDefinitionModule
+local buffomatModule = BomModuleManager.buffomatModule
+local constModule = BomModuleManager.constModule
+local spellIdsModule = BomModuleManager.spellIdsModule
+local unitCacheModule = BomModuleManager.unitCacheModule
 
 ---Checks whether a tracking spell is now active
 ---@param spell BomBuffDefinition The tracking spell which might have tracking enabled

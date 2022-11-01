@@ -2,9 +2,10 @@ local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BomAddon
 
 ---@class BomTaskListModule
-local taskListModule = BuffomatModule.New("TaskList") ---@type BomTaskListModule
+local taskListModule = {}
+BomModuleManager.taskListModule = taskListModule
 
-local taskModule = BuffomatModule.Import("Task") ---@type BomTaskModule
+local taskModule = BomModuleManager.taskModule
 
 ---@class BomTaskList
 ---@field tasks table<number, BomTask> This potentially becomes a macro action on the buff bu

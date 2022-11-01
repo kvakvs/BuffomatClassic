@@ -3,11 +3,11 @@ local BOM = BuffomatAddon ---@type BomAddon
 
 ---@class BomProfileModule
 ---@field ALL_PROFILES table<number, string>
-local profileModule = BuffomatModule.New("Profile") ---@type BomProfileModule
+local profileModule = {}
+BomModuleManager.profileModule = profileModule
 
-local buffomatModule = BuffomatModule.Import("Buffomat") ---@type BomBuffomatModule
-local _t = BuffomatModule.Import("Languages") ---@type BomLanguagesModule
-local libClassicSpecsModule = BuffomatModule.Import("LibClassicSpecs") ---@type LibClassicSpecsModule
+local buffomatModule = BomModuleManager.buffomatModule
+local _t = BomModuleManager.languagesModule
 
 ---@class BomProfile Snapshot of current options state as selected by the player
 ---Named options: Are addressed by their string name in translations, control names, etc

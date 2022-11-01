@@ -3,7 +3,8 @@ local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BomAddon
 
 ---@class BomSpellIdsModule
-local spellIdsModule = BuffomatModule.New("SpellIds") ---@type BomSpellIdsModule
+local spellIdsModule = {}
+BomModuleManager.spellIdsModule = spellIdsModule
 
 BOM.SpellId = {}
 

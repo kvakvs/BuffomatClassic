@@ -2,9 +2,12 @@ local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BomAddon
 
 ---@class BomToolboxModule
-local toolboxModule = BuffomatModule.New("Toolbox") ---@type BomToolboxModule
-local _t = BuffomatModule.Import("Languages") ---@type BomLanguagesModule
+local toolboxModule = {}
+BomModuleManager.toolboxModule = toolboxModule
 
+local _t = BomModuleManager.languagesModule
+
+---@deprecated
 local L = setmetatable(
         {},
         {

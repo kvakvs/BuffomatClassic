@@ -1,11 +1,12 @@
 local BOM = BuffomatAddon ---@type BomAddon
 
 ---@class BomAllConsumesFoodModule
-local foodModule = BuffomatModule.New("AllConsumesFood") ---@type BomAllConsumesFoodModule
+local foodModule = {}
+BomModuleManager.allConsumesFoodModule = foodModule
 
-local _t = BuffomatModule.Import("Languages") ---@type BomLanguagesModule
-local allBuffsModule = BuffomatModule.Import("AllBuffs") ---@type BomAllBuffsModule
-local buffDefModule = BuffomatModule.Import("BuffDefinition") ---@type BomBuffDefinitionModule
+local _t = BomModuleManager.languagesModule
+local allBuffsModule = BomModuleManager.allBuffsModule
+local buffDefModule = BomModuleManager.buffDefinitionModule
 
 ---@param buffs table<string, BomBuffDefinition>
 ---@param enchantments table<string, table<number>>

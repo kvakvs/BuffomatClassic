@@ -2,10 +2,11 @@ local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BomAddon
 
 ---@class BomGroupBuffTargetModule
-local groupBuffTargetModule = BuffomatModule.New("GroupBuffTarget") ---@type BomGroupBuffTargetModule
+local groupBuffTargetModule = {}
+BomModuleManager.groupBuffTargetModule = groupBuffTargetModule
 
-local toolboxModule = BuffomatModule.Import("Toolbox") ---@type BomToolboxModule
-local _t = BuffomatModule.Import("Languages") ---@type BomLanguagesModule
+local toolboxModule = BomModuleManager.toolboxModule
+local _t = BomModuleManager.languagesModule
 
 ---@class BomGroupBuffTarget
 ---@field groupIndex number

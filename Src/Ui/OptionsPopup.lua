@@ -1,15 +1,16 @@
 local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BomAddon
 
----@class BomOptionsPopupModule
 -- -@field behaviourSettings table<number, table> A list of {Key name, Default} for 'Profile' settings
-local optionsPopupModule = BuffomatModule.New("OptionsPopup") ---@type BomOptionsPopupModule
+---@class BomOptionsPopupModule
+local optionsPopupModule = {}
+BomModuleManager.optionsPopupModule = optionsPopupModule
 
-local _t = BuffomatModule.Import("Languages") ---@type BomLanguagesModule
-local buffomatModule = BuffomatModule.Import("Buffomat") ---@type BomBuffomatModule
-local constModule = BuffomatModule.Import("Const") ---@type BomConstModule
-local buffDefModule = BuffomatModule.Import("BuffDefinition") ---@type BomBuffDefinitionModule
-local profileModule = BuffomatModule.Import("Profile") ---@type BomProfileModule
+local _t = BomModuleManager.languagesModule
+local buffomatModule = BomModuleManager.buffomatModule
+local constModule = BomModuleManager.constModule
+local buffDefModule = BomModuleManager.buffDefinitionModule
+local profileModule = BomModuleManager.profileModule
 
 ---@deprecated See options.lua, and defaults in sharedState.lua and characterState.lua
 optionsPopupModule.behaviourSettings = {
@@ -45,6 +46,7 @@ optionsPopupModule.behaviourSettings = {
   { "SomeoneIsDrinking", false },
 }
 
+---@deprecated
 local L = setmetatable(
         {},
         {

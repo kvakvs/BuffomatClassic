@@ -1,15 +1,18 @@
 local BOM = BuffomatAddon ---@type BomAddon
 
 ---@class BomLanguagesModule
-local languagesModule = BuffomatModule.New("Languages") ---@type BomLanguagesModule
+---@overload fun(key: string): string
+local languagesModule = {}
+BomModuleManager.languagesModule = languagesModule
 
-local buffomatModule = BuffomatModule.Import("Buffomat") ---@type BomBuffomatModule
-local englishModule = BuffomatModule.Import("LanguageEnglish") ---@type BomLanguageEnglishModule
-local germanModule = BuffomatModule.Import("LanguageGerman") ---@type BomLanguageGermanModule
-local frenchModule = BuffomatModule.Import("LanguageFrench") ---@type BomLanguageFrenchModule
-local russianModule = BuffomatModule.Import("LanguageRussian") ---@type BomLanguageRussianModule
-local chineseModule = BuffomatModule.Import("LanguageChinese") ---@type BomLanguageChineseModule
+local buffomatModule = BomModuleManager.buffomatModule
+local englishModule = BomModuleManager.languageEnglishModule
+local germanModule = BomModuleManager.languageGermanModule
+local frenchModule = BomModuleManager.languageFrenchModule
+local russianModule = BomModuleManager.languageRussianModule
+local chineseModule = BomModuleManager.languageChineseModule
 
+---@deprecated
 local L = setmetatable({}, { __index = function(t, k)
   if BOM.L and BOM.L[k] then
     return BOM.L[k]

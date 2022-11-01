@@ -1,16 +1,18 @@
 local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BomAddon
 
-local buffomatModule = BuffomatModule.Import("Buffomat") ---@type BomBuffomatModule
-local constModule = BuffomatModule.Import("Const") ---@type BomConstModule
-local itemCacheModule = BuffomatModule.Import("ItemCache") ---@type BomItemCacheModule
+local buffomatModule = BomModuleManager.buffomatModule
+local constModule = BomModuleManager.constModule
+local itemCacheModule = BomModuleManager.itemCacheModule
 
 ---@class BomSpellSetupModule
-local spellSetupModule = BuffomatModule.New("SpellSetup") ---@type BomSpellSetupModule
+local spellSetupModule = {}
+BomModuleManager.spellSetupModule = spellSetupModule
 
-local toolboxModule = BuffomatModule.Import("Toolbox") ---@type BomToolboxModule
-local profileModule = BuffomatModule.Import("Profile") ---@type BomProfileModule
+local toolboxModule = BomModuleManager.toolboxModule
+local profileModule = BomModuleManager.profileModule
 
+---@deprecated
 local L = setmetatable({}, { __index = function(t, k)
   if BOM.L and BOM.L[k] then
     return BOM.L[k]
