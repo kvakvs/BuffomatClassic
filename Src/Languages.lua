@@ -31,10 +31,23 @@ setmetatable(languagesModule, {
   end
 })
 
+---@alias BomLanguage table<string, string>
+
+---@shape BomTranslationsDict
+---@field enEN BomLanguage
+---@field deDE BomLanguage
+---@field frFR BomLanguage
+---@field ruRU BomLanguage
+---@field zhCN BomLanguage
+
 function languagesModule:SetupTranslations()
   -- Always add english and add one language that is supported and is current
   BOM.locales = {
     enEN = englishModule:Translations(),
+    deDE = {},
+    frFR = {},
+    ruRU = {},
+    zhCN = {},
   }
 
   local currentLang = GetLocale()

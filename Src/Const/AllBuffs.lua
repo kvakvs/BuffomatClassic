@@ -49,24 +49,39 @@ allBuffsModule.BOM_ALL_CLASSES = BOM_ALL_CLASSES
 allBuffsModule.BOM_NO_CLASSES = BOM_NO_CLASS
 
 ---Classes which have a resurrection ability
+---@type string[]
 local RESURRECT_CLASSES = { "SHAMAN", "PRIEST", "PALADIN", "DRUID" } -- Druid in WotLK
 BOM.RESURRECT_CLASS = RESURRECT_CLASSES --used in TaskScan.lua
 allBuffsModule.RESURRECT_CLASSES = RESURRECT_CLASSES
+
 --- Classes which have mana bar and benefit from mp/5 and spirit
+---@type string[]
 local MANA_CLASSES = { "HUNTER", "WARLOCK", "MAGE", "DRUID", "SHAMAN", "PRIEST", "PALADIN" }
 BOM.MANA_CLASSES = MANA_CLASSES --used in TaskScan.lua
 allBuffsModule.MANA_CLASSES = MANA_CLASSES
+
 --- Classes which deal spell damage
+---@type string[]
 allBuffsModule.SPELL_CLASSES = { "WARLOCK", "MAGE", "DRUID", "SHAMAN", "PRIEST", "PALADIN", "DEATHKNIGHT", "HUNTER" }
+
 --- Classes which hit with weapons or claws
+---@type string[]
 allBuffsModule.MELEE_CLASSES = { "WARRIOR", "ROGUE", "DRUID", "SHAMAN", "PALADIN", "DEATHKNIGHT" }
+
 --- Classes capable of dealing shadow damage
+---@type string[]
 allBuffsModule.SHADOW_CLASSES = { "PRIEST", "WARLOCK", "DEATHKNIGHT" }
+
 --- Classes capable of dealing fire damage
+---@type string[]
 allBuffsModule.FIRE_CLASSES = { "MAGE", "WARLOCK", "SHAMAN", "HUNTER" }
+
 --- Classes capable of dealing frost damage
+---@type string[]
 allBuffsModule.FROST_CLASSES = { "MAGE", "SHAMAN", "DEATHKNIGHT" }
+
 --- Classes dealing physical ranged or melee damage
+---@type string[]
 allBuffsModule.PHYSICAL_CLASSES = { "HUNTER", "ROGUE", "SHAMAN", "WARRIOR", "DRUID", "PALADIN", "DEATHKNIGHT" }
 
 local DURATION_1H = 3600
@@ -106,26 +121,26 @@ function allBuffsModule.ExpansionChoice(classic, tbc, wotlk)
 end
 
 ---Add RESOURCE TRACKING spells
----@param buffs table<string, BomBuffDefinition>
----@param enchantments table<string, table<number>>
-function allBuffsModule:SetupTrackingSpells(buffs, enchantments)
-  buffDefModule:createAndRegisterBuff(buffs, spellIdsModule.FindHerbs, -- Find Herbs / kräuter
+---@param allBuffs BomAllBuffsTable
+---@param enchantments table<string, number[]>
+function allBuffsModule:SetupTrackingSpells(allBuffs, enchantments)
+  buffDefModule:createAndRegisterBuff(allBuffs, spellIdsModule.FindHerbs, -- Find Herbs / kräuter
           { type = "tracking", default = true })
                :Category(self.TRACKING)
 
-  buffDefModule:createAndRegisterBuff(buffs, spellIdsModule.FindMinerals, -- Find Minerals / erz
+  buffDefModule:createAndRegisterBuff(allBuffs, spellIdsModule.FindMinerals, -- Find Minerals / erz
           { type = "tracking", default = true })
                :Category(self.TRACKING)
 
-  buffDefModule:createAndRegisterBuff(buffs, spellIdsModule.FindTreasure, -- Find Treasure / Schatzsuche / Zwerge
+  buffDefModule:createAndRegisterBuff(allBuffs, spellIdsModule.FindTreasure, -- Find Treasure / Schatzsuche / Zwerge
           { type = "tracking", default = true })
                :Category(self.TRACKING)
 
-  buffDefModule:createAndRegisterBuff(buffs, spellIdsModule.FindFish, -- Find Fish (TBC daily quest reward)
+  buffDefModule:createAndRegisterBuff(allBuffs, spellIdsModule.FindFish, -- Find Fish (TBC daily quest reward)
           { type = "tracking", default = false })
                :Category(self.TRACKING)
 
-  return buffs
+  return allBuffs
 end
 
 function allBuffsModule:SetupConstantsCategories()
@@ -228,7 +243,7 @@ function allBuffsModule:GetBuffCategories()
 end
 
 ---Filter the input `allbuffs` if the limitations check returns true
----@param allBuffs table<number, BomBuffDefinition> Input list of all buffs
+---@param allBuffs BomAllBuffsTable Input list of all buffs
 ---@return table<number, BomBuffDefinition> Filtered list
 function allBuffsModule:ApplyPostLimitations(allBuffs)
   -- Apply post-limitations (added with :Limitation() functions on spell construction)
@@ -244,13 +259,14 @@ function allBuffsModule:ApplyPostLimitations(allBuffs)
   return result
 end
 
+---@alias BomAllBuffsTable table<number, BomBuffDefinition>
+
 ---All spells known to Buffomat
 ---Note: you can add your own spell in the "WTF\Account\<accountname>\SavedVariables\buffOmat.lua"
 ---table CustomSpells
----@return table<number, BomBuffDefinition> All known spells table (all spells to be scanned)
 function allBuffsModule:SetupSpells()
-  local allBuffs = {} ---@type table<number, BomBuffDefinition>
-  local enchantments = {} ---@type table<number, table<number>>
+  local allBuffs = {} ---@type BomAllBuffsTable
+  local enchantments = {} ---@type table<number, number[]>
   self:SetupConstants()
 
   priestModule:SetupPriestSpells(allBuffs, enchantments)

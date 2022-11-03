@@ -59,12 +59,12 @@ function spellSetupModule:Setup_MaybeAddCustomSpells()
 end
 
 function spellSetupModule:Setup_ResetCaches()
-  BOM.SelectedSpells = {} ---@type table<number, BomBuffDefinition>
+  BOM.SelectedSpells = {}
   BOM.cancelForm = {}
   BOM.AllSpellIds = {}
   BOM.SpellIdtoConfig = {}
   BOM.SpellIdIsSingle = {}
-  BOM.ConfigToSpell = {} ---@type table<number, BomBuffDefinition>
+  BOM.ConfigToSpell = {} ---@type BomAllBuffsTable
 
   buffomatModule.shared.Cache = buffomatModule.shared.Cache or {}
   buffomatModule.shared.Cache.Item2 = buffomatModule.shared.Cache.Item2 or {}
@@ -134,7 +134,7 @@ function spellSetupModule:Setup_EachSpell_Consumable(add, spell)
 
       buffomatModule.shared.Cache.Item2[spell.item] = item_info
     else
-      --BOM:Print("Item not found! Spell=" .. tostring(spell.singleId)
+      --buffomatModule:P("Item not found! Spell=" .. tostring(spell.singleId)
       --      .. " Item=" .. tostring(spell.item))
 
       -- Go delayed fetch

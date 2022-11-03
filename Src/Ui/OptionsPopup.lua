@@ -127,7 +127,7 @@ function optionsPopupModule:Setup(control, minimap)
     for _i, eachProfileName in pairs(profileModule.ALL_PROFILES) do
       if currentProfileName == eachProfileName then
         local activeName = _t("profile.activeProfileMenuTag") .. " " .. _t("profile_" .. eachProfileName)
-        BOM.PopupDynamic:AddItem(BOM.Color("00ff00", activeName),
+        BOM.PopupDynamic:AddItem(buffomatModule:Color("00ff00", activeName),
                 false, buffomatModule.ChooseProfile, eachProfileName)
       else
         BOM.PopupDynamic:AddItem(_t("profile_" .. eachProfileName),

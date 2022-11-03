@@ -8,7 +8,7 @@ BomModuleManager.characterSettingsModule = characterSettingsModule
 local profileModule = BomModuleManager.profileModule
 
 ---@class BomCharacterSettings Current character state snapshots per profile
----@field Spell table<number, BomBuffDefinition>
+---@field Spell table<number, BomBuffDefinition> # see also assignment to ["Spell"] in buffomatModule:InitGlobalStates()
 ---@field Duration table<string, number> Remaining aura duration on SELF, keyed with buff names
 ---@field LastTracking number Icon id for the last active tracking (not relevant in TBC?)
 ---@field solo BomProfile
@@ -21,12 +21,10 @@ local profileModule = BomModuleManager.profileModule
 ---@field battleground_spec2 BomProfile Alternate talents for WotLK dualspec
 ---@field BuffCategoriesHidden table<string, boolean> True if category is hidden (control in options)
 ---@field WatchGroup table<string, boolean> True to watch buffs in group 1..8
-
----@type BomCharacterSettings
 local characterStateClass = {}
 characterStateClass.__index = characterStateClass
 
----@param init BomCharacterSettings
+---@param init BomCharacterSettings|nil
 ---@return BomCharacterSettings
 function characterSettingsModule:New(init)
   local tab = init or self:Defaults()

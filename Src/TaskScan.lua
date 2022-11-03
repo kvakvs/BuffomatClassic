@@ -98,7 +98,7 @@ function taskScanModule:MaybeResetWatchGroups()
     buffomatModule:UpdateBuffTabText()
 
     if need_to_report then
-      BOM:Print(_t("ResetWatchGroups"))
+      buffomatModule:P(_t("ResetWatchGroups"))
     end
   end
 end
@@ -112,13 +112,13 @@ function taskScanModule:SetTracking(spell, value)
       local name, texture, active, _category, _nesting, spellId = GetTrackingInfo(i)
       if spellId == spell.singleId then
         -- found, compare texture with spell icon
-        --BOM:Print(_t("ActivateTracking") .. " " .. name)
+        --buffomatModule:P(_t("ActivateTracking") .. " " .. name)
         SetTracking(i, value)
         return
       end
     end
   else
-    --BOM:Print(_t("ActivateTracking") .. " " .. spell.trackingSpellName)
+    --buffomatModule:P(_t("ActivateTracking") .. " " .. spell.trackingSpellName)
     CastSpellByID(spell.singleId)
   end
 end
@@ -265,7 +265,7 @@ function taskScanModule:UpdateMacro(nextCast)
   BOM.CastFailedSpellId = nextCast.spellId
   local name = GetSpellInfo(nextCast.spellId)
   if name == nil then
-    BOM:Print("Update macro: Bad spell spellid=" .. nextCast.spellId)
+    buffomatModule:P("Update macro: Bad spell spellid=" .. nextCast.spellId)
   end
 
   if tContains(BOM.cancelForm, nextCast.spellId) then
@@ -669,7 +669,7 @@ function taskScanModule:CancelBuffs(playerUnit)
       local player_buff = playerUnit.knownBuffs[spell.buffId]
 
       if player_buff then
-        BOM:Print(string.format(_t("message.CancelBuff"),
+        buffomatModule:P(string.format(_t("message.CancelBuff"),
                 spell.singleLink or spell.singleText,
                 UnitName(player_buff.source or "") or ""))
         self:CancelBuff(spell.singleFamily)
@@ -689,7 +689,7 @@ function taskScanModule:WhisperExpired(spell)
       local msg = string.format(_t("message.BuffExpired"), spell.single)
       SendChatMessage(msg, "WHISPER", nil, name)
 
-      BOM:Print(msg, "WHISPER", nil, name)
+      buffomatModule:P(msg, "WHISPER", nil, name)
     end
   end
 end
@@ -1969,7 +1969,7 @@ function BOM.AddMemberToSkipList()
   end
 end
 
-function BOM.ClearSkip()
+function taskScanModule:ClearSkip()
   for spellIndex, spell in ipairs(BOM.SelectedSpells) do
     if spell.SkipList then
       wipe(spell.SkipList)
@@ -1987,7 +1987,7 @@ function BOM.DoCancelBuffs()
     if buffomatModule.currentProfile.CancelBuff[spell.buffId].Enable
             and taskScanModule:CancelBuff(spell.singleFamily)
     then
-      BOM:Print(string.format(_t("message.CancelBuff"), spell.singleLink or spell.singleText,
+      buffomatModule:P(string.format(_t("message.CancelBuff"), spell.singleLink or spell.singleText,
               UnitName(BOM.CancelBuffSource) or ""))
     end
   end

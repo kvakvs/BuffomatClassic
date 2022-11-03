@@ -12,8 +12,9 @@ BomModuleManager.unitCacheModule = unitCacheModule
 
 local buffModule = BomModuleManager.buffModule
 local buffomatModule = BomModuleManager.buffomatModule
-local unitModule = BomModuleManager.unitModule
+local taskScanModule = BomModuleManager.taskScanModule
 local toolboxModule = BomModuleManager.toolboxModule
+local unitModule = BomModuleManager.unitModule
 
 ---@param unitid string Player name or special name like "raidpet#"
 ---@param nameGroup string|number
@@ -255,7 +256,7 @@ function unitCacheModule:GetPartyMembers()
 
   if IsAltKeyDown() then
     BOM.DeclineHasResurrection = true
-    BOM.ClearSkip()
+    taskScanModule:ClearSkip()
   end
 
   -- For every party member which is in same zone, not a ghost or is a target

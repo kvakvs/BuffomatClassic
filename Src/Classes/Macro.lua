@@ -81,7 +81,7 @@ function BOM.Class.Macro.Recreate(self)
     if perChar < MAX_CHARACTER_MACROS then
       isChar = 1
     elseif perAccount >= MAX_ACCOUNT_MACROS then
-      BOM:Print(_t("castButton.NoMacroSlots"))
+      buffomatModule:P(_t("castButton.NoMacroSlots"))
       return
     end
 

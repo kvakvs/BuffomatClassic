@@ -2,6 +2,7 @@
 local russianModule = {}
 BomModuleManager.languageRussianModule = russianModule
 
+---@return BomLanguage
 function russianModule:Translations()
   return {
     ["Category_class"]                          = "Бафы вашего класса",

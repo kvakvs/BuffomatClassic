@@ -39,9 +39,12 @@ BOM.Class.GPIMinimapButtonConfigData.__index = BOM.Class.GPIMinimapButtonConfigD
 ---@field db GPIMinimapButtonConfigData Config database which will persist between addon reloads
 ---@field Tooltip string
 ---@field onClick function
+---@field UpdatePosition function
 
 ---@type GPIMinimapButton
-BOM.Class.GPIMinimapButton = {}
+BOM.Class.GPIMinimapButton = {
+  --UpdatePosition = minimapButtonClass:UpdatePosition ???
+}
 BOM.Class.GPIMinimapButton.__index = BOM.Class.GPIMinimapButton
 
 

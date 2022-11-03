@@ -270,9 +270,9 @@ function spellButtonsTabModule:AddSpellRow(rowBuilder, playerIsHorde, spell, pla
   spell:GetSingleText(
           function(buffLabelText)
             if spell.type == "weapon" then
-              buffLabelText = buffLabelText .. ": " .. BOM.Color("bbbbee", _t("TooltipIncludesAllRanks"))
+              buffLabelText = buffLabelText .. ": " .. buffomatModule:Color("bbbbee", _t("TooltipIncludesAllRanks"))
             elseif spell.extraText then
-              buffLabelText = buffLabelText .. ": " .. BOM.Color("bbbbee", spell.extraText)
+              buffLabelText = buffLabelText .. ": " .. buffomatModule:Color("bbbbee", spell.extraText)
             end
             buffLabel:SetText(buffLabelText)
           end
@@ -387,7 +387,7 @@ function spellButtonsTabModule:GetTargetsTooltipText(prefix, empty_text, name_ta
       if text ~= "" then
         text = text .. ", "
       end
-      text = text .. BOM.Color("ffffff", name)
+      text = text .. buffomatModule:Color("ffffff", name)
     end
   end
 
@@ -411,7 +411,7 @@ function spellButtonsTabModule:UpdateForcecastTooltip(button, spell)
   BOM.Tool.TooltipText(
           button,
           _t("TooltipForceCastOnTarget") .. "|n"
-                  .. string.format(_t("FormatToggleTarget"), BOM.Color("ffffff", BOM.lastTarget))
+                  .. string.format(_t("FormatToggleTarget"), buffomatModule:Color("ffffff", BOM.lastTarget))
                   .. tooltip_force_targets)
 end
 
@@ -428,7 +428,7 @@ function spellButtonsTabModule:UpdateExcludeTargetsTooltip(button, spell)
   BOM.Tool.TooltipText(
           button,
           _t("TooltipExcludeTarget") .. "|n"
-                  .. string.format(_t("FormatToggleTarget"), BOM.Color("ffffff", BOM.lastTarget))
+                  .. string.format(_t("FormatToggleTarget"), buffomatModule:Color("ffffff", BOM.lastTarget))
                   .. tooltip_exclude_targets)
 end
 
@@ -450,7 +450,7 @@ function spellButtonsTabModule:AddCategoryRow(catId, rowBuilder)
   end
 
   label:Show()
-  label:SetText(BOM.Color("aaaaaa", self:CategoryLabel(catId)))
+  label:SetText(buffomatModule:Color("aaaaaa", self:CategoryLabel(catId)))
   managedUiModule:ManageControl(catId .. "categoryTitleLabel", label)
   self.categoryLabels[catId] = label
 
@@ -509,11 +509,11 @@ function spellButtonsTabModule:UpdateSelectedSpell(spell)
 
       forceCastButton:SetScript("OnClick", function(self)
         if spellForcedTarget[lastTarget] == nil then
-          BOM:Print(BOM.FormatTexture(BOM.ICON_TARGET_ON) .. " "
+          buffomatModule:P(BOM.FormatTexture(BOM.ICON_TARGET_ON) .. " "
                   .. _t("MessageAddedForced") .. ": " .. lastTarget)
           spellForcedTarget[lastTarget] = lastTarget
         else
-          BOM:Print(BOM.FormatTexture(BOM.ICON_TARGET_ON) .. " "
+          buffomatModule:P(BOM.FormatTexture(BOM.ICON_TARGET_ON) .. " "
                   .. _t("MessageClearedForced") .. ": " .. lastTarget)
           spellForcedTarget[lastTarget] = nil
         end
@@ -528,11 +528,11 @@ function spellButtonsTabModule:UpdateSelectedSpell(spell)
 
       excludeButton:SetScript("OnClick", function(control)
         if spell_exclude[lastTarget] == nil then
-          BOM:Print(BOM.FormatTexture(BOM.ICON_TARGET_EXCLUDE) .. " "
+          buffomatModule:P(BOM.FormatTexture(BOM.ICON_TARGET_EXCLUDE) .. " "
                   .. _t("MessageAddedExcluded") .. ": " .. lastTarget)
           spell_exclude[lastTarget] = lastTarget
         else
-          BOM:Print(BOM.FormatTexture(BOM.ICON_TARGET_EXCLUDE) .. " "
+          buffomatModule:P(BOM.FormatTexture(BOM.ICON_TARGET_EXCLUDE) .. " "
                   .. _t("MessageClearedExcluded") .. ": " .. lastTarget)
           spell_exclude[lastTarget] = nil
         end

@@ -5,10 +5,10 @@ local BOM = BuffomatAddon ---@type BomAddon
 local eventsModule = {}
 BomModuleManager.eventsModule = eventsModule
 
-local profileModule = BomModuleManager.profileModule
+local allBuffsModule = BomModuleManager.allBuffsModule
 local buffomatModule = BomModuleManager.buffomatModule
 local constModule = BomModuleManager.constModule
-local allBuffsModule = BomModuleManager.allBuffsModule
+local profileModule = BomModuleManager.profileModule
 local spellButtonsTabModule = BomModuleManager.spellButtonsTabModule
 local spellSetupModule = BomModuleManager.spellSetupModule
 local taskScanModule = BomModuleManager.taskScanModule
@@ -95,7 +95,7 @@ local function Event_CombatStart()
 end
 
 local function Event_CombatStop()
-  BOM.ClearSkip()
+  taskScanModule:ClearSkip()
   buffomatModule:SetForceUpdate("combatStop")
   BOM.DeclineHasResurrection = true
   BOM.AllowAutOpen()

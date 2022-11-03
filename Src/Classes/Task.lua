@@ -5,6 +5,8 @@ local BOM = BuffomatAddon ---@type BomAddon
 local taskModule = {}
 BomModuleManager.taskModule = taskModule
 
+local buffomatModule = BomModuleManager.buffomatModule
+
 ---@class BomTask
 --- @field distance string|boolean Unit name or group number as string, to calculate whether player is in range to perform the task. Boolean true for no distance check.
 --- @field prefix_text string The message to show before the spell
@@ -67,9 +69,9 @@ function taskClass:Format()
   end
   return string.format("%s%s %s %s",
           target,
-          BOM.Color(bomGray, self.prefix_text),
+          buffomatModule:Color(bomGray, self.prefix_text),
           self.action_link,
-          BOM.Color(bomGray, self.extra_text))
+          buffomatModule:Color(bomGray, self.extra_text))
 end
 
 function taskClass:FormatDisabledRed(reason)
@@ -78,7 +80,7 @@ function taskClass:FormatDisabledRed(reason)
     target = ""
   end
   return string.format("%s %s %s",
-          BOM.Color(bomRed, reason),
+          buffomatModule:Color(bomRed, reason),
           target,
-          BOM.Color(bomBleakRed, self.action_text))
+          buffomatModule:Color(bomBleakRed, self.action_text))
 end

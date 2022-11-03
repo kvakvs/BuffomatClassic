@@ -10,10 +10,10 @@ local buffDefModule = BomModuleManager.buffDefinitionModule
 local spellIdsModule = BomModuleManager.spellIdsModule
 
 ---Add DRUID spells
----@param spells table<string, BomBuffDefinition>
----@param enchants table<string, table<number>>
-function druidModule:SetupDruidSpells(spells, enchants)
-  buffDefModule:createAndRegisterBuff(spells, 9885, --Gift/Mark of the Wild | Gabe/Mal der Wildniss
+---@param allBuffs BomAllBuffsTable
+---@param enchants table<string, number[]>
+function druidModule:SetupDruidSpells(allBuffs, enchants)
+  buffDefModule:createAndRegisterBuff(allBuffs, 9885, --Gift/Mark of the Wild | Gabe/Mal der Wildniss
           { groupId         = 21849, cancelForm = true, default = true,
             singleFamily    = { 1126, 5232, 6756, 5234, 8907, 9884, 9885, -- Mark of the Wild 1-7
                                 26990, -- TBC: Mark of the Wild 8
@@ -27,7 +27,7 @@ function druidModule:SetupDruidSpells(spells, enchants)
           })   :DefaultTargetClasses(allBuffsModule.BOM_ALL_CLASSES)
                :RequirePlayerClass("DRUID")
                :Category(allBuffsModule.CLASS)
-  buffDefModule:createAndRegisterBuff(spells, 9910, --Thorns | Dornen
+  buffDefModule:createAndRegisterBuff(allBuffs, 9910, --Thorns | Dornen
           { cancelForm     = false, default = false,
             singleFamily   = { 467, 782, 1075, 8914, 9756, 9910, -- Thorns 1-6
                                26992, -- TBC: Thorns 7
@@ -36,11 +36,11 @@ function druidModule:SetupDruidSpells(spells, enchants)
           })   :DefaultTargetClasses(allBuffsModule.MELEE_CLASSES)
                :RequirePlayerClass("DRUID")
                :Category(allBuffsModule.CLASS)
-  buffDefModule:createAndRegisterBuff(spells, 16864, --Omen of Clarity
+  buffDefModule:createAndRegisterBuff(allBuffs, 16864, --Omen of Clarity
           { isOwn = true, cancelForm = true, default = true
           })   :RequirePlayerClass("DRUID")
                :Category(allBuffsModule.CLASS)
-  buffDefModule:createAndRegisterBuff(spells, 17329, -- Nature's Grasp | Griff der Natur
+  buffDefModule:createAndRegisterBuff(allBuffs, 17329, -- Nature's Grasp | Griff der Natur
           { isOwn        = true, cancelForm = true, default = false,
             hasCD        = true, requiresOutdoors = true,
             singleFamily = { 16689, 16810, 16811, 16812, 16813, 17329, -- Nature's Grasp 1-6
@@ -48,20 +48,20 @@ function druidModule:SetupDruidSpells(spells, enchants)
                              53312 } -- WotLK: Nature's Grasp 8
           })   :RequirePlayerClass("DRUID")
                :Category(allBuffsModule.CLASS)
-  buffDefModule:createAndRegisterBuff(spells, 33891, --TBC: Tree of life
+  buffDefModule:createAndRegisterBuff(allBuffs, 33891, --TBC: Tree of life
           { isOwn = true, default = true, default = false, singleId = 33891, shapeshiftFormId = 2
           })   :RequirePlayerClass("DRUID")
                :RequireTBC() -- Requires TBC and up
                :Category(allBuffsModule.CLASS)
 
   -- Special code: This will disable herbalism and mining tracking in Cat Form
-  buffDefModule:createAndRegisterBuff(spells, spellIdsModule.Druid_TrackHumanoids, -- Track Humanoids (Cat Form)
+  buffDefModule:createAndRegisterBuff(allBuffs, spellIdsModule.Druid_TrackHumanoids, -- Track Humanoids (Cat Form)
           { type      = "tracking", needForm = CAT_FORM, default = true,
             extraText = _t("SpellLabel_TrackHumanoids")
           })   :RequirePlayerClass("DRUID")
                :Category(self.TRACKING)
 
-  buffDefModule:createAndRegisterBuff(spells, 50763, -- Revive (WotLK)
+  buffDefModule:createAndRegisterBuff(allBuffs, 50763, -- Revive (WotLK)
           { cancelForm   = true, type = "resurrection", default = true,
             singleFamily = { 50769, 50768, 50767, 50766, 50765, 50764, 50763 }, -- WotLK: Revive 1-7
           })   :RequireWotLK()

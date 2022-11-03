@@ -19,7 +19,7 @@ BOM.Class = BOM.Class or {}
 ---@field requireWotLK boolean
 ---@field hideInWotLK boolean
 ---@field playerRace string
----@field playerClass string|table<number, string> Collection of classes for this spell, or classname
+---@field playerClass string|string[] Collection of classes for this spell, or classname
 ---@field maxLevel number Hide the spell if player is above this level (to deprecate old spells)
 ---@field minLevel number Hide the spell if player is below this level
 ---@field hideIfSpellKnown number Hide the spell if spellId is in their spellbook
@@ -31,10 +31,10 @@ BOM.Class = BOM.Class or {}
 ---@field limitations BomSpellLimitations Temporary field for post-filtering on spell list creation, later zeroed
 ---@field category string|nil Group by this field and use special translation table to display headers
 ---@field elixirType string|nil Use this for elixir mutual exclusions on elixirs
----@field targetClasses table<string> List of target classes which are shown as toggle boxes to enable cast per class
+---@field targetClasses string[] List of target classes which are shown as toggle boxes to enable cast per class
 ---@field default boolean Whether the spell auto-cast is enabled by default
 ---@field groupDuration number Buff duration for group buff in seconds
----@field groupFamily table<number> Family of group buff spell ids which are mutually exclusive
+---@field groupFamily number[] Family of group buff spell ids which are mutually exclusive
 ---@field groupId number Spell id for group buff
 ---@field groupMana number Mana cost for group buff
 ---@field hasCD boolean There's a cooldown on this spell
@@ -68,17 +68,17 @@ BOM.Class = BOM.Class or {}
 ---@field isBlessing boolean Spell will be cast on group members of the same class
 ---
 ---@field item number Buff is granted by an item in user's bag. Number is item id shows as the icon.
----@field items table<number> All inventory item ids providing the same effect
----@field lockIfHaveItem table<number> Item ids which prevent this buff (unique conjured items for example)
+---@field items number[] All inventory item ids providing the same effect
+---@field lockIfHaveItem number[] Item ids which prevent this buff (unique conjured items for example)
 ---@field needForm number Required shapeshift form ID to cast this buff
----@field onlyUsableFor table<string> list of classes which only can see this buff (hidden for others)
----@field reagentRequired table<number> | number Reagent item ids required for group buff
+---@field onlyUsableFor string[] list of classes which only can see this buff (hidden for others)
+---@field reagentRequired number[] | number Reagent item ids required for group buff
 ---@field shapeshiftFormId number Class-based form id (coming from GetShapeshiftFormID LUA API) if active, the spell is skipped
 ---@field singleDuration number - buff duration for single buff in seconds
----@field singleFamily table<number> Family of single buff spell ids which are mutually exclusive
+---@field singleFamily number[] Family of single buff spell ids which are mutually exclusive
 ---@field singleId number Spell id for single buff
 ---@field singleMana number Mana cost
----@field ignoreIfBetterBuffs table<number> If these auras are present on target, the buff is not queued
+---@field ignoreIfBetterBuffs number[] If these auras are present on target, the buff is not queued
 ---@field section string Custom section to begin new spells group in the row builder
 ---
 ---Fields created dynamically while the addon is running
@@ -87,8 +87,8 @@ BOM.Class = BOM.Class or {}
 ---@field Class table
 ---@field buffId number Spell id of level 60 spell used as key everywhere else
 ---@field Enable boolean Whether buff is to be watched
----@field ExcludedTarget table<string> List of target names to never buff
----@field ForcedTarget table<string> List of extra targets to buff
+---@field ExcludedTarget string[] List of target names to never buff
+---@field ForcedTarget string[] List of extra targets to buff
 ---@field frames BomBuffRowFrames Dynamic list of controls associated with this spell in the UI
 ---@field GroupsHaveDead table<string, boolean> Group/class members who might be dead but their class needs this buff
 ---@field GroupsNeedBuff table List of groups who might need this buff
@@ -143,13 +143,13 @@ end
 --             :ShowInWotLK()
 --end
 
----@param dst table<BomBuffDefinition>
+---@param allBuffs BomAllBuffsTable
 ---@param singleId number
----@param itemId number|table<number> Item or multiple items giving this buff
----@param limitations BomSpellLimitations Add extra conditions, if not nil
+---@param itemId number|number[] Item or multiple items giving this buff
+---@param limitations BomSpellLimitations|nil Add extra conditions, if not nil
 ---@param extraText string Add extra text to the right if not nil
 ---@return BomBuffDefinition
-function buffDefModule:genericConsumable(dst, singleId, itemId, limitations,
+function buffDefModule:genericConsumable(allBuffs, singleId, itemId, limitations,
                                          extraText, extraFields)
   local fields = extraFields or {} ---@type BomBuffDefinition
   fields.isConsumable = true
@@ -166,7 +166,7 @@ function buffDefModule:genericConsumable(dst, singleId, itemId, limitations,
     fields.extraText = extraText
   end
 
-  return buffDefModule:createAndRegisterBuff(dst, singleId, fields, limitations)
+  return buffDefModule:createAndRegisterBuff(allBuffs, singleId, fields, limitations)
 end
 
 local _, playerClass, _ = UnitClass("player")
@@ -229,16 +229,16 @@ end
 
 ---Create a spelldef if the limitations apply and add to the table.
 ---Only check permanent limitations here like minlevel, TBC, or player class.
----@param dst table<number, BomBuffDefinition>
+---@param allBuffs BomAllBuffsTable
 ---@param buffSpellId number The buff spell ID is key in the AllSpells table
 ---@param fields table<string, any>
 ---@param limitations BomSpellLimitations Check these conditions to skip adding the spell. Permanent conditions only like minlevel or class
 ---@return BomBuffDefinition
-function buffDefModule:createAndRegisterBuff(dst, buffSpellId, fields, limitations)
+function buffDefModule:createAndRegisterBuff(allBuffs, buffSpellId, fields, limitations)
   local spell = self:New(buffSpellId, fields)
 
   if self:CheckLimitations(spell, limitations) then
-    return self:registerBuff(dst, spell)
+    return self:registerBuff(allBuffs, spell)
   end
 
   return buffDefModule:New(0, {}) -- limitations check failed
@@ -327,7 +327,7 @@ function buffDefClass:DefaultTargetClasses(classNames)
 end
 
 ---@return BomBuffDefinition
----@param className table<number,string>|string The class name or table of class names
+---@param className string[]|string The class name or table of class names
 function buffDefClass:RequirePlayerClass(className)
   self.limitations.playerClass = className
   return self

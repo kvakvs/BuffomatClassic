@@ -31,43 +31,42 @@ local toolboxModule = BomModuleManager.toolboxModule
 ---@field nextCooldownDue number Set this to next spell cooldown to force update
 ---@field checkCooldown number|nil Spell id to check cooldown for
 ---@field ForceUpdate boolean Set to true to force recheck buffs on timer
--- -@field ForceUpdateSpellsTab boolean Set to true to force clear and rebuild spells tab. This activity is throttled to 1 per second
----@field ALL_PROFILES table<string> Lists all buffomat profile names (group, solo... etc)
----@field RESURRECT_CLASS table<string> Classes who can resurrect others
----@field MANA_CLASSES table<string> Classes with mana resource
----@field locales BuffomatTranslations (same as BOM.L)
----@field L BuffomatTranslations (same as BOM.locales)
----@field AllBuffomatBuffs table<number, BomBuffDefinition> All spells known to Buffomat
----@field EnchantList table<number, table<number>> Spell ids mapping to enchant ids
----@field CancelBuffs table<number, BomBuffDefinition> All spells to be canceled on detection
+---@field ALL_PROFILES string[] Lists all buffomat profile names (group, solo... etc)
+---@field RESURRECT_CLASS string[] Classes who can resurrect others
+---@field MANA_CLASSES string[] Classes with mana resource
+---@field locales BomTranslationsDict (same as BOM.L)
+---@field L BomLanguage The current locale @deprecated
+---@field AllBuffomatBuffs BomAllBuffsTable All spells known to Buffomat
+---@field EnchantList table<number, number[]> Spell ids mapping to enchant ids
+---@field CancelBuffs BomBuffDefinition[] All spells to be canceled on detection
 ---@field ItemCache table<number, BomItemCacheElement> Precreated precached items
 ---@field ActivePaladinAura nil|number Spell id of aura if an unique aura was casted (only one can be active)
 ---@field ActivePaladinSeal nil|number Spell id of weapon seal, if an seal-type temporary enchant was used (only one can be active)
 ---@field ForceProfile string|nil Nil will choose profile name automatically, otherwise this profile will be used
 ---@field ArgentumDawn table Equipped AD trinket: Spell to and zone ids to check
----@field BuffExchangeId table<number, table<number>> Combines spell ids of spellrank flavours into main spell id
----@field BuffIgnoreAll table<number> Having this buff on target excludes the target (phaseshifted imp for example)
+---@field BuffExchangeId table<number, number[]> Combines spell ids of spellrank flavours into main spell id
+---@field BuffIgnoreAll number[] Having this buff on target excludes the target (phaseshifted imp for example)
 ---@field CachedHasItems table<string, CachedItem> Items in player's bag
 ---@field CancelBuffSource string Unit who casted the buff to be auto-canceled
 ---@field Carrot table Equipped Riding trinket: Spell to and zone ids to check
 ---@field CheckForError boolean Used by error suppression code
 ---@field CurrentProfile BomProfile Current profile from CharacterState.Profiles
--- -@field CharacterState BomCharacterState Copy of state only for the current character, with separate states per profile
--- -@field SharedState BomProfile Copy of state shared with all accounts
 ---@field DeclineHasResurrection boolean Set to true on combat start, stop, holding Alt, cleared on party update
 ---@field EnchantToSpell table<number, number> Reverse-maps enchant ids back to spells
 ---@field ForceTracking number|nil Defines icon id for enforced tracking
 ---@field ForceUpdate boolean Requests immediate spells/buffs refresh
 ---@field RepeatUpdate boolean Requests some sort of spells update similar to ForceUpdate
 ---@field IsMoving boolean Indicated that the player is moving (updated in event handlers)
----@field ItemList table<table<number>> Group different ranks of item together
+---@field ItemList table<number[]> Group different ranks of item together
 ---@field ItemListSpell table<number, number> Map itemid to spell?
 ---@field ItemListTarget table<number, string> Remember who casted item buff on you?
 ---@field lastTarget string|nil Last player's target
 ---@field ManaLimit number Player max mana
 ---@field PartyUpdateNeeded boolean Requests player party update
 ---@field PlayerCasting string|nil Indicates that the player is currently casting (updated in event handlers)
----@field SelectedSpells table<number, BomBuffDefinition>
+---@field SelectedSpells BomAllBuffsTable
+---@field ConfigToSpell BomAllBuffsTable
+---@field AllSpellIds number[]
 ---@field cancelForm table<number, number> Spell ids which cancel shapeshift form
 ---@field SpellIdIsSingle table<number, boolean> Whether spell ids are single buffs
 ---@field SpellIdtoConfig table<number, number> Maps spell ids to the key id of spell in the AllSpells
@@ -104,59 +103,64 @@ local toolboxModule = BomModuleManager.toolboxModule
 ---@field ICON_GEAR string
 ---@field ICON_GEAR string
 ---@field IconAutoOpenOn string
----@field IconAutoOpenOnCoord table<number>
+---@field IconAutoOpenOnCoord number[]
 ---@field IconAutoOpenOff string
----@field IconAutoOpenOffCoord table<number>
+---@field IconAutoOpenOffCoord number[]
 ---@field IconDeathBlockOn string
 ---@field IconDeathBlockOff string
----@field IconDeathBlockOffCoord table<number>
+---@field IconDeathBlockOffCoord number[]
 ---@field IconNoGroupBuffOn string
----@field IconNoGroupBuffOnCoord table<number>
+---@field IconNoGroupBuffOnCoord number[]
 ---@field IconNoGroupBuffOff string
----@field IconNoGroupBuffOffCoord table<number>
+---@field IconNoGroupBuffOffCoord number[]
 ---@field IconSameZoneOn string
----@field IconSameZoneOnCoord table<number>
+---@field IconSameZoneOnCoord number[]
 ---@field IconSameZoneOff string
----@field IconSameZoneOffCoord table<number>
+---@field IconSameZoneOffCoord number[]
 ---@field IconResGhostOn string
----@field IconResGhostOnCoord table<number>
+---@field IconResGhostOnCoord number[]
 ---@field IconResGhostOff string
----@field IconResGhostOffCoord table<number>
+---@field IconResGhostOffCoord number[]
 ---@field IconReplaceSingleOff string
----@field IconReplaceSingleOffCoord table<number>
+---@field IconReplaceSingleOffCoord number[]
 ---@field IconReplaceSingleOn string
----@field IconReplaceSingleOnCoord table<number>
+---@field IconReplaceSingleOnCoord number[]
 ---@field IconArgentumDawnOff string
 ---@field IconArgentumDawnOn string
----@field IconArgentumDawnOnCoord table<number>
+---@field IconArgentumDawnOnCoord number[]
 ---@field IconCarrotOff string
 ---@field IconCarrotOn string
----@field IconCarrotOnCoord table<number>
+---@field IconCarrotOnCoord number[]
 ---@field IconMainHandOff string
 ---@field IconMainHandOn string
----@field IconMainHandOnCoord table<number>
+---@field IconMainHandOnCoord number[]
 ---@field IconSecondaryHandOff string
 ---@field IconSecondaryHandOn string
----@field IconSecondaryHandOnCoord table<number>
+---@field IconSecondaryHandOnCoord number[]
 ---@field ICON_TANK string
----@field ICON_TANK_COORD table<number>
+---@field ICON_TANK_COORD number[]
 ---@field ICON_PET string
----@field ICON_PET_COORD table<number>
+---@field ICON_PET_COORD number[]
 ---@field IconInPVPOff string
 ---@field IconInPVPOn string
----@field IconInPVPOnCoord table<number>
+---@field IconInPVPOnCoord number[]
 ---@field IconInWorldOff string
 ---@field IconInWorldOn string
----@field IconInWorldOnCoord table<number>
+---@field IconInWorldOnCoord number[]
 ---@field IconInInstanceOff string
 ---@field IconInInstanceOn string
----@field IconInInstanceOnCoord table<number>
+---@field IconInInstanceOnCoord number[]
 ---@field IconUseRankOff string
 ---@field IconUseRankOn string
 ---@field QuickSingleBuff BomLegacyControl Button for single/group buff toggling next to cast button
 ---@field SpellId table<string, table<string, number>> Map of spell name to id
 ---@field ItemId table<string, table<string, number>> Map of item name to id
 ---@field PopupDynamic BomPopupDynamic
+---@field IsClassic boolean Whether we are running Classic Era or Season of Mastery
+---@field IsTBC boolean Whether we are running TBC classic
+---@field HaveTBC boolean Whether we are running TBC classic or later
+---@field IsWotLK boolean Whether we are running Wrath of the Lich King
+---@field HaveWotLK boolean Whether we are running Wrath of the Lich King or later
 
 BuffomatAddon = LibStub("AceAddon-3.0"):NewAddon(
         "Buffomat", "AceConsole-3.0", "AceEvent-3.0") ---@type BomAddon
@@ -175,11 +179,16 @@ BOM.IsClassic = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
 ---@param t string
 function BOM:Debug(t)
   if buffomatModule.shared.DebugLogging then
-    DEFAULT_CHAT_FRAME:AddMessage(tostring(GetTime()) .. " " .. BOM.Color("883030", "BOM") .. t)
+    DEFAULT_CHAT_FRAME:AddMessage(tostring(GetTime()) .. " " .. buffomatModule:Color("883030", "BOM") .. t)
   end
 end
 
-function BOM.Color(hex, text)
+---@param t string
+function buffomatModule:P(t)
+  BOM:Print(t)
+end
+
+function buffomatModule:Color(hex, text)
   return "|cff" .. hex .. text .. "|r"
 end
 
@@ -195,7 +204,7 @@ function BOM.BtnClose()
 end
 
 function BOM.BtnSettings(self)
-  optionsPopupModule:Setup(self)
+  optionsPopupModule:Setup(self, nil)
 end
 
 ---Bound the the macro cast button in the buff tab
@@ -215,6 +224,7 @@ function buffomatModule:ClearForceUpdate(debugCallerLocation)
   wipe(self.forceUpdateRequestedBy)
 end
 
+---@param reason string
 function buffomatModule:SetForceUpdate(reason)
   self.forceUpdateRequestedBy[reason] = (self.forceUpdateRequestedBy[reason] or 0) + 1
 end
@@ -245,18 +255,18 @@ end
 
 ---ChooseProfile
 ---BOM profile selection, using 'auto' by default
----@param profile table
+---@param profile string
 function buffomatModule.ChooseProfile(profile)
-  if profile == nil or profil == "" or profile == "auto" then
+  if profile == nil or profile == "" or profile == "auto" then
     BOM.ForceProfile = nil
   elseif buffomatModule.character[profile] then
     BOM.ForceProfile = profile
   else
-    BOM:Print("Unknown profile: " .. profile)
+    buffomatModule:P("Unknown profile: " .. profile)
     return
   end
 
-  BOM.ClearSkip()
+  taskScanModule:ClearSkip()
   BOM.PopupDynamic:Wipe()
   buffomatModule:SetForceUpdate("profileSelected")
   taskScanModule:ScanNow("profileSelected")
@@ -271,16 +281,13 @@ function buffomatModule:UseProfile(profileName)
 
   buffomatModule.currentProfileName = profileName
 
-  local selectedProfile = self.character[profileName] or characterSettingsModule:New()
+  local selectedProfile = self.character[profileName] or characterSettingsModule:New(nil)
   buffomatModule.currentProfile = selectedProfile
 
-  BomC_MainWindow_Title:SetText(
-          BOM.FormatTexture(constModule.BOM_BEAR_ICON_FULLPATH)
-                  .. _t("profile_" .. profileName)
+  BomC_MainWindow_Title:SetText(BOM.FormatTexture(constModule.BOM_BEAR_ICON_FULLPATH) .. _t("profile_" .. profileName))
   -- .. " - " .. constModule.SHORT_TITLE
-  )
 
-  BOM:Print("Using profile " .. _t("profile_" .. profileName))
+  buffomatModule:P("Using profile " .. _t("profile_" .. profileName))
 end
 
 ---When BomCharacterState.WatchGroup has changed, update the buff tab text to show what's
@@ -496,7 +503,7 @@ function BuffomatAddon:Init()
       DB[var] = false
     end
 
-    BOM:Print("Set " .. var .. " to " .. tostring(DB[var]))
+    buffomatModule:P("Set " .. var .. " to " .. tostring(DB[var]))
     buffomatModule:OptionsUpdate()
   end
 
@@ -590,7 +597,7 @@ function buffomatModule:DownGrade()
         buffomatModule.shared.SpellGreaterEqualThan[BOM.CastFailedSpellId] = level
         BOM.FastUpdateTimer()
         buffomatModule:SetForceUpdate("Downgrade")
-        BOM:Print(string.format(_t("MsgDownGrade"),
+        buffomatModule:P(string.format(_t("MsgDownGrade"),
                 BOM.CastFailedSpell.singleText,
                 BOM.CastFailedSpellTarget.name))
 
@@ -623,7 +630,7 @@ buffomatModule.lastSpellsTabUpdate = 0
 
 ---This runs every frame, do not do any excessive work here
 function buffomatModule.UpdateTimer(elapsed)
-  --if elapsed > 0.1 then BOM:Print("Elapsed: " .. elapsed) end
+  --if elapsed > 0.1 then buffomatModule:P("Elapsed: " .. elapsed) end
 
   local now = GetTime()
 
@@ -694,7 +701,7 @@ function buffomatModule.UpdateTimer(elapsed)
       if buffomatModule.slowCount >= 20 and updateTimerLimit < 1 then
         buffomatModule.updateTimerLimit = buffomatModule.BOM_THROTTLE_TIMER_LIMIT
         buffomatModule.slowerhardwareUpdateTimerLimit = buffomatModule.BOM_THROTTLE_SLOWER_HARDWARE_TIMER_LIMIT
-        BOM:Print("Overwhelmed - slowing down the scans!")
+        buffomatModule:P("Overwhelmed - slowing down the scans!")
       end
     else
       buffomatModule.slowCount = 0
@@ -735,7 +742,7 @@ function buffomatModule:PrintCallers(prefix, callersCollection)
         callers = callers .. string.format("%s; ", caller)
       end
     end
-    BOM:Print(prefix .. callers)
+    buffomatModule:P(prefix .. callers)
   end
 end
 
@@ -826,7 +833,7 @@ function BOM.ShowWindow(tab)
     end
     toolboxModule:SelectTab(BomC_MainWindow, tab or 1)
   else
-    BOM:Print(_t("message.ShowHideInCombat"))
+    buffomatModule:P(_t("message.ShowHideInCombat"))
   end
 end
 
@@ -890,7 +897,7 @@ function BOM.ResetWindow()
   BomC_MainWindow:SetHeight(200)
   BOM.SaveWindowPosition()
   BOM.ShowWindow(1)
-  BOM:Print("Window position is reset.")
+  buffomatModule:P("Window position is reset.")
 end
 
 local function perform_who_request(name)

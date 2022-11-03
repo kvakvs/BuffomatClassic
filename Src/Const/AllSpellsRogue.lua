@@ -9,12 +9,12 @@ local allBuffsModule = BomModuleManager.allBuffsModule
 local buffDefModule = BomModuleManager.buffDefinitionModule
 
 ---Add ROGUE spells
----@param spells table<string, BomBuffDefinition>
----@param enchants table<string, table<number>>
-function rogueModule:SetupRogueSpells(spells, enchants)
+---@param allBuffs BomAllBuffsTable
+---@param enchants table<string, number[]>
+function rogueModule:SetupRogueSpells(allBuffs, enchants)
   local duration = allBuffsModule.TbcOrClassic(allBuffsModule.DURATION_1H, allBuffsModule.DURATION_30M) -- TBC: Poisons become 1 hour
 
-  buffDefModule:createAndRegisterBuff(spells, 25351, --Deadly Poison
+  buffDefModule:createAndRegisterBuff(allBuffs, 25351, --Deadly Poison
           { item         = allBuffsModule.ExpansionChoice(20844, 22054, 43233),
             items        = { 22054, 22053, -- TBC: Deadly Poison
                              20844, 8985, 8984, 2893, 2892,
@@ -27,7 +27,7 @@ function rogueModule:SetupRogueSpells(spells, enchants)
                       2630, 627, 626, 8, 7, --Deadly Poison
                       3770, 3771 } -- WotLK: Deadly Poison 8, 9
 
-  buffDefModule:createAndRegisterBuff(spells, 11399, --Mind-numbing Poison
+  buffDefModule:createAndRegisterBuff(allBuffs, 11399, --Mind-numbing Poison
           { item     = 9186, items = { 9186, 6951, 5237 }, isConsumable = true, type = "weapon",
             duration = duration, default = false },
           { minLevel = 24 }
@@ -36,7 +36,7 @@ function rogueModule:SetupRogueSpells(spells, enchants)
                :Category(allBuffsModule.CLASS_WEAPON_ENCHANTMENT)
   enchants[11399] = { 643, 23, 35 } -- Mind-numbing Poison (also WotLK: enchantment 35)
 
-  buffDefModule:createAndRegisterBuff(spells, 11340, --Instant Poison
+  buffDefModule:createAndRegisterBuff(allBuffs, 11340, --Instant Poison
           { item         = allBuffsModule.TbcOrClassic(21927, 8928),
             items        = { 21927, -- TBC: Instant Poison
                              8928, 8927, 8926, 6950, 6949, 6947, -- Instant Poison 2-7
@@ -49,7 +49,7 @@ function rogueModule:SetupRogueSpells(spells, enchants)
                       625, 624, 623, 325, 324, 323, --Instant Poison
                       3768, 3769 } -- WotLK: Instant Poison 8, 9
 
-  buffDefModule:createAndRegisterBuff(spells, 13227, --Wound Poison
+  buffDefModule:createAndRegisterBuff(allBuffs, 13227, --Wound Poison
           { item         = allBuffsModule.TbcOrClassic(22055, 10922),
             items        = { 22055, -- TBC: Wound Poison
                              10922, 10921, 10920, 10918,
@@ -62,7 +62,7 @@ function rogueModule:SetupRogueSpells(spells, enchants)
                       706, 705, 704, 703, --Wound Poison
                       3772, 3773 } -- WotLK: Wound Poison 6, 7
 
-  buffDefModule:createAndRegisterBuff(spells, 11202, --Crippling Poison
+  buffDefModule:createAndRegisterBuff(allBuffs, 11202, --Crippling Poison
           { item     = 3776, items = { 3776, 3775 }, isConsumable = true, type = "weapon",
             duration = duration, default = false },
           { minLevel = 20 }
@@ -70,7 +70,7 @@ function rogueModule:SetupRogueSpells(spells, enchants)
                :Category(allBuffsModule.CLASS_WEAPON_ENCHANTMENT)
   enchants[11202] = { 603, 22 } --Crippling Poison
 
-  buffDefModule:createAndRegisterBuff(spells, 26785, --TBC: Anesthetic Poison
+  buffDefModule:createAndRegisterBuff(allBuffs, 26785, --TBC: Anesthetic Poison
           { item         = 21835,
             items        = { 21835,
                              43237 },

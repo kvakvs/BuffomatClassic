@@ -23,9 +23,9 @@ local L = setmetatable(
 ---@field IconClass table<string, string> Class icon strings indexed by class name
 ---@field IconClassBig table<string, string> Class icon strings indexed by class name
 ---@field RaidIconNames table<string, number>
----@field RaidIcon table<string>
----@field Classes table<string>
----@field ClassName table<string> Localized class names (male)
+---@field RaidIcon string[]
+---@field Classes string[]
+---@field ClassName string[] Localized class names (male)
 ---@field ClassColor table<string, table> Localized class colors
 ---@field NameToClass table<string, string> Reverse class name lookup
 ---@field _EditBox BomLegacyControl

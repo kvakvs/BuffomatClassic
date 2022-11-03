@@ -6,6 +6,7 @@ local taskListModule = {}
 BomModuleManager.taskListModule = taskListModule
 
 local taskModule = BomModuleManager.taskModule
+local buffomatModule = BomModuleManager.buffomatModule
 
 ---@class BomTaskList
 ---@field tasks table<number, BomTask> This potentially becomes a macro action on the buff bu
@@ -111,7 +112,7 @@ function taskListClass:Display()
   table.sort(self.tasks, bomCompareGroupsOrMembers)
 
   for i, text in ipairs(self.lowPrioComments) do
-    taskFrame:AddMessage(BOM.Color("aaaaaa", text))
+    taskFrame:AddMessage(buffomatModule:Color("aaaaaa", text))
   end
 
   for i, text in ipairs(self.comments) do
