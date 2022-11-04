@@ -50,9 +50,9 @@ Src/Classes/BuffDefinition.lua
 Src/Classes/Task.lua
 Src/Classes/TaskList.lua
 
-Src/Cache/GetItemCache.lua
-Src/Cache/GetSpellCache.lua
-Src/Cache/GetItemListCache.lua
+Src/Cache/ItemCache.lua
+Src/Cache/SpellCache.lua
+Src/Cache/ItemListCache.lua
 Src/Cache/UnitCache.lua
 
 Src/Ui/BuffRow.lua

@@ -8,8 +8,8 @@ local allBuffsModule = BomModuleManager.allBuffsModule
 local buffDefModule = BomModuleManager.buffDefinitionModule
 
 ---Add SHAMAN spells
----@param allBuffs BomAllBuffsTable
----@param enchants table<string, number[]>
+---@param allBuffs BomBuffDefinition[]
+---@param enchants BomEnchantmentsMapping
 function shamanModule:SetupShamanSpells(allBuffs, enchants)
   local duration = allBuffsModule.TbcOrClassic(allBuffsModule.DURATION_20M, allBuffsModule.DURATION_10M)
   local enchantmentDuration = allBuffsModule.TbcOrClassic(allBuffsModule.DURATION_30M, allBuffsModule.DURATION_5M) -- TBC: Shaman enchants become 30min

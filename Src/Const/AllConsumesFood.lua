@@ -8,8 +8,8 @@ local _t = BomModuleManager.languagesModule
 local allBuffsModule = BomModuleManager.allBuffsModule
 local buffDefModule = BomModuleManager.buffDefinitionModule
 
----@param allBuffs BomAllBuffsTable
----@param enchantments table<string, number[]>
+---@param allBuffs BomBuffDefinition[]
+---@param enchantments BomEnchantmentsMapping
 function foodModule:SetupFood(allBuffs, enchantments)
   self:_SetupCasterFoodClassic(allBuffs, enchantments)
   self:_SetupPhysicalFoodClassic(allBuffs, enchantments)
@@ -24,8 +24,8 @@ function foodModule:SetupFood(allBuffs, enchantments)
   self:_SetupMiscFoodWotLK(allBuffs, enchantments)
 end
 
----@param allBuffs BomAllBuffsTable
----@param enchantments table<string, number[]>
+---@param allBuffs BomBuffDefinition[]
+---@param enchantments BomEnchantmentsMapping
 function foodModule:_SetupMiscFoodTBC(allBuffs, enchantments)
   buffDefModule:genericConsumable(allBuffs, 33257, { 33052, 27667 }) --Well Fed +30 STA +20 SPI
                :RequireTBC()
@@ -42,8 +42,8 @@ function foodModule:_SetupMiscFoodTBC(allBuffs, enchantments)
                :Category(allBuffsModule.TBC_FOOD)
 end
 
----@param allBuffs BomAllBuffsTable
----@param enchantments table<string, number[]>
+---@param allBuffs BomBuffDefinition[]
+---@param enchantments BomEnchantmentsMapping
 function foodModule:_SetupPhysicalFoodTBC(allBuffs, enchantments)
   -- Warp Burger, Grilled Mudfish, ...
   buffDefModule:genericConsumable(allBuffs, 33261, { 27659, 30358, 27664, 33288, 33293 }) --Well Fed +20 AGI +20 SPI
@@ -73,8 +73,8 @@ function foodModule:_SetupPhysicalFoodTBC(allBuffs, enchantments)
                :Category(allBuffsModule.TBC_PHYS_FOOD)
 end
 
----@param allBuffs BomAllBuffsTable
----@param enchantments table<string, number[]>
+---@param allBuffs BomBuffDefinition[]
+---@param enchantments BomEnchantmentsMapping
 function foodModule:_SetupCasterFoodTBC(allBuffs, enchantments)
   buffDefModule:tbcConsumable(allBuffs, 33263, { 27657, 31673, 27665, 30361 }) -- Well Fed +23 SPELL +20 SPI
                :RequireTBC()
@@ -100,8 +100,8 @@ function foodModule:_SetupCasterFoodTBC(allBuffs, enchantments)
                :Category(allBuffsModule.TBC_SPELL_FOOD)
 end
 
----@param allBuffs BomAllBuffsTable
----@param enchantments table<string, number[]>
+---@param allBuffs BomBuffDefinition[]
+---@param enchantments BomEnchantmentsMapping
 function foodModule:_SetupCasterFoodClassic(allBuffs, enchantments)
   buffDefModule:genericConsumable(allBuffs, 18194, 13931) -- Nightfin Soup +8Mana/5
                :ExtraText(_t("tooltip.buff.mp5"))
@@ -120,15 +120,15 @@ function foodModule:_SetupCasterFoodClassic(allBuffs, enchantments)
                :Category(allBuffsModule.CLASSIC_SPELL_FOOD)
 end
 
----@param allBuffs BomAllBuffsTable
----@param enchantments table<string, number[]>
+---@param allBuffs BomBuffDefinition[]
+---@param enchantments BomEnchantmentsMapping
 function foodModule:_SetupMiscFoodClassic(allBuffs, enchantments)
   buffDefModule:genericConsumable(allBuffs, 25661, 21023) -- Dirge's Kickin' Chimaerok Chops x
                :Category(allBuffsModule.CLASSIC_FOOD)
 end
 
----@param allBuffs BomAllBuffsTable
----@param enchantments table<string, number[]>
+---@param allBuffs BomBuffDefinition[]
+---@param enchantments BomEnchantmentsMapping
 function foodModule:_SetupPhysicalFoodClassic(allBuffs, enchantments)
   buffDefModule:createAndRegisterBuff(allBuffs, 18192, --Grilled Squid +10 Agility
           { item = 13928, isConsumable = true, default = false })
@@ -143,8 +143,8 @@ function foodModule:_SetupPhysicalFoodClassic(allBuffs, enchantments)
                :Category(allBuffsModule.CLASSIC_PHYS_FOOD)
 end
 
----@param allBuffs BomAllBuffsTable
----@param enchantments table<string, number[]>
+---@param allBuffs BomBuffDefinition[]
+---@param enchantments BomEnchantmentsMapping
 function foodModule:_SetupCasterFoodWotLK(allBuffs, enchantments)
   buffDefModule:genericConsumable(allBuffs, 53284, 42779) -- Steaming Chicken Soup +25 Stam/25 Spi
                :RequireWotLK()
@@ -194,8 +194,8 @@ function foodModule:_SetupCasterFoodWotLK(allBuffs, enchantments)
                :Category(allBuffsModule.WOTLK_SPELL_FOOD)
 end
 
----@param allBuffs BomAllBuffsTable
----@param enchantments table<string, number[]>
+---@param allBuffs BomBuffDefinition[]
+---@param enchantments BomEnchantmentsMapping
 function foodModule:_SetupPhysicalFoodWotLK(allBuffs, enchantments)
   --
   -- Strength Food
@@ -256,8 +256,8 @@ function foodModule:_SetupPhysicalFoodWotLK(allBuffs, enchantments)
                :Category(allBuffsModule.WOTLK_PHYS_FOOD)
 end
 
----@param allBuffs BomAllBuffsTable
----@param enchantments table<string, number[]>
+---@param allBuffs BomBuffDefinition[]
+---@param enchantments BomEnchantmentsMapping
 function foodModule:_SetupMiscFoodWotLK(allBuffs, enchantments)
   --
   -- Haste Food

@@ -9,7 +9,7 @@ local allBuffsModule = BomModuleManager.allBuffsModule
 local buffDefModule = BomModuleManager.buffDefinitionModule
 
 ---FLASKS
----@param allBuffs BomAllBuffsTable A list of buffs (not dictionary)
+---@param allBuffs BomBuffDefinition[] A list of buffs (not dictionary)
 ---@param enchantments table<number, number[]> Key is spell id, value is list of enchantment ids
 function flasksModule:SetupFlasks(allBuffs, enchantments)
   self:_SetupFlasksClassic(allBuffs, enchantments)
@@ -17,7 +17,7 @@ function flasksModule:SetupFlasks(allBuffs, enchantments)
   self:_SetupFlasksWotLK(allBuffs, enchantments)
 end
 
----@param allBuffs BomAllBuffsTable A list of buffs (not dictionary)
+---@param allBuffs BomBuffDefinition[] A list of buffs (not dictionary)
 ---@param enchantments table<number, number[]> Key is spell id, value is list of enchantment ids
 function flasksModule:_SetupFlasksClassic(allBuffs, enchantments)
   buffDefModule:genericConsumable(allBuffs, 17628, 13512) --Flask of Supreme Power +70 SPELL
@@ -43,7 +43,7 @@ function flasksModule:_SetupFlasksClassic(allBuffs, enchantments)
                :ElixirType(allBuffsModule.ELIX_FLASK)
 end
 
----@param allBuffs BomAllBuffsTable A list of buffs (not dictionary)
+---@param allBuffs BomBuffDefinition[] A list of buffs (not dictionary)
 ---@param enchantments table<number, number[]> Key is spell id, value is list of enchantment ids
 function flasksModule:_SetupFlasksTBC(allBuffs, enchantments)
   buffDefModule:tbcConsumable(allBuffs, 28540, 22866) --TBC: Flask of Pure Death +80 SHADOW +80 FIRE +80 FROST
@@ -129,7 +129,7 @@ function flasksModule:_SetupFlasksTBC(allBuffs, enchantments)
                :ElixirType(allBuffsModule.ELIX_FLASK)
 end
 
----@param allBuffs BomAllBuffsTable A list of buffs (not dictionary)
+---@param allBuffs BomBuffDefinition[] A list of buffs (not dictionary)
 ---@param enchantments table<number, number[]> Key is spell id, value is list of enchantment ids
 function flasksModule:_SetupFlasksWotLK(allBuffs, enchantments)
   buffDefModule:genericConsumable(allBuffs, 53760, 46377) --WotLK: Flask of Endless Rage +180 AP

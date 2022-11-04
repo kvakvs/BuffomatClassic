@@ -1,8 +1,13 @@
 local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BomAddon
 
+---@alias BomSpellCacheKey number|string
+
+---@shape BomSpellCache
+---@field [BomSpellCacheKey] BomSpellCacheElement
+
 ---@class BomSpellCacheModule
----@field cache table<number|string, BomSpellCacheElement> Stores arg to results mapping for GetItemInfo
+---@field cache BomSpellCache Stores arg to results mapping for GetItemInfo
 local spellCacheModule = { cache = {} }
 BomModuleManager.spellCacheModule = spellCacheModule
 
@@ -34,19 +39,21 @@ function BOM.GetSpellInfo(arg)
   name = name or "MISSING NAME"
   icon = icon or "MISSING ICON"
 
-  local cacheSpell = {} ---@type BomSpellCacheElement
-  cacheSpell.name = name
-  cacheSpell.rank = rank
-  cacheSpell.icon = icon
-  cacheSpell.castTime = castTime
-  cacheSpell.minRange = minRange
-  cacheSpell.maxRange = maxRange
-  cacheSpell.spellId = spellId
+  local cacheSpell = --[[---@type BomSpellCacheElement]] {
+    name     = name,
+    rank     = rank,
+    icon     = icon,
+    castTime = castTime,
+    minRange = minRange,
+    maxRange = maxRange,
+    spellId  = spellId
+  }
 
   spellCacheModule.cache[arg] = cacheSpell
   return cacheSpell
 end
 
+---@param arg BomSpellCacheKey
 function spellCacheModule:HasSpellCached(arg)
   return self.cache[arg] ~= nil
 end
@@ -62,7 +69,7 @@ function spellCacheModule:LoadSpell(spellId, onLoaded)
 
   local spellMixin = Spell:CreateFromSpellID(spellId)
 
-  local cacheSpell = {} ---@type BomSpellCacheElement
+  local cacheSpell = --[[---@type BomSpellCacheElement]] {}
   cacheSpell.spellId = spellId
 
   local spellInfoReady_func = function()

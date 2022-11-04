@@ -9,96 +9,138 @@ local allBuffsModule = BomModuleManager.allBuffsModule
 local buffDefModule = BomModuleManager.buffDefinitionModule
 
 ---Add HUNTER spells
----@param allBuffs BomAllBuffsTable
----@param enchantments table<string, number[]>
+---@param allBuffs BomBuffDefinition[]
+---@param enchantments BomEnchantmentsMapping
 function hunterModule:SetupHunterSpells(allBuffs, enchantments)
   self:_SetupHunterSpellsTBC(allBuffs, enchantments)
   self:_SetupPetBuffs(allBuffs, enchantments)
 end
 
----@param allBuffs BomAllBuffsTable
----@param enchantments table<string, number[]>
+---@param allBuffs BomBuffDefinition[]
+---@param enchantments BomEnchantmentsMapping
 function hunterModule:_SetupHunterSpellsTBC(allBuffs, enchantments)
-  buffDefModule:createAndRegisterBuff(allBuffs, 20906, -- Trueshot Aura
-          { isOwn        = true, default = true,
-            singleFamily = { 19506, 20905, 20906, -- Trueshot Aura 1-3, WotLK: Trueshot Aura
-                             27066 }  -- TBC: Trueshot Aura 4
-          })   :RequirePlayerClass("HUNTER")
+  -- Trueshot Aura
+  buffDefModule:createAndRegisterBuff(allBuffs, 20906, nil)
+               :IsOwn(true)
+               :IsDefault(true)
+               :SingleFamily({ 19506, 20905, 20906, -- Trueshot Aura 1-3, WotLK: Trueshot Aura
+                               27066 })  -- TBC: Trueshot Aura 4
+               :RequirePlayerClass("HUNTER")
                :Category(allBuffsModule.AURA)
 
-  buffDefModule:createAndRegisterBuff(allBuffs, 25296, -- Aspect of the Hawk
-          { type         = "aura", default = true,
-            singleFamily = { 13165, 14318, 14319, 14320, 14321, 14322, 25296, -- Aspect of the Hawk 1-7
-                             27044, -- TBC: Aspect of the Hawk 8
-                             61846, 61847 } -- WotLK: Aspect of the Dragonhawk 1-2
-          })   :RequirePlayerClass("HUNTER")
-               :Category(allBuffsModule.CLASS)
-  buffDefModule:createAndRegisterBuff(allBuffs, 13163, --Aspect of the monkey
-          { type = "aura", default = false
-          })   :MaxLevel(74) -- Superceded by Aspect of the Dragonhawk
+  -- Aspect of the Hawk
+  buffDefModule:createAndRegisterBuff(allBuffs, 25296, nil)
+               :BuffType("aura")
+               :IsDefault(true)
+               :SingleFamily({ 13165, 14318, 14319, 14320, 14321, 14322, 25296, -- Aspect of the Hawk 1-7
+                               27044, -- TBC: Aspect of the Hawk 8
+                               61846, 61847 }) -- WotLK: Aspect of the Dragonhawk 1-2
                :RequirePlayerClass("HUNTER")
                :Category(allBuffsModule.CLASS)
-  buffDefModule:createAndRegisterBuff(allBuffs, 34074, -- TBC: Aspect of the Viper
-          { type = "aura", default = false
-          })   :RequirePlayerClass("HUNTER")
-               :RequireTBC()
-               :Category(allBuffsModule.CLASS)
-  buffDefModule:createAndRegisterBuff(allBuffs, 20190, -- Aspect of the Wild
-          { type         = "aura", default = false,
-            singleFamily = { 20043, 20190, -- Aspect of the Wild 1-2
-                             27045, -- TBC: Aspect of the Wild 3
-                             49071 } -- WotLK: Aspect of the Wild 4
-          })   :RequirePlayerClass("HUNTER")
-               :Category(allBuffsModule.AURA)
-  buffDefModule:createAndRegisterBuff(allBuffs, 5118, --Aspect of the Cheetah
-          { type = "aura", default = false
-          })   :RequirePlayerClass("HUNTER")
-               :Category(allBuffsModule.CLASS)
-  buffDefModule:createAndRegisterBuff(allBuffs, 13159, --Aspect of the Pack
-          { type = "aura", default = false
-          })   :RequirePlayerClass("HUNTER")
-               :Category(allBuffsModule.AURA)
-  buffDefModule:createAndRegisterBuff(allBuffs, 13161, -- Aspect of the Beast
-          { type = "aura", default = false
-          })   :RequirePlayerClass("HUNTER")
+
+  --Aspect of the monkey
+  buffDefModule:createAndRegisterBuff(allBuffs, 13163, nil)
+               :BuffType("aura")
+               :IsDefault(false)
+               :MaxLevel(74) -- Superceded by Aspect of the Dragonhawk
+               :RequirePlayerClass("HUNTER")
                :Category(allBuffsModule.CLASS)
 
-  buffDefModule:createAndRegisterBuff(allBuffs, 1494, -- Track Beast
-          { type = "tracking", default = false
-          })   :RequirePlayerClass("HUNTER")
+  -- TBC: Aspect of the Viper
+  buffDefModule:createAndRegisterBuff(allBuffs, 34074, nil)
+               :BuffType("aura")
+               :IsDefault(false)
+               :RequirePlayerClass("HUNTER")
+               :RequireTBC()
+               :Category(allBuffsModule.CLASS)
+
+  -- Aspect of the Wild
+  buffDefModule:createAndRegisterBuff(allBuffs, 20190, nil)
+               :BuffType("aura")
+               :IsDefault(false)
+               :SingleFamily({ 20043, 20190, -- Aspect of the Wild 1-2
+                               27045, -- TBC: Aspect of the Wild 3
+                               49071 }) -- WotLK: Aspect of the Wild 4
+               :RequirePlayerClass("HUNTER")
+               :Category(allBuffsModule.AURA)
+  --Aspect of the Cheetah
+  buffDefModule:createAndRegisterBuff(allBuffs, 5118, nil)
+               :BuffType("aura")
+               :IsDefault(false)
+               :RequirePlayerClass("HUNTER")
+               :Category(allBuffsModule.CLASS)
+  --Aspect of the Pack
+  buffDefModule:createAndRegisterBuff(allBuffs, 13159, nil)
+               :BuffType("aura")
+               :IsDefault(false)
+               :RequirePlayerClass("HUNTER")
+               :Category(allBuffsModule.AURA)
+  -- Aspect of the Beast
+  buffDefModule:createAndRegisterBuff(allBuffs, 13161, nil)
+               :BuffType("aura")
+               :IsDefault(false)
+               :RequirePlayerClass("HUNTER")
+               :Category(allBuffsModule.CLASS)
+
+  -- Track Beast
+  buffDefModule:createAndRegisterBuff(allBuffs, 1494, nil)
+               :BuffType("aura")
+               :IsDefault(false)
+               :RequirePlayerClass("HUNTER")
                :Category(allBuffsModule.TRACKING)
-  buffDefModule:createAndRegisterBuff(allBuffs, 19878, -- Track Demon
-          { type = "tracking", default = false
-          })   :RequirePlayerClass("HUNTER")
+
+  -- Track Demon
+  buffDefModule:createAndRegisterBuff(allBuffs, 19878, nil)
+               :BuffType("aura")
+               :IsDefault(false)
+               :RequirePlayerClass("HUNTER")
                :Category(allBuffsModule.TRACKING)
-  buffDefModule:createAndRegisterBuff(allBuffs, 19879, -- Track Dragonkin
-          { type = "tracking", default = false
-          })   :RequirePlayerClass("HUNTER")
+
+  -- Track Dragonkin
+  buffDefModule:createAndRegisterBuff(allBuffs, 19879, nil)
+               :BuffType("aura")
+               :IsDefault(false)
+               :RequirePlayerClass("HUNTER")
                :Category(allBuffsModule.TRACKING)
-  buffDefModule:createAndRegisterBuff(allBuffs, 19880, -- Track Elemental
-          { type = "tracking", default = false
-          })   :RequirePlayerClass("HUNTER")
+
+  -- Track Elemental
+  buffDefModule:createAndRegisterBuff(allBuffs, 19880, nil)
+               :BuffType("aura")
+               :IsDefault(false)
+               :RequirePlayerClass("HUNTER")
                :Category(allBuffsModule.TRACKING)
-  buffDefModule:createAndRegisterBuff(allBuffs, 19883, -- Track Humanoids
-          { type = "tracking", default = false
-          })   :RequirePlayerClass("HUNTER")
+
+  -- Track Humanoids
+  buffDefModule:createAndRegisterBuff(allBuffs, 19883, nil)
+               :BuffType("aura")
+               :IsDefault(false)
+               :RequirePlayerClass("HUNTER")
                :Category(allBuffsModule.TRACKING)
-  buffDefModule:createAndRegisterBuff(allBuffs, 19882, -- Track Giants / riesen
-          { type = "tracking", default = false
-          })   :RequirePlayerClass("HUNTER")
+
+  -- Track Giants / riesen
+  buffDefModule:createAndRegisterBuff(allBuffs, 19882, nil)
+               :BuffType("aura")
+               :IsDefault(false)
+               :RequirePlayerClass("HUNTER")
                :Category(allBuffsModule.TRACKING)
-  buffDefModule:createAndRegisterBuff(allBuffs, 19884, -- Track Undead
-          { type = "tracking", default = false
-          })   :RequirePlayerClass("HUNTER")
+
+  -- Track Undead
+  buffDefModule:createAndRegisterBuff(allBuffs, 19884, nil)
+               :BuffType("aura")
+               :IsDefault(false)
+               :RequirePlayerClass("HUNTER")
                :Category(allBuffsModule.TRACKING)
-  buffDefModule:createAndRegisterBuff(allBuffs, 19885, -- Track Hidden / verborgenes
-          { type = "tracking", default = false
-          })   :RequirePlayerClass("HUNTER")
+
+  -- Track Hidden / verborgenes
+  buffDefModule:createAndRegisterBuff(allBuffs, 19885, nil)
+               :BuffType("aura")
+               :IsDefault(false)
+               :RequirePlayerClass("HUNTER")
                :Category(allBuffsModule.TRACKING)
 end
 
----@param allBuffs BomAllBuffsTable
----@param enchantments table<string, number[]>
+---@param allBuffs BomBuffDefinition[]
+---@param enchantments BomEnchantmentsMapping
 function hunterModule:_SetupPetBuffs(allBuffs, enchantments)
   -- TODO: Do not use tbc_consumable function, add new flags for pet-buff
   buffDefModule:genericConsumable(allBuffs, 65247, 33874)

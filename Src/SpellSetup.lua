@@ -104,22 +104,22 @@ end
 ---@param add boolean
 function spellSetupModule:Setup_EachSpell_Consumable(add, spell)
   -- call results are cached if they are successful, should not be a performance hit
-  local item_info = BOM.GetItemInfo(spell.item)
+  local item_info = BOM.GetItemInfo(spell.buffCreatesItem)
 
   if not spell.isScanned and item_info then
     if (not item_info
             or not item_info.itemName
             or not item_info.itemLink
-            or not item_info.itemIcon) and buffomatModule.shared.Cache.Item2[spell.item]
+            or not item_info.itemIcon) and buffomatModule.shared.Cache.Item2[spell.buffCreatesItem]
     then
-      item_info = buffomatModule.shared.Cache.Item2[spell.item]
+      item_info = buffomatModule.shared.Cache.Item2[spell.buffCreatesItem]
 
     elseif (not item_info
             or not item_info.itemName
             or not item_info.itemLink
-            or not item_info.itemIcon) and itemCacheModule.cache[spell.item]
+            or not item_info.itemIcon) and itemCacheModule.cache[spell.buffCreatesItem]
     then
-      item_info = itemCacheModule.cache[spell.item]
+      item_info = itemCacheModule.cache[spell.buffCreatesItem]
     end
 
     if item_info
@@ -132,20 +132,20 @@ function spellSetupModule:Setup_EachSpell_Consumable(add, spell)
       spell.Icon = item_info.itemIcon
       spell.isScanned = true
 
-      buffomatModule.shared.Cache.Item2[spell.item] = item_info
+      buffomatModule.shared.Cache.Item2[spell.buffCreatesItem] = item_info
     else
       --buffomatModule:P("Item not found! Spell=" .. tostring(spell.singleId)
       --      .. " Item=" .. tostring(spell.item))
 
       -- Go delayed fetch
-      local item = Item:CreateFromItemID(spell.item)
+      local item = Item:CreateFromItemID(spell.buffCreatesItem)
       item:ContinueOnItemLoad(function()
         local name = item:GetItemName()
         local link = item:GetItemLink()
         local icon = item:GetItemIcon()
-        buffomatModule.shared.Cache.Item2[spell.item] = { itemName = name,
-                                                    itemLink = link,
-                                                    itemIcon = icon }
+        buffomatModule.shared.Cache.Item2[spell.buffCreatesItem] = { itemName = name,
+                                                                     itemLink = link,
+                                                                     itemIcon = icon }
       end)
     end
   else
@@ -153,7 +153,7 @@ function spellSetupModule:Setup_EachSpell_Consumable(add, spell)
   end
 
   if spell.items == nil then
-    spell.items = { spell.item }
+    spell.items = { spell.buffCreatesItem }
   end
 
   return add

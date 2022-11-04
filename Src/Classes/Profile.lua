@@ -40,7 +40,7 @@ local _t = BomModuleManager.languagesModule
 ---@field SlowerHardware boolean Less frequent updates
 ---@field Cache table<number, table> Caches responses from GetItemInfo() and GetSpellInfo()
 ---@field CancelBuff table|nil
----@field Spell BomBuffDefinition[]|nil
+---@field Spell BomBuffDefinition[]
 ---@field LastSeal number|nil
 ---@field LastAura number|nil
 

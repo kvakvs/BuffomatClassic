@@ -106,7 +106,7 @@ function buffRowClass:CreateInfoIcon(spell)
             nil, nil, tostring(spell.buffId) .. ".infoIcon")
 
     if spell.isConsumable then
-      BOM.Tool.TooltipLink(self.iconInfo, "item:" .. spell.item)
+      BOM.Tool.TooltipLink(self.iconInfo, "item:" .. spell.buffCreatesItem)
     else
       BOM.Tool.TooltipLink(self.iconInfo, "spell:" .. spell.singleId)
     end

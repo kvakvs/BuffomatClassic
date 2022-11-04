@@ -210,7 +210,7 @@ end
 
 local MyScanningTooltip ---@type BomLegacyControl
 
-function Tool.ScanToolTip(what, ...)
+function toolboxModule:ScanToolTip(what, ...)
   local TextList = {}
   if MyScanningTooltip == nil then
     MyScanningTooltip = CreateFrame("GameTooltip", TOCNAME .. "_MyScanningTooltip", nil, "GameTooltipTemplate") -- Tooltip name cannot be nil

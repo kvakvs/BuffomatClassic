@@ -42,7 +42,7 @@ local macroModule = BomModuleManager.macroModule
 ---@field PlayerBuffs BomBuffCollectionPerUnit
 ---@field ActivePaladinAura nil|number Spell id of aura if an unique aura was casted (only one can be active)
 ---@field ActivePaladinSeal nil|number Spell id of weapon seal, if an seal-type temporary enchant was used (only one can be active)
----@field ALL_PROFILES string[] Lists all buffomat profile names (group, solo... etc)
+---@field ALL_PROFILES BomProfileName[] Lists all buffomat profile names (group, solo... etc)
 ---@field AllBuffomatBuffs BomAllBuffsTable All spells known to Buffomat
 ---@field AllSpellIds number[]
 ---@field ArgentumDawn table Equipped AD trinket: Spell to and zone ids to check
@@ -76,7 +76,7 @@ local macroModule = BomModuleManager.macroModule
 ---@field IsWotLK boolean Whether we are running Wrath of the Lich King
 ---@field ItemCache table<number, BomItemCacheElement> Precreated precached items
 ---@field ItemId table<string, table<string, number>> Map of item name to id
----@field ItemList table<number[]> Group different ranks of item together
+---@field ItemList number[][] Group different ranks of item together
 ---@field ItemListSpell table<number, number> Map itemid to spell?
 ---@field ItemListTarget table<number, string> Remember who casted item buff on you?
 ---@field L BomLanguage The current locale @deprecated
@@ -84,7 +84,7 @@ local macroModule = BomModuleManager.macroModule
 ---@field legacyOptions BomLegacyUiOptions
 ---@field locales BomTranslationsDict (same as BOM.L)
 ---@field Macro BomMacro
----@field MANA_CLASSES string[] Classes with mana resource
+---@field MANA_CLASSES BomClass[] Classes with mana resource
 ---@field ManaLimit number Player max mana
 ---@field MinimapButton GPIMinimapButton Minimap button control
 ---@field nextCooldownDue number Set this to next spell cooldown to force update
@@ -93,7 +93,7 @@ local macroModule = BomModuleManager.macroModule
 ---@field PopupDynamic BomPopupDynamic
 ---@field QuickSingleBuff BomLegacyControl Button for single/group buff toggling next to cast button
 ---@field RepeatUpdate boolean Requests some sort of spells update similar to ForceUpdate
----@field RESURRECT_CLASS string[] Classes who can resurrect others
+---@field RESURRECT_CLASS BomClass[] Classes who can resurrect others
 ---@field ScanModifier boolean Will update buffomat when modifier key is held down
 ---@field SelectedSpells BomAllBuffsTable
 ---@field SetupAvailableSpells function

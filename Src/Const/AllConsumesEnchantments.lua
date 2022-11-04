@@ -9,7 +9,7 @@ local allBuffsModule = BomModuleManager.allBuffsModule
 local buffDefModule = BomModuleManager.buffDefinitionModule
 
 ---SCROLLS
----@param allBuffs BomAllBuffsTable A list of buffs (not dictionary)
+---@param allBuffs BomBuffDefinition[] A list of buffs (not dictionary)
 ---@param enchantments table<number, number[]> Key is spell id, value is list of enchantment ids
 function enchantmentsModule:SetupEnchantments(allBuffs, enchantments)
   self:_SetupPhysicalEnchantments(allBuffs, enchantments)
@@ -17,7 +17,7 @@ function enchantmentsModule:SetupEnchantments(allBuffs, enchantments)
   self:_SetupOtherEnchantments(allBuffs, enchantments)
 end
 
----@param allBuffs BomAllBuffsTable A list of buffs (not dictionary)
+---@param allBuffs BomBuffDefinition[] A list of buffs (not dictionary)
 ---@param enchantments table<number, number[]> Key is spell id, value is list of enchantment ids
 function enchantmentsModule:_SetupCasterEnchantments(allBuffs, enchantments)
   --if BOM.HaveTBC then
@@ -59,7 +59,7 @@ function enchantmentsModule:_SetupCasterEnchantments(allBuffs, enchantments)
   enchantments[28898] = { 2685 } --Blessed Wizard Oil
 end
 
----@param allBuffs BomAllBuffsTable A list of buffs (not dictionary)
+---@param allBuffs BomBuffDefinition[] A list of buffs (not dictionary)
 ---@param enchantments table<number, number[]> Key is spell id, value is list of enchantment ids
 function enchantmentsModule:_SetupPhysicalEnchantments(allBuffs, enchantments)
   --
@@ -130,7 +130,7 @@ function enchantmentsModule:_SetupPhysicalEnchantments(allBuffs, enchantments)
   enchantments[29453] = { 2713 } --TBC: Adamantite Sharpening Stone (Sharpened +14 Crit, +12)
 end
 
----@param allBuffs BomAllBuffsTable A list of buffs (not dictionary)
+---@param allBuffs BomBuffDefinition[] A list of buffs (not dictionary)
 ---@param enchantments table<number, number[]> Key is spell id, value is list of enchantment ids
 function enchantmentsModule:_SetupOtherEnchantments(allBuffs, enchantments)
   -- Rune of Warding

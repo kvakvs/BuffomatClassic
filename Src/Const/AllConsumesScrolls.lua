@@ -9,7 +9,7 @@ local allBuffsModule = BomModuleManager.allBuffsModule
 local buffDefModule = BomModuleManager.buffDefinitionModule
 
 ---SCROLLS
----@param allBuffs BomAllBuffsTable A list of buffs (not dictionary)
+---@param allBuffs BomBuffDefinition[] A list of buffs (not dictionary)
 ---@param enchantments table<number, number[]> Key is spell id, value is list of enchantment ids
 function scrollsModule:SetupScrolls(allBuffs, enchantments)
   self:_SetupScrollsAgility(allBuffs, enchantments)
@@ -27,7 +27,7 @@ function scrollsModule:AddScroll(buffs, buffSpellId, itemId)
           })          :Category(allBuffsModule.SCROLL)
 end
 
----@param allBuffs BomAllBuffsTable A list of buffs (not dictionary)
+---@param allBuffs BomBuffDefinition[] A list of buffs (not dictionary)
 ---@param enchantments table<number, number[]> Key is spell id, value is list of enchantment ids
 function scrollsModule:_SetupScrollsAgility(allBuffs, enchantments)
   --
@@ -59,7 +59,7 @@ function scrollsModule:_SetupScrollsAgility(allBuffs, enchantments)
       :RequirePlayerClass(allBuffsModule.PHYSICAL_CLASSES)
 end
 
----@param allBuffs BomAllBuffsTable A list of buffs (not dictionary)
+---@param allBuffs BomBuffDefinition[] A list of buffs (not dictionary)
 ---@param enchantments table<number, number[]> Key is spell id, value is list of enchantment ids
 function scrollsModule:_SetupScrollsStrength(allBuffs, enchantments)
   --
@@ -91,7 +91,7 @@ function scrollsModule:_SetupScrollsStrength(allBuffs, enchantments)
       :RequirePlayerClass(allBuffsModule.MELEE_CLASSES)
 end
 
----@param allBuffs BomAllBuffsTable A list of buffs (not dictionary)
+---@param allBuffs BomBuffDefinition[] A list of buffs (not dictionary)
 ---@param enchantments table<number, number[]> Key is spell id, value is list of enchantment ids
 function scrollsModule:_SetupScrollsProtection(allBuffs, enchantments)
   --
@@ -115,7 +115,7 @@ function scrollsModule:_SetupScrollsProtection(allBuffs, enchantments)
   self:AddScroll(allBuffs, 12175, 10305) -- Scroll of Protection 4
 end
 
----@param allBuffs BomAllBuffsTable A list of buffs (not dictionary)
+---@param allBuffs BomBuffDefinition[] A list of buffs (not dictionary)
 ---@param enchantments table<number, number[]> Key is spell id, value is list of enchantment ids
 function scrollsModule:_SetupScrollsSpirit(allBuffs, enchantments)
   --
@@ -144,7 +144,7 @@ function scrollsModule:_SetupScrollsSpirit(allBuffs, enchantments)
       :RequirePlayerClass(allBuffsModule.MANA_CLASSES)
 end
 
----@param allBuffs BomAllBuffsTable A list of buffs (not dictionary)
+---@param allBuffs BomBuffDefinition[] A list of buffs (not dictionary)
 ---@param enchantments table<number, number[]> Key is spell id, value is list of enchantment ids
 function scrollsModule:_SetupScrollsIntellect(allBuffs, enchantments)
   --
@@ -168,7 +168,7 @@ function scrollsModule:_SetupScrollsIntellect(allBuffs, enchantments)
       :RequireTBC()
 end
 
----@param allBuffs BomAllBuffsTable A list of buffs (not dictionary)
+---@param allBuffs BomBuffDefinition[] A list of buffs (not dictionary)
 ---@param enchantments table<number, number[]> Key is spell id, value is list of enchantment ids
 function scrollsModule:_SetupInscriptionScrolls(allBuffs, enchantments)
   -- TODO: Brilliance scroll

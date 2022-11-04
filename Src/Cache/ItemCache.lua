@@ -1,8 +1,13 @@
 local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BomAddon
 
+---@alias BomItemCacheKey number|string
+
+---@shape BomItemCache
+---@field [BomItemCacheKey] BomItemCacheElement
+
 ---@class BomItemCacheModule
----@field cache table<number|string, BomItemCacheElement> Stores arg to results mapping for GetItemInfo
+---@field cache BomItemCache Stores arg to results mapping for GetItemInfo
 local itemCacheModule = {
   cache = {}
 }
@@ -37,24 +42,26 @@ function BOM.GetItemInfo(arg)
     return nil
   end
 
-  local cacheItem = {} ---@type BomItemCacheElement
-  cacheItem.itemName = itemName
-  cacheItem.itemLink = itemLink
-  cacheItem.itemRarity = itemRarity
-  cacheItem.itemLevel = itemLevel
-  cacheItem.itemMinLevel = itemMinLevel
-  cacheItem.itemType = itemType
-  cacheItem.itemSubType = itemSubType
-  cacheItem.itemStackCount = itemStackCount
-  cacheItem.itemEquipLoc = itemEquipLoc
-  cacheItem.itemTexture = itemTexture
-  cacheItem.itemSellPrice = itemSellPrice
+  local cacheItem = --[[---@type BomItemCacheElement]] {
+    itemName       = itemName,
+    itemLink       = itemLink,
+    itemRarity     = itemRarity,
+    itemLevel      = itemLevel,
+    itemMinLevel   = itemMinLevel,
+    itemType       = itemType,
+    itemSubType    = itemSubType,
+    itemStackCount = itemStackCount,
+    itemEquipLoc   = itemEquipLoc,
+    itemTexture    = itemTexture,
+    itemSellPrice  = itemSellPrice,
+  }
 
   --print("Added to cache item info for ", arg)
   itemCacheModule.cache[arg] = cacheItem
   return cacheItem
 end
 
+---@param arg BomItemCacheKey
 function itemCacheModule:HasItemCached(arg)
   return self.cache[arg] ~= nil
 end
@@ -76,18 +83,19 @@ function itemCacheModule:LoadItem(itemId, onLoaded)
       return
     end
 
-    local cacheItem = {} ---@type BomItemCacheElement
-    cacheItem.itemName = itemMixin:GetItemName()
-    cacheItem.itemLink = itemMixin:GetItemLink()
-    cacheItem.itemRarity = itemMixin:GetItemQuality()
-    cacheItem.itemLevel = itemLevel
-    cacheItem.itemMinLevel = itemMinLevel
-    cacheItem.itemType = itemType
-    cacheItem.itemSubType = itemSubType
-    cacheItem.itemStackCount = itemStackCount
-    cacheItem.itemEquipLoc = itemEquipLoc
-    cacheItem.itemTexture = itemMixin:GetItemIcon()
-    cacheItem.itemSellPrice = itemSellPrice
+    local cacheItem = --[[---@type BomItemCacheElement]] {
+      itemName       = itemMixin:GetItemName(),
+      itemLink       = itemMixin:GetItemLink(),
+      itemRarity     = itemMixin:GetItemQuality(),
+      itemLevel      = itemLevel,
+      itemMinLevel   = itemMinLevel,
+      itemType       = itemType,
+      itemSubType    = itemSubType,
+      itemStackCount = itemStackCount,
+      itemEquipLoc   = itemEquipLoc,
+      itemTexture    = itemMixin:GetItemIcon(),
+      itemSellPrice  = itemSellPrice,
+    }
 
     itemCacheModule.cache[itemId] = cacheItem
     buffomatModule:SetForceUpdate(string.format("item%d", itemId))

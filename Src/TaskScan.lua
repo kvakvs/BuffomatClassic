@@ -541,8 +541,8 @@ function taskScanModule:ActivateSelectedTracking()
   for i, spell in ipairs(BOM.SelectedSpells) do
     if spell.type == "tracking" then
       if buffDefModule:IsBuffEnabled(spell.buffId) then
-        if spell.needForm ~= nil then
-          if GetShapeshiftFormID() == spell.needForm
+        if spell.requiresForm ~= nil then
+          if GetShapeshiftFormID() == spell.requiresForm
                   and BOM.ForceTracking ~= spell.trackingIconId then
             BOM.ForceTracking = spell.trackingIconId
             spellButtonsTabModule:UpdateSpellsTab("ForceUp1")
@@ -664,7 +664,7 @@ end
 function taskScanModule:CancelBuffs(playerUnit)
   for i, spell in ipairs(BOM.CancelBuffs) do
     if buffomatModule.currentProfile.CancelBuff[spell.buffId].Enable
-            and not spell.OnlyCombat
+            and not spell.onlyCombat
     then
       local player_buff = playerUnit.knownBuffs[spell.buffId]
 

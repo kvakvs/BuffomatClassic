@@ -9,7 +9,7 @@ local allBuffsModule = BomModuleManager.allBuffsModule
 local buffDefModule = BomModuleManager.buffDefinitionModule
 
 ---ELIXIRS
----@param allBuffs BomAllBuffsTable A list of buffs (not dictionary)
+---@param allBuffs BomBuffDefinition[] A list of buffs (not dictionary)
 ---@param enchantments table<number, number[]> Key is spell id, value is list of enchantment ids
 function elixirsModule:SetupElixirs(allBuffs, enchantments)
   self:_SetupBattleCasterElixirsClassic(allBuffs, enchantments)
@@ -26,7 +26,7 @@ function elixirsModule:SetupElixirs(allBuffs, enchantments)
   self:_SetupGuardianElixirsWotLK(allBuffs, enchantments)
 end
 
----@param allBuffs BomAllBuffsTable A list of buffs (not dictionary)
+---@param allBuffs BomBuffDefinition[] A list of buffs (not dictionary)
 ---@param enchantments table<number, number[]> Key is spell id, value is list of enchantment ids
 function elixirsModule:_SetupBattleCasterElixirsTBC(allBuffs, enchantments)
   buffDefModule:genericConsumable(allBuffs, 28509, 22840) --TBC: Elixir of Major Mageblood +16 mp5
@@ -60,7 +60,7 @@ function elixirsModule:_SetupBattleCasterElixirsTBC(allBuffs, enchantments)
                :ElixirType(allBuffsModule.ELIX_BATTLE)
 end
 
----@param allBuffs BomAllBuffsTable A list of buffs (not dictionary)
+---@param allBuffs BomBuffDefinition[] A list of buffs (not dictionary)
 ---@param enchantments table<number, number[]> Key is spell id, value is list of enchantment ids
 function elixirsModule:_SetupBattleCasterElixirsClassic(allBuffs, enchantments)
   buffDefModule:genericConsumable(allBuffs, 17539, 13454) --Greater Arcane Elixir
@@ -85,7 +85,7 @@ function elixirsModule:_SetupBattleCasterElixirsClassic(allBuffs, enchantments)
                :ElixirType(allBuffsModule.ELIX_BATTLE)
 end
 
----@param allBuffs BomAllBuffsTable A list of buffs (not dictionary)
+---@param allBuffs BomBuffDefinition[] A list of buffs (not dictionary)
 ---@param enchantments table<number, number[]> Key is spell id, value is list of enchantment ids
 function elixirsModule:_SetupBattlePhysicalElixirsClassic(allBuffs, enchantments)
   buffDefModule:createAndRegisterBuff(allBuffs, 17538, --Elixir of the Mongoose
@@ -105,7 +105,7 @@ function elixirsModule:_SetupBattlePhysicalElixirsClassic(allBuffs, enchantments
                :ElixirType(allBuffsModule.ELIX_BATTLE)
 end
 
----@param allBuffs BomAllBuffsTable A list of buffs (not dictionary)
+---@param allBuffs BomBuffDefinition[] A list of buffs (not dictionary)
 ---@param enchantments table<number, number[]> Key is spell id, value is list of enchantment ids
 function elixirsModule:_SetupBattlePhysicalElixirsTBC(allBuffs, enchantments)
   buffDefModule:createAndRegisterBuff(allBuffs, 28497, --TBC: Elixir of Major Agility +35 AGI +20 CRIT
@@ -134,7 +134,7 @@ function elixirsModule:_SetupBattlePhysicalElixirsTBC(allBuffs, enchantments)
                :ElixirType(allBuffsModule.ELIX_BATTLE)
 end
 
----@param allBuffs BomAllBuffsTable A list of buffs (not dictionary)
+---@param allBuffs BomBuffDefinition[] A list of buffs (not dictionary)
 ---@param enchantments table<number, number[]> Key is spell id, value is list of enchantment ids
 function elixirsModule:_SetupBattleCasterElixirsWotLK(allBuffs, enchantments)
   buffDefModule:genericConsumable(allBuffs, 33721, 40070) -- WotLK: Spellpower Elixir +58 SPELL
@@ -144,7 +144,7 @@ function elixirsModule:_SetupBattleCasterElixirsWotLK(allBuffs, enchantments)
                :ElixirType(allBuffsModule.ELIX_BATTLE)
 end
 
----@param allBuffs BomAllBuffsTable A list of buffs (not dictionary)
+---@param allBuffs BomBuffDefinition[] A list of buffs (not dictionary)
 ---@param enchantments table<number, number[]> Key is spell id, value is list of enchantment ids
 function elixirsModule:_SetupBattlePhysicalElixirsWotLK(allBuffs, enchantments)
   buffDefModule:genericConsumable(allBuffs, 60344, 44329) -- WotLK: Elixir of Expertise +45
@@ -179,7 +179,7 @@ function elixirsModule:_SetupBattlePhysicalElixirsWotLK(allBuffs, enchantments)
                :ElixirType(allBuffsModule.ELIX_BATTLE)
 end
 
----@param allBuffs BomAllBuffsTable A list of buffs (not dictionary)
+---@param allBuffs BomBuffDefinition[] A list of buffs (not dictionary)
 ---@param enchantments table<number, number[]> Key is spell id, value is list of enchantment ids
 function elixirsModule:_SetupGuardianElixirsTBC(allBuffs, enchantments)
   buffDefModule:genericConsumable(allBuffs, 39627, 32067) --TBC: Elixir of Draenic Wisdom +30 SPI
@@ -219,7 +219,7 @@ function elixirsModule:_SetupGuardianElixirsTBC(allBuffs, enchantments)
                :ElixirType(allBuffsModule.ELIX_GUARDIAN)
 end
 
----@param allBuffs BomAllBuffsTable A list of buffs (not dictionary)
+---@param allBuffs BomBuffDefinition[] A list of buffs (not dictionary)
 ---@param enchantments table<number, number[]> Key is spell id, value is list of enchantment ids
 function elixirsModule:_SetupGuardianElixirsClassic(allBuffs, enchantments)
   buffDefModule:genericConsumable(allBuffs, 24363, 20007) -- Mageblood Potion
@@ -294,7 +294,7 @@ function elixirsModule:_SetupGuardianElixirsClassic(allBuffs, enchantments)
   end
 end
 
----@param allBuffs BomAllBuffsTable A list of buffs (not dictionary)
+---@param allBuffs BomBuffDefinition[] A list of buffs (not dictionary)
 ---@param enchantments table<number, number[]> Key is spell id, value is list of enchantment ids
 function elixirsModule:_SetupGuardianElixirsWotLK(allBuffs, enchantments)
   buffDefModule:genericConsumable(allBuffs, 53747, 40072, nil) --WotLK: Elixir of Spirit +50
@@ -325,7 +325,7 @@ function elixirsModule:_SetupGuardianElixirsWotLK(allBuffs, enchantments)
                :ElixirType(allBuffsModule.ELIX_GUARDIAN)
 end
 
----@param allBuffs BomAllBuffsTable A list of buffs (not dictionary)
+---@param allBuffs BomBuffDefinition[] A list of buffs (not dictionary)
 ---@param enchantments table<number, number[]> Key is spell id, value is list of enchantment ids
 function elixirsModule:_SetupBattleElixirsWotLK(allBuffs, enchantments)
   buffDefModule:genericConsumable(allBuffs, 53749, 40076) --WotLK: Guru's Elixir +20 All Stats

@@ -125,7 +125,7 @@ function spellButtonsTabModule:AddSpellCancelRow(spell, rowBuilder)
           spell.frames.cancelBuffLabel,
           BomC_SpellTab_Scroll_Child,
           function(ctrl)
-            if spell.OnlyCombat then
+            if spell.onlyCombat then
               ctrl:SetText(_t("HintCancelThisBuff") .. ": " .. _t("HintCancelThisBuff_Combat"))
             else
               ctrl:SetText(_t("HintCancelThisBuff") .. ": " .. _t("HintCancelThisBuff_Always"))
@@ -231,7 +231,7 @@ function spellButtonsTabModule:AddSpellRow(rowBuilder, playerIsHorde, spell, pla
   if (spell.type == "tracking"
           or spell.type == "aura"
           or spell.type == "seal")
-          and spell.needForm == nil then
+          and spell.requiresForm == nil then
     local statusImage = spell.frames:CreateStatusCheckboxImage(spell)
     statusImage:SetPoint("TOPLEFT", infoIcon, "TOPRIGHT", rowBuilder.dx, 0)
     rowBuilder:SpaceToTheRight(statusImage, 7)
@@ -568,7 +568,7 @@ function spellButtonsTabModule:UpdateSelectedSpell(spell)
 
   if (spell.type == "tracking"
           or spell.type == "aura"
-          or spell.type == "seal") and spell.needForm == nil
+          or spell.type == "seal") and spell.requiresForm == nil
   then
     if (spell.type == "tracking" and buffomatModule.character.LastTracking == spell.trackingIconId) or
             (spell.type == "aura" and spell.buffId == buffomatModule.currentProfile.LastAura) or

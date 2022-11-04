@@ -1,10 +1,13 @@
 local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BomAddon
 
+---@alias BomBuffCategory string
+
 ---@class BomAllBuffsModule
----@field buffCategories table<number, string> Category names for buffs
----@field allBuffs table<number, BomBuffDefinition> All buffs, same as BOM.AllBuffomatSpells for convenience
+---@field buffCategories BomBuffCategory[] Category names for buffs
+---@field allBuffs {[BomBuffId] BomBuffDefinition} All buffs, same as BOM.AllBuffomatSpells for convenience
 local allBuffsModule = {}
+
 BomModuleManager.allBuffsModule = allBuffsModule
 
 local _t = BomModuleManager.languagesModule
@@ -29,76 +32,71 @@ local spellIdsModule = BomModuleManager.spellIdsModule
 local warlockModule = BomModuleManager.allSpellsWarlockModule
 local warriorModule = BomModuleManager.allSpellsWarriorModule
 
----@deprecated
-local L = setmetatable(
-        {},
-        {
-          __index = function(_t, k)
-            if BOM.L and BOM.L[k] then
-              return BOM.L[k]
-            else
-              return "[" .. k .. "]"
-            end
-          end
-        })
+-----@deprecated
+--local L = setmetatable(
+--        {},
+--        {
+--          __index = function(_t, k)
+--            if BOM.L and BOM.L[k] then
+--              return BOM.L[k]
+--            else
+--              return "[" .. k .. "]"
+--            end
+--          end
+--        })
+
+---@alias BomClass "WARRIOR"|"MAGE"|"ROGUE"|"DRUID"|"HUNTER"|"PRIEST"|"WARLOCK"|"SHAMAN"|"PALADIN"|"DEATHKNIGHT"
 
 local BOM_ALL_CLASSES = { "WARRIOR", "MAGE", "ROGUE", "DRUID", "HUNTER", "PRIEST", "WARLOCK",
-                          "SHAMAN", "PALADIN", "DEATHKNIGHT" }
-local BOM_NO_CLASS = { }
+                          "SHAMAN", "PALADIN", "DEATHKNIGHT" } ---@type BomClass[]
+local BOM_NO_CLASS = { } ---@type BomClass[]
 allBuffsModule.BOM_ALL_CLASSES = BOM_ALL_CLASSES
 allBuffsModule.BOM_NO_CLASSES = BOM_NO_CLASS
 
 ---Classes which have a resurrection ability
----@type string[]
+---@type BomClass[]
 local RESURRECT_CLASSES = { "SHAMAN", "PRIEST", "PALADIN", "DRUID" } -- Druid in WotLK
 BOM.RESURRECT_CLASS = RESURRECT_CLASSES --used in TaskScan.lua
 allBuffsModule.RESURRECT_CLASSES = RESURRECT_CLASSES
 
 --- Classes which have mana bar and benefit from mp/5 and spirit
----@type string[]
+---@type BomClass[]
 local MANA_CLASSES = { "HUNTER", "WARLOCK", "MAGE", "DRUID", "SHAMAN", "PRIEST", "PALADIN" }
 BOM.MANA_CLASSES = MANA_CLASSES --used in TaskScan.lua
 allBuffsModule.MANA_CLASSES = MANA_CLASSES
 
 --- Classes which deal spell damage
----@type string[]
+---@type BomClass[]
 allBuffsModule.SPELL_CLASSES = { "WARLOCK", "MAGE", "DRUID", "SHAMAN", "PRIEST", "PALADIN", "DEATHKNIGHT", "HUNTER" }
 
 --- Classes which hit with weapons or claws
----@type string[]
+---@type BomClass[]
 allBuffsModule.MELEE_CLASSES = { "WARRIOR", "ROGUE", "DRUID", "SHAMAN", "PALADIN", "DEATHKNIGHT" }
 
 --- Classes capable of dealing shadow damage
----@type string[]
+---@type BomClass[]
 allBuffsModule.SHADOW_CLASSES = { "PRIEST", "WARLOCK", "DEATHKNIGHT" }
 
 --- Classes capable of dealing fire damage
----@type string[]
+---@type BomClass[]
 allBuffsModule.FIRE_CLASSES = { "MAGE", "WARLOCK", "SHAMAN", "HUNTER" }
 
 --- Classes capable of dealing frost damage
----@type string[]
+---@type BomClass[]
 allBuffsModule.FROST_CLASSES = { "MAGE", "SHAMAN", "DEATHKNIGHT" }
 
 --- Classes dealing physical ranged or melee damage
----@type string[]
+---@type BomClass[]
 allBuffsModule.PHYSICAL_CLASSES = { "HUNTER", "ROGUE", "SHAMAN", "WARRIOR", "DRUID", "PALADIN", "DEATHKNIGHT" }
 
-local DURATION_1H = 3600
-local DURATION_30M = 1800
-local DURATION_20M = 1200
-local DURATION_15M = 900
-local DURATION_10M = 600
-local DURATION_5M = 300
-local DURATION_2M = 120
-
-allBuffsModule.DURATION_1H = DURATION_1H
-allBuffsModule.DURATION_30M = DURATION_30M
-allBuffsModule.DURATION_20M = DURATION_20M
-allBuffsModule.DURATION_15M = DURATION_15M
-allBuffsModule.DURATION_10M = DURATION_10M
-allBuffsModule.DURATION_5M = DURATION_5M
-allBuffsModule.DURATION_2M = DURATION_2M
+allBuffsModule.DURATION_1M = 60
+allBuffsModule.DURATION_2M = allBuffsModule.DURATION_1M * 2
+allBuffsModule.DURATION_5M = allBuffsModule.DURATION_1M * 5
+allBuffsModule.DURATION_10M = allBuffsModule.DURATION_5M * 10
+allBuffsModule.DURATION_15M = allBuffsModule.DURATION_1M * 15
+allBuffsModule.DURATION_20M = allBuffsModule.DURATION_1M * 20
+allBuffsModule.DURATION_30M = allBuffsModule.DURATION_1M * 30
+allBuffsModule.DURATION_1H = allBuffsModule.DURATION_1M * 60
 
 --- From 2 choices return TBC if BOM.IsTBC is true, otherwise return classic
 local function tbcOrClassic(tbc, classic)
@@ -121,8 +119,8 @@ function allBuffsModule.ExpansionChoice(classic, tbc, wotlk)
 end
 
 ---Add RESOURCE TRACKING spells
----@param allBuffs BomAllBuffsTable
----@param enchantments table<string, number[]>
+---@param allBuffs BomBuffDefinition[]
+---@param enchantments BomEnchantmentsMapping
 function allBuffsModule:SetupTrackingSpells(allBuffs, enchantments)
   buffDefModule:createAndRegisterBuff(allBuffs, spellIdsModule.FindHerbs, -- Find Herbs / kräuter
           { type = "tracking", default = true })
@@ -210,7 +208,7 @@ function allBuffsModule:SetupConstantsCategories()
 
     self.SCROLL, self.WEAPON_ENCHANTMENT,
 
-    false, -- special value no category
+    "", -- special value no category
   }
 end
 
@@ -232,26 +230,29 @@ function allBuffsModule:SetupConstants()
 end
 
 --- Filter away the 'false' element and return only keys, values become the translation strings
+---@return {[string] string}
 function allBuffsModule:GetBuffCategories()
   local result = {}
   for _i, cat in ipairs(self.buffCategories) do
     if type(cat) == "string" then
-      result[cat] = _t("Category_" .. cat)
+      result[--[[---@type string]]cat] = _t("Category_" .. cat)
     end
   end
   return result
 end
 
 ---Filter the input `allbuffs` if the limitations check returns true
----@param allBuffs BomAllBuffsTable Input list of all buffs
----@return table<number, BomBuffDefinition> Filtered list
+---@param allBuffs BomBuffDefinition[] Input list of all buffs
+---@return BomBuffDefinition[] Filtered list
 function allBuffsModule:ApplyPostLimitations(allBuffs)
   -- Apply post-limitations (added with :Limitation() functions on spell construction)
   local result = {}
 
   for _i, buff in ipairs(allBuffs) do
-    if buffDefModule:CheckLimitations(buff, buff.limitations) then
-      tinsert(result, buff)
+    if buff.limitations ~= nil then
+      if buffDefModule:CheckLimitations(buff, buff.limitations) then
+        tinsert(result, buff)
+      end
     end
     buff.limitations = nil -- do not need to store this
   end
@@ -259,14 +260,19 @@ function allBuffsModule:ApplyPostLimitations(allBuffs)
   return result
 end
 
----@alias BomAllBuffsTable table<number, BomBuffDefinition>
+---@alias BomBuffId number
+---@alias BomEnchantmentId number
+
+---@alias BomAllBuffsTable {[BomBuffId] BomBuffDefinition}
+
+---@alias BomEnchantmentsMapping {[BomSpellId] BomEnchantmentId[]}
 
 ---All spells known to Buffomat
 ---Note: you can add your own spell in the "WTF\Account\<accountname>\SavedVariables\buffOmat.lua"
 ---table CustomSpells
 function allBuffsModule:SetupSpells()
-  local allBuffs = {} ---@type BomAllBuffsTable
-  local enchantments = {} ---@type table<number, number[]>
+  local allBuffs = --[[---@type BomBuffDefinition[] ]] {}
+  local enchantments = --[[---@type BomEnchantmentsMapping]] {}
   self:SetupConstants()
 
   priestModule:SetupPriestSpells(allBuffs, enchantments)
@@ -371,18 +377,18 @@ BOM.ItemListSpell = {
 }
 BOM.ItemListTarget = {}
 
----@return table<number, BomBuffDefinition>
+-- -@return table<number, BomBuffDefinition>
 function allBuffsModule:SetupCancelBuffs()
   -- Note: you can add your own spell in the "WTF\Account\<accountname>\SavedVariables\buffOmat.lua"
   -- table CustomCancelBuff
-  local spirit = BOM.SpellDef_PrayerOfSpirit()
+  local spirit = priestModule:CreatePrayerOfSpiritBuff()
   spirit.default = false
 
-  local intelli = BOM.SpellDef_ArcaneIntelligence()
+  local intelli = mageModule:CreateIntelligenceBuff()
   intelli.default = false
 
   local s = {
-    BOM.SpellDef_PW_Shield(),
+    priestModule:CreatePowerWordShieldBuff(),
     spirit,
     intelli,
   }
@@ -390,13 +396,18 @@ function allBuffsModule:SetupCancelBuffs()
   do
     local _, class, _ = UnitClass("unit")
     if class == "HUNTER" then
-      tinsert(s, buffDefModule:New(5118, --Aspect of the Cheetah/of the pack
-              { OnlyCombat = true, default = true, singleFamily = { 5118, 13159 } }))
+      local buff = buffDefModule:New(5118)--Aspect of the Cheetah/of the pack
+                                :OnlyCombat(true)
+                                :IsDefault(true)
+                                :SingleFamily({ 5118, 13159 })
+      tinsert(s, buff)
     end
 
     if (UnitFactionGroup("player")) ~= "Horde" or BOM.IsTBC then
-      tinsert(s, buffDefModule:New(1038, --Blessing of Salvation
-              { default = false, singleFamily = { 1038, 25895 } }))
+      local buff = buffDefModule:New(1038) --Blessing of Salvation
+                                :IsDefault(false)
+                                :SingleFamily({ 1038, 25895 })
+      tinsert(s, buff)
     end
   end
 
@@ -441,8 +452,8 @@ function allBuffsModule:LoadItemsAndSpells()
       for _index, itemId in ipairs(buffDef.items) do
         itemCacheModule:LoadItem(itemId)
       end
-    elseif type(buffDef.item) == "number" then
-      itemCacheModule:LoadItem(buffDef.item)
+    elseif type(buffDef.buffCreatesItem) == "number" then
+      itemCacheModule:LoadItem(buffDef.buffCreatesItem)
     end
   end
 end

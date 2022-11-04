@@ -6,35 +6,28 @@ local BOM = BuffomatAddon ---@type BomAddon
 local itemIdsModule = {}
 BomModuleManager.itemIdsModule = itemIdsModule
 
-BOM.ItemId = {}
+itemIdsModule.Deathknight_CorpseDust = 37201
 
-BOM.Item_Deathknight_CorpseDust = 37201
+itemIdsModule.Mage_ManaSapphire = 33312
+itemIdsModule.Mage_ManaEmerald = 22044
+itemIdsModule.Mage_ManaRuby = 8008
+itemIdsModule.Mage_ManaCitrine = 8007
+itemIdsModule.Mage_ManaJade = 5513
+itemIdsModule.Mage_ManaAgate = 5514
 
-BOM.ItemId.Mage = {}
+itemIdsModule.Warlock_SoulShard = 6265
+itemIdsModule.Warlock_Spellstone1 = 41191
+itemIdsModule.Warlock_Spellstone2 = 41192
+itemIdsModule.Warlock_Spellstone3 = 41193
+itemIdsModule.Warlock_Spellstone4 = 41194
+itemIdsModule.Warlock_Spellstone5 = 41195
+itemIdsModule.Warlock_Spellstone6 = 41196
+itemIdsModule.Warlock_Firestone1 = 41170
+itemIdsModule.Warlock_Firestone2 = 41169
+itemIdsModule.Warlock_Firestone3 = 41171
+itemIdsModule.Warlock_Firestone4 = 41172
+itemIdsModule.Warlock_Firestone5 = 40773
+itemIdsModule.Warlock_Firestone6 = 41173
+itemIdsModule.Warlock_Firestone7 = 41174
 
-BOM.ItemId.Mage.ManaSapphire = 33312
-BOM.ItemId.Mage.ManaEmerald = 22044
-BOM.ItemId.Mage.ManaRuby = 8008
-BOM.ItemId.Mage.ManaCitrine = 8007
-BOM.ItemId.Mage.ManaJade = 5513
-BOM.ItemId.Mage.ManaAgate = 5514
-
-BOM.ItemId.Warlock = {}
-BOM.ItemId.Warlock.SoulShard = 6265
-BOM.ItemId.Warlock.Spellstone1 = 41191
-BOM.ItemId.Warlock.Spellstone2 = 41192
-BOM.ItemId.Warlock.Spellstone3 = 41193
-BOM.ItemId.Warlock.Spellstone4 = 41194
-BOM.ItemId.Warlock.Spellstone5 = 41195
-BOM.ItemId.Warlock.Spellstone6 = 41196
-BOM.ItemId.Warlock.Firestone1 = 41170
-BOM.ItemId.Warlock.Firestone2 = 41169
-BOM.ItemId.Warlock.Firestone3 = 41171
-BOM.ItemId.Warlock.Firestone4 = 41172
-BOM.ItemId.Warlock.Firestone5 = 40773
-BOM.ItemId.Warlock.Firestone6 = 41173
-BOM.ItemId.Warlock.Firestone7 = 41174
-
-
-BOM.ItemId.Paladin = {}
-BOM.ItemId.Paladin.SymbolOfKings = 21177
+itemIdsModule.Paladin_SymbolOfKings = 21177

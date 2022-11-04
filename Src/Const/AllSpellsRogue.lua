@@ -9,8 +9,8 @@ local allBuffsModule = BomModuleManager.allBuffsModule
 local buffDefModule = BomModuleManager.buffDefinitionModule
 
 ---Add ROGUE spells
----@param allBuffs BomAllBuffsTable
----@param enchants table<string, number[]>
+---@param allBuffs BomBuffDefinition[]
+---@param enchants BomEnchantmentsMapping
 function rogueModule:SetupRogueSpells(allBuffs, enchants)
   local duration = allBuffsModule.TbcOrClassic(allBuffsModule.DURATION_1H, allBuffsModule.DURATION_30M) -- TBC: Poisons become 1 hour
 
