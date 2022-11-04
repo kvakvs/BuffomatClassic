@@ -1,102 +1,138 @@
 local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BomAddon
 
----@class BomTexturesModule
+---@shape BomTexturesModule
+---@field CLASS_ICONS_ATLAS string
+---@field CLASS_ICONS_ATLAS_TEX_COORD string
+---@field ICON_BUFF_OFF string
+---@field ICON_BUFF_ON string
+---@field ICON_CHECKED string
+---@field ICON_CHECKED_OFF string
+---@field ICON_DISABLED string
+---@field ICON_EMPTY string
+---@field ICON_GEAR string
+---@field ICON_GEAR string
+---@field ICON_GROUP string
+---@field ICON_GROUP_ITEM string
+---@field ICON_GROUP_NONE string
+---@field ICON_OPT_DISABLED string
+---@field ICON_OPT_ENABLED string
+---@field ICON_PET string
+---@field ICON_PET string
+---@field ICON_PET_COORD number[]
+---@field ICON_SELF_CAST_OFF string
+---@field ICON_SELF_CAST_ON string
+---@field ICON_SETTING_OFF string
+---@field ICON_SETTING_ON string
+---@field ICON_TANK string
+---@field ICON_TANK_COORD number[]
+---@field ICON_TARGET_EXCLUDE string
+---@field ICON_TARGET_OFF string
+---@field ICON_TARGET_ON string
+---@field ICON_WHISPER_OFF string
+---@field ICON_WHISPER_ON string
+---@field ICON_COORD_09 number[]
+---@field ICON_COORD_08 number[]
 local texturesModule = {}
 BomModuleManager.texturesModule = texturesModule
 
-BOM.ICON_OPT_ENABLED = "Interface\\Buttons\\UI-CheckBox-Check"
-BOM.ICON_OPT_DISABLED = "Interface\\Buttons\\UI-CheckBox-Up"
+texturesModule.ICON_COORD_09 = { 0.1, 0.9, 0.1, 0.9 }
+texturesModule.ICON_COORD_08 = { 0.2, 0.8, 0.2, 0.8 }
 
-BOM.ICON_SELF_CAST_ON = "Interface\\FriendsFrame\\UI-Toast-FriendOnlineIcon"
-BOM.ICON_SELF_CAST_OFF = "Interface\\FriendsFrame\\UI-Toast-ChatInviteIcon"
+texturesModule.ICON_OPT_ENABLED = "Interface\\Buttons\\UI-CheckBox-Check"
+texturesModule.ICON_OPT_DISABLED = "Interface\\Buttons\\UI-CheckBox-Up"
 
-BOM.CLASS_ICONS_ATLAS = "Interface\\WorldStateFrame\\ICONS-CLASSES"
-BOM.CLASS_ICONS_ATLAS_TEX_COORD = CLASS_ICON_TCOORDS
-BOM.ICON_EMPTY = "Interface\\Buttons\\UI-MultiCheck-Disabled"
+texturesModule.ICON_SELF_CAST_ON = "Interface\\FriendsFrame\\UI-Toast-FriendOnlineIcon"
+texturesModule.ICON_SELF_CAST_OFF = "Interface\\FriendsFrame\\UI-Toast-ChatInviteIcon"
 
-BOM.ICON_SETTING_ON = "Interface\\RAIDFRAME\\ReadyCheck-Ready"
-BOM.ICON_SETTING_OFF = BOM.ICON_EMPTY
+texturesModule.CLASS_ICONS_ATLAS = "Interface\\WorldStateFrame\\ICONS-CLASSES"
+texturesModule.CLASS_ICONS_ATLAS_TEX_COORD = CLASS_ICON_TCOORDS
+texturesModule.ICON_EMPTY = "Interface\\Buttons\\UI-MultiCheck-Disabled"
 
-BOM.ICON_WHISPER_ON = "Interface\\Buttons\\UI-GuildButton-MOTD-Up"
-BOM.ICON_WHISPER_OFF = "Interface\\Buttons\\UI-GuildButton-MOTD-Disabled"
+---@deprecated Unused
+texturesModule.ICON_SETTING_ON = "Interface\\RAIDFRAME\\ReadyCheck-Ready"
+---@deprecated Unused
+texturesModule.ICON_SETTING_OFF = texturesModule.ICON_EMPTY
 
-BOM.ICON_BUFF_ON = "Interface\\Buttons\\UI-GroupLoot-Pass-Up"
-BOM.ICON_BUFF_OFF = BOM.ICON_EMPTY
+texturesModule.ICON_WHISPER_ON = "Interface\\Buttons\\UI-GuildButton-MOTD-Up"
+texturesModule.ICON_WHISPER_OFF = "Interface\\Buttons\\UI-GuildButton-MOTD-Disabled"
+
+texturesModule.ICON_BUFF_ON = "Interface\\Buttons\\UI-GroupLoot-Pass-Up"
+texturesModule.ICON_BUFF_OFF = texturesModule.ICON_EMPTY
 
 --Icon for when self cast is enabled
-BOM.ICON_DISABLED = "Interface\\FriendsFrame\\StatusIcon-Offline" --grey circle
+texturesModule.ICON_DISABLED = "Interface\\FriendsFrame\\StatusIcon-Offline" --grey circle
 
 --"Interface\\COMMON\\VOICECHAT-MUTED"
-BOM.ICON_TARGET_ON = "Interface\\CURSOR\\Crosshairs"
-BOM.ICON_TARGET_EXCLUDE = "Interface\\Buttons\\UI-GroupLoot-Pass-Up"
-BOM.ICON_TARGET_OFF = BOM.ICON_EMPTY
+texturesModule.ICON_TARGET_ON = "Interface\\CURSOR\\Crosshairs"
+texturesModule.ICON_TARGET_EXCLUDE = "Interface\\Buttons\\UI-GroupLoot-Pass-Up"
+texturesModule.ICON_TARGET_OFF = texturesModule.ICON_EMPTY
 
-BOM.ICON_CHECKED = "Interface\\Buttons\\UI-CheckBox-Check"
-BOM.ICON_CHECKED_OFF = BOM.ICON_EMPTY
+texturesModule.ICON_CHECKED = "Interface\\Buttons\\UI-CheckBox-Check"
+texturesModule.ICON_CHECKED_OFF = texturesModule.ICON_EMPTY
 
-BOM.ICON_GROUP = "Interface\\ICONS\\Achievement_GuildPerk_EverybodysFriend"
-BOM.ICON_GROUP_ITEM = "Interface\\Buttons\\UI-PageButton-Background"
-BOM.ICON_GROUP_NONE = BOM.ICON_EMPTY
-BOM.ICON_GEAR = "Interface\\ICONS\\INV_Misc_Gear_01"
+texturesModule.ICON_GROUP = "Interface\\ICONS\\Achievement_GuildPerk_EverybodysFriend"
+texturesModule.ICON_GROUP_ITEM = "Interface\\Buttons\\UI-PageButton-Background"
+texturesModule.ICON_GROUP_NONE = texturesModule.ICON_EMPTY
+texturesModule.ICON_GEAR = "Interface\\ICONS\\INV_Misc_Gear_01"
 
----- Options icons ----
-BOM.IconAutoOpenOn = "Interface\\LFGFRAME\\BattlenetWorking1"
-BOM.IconAutoOpenOnCoord = { 0.2, 0.8, 0.2, 0.8 }
-BOM.IconAutoOpenOff = "Interface\\LFGFRAME\\BattlenetWorking4"
-BOM.IconAutoOpenOffCoord = { 0.2, 0.8, 0.2, 0.8 }
-BOM.IconDeathBlockOn = "Interface\\TARGETINGFRAME\\UI-RaidTargetingIcon_8"
-BOM.IconDeathBlockOff = "Interface\\ICONS\\Spell_Holy_ArcaneIntellect"--INV_Enchant_DustVision"
-BOM.IconDeathBlockOffCoord = { 0.1, 0.9, 0.1, 0.9 }
-BOM.IconNoGroupBuffOn = BOM.ICON_SELF_CAST_ON
-BOM.IconNoGroupBuffOnCoord = { 0.1, 0.9, 0.1, 0.9 }
-BOM.IconNoGroupBuffOff = BOM.ICON_SELF_CAST_OFF
-BOM.IconNoGroupBuffOffCoord = { 0.1, 0.9, 0.1, 0.9 }
-BOM.IconSameZoneOn = "Interface\\ICONS\\INV_Misc_Map_01"
-BOM.IconSameZoneOnCoord = { 0.1, 0.9, 0.1, 0.9 }
-BOM.IconSameZoneOff = "Interface\\ICONS\\INV_Scroll_03"
-BOM.IconSameZoneOffCoord = { 0.1, 0.9, 0.1, 0.9 }
-BOM.IconResGhostOn = "Interface\\RAIDFRAME\\Raid-Icon-Rez"
-BOM.IconResGhostOnCoord = { 0.1, 0.9, 0.1, 0.9 }
-BOM.IconResGhostOff = "Interface\\ICONS\\Ability_Vanish"
-BOM.IconResGhostOffCoord = { 0.1, 0.9, 0.1, 0.9 }
-BOM.IconReplaceSingleOff = "Interface\\ICONS\\Spell_Holy_DivineSpirit"
-BOM.IconReplaceSingleOffCoord = { 0.1, 0.9, 0.1, 0.9 }
-BOM.IconReplaceSingleOn = "Interface\\ICONS\\Spell_Holy_PrayerofSpirit"
-BOM.IconReplaceSingleOnCoord = { 0.1, 0.9, 0.1, 0.9 }
-
-BOM.IconArgentumDawnOff = BOM.ICON_EMPTY
-BOM.IconArgentumDawnOn = "Interface\\ICONS\\INV_Jewelry_Talisman_07"
-BOM.IconArgentumDawnOnCoord = { 0.1, 0.9, 0.1, 0.9 }
-
-BOM.IconCarrotOff = BOM.ICON_EMPTY
-BOM.IconCarrotOn = "Interface\\ICONS\\INV_Misc_Food_54"
-BOM.IconCarrotOnCoord = { 0.1, 0.9, 0.1, 0.9 }
-
-BOM.IconMainHandOff = BOM.ICON_EMPTY
-BOM.IconMainHandOn = "Interface\\ICONS\\INV_Weapon_ShortBlade_03"
-BOM.IconMainHandOnCoord = { 0.1, 0.9, 0.1, 0.9 }
-
-BOM.IconSecondaryHandOff = BOM.ICON_EMPTY
-BOM.IconSecondaryHandOn = "Interface\\ICONS\\INV_Weapon_Halberd_12"
-BOM.IconSecondaryHandOnCoord = { 0.1, 0.9, 0.1, 0.9 }
-
-BOM.ICON_TANK = "Interface\\RAIDFRAME\\UI-RAIDFRAME-MAINTANK"
-BOM.ICON_TANK_COORD = { 0.1, 0.9, 0.1, 0.9 }
-BOM.ICON_PET = "Interface\\ICONS\\Ability_Mount_JungleTiger"
-BOM.ICON_PET_COORD = { 0.1, 0.9, 0.1, 0.9 }
-
-BOM.IconInPVPOff = BOM.ICON_EMPTY
-BOM.IconInPVPOn = "Interface\\ICONS\\Ability_DualWield"
-BOM.IconInPVPOnCoord = { 0.1, 0.9, 0.1, 0.9 }
-
-BOM.IconInWorldOff = BOM.ICON_EMPTY
-BOM.IconInWorldOn = "Interface\\ICONS\\INV_Misc_Orb_01"
-BOM.IconInWorldOnCoord = { 0.1, 0.9, 0.1, 0.9 }
-
-BOM.IconInInstanceOff = BOM.ICON_EMPTY
-BOM.IconInInstanceOn = "Interface\\ICONS\\INV_Misc_Head_Dragon_01"
-BOM.IconInInstanceOnCoord = { 0.1, 0.9, 0.1, 0.9 }
-
-BOM.IconUseRankOff = BOM.ICON_EMPTY
-BOM.IconUseRankOn = "Interface\\Buttons\\JumpUpArrow"
+------ Options icons ----
+--texturesModule.ICON_AUTO_OPEN_ON = "Interface\\LFGFRAME\\BattlenetWorking1"
+--texturesModule.ICON_AUTO_OPEN_ON_COORD = texturesModule.ICON_COORD_08
+--texturesModule.ICON_AUTO_OPEN_OFF = "Interface\\LFGFRAME\\BattlenetWorking4"
+--texturesModule.ICON_AUTO_OPEN_OFF_COORD = texturesModule.ICON_COORD_08
+--texturesModule.ICON_DEATH_BLOCK_ON = "Interface\\TARGETINGFRAME\\UI-RaidTargetingIcon_8"
+--texturesModule.ICON_DEATH_BLOCK_OFF = "Interface\\ICONS\\Spell_Holy_ArcaneIntellect"--INV_Enchant_DustVision"
+--texturesModule.ICON_DEATH_BLOCK_COORD = texturesModule.ICON_COORD_09
+--texturesModule.ICON_NO_GROUP_BUFF_ON = texturesModule.ICON_SELF_CAST_ON
+--texturesModule.ICON_NO_GROUP_BUFF_ON_COORD = texturesModule.ICON_COORD_09
+--texturesModule.ICON_NO_GROUP_BUFF_OFF = texturesModule.ICON_SELF_CAST_OFF
+--texturesModule.ICON_NO_GROUP_BUFF_OFF_COORD = texturesModule.ICON_COORD_09
+--texturesModule.ICON_SAME_ZONE_ON = "Interface\\ICONS\\INV_Misc_Map_01"
+--texturesModule.ICON_SAME_ZONE_ON_COORD = texturesModule.ICON_COORD_09
+--texturesModule.ICON_SAME_ZONE_OFF = "Interface\\ICONS\\INV_Scroll_03"
+--texturesModule.ICON_SAME_ZONE_OFF_COORD = texturesModule.ICON_COORD_09
+--texturesModule.ICON_RES_GHOST_ON = "Interface\\RAIDFRAME\\Raid-Icon-Rez"
+--texturesModule.ICON_RES_GHOST_ON_COORD = texturesModule.ICON_COORD_09
+--BOM.IconResGhostOff = "Interface\\ICONS\\Ability_Vanish"
+--BOM.IconResGhostOffCoord = texturesModule.ICON_COORD_09
+--BOM.IconReplaceSingleOff = "Interface\\ICONS\\Spell_Holy_DivineSpirit"
+--BOM.IconReplaceSingleOffCoord = texturesModule.ICON_COORD_09
+--BOM.IconReplaceSingleOn = "Interface\\ICONS\\Spell_Holy_PrayerofSpirit"
+--BOM.IconReplaceSingleOnCoord = texturesModule.ICON_COORD_09
+--
+--BOM.IconArgentumDawnOff = texturesModule.ICON_EMPTY
+--BOM.IconArgentumDawnOn = "Interface\\ICONS\\INV_Jewelry_Talisman_07"
+--BOM.IconArgentumDawnOnCoord = texturesModule.ICON_COORD_09
+--
+--BOM.IconCarrotOff = texturesModule.ICON_EMPTY
+--BOM.IconCarrotOn = "Interface\\ICONS\\INV_Misc_Food_54"
+--BOM.IconCarrotOnCoord = texturesModule.ICON_COORD_09
+--
+--BOM.IconMainHandOff = texturesModule.ICON_EMPTY
+--BOM.IconMainHandOn = "Interface\\ICONS\\INV_Weapon_ShortBlade_03"
+--BOM.IconMainHandOnCoord = texturesModule.ICON_COORD_09
+--
+--BOM.IconSecondaryHandOff = texturesModule.ICON_EMPTY
+--BOM.IconSecondaryHandOn = "Interface\\ICONS\\INV_Weapon_Halberd_12"
+--BOM.IconSecondaryHandOnCoord = texturesModule.ICON_COORD_09
+--
+--BOM.ICON_TANK = "Interface\\RAIDFRAME\\UI-RAIDFRAME-MAINTANK"
+--BOM.ICON_TANK_COORD = texturesModule.ICON_COORD_09
+--BOM.ICON_PET = "Interface\\ICONS\\Ability_Mount_JungleTiger"
+--BOM.ICON_PET_COORD = texturesModule.ICON_COORD_09
+--
+--BOM.IconInPVPOff = texturesModule.ICON_EMPTY
+--BOM.IconInPVPOn = "Interface\\ICONS\\Ability_DualWield"
+--BOM.IconInPVPOnCoord = texturesModule.ICON_COORD_09
+--
+--BOM.IconInWorldOff = texturesModule.ICON_EMPTY
+--BOM.IconInWorldOn = "Interface\\ICONS\\INV_Misc_Orb_01"
+--BOM.IconInWorldOnCoord = texturesModule.ICON_COORD_09
+--
+--BOM.IconInInstanceOff = texturesModule.ICON_EMPTY
+--BOM.IconInInstanceOn = "Interface\\ICONS\\INV_Misc_Head_Dragon_01"
+--BOM.IconInInstanceOnCoord = texturesModule.ICON_COORD_09
+--
+--BOM.IconUseRankOff = texturesModule.ICON_EMPTY
+--BOM.IconUseRankOn = "Interface\\Buttons\\JumpUpArrow"

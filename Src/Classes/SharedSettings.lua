@@ -17,7 +17,11 @@ sharedSettingsModule.defaults = {
 ---@field position number
 ---@field distance number
 
----@class BomSharedSettings Current character state snapshots per profile
+---@shape BomSharedSettings Current character state snapshots per profile
+---@field X number Window horizontal position
+---@field Y number Window vertical position
+---@field Width number Window width
+---@field Height number Window height
 ---@field DebugLogging boolean
 ---@field PlaySoundWhenTask string Play a sound when task list is not empty
 ---@field Minimap BomMinimapSettings
@@ -57,6 +61,7 @@ sharedSettingsModule.defaults = {
 ---@field SelfFirst boolean
 ---@field DontUseConsumables boolean
 ---@field SomeoneIsDrinking string "low-prio" - Show as a comment; "hide" - no show; "show" - Show as a task and show buffomat window
+---@field HideSomeoneIsDrinking nil
 ---@field ActivateBomOnSpiritTap number Percent mana to deactivate Buffomat if Spirit Tap is active for a priest
 ---@field MinBuff number How many missing buffs to prefer group buff
 ---@field MinBlessing number
@@ -65,8 +70,8 @@ sharedSettingsModule.defaults = {
 ---@field Time600 number
 ---@field Time1800 number
 ---@field Time3600 number
+---@field Duration BomSpellCooldownsTable Copy from character settings
 
----@type BomSharedSettings
 local sharedStateClass = {}
 sharedStateClass.__index = sharedStateClass
 

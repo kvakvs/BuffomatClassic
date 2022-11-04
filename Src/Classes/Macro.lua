@@ -8,44 +8,38 @@ BomModuleManager.macroModule = macroModule
 local constModule = BomModuleManager.constModule
 local _t = BomModuleManager.languagesModule
 
----@deprecated
-local L = setmetatable({}, { __index = function(t, k)
-  if BOM.L and BOM.L[k] then
-    return BOM.L[k]
-  else
-    return "[" .. k .. "]"
-  end
-end })
+-----@deprecated
+--local L = setmetatable({}, { __index = function(t, k)
+--  if BOM.L and BOM.L[k] then
+--    return BOM.L[k]
+--  else
+--    return "[" .. k .. "]"
+--  end
+--end })
 
-BOM.Class = BOM.Class or {}
+--BOM.Class = BOM.Class or {}
 
----@class Macro
+---@shape BomMacro
 ---@field name string Macro name, default Buff'o'mat
 ---@field icon string Texture path to macro icon
----@field lines table<number, string> Lines of the macro
-
----@type Macro
-BOM.Class.Macro = {}
-BOM.Class.Macro.__index = BOM.Class.Macro
-
-local CLASS_TAG = "macro"
+---@field lines string[] Lines of the macro
+local macroClass = {}
+macroClass.__index = macroClass
 
 ---Creates a new Macro
 ---@param name string
----@param lines table<number, string>|nil
----@return Macro
-function BOM.Class.Macro:new(name, lines)
-  local fields = {
-    t     = CLASS_TAG,
-    name  = name,
-    lines = lines or {},
-  }
-  setmetatable(fields, BOM.Class.Macro)
+---@param lines string[]|nil
+---@return BomMacro
+function macroModule:NewMacro(name, lines)
+  local fields = --[[---@type BomMacro]] {}
+  fields.name  = name
+  fields.lines = lines or {}
+
+  setmetatable(fields, macroClass)
   return fields
 end
 
----@param self Macro
-function BOM.Class.Macro.Clear(self)
+function macroClass:Clear()
   if InCombatLockdown() then
     return
   end
@@ -56,9 +50,8 @@ function BOM.Class.Macro.Clear(self)
   EditMacro(self.name, nil, self.icon, self:GetText())
 end
 
----@param self Macro
 ---@return string
-function BOM.Class.Macro.GetText(self)
+function macroClass:GetText()
   local t = "#showtooltip\n/bom update"
   for i, line in ipairs(self.lines) do
     t = t .. "\n" .. line
@@ -66,14 +59,12 @@ function BOM.Class.Macro.GetText(self)
   return t
 end
 
----@param self Macro
-function BOM.Class.Macro.UpdateMacro(self)
+function macroClass:UpdateMacro()
   EditMacro(constModule.MACRO_NAME, nil, self.icon, self:GetText())
   BOM.MinimapButton.SetTexture("Interface\\ICONS\\" .. self.icon)
 end
 
----@param self Macro
-function BOM.Class.Macro.Recreate(self)
+function macroClass:Recreate()
   if (GetMacroInfo(constModule.MACRO_NAME)) == nil then
     local perAccount, perChar = GetNumMacros()
     local isChar

@@ -38,8 +38,10 @@ BOM.Class.GPIMinimapButtonConfigData.__index = BOM.Class.GPIMinimapButtonConfigD
 ---@field isDraggingButton boolean
 ---@field db GPIMinimapButtonConfigData Config database which will persist between addon reloads
 ---@field Tooltip string
+---@field Init function
 ---@field onClick function
 ---@field UpdatePosition function
+---@field SetTexture fun(texturePath: string)
 
 ---@type GPIMinimapButton
 BOM.Class.GPIMinimapButton = {
@@ -63,7 +65,6 @@ BOM.Class.GPIMinimapButton.__index = BOM.Class.GPIMinimapButton
 ---@field _privat_Text string
 ---@field _privat_ToolTipLink string Mouseover will show the link
 ---@field _privat_ToolTipText string Mouseover will show the text
----
 ---@field _GPIPRIVAT_events table<string, function> Events
 ---@field _GPIPRIVAT_updates table<function> private field
 ---@field _GPIPRIVAT_MovingStopCallback any private field
@@ -76,6 +77,10 @@ BOM.Class.GPIMinimapButton.__index = BOM.Class.GPIMinimapButton
 ---@field GPI_DoStop boolean
 ---@field GPI_SIZETYPE string
 ---@field Lib_GPI_MinimapButton GPIMinimapButton Stores extra values for minimap button control
+---@field SetPoint fun(self: BomLegacyControl, point: string, relativeTo: table, relativePoint: string, xOfs: number, yOfs: number)
+---@field SetScript fun(self: BomLegacyControl, script: string, handler: function)
+---@field Hide fun(self: BomLegacyControl)
+---@field Show fun(self: BomLegacyControl)
 
 ---@type BomLegacyControl
 BOM.Class.Control = {}

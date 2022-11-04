@@ -15,7 +15,7 @@ function uiButtonModule:CreateSmallButton(id, parent, normalTexture)
   b:SetWidth(20);
   b:SetHeight(20);
   b:SetNormalTexture(normalTexture)
-  b:SetDisabledTexture(BOM.ICON_DISABLED)
+  b:SetDisabledTexture(texturesModule.ICON_DISABLED)
   --b:SetBackdrop(nil)
 
   return b

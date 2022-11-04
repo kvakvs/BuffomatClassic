@@ -262,7 +262,7 @@ function taskScanModule:UpdateMacro(nextCast)
     end
   end
 
-  BOM.CastFailedSpellId = nextCast.spellId
+  BOM.castFailedSpellId = nextCast.spellId
   local name = GetSpellInfo(nextCast.spellId)
   if name == nil then
     buffomatModule:P("Update macro: Bad spell spellid=" .. nextCast.spellId)
@@ -826,7 +826,7 @@ function taskScanModule:AddBlessing(spell, playerParty, playerUnit, inRange)
       local add = ""
       local blessing_name = buffDefModule:GetProfileBuff(constModule.BLESSING_ID)
       if blessing_name[unitNeedsBuff.name] ~= nil then
-        add = string.format(constModule.PICTURE_FORMAT, BOM.ICON_TARGET_ON)
+        add = string.format(constModule.PICTURE_FORMAT, texturesModule.ICON_TARGET_ON)
       end
 
       local test_in_range = IsSpellInRange(spell.singleText, unitNeedsBuff.unitId) == 1
@@ -970,7 +970,7 @@ function taskScanModule:AddBuff_SingleBuff(buffDef, minBuff, inRange)
       local profileBuff = buffDefModule:GetProfileBuff(buffDef.buffId)
 
       if profileBuff.ForcedTarget[needBuff.name] then
-        add = string.format(constModule.PICTURE_FORMAT, BOM.ICON_TARGET_ON)
+        add = string.format(constModule.PICTURE_FORMAT, texturesModule.ICON_TARGET_ON)
       end
 
       local unitIsInRange = (IsSpellInRange(buffDef.singleText, needBuff.unitId) == 1)
@@ -1764,8 +1764,8 @@ function taskScanModule:UpdateScan_Button_TargetedSpell()
     BomC_ListTab_Button:Enable()
   end
 
-  BOM.CastFailedSpell = nextCastSpell.spell
-  BOM.CastFailedSpellTarget = nextCastSpell.targetUnit
+  BOM.castFailedBuff = nextCastSpell.spell
+  BOM.castFailedBuffTarget = nextCastSpell.targetUnit
 end
 
 function taskScanModule:UpdateScan_Button_Nothing()
@@ -1860,14 +1860,14 @@ function taskScanModule:UpdateScan_Scan(playerParty, playerUnit)
 
   -- Open Buffomat if any cast tasks were added to the task list
   if #tasklist.tasks > 0 or #tasklist.comments > 0 then
-    BOM.AutoOpen()
+    buffomatModule:AutoOpen()
     -- to avoid repeating sound, check whether task list before we started had length of 0
     if self.taskListSizeBeforeScan == 0 then
       self:PlayTaskSound()
     end
   else
     self:FadeBuffomatWindow()
-    BOM.AutoClose()
+    buffomatModule:AutoClose()
   end
 
   tasklist:Display() -- Show all tasks and comments
@@ -1933,7 +1933,7 @@ function taskScanModule:UpdateScan_PreCheck(from)
     if not isBomActive then
       buffomatModule:ClearForceUpdate()
       BOM.CheckForError = false
-      BOM.AutoClose()
+      buffomatModule:AutoClose()
       BOM.Macro:Clear()
       self:FadeBuffomatWindow()
       self:CastButton(reasonDisabled, false)
@@ -1960,10 +1960,10 @@ end
 ---If a spell cast failed, the member is temporarily added to skip list, to
 ---continue casting buffs on other members
 function BOM.AddMemberToSkipList()
-  if BOM.CastFailedSpell
-          and BOM.CastFailedSpell.SkipList
-          and BOM.CastFailedSpellTarget then
-    tinsert(BOM.CastFailedSpell.SkipList, BOM.CastFailedSpellTarget.name)
+  if BOM.castFailedBuff
+          and BOM.castFailedBuff.SkipList
+          and BOM.castFailedBuffTarget then
+    tinsert(BOM.castFailedBuff.SkipList, BOM.castFailedBuffTarget.name)
     BOM.FastUpdateTimer()
     buffomatModule:SetForceUpdate("skipListMemberAdded")
   end

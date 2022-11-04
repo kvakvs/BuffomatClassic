@@ -86,7 +86,7 @@ end
 local function Event_CombatStart()
   buffomatModule:SetForceUpdate("combatStart")
   BOM.DeclineHasResurrection = true
-  BOM.AutoClose()
+  buffomatModule:AutoClose()
   if not InCombatLockdown() then
     BomC_ListTab_Button:Disable()
   end

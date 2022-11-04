@@ -115,7 +115,7 @@ local bom_special_letter_to_ascii = {
 
 local function bom_on_enter_hyperlink(self, link, text)
   --print(link,text)
-  local part = Tool.Split(link, ":")
+  local part = toolboxModule:Split(link, ":")
   if part[1] == "spell"
           or part[1] == "unit"
           or part[1] == "item"
@@ -197,7 +197,7 @@ local function bom_frame_drag_stop(self)
   end
 end
 
-function Tool.EnableMoving(frame, callback)
+function toolboxModule:EnableMoving(frame, callback)
   frame:SetMovable(true)
   frame:EnableMouse(true)
   frame:RegisterForDrag("LeftButton")
@@ -417,7 +417,8 @@ function Tool.iSplit(inputstr, sep)
   return t
 end
 
-function Tool.Split(inputstr, sep)
+---@return string[]
+function toolboxModule:Split(inputstr, sep)
   if sep == nil then
     sep = "%s"
   end
@@ -491,7 +492,7 @@ local ResizeCursor_Update = function(self)
   self:SetPoint("CENTER", UIParent, "BOTTOMLEFT", X / Scale, Y / Scale)
 end
 
-function Tool.EnableSize(frame, border, OnStart, OnStop)
+function toolboxModule:EnableSize(frame, border, OnStart, OnStop)
   if not ResizeCursor then
     ResizeCursor = CreateFrame("Frame", nil, UIParent)
     ResizeCursor:Hide()
@@ -805,7 +806,7 @@ local function bom_slash_unpack(t, sep)
   return ret
 end
 
-function Tool.PrintSlashCommand(prefix, subSlash, p)
+function toolboxModule:PrintSlashCommand(prefix, subSlash, p)
   p = p or print
   prefix = prefix or ""
   subSlash = subSlash or slash
@@ -823,7 +824,7 @@ function Tool.PrintSlashCommand(prefix, subSlash, p)
     end
     if type(subcmd[3]) == "table" then
 
-      Tool.PrintSlashCommand(prefix .. words .. " ", subcmd[3], p)
+      toolboxModule:PrintSlashCommand(prefix .. words .. " ", subcmd[3], p)
     end
 
   end
@@ -848,7 +849,7 @@ local function bom_do_slash(deep, msg, subSlash)
     end
   end
 
-  Tool.PrintSlashCommand(Tool.Combine(msg, " ", 1, deep - 1) .. " ", subSlash)
+  toolboxModule:PrintSlashCommand(Tool.Combine(msg, " ", 1, deep - 1) .. " ", subSlash)
 
   return nil
 end
@@ -862,13 +863,13 @@ local function bom_handle_slash_command(msg)
       print("SlashCommand:", colCmd, bom_slash_unpack(slashCmd, "|r, " .. colCmd), "|r")
     end
 
-    Tool.PrintSlashCommand()
+    toolboxModule:PrintSlashCommand()
   else
     bom_do_slash(1, Tool.Split(msg, " "), slash)
   end
 end
 
-function Tool.SlashCommand(cmds, subcommand)
+function toolboxModule:SlashCommand(cmds, subcommand)
   slash = subcommand
   slashCmd = cmds
   if type(cmds) == "table" then
@@ -931,7 +932,7 @@ local function bom_create_copypaste()
     end
   end)
 
-  Tool.EnableSize(frame)
+  toolboxModule:EnableSize(frame)
 
   local button = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
   button:SetWidth(128)
@@ -1036,7 +1037,7 @@ end
 ---Add onenter/onleave scripts to show the tooltip with TEXT
 ---@param control BomLegacyControl
 ---@param text string - the localized text to display
-function Tool.TooltipText(control, text)
+function toolboxModule:TooltipText(control, text)
   control:SetScript("OnEnter", function()
     GameTooltip:SetOwner(control, "ANCHOR_RIGHT")
     GameTooltip:AddLine(text)

@@ -1,4 +1,4 @@
----@class BomModuleModule
+---@shape BomModuleModule
 ---@field allBuffsModule BomAllBuffsModule
 ---@field allConsumesElixirsModule BomAllConsumesElixirsModule
 ---@field allConsumesEnchantmentsModule BomAllConsumesEnchantmentsModule

@@ -1,6 +1,7 @@
 --local TOCNAME, _ = ...
 
----@class BomBuffomatModule
+---@shape BomBuffomatModule
+---@field [string] any
 ---@field shared BomSharedSettings Refers to BuffomatShared global
 ---@field character BomCharacterSettings Refers to BuffomatCharacter global
 ---@field currentProfileName string
@@ -24,143 +25,85 @@ local sharedStateModule = BomModuleManager.sharedSettingsModule
 local spellButtonsTabModule = BomModuleManager.spellButtonsTabModule
 local taskScanModule = BomModuleManager.taskScanModule
 local toolboxModule = BomModuleManager.toolboxModule
+local macroModule = BomModuleManager.macroModule
+
+---Collection of tables of buffs, indexed per unit name
+---@shape BomBuffCollectionPerUnit
+---@field [string] BomBuffExpirations Buffs on that unit
+
+---Table of buff expirations, indexed per buff name
+---@shape BomBuffExpirations
+---@field [string] number Expiration time
 
 ---global, visible from XML files and from script console and chat commands
 ---@class BomAddon
----@field ScanModifier boolean Will update buffomat when modifier key is held down
----@field nextCooldownDue number Set this to next spell cooldown to force update
----@field checkCooldown number|nil Spell id to check cooldown for
----@field ForceUpdate boolean Set to true to force recheck buffs on timer
----@field ALL_PROFILES string[] Lists all buffomat profile names (group, solo... etc)
----@field RESURRECT_CLASS string[] Classes who can resurrect others
----@field MANA_CLASSES string[] Classes with mana resource
----@field locales BomTranslationsDict (same as BOM.L)
----@field L BomLanguage The current locale @deprecated
----@field AllBuffomatBuffs BomAllBuffsTable All spells known to Buffomat
----@field EnchantList table<number, number[]> Spell ids mapping to enchant ids
----@field CancelBuffs BomBuffDefinition[] All spells to be canceled on detection
----@field ItemCache table<number, BomItemCacheElement> Precreated precached items
+---@field InLoading boolean True while in the loading screen
+---@field LoadingScreenTimeOut number
+---@field PlayerBuffs BomBuffCollectionPerUnit
 ---@field ActivePaladinAura nil|number Spell id of aura if an unique aura was casted (only one can be active)
 ---@field ActivePaladinSeal nil|number Spell id of weapon seal, if an seal-type temporary enchant was used (only one can be active)
----@field ForceProfile string|nil Nil will choose profile name automatically, otherwise this profile will be used
+---@field ALL_PROFILES string[] Lists all buffomat profile names (group, solo... etc)
+---@field AllBuffomatBuffs BomAllBuffsTable All spells known to Buffomat
+---@field AllSpellIds number[]
 ---@field ArgentumDawn table Equipped AD trinket: Spell to and zone ids to check
 ---@field BuffExchangeId table<number, number[]> Combines spell ids of spellrank flavours into main spell id
 ---@field BuffIgnoreAll number[] Having this buff on target excludes the target (phaseshifted imp for example)
 ---@field CachedHasItems table<string, CachedItem> Items in player's bag
+---@field CancelBuffs BomBuffDefinition[] All spells to be canceled on detection
 ---@field CancelBuffSource string Unit who casted the buff to be auto-canceled
+---@field cancelForm table<number, number> Spell ids which cancel shapeshift form
 ---@field Carrot table Equipped Riding trinket: Spell to and zone ids to check
+---@field castFailedBuff BomBuffDefinition|nil
+---@field castFailedBuffTarget BomUnit|nil
+---@field castFailedSpellId number
+---@field checkCooldown number|nil Spell id to check cooldown for
 ---@field CheckForError boolean Used by error suppression code
+---@field ConfigToSpell BomAllBuffsTable
 ---@field CurrentProfile BomProfile Current profile from CharacterState.Profiles
 ---@field DeclineHasResurrection boolean Set to true on combat start, stop, holding Alt, cleared on party update
+---@field EnchantList table<number, number[]> Spell ids mapping to enchant ids
 ---@field EnchantToSpell table<number, number> Reverse-maps enchant ids back to spells
+---@field ForceProfile string|nil Nil will choose profile name automatically, otherwise this profile will be used
 ---@field ForceTracking number|nil Defines icon id for enforced tracking
 ---@field ForceUpdate boolean Requests immediate spells/buffs refresh
----@field RepeatUpdate boolean Requests some sort of spells update similar to ForceUpdate
+---@field ForceUpdate boolean Set to true to force recheck buffs on timer
+---@field HaveTBC boolean Whether we are running TBC classic or later
+---@field HaveWotLK boolean Whether we are running Wrath of the Lich King or later
+---@field IsClassic boolean Whether we are running Classic Era or Season of Mastery
+---@field IsClassic boolean Whether we are running Classic Era or Season of Mastery
 ---@field IsMoving boolean Indicated that the player is moving (updated in event handlers)
+---@field IsTBC boolean Whether we are running TBC classic
+---@field IsWotLK boolean Whether we are running Wrath of the Lich King
+---@field ItemCache table<number, BomItemCacheElement> Precreated precached items
+---@field ItemId table<string, table<string, number>> Map of item name to id
 ---@field ItemList table<number[]> Group different ranks of item together
 ---@field ItemListSpell table<number, number> Map itemid to spell?
 ---@field ItemListTarget table<number, string> Remember who casted item buff on you?
+---@field L BomLanguage The current locale @deprecated
 ---@field lastTarget string|nil Last player's target
+---@field legacyOptions BomLegacyUiOptions
+---@field locales BomTranslationsDict (same as BOM.L)
+---@field Macro BomMacro
+---@field MANA_CLASSES string[] Classes with mana resource
 ---@field ManaLimit number Player max mana
+---@field MinimapButton GPIMinimapButton Minimap button control
+---@field nextCooldownDue number Set this to next spell cooldown to force update
 ---@field PartyUpdateNeeded boolean Requests player party update
 ---@field PlayerCasting string|nil Indicates that the player is currently casting (updated in event handlers)
+---@field PopupDynamic BomPopupDynamic
+---@field QuickSingleBuff BomLegacyControl Button for single/group buff toggling next to cast button
+---@field RepeatUpdate boolean Requests some sort of spells update similar to ForceUpdate
+---@field RESURRECT_CLASS string[] Classes who can resurrect others
+---@field ScanModifier boolean Will update buffomat when modifier key is held down
 ---@field SelectedSpells BomAllBuffsTable
----@field ConfigToSpell BomAllBuffsTable
----@field AllSpellIds number[]
----@field cancelForm table<number, number> Spell ids which cancel shapeshift form
+---@field SetupAvailableSpells function
+---@field SpellId table<string, table<string, number>> Map of spell name to id
 ---@field SpellIdIsSingle table<number, boolean> Whether spell ids are single buffs
 ---@field SpellIdtoConfig table<number, number> Maps spell ids to the key id of spell in the AllSpells
 ---@field SpellTabsCreatedFlag boolean Indicated spells tab already populated with controls
 ---@field SpellToSpell table<number, number> Maps spells ids to other spell ids
 ---@field TBC boolean Whether we are running TBC classic
----@field IsClassic boolean Whether we are running Classic Era or Season of Mastery
 ---@field WipeCachedItems boolean Command to reset cached items
----@field MinimapButton GPIMinimapButton Minimap button control
----@field legacyOptions BomLegacyUiOptions
----@field ICON_PET string
----@field ICON_OPT_ENABLED string
----@field ICON_OPT_DISABLED string
----@field ICON_SELF_CAST_ON string
----@field ICON_SELF_CAST_OFF string
----@field CLASS_ICONS_ATLAS string
----@field CLASS_ICONS_ATLAS_TEX_COORD string
----@field ICON_EMPTY string
----@field ICON_SETTING_ON string
----@field ICON_SETTING_OFF string
----@field ICON_WHISPER_ON string
----@field ICON_WHISPER_OFF string
----@field ICON_BUFF_ON string
----@field ICON_BUFF_OFF string
----@field ICON_DISABLED string
----@field ICON_TARGET_ON string
----@field ICON_TARGET_OFF string
----@field ICON_TARGET_EXCLUDE string
----@field ICON_CHECKED string
----@field ICON_CHECKED_OFF string
----@field ICON_GROUP string
----@field ICON_GROUP_ITEM string
----@field ICON_GROUP_NONE string
----@field ICON_GEAR string
----@field ICON_GEAR string
----@field IconAutoOpenOn string
----@field IconAutoOpenOnCoord number[]
----@field IconAutoOpenOff string
----@field IconAutoOpenOffCoord number[]
----@field IconDeathBlockOn string
----@field IconDeathBlockOff string
----@field IconDeathBlockOffCoord number[]
----@field IconNoGroupBuffOn string
----@field IconNoGroupBuffOnCoord number[]
----@field IconNoGroupBuffOff string
----@field IconNoGroupBuffOffCoord number[]
----@field IconSameZoneOn string
----@field IconSameZoneOnCoord number[]
----@field IconSameZoneOff string
----@field IconSameZoneOffCoord number[]
----@field IconResGhostOn string
----@field IconResGhostOnCoord number[]
----@field IconResGhostOff string
----@field IconResGhostOffCoord number[]
----@field IconReplaceSingleOff string
----@field IconReplaceSingleOffCoord number[]
----@field IconReplaceSingleOn string
----@field IconReplaceSingleOnCoord number[]
----@field IconArgentumDawnOff string
----@field IconArgentumDawnOn string
----@field IconArgentumDawnOnCoord number[]
----@field IconCarrotOff string
----@field IconCarrotOn string
----@field IconCarrotOnCoord number[]
----@field IconMainHandOff string
----@field IconMainHandOn string
----@field IconMainHandOnCoord number[]
----@field IconSecondaryHandOff string
----@field IconSecondaryHandOn string
----@field IconSecondaryHandOnCoord number[]
----@field ICON_TANK string
----@field ICON_TANK_COORD number[]
----@field ICON_PET string
----@field ICON_PET_COORD number[]
----@field IconInPVPOff string
----@field IconInPVPOn string
----@field IconInPVPOnCoord number[]
----@field IconInWorldOff string
----@field IconInWorldOn string
----@field IconInWorldOnCoord number[]
----@field IconInInstanceOff string
----@field IconInInstanceOn string
----@field IconInInstanceOnCoord number[]
----@field IconUseRankOff string
----@field IconUseRankOn string
----@field QuickSingleBuff BomLegacyControl Button for single/group buff toggling next to cast button
----@field SpellId table<string, table<string, number>> Map of spell name to id
----@field ItemId table<string, table<string, number>> Map of item name to id
----@field PopupDynamic BomPopupDynamic
----@field IsClassic boolean Whether we are running Classic Era or Season of Mastery
----@field IsTBC boolean Whether we are running TBC classic
----@field HaveTBC boolean Whether we are running TBC classic or later
----@field IsWotLK boolean Whether we are running Wrath of the Lich King
----@field HaveWotLK boolean Whether we are running Wrath of the Lich King or later
 
 BuffomatAddon = LibStub("AceAddon-3.0"):NewAddon(
         "Buffomat", "AceConsole-3.0", "AceEvent-3.0") ---@type BomAddon
@@ -185,6 +128,7 @@ end
 
 ---@param t string
 function buffomatModule:P(t)
+  -- -@diagnostic disable-next-line
   BOM:Print(t)
 end
 
@@ -255,7 +199,7 @@ end
 
 ---ChooseProfile
 ---BOM profile selection, using 'auto' by default
----@param profile string
+---@param profile BomProfileName
 function buffomatModule.ChooseProfile(profile)
   if profile == nil or profile == "" or profile == "auto" then
     BOM.ForceProfile = nil
@@ -274,6 +218,7 @@ function buffomatModule.ChooseProfile(profile)
   buffomatModule:UseProfile(profile)
 end
 
+---@param profileName BomProfileName
 function buffomatModule:UseProfile(profileName)
   if buffomatModule.currentProfileName == profileName then
     return
@@ -354,18 +299,18 @@ function BOM.CreateSingleBuffButton(parent_frame)
   if BOM.QuickSingleBuff == nil then
     BOM.QuickSingleBuff = managedUiModule:CreateManagedButton(
             parent_frame,
-            BOM.ICON_SELF_CAST_ON,
-            BOM.ICON_SELF_CAST_OFF,
+            texturesModule.ICON_SELF_CAST_ON,
+            texturesModule.ICON_SELF_CAST_OFF,
             nil, nil, nil, nil, nil)
     BOM.QuickSingleBuff:SetPoint("BOTTOMLEFT", parent_frame, "BOTTOMRIGHT", -18, 0);
     BOM.QuickSingleBuff:SetPoint("BOTTOMRIGHT", parent_frame, "BOTTOMRIGHT", -2, 12);
-    BOM.QuickSingleBuff:SetVariable(buffomatModule.shared, "NoGroupBuff")
+    BOM.QuickSingleBuff:SetVariable(buffomatModule.shared, "NoGroupBuff", nil)
     BOM.QuickSingleBuff:SetOnClick(BOM.MyButtonOnClick)
-    BOM.Tool.TooltipText(
+    toolboxModule:TooltipText(
             BOM.QuickSingleBuff,
-            BOM.FormatTexture(BOM.ICON_SELF_CAST_ON) .. " - " .. _t("options.long.NoGroupBuff")
+            BOM.FormatTexture(texturesModule.ICON_SELF_CAST_ON) .. " - " .. _t("options.long.NoGroupBuff")
                     .. "|n"
-                    .. BOM.FormatTexture(BOM.ICON_SELF_CAST_OFF) .. " - " .. _t("options.long.GroupBuff"))
+                    .. BOM.FormatTexture(texturesModule.ICON_SELF_CAST_OFF) .. " - " .. _t("options.long.GroupBuff"))
 
     BOM.QuickSingleBuff:Show()
   end
@@ -403,7 +348,7 @@ function buffomatModule:InitUI()
   BOM.RepeatUpdate = false
 
   -- Make main frame draggable
-  BOM.Tool.EnableMoving(BomC_MainWindow, BOM.SaveWindowPosition)
+  toolboxModule:EnableMoving(BomC_MainWindow, BOM.SaveWindowPosition)
   BomC_MainWindow:SetMinResize(180, 90)
 
   toolboxModule:AddTab(BomC_MainWindow, _t("TabBuff"), BomC_ListTab, true)
@@ -412,14 +357,17 @@ function buffomatModule:InitUI()
 end
 
 function buffomatModule:InitGlobalStates()
-  local loadedShared = (BomSharedState or BuffomatShared) or {} -- Upgrade from legacy Buffomat State if found
+  -- Upgrade from legacy Buffomat State if found
+  ---@type BomSharedSettings
+  local loadedShared = (--[[---@type BomSharedSettings]] BomSharedState or BuffomatShared) or {}
   if BomSharedState then
     BomSharedState = nil -- reset after reimport
   end
   BuffomatShared = sharedStateModule:New(loadedShared) ---@type BomSharedSettings
   buffomatModule.shared = BuffomatShared
 
-  local loadedChar = (BomCharacterState or BuffomatCharacter) or {} -- Upgrade from legacy Buffomat State if found
+  -- Upgrade from legacy Buffomat State if found
+  local loadedChar = (--[[---@type BomCharacterSettings]] BomCharacterState or BuffomatCharacter) or {}
   if BomCharacterState then
     BomCharacterState = nil -- reset after reimport
   end
@@ -428,18 +376,19 @@ function buffomatModule:InitGlobalStates()
 
   if self.character.Duration then
     self.shared.Duration = self.character.Duration
-    self.character.Duration = nil
+    self.character.Duration = --[[---@type BomSpellCooldownsTable]] {}
   elseif not self.shared.Duration then
-    self.shared.Duration = {}
+    self.shared.Duration = --[[---@type BomSpellCooldownsTable]] {}
   end
 
   if not self.character[profileModule.ALL_PROFILES[1]] then
-    self.character[profileModule.ALL_PROFILES[1]] = {
-      ["CancelBuff"] = self.character.CancelBuff,
-      ["Spell"]      = self.character.Spell,
-      ["LastAura"]   = self.character.LastAura,
-      ["LastSeal"]   = self.character.LastSeal,
-    }
+    local newProfile = profileModule:New()
+    newProfile.CancelBuff = self.character.CancelBuff
+    newProfile.Spell = self.character.Spell
+    newProfile.LastAura = self.character.LastAura
+    newProfile.LastSeal = self.character.LastSeal
+    self.character[profileModule.ALL_PROFILES[1]] = newProfile
+
     self.character.CancelBuff = nil
     self.character.Spell = nil
     self.character.LastAura = nil
@@ -448,14 +397,14 @@ function buffomatModule:InitGlobalStates()
 
   for i, each_profile in ipairs(profileModule.ALL_PROFILES) do
     if not self.character[each_profile] then
-      self.character[each_profile] = {}
+      self.character[each_profile] = profileModule:New()
     end
   end
 
   --BOM.SharedState = self.shared
   --BOM.CharacterState = self.character
   local soloProfile = profileModule:SoloProfile()
-  BOM.CurrentProfile = self.character[profileModule.ALL_PROFILES[soloProfile] or {}]
+  BOM.CurrentProfile = self.character[soloProfile or "solo"]
 end
 
 ---Called from event handler on Addon Loaded event
@@ -467,7 +416,7 @@ function BuffomatAddon:Init()
   --BOM.SetupItemCache()
   taskScanModule:SetupTasklist()
 
-  BOM.Macro = BOM.Class.Macro:new(constModule.MACRO_NAME)
+  BOM.Macro = macroModule:NewMacro(constModule.MACRO_NAME, nil)
 
   languagesModule:LocalizationInit()
 
@@ -486,7 +435,7 @@ function BuffomatAddon:Init()
     end
   end
 
-  BOM.Tool.EnableSize(BomC_MainWindow, 8, nil, function()
+  toolboxModule:EnableSize(BomC_MainWindow, 8, nil, function()
     BOM.SaveWindowPosition()
   end)
 
@@ -507,14 +456,14 @@ function BuffomatAddon:Init()
     buffomatModule:OptionsUpdate()
   end
 
-  BOM.Tool.SlashCommand({ "/bom", "/buffomat" }, {
+  toolboxModule:SlashCommand({ "/bom", "/buffomat" }, {
     { "debug", "", {
       { "buff", "", BOM.DebugBuffList },
       { "target", "", BOM.DebugBuffs, "target" },
     },
     },
     { "profile", "", {
-      { "%", _t("SlashProfile"), BOM.ChooseProfile }
+      { "%", _t("SlashProfile"), buffomatModule.ChooseProfile }
     },
     },
     { "spellbook", _t("SlashSpellBook"), BOM.SetupAvailableSpells },
@@ -568,15 +517,16 @@ function BuffomatAddon:OnEnable()
   -- the game that wasn't available in OnInitialize
   self:Init()
   eventsModule:InitEvents()
+  local onClick = function(self, button)
+    if button == "LeftButton" then
+      buffomatModule:ToggleWindow()
+    else
+      optionsPopupModule:Setup(self, true)
+    end
+  end
   toolboxModule:AddDataBroker(
           constModule.BOM_BEAR_ICON_FULLPATH,
-          function(self, button)
-            if button == "LeftButton" then
-              buffomatModule:ToggleWindow()
-            else
-              optionsPopupModule:Setup(self, true)
-            end
-          end)
+          onClick, nil, nil)
   buffomatModule:UseProfile(profileModule:SoloProfile())
 end
 
@@ -585,23 +535,23 @@ function BuffomatAddon:OnDisable()
 end
 
 function buffomatModule:DownGrade()
-  if BOM.CastFailedSpell
-          and BOM.CastFailedSpell.SkipList
-          and BOM.CastFailedSpellTarget then
-    local level = UnitLevel(BOM.CastFailedSpellTarget.unitId)
+  if BOM.castFailedBuff
+          and (--[[---@not nil]] BOM.castFailedBuff).SkipList
+          and BOM.castFailedBuffTarget then
+    local level = UnitLevel((--[[---@not nil]] BOM.castFailedBuffTarget).unitId)
 
     if level ~= nil and level > -1 then
-      if buffomatModule.shared.SpellGreaterEqualThan[BOM.CastFailedSpellId] == nil
-              or buffomatModule.shared.SpellGreaterEqualThan[BOM.CastFailedSpellId] < level
+      if self.shared.SpellGreaterEqualThan[BOM.castFailedSpellId] == nil
+              or self.shared.SpellGreaterEqualThan[BOM.castFailedSpellId] < level
       then
-        buffomatModule.shared.SpellGreaterEqualThan[BOM.CastFailedSpellId] = level
-        BOM.FastUpdateTimer()
-        buffomatModule:SetForceUpdate("Downgrade")
-        buffomatModule:P(string.format(_t("MsgDownGrade"),
-                BOM.CastFailedSpell.singleText,
-                BOM.CastFailedSpellTarget.name))
+        self.shared.SpellGreaterEqualThan[BOM.castFailedSpellId] = level
+        self:FastUpdateTimer()
+        self:SetForceUpdate("Downgrade")
+        self:P(string.format(_t("MsgDownGrade"),
+                (--[[---@not nil]] BOM.castFailedBuff).singleText,
+                ((--[[---@not nil]] BOM.castFailedBuffTarget).name)))
 
-      elseif buffomatModule.shared.SpellGreaterEqualThan[BOM.CastFailedSpellId] >= level then
+      elseif buffomatModule.shared.SpellGreaterEqualThan[BOM.castFailedSpellId] >= level then
         BOM.AddMemberToSkipList()
       end
     else
@@ -689,7 +639,7 @@ function buffomatModule.UpdateTimer(elapsed)
 
     -- Debug: Print the callers as reasons to force update
     -- buffomatModule:PrintCallers("Update: ", buffomatModule.forceUpdateRequestedBy)
-    buffomatModule:ClearForceUpdate()
+    buffomatModule:ClearForceUpdate(nil)
     taskScanModule:ScanNow("timer")
 
     -- If updatescan call above took longer than 32 ms, and repeated update, then
@@ -709,13 +659,13 @@ function buffomatModule.UpdateTimer(elapsed)
   end
 end
 
-function BOM.FastUpdateTimer()
+function buffomatModule:FastUpdateTimer()
   buffomatModule.lastUpdateTimestamp = 0
 end
 
-BOM.PlayerBuffs = {}
+BOM.PlayerBuffs = --[[---@type BomBuffCollectionPerUnit]] {}
 
----@class BomUnitAuraResult
+---@shape BomUnitAuraResult
 ---@field name string The name of the spell or effect of the debuff. This is the name shown in yellow when you mouse over the icon
 ---@field icon string The path to the icon file
 ---@field count number The number of times the debuff has been applied to the target. Returns 0 for any debuff which doesn't stack.
@@ -753,6 +703,7 @@ end
 ---@param filter string Filter string like "HELPFUL", "PLAYER", "RAID"... etc
 ---@return BomUnitAuraResult
 function buffomatModule:UnitAura(unitId, buffIndex, filter)
+  ---@type string, string, number, string, number, number, string, boolean, boolean, number, boolean, boolean, boolean, boolean, number
   local name, icon, count, debuffType, duration, expirationTime, source, isStealable
   , nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, castByPlayer
   , nameplateShowAll, timeMod = UnitAura(unitId, buffIndex, filter)
@@ -769,14 +720,16 @@ function buffomatModule:UnitAura(unitId, buffIndex, filter)
       end
 
       if duration > 0 and (expirationTime == nil or expirationTime == 0) then
-        local destName = (UnitFullName(unitId))
+        local destName = UnitFullName(unitId) ---@type string
 
         if BOM.PlayerBuffs[destName] and BOM.PlayerBuffs[destName][name] then
           expirationTime = BOM.PlayerBuffs[destName][name] + duration
 
-          if expirationTime <= GetTime() then
-            BOM.PlayerBuffs[destName][name] = GetTime()
-            expirationTime = GetTime() + duration
+          local now = GetTime()
+
+          if expirationTime <= now then
+            BOM.PlayerBuffs[destName][name] = now
+            expirationTime = now + duration
           end
         end
       end
@@ -788,21 +741,23 @@ function buffomatModule:UnitAura(unitId, buffIndex, filter)
 
   end
 
-  return { name                  = name,
-           icon                  = icon,
-           count                 = count,
-           debuffType            = debuffType,
-           duration              = duration,
-           expirationTime        = expirationTime,
-           source                = source,
-           isStealable           = isStealable,
-           nameplateShowPersonal = nameplateShowPersonal,
-           spellId               = spellId,
-           canApplyAura          = canApplyAura,
-           isBossDebuff          = isBossDebuff,
-           castByPlayer          = castByPlayer,
-           nameplateShowAll      = nameplateShowAll,
-           timeMod               = timeMod }
+  return {
+    name                  = name,
+    icon                  = icon,
+    count                 = count,
+    debuffType            = debuffType,
+    duration              = duration,
+    expirationTime        = expirationTime,
+    source                = source,
+    isStealable           = isStealable,
+    nameplateShowPersonal = nameplateShowPersonal,
+    spellId               = spellId,
+    canApplyAura          = canApplyAura,
+    isBossDebuff          = isBossDebuff,
+    castByPlayer          = castByPlayer,
+    nameplateShowAll      = nameplateShowAll,
+    timeMod               = timeMod
+  }
 end
 
 buffomatModule.autoHelper = "open"
@@ -847,11 +802,11 @@ function buffomatModule:ToggleWindow()
   else
     buffomatModule:SetForceUpdate("toggleWindow")
     taskScanModule:ScanNow("toggleWindow")
-    BOM.ShowWindow()
+    BOM.ShowWindow(nil)
   end
 end
 
-function BOM.AutoOpen()
+function buffomatModule:AutoOpen()
   if not InCombatLockdown() and buffomatModule.shared.AutoOpen then
     if not BOM.WindowVisible() and buffomatModule.autoHelper == "open" then
       buffomatModule.autoHelper = "close"
@@ -862,7 +817,7 @@ function BOM.AutoOpen()
   end
 end
 
-function BOM.AutoClose(x)
+function buffomatModule:AutoClose()
   if not InCombatLockdown() and buffomatModule.shared.AutoOpen then
     if BOM.WindowVisible() then
       if buffomatModule.autoHelper == "close" then
@@ -909,9 +864,9 @@ local function perform_whisper_request(name)
   ChatFrame_OpenChat("/w " .. name .. " ")
 end
 
-function BOM.EnterHyperlink(self, link, text)
+function BOM.EnterHyperlink(_control, link)
   --print(link,text)
-  local part = BOM.Tool.Split(link, ":")
+  local part = toolboxModule:Split(link, ":")
   if part[1] == "spell" or part[1] == "unit" or part[1] == "item" then
     GameTooltip_SetDefaultAnchor(BomC_Tooltip, UIParent)
     BomC_Tooltip:SetOwner(UIParent, "ANCHOR_PRESERVE")
@@ -926,7 +881,7 @@ function BOM.LeaveHyperlink(self)
 end
 
 function BOM.ClickHyperlink(self, link)
-  local part = BOM.Tool.Split(link, ":")
+  local part = toolboxModule:Split(link, ":")
   if part[1] == "unit" then
     if IsShiftKeyDown() then
       perform_who_request(part[3])

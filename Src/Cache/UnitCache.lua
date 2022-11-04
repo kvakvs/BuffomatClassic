@@ -149,7 +149,7 @@ function unitCacheModule:Get40manRaidMembers(playerUnit)
     , role, isML, combatRole = GetRaidRosterInfo(raid_index)
 
     if name then
-      name = BOM.Tool.Split(name, "-")[1]
+      name = toolboxModule:Split(name, "-")[1]
       name_group[name] = subgroup
       name_role[name] = role
     end

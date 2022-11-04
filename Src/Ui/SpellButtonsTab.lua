@@ -59,8 +59,8 @@ spellButtonsTabModule.spellSettingsFrames = {}
 ---@param playerIsHorde boolean Whether we are the horde
 ---@param spell BomBuffDefinition The spell currently being displayed
 function spellButtonsTabModule:AddSpellRow_ClassSelector(rowBuilder, playerIsHorde, spell, profileSpell)
-  local tooltip1 = BOM.FormatTexture(BOM.ICON_SELF_CAST_ON) .. " - " .. _t("TooltipSelfCastCheckbox_Self") .. "|n"
-          .. BOM.FormatTexture(BOM.ICON_SELF_CAST_OFF) .. " - " .. _t("TooltipSelfCastCheckbox_Party")
+  local tooltip1 = BOM.FormatTexture(texturesModule.ICON_SELF_CAST_ON) .. " - " .. _t("TooltipSelfCastCheckbox_Self") .. "|n"
+          .. BOM.FormatTexture(texturesModule.ICON_SELF_CAST_OFF) .. " - " .. _t("TooltipSelfCastCheckbox_Party")
   local selfcastToggle = spell.frames:CreateSelfCastToggle(tooltip1)
   rowBuilder:ChainToTheRight(nil, selfcastToggle, 5)
   selfcastToggle:SetVariable(profileSpell, "SelfCast")
@@ -70,8 +70,8 @@ function spellButtonsTabModule:AddSpellRow_ClassSelector(rowBuilder, playerIsHor
   --------------------------------------
   for ci, class in ipairs(BOM.Tool.Classes) do
     local tooltip2 = BOM.Tool.IconClass[class] .. " - " .. _t("TooltipCastOnClass") .. ": " .. BOM.Tool.ClassName[class] .. "|n"
-            .. BOM.FormatTexture(BOM.ICON_EMPTY) .. " - " .. _t("TabDoNotBuff") .. ": " .. BOM.Tool.ClassName[class] .. "|n"
-            .. BOM.FormatTexture(BOM.ICON_DISABLED) .. " - " .. _t("TabBuffOnlySelf")
+            .. BOM.FormatTexture(texturesModule.ICON_EMPTY) .. " - " .. _t("TabDoNotBuff") .. ": " .. BOM.Tool.ClassName[class] .. "|n"
+            .. BOM.FormatTexture(texturesModule.ICON_DISABLED) .. " - " .. _t("TabBuffOnlySelf")
     local classToggle = spell.frames:CreateClassToggle(class, tooltip2, bomDoBlessingOnClick)
     classToggle:SetVariable(profileSpell.Class, class)
     rowBuilder:ChainToTheRight(nil, classToggle, 0)
@@ -145,10 +145,10 @@ function spellButtonsTabModule:AddGroupScanSelector(rowBuilder)
   if self.spellSettingsFrames.Settings == nil then
     self.spellSettingsFrames.Settings = managedUiModule:CreateManagedButton(
             BomC_SpellTab_Scroll_Child,
-            BOM.ICON_GEAR,
+            texturesModule.ICON_GEAR,
             nil,
             nil,
-            { 0.1, 0.9, 0.1, 0.9 },
+            texturesModule.ICONCOORD,
             nil, nil, "groupScanSelector.icon")
   end
 
@@ -163,15 +163,15 @@ function spellButtonsTabModule:AddGroupScanSelector(rowBuilder)
     if self.spellSettingsFrames[i] == nil then
       self.spellSettingsFrames[i] = managedUiModule:CreateManagedButton(
               BomC_SpellTab_Scroll_Child,
-              BOM.ICON_GROUP_ITEM,
-              BOM.ICON_GROUP_NONE,
+              texturesModule.ICON_GROUP_ITEM,
+              texturesModule.ICON_GROUP_NONE,
               nil, nil, nil, nil, "groupScanSelector." .. tostring(i))
     end
 
     rowBuilder:ChainToTheRight(nil, self.spellSettingsFrames[i], 2)
     self.spellSettingsFrames[i]:SetVariable(buffomatModule.character.WatchGroup, i)
     self.spellSettingsFrames[i]:SetText(i)
-    BOM.Tool.TooltipText(self.spellSettingsFrames[i], string.format(_t("TooltipGroup"), i))
+    toolboxModule:TooltipText(self.spellSettingsFrames[i], string.format(_t("TooltipGroup"), i))
     self.spellSettingsFrames[i]:Show()
 
     -- Let the MyButton library function handle the data update, and update the tab text too
@@ -408,7 +408,7 @@ end
 ---@param spell BomBuffDefinition
 function spellButtonsTabModule:UpdateForcecastTooltip(button, spell)
   local tooltip_force_targets = self:ForceTargetsTooltipText(spell)
-  BOM.Tool.TooltipText(
+  toolboxModule:TooltipText(
           button,
           _t("TooltipForceCastOnTarget") .. "|n"
                   .. string.format(_t("FormatToggleTarget"), buffomatModule:Color("ffffff", BOM.lastTarget))
@@ -425,7 +425,7 @@ end
 ---@param spell BomBuffDefinition
 function spellButtonsTabModule:UpdateExcludeTargetsTooltip(button, spell)
   local tooltip_exclude_targets = self:ExcludeTargetsTooltip(spell)
-  BOM.Tool.TooltipText(
+  toolboxModule:TooltipText(
           button,
           _t("TooltipExcludeTarget") .. "|n"
                   .. string.format(_t("FormatToggleTarget"), buffomatModule:Color("ffffff", BOM.lastTarget))
@@ -509,11 +509,11 @@ function spellButtonsTabModule:UpdateSelectedSpell(spell)
 
       forceCastButton:SetScript("OnClick", function(self)
         if spellForcedTarget[lastTarget] == nil then
-          buffomatModule:P(BOM.FormatTexture(BOM.ICON_TARGET_ON) .. " "
+          buffomatModule:P(BOM.FormatTexture(texturesModule.ICON_TARGET_ON) .. " "
                   .. _t("MessageAddedForced") .. ": " .. lastTarget)
           spellForcedTarget[lastTarget] = lastTarget
         else
-          buffomatModule:P(BOM.FormatTexture(BOM.ICON_TARGET_ON) .. " "
+          buffomatModule:P(BOM.FormatTexture(texturesModule.ICON_TARGET_ON) .. " "
                   .. _t("MessageClearedForced") .. ": " .. lastTarget)
           spellForcedTarget[lastTarget] = nil
         end
@@ -528,11 +528,11 @@ function spellButtonsTabModule:UpdateSelectedSpell(spell)
 
       excludeButton:SetScript("OnClick", function(control)
         if spell_exclude[lastTarget] == nil then
-          buffomatModule:P(BOM.FormatTexture(BOM.ICON_TARGET_EXCLUDE) .. " "
+          buffomatModule:P(BOM.FormatTexture(texturesModule.ICON_TARGET_EXCLUDE) .. " "
                   .. _t("MessageAddedExcluded") .. ": " .. lastTarget)
           spell_exclude[lastTarget] = lastTarget
         else
-          buffomatModule:P(BOM.FormatTexture(BOM.ICON_TARGET_EXCLUDE) .. " "
+          buffomatModule:P(BOM.FormatTexture(texturesModule.ICON_TARGET_EXCLUDE) .. " "
                   .. _t("MessageClearedExcluded") .. ": " .. lastTarget)
           spell_exclude[lastTarget] = nil
         end
@@ -542,14 +542,14 @@ function spellButtonsTabModule:UpdateSelectedSpell(spell)
     else
       --======================================
       forceCastButton:Disable()
-      BOM.Tool.TooltipText(
+      toolboxModule:TooltipText(
               forceCastButton,
               _t("TooltipForceCastOnTarget") .. "|n" .. _t("TooltipSelectTarget")
                       .. self:ForceTargetsTooltipText(profileSpell))
       --force_cast_button:SetVariable()
       ---------------------------------
       excludeButton:Disable()
-      BOM.Tool.TooltipText(
+      toolboxModule:TooltipText(
               excludeButton,
               _t("TooltipExcludeTarget") .. "|n" .. _t("TooltipSelectTarget")
                       .. self:ExcludeTargetsTooltip(profileSpell))

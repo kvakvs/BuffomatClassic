@@ -1,9 +1,11 @@
 local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BomAddon
 
----@class BomUiMyButtonModule
----@field managed table<string, BomLegacyControl> Contains all MyButtons with uniqueId
----@field managedWithoutUniqueId table<number, BomLegacyControl> Contains all MyButtons without uniqueId
+---@alias BomManagedControlsTable {[string] = BomLegacyControl|BomControl}
+
+---@shape BomUiMyButtonModule
+---@field managed BomManagedControlsTable Contains all MyButtons with uniqueId
+---@field managedWithoutUniqueId BomLegacyControl[] Contains all MyButtons without uniqueId
 local managedUiModule = {
   managed                = {},
   managedWithoutUniqueId = {},
@@ -165,15 +167,15 @@ function BOM.MyButton_SetTextures(self, sel, unsel, dis, selCoord, unselCoord, d
   BOM.MyButton_Update(self)
 end
 
----@param db table<string, any> A storage table where clicking the button will modify something
+---@param self BomLegacyControl
+---@param db table A storage table where clicking the button will modify something
 ---@param var string Key in the table to be modified
 ---@param set any Value to be written to the table if the button is clicked
----@param self BomLegacyControl
 function BOM.MyButton_SetVariable(self, db, var, set)
   self._privat_DB = db
   self._privat_Var = var
   self._privat_Set = set
-  self:SetState()
+  self:SetState(nil)
 end
 
 function BOM.MyButton_SetTooltipLink(self, link)
@@ -196,24 +198,26 @@ end
 ---@param parent table - UI parent frame
 ---@param sel string - texture for checked / selected
 ---@param unsel string - texture for unchecked / unselected
----@param dis string - texture for disabled
----@param selCoord table - texcoord for selected
----@param unselCoord table - texcoord for unselected
----@param disCoord table - texcoord for disabled
+---@param dis string|nil - texture for disabled
+---@param selCoord number[]|nil - texcoord for selected
+---@param unselCoord number[]|nil - texcoord for unselected
+---@param disCoord number[]|nil - texcoord for disabled
 ---@param uniqueId string|nil - set to nil to not add button to bom_managed_mybuttons, or pass unique id
 ---@return BomLegacyControl
 function managedUiModule:CreateManagedButton(parent, sel, unsel, dis, selCoord, unselCoord, disCoord, uniqueId)
   local newButtonFrame = CreateFrame("frame", nil, parent, "BomC_MyButton")
-  BOM.MyButton_OnLoad(newButtonFrame)
+  BOM.MyButton_OnLoad(newButtonFrame, false)
   newButtonFrame:SetTextures(sel, unsel, dis, selCoord, unselCoord, disCoord)
 
   self:ManageControl(uniqueId, newButtonFrame)
   return newButtonFrame
 end
 
+---@param uniqueId string|nil Pass a nil to not add button to bom_managed_mybuttons, or provide an unique id
+---@param control BomLegacyControl
 function managedUiModule:ManageControl(uniqueId, control)
   if uniqueId ~= nil then
-    self.managed[uniqueId] = control
+    self.managed[--[[---@not nil]]uniqueId] = control
   else
     table.insert(self.managedWithoutUniqueId, control)
   end
@@ -237,7 +241,7 @@ function managedUiModule:UpdateAll()
   end
   for i, control in ipairs(self.managedWithoutUniqueId) do
     if control.SetState then
-      control:SetState()
+      control:SetState(nil)
     end
   end
 end

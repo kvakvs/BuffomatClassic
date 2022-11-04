@@ -7,9 +7,14 @@ BomModuleManager.characterSettingsModule = characterSettingsModule
 
 local profileModule = BomModuleManager.profileModule
 
----@class BomCharacterSettings Current character state snapshots per profile
----@field Spell table<number, BomBuffDefinition> # see also assignment to ["Spell"] in buffomatModule:InitGlobalStates()
----@field Duration table<string, number> Remaining aura duration on SELF, keyed with buff names
+---@alias BomProfileName "solo"|"group"|"raid"|"battleground"|"solo_spec2"|"group_spec2"|"raid_spec2"|"battleground_spec2"
+
+---@shape BomSpellCooldownsTable
+---@field [string] number
+
+---@shape BomCharacterSettings Current character state snapshots per profile
+---@field [BomProfileName] BomProfile Access to subprofiles [solo, group, raid, battleground, ...]
+---@field Duration BomSpellCooldownsTable Remaining aura duration on SELF, keyed with buff names
 ---@field LastTracking number Icon id for the last active tracking (not relevant in TBC?)
 ---@field solo BomProfile
 ---@field group BomProfile
@@ -20,7 +25,12 @@ local profileModule = BomModuleManager.profileModule
 ---@field raid_spec2 BomProfile Alternate talents for WotLK dualspec
 ---@field battleground_spec2 BomProfile Alternate talents for WotLK dualspec
 ---@field BuffCategoriesHidden table<string, boolean> True if category is hidden (control in options)
----@field WatchGroup table<string, boolean> True to watch buffs in group 1..8
+---@field WatchGroup table<number, boolean> True to watch buffs in group 1..8
+---@field Spell BomBuffDefinition[]|nil # see also assignment to ["Spell"] in buffomatModule:InitGlobalStates()
+---@field CancelBuff table|nil
+---@field LastSeal number|nil
+---@field LastAura number|nil
+
 local characterStateClass = {}
 characterStateClass.__index = characterStateClass
 

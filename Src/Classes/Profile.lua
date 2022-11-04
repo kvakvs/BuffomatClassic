@@ -2,14 +2,14 @@ local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BomAddon
 
 ---@class BomProfileModule
----@field ALL_PROFILES table<number, string>
+---@field ALL_PROFILES BomProfileName[]
 local profileModule = {}
 BomModuleManager.profileModule = profileModule
 
 local buffomatModule = BomModuleManager.buffomatModule
 local _t = BomModuleManager.languagesModule
 
----@class BomProfile Snapshot of current options state as selected by the player
+---@shape BomProfile Snapshot of current options state as selected by the player
 ---Named options: Are addressed by their string name in translations, control names, etc
 ---@field ArgentumDawn boolean Warn if AD trinket is equipped while in an instance 
 ---@field AutoDismount boolean Dismount if necessary for buff cast 
@@ -38,12 +38,15 @@ local _t = BomModuleManager.languagesModule
 ---@field ShowTBCConsumables boolean Will show TBC consumables in the list
 ---@field UseRank boolean Use ranked spells
 ---@field SlowerHardware boolean Less frequent updates
----
 ---@field Cache table<number, table> Caches responses from GetItemInfo() and GetSpellInfo()
+---@field CancelBuff table|nil
+---@field Spell BomBuffDefinition[]|nil
+---@field LastSeal number|nil
+---@field LastAura number|nil
 
 ---@return BomProfile
 function profileModule:New()
-  local profile = {} ---@type BomProfile
+  local profile = --[[---@type BomProfile]] {}
   profile.AutoOpen = true
   profile.AutoStand = true
   profile.BuffTarget = true
@@ -81,6 +84,7 @@ local function bomGetActiveTalentGroup()
   end
 end
 
+---@return BomProfileName
 function profileModule:SoloProfile()
   local spec = bomGetActiveTalentGroup()
   if spec == 1 or spec == nil then
@@ -90,6 +94,7 @@ function profileModule:SoloProfile()
   end
 end
 
+---@return BomProfileName
 function profileModule:GroupProfile()
   local spec = bomGetActiveTalentGroup()
   if spec == 1 or spec == nil then
@@ -99,6 +104,7 @@ function profileModule:GroupProfile()
   end
 end
 
+---@return BomProfileName
 function profileModule:RaidProfile()
   local spec = bomGetActiveTalentGroup()
   if spec == 1 or spec == nil then
@@ -108,6 +114,7 @@ function profileModule:RaidProfile()
   end
 end
 
+---@return BomProfileName
 function profileModule:BattlegroundProfile()
   local spec = bomGetActiveTalentGroup()
   if spec == 1 or spec == nil then
@@ -119,7 +126,7 @@ end
 
 ---Based on profile settings and current PVE or PVP instance choose the mode
 ---of operation
----@return string
+---@return BomProfileName
 function profileModule:ChooseProfile()
   local _inInstance, instanceType = IsInInstance()
   local selectedProfile = self:SoloProfile()
