@@ -26,7 +26,7 @@ function shamanModule:SetupShamanSpells(allBuffs, enchants)
                                25489, -- TBC: Flametongue Weapon 7
                                58785, 58789, 58790 }) -- WotLK: Flametongue Weapon 8-10
                :RequirePlayerClass("SHAMAN")
-               :Category(allBuffsModule.CLASS_WEAPON_ENCHANTMENT)
+               :Category("class"_WEAPON_ENCHANTMENT)
   enchants[16342] = { 3, 4, 5, 523, 1665, 1666, -- Flametongue 1-6
                       2634, -- TBC: Flametongue 7
                       3779, 3780, 3781 } -- WotLK: Flametongue 8-10
@@ -43,7 +43,7 @@ function shamanModule:SetupShamanSpells(allBuffs, enchants)
                                25500, -- TBC: Frostbrand Weapon 6
                                58794, 58795, 58796 }) -- WotLK: Frostbrand Weapon 7-9
                :RequirePlayerClass("SHAMAN")
-               :Category(allBuffsModule.CLASS_WEAPON_ENCHANTMENT)
+               :Category("class"_WEAPON_ENCHANTMENT)
   enchants[16356] = { 2, 12, 524, 1667, 1668, -- Frostbrand
                       2635, -- TBC: Frostbrand 6
                       3782, 3783, 3784 } -- WotLK: Frostbrand 7-9
@@ -60,7 +60,7 @@ function shamanModule:SetupShamanSpells(allBuffs, enchants)
                                25479, 25485 }) -- TBC: Ranks 8-9
                :RequirePlayerClass("SHAMAN")
                :HideInWotLK()
-               :Category(allBuffsModule.CLASS_WEAPON_ENCHANTMENT)
+               :Category("class"_WEAPON_ENCHANTMENT)
 
   -- Note: in TBC all enchantIds for rockbiter have changed
   enchants[16316] = { 1, 6, 29, 503, 504, 683, 1663, 1664, -- Rockbiter, also 504 some special +80 Rockbiter?
@@ -80,7 +80,7 @@ function shamanModule:SetupShamanSpells(allBuffs, enchants)
                                25505, -- TBC: Windfury Weapon 5
                                58801, 58803, 58804 }) -- WotLK: Windfury Weapon 6-8
                :RequirePlayerClass("SHAMAN")
-               :Category(allBuffsModule.CLASS_WEAPON_ENCHANTMENT)
+               :Category("class"_WEAPON_ENCHANTMENT)
   enchants[16362] = { 283, 284, 525, 1669, -- Windfury 1-4
                       2636, -- TBC: Windfury 5
                       3785, 3786, 3787 } -- WotLK: Windfury 6-8
@@ -95,7 +95,7 @@ function shamanModule:SetupShamanSpells(allBuffs, enchants)
                :SingleDuration(enchantmentDuration)
                :SingleFamily({ 51730, 51988, 51991, 51992, 51993, 51994 }) -- WotLK: Earthliving Weapon 1-6
                :RequirePlayerClass("SHAMAN")
-               :Category(allBuffsModule.CLASS_WEAPON_ENCHANTMENT)
+               :Category("class"_WEAPON_ENCHANTMENT)
   enchants[51730] = { 3345, 3346, 3347, 3348, 3349, 3350 } -- WotLK: Earthliving 1-6
 
   -- Lightning Shield / Blitzschlagschild
@@ -107,7 +107,7 @@ function shamanModule:SetupShamanSpells(allBuffs, enchants)
                                25469, 25472, -- TBC: Lightning Shield 8-9
                                49280, 49281 }) -- WotLK: Lightning Shield 10-11
                :RequirePlayerClass("SHAMAN")
-               :Category(allBuffsModule.CLASS)
+               :Category("class")
 
   -- Water Walking (no reagent in WotLK with a glyph)
   buffDefModule:createAndRegisterBuff(allBuffs, 546, nil)
@@ -115,7 +115,7 @@ function shamanModule:SetupShamanSpells(allBuffs, enchants)
                :SingleDuration(allBuffsModule.DURATION_10M)
                :DefaultTargetClasses(allBuffsModule.BOM_ALL_CLASSES)
                :RequirePlayerClass("SHAMAN")
-               :Category(allBuffsModule.CLASS)
+               :Category("class")
 
   -- Water Breathing (no reagent in WotLK with a glyph)
   buffDefModule:createAndRegisterBuff(allBuffs, 131, nil)
@@ -123,7 +123,7 @@ function shamanModule:SetupShamanSpells(allBuffs, enchants)
                :SingleDuration(allBuffsModule.DURATION_10M)
                :DefaultTargetClasses(allBuffsModule.BOM_ALL_CLASSES)
                :RequirePlayerClass("SHAMAN")
-               :Category(allBuffsModule.CLASS)
+               :Category("class")
 
   -- Water Shield
   buffDefModule:createAndRegisterBuff(allBuffs, 33736, nil)
@@ -135,7 +135,7 @@ function shamanModule:SetupShamanSpells(allBuffs, enchants)
                                57960 }) -- WotLK: Water Shield 9
                :RequirePlayerClass("SHAMAN")
                :RequireTBC()
-               :Category(allBuffsModule.CLASS)
+               :Category("class")
 
   -- Ancestral Spirit / Auferstehung
   buffDefModule:createAndRegisterBuff(allBuffs, 20777, nil)
@@ -145,5 +145,5 @@ function shamanModule:SetupShamanSpells(allBuffs, enchants)
                                25590, -- TBC: Ancestral Spirit 6
                                49277 }) -- WotLK: Ancestral Spirit 7
                :RequirePlayerClass("SHAMAN")
-               :Category(allBuffsModule.CLASS)
+               :Category("class")
 end

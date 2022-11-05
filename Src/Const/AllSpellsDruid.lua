@@ -29,7 +29,7 @@ function druidModule:SetupDruidSpells(allBuffs, enchantments)
                                   44605 }) -- WotLK: Wild Spineleaf
                :DefaultTargetClasses(allBuffsModule.BOM_ALL_CLASSES)
                :RequirePlayerClass("DRUID")
-               :Category(allBuffsModule.CLASS)
+               :Category("class")
 
   --Thorns | Dornen
   buffDefModule:createAndRegisterBuff(allBuffs, 9910, nil)
@@ -41,7 +41,7 @@ function druidModule:SetupDruidSpells(allBuffs, enchantments)
                :SingleDuration(allBuffsModule.DURATION_10M)
                :DefaultTargetClasses(allBuffsModule.MELEE_CLASSES)
                :RequirePlayerClass("DRUID")
-               :Category(allBuffsModule.CLASS)
+               :Category("class")
 
   --Omen of Clarity
   buffDefModule:createAndRegisterBuff(allBuffs, 16864, nil)
@@ -49,7 +49,7 @@ function druidModule:SetupDruidSpells(allBuffs, enchantments)
                :RequiresCancelForm(true)
                :IsDefault(true)
                :RequirePlayerClass("DRUID")
-               :Category(allBuffsModule.CLASS)
+               :Category("class")
 
   -- Nature's Grasp | Griff der Natur
   buffDefModule:createAndRegisterBuff(allBuffs, 17329, nil)
@@ -62,7 +62,7 @@ function druidModule:SetupDruidSpells(allBuffs, enchantments)
                                27009, -- TBC: Nature's Grasp 7
                                53312 }) -- WotLK: Nature's Grasp 8
                :RequirePlayerClass("DRUID")
-               :Category(allBuffsModule.CLASS)
+               :Category("class")
 
   --TBC: Tree of life
   buffDefModule:createAndRegisterBuff(allBuffs, 33891, nil)
@@ -71,7 +71,7 @@ function druidModule:SetupDruidSpells(allBuffs, enchantments)
                :ShapeshiftFormId(2)
                :RequirePlayerClass("DRUID")
                :RequireTBC() -- Requires TBC and up
-               :Category(allBuffsModule.CLASS)
+               :Category("class")
 
   -- Special code: This will disable herbalism and mining tracking in Cat Form
   -- Track Humanoids (Cat Form)
@@ -91,5 +91,5 @@ function druidModule:SetupDruidSpells(allBuffs, enchantments)
                :SingleFamily({ 50769, 50768, 50767, 50766, 50765, 50764, 50763 }) -- WotLK: Revive 1-7
                :RequireWotLK()
                :RequirePlayerClass("DRUID")
-               :Category(allBuffsModule.CLASS)
+               :Category("class")
 end

@@ -8,7 +8,7 @@ BomModuleManager.spellIdsModule = spellIdsModule
 
 BOM.SpellId = {}
 
-BOM.SpellId.WotlkFood80 = 45548
+spellIdsModule.WotlkFood80 = 45548
 
 spellIdsModule.Mage_ConjureManaSapphire = 42985
 spellIdsModule.Mage_ConjureManaEmerald = 27101

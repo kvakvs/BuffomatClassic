@@ -28,7 +28,7 @@ function priestModule:CreatePrayerOfSpiritBuff()
                        57565, -- Fel Intelligence 3 (Wotlk Warlock)
                        57566, -- Fel Intelligence 4 (Wotlk Warlock)
                        57567 }) -- Fel Intelligence 5 (Wotlk Warlock)
-   :Category(allBuffsModule.CLASS)
+   :Category("class")
   return b
 end
 
@@ -41,7 +41,7 @@ function priestModule:CreatePowerWordShieldBuff()
    :SingleDuration(30)
    :HasCooldown(true)
    :DefaultTargetClasses(allBuffsModule.BOM_NO_CLASSES)
-   :Category(allBuffsModule.CLASS)
+   :Category("class")
   return b
 end
 
@@ -64,7 +64,7 @@ function priestModule:SetupPriestSpells(allBuffs, enchants)
                :ReagentRequired({ 17028, 17029, -- Candle
                                   44615 })  -- WotLK: Devout Candle
                :DefaultTargetClasses(allBuffsModule.BOM_ALL_CLASSES)
-               :Category(allBuffsModule.CLASS)
+               :Category("class")
                :IgnoreIfHaveBuff(46302) -- Kiru's Song of Victory (Sunwell)
                :RequirePlayerClass("PRIEST")
 
@@ -85,7 +85,7 @@ function priestModule:SetupPriestSpells(allBuffs, enchants)
                :ReagentRequired({ 17028, 17029,
                                   44615 })  -- WotLK: Devout Candle
                :DefaultTargetClasses(allBuffsModule.BOM_ALL_CLASSES)
-               :Category(allBuffsModule.CLASS)
+               :Category("class")
                :RequirePlayerClass("PRIEST")
 
   -- Fear Ward
@@ -94,7 +94,7 @@ function priestModule:SetupPriestSpells(allBuffs, enchants)
                :SingleDuration(allBuffsModule.DURATION_10M)
                :HasCooldown(true)
                :DefaultTargetClasses(allBuffsModule.BOM_ALL_CLASSES)
-               :Category(allBuffsModule.CLASS)
+               :Category("class")
                :RequirePlayerClass("PRIEST")
 
   tinsert(allBuffs, self:CreatePowerWordShieldBuff())
@@ -105,7 +105,7 @@ function priestModule:SetupPriestSpells(allBuffs, enchants)
                :IsOwn(true)
                :SingleFamily({ 2652, 19261, 19262, 19264, 19265, 19266, -- Ranks 1-6
                                25461 }) -- TBC: Rank 7
-               :Category(allBuffsModule.CLASS)
+               :Category("class")
                :RequirePlayerClass("PRIEST")
 
   -- Inner Fire / inneres Feuer
@@ -115,7 +115,7 @@ function priestModule:SetupPriestSpells(allBuffs, enchants)
                :SingleFamily({ 588, 7128, 602, 1006, 10951, 10952, -- Inner Fire 1-6
                                25431, -- TBC: Inner Fire 7
                                48040, 48168 }) -- WotLK: Inner Fire 8-9
-               :Category(allBuffsModule.CLASS)
+               :Category("class")
                :RequirePlayerClass("PRIEST")
 
   -- Shadowguard (Clasic and TBC only)
@@ -124,7 +124,7 @@ function priestModule:SetupPriestSpells(allBuffs, enchants)
                :IsOwn(true)
                :SingleFamily({ 18137, 19308, 19309, 19310, 19311, 19312, -- Ranks 1-6
                                25477 }) -- TBC: Rank 7
-               :Category(allBuffsModule.CLASS)
+               :Category("class")
                :RequirePlayerClass("PRIEST")
 
   -- Elune's Grace (Clasic and TBC only)
@@ -134,13 +134,13 @@ function priestModule:SetupPriestSpells(allBuffs, enchants)
                :SingleFamily({ 2651, -- Rank 1 also TBC: The only rank
                                19289, 19291, 19292, 19293 }) -- Ranks 2-5 (non-TBC)
                :RequirePlayerClass("PRIEST")
-               :Category(allBuffsModule.CLASS)
+               :Category("class")
   -- Shadow Form
   buffDefModule:createAndRegisterBuff(allBuffs, 15473, nil)
                :IsDefault(false)
                :IsOwn(true)
                :RequirePlayerClass("PRIEST")
-               :Category(allBuffsModule.CLASS)
+               :Category("class")
   -- Resurrection / Auferstehung
   buffDefModule:createAndRegisterBuff(allBuffs, 20770, nil)
                :RequiresCancelForm(true)
@@ -150,7 +150,7 @@ function priestModule:SetupPriestSpells(allBuffs, enchants)
                                25435, -- TBC: Resurrection 6
                                48171 }) -- WotLK: Resurrection 7
                :RequirePlayerClass("PRIEST")
-               :Category(allBuffsModule.CLASS)
+               :Category("class")
   -- WotLK: Vampiric Embrace is a buff
   buffDefModule:createAndRegisterBuff(allBuffs, 15286, nil)
                :IsDefault(false)
@@ -158,5 +158,5 @@ function priestModule:SetupPriestSpells(allBuffs, enchants)
                :SingleFamily({ 15286 }) -- WotLK: Vampiric Embrace
                :RequireWotLK()
                :RequirePlayerClass("PRIEST")
-               :Category(allBuffsModule.CLASS)
+               :Category("class")
 end

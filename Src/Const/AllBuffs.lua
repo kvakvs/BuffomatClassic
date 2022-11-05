@@ -1,11 +1,12 @@
 local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BomAddon
 
----@alias BomBuffCategory string
+---@alias BomBuffCategory ""|"tracking"|"pet"|"aura"|"seal"|"blessing"|"class"|"classicPhysFood"|"classicSpellFood"|"classicFood"|"classicPhysElixir"|"classicPhysBuff"|"classicBuff"|"classicSpellElixir"|"classicElixir"|"classicFlask"|"tbcPhysFood"|"tbcSpellFood"|"tbcFood"|"tbcPhysElixir"|"tbcSpellElixir"|"tbcElixir"|"tbcFlask"|"wotlkPhysFood"|"wotlkSpellFood"|"wotlkFood"|"wotlkPhysElixir"|"wotlkSpellElixir"|"wotlkElixir"|"wotlkFlask"|"scroll"|"weaponEnchantment"|"classWeaponEnchantment"
 
 ---@class BomAllBuffsModule
 ---@field buffCategories BomBuffCategory[] Category names for buffs
 ---@field allBuffs {[BomBuffId] BomBuffDefinition} All buffs, same as BOM.AllBuffomatSpells for convenience
+---@field CrusaderAuraSpell BomBuffDefinition
 local allBuffsModule = {}
 
 BomModuleManager.allBuffsModule = allBuffsModule
@@ -124,108 +125,51 @@ end
 function allBuffsModule:SetupTrackingSpells(allBuffs, enchantments)
   buffDefModule:createAndRegisterBuff(allBuffs, spellIdsModule.FindHerbs, -- Find Herbs / kräuter
           { type = "tracking", default = true })
-               :Category(self.TRACKING)
+               :Category("tracking")
 
   buffDefModule:createAndRegisterBuff(allBuffs, spellIdsModule.FindMinerals, -- Find Minerals / erz
           { type = "tracking", default = true })
-               :Category(self.TRACKING)
+               :Category("tracking")
 
   buffDefModule:createAndRegisterBuff(allBuffs, spellIdsModule.FindTreasure, -- Find Treasure / Schatzsuche / Zwerge
           { type = "tracking", default = true })
-               :Category(self.TRACKING)
+               :Category("tracking")
 
   buffDefModule:createAndRegisterBuff(allBuffs, spellIdsModule.FindFish, -- Find Fish (TBC daily quest reward)
           { type = "tracking", default = false })
-               :Category(self.TRACKING)
+               :Category("tracking")
 
   return allBuffs
 end
 
 function allBuffsModule:SetupConstantsCategories()
-  self.CLASSIC_PHYS_FOOD = "classicPhysicalFood"
-  self.CLASSIC_SPELL_FOOD = "classicSpellFood"
-  self.CLASSIC_FOOD = "classicFood"
-  self.CLASSIC_PHYS_ELIXIR = "classicPhysElixir"
-  self.CLASSIC_PHYS_BUFF = "classicPhysBuff"
-  self.CLASSIC_BUFF = "classicBuff"
-  self.CLASSIC_SPELL_ELIXIR = "classicSpellElixir"
-  self.CLASSIC_ELIXIR = "classicElixir"
-  self.CLASSIC_FLASK = "classicFlask"
-
-  self.TBC_PHYS_FOOD = "tbcPhysicalFood"
-  self.TBC_SPELL_FOOD = "tbcSpellFood"
-  self.TBC_FOOD = "tbcFood"
-  self.TBC_PHYS_ELIXIR = "tbcPhysElixir"
-  self.TBC_SPELL_ELIXIR = "tbcSpellElixir"
-  self.TBC_ELIXIR = "tbcElixir"
-  self.TBC_FLASK = "tbcFlask"
-
-  self.WOTLK_PHYS_FOOD = "wotlkPhysicalFood"
-  self.WOTLK_SPELL_FOOD = "wotlkSpellFood"
-  self.WOTLK_FOOD = "wotlkFood"
-  self.WOTLK_PHYS_ELIXIR = "wotlkPhysElixir"
-  self.WOTLK_SPELL_ELIXIR = "wotlkSpellElixir"
-  self.WOTLK_ELIXIR = "wotlkElixir"
-  self.WOTLK_FLASK = "wotlkFlask"
-
-  self.SCROLL = "scroll"
-  self.WEAPON_ENCHANTMENT = "weaponEnchantment"
-  self.CLASS_WEAPON_ENCHANTMENT = "classWeaponEnchantment"
+  --self.CLASSIC_PHYS_FOOD = "classicPhysFood"
+  --self.CLASSIC_SPELL_FOOD = "classicSpellFood"
+  --self.CLASSIC_FOOD = "classicFood"
+  --self.CLASSIC_PHYS_ELIXIR = "classicPhysElixir"
+  --self.CLASSIC_PHYS_BUFF = "classicPhysBuff"
+  --self.CLASSIC_BUFF = "classicBuff"
+  --self.CLASSIC_SPELL_ELIXIR = "classicSpellElixir"
+  --self.CLASSIC_ELIXIR = "classicElixir"
+  --self.CLASSIC_FLASK = "classicFlask"
+  --
+  --self.SCROLL = "scroll"
+  --self.WEAPON_ENCHANTMENT = "weaponEnchantment"
+  --self.CLASS_WEAPON_ENCHANTMENT = "classWeaponEnchantment"
 
   -- Categories ordered for display
   self.buffCategories = {
-    self.CLASS,
-    self.CLASS_WEAPON_ENCHANTMENT,
-    self.BLESSING, self.SEAL, self.AURA,
-    self.PET,
-    self.TRACKING,
-
-    self.WOTLK_PHYS_ELIXIR,
-    self.WOTLK_SPELL_ELIXIR,
-    self.WOTLK_ELIXIR,
-    self.WOTLK_FLASK,
-    self.WOTLK_PHYS_FOOD,
-    self.WOTLK_SPELL_FOOD,
-    self.WOTLK_FOOD,
-
-    self.TBC_PHYS_ELIXIR,
-    self.TBC_SPELL_ELIXIR,
-    self.TBC_ELIXIR,
-    self.TBC_FLASK,
-    self.TBC_PHYS_FOOD,
-    self.TBC_SPELL_FOOD,
-    self.TBC_FOOD,
-
-    self.CLASSIC_PHYS_ELIXIR,
-    self.CLASSIC_PHYS_BUFF,
-    self.CLASSIC_SPELL_ELIXIR,
-    self.CLASSIC_ELIXIR,
-    self.CLASSIC_FLASK,
-    self.CLASSIC_BUFF,
-    self.CLASSIC_PHYS_FOOD,
-    self.CLASSIC_SPELL_FOOD,
-    self.CLASSIC_FOOD,
-
-    self.SCROLL, self.WEAPON_ENCHANTMENT,
-
+    "class", "classWeaponEnchantment", "blessing", "seal", "aura", "pet", "tracking",
+    "wotlkPhysElixir", "wotlkSpellElixir", "wotlkElixir", "wotlkFlask", "wotlkFood", "wotlkPhysFood", "wotlkSpellFood",
+    "tbcPhysElixir", "tbcSpellElixir", "tbcElixir", "tbcFlask", "tbcFood", "tbcPhysFood", "tbcSpellFood",
+    "classicPhysElixir", "classicPhysBuff", "classicSpellElixir", "classicElixir", "classicFlask",
+    "classicFood", "classicPhysFood", "classicSpellFood",
+    "scroll", "weaponEnchantment",
     "", -- special value no category
   }
 end
 
 function allBuffsModule:SetupConstants()
-  -- Elixir types for mutual exclusions
-  self.ELIX_BATTLE = "elixir-battle"
-  self.ELIX_GUARDIAN = "elixir-guardian"
-  self.ELIX_FLASK = "elixir-flask" -- both battle and guardian
-
-  --- Categories for nice display of titles and grouping
-  self.CLASS = "class" -- class buffs go first
-  self.BLESSING = "classBlessing" -- paladin blessings
-  self.PET = "pet" -- class buffs for pets
-  self.TRACKING = "tracking"
-  self.AURA = "aura" -- auras for paladins and hunters etc
-  self.SEAL = "seal" -- seals for paladins
-
   self:SetupConstantsCategories()
 end
 

@@ -21,10 +21,10 @@ function scrollsModule:SetupScrolls(allBuffs, enchantments)
 end
 
 function scrollsModule:AddScroll(buffs, buffSpellId, itemId)
-  return buffDefModule:createAndRegisterBuff(buffs, buffSpellId,
-          { item           = itemId, isConsumable = true, default = false, consumableTarget = "player",
-            singleDuration = allBuffsModule.DURATION_30M,
-          })          :Category(allBuffsModule.SCROLL)
+  return buffDefModule:genericConsumable(buffs, buffSpellId, itemId)
+                      :ConsumableTarget("player")
+                      :SingleDuration(allBuffsModule.DURATION_30M)
+                      :Category("scroll")
 end
 
 ---@param allBuffs BomBuffDefinition[] A list of buffs (not dictionary)

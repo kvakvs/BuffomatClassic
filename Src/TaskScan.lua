@@ -8,6 +8,7 @@ local taskScanModule = {
 BomModuleManager.taskScanModule = taskScanModule
 
 local _t = BomModuleManager.languagesModule
+local allBuffsModule = BomModuleManager.allBuffsModule
 local buffChecksModule = BomModuleManager.buffChecksModule
 local buffDefModule = BomModuleManager.buffDefinitionModule
 local buffomatModule = BomModuleManager.buffomatModule
@@ -1688,7 +1689,7 @@ function taskScanModule:MountedCrusaderAuraPrompt()
   local playerMember = unitCacheModule:GetUnit("player")
 
   if self:IsMountedAndCrusaderAuraRequired() then
-    local spell = BOM.CrusaderAuraSpell
+    local spell = allBuffsModule.CrusaderAuraSpell
     tasklist:AddWithPrefix(
             _t("TASK_CAST"),
             spell.singleLink or spell.singleText,

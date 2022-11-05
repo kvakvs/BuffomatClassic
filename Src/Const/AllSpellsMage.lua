@@ -29,7 +29,7 @@ function mageModule:CreateIntelligenceBuff()
                       :IgnoreIfHaveBuff(57565) -- Fel Intelligence 3 (Wotlk Warlock)
                       :IgnoreIfHaveBuff(57566) -- Fel Intelligence 4 (Wotlk Warlock)
                       :IgnoreIfHaveBuff(57567) -- Fel Intelligence 5 (Wotlk Warlock)
-                      :Category(allBuffsModule.CLASS)
+                      :Category("class")
 end
 
 ---Add MAGE spells
@@ -47,7 +47,7 @@ function mageModule:SetupMageSpells(allBuffs, enchantments)
                                43015 }) -- WotLK: Dampen Magic 7
                :DefaultTargetClasses(allBuffsModule.BOM_NO_CLASSES)
                :RequirePlayerClass("MAGE")
-               :Category(allBuffsModule.CLASS)
+               :Category("class")
   --Amplify Magic
   buffDefModule:createAndRegisterBuff(allBuffs, 10170, nil)
                :IsDefault(false)
@@ -57,7 +57,7 @@ function mageModule:SetupMageSpells(allBuffs, enchantments)
                                43017 }) -- WotLK: Amplify Magic 7
                :DefaultTargetClasses(allBuffsModule.BOM_NO_CLASSES)
                :RequirePlayerClass("MAGE")
-               :Category(allBuffsModule.CLASS)
+               :Category("class")
   -- Ice Armor / eisrüstung
   buffDefModule:createAndRegisterBuff(allBuffs, 10220, nil)
                :BuffType("seal")
@@ -67,7 +67,7 @@ function mageModule:SetupMageSpells(allBuffs, enchantments)
                                27124, -- TBC: Ice Armor 5
                                43008 }) -- WotLK: Ice Armor 6
                :RequirePlayerClass("MAGE")
-               :Category(allBuffsModule.CLASS)
+               :Category("class")
   -- Ice Barrier
   buffDefModule:createAndRegisterBuff(allBuffs, 11426, nil)
                :BuffType("seal")
@@ -77,7 +77,7 @@ function mageModule:SetupMageSpells(allBuffs, enchantments)
                                27134, 33405, -- TBC: Ice Barrier 5, 6
                                43038, 43039 }) -- WotLK: Ice Barrier 7
                :RequirePlayerClass("MAGE")
-               :Category(allBuffsModule.CLASS)
+               :Category("class")
   -- TBC: Molten Armor
   buffDefModule:createAndRegisterBuff(allBuffs, 30482, nil)
                :BuffType("seal")
@@ -85,7 +85,7 @@ function mageModule:SetupMageSpells(allBuffs, enchantments)
                :SingleFamily({ 30482, -- TBC: Molten Armor 1
                                43045, 43046 }) -- WotLK: Molten Armor 2, 3
                :RequirePlayerClass("MAGE")
-               :Category(allBuffsModule.CLASS)
+               :Category("class")
   -- Mage Armor / magische rüstung
   buffDefModule:createAndRegisterBuff(allBuffs, 22783, nil)
                :BuffType("seal")
@@ -94,7 +94,7 @@ function mageModule:SetupMageSpells(allBuffs, enchantments)
                                27125, -- TBC: Mage Armor 4
                                43023, 43024 }) -- WotLK: Mage Armor 5, 6
                :RequirePlayerClass("MAGE")
-               :Category(allBuffsModule.CLASS)
+               :Category("class")
   --Mana Shield | Manaschild - unabhängig von allen.
   buffDefModule:createAndRegisterBuff(allBuffs, 10193, nil)
                :IsOwn(true)
@@ -104,7 +104,7 @@ function mageModule:SetupMageSpells(allBuffs, enchantments)
                                27131, -- TBC: Mana Shield 7
                                43019, 43020 }) -- WotLK: Mana Shield 8, 9
                :RequirePlayerClass("MAGE")
-               :Category(allBuffsModule.CLASS)
+               :Category("class")
 
   local playerLevel = UnitLevel("player")
 
@@ -114,19 +114,19 @@ function mageModule:SetupMageSpells(allBuffs, enchantments)
     tinsert(allBuffs,
             buffDefModule:conjureItem(spellIdsModule.Mage_ConjureManaEmerald, itemIdsModule.Mage_ManaEmerald)
                          :RequirePlayerClass("MAGE")
-                         :Category(allBuffsModule.CLASS)
+                         :Category("class")
     )
     tinsert(allBuffs,
             buffDefModule:conjureItem(spellIdsModule.Mage_ConjureManaRuby, itemIdsModule.Mage_ManaRuby)
                          :RequirePlayerClass("MAGE")
-                         :Category(allBuffsModule.CLASS)
+                         :Category("class")
     )
     if playerLevel <= 68 then
       -- Players > 68 will not be interested in Citrine
       tinsert(allBuffs,
               buffDefModule:conjureItem(spellIdsModule.Mage_ConjureManaCitrine, itemIdsModule.Mage_ManaCitrine)
                            :RequirePlayerClass("MAGE")
-                           :Category(allBuffsModule.CLASS)
+                           :Category("class")
       )
     end
   else
@@ -148,6 +148,6 @@ function mageModule:SetupMageSpells(allBuffs, enchantments)
                                  spellIdsModule.Mage_ConjureManaEmerald,
                                  spellIdsModule.Mage_ConjureManaSapphire })
                  :RequirePlayerClass("MAGE")
-                 :Category(allBuffsModule.CLASS)
+                 :Category("class")
   end
 end

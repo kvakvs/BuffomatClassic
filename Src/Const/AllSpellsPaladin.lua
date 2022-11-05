@@ -18,7 +18,7 @@ function paladinModule:SetupPaladinSpells(allBuffs, enchants)
   buffDefModule:createAndRegisterBuff(allBuffs, 25780, nil)
                :IsOwn(true)
                :IsDefault(false)
-               :Category(allBuffsModule.CLASS)
+               :Category("class")
 
   local blessing_duration = allBuffsModule.TbcOrClassic(allBuffsModule.DURATION_10M, allBuffsModule.DURATION_5M)
   local greaterBlessingDuration = allBuffsModule.TbcOrClassic(allBuffsModule.DURATION_15M, allBuffsModule.DURATION_30M)
@@ -34,7 +34,7 @@ function paladinModule:SetupPaladinSpells(allBuffs, enchants)
                :SingleDuration(blessing_duration)
                :DefaultTargetClasses({ "MAGE", "HUNTER", "WARLOCK" })
                :IgnoreIfHaveBuff(25898) -- Greater Kings
-               :Category(allBuffsModule.BLESSING)
+               :Category("blessing")
 
   -- Blessing of Light (classic and TBC only)
   buffDefModule:createAndRegisterBuff(allBuffs, 19979, nil)
@@ -48,7 +48,7 @@ function paladinModule:SetupPaladinSpells(allBuffs, enchants)
                :HideInWotLK()
                :DefaultTargetClasses(allBuffsModule.BOM_NO_CLASSES)
                :IgnoreIfHaveBuff(21177) -- Greater Light
-               :Category(allBuffsModule.BLESSING)
+               :Category("blessing")
 
   -- Blessing of Might
   buffDefModule:createAndRegisterBuff(allBuffs, 25291, nil)
@@ -62,7 +62,7 @@ function paladinModule:SetupPaladinSpells(allBuffs, enchants)
                :DefaultTargetClasses(allBuffsModule.PHYSICAL_CLASSES)
                :IgnoreIfHaveBuff({ 25782, 25916, 27141 }) -- Greater Might 1-3
                :IgnoreIfHaveBuff({ 48933, 48934 }) -- WotLK: Greater Might 4-5
-               :Category(allBuffsModule.BLESSING)
+               :Category("blessing")
 
   -- Blessing of Salvation (classic and TBC only)
   buffDefModule:createAndRegisterBuff(allBuffs, 1038, nil)
@@ -73,7 +73,7 @@ function paladinModule:SetupPaladinSpells(allBuffs, enchants)
                :HideInWotLK()
                :DefaultTargetClasses(allBuffsModule.BOM_NO_CLASSES)
                :IgnoreIfHaveBuff(25895) -- Greater Salv
-               :Category(allBuffsModule.BLESSING)
+               :Category("blessing")
 
   -- Blessing of Wisdom
   buffDefModule:createAndRegisterBuff(allBuffs, 25290, nil)
@@ -86,7 +86,7 @@ function paladinModule:SetupPaladinSpells(allBuffs, enchants)
                :GroupDuration(greaterBlessingDuration)
                :RequirePlayerClass("PALADIN")
                :DefaultTargetClasses(allBuffsModule.MANA_CLASSES)
-               :Category(allBuffsModule.BLESSING)
+               :Category("blessing")
 
   -- Blessing of Sanctuary
   buffDefModule:createAndRegisterBuff(allBuffs, 20914, nil)
@@ -98,7 +98,7 @@ function paladinModule:SetupPaladinSpells(allBuffs, enchants)
                :GroupDuration(greaterBlessingDuration)
                :RequirePlayerClass("PALADIN")
                :DefaultTargetClasses(allBuffsModule.BOM_NO_CLASSES)
-               :Category(allBuffsModule.BLESSING)
+               :Category("blessing")
   --
   -- GREATER BLESSINGS
   --
@@ -110,7 +110,7 @@ function paladinModule:SetupPaladinSpells(allBuffs, enchants)
                :ReagentRequired({ itemIdsModule.Paladin_SymbolOfKings })
                :RequirePlayerClass("PALADIN")
                :DefaultTargetClasses(allBuffsModule.BOM_NO_CLASSES)
-               :Category(allBuffsModule.BLESSING)
+               :Category("blessing")
 
   -- Greater Blessing of Light
   buffDefModule:createAndRegisterBuff(allBuffs, 25890, nil)
@@ -123,7 +123,7 @@ function paladinModule:SetupPaladinSpells(allBuffs, enchants)
                :RequirePlayerClass("PALADIN")
                :HideInWotLK()
                :DefaultTargetClasses(allBuffsModule.BOM_NO_CLASSES)
-               :Category(allBuffsModule.BLESSING)
+               :Category("blessing")
 
   --Greater Blessing of Might
   buffDefModule:createAndRegisterBuff(allBuffs, 25916, nil)
@@ -136,7 +136,7 @@ function paladinModule:SetupPaladinSpells(allBuffs, enchants)
                :ReagentRequired({ itemIdsModule.Paladin_SymbolOfKings })
                :RequirePlayerClass("PALADIN")
                :DefaultTargetClasses(allBuffsModule.PHYSICAL_CLASSES)
-               :Category(allBuffsModule.BLESSING)
+               :Category("blessing")
 
   --Greater Blessing of Salvation
   buffDefModule:createAndRegisterBuff(allBuffs, 25895, nil)
@@ -146,7 +146,7 @@ function paladinModule:SetupPaladinSpells(allBuffs, enchants)
                :ReagentRequired({ itemIdsModule.Paladin_SymbolOfKings })
                :RequirePlayerClass("PALADIN")
                :DefaultTargetClasses(allBuffsModule.BOM_NO_CLASSES)
-               :Category(allBuffsModule.BLESSING)
+               :Category("blessing")
 
   --Greater Blessing of Wisdom
   buffDefModule:createAndRegisterBuff(allBuffs, 25918, nil)
@@ -159,7 +159,7 @@ function paladinModule:SetupPaladinSpells(allBuffs, enchants)
                :ReagentRequired({ itemIdsModule.Paladin_SymbolOfKings })
                :RequirePlayerClass("PALADIN")
                :DefaultTargetClasses(allBuffsModule.MANA_CLASSES)
-               :Category(allBuffsModule.BLESSING)
+               :Category("blessing")
 
   --Greater Blessing of Sanctuary
   buffDefModule:createAndRegisterBuff(allBuffs, 25899, nil)
@@ -171,7 +171,7 @@ function paladinModule:SetupPaladinSpells(allBuffs, enchants)
                :ReagentRequired({ itemIdsModule.Paladin_SymbolOfKings })
                :RequirePlayerClass("PALADIN")
                :DefaultTargetClasses(allBuffsModule.BOM_NO_CLASSES)
-               :Category(allBuffsModule.BLESSING)
+               :Category("blessing")
 
   -- END blessings ------
   --
@@ -185,7 +185,7 @@ function paladinModule:SetupPaladinSpells(allBuffs, enchants)
                                27149, -- TBC: Devotion Aura 8
                                48941, 48942 }) -- WotLK: Devotion Aura 9-10
                :RequirePlayerClass("PALADIN")
-               :Category(allBuffsModule.AURA)
+               :Category("aura")
 
   -- Retribution Aura
   buffDefModule:createAndRegisterBuff(allBuffs, 10301, nil)
@@ -195,14 +195,14 @@ function paladinModule:SetupPaladinSpells(allBuffs, enchants)
                                27150, -- TBC: Retribution Aura 6
                                54043 }) -- WotLK: Retribution Aura 7
                :RequirePlayerClass("PALADIN")
-               :Category(allBuffsModule.AURA)
+               :Category("aura")
 
   --Concentration Aura
   buffDefModule:createAndRegisterBuff(allBuffs, 19746, nil)
                :BuffType("aura")
                :IsDefault(false)
                :RequirePlayerClass("PALADIN")
-               :Category(allBuffsModule.AURA)
+               :Category("aura")
 
   -- Shadow Resistance Aura
   buffDefModule:createAndRegisterBuff(allBuffs, 19896, nil)
@@ -212,7 +212,7 @@ function paladinModule:SetupPaladinSpells(allBuffs, enchants)
                                27151, -- TBC: Shadow Resistance Aura 4
                                48943 }) -- WotLK: Shadow Resistance Aura 5
                :RequirePlayerClass("PALADIN")
-               :Category(allBuffsModule.AURA)
+               :Category("aura")
 
   -- Frost Resistance Aura
   buffDefModule:createAndRegisterBuff(allBuffs, 19898, nil)
@@ -222,7 +222,7 @@ function paladinModule:SetupPaladinSpells(allBuffs, enchants)
                                27152, -- TBC: Frost Resistance Aura 4
                                48945 }) -- WotLK: Frost Resistance Aura 5
                :RequirePlayerClass("PALADIN")
-               :Category(allBuffsModule.AURA)
+               :Category("aura")
 
   -- Fire Resistance Aura
   buffDefModule:createAndRegisterBuff(allBuffs, 19900, nil)
@@ -232,7 +232,7 @@ function paladinModule:SetupPaladinSpells(allBuffs, enchants)
                                27153, -- TBC: Fire Resistance Aura 4
                                48947 }) -- WotLK: Fire Resistance Aura 5
                :RequirePlayerClass("PALADIN")
-               :Category(allBuffsModule.AURA)
+               :Category("aura")
 
   --Sanctity Aura (classic and TBC only)
   buffDefModule:createAndRegisterBuff(allBuffs, 20218, nil)
@@ -240,16 +240,17 @@ function paladinModule:SetupPaladinSpells(allBuffs, enchants)
                :IsDefault(false)
                :RequirePlayerClass("PALADIN")
                :HideInWotLK()
-               :Category(allBuffsModule.AURA)
+               :Category("aura")
 
   --TBC: Crusader Aura
-  BOM.CrusaderAuraSpell = buffDefModule:createAndRegisterBuff(allBuffs, spellIdsModule.Paladin_CrusaderAura, nil)
-                                       :BuffType("aura")
-                                       :IsDefault(false)
-                                       :ExtraText(_t("CRUSADER_AURA_COMMENT"))
-                                       :SingleManaCost(0)
-                                       :RequirePlayerClass("PALADIN")
-                                       :Category(allBuffsModule.AURA)
+  local ca = buffDefModule:createAndRegisterBuff(allBuffs, spellIdsModule.Paladin_CrusaderAura, nil)
+                          :BuffType("aura")
+                          :IsDefault(false)
+                          :ExtraText(_t("CRUSADER_AURA_COMMENT"))
+                          :SingleManaCost(0)
+                          :RequirePlayerClass("PALADIN")
+                          :Category("aura")
+  allBuffsModule.CrusaderAuraSpell = ca
 
   --
   -- ----------------------------------
@@ -261,7 +262,7 @@ function paladinModule:SetupPaladinSpells(allBuffs, enchants)
                :SingleFamily({ 7328, 10322, 10324, 20772, 20773, -- Classic: Redemption 1-5
                                48949, 48950 }) -- WotLK: Redemption 6-7
                :RequirePlayerClass("PALADIN")
-               :Category(allBuffsModule.CLASS)
+               :Category("class")
 
   -- Sanctity Seal (classic and TBC only)
   buffDefModule:createAndRegisterBuff(allBuffs, 20164, nil)
@@ -269,13 +270,13 @@ function paladinModule:SetupPaladinSpells(allBuffs, enchants)
                :IsDefault(false)
                :RequirePlayerClass("PALADIN")
                :HideInTBC()
-               :Category(allBuffsModule.SEAL) -- classic only
+               :Category(3) -- classic only
 
   buffDefModule:createAndRegisterBuff(allBuffs, 5502, nil) -- Sense undead
                :BuffType("tracking")
                :IsDefault(false)
                :RequirePlayerClass("PALADIN")
-               :Category(allBuffsModule.TRACKING)
+               :Category("tracking")
 
   -- Seal of Light
   buffDefModule:createAndRegisterBuff(allBuffs, 20165, nil)
@@ -284,7 +285,7 @@ function paladinModule:SetupPaladinSpells(allBuffs, enchants)
                :SingleFamily({ 20165, 20347, 20348, 20349, -- Seal of Light 1-4; also WotLK: Seal of Light
                                27160 })  -- TBC: Seal of Light 5
                :RequirePlayerClass("PALADIN")
-               :Category(allBuffsModule.SEAL)
+               :Category("seal")
 
   -- Seal of Righteousness
   buffDefModule:createAndRegisterBuff(allBuffs, 20154, nil)
@@ -294,14 +295,14 @@ function paladinModule:SetupPaladinSpells(allBuffs, enchants)
                                27155, -- TBC: Seal of Righteousness 9
                                21084 }) -- WotLK: Seal of Righteousness
                :RequirePlayerClass("PALADIN")
-               :Category(allBuffsModule.SEAL)
+               :Category("seal")
 
   -- Seal of Wisdom
   buffDefModule:createAndRegisterBuff(allBuffs, 20166, nil)
                :BuffType("seal")
                :IsDefault(false)
                :RequirePlayerClass("PALADIN")
-               :Category(allBuffsModule.SEAL)
+               :Category("seal")
 
   -- TBC: Seal of Vengeance
   buffDefModule:createAndRegisterBuff(allBuffs, 348704, nil)
@@ -310,14 +311,14 @@ function paladinModule:SetupPaladinSpells(allBuffs, enchants)
                :SingleFamily({ 31801, -- TBC: level 70 spell for Blood Elf
                                348704 })  -- TBC: Base spell for the alliance races
                :RequirePlayerClass("PALADIN")
-               :Category(allBuffsModule.SEAL)
+               :Category("seal")
 
   -- TBC: Seal of the Martyr (Draenei, Dwarf, Human)
   buffDefModule:createAndRegisterBuff(allBuffs, 348700, nil)
                :BuffType("seal")
                :IsDefault(false)
                :RequirePlayerClass("PALADIN")
-               :Category(allBuffsModule.SEAL)
+               :Category("seal")
 
   -- TBC: Seal of Blood
   buffDefModule:createAndRegisterBuff(allBuffs, 31892, nil)
@@ -326,12 +327,12 @@ function paladinModule:SetupPaladinSpells(allBuffs, enchants)
                :SingleFamily({ 31892, -- TBC: Base Blood Elf spell
                                38008 }) -- TBC: Alliance version???
                :RequirePlayerClass("PALADIN")
-               :Category(allBuffsModule.SEAL)
+               :Category("seal")
 
   -- TBC/WotLK: Seal of Command
   buffDefModule:createAndRegisterBuff(allBuffs, 20375, nil)
                :BuffType("seal")
                :IsDefault(false)
                :RequirePlayerClass("PALADIN")
-               :Category(allBuffsModule.SEAL)
+               :Category("seal")
 end

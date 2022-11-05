@@ -1,12 +1,13 @@
 local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BomAddon
 
+---@alias BomElixirType "battle"|"guardian"|"both"
 ---@alias BomItemId number
 ---@alias BomSpellId number
 
 ---@class BomBuffDefinitionModule
 local buffDefModule = {}
-BomModuleManager.buffDefinitionModule = buffDefinitionModule
+BomModuleManager.buffDefinitionModule = buffDefModule
 
 local buffomatModule = BomModuleManager.buffomatModule
 local spellCacheModule = BomModuleManager.spellCacheModule
@@ -21,6 +22,7 @@ local allBuffsModule = BomModuleManager.allBuffsModule
 ---@alias BomBuffType "aura"|"consumable"|"weapon"|"seal"|"tracking"|"resurrection"|"summon"
 ---@alias BomCreatureType "Demon"|"Undead"
 ---@alias BomCreatureFamily "Ghoul"|"Voidwalker"|"Imp"|"Succubus"|"Incubus"|"Felhunter"|"Felguard"
+---@alias BomPlayerRace "BloodElf"|"Draenei"|"Dwarf"|"Gnome"|"Human"|"NightElf"|"Orc"|"Tauren"|"Troll"|"Undead"
 
 ---@shape BomSpellLimitations
 ---@field cancelForm boolean Casting spell requires leaving shapeshift, shadow form etc.
@@ -28,7 +30,7 @@ local allBuffsModule = BomModuleManager.allBuffsModule
 ---@field hideInTBC boolean
 ---@field requireWotLK boolean
 ---@field hideInWotLK boolean
----@field playerRace string
+---@field playerRace BomPlayerRace
 ---@field playerClass BomClass|BomClass[] Collection of classes for this spell, or classname
 ---@field maxLevel number Hide the spell if player is above this level (to deprecate old spells)
 ---@field minLevel number Hide the spell if player is below this level
@@ -138,33 +140,26 @@ function buffDefModule:New(singleId)
   return newSpell
 end
 
-function buffDefModule:tbcConsumable(dst, singleId, itemId, limitations, extraText, extraFields)
-  return self:genericConsumable(dst, singleId, itemId, limitations, extraText, extraFields)
+function buffDefModule:tbcConsumable(dst, singleId, itemId)
+  return self:genericConsumable(dst, singleId, itemId)
              :RequireTBC()
+end
+
+function buffDefModule:wotlkConsumable(dst, singleId, itemId)
+  return self:genericConsumable(dst, singleId, itemId)
+             :RequireWotLK()
 end
 
 ---@param allBuffs BomBuffDefinition[]
 ---@param singleId BomSpellId
 ---@param providedByItem BomItemId|BomItemId[] Item or multiple items giving this buff
----@param limitations BomSpellLimitations|nil Add extra conditions, if not nil
----@param extraText string Add extra text to the right if not nil
 ---@return BomBuffDefinition
-function buffDefModule:genericConsumable(allBuffs, singleId, providedByItem, limitations, extraText, extraFields)
-  local fields = extraFields or {} ---@type BomBuffDefinition
-  fields.isConsumable = true
-  fields.default = false
-
-  if type(providedByItem) == "table" then
-    fields.buffProvidedByItem = --[[---@type BomItemId[] ]] providedByItem
-  else
-    fields.buffProvidedByItem = { --[[---@type BomItemId ]] providedByItem }
-  end
-
-  if extraText then
-    fields.extraText = extraText
-  end
-
-  return buffDefModule:createAndRegisterBuff(allBuffs, singleId, limitations)
+function buffDefModule:genericConsumable(allBuffs, singleId, providedByItem)
+  local b = buffDefModule:createAndRegisterBuff(allBuffs, singleId, nil)
+                         :IsConsumable(true)
+                         :IsDefault(false)
+                         :CreatesOrProvidedByItem(providedByItem)
+  return b
 end
 
 local _, playerClass, _ = UnitClass("player")
@@ -260,6 +255,14 @@ function buffDefModule:conjureItem(spellId, itemId)
                       :IsDefault(true)
                       :LockIfHaveItem({ itemId })
                       :SingleFamily({ spellId })
+end
+
+---Add "[@" .. consumableTarget .. "]" to the "/use bag slot" macro
+---@param unit string
+---@return BomBuffDefinition
+function buffDefClass:ConsumableTarget(unit)
+  self.consumableTarget = unit
+  return self
 end
 
 ---@param own boolean
@@ -494,10 +497,17 @@ function buffDefClass:DefaultTargetClasses(classNames)
   return self
 end
 
----@return BomBuffDefinition
 ---@param className BomClass[]|BomClass The class name or table of class names
+---@return BomBuffDefinition
 function buffDefClass:RequirePlayerClass(className)
   (--[[---@not nil]] self.limitations).playerClass = className
+  return self
+end
+
+---@param raceName BomRace Player race
+---@return BomBuffDefinition
+function buffDefClass:RequirePlayerRace(raceName)
+  (--[[---@not nil]] self.limitations).playerRace = raceName
   return self
 end
 
@@ -536,6 +546,7 @@ function buffDefClass:IgnoreIfHaveBuff(spellId)
   return self
 end
 
+---@param elixirType BomElixirType
 ---@return BomBuffDefinition
 function buffDefClass:ElixirType(elixirType)
   self.elixirType = elixirType

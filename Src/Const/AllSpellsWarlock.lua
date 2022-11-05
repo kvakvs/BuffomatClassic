@@ -19,7 +19,7 @@ function warlockModule:SetupWarlockSpells(allBuffs, enchantments)
                :SingleDuration(allBuffsModule.DURATION_10M)
                :RequirePlayerClass("WARLOCK")
                :DefaultTargetClasses(allBuffsModule.BOM_ALL_CLASSES)
-               :Category(allBuffsModule.CLASS)
+               :Category("class")
 
   -- Detect Greater Invisibility | Große Unsichtbarkeit entdecken
   buffDefModule:createAndRegisterBuff(allBuffs, 132, nil)
@@ -29,7 +29,7 @@ function warlockModule:SetupWarlockSpells(allBuffs, enchantments)
                :SingleDuration(allBuffsModule.DURATION_10M)
                :RequirePlayerClass("WARLOCK")
                :DefaultTargetClasses(allBuffsModule.BOM_ALL_CLASSES)
-               :Category(allBuffsModule.CLASS)
+               :Category("class")
 
   -- Shadow Ward / Schattenzauberschutz
   buffDefModule:createAndRegisterBuff(allBuffs, 28610, nil)
@@ -38,7 +38,7 @@ function warlockModule:SetupWarlockSpells(allBuffs, enchantments)
                :SingleFamily({ 6229, 11739, 11740, 28610, -- Shadow Ward 1-4
                                47890, 47891 }) -- WotLK: Shadow Ward 5-6
                :RequirePlayerClass("WARLOCK")
-               :Category(allBuffsModule.CLASS)
+               :Category("class")
 
   -- TBC: Fel Armor
   buffDefModule:createAndRegisterBuff(allBuffs, 28176, nil)
@@ -48,7 +48,7 @@ function warlockModule:SetupWarlockSpells(allBuffs, enchantments)
                                47892, 47893 }) -- WotLK: Fel Armor 3-4
                :RequirePlayerClass("WARLOCK")
                :RequireTBC()
-               :Category(allBuffsModule.CLASS)
+               :Category("class")
 
   -- Demon Skin / Demon Armor
   buffDefModule:createAndRegisterBuff(allBuffs, 11735, nil)
@@ -59,7 +59,7 @@ function warlockModule:SetupWarlockSpells(allBuffs, enchantments)
                                27260, -- TBC: Demon Armor 6
                                47793, 47889 }) -- WotLK: Demon Armor 7-8
                :RequirePlayerClass("WARLOCK")
-               :Category(allBuffsModule.CLASS)
+               :Category("class")
 
   if BOM.HaveWotLK then
     -- Create Firesone
@@ -81,7 +81,7 @@ function warlockModule:SetupWarlockSpells(allBuffs, enchantments)
                                  spellIdsModule.Warlock_CreateFirestone6,
                                  spellIdsModule.Warlock_CreateFirestone7 })
                  :RequirePlayerClass("WARLOCK")
-                 :Category(allBuffsModule.CLASS_WEAPON_ENCHANTMENT)
+                 :Category("class"_WEAPON_ENCHANTMENT)
     -- Firestone
     buffDefModule:createAndRegisterBuff(allBuffs, 60220, nil)
                  :CreatesOrProvidedByItem({ itemIdsModule.Warlock_Firestone1,
@@ -96,7 +96,7 @@ function warlockModule:SetupWarlockSpells(allBuffs, enchantments)
                  :IsDefault(false)
                  :SingleDuration(allBuffsModule.DURATION_1H)
                  :RequirePlayerClass("WARLOCK")
-                 :Category(allBuffsModule.CLASS_WEAPON_ENCHANTMENT)
+                 :Category("class"_WEAPON_ENCHANTMENT)
     enchantments[60220] = { 3609, 3610, 3611, 3612, 3597, 3613, 3614 } -- WotLK: Firestone 1-7
   else
     -- in WotLK firestone becomes a 5-charges conjured weapon enchantment item
@@ -109,7 +109,7 @@ function warlockModule:SetupWarlockSpells(allBuffs, enchantments)
                  :SingleFamily({ 6366, 17951, 17952, 17953, -- Rank 1-4
                                  27250 }) -- TBC: Rank 5
                  :RequirePlayerClass("WARLOCK")
-                 :Category(allBuffsModule.CLASS)
+                 :Category("class")
   end
 
   if BOM.HaveWotLK then
@@ -130,7 +130,7 @@ function warlockModule:SetupWarlockSpells(allBuffs, enchantments)
                                  spellIdsModule.Warlock_CreateSpellstone5,
                                  spellIdsModule.Warlock_CreateSpellstone6 })
                  :RequirePlayerClass("WARLOCK")
-                 :Category(allBuffsModule.CLASS_WEAPON_ENCHANTMENT)
+                 :Category("class"_WEAPON_ENCHANTMENT)
 
     -- Spellstone
     buffDefModule:createAndRegisterBuff(allBuffs, 55194, nil)
@@ -145,7 +145,7 @@ function warlockModule:SetupWarlockSpells(allBuffs, enchantments)
                  :IsDefault(false)
                  :SingleDuration(allBuffsModule.DURATION_1H)
                  :RequirePlayerClass("WARLOCK")
-                 :Category(allBuffsModule.CLASS_WEAPON_ENCHANTMENT)
+                 :Category("class"_WEAPON_ENCHANTMENT)
     enchantments[55194] = {
       3615, 3616, 3617, 3618, 3619, 3620
     } -- WotLK: Spellstone 1-6 enchantIds
@@ -160,7 +160,7 @@ function warlockModule:SetupWarlockSpells(allBuffs, enchantments)
                  :SingleFamily({ 2362, 17727, 17728, -- Rank 1-3
                                  28172 }) -- TBC: Rank 4
                  :RequirePlayerClass("WARLOCK")
-                 :Category(allBuffsModule.CLASS)
+                 :Category("class")
   end
 
   -- Healthstone
@@ -179,7 +179,7 @@ function warlockModule:SetupWarlockSpells(allBuffs, enchantments)
                                27230, -- TBC: Healthstone 6
                                47871, 47878 })  -- WotLK: Demonic and Fel Healthstone (rank 7-8)
                :RequirePlayerClass("WARLOCK")
-               :Category(allBuffsModule.CLASS)
+               :Category("class")
 
   --Soulstone
   buffDefModule:createAndRegisterBuff(allBuffs, 20757, nil)
@@ -192,21 +192,21 @@ function warlockModule:SetupWarlockSpells(allBuffs, enchantments)
                                27238, -- TBC: Rank 6
                                47884 }) -- WotLK: Rank 7
                :RequirePlayerClass("WARLOCK")
-               :Category(allBuffsModule.CLASS)
+               :Category("class")
 
   --Sense Demons
   buffDefModule:createAndRegisterBuff(allBuffs, 5500, nil)
                :BuffType("tracking")
                :IsDefault(false)
                :RequirePlayerClass("WARLOCK")
-               :Category(allBuffsModule.TRACKING)
+               :Category("tracking")
 
   --Sense Demons
   buffDefModule:createAndRegisterBuff(allBuffs, 5500, nil)
                :BuffType("tracking")
                :IsDefault(false)
                :RequirePlayerClass("WARLOCK")
-               :Category(self.TRACKING)
+               :Category("tracking")
 
   ------------------------
   -- Pet Management
@@ -219,7 +219,7 @@ function warlockModule:SetupWarlockSpells(allBuffs, enchantments)
                :RequireWarlockPet(true)
                :RequirePlayerClass("WARLOCK")
                :HideInWotLK()
-               :Category(allBuffsModule.PET)
+               :Category("pet")
 
   -- TBC: Soul Link, talent spell 19028, gives buff 25228
   buffDefModule:createAndRegisterBuff(allBuffs, 19028, nil)
@@ -228,7 +228,7 @@ function warlockModule:SetupWarlockSpells(allBuffs, enchantments)
                :SingleFamily({ 19028, 25228 })
                :RequireWarlockPet(true)
                :RequirePlayerClass("WARLOCK")
-               :Category(allBuffsModule.PET)
+               :Category("pet")
 
   --Summon Imp
   buffDefModule:createAndRegisterBuff(allBuffs, 688, nil)
@@ -239,7 +239,7 @@ function warlockModule:SetupWarlockSpells(allBuffs, enchantments)
                :SummonCreatureType("Demon")
                :SacrificeAuraIds({ 18789 })
                :RequirePlayerClass("WARLOCK")
-               :Category(allBuffsModule.PET)
+               :Category("pet")
 
   --Summon Voidwalker
   buffDefModule:createAndRegisterBuff(allBuffs, 697, nil)
@@ -251,7 +251,7 @@ function warlockModule:SetupWarlockSpells(allBuffs, enchantments)
                :SummonCreatureType("Demon")
                :SacrificeAuraIds({ 18790, 1905 })  -- TBC: Restore 2% hp, and Classic: Shield the warlock
                :RequirePlayerClass("WARLOCK")
-               :Category(allBuffsModule.PET)
+               :Category("pet")
 
   --Summon Succubus
   buffDefModule:createAndRegisterBuff(allBuffs, 712, nil)
@@ -263,7 +263,7 @@ function warlockModule:SetupWarlockSpells(allBuffs, enchantments)
                :SummonCreatureType("Demon")
                :SacrificeAuraIds({ 18791 })
                :RequirePlayerClass("WARLOCK")
-               :Category(allBuffsModule.PET)
+               :Category("pet")
 
   --Summon Incubus (TBC)
   buffDefModule:createAndRegisterBuff(allBuffs, 713, nil)
@@ -275,7 +275,7 @@ function warlockModule:SetupWarlockSpells(allBuffs, enchantments)
                :SummonCreatureType("Demon")
                :SacrificeAuraIds({ 18791 })
                :RequirePlayerClass("WARLOCK")
-               :Category(allBuffsModule.PET)
+               :Category("pet")
 
   --Summon Felhunter
   buffDefModule:createAndRegisterBuff(allBuffs, 691, nil)
@@ -287,7 +287,7 @@ function warlockModule:SetupWarlockSpells(allBuffs, enchantments)
                :SummonCreatureType("Demon")
                :SacrificeAuraIds({ 18792 })
                :RequirePlayerClass("WARLOCK")
-               :Category(allBuffsModule.PET)
+               :Category("pet")
 
   --Summon Felguard
   buffDefModule:createAndRegisterBuff(allBuffs, 30146, nil)
@@ -299,5 +299,5 @@ function warlockModule:SetupWarlockSpells(allBuffs, enchantments)
                :SummonCreatureType("Demon")
                :SacrificeAuraIds({ 35701 })
                :RequirePlayerClass("WARLOCK")
-               :Category(allBuffsModule.PET)
+               :Category("pet")
 end
