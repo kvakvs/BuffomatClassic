@@ -1,9 +1,11 @@
 local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BomAddon
 
+---@alias BomTexCoords number[]
+---
 ---@shape BomTexturesModule
 ---@field CLASS_ICONS_ATLAS string
----@field CLASS_ICONS_ATLAS_TEX_COORD string
+---@field CLASS_ICONS_ATLAS_TEX_COORD {[BomClass} BomTexCoords}
 ---@field ICON_BUFF_OFF string
 ---@field ICON_BUFF_ON string
 ---@field ICON_CHECKED string
@@ -19,20 +21,20 @@ local BOM = BuffomatAddon ---@type BomAddon
 ---@field ICON_OPT_ENABLED string
 ---@field ICON_PET string
 ---@field ICON_PET string
----@field ICON_PET_COORD number[]
+---@field ICON_PET_COORD BomTexCoords
 ---@field ICON_SELF_CAST_OFF string
 ---@field ICON_SELF_CAST_ON string
 ---@field ICON_SETTING_OFF string
 ---@field ICON_SETTING_ON string
 ---@field ICON_TANK string
----@field ICON_TANK_COORD number[]
+---@field ICON_TANK_COORD BomTexCoords
 ---@field ICON_TARGET_EXCLUDE string
 ---@field ICON_TARGET_OFF string
 ---@field ICON_TARGET_ON string
 ---@field ICON_WHISPER_OFF string
 ---@field ICON_WHISPER_ON string
----@field ICON_COORD_09 number[]
----@field ICON_COORD_08 number[]
+---@field ICON_COORD_09 BomTexCoords
+---@field ICON_COORD_08 BomTexCoords
 local texturesModule = {}
 BomModuleManager.texturesModule = texturesModule
 
@@ -46,7 +48,7 @@ texturesModule.ICON_SELF_CAST_ON = "Interface\\FriendsFrame\\UI-Toast-FriendOnli
 texturesModule.ICON_SELF_CAST_OFF = "Interface\\FriendsFrame\\UI-Toast-ChatInviteIcon"
 
 texturesModule.CLASS_ICONS_ATLAS = "Interface\\WorldStateFrame\\ICONS-CLASSES"
-texturesModule.CLASS_ICONS_ATLAS_TEX_COORD = CLASS_ICON_TCOORDS
+texturesModule.CLASS_ICONS_ATLAS_TEX_COORD = --[[---@type {[BomClass} BomTexCoords} ]] CLASS_ICON_TCOORDS
 texturesModule.ICON_EMPTY = "Interface\\Buttons\\UI-MultiCheck-Disabled"
 
 ---@deprecated Unused
@@ -108,20 +110,21 @@ texturesModule.ICON_GEAR = "Interface\\ICONS\\INV_Misc_Gear_01"
 --BOM.IconCarrotOff = texturesModule.ICON_EMPTY
 --BOM.IconCarrotOn = "Interface\\ICONS\\INV_Misc_Food_54"
 --BOM.IconCarrotOnCoord = texturesModule.ICON_COORD_09
---
---BOM.IconMainHandOff = texturesModule.ICON_EMPTY
---BOM.IconMainHandOn = "Interface\\ICONS\\INV_Weapon_ShortBlade_03"
---BOM.IconMainHandOnCoord = texturesModule.ICON_COORD_09
---
---BOM.IconSecondaryHandOff = texturesModule.ICON_EMPTY
---BOM.IconSecondaryHandOn = "Interface\\ICONS\\INV_Weapon_Halberd_12"
---BOM.IconSecondaryHandOnCoord = texturesModule.ICON_COORD_09
---
---BOM.ICON_TANK = "Interface\\RAIDFRAME\\UI-RAIDFRAME-MAINTANK"
---BOM.ICON_TANK_COORD = texturesModule.ICON_COORD_09
---BOM.ICON_PET = "Interface\\ICONS\\Ability_Mount_JungleTiger"
---BOM.ICON_PET_COORD = texturesModule.ICON_COORD_09
---
+
+texturesModule.ICON_MAINHAND_OFF = texturesModule.ICON_EMPTY
+texturesModule.ICON_MAINHAND_ON = "Interface\\ICONS\\INV_Weapon_ShortBlade_03"
+texturesModule.ICON_MAINHAND_COORD = texturesModule.ICON_COORD_09
+
+texturesModule.ICON_OFFHAND_OFF = texturesModule.ICON_EMPTY
+texturesModule.ICON_OFFHAND_ON = "Interface\\ICONS\\INV_Weapon_Halberd_12"
+texturesModule.ICON_OFFHAND_COORD = texturesModule.ICON_COORD_09
+
+texturesModule.ICON_TANK = "Interface\\RAIDFRAME\\UI-RAIDFRAME-MAINTANK"
+texturesModule.ICON_TANK_COORD = texturesModule.ICON_COORD_09
+
+texturesModule.ICON_PET = "Interface\\ICONS\\Ability_Mount_JungleTiger"
+texturesModule.ICON_PET_COORD = texturesModule.ICON_COORD_09
+
 --BOM.IconInPVPOff = texturesModule.ICON_EMPTY
 --BOM.IconInPVPOn = "Interface\\ICONS\\Ability_DualWield"
 --BOM.IconInPVPOnCoord = texturesModule.ICON_COORD_09

@@ -243,8 +243,8 @@ function allBuffsModule:SetupSpells()
 
   --Preload items!
   for x, spell in ipairs(allBuffs) do
-    if spell.isConsumable and spell.item then
-      BOM.GetItemInfo(spell.item)
+    if spell.isConsumable and spell.items then
+      BOM.GetItemInfo(spell.items)
     end
   end
 
@@ -402,8 +402,8 @@ function allBuffsModule:LoadItemsAndSpells()
       for _index, itemId in ipairs(buffDef.items) do
         itemCacheModule:LoadItem(itemId)
       end
-    elseif type(buffDef.buffCreatesItem) == "number" then
-      itemCacheModule:LoadItem(buffDef.buffCreatesItem)
+    elseif type(buffDef.items) == "number" then
+      itemCacheModule:LoadItem(buffDef.items)
     end
   end
 end

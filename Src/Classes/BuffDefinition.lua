@@ -83,8 +83,7 @@ local allBuffsModule = BomModuleManager.allBuffsModule
 ---@field isOwn boolean Spell only casts on self
 ---@field isBlessing boolean Spell will be cast on group members of the same class
 ---
----@field buffCreatesItem BomItemId[] Conjuration spells create these items.
----@field buffProvidedByItem BomItemId[] Buff is granted by an item in user's bag. Number is item id shows as the icon.
+---@field items BomItemId[] Conjuration spells create these items. Or buff is granted by an item in user's bag. Number is item id shows as the icon.
 ---@field lockIfHaveItem BomItemId[] Item ids which prevent this buff (unique conjured items for example)
 ---@field requiresForm number Required shapeshift form ID to cast this buff
 ---@field onlyUsableFor string[] list of classes which only can see this buff (hidden for others)
@@ -284,9 +283,9 @@ end
 ---@return BomBuffDefinition
 function buffDefClass:CreatesOrProvidedByItem(itemId)
   if type(itemId) == "number" then
-    self.buffCreatesItem = { --[[---@type BomItemId]] itemId }
+    self.items = { --[[---@type BomItemId]] itemId }
   else
-    self.buffCreatesItem = --[[---@type BomItemId[] ]] itemId
+    self.items = --[[---@type BomItemId[] ]] itemId
   end
   return self
 end
@@ -630,7 +629,7 @@ end
 
 function buffDefClass:IsItem()
   -- TODO: self.isConsumable does this too?
-  return self.buffCreatesItem and next(self.buffCreatesItem) ~= nil
+  return self.items and next(self.items) ~= nil
 end
 
 ---@param unit BomUnit
@@ -658,7 +657,7 @@ end
 function buffDefClass:RefreshTextAndIcon(iconReadyFn, nameReadyFn)
   -- TODO: If refresh is in progress and multiple requests come in parallel, that might also be a problem
   if self:IsItem() then
-    local _, itemId = next(self.buffCreatesItem)
+    local _, itemId = next(self.items)
 
     itemCacheModule:LoadItem(
             itemId,
@@ -692,4 +691,16 @@ function buffDefClass:RefreshTextAndIcon(iconReadyFn, nameReadyFn)
           end)
 
   -- nil otherwise
+end
+
+---@return BomSpellId
+function buffDefClass:GetFirstSingleId()
+  local _, singleId = next(self.singleFamily)
+  return singleId
+end
+
+---@return BomItemId|nil
+function buffDefClass:GetFirstItem()
+  local _, itemId = next(self.items)
+  return itemId
 end

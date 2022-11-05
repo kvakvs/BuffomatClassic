@@ -47,8 +47,18 @@ controlModule.GPIMinimapButton.__index = controlModule.GPIMinimapButton
 ---@field bomToolTipText string Mouseover will show the text
 ---@field bomReadVariable function Returns value which the button can modify, boolean for toggle buttons
 ---@field SetPoint fun(self: BomControl, point: string, relativeTo: BomControl, relativePoint: string, xOfs: number, yOfs: number)
+---@field Hide fun(self: BomControl)
+---@field ClearAllPoints fun(self: BomControl)
+---@field SetParent fun(self: BomControl, parent: BomControl|nil)
+---@field SetScript fun(self: BomControl, script: string, handler: function)
+---@field Hide fun(self: BomControl)
+---@field Show fun(self: BomControl)
+---@field SetTextures fun(self: BomControl, sel: string|nil, unsel: string|nil, dis: string|nil, selCoord: number[]|nil, unselCoord: number[]|nil, disCoord: number[]|nil)
+---@field SetText fun(self: BomControl, text: string)
+---@field SetWidth fun(self: BomControl, width: number)
+---@field SetHeight fun(self: BomControl, height: number)
 
----@class BomLegacyControl: BomControl A blizzard UI frame but may contain private fields used by internal library by GPI
+---@class BomGPIControl: BomControl A blizzard UI frame but may contain private fields used by internal library by GPI
 ---@field _privat_DB table Stores value when button is clicked
 ---@field _privat_Var string Variable name in the _privat_DB
 ---@field _privat_Set any Value to be set/reset to nil when the button is clicked, use nil to toggle a boolean
@@ -70,10 +80,8 @@ controlModule.GPIMinimapButton.__index = controlModule.GPIMinimapButton
 ---@field GPI_DoStop boolean
 ---@field GPI_SIZETYPE string
 ---@field Lib_GPI_MinimapButton GPIMinimapButton Stores extra values for minimap button control
--- -@field SetPoint fun(self: BomLegacyControl, point: string, relativeTo: table, relativePoint: string, xOfs: number, yOfs: number)
----@field SetScript fun(self: BomLegacyControl, script: string, handler: function)
----@field Hide fun(self: BomLegacyControl)
----@field Show fun(self: BomLegacyControl)
+---@field SetSpell fun(self: BomGPIControl, spell: BomSpellId)
+---@field SetOnClick fun(self: BomGPIControl, func: function)
 controlModule.Control = {}
 controlModule.Control.__index = controlModule.Control
 

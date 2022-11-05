@@ -4,7 +4,7 @@ local BOM = BuffomatAddon ---@type BomAddon
 
 ---@class BomSpellButtonsTabModule
 ---@field spellTabsCreatedFlag boolean True if spells tab is created and filled
----@field categoryLabels table<string, BomLegacyControl> Collection of category labels indexed per category name
+---@field categoryLabels table<string, BomGPIControl> Collection of category labels indexed per category name
 ---@field spellTabUpdateRequestedBy table<number, string> Contains the callers who last requested spells tab update, or nothing
 local spellButtonsTabModule = {
   categoryLabels            = {},
@@ -152,7 +152,7 @@ function spellButtonsTabModule:AddGroupScanSelector(rowBuilder)
             nil, nil, "groupScanSelector.icon")
   end
 
-  BOM.Tool.Tooltip(self.spellSettingsFrames.Settings, _t("TooltipRaidGroupsSettings"))
+  toolboxModule:Tooltip(self.spellSettingsFrames.Settings, _t("TooltipRaidGroupsSettings"))
   rowBuilder:PositionAtNewRow(self.spellSettingsFrames.Settings, 0, 7)
   rowBuilder.dx = 7
 
@@ -496,8 +496,8 @@ function spellButtonsTabModule:UpdateSelectedSpell(spell)
     end
 
     --========================================
-    local forceCastButton = spell.frames.toggleForceCast ---@type BomLegacyControl
-    local excludeButton = spell.frames.toggleExclude ---@type BomLegacyControl
+    local forceCastButton = spell.frames.toggleForceCast ---@type BomGPIControl
+    local excludeButton = spell.frames.toggleExclude ---@type BomGPIControl
 
     if BOM.lastTarget ~= nil then
       -------------------------

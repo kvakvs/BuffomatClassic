@@ -8,7 +8,7 @@ BomModuleManager.uiButtonModule = uiButtonModule
 BOM.UI = {}
 
 ---@param id string Button ID
----@param parent BomLegacyControl parent UI frame for the button
+---@param parent BomGPIControl parent UI frame for the button
 ---@param normalTexture string
 function uiButtonModule:CreateSmallButton(id, parent, normalTexture)
   local b = CreateFrame("Button", id, parent)

@@ -10,8 +10,8 @@ managedUiModule.ICON_OFF = "|TInterface\\RAIDFRAME\\ReadyCheck-NotReady:0:0:0:0:
 
 ---Collection of UI elements which can be hidden together/shown in parts
 ---@class BomManagedUi
----@field uiElements table<string, BomLegacyControl>
----@field parent BomLegacyControl Use this parent to create all controls
+---@field uiElements table<string, BomGPIControl>
+---@field parent BomGPIControl Use this parent to create all controls
 
 local managedUiClass = {} ---@type BomManagedUi
 managedUiClass.__index = managedUiClass
@@ -65,7 +65,7 @@ function managedUiModule.ButtonOnLeave(self)
 
 end
 
----@param button BomLegacyControl
+---@param button BomGPIControl
 function managedUiModule:SetupButton(button, isSecure)
   button:SetScript("OnEnter", managedUiModule.ButtonOnEnter)
   button:SetScript("OnLeave", managedUiModule.ButtonOnLeave)

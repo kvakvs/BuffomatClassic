@@ -5,7 +5,7 @@ local BOM = BuffomatAddon ---@type BomAddon
 
 ---@shape BomUiMyButtonModule
 ---@field managed BomManagedControlsTable Contains all MyButtons with uniqueId
----@field managedWithoutUniqueId BomLegacyControl[] Contains all MyButtons without uniqueId
+---@field managedWithoutUniqueId BomControl[] Contains all MyButtons without uniqueId
 local managedUiModule = {
   managed                = {},
   managedWithoutUniqueId = {},
@@ -35,7 +35,7 @@ function BOM.MyButton_Update(self)
   end
 end
 
----@param self BomLegacyControl
+---@param self BomGPIControl
 function BOM.MyButton_SetOnClick(self, func)
   self._privat_OnClick = func
 end
@@ -50,7 +50,7 @@ function BOM.MyButton_OnEnable(self)
   BOM.MyButton_Update(self)
 end
 
----@param self BomLegacyControl
+---@param self BomGPIControl
 function BOM.MyButton_OnEnter(self)
   if self._privat_ToolTipLink or self._privat_ToolTipText then
     GameTooltip_SetDefaultAnchor(BomC_Tooltip, UIParent)
@@ -86,7 +86,7 @@ function BOM.MyButton_OnLeave(self)
   self._iconHighlight:SetVertexColor(1, 1, 1, 0);
 end
 
----@param self BomLegacyControl
+---@param self BomGPIControl
 function BOM.MyButton_OnMouseUp(self, button)
   if not self._privat_disabled then
     if self._privat_DB and self._privat_Var then
@@ -113,7 +113,7 @@ function BOM.MyButton_SetText(self, text)
   BOM.MyButton_Update(self)
 end
 
----@param self BomLegacyControl
+---@param self BomGPIControl
 function BOM.MyButton_OnLoad(self, isSecure)
   self._privat_state = true
   self._privat_disabled = false
@@ -139,7 +139,7 @@ function BOM.MyButton_OnLoad(self, isSecure)
   self:SetScript("OnLeave", BOM.MyButton_OnLeave)
 end
 
----@param self BomLegacyControl
+---@param self BomGPIControl
 function BOM.MyButton_SetState(self, state)
   if state == nil then
     if self._privat_DB and self._privat_Var then
@@ -167,7 +167,7 @@ function BOM.MyButton_SetTextures(self, sel, unsel, dis, selCoord, unselCoord, d
   BOM.MyButton_Update(self)
 end
 
----@param self BomLegacyControl
+---@param self BomGPIControl
 ---@param db table A storage table where clicking the button will modify something
 ---@param var string Key in the table to be modified
 ---@param set any Value to be written to the table if the button is clicked
@@ -197,13 +197,13 @@ end
 ---Creates small clickable button in the spell tab
 ---@param parent table - UI parent frame
 ---@param sel string - texture for checked / selected
----@param unsel string - texture for unchecked / unselected
+---@param unsel string|nil - texture for unchecked / unselected
 ---@param dis string|nil - texture for disabled
 ---@param selCoord number[]|nil - texcoord for selected
 ---@param unselCoord number[]|nil - texcoord for unselected
 ---@param disCoord number[]|nil - texcoord for disabled
 ---@param uniqueId string|nil - set to nil to not add button to bom_managed_mybuttons, or pass unique id
----@return BomLegacyControl
+---@return BomGPIControl
 function managedUiModule:CreateManagedButton(parent, sel, unsel, dis, selCoord, unselCoord, disCoord, uniqueId)
   local newButtonFrame = CreateFrame("frame", nil, parent, "BomC_MyButton")
   BOM.MyButton_OnLoad(newButtonFrame, false)
@@ -214,7 +214,7 @@ function managedUiModule:CreateManagedButton(parent, sel, unsel, dis, selCoord, 
 end
 
 ---@param uniqueId string|nil Pass a nil to not add button to bom_managed_mybuttons, or provide an unique id
----@param control BomLegacyControl
+---@param control BomControl
 function managedUiModule:ManageControl(uniqueId, control)
   if uniqueId ~= nil then
     self.managed[--[[---@not nil]]uniqueId] = control
@@ -223,7 +223,7 @@ function managedUiModule:ManageControl(uniqueId, control)
   end
 end
 
----@return BomLegacyControl
+---@return BomGPIControl
 ---@param uniqueId string|nil Uniqueid for ManageControl call or nil to keep unmanaged
 function managedUiModule:CreateMyButtonSecure(parent, sel, unsel, dis, selCoord, unselCoord, disCoord, uniqueId)
   local newButton = CreateFrame("Button", nil, parent, "BomC_MyButtonSecure")

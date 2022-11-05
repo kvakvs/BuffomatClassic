@@ -28,7 +28,7 @@ local L = setmetatable(
 ---@field ClassName string[] Localized class names (male)
 ---@field ClassColor table<string, table> Localized class colors
 ---@field NameToClass table<string, string> Reverse class name lookup
----@field _EditBox BomLegacyControl
+---@field _EditBox BomGPIControl
 
 BOM.Tool = BOM.Tool or {} ---@type BuffomatTool
 local Tool = BOM.Tool ---@type BuffomatTool
@@ -144,7 +144,7 @@ end
 --- EventHandler
 --local eventFrame ---@type Control
 
----@param self BomLegacyControl
+---@param self BomGPIControl
 local function bom_gpiprivat_event_handler(self, event, ...)
   for i, Entry in pairs(self._GPIPRIVAT_events) do
     if Entry[1] == event then
@@ -153,7 +153,7 @@ local function bom_gpiprivat_event_handler(self, event, ...)
   end
 end
 
----@param self BomLegacyControl
+---@param self BomGPIControl
 local function bom_gpiprivat_update_handler(self, ...)
   for i, Entry in pairs(self._GPIPRIVAT_updates) do
     Entry(...)
@@ -208,7 +208,7 @@ end
 
 -- misc tools
 
-local MyScanningTooltip ---@type BomLegacyControl
+local MyScanningTooltip ---@type BomGPIControl
 
 function toolboxModule:ScanToolTip(what, ...)
   local TextList = {}
@@ -436,7 +436,7 @@ end
 
 -- Size 
 
-local ResizeCursor ---@type BomLegacyControl
+local ResizeCursor ---@type BomGPIControl
 
 local SizingStop = function(self, button)
   self:GetParent():StopMovingOrSizing()
@@ -453,7 +453,7 @@ local SizingStart = function(self, button)
   end
 end
 
----@type BomLegacyControl
+---@type BomGPIControl
 local SizingEnter = function(self)
   if not (GetCursorInfo()) then
     ResizeCursor:Show()
@@ -469,7 +469,7 @@ end
 local sizecount = 0
 
 local function CreateSizeBorder(frame, name, a1, x1, y1, a2, x2, y2, cursor, rot, OnStart, OnStop)
-  local FrameSizeBorder ---@type BomLegacyControl
+  local FrameSizeBorder ---@type BomGPIControl
   sizecount = sizecount + 1
   FrameSizeBorder = CreateFrame("Frame", (frame:GetName() or TOCNAME .. sizecount) .. "_size_" .. name, frame)
   FrameSizeBorder:SetPoint("TOPLEFT", frame, a1, x1, y1)
@@ -566,7 +566,7 @@ end
 
 local PopupLastWipeName
 
----@param self BomLegacyControl
+---@param self BomGPIControl
 local function PopupWipe(self, WipeName)
   self._Frame._GPIPRIVAT_Items.count = 0
   PopupDepth = nil
@@ -582,7 +582,7 @@ local function PopupWipe(self, WipeName)
   return true
 end
 
----@param frame BomLegacyControl
+---@param frame BomGPIControl
 local function PopupCreate(frame, level, menuList)
   if level == nil then
     return
@@ -643,7 +643,7 @@ local function PopupShow(self, where, x, y)
 end
 
 ---@class BomPopupDynamic
----@field _Frame BomLegacyControl
+---@field _Frame BomGPIControl
 ---@field AddItem function
 ---@field SubMenu function
 ---@field Show function
@@ -652,7 +652,7 @@ end
 ---@return BomPopupDynamic
 function toolboxModule:CreatePopup(callbackFn)
   local popup = {} ---@type BomPopupDynamic
-  popup._Frame = CreateFrame("Frame", nil, UIParent, "UIDropDownMenuTemplate") ---@type BomLegacyControl
+  popup._Frame = CreateFrame("Frame", nil, UIParent, "UIDropDownMenuTemplate") ---@type BomGPIControl
   popup._Frame._GPIPRIVAT_TableCallback = callbackFn
   popup._Frame._GPIPRIVAT_Items = {}
   popup._Frame._GPIPRIVAT_Items.count = 0
@@ -726,9 +726,9 @@ function Tool.GetSelectedTab(frame)
 end
 
 ---Adds a Tab to a frame (main window for example)
----@param frame BomLegacyControl | string - where to add a tab
+---@param frame BomGPIControl | string - where to add a tab
 ---@param name string - tab text
----@param tabFrame BomLegacyControl | string - tab text
+---@param tabFrame BomGPIControl | string - tab text
 ---@param combatlockdown boolean - accessible in combat or not
 function toolboxModule:AddTab(frame, name, tabFrame, combatlockdown)
   local frameName
@@ -994,8 +994,8 @@ end
 
 ---If maybe_label is nil, creates a text label under the parent. Calls position_fn
 ---on the label to set its position.
----@param maybeLabel BomLegacyControl|nil - the existing label or nil
----@param parent BomLegacyControl - parent where the label is created
+---@param maybeLabel BomGPIControl|nil - the existing label or nil
+---@param parent BomGPIControl - parent where the label is created
 ---@param positionFn function - applies function after creating the label
 function toolboxModule:CreateSmalltextLabel(maybeLabel, parent, positionFn)
   if maybeLabel == nil then
@@ -1007,7 +1007,7 @@ end
 
 ---Add onenter/onleave scripts to show the tooltip with translation by key
 ---This works when the tooltip is set too early before translations are loaded.
----@param control BomLegacyControl
+---@param control BomGPIControl
 ---@param translationKey string The key to translation
 function Tool.TooltipWithTranslationKey(control, translationKey)
   control:SetScript("OnEnter", function()
@@ -1021,9 +1021,9 @@ function Tool.TooltipWithTranslationKey(control, translationKey)
 end
 
 ---Add onenter/onleave scripts to show the tooltip with translation by key
----@param control BomLegacyControl
+---@param control BomGPIControl
 ---@param text string The translated text
-function Tool.Tooltip(control, text)
+function toolboxModule:Tooltip(control, text)
   control:SetScript("OnEnter", function()
     GameTooltip:SetOwner(control, "ANCHOR_RIGHT")
     GameTooltip:AddLine(text)
@@ -1035,7 +1035,7 @@ function Tool.Tooltip(control, text)
 end
 
 ---Add onenter/onleave scripts to show the tooltip with TEXT
----@param control BomLegacyControl
+---@param control BomControl
 ---@param text string - the localized text to display
 function toolboxModule:TooltipText(control, text)
   control:SetScript("OnEnter", function()
@@ -1066,9 +1066,9 @@ local function bom_find_spellid(spellName)
 end
 
 ---Add onenter/onleave scripts to show the tooltip with spell
----@param control BomLegacyControl
+---@param control BomControl
 ---@param link string The string in format "spell:<id>" or "item:<id>"
-function Tool.TooltipLink(control, link)
+function toolboxModule:TooltipLink(control, link)
   control:SetScript("OnEnter", function()
     local spellId = GameTooltip:SetOwner(control, "ANCHOR_RIGHT")
     GameTooltip:SetHyperlink(link)

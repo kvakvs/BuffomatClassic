@@ -10,23 +10,23 @@ local Options = BOM.legacyOptions
 
 ---@class BomLegacyUiOptions
 ---@field Btn table
----@field CBox table<string, BomLegacyControl> Checkboxes
+---@field CBox table<string, BomGPIControl> Checkboxes
 ---@field Color table
----@field CurrentPanel BomLegacyControl used when building the panel
----@field Edit table<string, BomLegacyControl> Controls
----@field Frames table<string, BomLegacyControl>
+---@field CurrentPanel BomGPIControl used when building the panel
+---@field Edit table<string, BomGPIControl> Controls
+---@field Frames table<string, BomGPIControl>
 ---@field Index table<number, string> Maps sequential control id to control names
 ---@field inLine boolean
 ---@field LineRelativ string|nil
----@field NextRelativ BomLegacyControl Used to anchor next control to it
+---@field NextRelativ BomGPIControl Used to anchor next control to it
 ---@field NextRelativX number Anchor offset X
 ---@field NextRelativY number Anchor offset Y
----@field oldNextRelativ BomLegacyControl Used to anchor next control to it
+---@field oldNextRelativ BomGPIControl Used to anchor next control to it
 ---@field oldNextRelativX number Anchor offset X
 ---@field oldNextRelativY number Anchor offset Y
----@field Panel table<string, BomLegacyControl>
+---@field Panel table<string, BomGPIControl>
 ---@field Prefix string the name prefix for controls: "BuffomatClassic_O_" .. <control name>
----@field RightSide BomLegacyControl
+---@field RightSide BomGPIControl
 ---@field scale number Options GUI scale
 ---@field Vars table<string, table<string, any>>
 
@@ -642,7 +642,7 @@ end
 ---@param onlynumbers boolean - numeric value only allowed
 ---@param tooltip string
 ---@param suggestion table
----@return BomLegacyControl
+---@return BomGPIControl
 function Options.AddEditBox(DB, Var, Init, TXTLeft, width, widthLeft, onlynumbers,
                             tooltip, suggestion)
   if width == nil then

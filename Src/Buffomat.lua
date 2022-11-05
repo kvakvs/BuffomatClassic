@@ -87,7 +87,7 @@ local macroModule = BomModuleManager.macroModule
 ---@field PlayerBuffs BomBuffCollectionPerUnit
 ---@field PlayerCasting string|nil Indicates that the player is currently casting (updated in event handlers)
 ---@field PopupDynamic BomPopupDynamic
----@field QuickSingleBuff BomLegacyControl Button for single/group buff toggling next to cast button
+---@field QuickSingleBuff BomGPIControl Button for single/group buff toggling next to cast button
 ---@field RepeatUpdate boolean Requests some sort of spells update similar to ForceUpdate
 ---@field RESURRECT_CLASS BomClass[] Classes who can resurrect others
 ---@field ScanModifier boolean Will update buffomat when modifier key is held down
