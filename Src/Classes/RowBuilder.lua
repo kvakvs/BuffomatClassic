@@ -48,7 +48,7 @@ end
 
 ---@param anchor BomControl|nil
 ---@param control BomControl
----@param spaceAfter number
+---@param spaceAfter number|nil
 function rowBuilderClass:ChainToTheRight(anchor, control, spaceAfter)
   if anchor == nil then
     anchor = self.prevControl

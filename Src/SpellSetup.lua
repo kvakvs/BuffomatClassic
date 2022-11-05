@@ -197,28 +197,28 @@ function spellSetupModule:Setup_EachSpell_CacheUpdate(spell)
   end
 end
 
----@param spell BomBuffDefinition
-function spellSetupModule:Setup_EachSpell_SetupNonConsumable(spell)
+---@param buffDef BomBuffDefinition
+function spellSetupModule:Setup_EachSpell_SetupNonConsumable(buffDef)
   -- Load spell info and save some good fields for later use
-  local spellInfo = BOM.GetSpellInfo(spell.singleId)
+  local spellInfo = BOM.GetSpellInfo(buffDef.singleId)
 
   if spellInfo ~= nil then
-    spell.singleText = spellInfo.name
-    spellInfo.rank = GetSpellSubtext(spell.singleId) or ""
-    spell.singleLink = self:FormatSpellLink(spellInfo)
-    spell.spellIcon = spellInfo.icon
+    buffDef.singleText = spellInfo.name
+    spellInfo.rank = GetSpellSubtext(buffDef.singleId) or ""
+    buffDef.singleLink = self:FormatSpellLink(spellInfo)
+    buffDef.spellIcon = spellInfo.icon
 
-    if spell.type == "tracking" then
-      spell.trackingIconId = spellInfo.icon
-      spell.trackingSpellName = spellInfo.name
+    if buffDef.type == "tracking" then
+      buffDef.trackingIconId = spellInfo.icon
+      buffDef.trackingSpellName = spellInfo.name
     end
 
-    if not spell.isInfo
-            and not spell.isConsumable
-            and spell.singleDuration
+    if not buffDef.isInfo
+            and not buffDef.isConsumable
+            and buffDef.singleDuration
             and buffomatModule.shared.Duration[spellInfo.name] == nil
-            and IsSpellKnown(spell.singleId) then
-      buffomatModule.shared.Duration[spellInfo.name] = spell.singleDuration
+            and IsSpellKnown(buffDef.singleId) then
+      buffomatModule.shared.Duration[spellInfo.name] = buffDef.singleDuration
     end
   end -- spell info returned success
 end

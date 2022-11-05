@@ -5,7 +5,7 @@
 ---
 ---@shape BomTexturesModule
 ---@field CLASS_ICONS_ATLAS string
----@field CLASS_ICONS_ATLAS_TEX_COORD {[BomClass} BomTexCoords}
+---@field CLASS_ICONS_ATLAS_TEX_COORD {[BomClassName} BomTexCoords}
 ---@field ICON_BUFF_OFF string
 ---@field ICON_BUFF_ON string
 ---@field ICON_CHECKED string
@@ -19,7 +19,6 @@
 ---@field ICON_GROUP_NONE string
 ---@field ICON_OPT_DISABLED string
 ---@field ICON_OPT_ENABLED string
----@field ICON_PET string
 ---@field ICON_PET string
 ---@field ICON_PET_COORD BomTexCoord
 ---@field ICON_SELF_CAST_OFF string
@@ -48,7 +47,7 @@ texturesModule.ICON_SELF_CAST_ON = "Interface\\FriendsFrame\\UI-Toast-FriendOnli
 texturesModule.ICON_SELF_CAST_OFF = "Interface\\FriendsFrame\\UI-Toast-ChatInviteIcon"
 
 texturesModule.CLASS_ICONS_ATLAS = "Interface\\WorldStateFrame\\ICONS-CLASSES"
-texturesModule.CLASS_ICONS_ATLAS_TEX_COORD = --[[---@type {[BomClass} BomTexCoords} ]] CLASS_ICON_TCOORDS
+texturesModule.CLASS_ICONS_ATLAS_TEX_COORD = --[[---@type {[BomClassName} BomTexCoords} ]] CLASS_ICON_TCOORDS
 texturesModule.ICON_EMPTY = "Interface\\Buttons\\UI-MultiCheck-Disabled"
 
 ---@deprecated Unused

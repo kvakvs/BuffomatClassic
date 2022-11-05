@@ -45,7 +45,7 @@ controlModule.GPIMinimapButton.__index = controlModule.GPIMinimapButton
 
 
 ---@class WowTexture
----@field SetTexture fun(self: WowTexture, texturePath: string)
+---@field SetTexture fun(self: WowTexture, texturePath: string|nil, a: nil, ln: nil)
 ---@field SetTexCoord fun(self: WowTexture, coord: BomTexCoord)
 ---@field GetTexture fun(self: WowTexture): string
 ---@field GetTexCoord fun(self: WowTexture): BomTexCoord
@@ -58,7 +58,7 @@ controlModule.GPIMinimapButton.__index = controlModule.GPIMinimapButton
 ---@field bomToolTipLink string Mouseover will show the link
 ---@field bomToolTipText string Mouseover will show the text
 ---@field bomReadVariable function Returns value which the button can modify, boolean for toggle buttons
----@field SetPoint fun(self: BomControl, point: string, relativeTo: BomControl, relativePoint: string, xOfs: number, yOfs: number)
+---@field SetPoint fun(self: BomControl, point: string, relativeTo: BomControl|nil, relativePoint: string, xOfs: number, yOfs: number)
 ---@field Hide fun(self: BomControl)
 ---@field ClearAllPoints fun(self: BomControl)
 ---@field SetParent fun(self: BomControl, parent: BomControl|nil)
@@ -70,14 +70,15 @@ controlModule.GPIMinimapButton.__index = controlModule.GPIMinimapButton
 ---@field SetWidth fun(self: BomControl, width: number)
 ---@field SetHeight fun(self: BomControl, height: number)
 ---@field SetState fun(self: BomGPIControl, state: any) GPI control handler but is here for simpler code where controls are mixed in same container
+---@field CreateFontString fun(self: BomControl, name: string|nil, layer: string, inherits: string): BomControl
 
 ---@class BomGPIControl: BomControl A blizzard UI frame but may contain private fields used by internal library by GPI
 ---@field _icon WowTexture
 ---@field _text BomControl
 ---@field _iconHighlight WowTexture
----@field _privat_DB table Stores value when button is clicked
----@field _privat_Var string Variable name in the _privat_DB
----@field _privat_Set any Value to be set/reset to nil when the button is clicked, use nil to toggle a boolean
+---@field gpiDict table Stores dictionary which will be updated when button is clicked
+---@field gpiVariableName string Variable name in the gpiDict, which will be updated on click
+---@field gpiValueOnClick any Value to be set/reset to nil when the button is clicked, use nil to toggle a boolean
 ---@field _privat_OnClick function
 ---@field _privat_state boolean
 ---@field _privat_disabled boolean
@@ -90,12 +91,12 @@ controlModule.GPIMinimapButton.__index = controlModule.GPIMinimapButton
 ---@field _GPIPRIVAT_TableCallback function
 ---@field _GPIPRIVAT_Items table<GPIMenuItem> Popup item list?
 ---@field _GPIPRIVAT_MovingStopCallback function
----@field GPI_Cursor any
----@field GPI_Rotation number Rotation in degrees
+---@field gpiCursor any
+---@field gpiRotation number Rotation in degrees
 ---@field GPI_DoStart boolean
 ---@field GPI_DoStop boolean
 ---@field GPI_SIZETYPE string
----@field Lib_GPI_MinimapButton BomGPIMinimapButton Stores extra values for minimap button control
+---@field gpiMinimapButton BomGPIMinimapButton Stores extra values for minimap button control
 ---@field SetSpell fun(self: BomGPIControl, spell: BomSpellId)
 ---@field SetOnClick fun(self: BomGPIControl, func: function)
 local gpiControlClass = {}
@@ -138,7 +139,7 @@ function controlModule.MyButton_OnEnter(self)
       BomC_Tooltip:SetHyperlink(self._privat_ToolTipLink)
     else
       local add = ""
-      if (self._privat_DB and self._privat_Var) then
+      if (self.gpiDict and self.gpiVariableName) then
         add = " " .. (self._privat_state and ONIcon or OFFIcon)
       end
       BomC_Tooltip:AddLine(self._privat_ToolTipText .. add)
@@ -146,7 +147,7 @@ function controlModule.MyButton_OnEnter(self)
     end
     BomC_Tooltip:Show()
   end
-  if ((self._privat_DB and self._privat_Var) or self._privat_isSecure) and not self._privat_disabled then
+  if ((self.gpiDict and self.gpiVariableName) or self._privat_isSecure) and not self._privat_disabled then
     self._iconHighlight:SetTexture(self._icon:GetTexture())
     self._iconHighlight:SetTexCoord(self._icon:GetTexCoord())
     if (self._iconHighlight:SetDesaturated(true)) then
@@ -168,11 +169,11 @@ end
 ---@param self BomGPIControl
 function controlModule.MyButton_SetState(self, state)
   if state == nil then
-    if self._privat_DB and self._privat_Var then
-      if self._privat_Set == nil then
-        self._privat_state = self._privat_DB[self._privat_Var]
+    if self.gpiDict and self.gpiVariableName then
+      if self.gpiValueOnClick == nil then
+        self._privat_state = self.gpiDict[self.gpiVariableName]
       else
-        self._privat_state = (self._privat_DB[self._privat_Var] == self._privat_Set)
+        self._privat_state = (self.gpiDict[self.gpiVariableName] == self.gpiValueOnClick)
       end
     end
   else
@@ -236,14 +237,14 @@ end
 ---@param button string Key or mouse button?
 function controlModule.MyButton_OnMouseUp(self, button)
   if not self._privat_disabled then
-    if self._privat_DB and self._privat_Var then
-      if self._privat_Set == nil then
-        self._privat_DB[self._privat_Var] = not self._privat_DB[self._privat_Var]
+    if self.gpiDict and self.gpiVariableName then
+      if self.gpiValueOnClick == nil then
+        self.gpiDict[self.gpiVariableName] = not self.gpiDict[self.gpiVariableName]
       else
-        if self._privat_DB[self._privat_Var] ~= self._privat_Set then
-          self._privat_DB[self._privat_Var] = self._privat_Set
+        if self.gpiDict[self.gpiVariableName] ~= self.gpiValueOnClick then
+          self.gpiDict[self.gpiVariableName] = self.gpiValueOnClick
         else
-          self._privat_DB[self._privat_Var] = nil
+          self.gpiDict[self.gpiVariableName] = nil
         end
       end
       self:SetState(nil)
@@ -263,13 +264,13 @@ function controlModule.MyButton_SetText(self, text)
 end
 
 ---@param self BomGPIControl
----@param db table A storage table where clicking the button will modify something
----@param var string Key in the table to be modified
----@param set any Value to be written to the table if the button is clicked
-function controlModule.MyButton_SetVariable(self, db, var, set)
-  self._privat_DB = db
-  self._privat_Var = var
-  self._privat_Set = set
+---@param dictionary table A storage table where clicking the button will modify something
+---@param variableName string Key in the table to be modified
+---@param valueOnClick any Value to be written to the table if the button is clicked
+function controlModule.MyButton_SetVariable(self, dictionary, variableName, valueOnClick)
+  self.gpiDict = dictionary
+  self.gpiVariableName = variableName
+  self.gpiValueOnClick = valueOnClick
   self:SetState(nil)
 end
 

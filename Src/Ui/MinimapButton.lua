@@ -13,12 +13,12 @@ local minimapButtonClass = BOM.MinimapButton
 local function minimap_button_texture_zoom(button)
   local deltaX, deltaY = 0, 0
 
-  if not button.Lib_GPI_MinimapButton.isMouseDown then
+  if not button.gpiMinimapButton.isMouseDown then
     deltaX = 0.05
     deltaY = 0.05
   end
 
-  button.Lib_GPI_MinimapButton.icon:SetTexCoord(deltaX, 1 - deltaX, deltaY, 1 - deltaY)
+  button.gpiMinimapButton.icon:SetTexCoord(deltaX, 1 - deltaX, deltaY, 1 - deltaY)
 end
 
 ---Called when minimap button is dragged to update.
@@ -32,7 +32,7 @@ local function minimap_button_drag_update(button)
   local dx, dy = px - mx, py - my
   local dist = math.sqrt(dx * dx + dy * dy) / w
 
-  if button.Lib_GPI_MinimapButton.db.lockDistance then
+  if button.gpiMinimapButton.db.lockDistance then
     dist = 1
   else
     if dist < 1 then
@@ -42,38 +42,38 @@ local function minimap_button_drag_update(button)
     end
   end
 
-  button.Lib_GPI_MinimapButton.db.distance = dist
-  button.Lib_GPI_MinimapButton.db.position = math.deg(math.atan2(dy, dx)) % 360
-  button.Lib_GPI_MinimapButton.UpdatePosition()
+  button.gpiMinimapButton.db.distance = dist
+  button.gpiMinimapButton.db.position = math.deg(math.atan2(dy, dx)) % 360
+  button.gpiMinimapButton.UpdatePosition()
 end
 
 local function minimap_button_drag_start(button)
-  button.Lib_GPI_MinimapButton.isMouseDown = true
-  if button.Lib_GPI_MinimapButton.db.lock == false then
+  button.gpiMinimapButton.isMouseDown = true
+  if button.gpiMinimapButton.db.lock == false then
     button:LockHighlight()
     minimap_button_texture_zoom(button)
     button:SetScript("OnUpdate", minimap_button_drag_update)
-    button.Lib_GPI_MinimapButton.isDraggingButton = true
+    button.gpiMinimapButton.isDraggingButton = true
   end
   GameTooltip:Hide()
 end
 
 local function minimap_button_drag_stop(button)
   button:SetScript("OnUpdate", nil)
-  button.Lib_GPI_MinimapButton.isMouseDown = false
+  button.gpiMinimapButton.isMouseDown = false
   minimap_button_texture_zoom(button)
   button:UnlockHighlight()
-  button.Lib_GPI_MinimapButton.isDraggingButton = false
+  button.gpiMinimapButton.isDraggingButton = false
 end
 
 local function minimap_button_mouse_enter(button)
-  if button.Lib_GPI_MinimapButton.isDraggingButton
-          or not button.Lib_GPI_MinimapButton.Tooltip then
+  if button.gpiMinimapButton.isDraggingButton
+          or not button.gpiMinimapButton.Tooltip then
     return
   end
 
   GameTooltip:SetOwner(button, "ANCHOR_BOTTOMLEFT", 0, 0)
-  GameTooltip:AddLine(button.Lib_GPI_MinimapButton.Tooltip)
+  GameTooltip:AddLine(button.gpiMinimapButton.Tooltip)
   GameTooltip:Show()
 end
 
@@ -84,18 +84,18 @@ end
 local function minimap_button_click(button, b)
   GameTooltip:Hide()
 
-  if button.Lib_GPI_MinimapButton.onClick then
-    button.Lib_GPI_MinimapButton.onClick(button.Lib_GPI_MinimapButton, b)
+  if button.gpiMinimapButton.onClick then
+    button.gpiMinimapButton.onClick(button.gpiMinimapButton, b)
   end
 end
 
 local function minimap_button_mouse_down(button)
-  button.Lib_GPI_MinimapButton.isMouseDown = true
+  button.gpiMinimapButton.isMouseDown = true
   minimap_button_texture_zoom(button)
 end
 
 local function minimap_button_mouse_up(button)
-  button.Lib_GPI_MinimapButton.isMouseDown = false
+  button.gpiMinimapButton.isMouseDown = false
   minimap_button_texture_zoom(button)
 end
 
@@ -108,7 +108,7 @@ function minimapButtonClass.Init(Database, Texture, DoOnClick, Tooltip)
   local button = CreateFrame("Button", "Lib_GPI_Minimap_" .. TOCNAME, Minimap)
 
   minimapButtonClass.button = button
-  button.Lib_GPI_MinimapButton = minimapButtonClass
+  button.gpiMinimapButton = minimapButtonClass
 
   button:SetFrameStrata("MEDIUM")
   button:SetSize(31, 31)

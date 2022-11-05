@@ -79,7 +79,7 @@ local macroModule = BomModuleManager.macroModule
 ---@field legacyOptions BomLegacyUiOptions
 ---@field LoadingScreenTimeOut number
 ---@field Macro BomMacro
----@field MANA_CLASSES BomClass[] Classes with mana resource
+---@field MANA_CLASSES BomClassName[] Classes with mana resource
 ---@field ManaLimit number Player max mana
 ---@field MinimapButton BomGPIMinimapButton Minimap button control
 ---@field nextCooldownDue number Set this to next spell cooldown to force update
@@ -89,7 +89,7 @@ local macroModule = BomModuleManager.macroModule
 ---@field PopupDynamic BomPopupDynamic
 ---@field QuickSingleBuff BomGPIControl Button for single/group buff toggling next to cast button
 ---@field RepeatUpdate boolean Requests some sort of spells update similar to ForceUpdate
----@field RESURRECT_CLASS BomClass[] Classes who can resurrect others
+---@field RESURRECT_CLASS BomClassName[] Classes who can resurrect others
 ---@field ScanModifier boolean Will update buffomat when modifier key is held down
 ---@field selectedBuffs BomBuffDefinition[]
 ---@field SetupAvailableSpells function

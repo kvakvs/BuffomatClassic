@@ -128,54 +128,54 @@ end
 ---Check for party, spell and player, which targets that spell goes onto
 ---Update spell.NeedMember, spell.NeedGroup and spell.DeathGroup
 ---@param party table<number, BomUnit> - the party
----@param spell BomBuffDefinition the spell to update
+---@param buffDef BomBuffDefinition the spell to update
 ---@param playerUnit BomUnit the player
 ---@return boolean someoneIsDead
-function taskScanModule:UpdateSpellTargets(party, spell, playerUnit)
+function taskScanModule:UpdateSpellTargets(party, buffDef, playerUnit)
   local someoneIsDead = false
   --local thisBuffOnPlayer = playerUnit.knownBuffs[spell.buffId]
-  spell:ResetBuffTargets()
+  buffDef:ResetBuffTargets()
 
   -- Save skipped unit and do nothing
-  if spell:DoesUnitHaveBetterBuffs(playerUnit) then
-    tinsert(spell.UnitsHaveBetterBuff, playerUnit)
-  elseif not buffDefModule:IsBuffEnabled(spell.buffId) then
+  if buffDef:DoesUnitHaveBetterBuffs(playerUnit) then
+    tinsert(buffDef.UnitsHaveBetterBuff, playerUnit)
+  elseif not buffDefModule:IsBuffEnabled(buffDef.buffId) then
     --nothing, the spell is not enabled!
-  elseif spellButtonsTabModule:CategoryIsHidden(spell.category) then
+  elseif spellButtonsTabModule:CategoryIsHidden(buffDef.category) then
     --nothing, the category is not showing!
-  elseif spell.type == "weapon" then
-    buffChecksModule:PlayerNeedsWeaponBuff(spell, playerUnit, party, someoneIsDead)
+  elseif buffDef.type == "weapon" then
+    buffChecksModule:PlayerNeedsWeaponBuff(buffDef, playerUnit, party, someoneIsDead)
     -- NOTE: This must go before spell.IsConsumable clause
     -- For TBC hunter pet buffs we check if the pet is missing the buff
     -- but then the hunter must consume it
-  elseif spell.tbcHunterPetBuff then
-    buffChecksModule:HunterPetNeedsBuff(spell, playerUnit, party, someoneIsDead)
-  elseif spell.isConsumable then
-    buffChecksModule:PlayerNeedsConsumable(spell, playerUnit, party, someoneIsDead)
-  elseif spell.isInfo then
-    buffChecksModule:PartyNeedsInfoBuff(spell, playerUnit, party, someoneIsDead)
-  elseif spell.isOwn then
-    buffChecksModule:PlayerNeedsSelfBuff(spell, playerUnit, party, someoneIsDead)
-  elseif spell.type == "resurrection" then
-    buffChecksModule:DeadNeedsResurrection(spell, playerUnit, party, someoneIsDead)
-  elseif spell.type == "tracking" then
-    buffChecksModule:PlayerNeedsTracking(spell, playerUnit, party, someoneIsDead)
-  elseif spell.type == "aura" then
-    buffChecksModule:PaladinNeedsAura(spell, playerUnit, party, someoneIsDead)
-  elseif spell.type == "seal" then
-    buffChecksModule:PaladinNeedsSeal(spell, playerUnit, party, someoneIsDead)
-  elseif spell.isBlessing then
-    someoneIsDead = buffChecksModule:PartyNeedsPaladinBlessing(spell, playerUnit, party, someoneIsDead)
+  elseif buffDef.tbcHunterPetBuff then
+    buffChecksModule:HunterPetNeedsBuff(buffDef, playerUnit, party, someoneIsDead)
+  elseif buffDef.isConsumable then
+    buffChecksModule:PlayerNeedsConsumable(buffDef, playerUnit, party, someoneIsDead)
+  elseif buffDef.isInfo then
+    buffChecksModule:PartyNeedsInfoBuff(buffDef, playerUnit, party, someoneIsDead)
+  elseif buffDef.isOwn then
+    buffChecksModule:PlayerNeedsSelfBuff(buffDef, playerUnit, party, someoneIsDead)
+  elseif buffDef.type == "resurrection" then
+    buffChecksModule:DeadNeedsResurrection(buffDef, playerUnit, party, someoneIsDead)
+  elseif buffDef.type == "tracking" then
+    buffChecksModule:PlayerNeedsTracking(buffDef, playerUnit, party, someoneIsDead)
+  elseif buffDef.type == "aura" then
+    buffChecksModule:PaladinNeedsAura(buffDef, playerUnit, party, someoneIsDead)
+  elseif buffDef.type == "seal" then
+    buffChecksModule:PaladinNeedsSeal(buffDef, playerUnit, party, someoneIsDead)
+  elseif buffDef.isBlessing then
+    someoneIsDead = buffChecksModule:PartyNeedsPaladinBlessing(buffDef, playerUnit, party, someoneIsDead)
   else
-    buffChecksModule:PartyNeedsBuff(spell, playerUnit, party, someoneIsDead)
+    buffChecksModule:PartyNeedsBuff(buffDef, playerUnit, party, someoneIsDead)
   end
 
   -- Check Spell CD
-  if spell.hasCD and #spell.UnitsNeedBuff > 0 then
-    local startTime, duration = GetSpellCooldown(spell.singleId)
+  if buffDef.hasCD and #buffDef.UnitsNeedBuff > 0 then
+    local startTime, duration = GetSpellCooldown(buffDef.singleId)
     if duration ~= 0 then
       -- The buff spell is still not ready
-      spell:ResetBuffTargets()
+      buffDef:ResetBuffTargets()
       startTime = startTime + duration
 
       -- Check next time when the cooldown is up, or sooner
@@ -370,7 +370,7 @@ function taskScanModule:GetClassInRange(spellName, party, class, spell)
 end
 
 ---@class BomScan_NextCastSpell
----@field spell BomBuffDefinition
+---@field buffDef BomBuffDefinition
 ---@field spellLink string|nil
 ---@field targetUnit string|nil
 ---@field spellId number|nil
@@ -416,14 +416,14 @@ function taskScanModule:QueueSpell(cost, spellId, link, targetUnit, buffDef, tem
   if not buffDef.type == "resurrection" and targetUnit.isDead then
     -- Cannot cast resurrections on deads
     return
-  elseif nextCastSpell.spell and buffDef.type ~= "tracking" then
-    if nextCastSpell.spell.type == "tracking" then
+  elseif nextCastSpell.buffDef and buffDef.type ~= "tracking" then
+    if nextCastSpell.buffDef.type == "tracking" then
       return
     elseif buffDef.type == "resurrection" then
       --------------------
       -- If resurrection
       --------------------
-      if nextCastSpell.spell.type == "resurrection" then
+      if nextCastSpell.buffDef.type == "resurrection" then
         if (tContains(BOM.RESURRECT_CLASS, nextCastSpell.targetUnit.class) and not tContains(BOM.RESURRECT_CLASS, targetUnit.class))
                 or (tContains(BOM.MANA_CLASSES, nextCastSpell.targetUnit.class) and not tContains(BOM.MANA_CLASSES, targetUnit.class))
                 or (not nextCastSpell.targetUnit.isGhost and targetUnit.isGhost)
@@ -450,7 +450,7 @@ function taskScanModule:QueueSpell(cost, spellId, link, targetUnit, buffDef, tem
   nextCastSpell.spellId = spellId
   nextCastSpell.spellLink = link
   nextCastSpell.targetUnit = targetUnit
-  nextCastSpell.spell = buffDef
+  nextCastSpell.buffDef = buffDef
 end
 
 ---Cleares the spell from `cast` global
@@ -458,7 +458,7 @@ function taskScanModule:ClearNextCastSpell()
   nextCastSpell.manaCost = -1
   nextCastSpell.spellId = nil
   nextCastSpell.targetUnit = nil
-  nextCastSpell.spell = nil
+  nextCastSpell.buffDef = nil
   nextCastSpell.spellLink = nil
   nextCastSpell.temporaryDownrank = false
 end
@@ -539,23 +539,22 @@ function taskScanModule:ActivateSelectedTracking()
   --reset tracking
   BOM.forceTracking = nil
 
-  ---@param spell BomBuffDefinition
-  for i, spell in ipairs(BOM.selectedBuffs) do
-    if spell.type == "tracking" then
-      if buffDefModule:IsBuffEnabled(spell.buffId, nil) then
-        if spell.requiresForm ~= nil then
-          if GetShapeshiftFormID() == spell.requiresForm
-                  and BOM.forceTracking ~= spell.trackingIconId then
-            BOM.forceTracking = spell.trackingIconId
+  for i, buffDef in ipairs(BOM.selectedBuffs) do
+    if buffDef.type == "tracking" then
+      if buffDefModule:IsBuffEnabled(buffDef.buffId, nil) then
+        if buffDef.requiresForm ~= nil then
+          if GetShapeshiftFormID() == buffDef.requiresForm
+                  and BOM.forceTracking ~= buffDef.trackingIconId then
+            BOM.forceTracking = buffDef.trackingIconId
             spellButtonsTabModule:UpdateSpellsTab("ForceUp1")
           end
-        elseif buffChecksModule:IsTrackingActive(spell)
-                and buffomatModule.character.lastTrackingIconId ~= spell.trackingIconId then
-          buffomatModule.character.lastTrackingIconId = spell.trackingIconId
+        elseif buffChecksModule:IsTrackingActive(buffDef)
+                and buffomatModule.character.lastTrackingIconId ~= buffDef.trackingIconId then
+          buffomatModule.character.lastTrackingIconId = buffDef.trackingIconId
           spellButtonsTabModule:UpdateSpellsTab("ForceUp2")
         end
       else
-        if buffomatModule.character.lastTrackingIconId == spell.trackingIconId
+        if buffomatModule.character.lastTrackingIconId == buffDef.trackingIconId
                 and buffomatModule.character.lastTrackingIconId ~= nil then
           buffomatModule.character.lastTrackingIconId = nil
           spellButtonsTabModule:UpdateSpellsTab("ForceUp3")
@@ -575,24 +574,24 @@ function taskScanModule:GetActiveAuraAndSeal(playerUnit)
   BOM.activePaladinAura = nil
   BOM.activePaladinSeal = nil
 
-  ---@param spell BomBuffDefinition
-  for i, spell in ipairs(BOM.selectedBuffs) do
-    local player_buff = playerUnit.knownBuffs[spell.buffId]
+  ---@param buffDef BomBuffDefinition
+  for i, buffDef in ipairs(BOM.selectedBuffs) do
+    local player_buff = playerUnit.knownBuffs[buffDef.buffId]
 
     if player_buff then
-      if spell.type == "aura" then
-        if (BOM.activePaladinAura == nil and BOM.LastAura == spell.buffId)
+      if buffDef.type == "aura" then
+        if (BOM.activePaladinAura == nil and BOM.LastAura == buffDef.buffId)
                 or UnitIsUnit(player_buff.source, "player")
         then
           if buffChecksModule:TimeCheck(player_buff.expirationTime, player_buff.duration) then
-            BOM.activePaladinAura = spell.buffId
+            BOM.activePaladinAura = buffDef.buffId
           end
         end
 
-      elseif spell.type == "seal" then
+      elseif buffDef.type == "seal" then
         if UnitIsUnit(player_buff.source, "player") then
           if buffChecksModule:TimeCheck(player_buff.expirationTime, player_buff.duration) then
-            BOM.activePaladinSeal = spell.buffId
+            BOM.activePaladinSeal = buffDef.buffId
           end
         end
       end -- if is aura
@@ -602,32 +601,32 @@ end
 
 function taskScanModule:CheckChangesAndUpdateSpelltab()
   --reset aura/seal
-  ---@param spell BomBuffDefinition
-  for i, spell in ipairs(BOM.selectedBuffs) do
-    if spell.type == "aura" then
-      if buffDefModule:IsBuffEnabled(spell.buffId) then
-        if BOM.activePaladinAura == spell.buffId
-                and buffomatModule.currentProfile.LastAura ~= spell.buffId then
-          buffomatModule.currentProfile.LastAura = spell.buffId
+  ---@param buffDef BomBuffDefinition
+  for i, buffDef in ipairs(BOM.selectedBuffs) do
+    if buffDef.type == "aura" then
+      if buffDefModule:IsBuffEnabled(buffDef.buffId) then
+        if BOM.activePaladinAura == buffDef.buffId
+                and buffomatModule.currentProfile.LastAura ~= buffDef.buffId then
+          buffomatModule.currentProfile.LastAura = buffDef.buffId
           spellButtonsTabModule:UpdateSpellsTab("ForceUp4")
         end
       else
-        if buffomatModule.currentProfile.LastAura == spell.buffId
+        if buffomatModule.currentProfile.LastAura == buffDef.buffId
                 and buffomatModule.currentProfile.LastAura ~= nil then
           buffomatModule.currentProfile.LastAura = nil
           spellButtonsTabModule:UpdateSpellsTab("ForceUp5")
         end
       end -- if currentprofile.spell.enable
 
-    elseif spell.type == "seal" then
-      if buffDefModule:IsBuffEnabled(spell.buffId) then
-        if BOM.activePaladinSeal == spell.buffId
-                and buffomatModule.currentProfile.LastSeal ~= spell.buffId then
-          buffomatModule.currentProfile.LastSeal = spell.buffId
+    elseif buffDef.type == "seal" then
+      if buffDefModule:IsBuffEnabled(buffDef.buffId) then
+        if BOM.activePaladinSeal == buffDef.buffId
+                and buffomatModule.currentProfile.LastSeal ~= buffDef.buffId then
+          buffomatModule.currentProfile.LastSeal = buffDef.buffId
           spellButtonsTabModule:UpdateSpellsTab("ForceUp6")
         end
       else
-        if buffomatModule.currentProfile.LastSeal == spell.buffId
+        if buffomatModule.currentProfile.LastSeal == buffDef.buffId
                 and buffomatModule.currentProfile.LastSeal ~= nil then
           buffomatModule.currentProfile.LastSeal = nil
           spellButtonsTabModule:UpdateSpellsTab("ForceUp7")
@@ -1766,7 +1765,7 @@ function taskScanModule:UpdateScan_Button_TargetedSpell()
     BomC_ListTab_Button:Enable()
   end
 
-  BOM.castFailedBuff = nextCastSpell.spell
+  BOM.castFailedBuff = nextCastSpell.buffDef
   BOM.castFailedBuffTarget = nextCastSpell.targetUnit
 end
 

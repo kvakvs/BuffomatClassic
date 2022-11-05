@@ -11,7 +11,7 @@ local toolboxModule = BomModuleManager.toolboxModule
 local texturesModule = BomModuleManager.texturesModule
 
 ---@class BomBuffRowFrames
----@field [BomClass] BomGPIControl Used for class toggle buttons
+---@field [BomClassName] BomGPIControl Used for class toggle buttons
 ---@field uniqueId string Used for ManageControl() calls as prefix
 ---@field iconInfo BomControl Icon for spell or item which provides the buff
 ---@field checkboxEnable BomGPIControl Checkbox for enable/disable buff
@@ -34,7 +34,7 @@ local texturesModule = BomModuleManager.texturesModule
 ---@field PRIEST BomGPIControl Per class setting for class-specific buffs
 ---@field WARLOCK BomGPIControl Per class setting for class-specific buffs
 ---@field PALADIN BomGPIControl Per class setting for class-specific buffs
----@field cancelBuffLabel BomControl Text label for buff cancel row (in combat or always)
+---@field cancelBuffLabel BomGPIControl Text label for buff cancel row (in combat or always)
 local buffRowClass = {}
 buffRowClass.__index = buffRowClass
 
@@ -218,7 +218,7 @@ function buffRowClass:CreateSelfCastToggle(tooltip)
   return self.toggleSelfCast
 end
 
----@param class BomClass
+---@param class BomClassName
 ---@param tooltip string
 ---@param onClick function
 ---@return BomGPIControl

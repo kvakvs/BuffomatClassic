@@ -33,69 +33,6 @@ local L = setmetatable(
 BOM.Tool = BOM.Tool or {} ---@type BuffomatTool
 local Tool = BOM.Tool ---@type BuffomatTool
 
---Tool.IconClassTexture = "Interface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES"
---Tool.IconClassTextureWithoutBorder = "Interface\\WorldStateFrame\\ICONS-CLASSES"
---Tool.IconClassTextureCoord = CLASS_ICON_TCOORDS
-
--- The texture is square 4x in a row, 64 px per icon
--- https://github.com/Gethe/wow-ui-textures/blob/live/WorldStateFrame/ICONS-CLASSES.PNG
-Tool.IconClass = {
-  ["WARRIOR"]     = "|TInterface\\WorldStateFrame\\ICONS-CLASSES:0:0:0:0:256:256:0:64:0:64|t",
-  ["MAGE"]        = "|TInterface\\WorldStateFrame\\ICONS-CLASSES:0:0:0:0:256:256:64:128:0:64|t",
-  ["ROGUE"]       = "|TInterface\\WorldStateFrame\\ICONS-CLASSES:0:0:0:0:256:256:128:192:0:64|t",
-  ["DRUID"]       = "|TInterface\\WorldStateFrame\\ICONS-CLASSES:0:0:0:0:256:256:192:256:0:64|t",
-
-  ["HUNTER"]      = "|TInterface\\WorldStateFrame\\ICONS-CLASSES:0:0:0:0:256:256:0:64:64:128|t",
-  ["SHAMAN"]      = "|TInterface\\WorldStateFrame\\ICONS-CLASSES:0:0:0:0:256:256:64:128:64:128|t",
-  ["PRIEST"]      = "|TInterface\\WorldStateFrame\\ICONS-CLASSES:0:0:0:0:256:256:128:192:64:128|t",
-  ["WARLOCK"]     = "|TInterface\\WorldStateFrame\\ICONS-CLASSES:0:0:0:0:256:256:192:256:64:128|t",
-
-  ["PALADIN"]     = "|TInterface\\WorldStateFrame\\ICONS-CLASSES:0:0:0:0:256:256:0:64:128:192|t",
-  ["DEATHKNIGHT"] = "|TInterface\\WorldStateFrame\\ICONS-CLASSES:0:0:0:0:256:256:64:128:128:192|t",
-}
-
--- The texture is square 4x in a row, 64 px per icon
--- https://github.com/Gethe/wow-ui-textures/blob/live/WorldStateFrame/ICONS-CLASSES.PNG
-Tool.IconClassBig = {
-  ["WARRIOR"]     = "|TInterface\\WorldStateFrame\\ICONS-CLASSES:18:18:-4:4:256:256:0:64:0:64|t",
-  ["MAGE"]        = "|TInterface\\WorldStateFrame\\ICONS-CLASSES:18:18:-4:4:256:256:64:128:0:64|t",
-  ["ROGUE"]       = "|TInterface\\WorldStateFrame\\ICONS-CLASSES:18:18:-4:4:256:256:128:192:0:64|t",
-  ["DRUID"]       = "|TInterface\\WorldStateFrame\\ICONS-CLASSES:18:18:-4:4:256:256:192:256:0:64|t",
-
-  ["HUNTER"]      = "|TInterface\\WorldStateFrame\\ICONS-CLASSES:18:18:-4:4:256:256:0:64:64:128|t",
-  ["SHAMAN"]      = "|TInterface\\WorldStateFrame\\ICONS-CLASSES:18:18:-4:4:256:256:64:128:64:128|t",
-  ["PRIEST"]      = "|TInterface\\WorldStateFrame\\ICONS-CLASSES:18:18:-4:4:256:256:128:192:64:128|t",
-  ["WARLOCK"]     = "|TInterface\\WorldStateFrame\\ICONS-CLASSES:18:18:-4:4:256:256:192:256:64:128|t",
-
-  ["PALADIN"]     = "|TInterface\\WorldStateFrame\\ICONS-CLASSES:18:18:-4:4:256:256:0:64:128:192|t",
-  ["DEATHKNIGHT"] = "|TInterface\\WorldStateFrame\\ICONS-CLASSES:18:18:-4:4:256:256:64:128:128:192|t",
-}
-
-Tool.RaidIconNames = ICON_TAG_LIST
-Tool.RaidIcon = {
-  "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_1:0|t", -- [1]
-  "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_2:0|t", -- [2]
-  "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_3:0|t", -- [3]
-  "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_4:0|t", -- [4]
-  "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_5:0|t", -- [5]
-  "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_6:0|t", -- [6]
-  "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_7:0|t", -- [7]
-  "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_8:0|t", -- [8]
-}
-
-Tool.Classes = CLASS_SORT_ORDER
-Tool.ClassName = LOCALIZED_CLASS_NAMES_MALE
-Tool.ClassColor = RAID_CLASS_COLORS
-
-Tool.NameToClass = {}
-for eng, name in pairs(LOCALIZED_CLASS_NAMES_MALE) do
-  Tool.NameToClass[name] = eng
-  Tool.NameToClass[eng] = eng
-end
-for eng, name in pairs(LOCALIZED_CLASS_NAMES_FEMALE) do
-  Tool.NameToClass[name] = eng
-end
-
 ---Converts accented letters to ASCII equivalent for sorting
 local bom_special_letter_to_ascii = {
   ["�"] = "A", ["�"] = "A", ["�"] = "A", ["�"] = "A", ["�"] = "Ae", ["�"] = "A",
@@ -457,8 +394,8 @@ end
 local SizingEnter = function(self)
   if not (GetCursorInfo()) then
     ResizeCursor:Show()
-    ResizeCursor.Texture:SetTexture(self.GPI_Cursor)
-    ResizeCursor.Texture:SetRotation(math.rad(self.GPI_Rotation), 0.5, 0.5)
+    ResizeCursor.Texture:SetTexture(self.gpiCursor)
+    ResizeCursor.Texture:SetRotation(math.rad(self.gpiRotation), 0.5, 0.5)
   end
 end
 
@@ -475,8 +412,8 @@ local function CreateSizeBorder(frame, name, a1, x1, y1, a2, x2, y2, cursor, rot
   FrameSizeBorder:SetPoint("TOPLEFT", frame, a1, x1, y1)
   FrameSizeBorder:SetPoint("BOTTOMRIGHT", frame, a2, x2, y2)
   FrameSizeBorder.GPI_SIZETYPE = name
-  FrameSizeBorder.GPI_Cursor = cursor
-  FrameSizeBorder.GPI_Rotation = rot
+  FrameSizeBorder.gpiCursor = cursor
+  FrameSizeBorder.gpiRotation = rot
   FrameSizeBorder.GPI_DoStart = OnStart
   FrameSizeBorder.GPI_DoStop = OnStop
   FrameSizeBorder:SetScript("OnMouseDown", SizingStart)
@@ -994,15 +931,16 @@ end
 
 ---If maybe_label is nil, creates a text label under the parent. Calls position_fn
 ---on the label to set its position.
----@param maybeLabel BomGPIControl|nil - the existing label or nil
----@param parent BomGPIControl - parent where the label is created
----@param positionFn function - applies function after creating the label
+---@param maybeLabel BomGPIControl|nil the existing label or nil
+---@param parent BomGPIControl parent where the label is created
+---@param positionFn function applies function after creating the label
+---@return BomGPIControl
 function toolboxModule:CreateSmalltextLabel(maybeLabel, parent, positionFn)
   if maybeLabel == nil then
-    maybeLabel = parent:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    maybeLabel = --[[---@type BomGPIControl]] parent:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
   end
   positionFn(maybeLabel)
-  return maybeLabel
+  return --[[---@not nil]] maybeLabel
 end
 
 ---Add onenter/onleave scripts to show the tooltip with translation by key

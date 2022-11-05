@@ -20,7 +20,13 @@ local allBuffsModule = BomModuleManager.allBuffsModule
 
 ---@alias BomShapeshiftFormId number Shapeshift form for various classes
 
+---type="aura" Auras are no target buff check. True if the buff affects others in radius, and not a target buff
+---type="seal" Seals are 1hand enchants which are unique for equipped weapon. Paladins use seals. Shamans also use seals but in TBC shamans have 2 independent seals.
+---type="resurrection" The spell will bring up a dead person
+---type="tracking" the buff grants the tracking of some resource or enemy type
+---type="weapon" The buff is a temporary weapon enchant on user's weapons (poison or shaman etc)
 ---@alias BomBuffType "aura"|"consumable"|"weapon"|"seal"|"tracking"|"resurrection"|"summon"
+
 ---@alias BomCreatureType "Demon"|"Undead"
 ---@alias BomCreatureFamily "Ghoul"|"Voidwalker"|"Imp"|"Succubus"|"Incubus"|"Felhunter"|"Felguard"
 ---@alias BomPlayerRace "BloodElf"|"Draenei"|"Dwarf"|"Gnome"|"Human"|"NightElf"|"Orc"|"Tauren"|"Troll"|"Undead"
@@ -32,7 +38,7 @@ local allBuffsModule = BomModuleManager.allBuffsModule
 ---@field requireWotLK boolean
 ---@field hideInWotLK boolean
 ---@field playerRace BomPlayerRace
----@field playerClass BomClass|BomClass[] Collection of classes for this spell, or classname
+---@field playerClass BomClassName|BomClassName[] Collection of classes for this spell, or classname
 ---@field maxLevel number Hide the spell if player is above this level (to deprecate old spells)
 ---@field minLevel number Hide the spell if player is below this level
 ---@field hideIfSpellKnown number Hide the spell if spellId is in their spellbook
@@ -44,78 +50,68 @@ local allBuffsModule = BomModuleManager.allBuffsModule
 -- -@field [BomSpellId] BomBuffDefinition
 
 ---@shape BomBuffDefinition
----@field requiresOutdoors boolean Spell can only be cast outdoors
----@field limitations BomSpellLimitations|nil [Temporary] field for post-filtering on spell list creation, later zeroed
----@field category BomBuffCategory Group by this field and use special translation table to display headers
----@field elixirType string|nil Use this for elixir mutual exclusions on elixirs
----@field targetClasses BomClass[] List of target classes which are shown as toggle boxes to enable cast per class
----@field default boolean Whether the spell auto-cast is enabled by default
----@field groupDuration number Buff duration for group buff in seconds
----@field groupFamily number[] Family of group buff spell ids which are mutually exclusive
----@field groupMana number Mana cost for group buff
----@field hasCD boolean There's a cooldown on this spell
+---@field AllowWhisper boolean [⚠DO NOT RENAME] Allow whispering expired soulstone to the warlock
+---@field buffId BomBuffId Spell id of level 60 spell used as key everywhere else
+---@field buffSource string Unit/player who gave this buff
+---@field category BomBuffCategoryName Group by this field and use special translation table to display headers
+---@field Class table<BomClassName, boolean> [⚠DO NOT RENAME] List of classes to receive this buff
 ---@field consumableEra string One of constants BOM.CLASSIC_ERA or BOM.IsTBC_ERA which will affect buff visibility based on used choice
----@field tbcHunterPetBuff boolean True for TBC hunter pet consumable which places aura on the hunter pet
----
+---@field consumableTarget string Add "[@" .. consumableTarget .. "]" to the "/use bag slot" macro
 ---@field creatureFamily BomCreatureFamily Warlock summon pet family for type='summon' (Imp, etc)
 ---@field creatureType BomCreatureType Warlock summon pet type for type='summon' (Demon)
----@field sacrificeAuraIds BomSpellId[]|nil Aura id for demonic sacrifice of that pet. Do not summon if buff is present.
----@field requireWarlockPet boolean For Soul Link - must check if a demon pet is present
----
---- Selected spell casting and display on the cast button
+---@field default boolean Whether the spell auto-cast is enabled by default
+---@field elixirType string|nil Use this for elixir mutual exclusions on elixirs
+---@field Enable boolean [⚠DO NOT RENAME]  Whether buff is to be watched
+---@field ExcludedTarget table<string, boolean> [⚠DO NOT RENAME] List of target names to never buff
 ---@field extraText string Added to the right of spell name in the spells config
----@field singleLink string Printable link for single buff
----@field groupLink string Printable link for group buff
----@field singleText string Name of single buff spell (from GetSpellInfo())
----@field groupText string Name of group buff spell (from GetSpellInfo())
----@field spellIcon string
----@field itemIcon string
----
----type="aura" Auras are no target buff check. True if the buff affects others in radius, and not a target buff
----type="seal" Seals are 1hand enchants which are unique for equipped weapon. Paladins use seals. Shamans also use seals but in TBC shamans have 2 independent seals.
----type="resurrection" The spell will bring up a dead person
----type="tracking" the buff grants the tracking of some resource or enemy type
----type="weapon" The buff is a temporary weapon enchant on user's weapons (poison or shaman etc)
----@field type BomBuffType Defines type: "aura", "consumable", "weapon" for Enchant Consumables, "seal", "tracking", "resurrection"
----@field isConsumable boolean Is an item-based buff; the spell must have 'items' field too
----@field consumableTarget string Add "[@" .. consumableTarget .. "]" to the "/use bag slot" macro
----@field isInfo boolean
----@field isOwn boolean Spell only casts on self
----@field isBlessing boolean Spell will be cast on group members of the same class
----
----@field items BomItemId[] Conjuration spells create these items. Or buff is granted by an item in user's bag. Number is item id shows as the icon.
----@field lockIfHaveItem BomItemId[] Item ids which prevent this buff (unique conjured items for example)
----@field requiresForm number Required shapeshift form ID to cast this buff
----@field onlyUsableFor string[] list of classes which only can see this buff (hidden for others)
----@field reagentRequired BomItemId[] | BomItemId Reagent item ids required for group buff
----@field shapeshiftFormId BomShapeshiftFormId Class-based form id (coming from GetShapeshiftFormID LUA API) if active, the spell is skipped
----@field singleDuration number - buff duration for single buff in seconds
----@field singleFamily BomSpellId[] Family of single buff spell ids which are mutually exclusive
----@field singleMana number Mana cost
----@field ignoreIfBetterBuffs BomSpellId[] If these auras are present on target, the buff is not queued
----@field section string Custom section to begin new spells group in the row builder
----
----Fields created dynamically while the addon is running
----
----@field isScanned boolean
----@field Class table
----@field buffId BomBuffId Spell id of level 60 spell used as key everywhere else
----@field Enable boolean Whether buff is to be watched
----@field ExcludedTarget string[] List of target names to never buff
----@field ForcedTarget string[] List of extra targets to buff
+---@field ForcedTarget table<string, boolean> [⚠DO NOT RENAME] List of extra targets to buff
 ---@field frames BomBuffRowFrames Dynamic list of controls associated with this spell in the UI
+---@field groupDuration number Buff duration for group buff in seconds
+---@field groupFamily number[] Family of group buff spell ids which are mutually exclusive
+---@field groupLink string Printable link for group buff
+---@field groupMana number Mana cost for group buff
+---@field GroupsHaveBetterBuff table List of groups who have better version of this buff
 ---@field GroupsHaveDead table<string, boolean> Group/class members who might be dead but their class needs this buff
 ---@field GroupsNeedBuff table List of groups who might need this buff
----@field GroupsHaveBetterBuff table List of groups who have better version of this buff
----@field UnitsNeedBuff BomUnit[] List of group members who might need this buff
----@field UnitsHaveBetterBuff BomUnit[] List of group members who might need this buff but won't get it because they have better
----@field SelfCast boolean
+---@field groupText string Name of group buff spell (from GetSpellInfo())
+---@field hasCD boolean There's a cooldown on this spell
+---@field ignoreIfBetterBuffs BomSpellId[] If these auras are present on target, the buff is not queued
+---@field isBlessing boolean Spell will be cast on group members of the same class
+---@field isConsumable boolean Is an item-based buff; the spell must have 'items' field too
+---@field isInfo boolean
+---@field isOwn boolean Spell only casts on self
+---@field isScanned boolean
+---@field itemIcon string
+---@field items BomItemId[] Conjuration spells create these items. Or buff is granted by an item in user's bag. Number is item id shows as the icon.
+---@field limitations BomSpellLimitations|nil [Temporary] field for post-filtering on spell list creation, later zeroed
+---@field lockIfHaveItem BomItemId[] Item ids which prevent this buff (unique conjured items for example)
+---@field MainHandEnable boolean [⚠DO NOT RENAME]
+---@field OffHandEnable boolean [⚠DO NOT RENAME]
+---@field onlyUsableFor string[] list of classes which only can see this buff (hidden for others)
+---@field optionText string Used to create sections in spell list in the options page
+---@field reagentRequired BomItemId[] | BomItemId Reagent item ids required for group buff
+---@field requiresForm number Required shapeshift form ID to cast this buff
+---@field requiresOutdoors boolean Spell can only be cast outdoors
+---@field requireWarlockPet boolean For Soul Link - must check if a demon pet is present
+---@field sacrificeAuraIds BomSpellId[]|nil Aura id for demonic sacrifice of that pet. Do not summon if buff is present.
+---@field section string Custom section to begin new spells group in the row builder
+---@field SelfCast boolean [⚠DO NOT RENAME]
+---@field shapeshiftFormId BomShapeshiftFormId Class-based form id (coming from GetShapeshiftFormID LUA API) if active, the spell is skipped
+---@field shapeshiftFormId number Check this shapeshift form to know whether spell is already casted
+---@field singleDuration number - buff duration for single buff in seconds
+---@field singleFamily BomSpellId[] Family of single buff spell ids which are mutually exclusive
+---@field singleLink string Printable link for single buff
+---@field singleMana number Mana cost
+---@field singleText string Name of single buff spell (from GetSpellInfo())
 ---@field SkipList table If spell cast failed, contains recently failed targets
+---@field spellIcon string
+---@field targetClasses BomClassName[] List of target classes which are shown as toggle boxes to enable cast per class
+---@field tbcHunterPetBuff boolean True for TBC hunter pet consumable which places aura on the hunter pet
 ---@field trackingIconId number Numeric id for the tracking texture icon
 ---@field trackingSpellName string For tracking spells, contains string name for the spell
----@field shapeshiftFormId number Check this shapeshift form to know whether spell is already casted
----@field optionText string Used to create sections in spell list in the options page
----@field buffSource string Unit/player who gave this buff
+---@field type BomBuffType Defines type: "aura", "consumable", "weapon" for Enchant Consumables, "seal", "tracking", "resurrection"
+---@field UnitsHaveBetterBuff BomUnit[] List of group members who might need this buff but won't get it because they have better
+---@field UnitsNeedBuff BomUnit[] List of group members who might need this buff
 local buffDefClass = {}
 buffDefClass.__index = buffDefClass
 
@@ -417,7 +413,7 @@ function buffDefClass:ClassicBuffTypeIsSeal()
   return self
 end
 
----@param cat BomBuffCategory
+---@param cat BomBuffCategoryName
 ---@return BomBuffDefinition
 function buffDefClass:Category(cat)
   self.category = cat
@@ -491,13 +487,13 @@ function buffDefClass:HunterPetFood()
 end
 
 ---@return BomBuffDefinition
----@param classNames BomClass[] Class names to use as the default targets (user can modify)
+---@param classNames BomClassName[] Class names to use as the default targets (user can modify)
 function buffDefClass:DefaultTargetClasses(classNames)
   self.targetClasses = classNames
   return self
 end
 
----@param className BomClass[]|BomClass The class name or table of class names
+---@param className BomClassName[]|BomClassName The class name or table of class names
 ---@return BomBuffDefinition
 function buffDefClass:RequirePlayerClass(className)
   (--[[---@not nil]] self.limitations).playerClass = className

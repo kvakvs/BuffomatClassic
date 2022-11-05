@@ -1,10 +1,10 @@
 local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BomAddon
 
----@alias BomBuffCategory ""|"tracking"|"pet"|"aura"|"seal"|"blessing"|"class"|"classicPhysFood"|"classicSpellFood"|"classicFood"|"classicPhysElixir"|"classicPhysBuff"|"classicBuff"|"classicSpellElixir"|"classicElixir"|"classicFlask"|"tbcPhysFood"|"tbcSpellFood"|"tbcFood"|"tbcPhysElixir"|"tbcSpellElixir"|"tbcElixir"|"tbcFlask"|"wotlkPhysFood"|"wotlkSpellFood"|"wotlkFood"|"wotlkPhysElixir"|"wotlkSpellElixir"|"wotlkElixir"|"wotlkFlask"|"scroll"|"weaponEnchantment"|"classWeaponEnchantment"
+---@alias BomBuffCategoryName ""|"tracking"|"pet"|"aura"|"seal"|"blessing"|"class"|"classicPhysFood"|"classicSpellFood"|"classicFood"|"classicPhysElixir"|"classicPhysBuff"|"classicBuff"|"classicSpellElixir"|"classicElixir"|"classicFlask"|"tbcPhysFood"|"tbcSpellFood"|"tbcFood"|"tbcPhysElixir"|"tbcSpellElixir"|"tbcElixir"|"tbcFlask"|"wotlkPhysFood"|"wotlkSpellFood"|"wotlkFood"|"wotlkPhysElixir"|"wotlkSpellElixir"|"wotlkElixir"|"wotlkFlask"|"scroll"|"weaponEnchantment"|"classWeaponEnchantment"
 
 ---@class BomAllBuffsModule
----@field buffCategories BomBuffCategory[] Category names for buffs
+---@field buffCategories BomBuffCategoryName[] Category names for buffs
 ---@field allBuffs {[BomBuffId] BomBuffDefinition} All buffs, same as BOM.AllBuffomatSpells for convenience
 ---@field CrusaderAuraSpell BomBuffDefinition
 local allBuffsModule = {}
@@ -46,48 +46,48 @@ local warriorModule = BomModuleManager.allSpellsWarriorModule
 --          end
 --        })
 
----@alias BomClass "WARRIOR"|"MAGE"|"ROGUE"|"DRUID"|"HUNTER"|"PRIEST"|"WARLOCK"|"SHAMAN"|"PALADIN"|"DEATHKNIGHT"
+---@alias BomClassName "WARRIOR"|"MAGE"|"ROGUE"|"DRUID"|"HUNTER"|"PRIEST"|"WARLOCK"|"SHAMAN"|"PALADIN"|"DEATHKNIGHT"
 
 local BOM_ALL_CLASSES = { "WARRIOR", "MAGE", "ROGUE", "DRUID", "HUNTER", "PRIEST", "WARLOCK",
-                          "SHAMAN", "PALADIN", "DEATHKNIGHT" } ---@type BomClass[]
-local BOM_NO_CLASS = { } ---@type BomClass[]
+                          "SHAMAN", "PALADIN", "DEATHKNIGHT" } ---@type BomClassName[]
+local BOM_NO_CLASS = { } ---@type BomClassName[]
 allBuffsModule.BOM_ALL_CLASSES = BOM_ALL_CLASSES
 allBuffsModule.BOM_NO_CLASSES = BOM_NO_CLASS
 
 ---Classes which have a resurrection ability
----@type BomClass[]
+---@type BomClassName[]
 local RESURRECT_CLASSES = { "SHAMAN", "PRIEST", "PALADIN", "DRUID" } -- Druid in WotLK
 BOM.RESURRECT_CLASS = RESURRECT_CLASSES --used in TaskScan.lua
 allBuffsModule.RESURRECT_CLASSES = RESURRECT_CLASSES
 
 --- Classes which have mana bar and benefit from mp/5 and spirit
----@type BomClass[]
+---@type BomClassName[]
 local MANA_CLASSES = { "HUNTER", "WARLOCK", "MAGE", "DRUID", "SHAMAN", "PRIEST", "PALADIN" }
 BOM.MANA_CLASSES = MANA_CLASSES --used in TaskScan.lua
 allBuffsModule.MANA_CLASSES = MANA_CLASSES
 
 --- Classes which deal spell damage
----@type BomClass[]
+---@type BomClassName[]
 allBuffsModule.SPELL_CLASSES = { "WARLOCK", "MAGE", "DRUID", "SHAMAN", "PRIEST", "PALADIN", "DEATHKNIGHT", "HUNTER" }
 
 --- Classes which hit with weapons or claws
----@type BomClass[]
+---@type BomClassName[]
 allBuffsModule.MELEE_CLASSES = { "WARRIOR", "ROGUE", "DRUID", "SHAMAN", "PALADIN", "DEATHKNIGHT" }
 
 --- Classes capable of dealing shadow damage
----@type BomClass[]
+---@type BomClassName[]
 allBuffsModule.SHADOW_CLASSES = { "PRIEST", "WARLOCK", "DEATHKNIGHT" }
 
 --- Classes capable of dealing fire damage
----@type BomClass[]
+---@type BomClassName[]
 allBuffsModule.FIRE_CLASSES = { "MAGE", "WARLOCK", "SHAMAN", "HUNTER" }
 
 --- Classes capable of dealing frost damage
----@type BomClass[]
+---@type BomClassName[]
 allBuffsModule.FROST_CLASSES = { "MAGE", "SHAMAN", "DEATHKNIGHT" }
 
 --- Classes dealing physical ranged or melee damage
----@type BomClass[]
+---@type BomClassName[]
 allBuffsModule.PHYSICAL_CLASSES = { "HUNTER", "ROGUE", "SHAMAN", "WARRIOR", "DRUID", "PALADIN", "DEATHKNIGHT" }
 
 allBuffsModule.DURATION_1M = 60

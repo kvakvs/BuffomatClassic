@@ -1,8 +1,12 @@
 local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BomAddon
 
--- -@field behaviourSettings table<number, table> A list of {Key name, Default} for 'Profile' settings
+---@shape BomBehaviourSetting
+---@field name string
+---@field value boolean
+
 ---@class BomOptionsPopupModule
+---@field behaviourSettings BomBehaviourSetting[]
 local optionsPopupModule = {}
 BomModuleManager.optionsPopupModule = optionsPopupModule
 
@@ -13,37 +17,37 @@ local buffDefModule = BomModuleManager.buffDefinitionModule
 local profileModule = BomModuleManager.profileModule
 
 ---@deprecated See options.lua, and defaults in sharedState.lua and characterState.lua
-optionsPopupModule.behaviourSettings = {
-  { "AutoOpen", true },
-  { "ScanInRestArea", false },
-  { "ScanInStealth", false },
-  { "ScanWhileMounted", true },
-  { "InWorld", true },
-  { "InPVP", true },
-  { "InInstance", true },
-  { "PreventPVPTag", true },
+optionsPopupModule.behaviourSettings = --[[---@type BomBehaviourSetting[] ]] {
+  { name = "AutoOpen", value = true },
+  { name = "ScanInRestArea", value = false },
+  { name = "ScanInStealth", value = false },
+  { name = "ScanWhileMounted", value = true },
+  { name = "InWorld", value = true },
+  { name = "InPVP", value = true },
+  { name = "InInstance", value = true },
+  { name = "PreventPVPTag", value = true },
 
-  { "DeathBlock", true },
-  { "NoGroupBuff", false },
-  { "SameZone", false },
-  { "ResGhost", false },
-  { "ReplaceSingle", true },
-  { "ArgentumDawn", false },
-  { "Carrot", false },
-  { "MainHand", false },
-  { "SecondaryHand", false },
-  { "UseRank", true },
-  { "AutoCrusaderAura", true },
-  { "AutoDismount", true },
-  { "AutoDismountFlying", false },
-  { "AutoStand", true },
-  { "AutoDisTravel", true },
-  { "BuffTarget", false },
-  { "OpenLootable", true },
-  { "SelfFirst", false },
-  { "DontUseConsumables", false },
-  { "SlowerHardware", false },
-  { "SomeoneIsDrinking", false },
+  { name = "DeathBlock", value = true },
+  { name = "NoGroupBuff", value = false },
+  { name = "SameZone", value = false },
+  { name = "ResGhost", value = false },
+  { name = "ReplaceSingle", value = true },
+  { name = "ArgentumDawn", value = false },
+  { name = "Carrot", value = false },
+  { name = "MainHand", value = false },
+  { name = "SecondaryHand", value = false },
+  { name = "UseRank", value = true },
+  { name = "AutoCrusaderAura", value = true },
+  { name = "AutoDismount", value = true },
+  { name = "AutoDismountFlying", value = false },
+  { name = "AutoStand", value = true },
+  { name = "AutoDisTravel", value = true },
+  { name = "BuffTarget", value = false },
+  { name = "OpenLootable", value = true },
+  { name = "SelfFirst", value = false },
+  { name = "DontUseConsumables", value = false },
+  { name = "SlowerHardware", value = false },
+  { name = "SomeoneIsDrinking", value = false },
 }
 
 local L
@@ -64,8 +68,8 @@ end
 function optionsPopupModule:PopupQuickOptions()
   BOM.PopupDynamic:SubMenu(_t("popup.QuickSettings"), "subSettings")
 
-  for i, set in ipairs(self.behaviourSettings) do
-    BOM.PopupDynamic:AddItem(self:MakeSettingsRow(buffomatModule.shared, set[1]))
+  for i, setting in ipairs(self.behaviourSettings) do
+    BOM.PopupDynamic:AddItem(self:MakeSettingsRow(buffomatModule.shared, setting.name))
   end
 
   -- -------------------------------------------
