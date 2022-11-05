@@ -1,7 +1,7 @@
 --local TOCNAME, _ = ...
 --local BOM = BuffomatAddon ---@type BomAddon
 
----@alias BomManagedControlsTable {[string] = BomLegacyControl|BomControl}
+---@alias BomManagedControlsTable {[string]: BomGPIControl|BomControl}
 
 ---@shape BomUiMyButtonModule
 ---@field managed BomManagedControlsTable Contains all MyButtons with uniqueId

@@ -9,8 +9,7 @@ local buffDefModule = BomModuleManager.buffDefinitionModule
 
 function priestModule:CreatePrayerOfSpiritBuff()
   local b = buffDefModule:New(14819) -- Divine Spirit / Prayer of Spirit / Willenstärke
-  b:GroupId(27681)
-   :IsDefault(true)
+  b:IsDefault(true)
    :SingleFamily({ 14752, 14818, 14819, 27841, -- Divine Spirit 1-4
                    25312, -- TBC: Divine Spirit 5
                    48073 }) -- WotLK: Divine Spirit 6
@@ -51,7 +50,6 @@ end
 function priestModule:SetupPriestSpells(allBuffs, enchants)
   -- Fortitude / Seelenstärke
   buffDefModule:createAndRegisterBuff(allBuffs, 10938, nil)
-               :GroupId(21562)
                :IsDefault(true)
                :SingleFamily({ 1243, 1244, 1245, 2791, 10937, 10938, -- Power Word: Fortitude 1-6
                                25389, -- TBC: Power Word: Fortitude 7
@@ -72,7 +70,6 @@ function priestModule:SetupPriestSpells(allBuffs, enchants)
 
   -- Shadow Protection / Prayer of Shadow / Schattenschutz
   buffDefModule:createAndRegisterBuff(allBuffs, 10958, nil)
-               :GroupId(27683)
                :IsDefault(false)
                :SingleDuration(allBuffsModule.DURATION_10M)
                :GroupDuration(allBuffsModule.DURATION_20M)

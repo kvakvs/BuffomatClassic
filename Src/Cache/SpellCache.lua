@@ -17,7 +17,7 @@ local buffDefModule = BomModuleManager.buffDefinitionModule
 ---@class BomSpellCacheElement
 ---@field name string
 ---@field rank string
----@field icon string
+---@field icon WowIconId
 ---@field castTime number
 ---@field minRange number
 ---@field maxRange number

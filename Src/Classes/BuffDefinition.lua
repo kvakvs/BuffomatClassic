@@ -50,6 +50,8 @@ local allBuffsModule = BomModuleManager.allBuffsModule
 -- -@field [BomSpellId] BomBuffDefinition
 
 ---@shape BomBuffDefinition
+---@field highestRankSingleId BomSpellId Updated in SpellSetup for each spell cache update
+---@field highestRankGroupId BomSpellId Updated in SpellSetup for each spell cache update
 ---@field AllowWhisper boolean [⚠DO NOT RENAME] Allow whispering expired soulstone to the warlock
 ---@field buffId BomBuffId Spell id of level 60 spell used as key everywhere else
 ---@field buffSource string Unit/player who gave this buff
@@ -81,7 +83,7 @@ local allBuffsModule = BomModuleManager.allBuffsModule
 ---@field isInfo boolean
 ---@field isOwn boolean Spell only casts on self
 ---@field isScanned boolean
----@field itemIcon string
+---@field itemIcon string|number
 ---@field items BomItemId[] Conjuration spells create these items. Or buff is granted by an item in user's bag. Number is item id shows as the icon.
 ---@field limitations BomSpellLimitations|nil [Temporary] field for post-filtering on spell list creation, later zeroed
 ---@field lockIfHaveItem BomItemId[] Item ids which prevent this buff (unique conjured items for example)
@@ -104,10 +106,10 @@ local allBuffsModule = BomModuleManager.allBuffsModule
 ---@field singleMana number Mana cost
 ---@field singleText string Name of single buff spell (from GetSpellInfo())
 ---@field SkipList table If spell cast failed, contains recently failed targets
----@field spellIcon string
+---@field spellIcon WowIconId
 ---@field targetClasses BomClassName[] List of target classes which are shown as toggle boxes to enable cast per class
 ---@field tbcHunterPetBuff boolean True for TBC hunter pet consumable which places aura on the hunter pet
----@field trackingIconId number Numeric id for the tracking texture icon
+---@field trackingIconId WowIconId Numeric id for the tracking texture icon
 ---@field trackingSpellName string For tracking spells, contains string name for the spell
 ---@field type BomBuffType Defines type: "aura", "consumable", "weapon" for Enchant Consumables, "seal", "tracking", "resurrection"
 ---@field UnitsHaveBetterBuff BomUnit[] List of group members who might need this buff but won't get it because they have better
@@ -119,19 +121,20 @@ buffDefClass.__index = buffDefClass
 ---@param singleId BomSpellId Spell id also serving as buffId key
 ---@return BomBuffDefinition
 function buffDefModule:New(singleId)
-  local newSpell = --[[---@type BomBuffDefinition]] {}
-  newSpell.category = "" -- special value no category
-  newSpell.frames = buffRowModule:New(tostring(singleId)) -- spell buttons from the UI go here
-  newSpell.buffId = singleId
-  newSpell.singleFamily = { singleId }
-  newSpell.limitations = --[[---@type BomSpellLimitations]] {}
-  newSpell.ForcedTarget = {}
-  newSpell.ExcludedTarget = {}
-  newSpell.UnitsNeedBuff = {}
-  newSpell.UnitsHaveBetterBuff = {}
-  newSpell.GroupsNeedBuff = {}
-  newSpell.GroupsHaveDead = {}
-
+  local newSpell = --[[---@type BomBuffDefinition]] {
+    category            = "", -- special value no category
+    frames              = buffRowModule:New(tostring(singleId)), -- spell buttons from the UI go here
+    buffId              = singleId,
+    highestRankSingleId = singleId,
+    singleFamily        = { singleId },
+    limitations         = --[[---@type BomSpellLimitations]] {},
+    ForcedTarget        = {},
+    ExcludedTarget      = {},
+    UnitsNeedBuff       = {},
+    UnitsHaveBetterBuff = {},
+    GroupsNeedBuff      = {},
+    GroupsHaveDead      = {},
+  }
   setmetatable(newSpell, buffDefClass)
   return newSpell
 end
@@ -339,13 +342,6 @@ end
 ---@return BomBuffDefinition
 function buffDefClass:IsDefault(enabled)
   self.default = enabled
-  return self
-end
-
----@param spell BomSpellId
----@return BomBuffDefinition
-function buffDefClass:GroupId(spell)
-  self.groupId = spell
   return self
 end
 
@@ -689,11 +685,11 @@ function buffDefClass:RefreshTextAndIcon(iconReadyFn, nameReadyFn)
   -- nil otherwise
 end
 
----@return BomSpellId
-function buffDefClass:GetFirstSingleId()
-  local _, singleId = next(self.singleFamily)
-  return singleId
-end
+-----@return BomSpellId
+--function buffDefClass:GetFirstSingleId()
+--  local _, singleId = next(self.singleFamily)
+--  return singleId
+--end
 
 ---@return BomItemId|nil
 function buffDefClass:GetFirstItem()

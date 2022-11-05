@@ -15,7 +15,7 @@ constModule.ICON_FORMAT = "|T%s:0:0:0:0:64:64:4:60:4:60|t"
 constModule.PICTURE_FORMAT = "|T%s:0|t"
 
 constModule.MACRO_NAME = "Buff'o'mat"
-constModule.BLESSING_ID = "blessing"
+--constModule.BLESSING_ID = "blessing"
 constModule.LOADING_SCREEN_TIMEOUT = 2
 
 -- Play MP3 from Sounds/ directory when task list is not empty

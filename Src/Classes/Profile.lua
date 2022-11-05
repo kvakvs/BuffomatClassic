@@ -38,10 +38,12 @@ local _t = BomModuleManager.languagesModule
 ---@field ShowTBCConsumables boolean Will show TBC consumables in the list
 ---@field UseRank boolean Use ranked spells
 ---@field SlowerHardware boolean Less frequent updates
----@field CancelBuff table<BomBuffId, BomBuffDefinition>
----@field Spell BomBuffDefinition[]
+---@field CancelBuff BomAllBuffsTable --table<BomBuffId, BomBuffDefinition>
+---@field Spell BomBuffDefinitionDict
 ---@field LastSeal number|nil
 ---@field LastAura number|nil
+
+---@alias BomBuffDefinitionDict {[string|BomBuffId]: BomBuffDefinition}
 
 ---@return BomProfile
 function profileModule:New()

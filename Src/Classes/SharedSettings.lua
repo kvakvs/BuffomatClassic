@@ -28,8 +28,6 @@ sharedSettingsModule.defaults = {
 ---@field Minimap BomMinimapSettings
 ---@field SpellGreaterEqualThan table
 ---@field CustomLocales table
--- -@field CustomSpells table Additional spells from the config file. Deprecated
--- -@field CustomCancelBuff table Additional cancel spells. Deprecated
 ---@field UIWindowScale number
 ---@field AutoOpen boolean
 ---@field FadeWhenNothingToDo boolean Allows Buffomat window to fade when nothing to do

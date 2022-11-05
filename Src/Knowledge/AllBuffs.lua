@@ -5,7 +5,7 @@ local BOM = BuffomatAddon ---@type BomAddon
 
 ---@class BomAllBuffsModule
 ---@field buffCategories BomBuffCategoryName[] Category names for buffs
----@field allBuffs {[BomBuffId] BomBuffDefinition} All buffs, same as BOM.AllBuffomatSpells for convenience
+---@field allBuffs {[BomBuffId]: BomBuffDefinition} All buffs, same as BOM.AllBuffomatSpells for convenience
 ---@field CrusaderAuraSpell BomBuffDefinition
 local allBuffsModule = {}
 
@@ -174,7 +174,7 @@ function allBuffsModule:SetupConstants()
 end
 
 --- Filter away the 'false' element and return only keys, values become the translation strings
----@return {[string] string}
+---@return {[string]: string}
 function allBuffsModule:GetBuffCategories()
   local result = {}
   for _i, cat in ipairs(self.buffCategories) do
@@ -210,7 +210,7 @@ end
 ---@shape BomAllBuffsTable
 ---@field [BomBuffId] BomBuffDefinition
 
----@alias BomEnchantmentsMapping {[BomSpellId] BomEnchantmentId[]}
+---@alias BomEnchantmentsMapping {[BomSpellId]: BomEnchantmentId[]}
 
 ---All spells known to Buffomat
 ---Note: you can add your own spell in the "WTF\Account\<accountname>\SavedVariables\buffOmat.lua"
@@ -264,6 +264,8 @@ end
 ---@shape BomReputationTrinketZones
 ---@field itemIds BomItemId[]
 ---@field zones BomZoneId[]
+---@field Link string
+---@field spell BomSpellId
 BOM.reputationTrinketZones = {
   itemIds = {
     12846, -- Simple AD trinket
@@ -282,6 +284,8 @@ BOM.reputationTrinketZones = {
 ---@shape BomRidingSpeedZones
 ---@field itemIds BomItemId[]
 ---@field zones BomZoneId[]
+---@field Link string
+---@field spell BomSpellId
 BOM.ridingSpeedZones = {
   itemIds = {
     11122, -- Classic: Item [Carrot on a Stick]

@@ -43,7 +43,7 @@ local popupModule = BomModuleManager.popupModule
 ---@field ALL_PROFILES BomProfileName[] Lists all buffomat profile names (group, solo... etc)
 ---@field allBuffomatBuffs BomAllBuffsTable All spells known to Buffomat
 ---@field allSpellIds number[]
----@field reputationTrinketZones table Equipped AD trinket: Spell to and zone ids to check
+---@field reputationTrinketZones BomReputationTrinketZones Equipped AD trinket: Spell to and zone ids to check
 ---@field buffExchangeId table<number, number[]> Combines spell ids of spellrank flavours into main spell id
 ---@field buffIgnoreAll number[] Having this buff on target excludes the target (phaseshifted imp for example)
 ---@field cachedPlayerBag BomCachedPlayerBag Items in player's bag
@@ -59,8 +59,8 @@ local popupModule = BomModuleManager.popupModule
 ---@field configToSpellLookup BomAllBuffsTable
 ---@field currentProfile BomProfile Current profile from CharacterState.Profiles
 ---@field declineHasResurrection boolean Set to true on combat start, stop, holding Alt, cleared on party update
----@field enchantList {[BomSpellId] number[]} Spell ids mapping to enchantment ids
----@field enchantToSpellLookup {[number] BomSpellId} Reverse-maps enchantment ids back to spells
+---@field enchantList {[BomSpellId]: number[]} Spell ids mapping to enchantment ids
+---@field enchantToSpellLookup {[number]: BomSpellId} Reverse-maps enchantment ids back to spells
 ---@field forceProfile BomProfileName|nil Nil will choose profile name automatically, otherwise this profile will be used
 ---@field forceTracking number|nil Defines icon id for enforced tracking
 ---@field forceUpdate boolean Requests immediate spells/buffs refresh
@@ -71,8 +71,8 @@ local popupModule = BomModuleManager.popupModule
 ---@field isPlayerMoving boolean Indicated that the player is moving (updated in event handlers)
 ---@field isTBC boolean Whether we are running TBC classic
 ---@field isWotLK boolean Whether we are running Wrath of the Lich King
----@field itemCache {[BomItemId] BomItemCacheElement} Precreated precached items
----@field itemIdLookup {[string] table<string, number>} Map of item name to id
+---@field itemCache {[BomItemId]: BomItemCacheElement} Precreated precached items
+---@field itemIdLookup {[string]: table<string, number>} Map of item name to id
 ---@field itemList number[][] Group different ranks of item together
 ---@field itemListSpellLookup table<number, number> Map itemid to spell?
 ---@field itemListTarget table<number, string> Remember who casted item buff on you?

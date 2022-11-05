@@ -101,7 +101,7 @@ function buffRowClass:CreateStatusCheckboxImage(buffDef)
             texturesModule.ICON_CHECKED,
             texturesModule.ICON_CHECKED_OFF,
             nil, nil, nil, nil, self.uniqueId .. ".statusCheckbox")
-    self.checkboxSet:SetSpell(buffDef:GetFirstSingleId())
+    self.checkboxSet:SetSpell(buffDef.highestRankSingleId)
   end
 
   self.checkboxSet:Show()
@@ -122,7 +122,7 @@ function buffRowClass:CreateInfoIcon(spell)
     if spell.isConsumable then
       toolboxModule:TooltipLink(self.iconInfo, "item:" .. spell:GetFirstItem())
     else
-      toolboxModule:TooltipLink(self.iconInfo, "spell:" .. spell:GetFirstSingleId())
+      toolboxModule:TooltipLink(self.iconInfo, "spell:" .. spell.highestRankSingleId)
     end
 
     -- Set texture when ready, might load with a delay

@@ -587,7 +587,7 @@ function spellButtonsTabModule:HideAllControls()
   for _id, buffDef in pairs(allBuffsModule.allBuffs) do
     if self:CategoryIsHidden(buffDef.category) then
       buffDef.frames:Destroy()
-      buffDef.frames = buffRowModule:New(tostring(buffDef:GetFirstSingleId()))
+      buffDef.frames = buffRowModule:New(tostring(buffDef.highestRankSingleId))
     else
       buffDef.frames:Hide()
     end

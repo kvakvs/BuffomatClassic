@@ -1,11 +1,13 @@
 --local TOCNAME, _ = ...
 --local BOM = BuffomatAddon ---@type BomAddon
 
+---@alias WowIconId string|number
+
 ---@alias BomTexCoord number[]
----
+
 ---@shape BomTexturesModule
 ---@field CLASS_ICONS_ATLAS string
----@field CLASS_ICONS_ATLAS_TEX_COORD {[BomClassName} BomTexCoords}
+---@field CLASS_ICONS_ATLAS_TEX_COORD {[BomClassName]: BomTexCoord}
 ---@field ICON_BUFF_OFF string
 ---@field ICON_BUFF_ON string
 ---@field ICON_CHECKED string
@@ -47,7 +49,7 @@ texturesModule.ICON_SELF_CAST_ON = "Interface\\FriendsFrame\\UI-Toast-FriendOnli
 texturesModule.ICON_SELF_CAST_OFF = "Interface\\FriendsFrame\\UI-Toast-ChatInviteIcon"
 
 texturesModule.CLASS_ICONS_ATLAS = "Interface\\WorldStateFrame\\ICONS-CLASSES"
-texturesModule.CLASS_ICONS_ATLAS_TEX_COORD = --[[---@type {[BomClassName} BomTexCoords} ]] CLASS_ICON_TCOORDS
+texturesModule.CLASS_ICONS_ATLAS_TEX_COORD = --[[---@type {[BomClassName]: BomTexCoord} ]] CLASS_ICON_TCOORDS
 texturesModule.ICON_EMPTY = "Interface\\Buttons\\UI-MultiCheck-Disabled"
 
 ---@deprecated Unused

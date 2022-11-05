@@ -26,7 +26,7 @@ local buffomatModule = BomModuleManager.buffomatModule
 ---@field itemSubType string Same as itemType
 ---@field itemStackCount number
 ---@field itemEquipLoc string "" or a constant INVTYPE_HEAD for example
----@field itemTexture string|number Texture or icon id
+---@field itemTexture string Texture or icon id
 ---@field itemSellPrice number Copper price for the item
 
 ---Calls GetItemInfo and saves the results, or not (if nil was returned)
