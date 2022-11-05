@@ -1115,7 +1115,7 @@ end
 ---@param spell BomBuffDefinition - the spell to cast
 ---@param playerMember BomUnit - the player
 function taskScanModule:AddSelfbuff(spell, playerMember)
-  if spell.requiresWarlockPet then
+  if spell.requireWarlockPet then
     if not UnitExists("pet") or UnitCreatureType("pet") ~= "Demon" then
       return -- No demon pet - buff can not be casted
     end

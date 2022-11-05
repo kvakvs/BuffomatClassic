@@ -20,7 +20,7 @@ local allBuffsModule = BomModuleManager.allBuffsModule
 
 ---@alias BomBuffType "aura"|"consumable"|"weapon"|"seal"|"tracking"|"resurrection"|"summon"
 ---@alias BomCreatureType "Demon"|"Undead"
----@alias BomCreatureFamily "Ghoul"
+---@alias BomCreatureFamily "Ghoul"|"Voidwalker"|"Imp"|"Succubus"|"Incubus"|"Felhunter"|"Felguard"
 
 ---@shape BomSpellLimitations
 ---@field cancelForm boolean Casting spell requires leaving shapeshift, shadow form etc.
@@ -56,8 +56,8 @@ local allBuffsModule = BomModuleManager.allBuffsModule
 ---
 ---@field creatureFamily BomCreatureFamily Warlock summon pet family for type='summon' (Imp, etc)
 ---@field creatureType BomCreatureType Warlock summon pet type for type='summon' (Demon)
----@field sacrificeAuraIds number Aura id for demonic sacrifice of that pet. Do not summon if buff is present.
----@field requiresWarlockPet boolean For Soul Link - must check if a demon pet is present
+---@field sacrificeAuraIds BomSpellId[]|nil Aura id for demonic sacrifice of that pet. Do not summon if buff is present.
+---@field requireWarlockPet boolean For Soul Link - must check if a demon pet is present
 ---
 --- Selected spell casting and display on the cast button
 ---@field extraText string Added to the right of spell name in the spells config
@@ -278,12 +278,19 @@ end
 
 ---@param itemId BomItemId|BomItemId[]
 ---@return BomBuffDefinition
-function buffDefClass:BuffCreatesItem(itemId)
+function buffDefClass:CreatesOrProvidedByItem(itemId)
   if type(itemId) == "number" then
     self.buffCreatesItem = { --[[---@type BomItemId]] itemId }
   else
     self.buffCreatesItem = --[[---@type BomItemId[] ]] itemId
   end
+  return self
+end
+
+---@param auraIds BomSpellId[]
+---@return BomBuffDefinition
+function buffDefClass:SacrificeAuraIds(auraIds)
+  self.sacrificeAuraIds = auraIds
   return self
 end
 
@@ -378,6 +385,13 @@ function buffDefClass:GroupFamily(spellIds)
   return self
 end
 
+---@param isBlessing boolean
+---@return BomBuffDefinition
+function buffDefClass:IsBlessing(isBlessing)
+  self.isBlessing = isBlessing
+  return self
+end
+
 ---@param duration number
 ---@return BomBuffDefinition
 function buffDefClass:SingleDuration(duration)
@@ -392,7 +406,7 @@ function buffDefClass:GroupDuration(duration)
   return self
 end
 
-function buffDefClass:Seal()
+function buffDefClass:ClassicBuffTypeIsSeal()
   -- for before TBC make this a seal spell, for TBC do not modify
   if not BOM.HaveTBC then
     self.type = "seal"
@@ -400,17 +414,31 @@ function buffDefClass:Seal()
   return self
 end
 
----@return BomBuffDefinition
 ---@param cat BomBuffCategory
+---@return BomBuffDefinition
 function buffDefClass:Category(cat)
   self.category = cat
   return self
 end
 
+---@param requirePet boolean
 ---@return BomBuffDefinition
+function buffDefClass:RequireWarlockPet(requirePet)
+  self.requireWarlockPet = requirePet
+  return self
+end
+
 ---@param level number
+---@return BomBuffDefinition
 function buffDefClass:MaxLevel(level)
   (--[[---@not nil]] self.limitations).maxLevel = level
+  return self
+end
+
+---@return BomBuffDefinition
+---@param level number
+function buffDefClass:MinLevel(level)
+  (--[[---@not nil]] self.limitations).minLevel = level
   return self
 end
 
@@ -484,6 +512,13 @@ end
 ---@param text string
 function buffDefClass:ExtraText(text)
   self.extraText = text
+  return self
+end
+
+---@param manaCost number
+---@return BomBuffDefinition
+function buffDefClass:SingleManaCost(manaCost)
+  self.singleMana = manaCost
   return self
 end
 
