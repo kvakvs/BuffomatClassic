@@ -52,7 +52,7 @@ function unitClass:ForceUpdateBuffs(playerUnit)
   wipe(self.knownBuffs)
   wipe(self.allBuffs)
 
-  BOM.SomeBodyGhost = BOM.SomeBodyGhost or self.isGhost
+  BOM.someBodyIsGhost = BOM.someBodyIsGhost or self.isGhost
 
   if self.isDead then
     BOM.PlayerBuffs[self.name] = nil
@@ -74,7 +74,7 @@ function unitClass:ForceUpdateBuffs(playerUnit)
         end
       end
 
-      local spellId = BOM.SpellToSpell[unitAura.spellId] or unitAura.spellId
+      local spellId = BOM.spellToSpellLookup[unitAura.spellId] or unitAura.spellId
 
       if spellId then
         -- Skip members who have a buff on the global ignore list - example phaseshifted imps
@@ -93,14 +93,14 @@ function unitClass:ForceUpdateBuffs(playerUnit)
         --end
 
         if tContains(BOM.allSpellIds, spellId) then
-          local configKey = BOM.SpellIdtoConfig[spellId]
+          local configKey = BOM.spellIdtoBuffId[spellId]
 
           self.knownBuffs[configKey] = buffModule:New(
                   spellId,
                   unitAura.duration,
                   unitAura.expirationTime,
                   unitAura.source,
-                  BOM.SpellIdIsSingle[spellId])
+                  BOM.spellIdIsSingleLookup[spellId])
         end
       end
 

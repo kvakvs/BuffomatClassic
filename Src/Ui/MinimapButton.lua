@@ -5,8 +5,7 @@ local BOM = BuffomatAddon ---@type BomAddon
 local uiMinimapButtonModule = {}
 BomModuleManager.uiMinimapButtonModule = uiMinimapButtonModule
 
----@class BomMinimapButton
-BOM.MinimapButton = BOM.MinimapButton or {} ---@type BomMinimapButton
+BOM.MinimapButton = BOM.MinimapButton or --[[---@type BomGPIMinimapButton]] {}
 local minimapButtonClass = BOM.MinimapButton
 
 ---Change minimap button texture position slightly
@@ -102,8 +101,8 @@ end
 
 function minimapButtonClass.Init(Database, Texture, DoOnClick, Tooltip)
   minimapButtonClass.db = Database
-  minimapButtonClass.onClick = DoOnClick
-  minimapButtonClass.Tooltip = Tooltip
+  minimapButtonClass.OnClick = DoOnClick
+  minimapButtonClass.tooltip = Tooltip
   minimapButtonClass.isMinimapButton = true
 
   local button = CreateFrame("Button", "Lib_GPI_Minimap_" .. TOCNAME, Minimap)
@@ -246,5 +245,5 @@ function minimapButtonClass.SetTexture(Texture)
 end
 
 function minimapButtonClass.SetTooltip(Text)
-  minimapButtonClass.Tooltip = Text
+  minimapButtonClass.tooltip = Text
 end

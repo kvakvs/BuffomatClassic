@@ -1,7 +1,7 @@
-local TOCNAME, _ = ...
-local BOM = BuffomatAddon ---@type BomAddon
+--local TOCNAME, _ = ...
+--local BOM = BuffomatAddon ---@type BomAddon
 
----@alias BomTexCoords number[]
+---@alias BomTexCoord number[]
 ---
 ---@shape BomTexturesModule
 ---@field CLASS_ICONS_ATLAS string
@@ -21,20 +21,20 @@ local BOM = BuffomatAddon ---@type BomAddon
 ---@field ICON_OPT_ENABLED string
 ---@field ICON_PET string
 ---@field ICON_PET string
----@field ICON_PET_COORD BomTexCoords
+---@field ICON_PET_COORD BomTexCoord
 ---@field ICON_SELF_CAST_OFF string
 ---@field ICON_SELF_CAST_ON string
 ---@field ICON_SETTING_OFF string
 ---@field ICON_SETTING_ON string
 ---@field ICON_TANK string
----@field ICON_TANK_COORD BomTexCoords
+---@field ICON_TANK_COORD BomTexCoord
 ---@field ICON_TARGET_EXCLUDE string
 ---@field ICON_TARGET_OFF string
 ---@field ICON_TARGET_ON string
 ---@field ICON_WHISPER_OFF string
 ---@field ICON_WHISPER_ON string
----@field ICON_COORD_09 BomTexCoords
----@field ICON_COORD_08 BomTexCoords
+---@field ICON_COORD_09 BomTexCoord
+---@field ICON_COORD_08 BomTexCoord
 local texturesModule = {}
 BomModuleManager.texturesModule = texturesModule
 
@@ -139,3 +139,6 @@ texturesModule.ICON_PET_COORD = texturesModule.ICON_COORD_09
 --
 --BOM.IconUseRankOff = texturesModule.ICON_EMPTY
 --BOM.IconUseRankOn = "Interface\\Buttons\\JumpUpArrow"
+
+texturesModule.ON_ICON = "|TInterface\\RAIDFRAME\\ReadyCheck-Ready:0:0:0:0:64:64:4:60:4:60|t"
+texturesModule.OFF_ICON = "|TInterface\\RAIDFRAME\\ReadyCheck-NotReady:0:0:0:0:64:64:4:60:4:60|t"

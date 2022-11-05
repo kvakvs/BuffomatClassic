@@ -9,7 +9,7 @@ BomModuleManager.itemListCacheModule = itemListCacheModule
 local buffomatModule = BomModuleManager.buffomatModule
 local toolboxModule = BomModuleManager.toolboxModule
 
-BOM.WipeCachedItems = true
+BOM.wipeCachedItems = true
 
 ---@class GetContainerItemInfoResult
 ---@field Index number
@@ -25,9 +25,9 @@ BOM.WipeCachedItems = true
 local itemListCache = {}
 
 function BOM.GetItemList()
-  if BOM.WipeCachedItems then
+  if BOM.wipeCachedItems then
     wipe(itemListCache)
-    BOM.WipeCachedItems = false
+    BOM.wipeCachedItems = false
 
     for bag = BACKPACK_CONTAINER, NUM_BAG_SLOTS do
       for slot = 1, GetContainerNumSlots(bag) do

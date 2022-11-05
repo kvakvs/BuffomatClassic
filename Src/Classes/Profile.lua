@@ -140,7 +140,7 @@ function profileModule:ChooseProfile()
   -- TODO: Refactor isDisabled into a function, also return reason why is disabled
   if BOM.forceProfile then
     selectedProfile = --[[---@not nil]] BOM.forceProfile
-  elseif not buffomatModule.character.UseProfiles then
+  elseif not buffomatModule.character.useProfilesOption then
     selectedProfile = self:SoloProfile()
   elseif instanceType == "pvp" or instanceType == "arena" then
     selectedProfile = self:BattlegroundProfile()

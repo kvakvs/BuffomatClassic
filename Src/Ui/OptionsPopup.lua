@@ -46,24 +46,13 @@ optionsPopupModule.behaviourSettings = {
   { "SomeoneIsDrinking", false },
 }
 
----@deprecated
-local L = setmetatable(
-        {},
-        {
-          __index = function(_t, k)
-            if BOM.L and BOM.L[k] then
-              return BOM.L[k]
-            else
-              return "[" .. k .. "]"
-            end
-          end
-        })
+local L
 
 ---Makes a tuple to pass to the menubuilder to display a settings checkbox in popup menu
 ---@param db table - BuffomatShared reference to read settings from it
 ---@param var string Variable name from optionsPopupModule.BehaviourSettings
 function optionsPopupModule:MakeSettingsRow(db, var)
-  return L["options.short." .. var], false, db, var
+  return _t("options.short." .. var), false, db, var
 end
 
 local function bomOpenOptions()
@@ -73,7 +62,7 @@ end
 ---Populate the [⚙] popup menu: Submenu "Quick Options"
 ---@deprecated
 function optionsPopupModule:PopupQuickOptions()
-  BOM.PopupDynamic:SubMenu(L["popup.QuickSettings"], "subSettings")
+  BOM.PopupDynamic:SubMenu(_t("popup.QuickSettings"), "subSettings")
 
   for i, set in ipairs(self.behaviourSettings) do
     BOM.PopupDynamic:AddItem(self:MakeSettingsRow(buffomatModule.shared, set[1]))
@@ -83,7 +72,7 @@ function optionsPopupModule:PopupQuickOptions()
   -- Watch in Raid group -> 1 2 3 4 5 6 7 8
   -- -------------------------------------------
   BOM.PopupDynamic:AddItem()
-  BOM.PopupDynamic:SubMenu(L["HeaderWatchGroup"], "subGroup")
+  BOM.PopupDynamic:SubMenu(_t("HeaderWatchGroup"), "subGroup")
 
   for i = 1, 8 do
     BOM.PopupDynamic:AddItem(i, "keep", buffomatModule.character.WatchGroup, i)
@@ -101,7 +90,7 @@ function optionsPopupModule:Setup(control, minimap)
   end
 
   if minimap then
-    BOM.PopupDynamic:AddItem(L.BtnOpen, false, BOM.ShowWindow)
+    BOM.PopupDynamic:AddItem(_t("BtnOpen"), false, BOM.ShowWindow)
     BOM.PopupDynamic:AddItem()
     BOM.PopupDynamic:AddItem(_t("options.short.ShowMinimapButton"), false,
             buffomatModule.shared.Minimap, "visible")
@@ -115,12 +104,12 @@ function optionsPopupModule:Setup(control, minimap)
   -- --------------------------------------------
   -- Use Profiles checkbox and submenu
   -- --------------------------------------------
-  BOM.PopupDynamic:AddItem(L["options.short.UseProfiles"], false,
+  BOM.PopupDynamic:AddItem(_t("options.short.UseProfiles"), false,
           buffomatModule.character, "UseProfiles")
 
   if buffomatModule.character.UseProfiles then
-    BOM.PopupDynamic:SubMenu(L["HeaderProfiles"], "subProfiles")
-    BOM.PopupDynamic:AddItem(L["profile_auto"], false,
+    BOM.PopupDynamic:SubMenu(_t("HeaderProfiles"), "subProfiles")
+    BOM.PopupDynamic:AddItem(_t("profile_auto"), false,
             buffomatModule.ChooseProfile, "auto")
 
     local currentProfileName = profileModule:ChooseProfile()
@@ -143,11 +132,11 @@ function optionsPopupModule:Setup(control, minimap)
   -- --------------------------------------------
   -- Selected spells check on/off
   -- --------------------------------------------
-  for i, spell in ipairs(BOM.SelectedSpells) do
-    if not spell.isConsumable then
-      BOM.PopupDynamic:AddItem(spell.singleLink or spell.singleText,
+  for i, buffDef in ipairs(BOM.selectedBuffs) do
+    if not buffDef.isConsumable then
+      BOM.PopupDynamic:AddItem(buffDef.singleLink or buffDef.singleText,
               "keep",
-              buffDefModule:GetProfileBuff(spell.buffId),
+              buffDefModule:GetProfileBuff(buffDef.buffId, nil),
               "Enable")
     end
   end
@@ -159,7 +148,7 @@ function optionsPopupModule:Setup(control, minimap)
 
   BOM.PopupDynamic:AddItem()
   --self:PopupQuickOptions()
-  BOM.PopupDynamic:AddItem(L.BtnSettings, false, bomOpenOptions, 1)
+  BOM.PopupDynamic:AddItem(_t("BtnSettings"), false, bomOpenOptions, 1)
 
   BOM.PopupDynamic:Show(control or "cursor", 0, 0)
 end

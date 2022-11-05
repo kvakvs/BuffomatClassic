@@ -59,11 +59,11 @@ function spellSetupModule:Setup_MaybeAddCustomSpells()
 end
 
 function spellSetupModule:Setup_ResetCaches()
-  BOM.SelectedSpells = {}
+  BOM.selectedBuffs = {}
   BOM.cancelForm = {}
   BOM.allSpellIds = {}
-  BOM.SpellIdtoConfig = {}
-  BOM.SpellIdIsSingle = {}
+  BOM.spellIdtoBuffId = {}
+  BOM.spellIdIsSingleLookup = {}
   BOM.configToSpellLookup = {} ---@type BomAllBuffsTable
 
   buffomatModule.shared.Cache = buffomatModule.shared.Cache or {}
@@ -77,7 +77,7 @@ function spellSetupModule:Setup_CancelBuffs()
 
     if spell.singleFamily then
       for sindex, sID in ipairs(spell.singleFamily) do
-        BOM.SpellIdtoConfig[sID] = spell.buffId
+        BOM.spellIdtoBuffId[sID] = spell.buffId
       end
     end
 
@@ -164,8 +164,8 @@ function spellSetupModule:Setup_EachSpell_CacheUpdate(spell)
   -- get highest rank and store SpellID=buffId
   if spell.singleFamily then
     for sindex, sID in ipairs(spell.singleFamily) do
-      BOM.SpellIdtoConfig[sID] = spell.buffId
-      BOM.SpellIdIsSingle[sID] = true
+      BOM.spellIdtoBuffId[sID] = spell.buffId
+      BOM.spellIdIsSingleLookup[sID] = true
       BOM.configToSpellLookup[sID] = spell
 
       if IsSpellKnown(sID) then
@@ -175,14 +175,14 @@ function spellSetupModule:Setup_EachSpell_CacheUpdate(spell)
   end
 
   if spell.singleId then
-    BOM.SpellIdtoConfig[spell.singleId] = spell.buffId
-    BOM.SpellIdIsSingle[spell.singleId] = true
+    BOM.spellIdtoBuffId[spell.singleId] = spell.buffId
+    BOM.spellIdIsSingleLookup[spell.singleId] = true
     BOM.configToSpellLookup[spell.singleId] = spell
   end
 
   if spell.groupFamily then
     for sindex, sID in ipairs(spell.groupFamily) do
-      BOM.SpellIdtoConfig[sID] = spell.buffId
+      BOM.spellIdtoBuffId[sID] = spell.buffId
       BOM.configToSpellLookup[sID] = spell
 
       if IsSpellKnown(sID) then
@@ -192,7 +192,7 @@ function spellSetupModule:Setup_EachSpell_CacheUpdate(spell)
   end
 
   if spell.groupId then
-    BOM.SpellIdtoConfig[spell.groupId] = spell.buffId
+    BOM.spellIdtoBuffId[spell.groupId] = spell.buffId
     BOM.configToSpellLookup[spell.groupId] = spell
   end
 end
@@ -244,7 +244,7 @@ end
 ---Adds a spell to the palette of spells to configure and use, for each profile
 ---@param spell BomBuffDefinition
 function spellSetupModule:Setup_EachSpell_Add(spell)
-  tinsert(BOM.SelectedSpells, spell)
+  tinsert(BOM.selectedBuffs, spell)
   BOM.Tool.iMerge(BOM.allSpellIds, spell.singleFamily, spell.groupFamily,
           spell.singleId, spell.groupId)
 

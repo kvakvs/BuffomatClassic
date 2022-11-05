@@ -39,7 +39,7 @@ local L = setmetatable(
 local function bomDoBlessingOnClick(self)
   local saved = self._privat_DB[self._privat_Var]
 
-  for i, spell in ipairs(BOM.SelectedSpells) do
+  for i, spell in ipairs(BOM.selectedBuffs) do
     if spell.isBlessing then
       -- TODO: use spell instead of BOM.CurrentProfile.Spell[]
       buffomatModule.currentProfile.Spell[spell.buffId].Class[self._privat_Var] = false
@@ -337,7 +337,7 @@ function spellButtonsTabModule:CreateTab(playerIsHorde)
 
   for j, cat in ipairs(allBuffsModule.buffCategories) do
     if not self:CategoryIsHidden(cat) then
-      for i, spell in ipairs(BOM.SelectedSpells) do -- for all spells known by Buffomat and the player
+      for i, spell in ipairs(BOM.selectedBuffs) do -- for all spells known by Buffomat and the player
         if spell.category ~= cat -- category has changed from the previous row
                 or (type(spell.onlyUsableFor) == "table"
                 and not tContains(spell.onlyUsableFor, selfClass)) then
@@ -570,7 +570,7 @@ function spellButtonsTabModule:UpdateSelectedSpell(spell)
           or spell.type == "aura"
           or spell.type == "seal") and spell.requiresForm == nil
   then
-    if (spell.type == "tracking" and buffomatModule.character.LastTracking == spell.trackingIconId) or
+    if (spell.type == "tracking" and buffomatModule.character.lastTrackingIconId == spell.trackingIconId) or
             (spell.type == "aura" and spell.buffId == buffomatModule.currentProfile.LastAura) or
             (spell.type == "seal" and spell.buffId == buffomatModule.currentProfile.LastSeal) then
       spell.frames.checkboxSet:SetState(true)
@@ -617,7 +617,7 @@ function spellButtonsTabModule:UpdateSpellsTab_Throttled()
   wipe(self.spellTabUpdateRequestedBy)
 
   -- InCombat Protection is checked by the caller (Update***Tab)
-  if BOM.SelectedSpells == nil then
+  if BOM.selectedBuffs == nil then
     return false
   end
 
@@ -631,7 +631,7 @@ function spellButtonsTabModule:UpdateSpellsTab_Throttled()
 
   local _className, playerClass, _classId = UnitClass("player")
 
-  for i, spell in ipairs(BOM.SelectedSpells) do
+  for i, spell in ipairs(BOM.selectedBuffs) do
     if self:CategoryIsHidden(spell.category) then
       -- nothing, is hidden
     elseif type(spell.onlyUsableFor) == "table"

@@ -310,14 +310,11 @@ local function Event_UNIT_SPELLCHANNEL_STOP(unit)
   end
 end
 
-local function Event_SpellsChanged()
+function eventsModule.Event_SpellsChanged()
   spellSetupModule:SetupAvailableSpells()
   buffomatModule:SetForceUpdate("spellsChanged")
   spellButtonsTabModule:UpdateSpellsTab("spellsChanged")
 end
-
--- Global accessor to refresh the spells tab
-BOM.OnSpellsChanged = Event_SpellsChanged
 
 --local function Event_ADDON_LOADED(arg1)
 --end
@@ -328,7 +325,7 @@ BOM.OnSpellsChanged = Event_SpellsChanged
 
 local function Event_Bag()
   buffomatModule:SetForceUpdate("bagUpdate")
-  BOM.WipeCachedItems = true
+  BOM.wipeCachedItems = true
 
   if BOM.cachedPlayerBag then
     wipe(BOM.cachedPlayerBag)
@@ -386,7 +383,7 @@ function eventsModule:InitEvents()
   end
 
   for i, event in ipairs(eventsModule.EVT_SPELLBOOK_CHANGED) do
-    BuffomatAddon:RegisterEvent(event, Event_SpellsChanged)
+    BuffomatAddon:RegisterEvent(event, eventsModule.Event_SpellsChanged)
   end
   for i, event in ipairs(eventsModule.EVT_PARTY_CHANGED) do
     BuffomatAddon:RegisterEvent(event, Event_PartyChanged)

@@ -207,7 +207,8 @@ end
 ---@alias BomBuffId number
 ---@alias BomEnchantmentId number
 
----@alias BomAllBuffsTable {[BomBuffId] BomBuffDefinition}
+---@shape BomAllBuffsTable
+---@field [BomBuffId] BomBuffDefinition
 
 ---@alias BomEnchantmentsMapping {[BomSpellId] BomEnchantmentId[]}
 
@@ -303,10 +304,10 @@ BOM.buffExchangeId = { -- combine-spell-ids to new one
   [16591] = { 16591, 16589, 16595, 16593 }, -- noggenfoger
 }
 
-BOM.SpellToSpell = {}
+BOM.spellToSpellLookup = {}
 for dest, list in pairs(BOM.buffExchangeId) do
   for i, id in ipairs(list) do
-    BOM.SpellToSpell[id] = dest
+    BOM.spellToSpellLookup[id] = dest
   end
 end
 

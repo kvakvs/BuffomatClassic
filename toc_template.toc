@@ -56,8 +56,8 @@ Src/Cache/ItemListCache.lua
 Src/Cache/UnitCache.lua
 
 Src/Ui/BuffRow.lua
-Src/Ui/LegacyManagedButton.lua
-Src/Ui/LegacyOptions.lua
+Src/Ui/ControlManager.lua
+# Src/Ui/LegacyOptions.lua
 Src/Ui/ManagedUi.lua
 Src/Ui/MinimapButton.lua
 Src/Ui/Options.lua

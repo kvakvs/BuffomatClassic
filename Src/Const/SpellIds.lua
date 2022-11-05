@@ -6,7 +6,7 @@ local BOM = BuffomatAddon ---@type BomAddon
 local spellIdsModule = {}
 BomModuleManager.spellIdsModule = spellIdsModule
 
-BOM.SpellId = {}
+BOM.spellIdLookup = {}
 
 spellIdsModule.WotlkFood80 = 45548
 

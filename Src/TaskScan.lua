@@ -540,9 +540,9 @@ function taskScanModule:ActivateSelectedTracking()
   BOM.forceTracking = nil
 
   ---@param spell BomBuffDefinition
-  for i, spell in ipairs(BOM.SelectedSpells) do
+  for i, spell in ipairs(BOM.selectedBuffs) do
     if spell.type == "tracking" then
-      if buffDefModule:IsBuffEnabled(spell.buffId) then
+      if buffDefModule:IsBuffEnabled(spell.buffId, nil) then
         if spell.requiresForm ~= nil then
           if GetShapeshiftFormID() == spell.requiresForm
                   and BOM.forceTracking ~= spell.trackingIconId then
@@ -550,14 +550,14 @@ function taskScanModule:ActivateSelectedTracking()
             spellButtonsTabModule:UpdateSpellsTab("ForceUp1")
           end
         elseif buffChecksModule:IsTrackingActive(spell)
-                and buffomatModule.character.LastTracking ~= spell.trackingIconId then
-          buffomatModule.character.LastTracking = spell.trackingIconId
+                and buffomatModule.character.lastTrackingIconId ~= spell.trackingIconId then
+          buffomatModule.character.lastTrackingIconId = spell.trackingIconId
           spellButtonsTabModule:UpdateSpellsTab("ForceUp2")
         end
       else
-        if buffomatModule.character.LastTracking == spell.trackingIconId
-                and buffomatModule.character.LastTracking ~= nil then
-          buffomatModule.character.LastTracking = nil
+        if buffomatModule.character.lastTrackingIconId == spell.trackingIconId
+                and buffomatModule.character.lastTrackingIconId ~= nil then
+          buffomatModule.character.lastTrackingIconId = nil
           spellButtonsTabModule:UpdateSpellsTab("ForceUp3")
         end
       end -- if spell.enable
@@ -565,7 +565,7 @@ function taskScanModule:ActivateSelectedTracking()
   end -- for all spells
 
   if BOM.forceTracking == nil then
-    BOM.forceTracking = buffomatModule.character.LastTracking
+    BOM.forceTracking = buffomatModule.character.lastTrackingIconId
   end
 end
 
@@ -576,7 +576,7 @@ function taskScanModule:GetActiveAuraAndSeal(playerUnit)
   BOM.activePaladinSeal = nil
 
   ---@param spell BomBuffDefinition
-  for i, spell in ipairs(BOM.SelectedSpells) do
+  for i, spell in ipairs(BOM.selectedBuffs) do
     local player_buff = playerUnit.knownBuffs[spell.buffId]
 
     if player_buff then
@@ -603,7 +603,7 @@ end
 function taskScanModule:CheckChangesAndUpdateSpelltab()
   --reset aura/seal
   ---@param spell BomBuffDefinition
-  for i, spell in ipairs(BOM.SelectedSpells) do
+  for i, spell in ipairs(BOM.selectedBuffs) do
     if spell.type == "aura" then
       if buffDefModule:IsBuffEnabled(spell.buffId) then
         if BOM.activePaladinAura == spell.buffId
@@ -654,7 +654,7 @@ function taskScanModule:ForceUpdate(party, playerUnit)
 
   -- For each selected spell check the targets
   ---@param spell BomBuffDefinition
-  for i, spell in ipairs(BOM.SelectedSpells) do
+  for i, spell in ipairs(BOM.selectedBuffs) do
     someoneIsDead = self:UpdateSpellTargets(party, spell, playerUnit)
   end
 
@@ -1665,7 +1665,7 @@ end
 ---@param macroCommand string
 ---@return boolean, string, string {inRange, castButtonTitle, macroCommand}
 function taskScanModule:ScanSelectedSpells(playerUnit, playerParty, inRange, castButtonTitle, macroCommand)
-  for _, buffDef in ipairs(BOM.SelectedSpells) do
+  for _, buffDef in ipairs(BOM.selectedBuffs) do
     local profileSpell = buffDefModule:GetProfileBuff(buffDef.buffId)
 
     if buffDef.isInfo and profileSpell.Whisper then
@@ -1775,7 +1775,7 @@ function taskScanModule:UpdateScan_Button_Nothing()
   --Clear the cast button
   self:CastButton(_t("castButton.NothingToDo"), false)
 
-  for _i, spell in ipairs(BOM.SelectedSpells) do
+  for _i, spell in ipairs(BOM.selectedBuffs) do
     if #spell.SkipList > 0 then
       wipe(spell.SkipList)
     end
@@ -1796,7 +1796,7 @@ function taskScanModule:UpdateScan_Button_HaveTasks(inRange)
     self:CastButton(ERR_SPELL_OUT_OF_RANGE, false)
     local skipreset = false
 
-    for spellIndex, spell in ipairs(BOM.SelectedSpells) do
+    for spellIndex, spell in ipairs(BOM.selectedBuffs) do
       if #spell.SkipList > 0 then
         skipreset = true
         wipe(spell.SkipList)
@@ -1903,7 +1903,7 @@ function taskScanModule:UpdateScan_Scan(playerParty, playerUnit)
 end -- end function bomUpdateScan_Scan()
 
 function taskScanModule:UpdateScan_PreCheck(from)
-  if BOM.SelectedSpells == nil then
+  if BOM.selectedBuffs == nil then
     BOM:Debug("UpdateScan_PreCheck: BOM.SelectedSpells is nil")
     return
   end
@@ -1972,7 +1972,7 @@ function BOM.AddMemberToSkipList()
 end
 
 function taskScanModule:ClearSkip()
-  for spellIndex, spell in ipairs(BOM.SelectedSpells) do
+  for spellIndex, spell in ipairs(BOM.selectedBuffs) do
     if spell.SkipList then
       wipe(spell.SkipList)
     end
@@ -1981,7 +1981,7 @@ end
 
 ---On Combat Start go through cancel buffs list and cancel those bufs
 function BOM.DoCancelBuffs()
-  if BOM.SelectedSpells == nil or buffomatModule.currentProfile == nil then
+  if BOM.selectedBuffs == nil or buffomatModule.currentProfile == nil then
     return
   end
 

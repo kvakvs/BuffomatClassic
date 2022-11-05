@@ -250,7 +250,7 @@ function unitCacheModule:GetPartyMembers()
   end
 
   BOM.PartyUpdateNeeded = false
-  BOM.SomeBodyGhost = false
+  BOM.someBodyIsGhost = false
 
   local player_zone = C_Map.GetBestMapForUnit("player")
 

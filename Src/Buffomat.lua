@@ -81,7 +81,7 @@ local macroModule = BomModuleManager.macroModule
 ---@field Macro BomMacro
 ---@field MANA_CLASSES BomClass[] Classes with mana resource
 ---@field ManaLimit number Player max mana
----@field MinimapButton GPIMinimapButton Minimap button control
+---@field MinimapButton BomGPIMinimapButton Minimap button control
 ---@field nextCooldownDue number Set this to next spell cooldown to force update
 ---@field PartyUpdateNeeded boolean Requests player party update
 ---@field PlayerBuffs BomBuffCollectionPerUnit
@@ -91,16 +91,15 @@ local macroModule = BomModuleManager.macroModule
 ---@field RepeatUpdate boolean Requests some sort of spells update similar to ForceUpdate
 ---@field RESURRECT_CLASS BomClass[] Classes who can resurrect others
 ---@field ScanModifier boolean Will update buffomat when modifier key is held down
----@field SelectedSpells BomAllBuffsTable
+---@field selectedBuffs BomBuffDefinition[]
 ---@field SetupAvailableSpells function
----@field SomeBodyGhost boolean [unused?] Someone in the party is a ghost
----@field SpellId table<string, table<string, number>> Map of spell name to id
----@field SpellIdIsSingle table<number, boolean> Whether spell ids are single buffs
----@field SpellIdtoConfig table<number, number> Maps spell ids to the key id of spell in the AllSpells
----@field SpellTabsCreatedFlag boolean Indicated spells tab already populated with controls
----@field SpellToSpell table<number, number> Maps spells ids to other spell ids
----@field TBC boolean Whether we are running TBC classic
----@field WipeCachedItems boolean Command to reset cached items
+---@field someBodyIsGhost boolean [unused?] Someone in the party is a ghost
+---@field spellIdLookup table<string, table<string, number>> Map of spell name to id
+---@field spellIdIsSingleLookup table<number, boolean> Whether spell ids are single buffs
+---@field spellIdtoBuffId table<number, number> Maps spell ids to the key id of spell in the AllSpells
+---@field spellTabsCreatedFlag boolean Indicated spells tab already populated with controls
+---@field spellToSpellLookup table<number, number> Maps spells ids to other spell ids
+---@field wipeCachedItems boolean Command to reset cached items
 
 BuffomatAddon = LibStub("AceAddon-3.0"):NewAddon(
         "Buffomat", "AceConsole-3.0", "AceEvent-3.0") ---@type BomAddon
@@ -371,9 +370,9 @@ function buffomatModule:InitGlobalStates()
   BuffomatCharacter = characterStateModule:New(loadedChar) ---@type BomCharacterSettings
   buffomatModule.character = BuffomatCharacter
 
-  if self.character.Duration then
-    self.shared.Duration = self.character.Duration
-    self.character.Duration = --[[---@type BomSpellCooldownsTable]] {}
+  if self.character.remainingDurations then
+    self.shared.Duration = self.character.remainingDurations
+    self.character.remainingDurations = --[[---@type BomSpellCooldownsTable]] {}
   elseif not self.shared.Duration then
     self.shared.Duration = --[[---@type BomSpellCooldownsTable]] {}
   end
@@ -892,7 +891,7 @@ end
 function BOM.DebugBuffs(dest)
   dest = dest or "player"
 
-  print("LastTracking:", buffomatModule.character.LastTracking, " ")
+  print("LastTracking:", buffomatModule.character.lastTrackingIconId, " ")
   print("ForceTracking:", BOM.forceTracking, " ")
   print("ActivAura:", BOM.activePaladinAura, " ")
   print("LastAura:", BOM.currentProfile.LastAura, " ")

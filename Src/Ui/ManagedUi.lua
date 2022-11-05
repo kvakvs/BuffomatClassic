@@ -1,5 +1,5 @@
-local TOCNAME, _ = ...
-local BOM = BuffomatAddon ---@type BomAddon
+--local TOCNAME, _ = ...
+--local BOM = BuffomatAddon ---@type BomAddon
 
 ---@class BomManagedUiModule
 local managedUiModule = {}
@@ -12,15 +12,15 @@ managedUiModule.ICON_OFF = "|TInterface\\RAIDFRAME\\ReadyCheck-NotReady:0:0:0:0:
 ---@class BomManagedUi
 ---@field uiElements table<string, BomGPIControl>
 ---@field parent BomGPIControl Use this parent to create all controls
-
-local managedUiClass = {} ---@type BomManagedUi
+local managedUiClass = {}
 managedUiClass.__index = managedUiClass
 
 ---@return BomManagedUi
 function managedUiModule:new(parent)
-  local fields = {} ---@type BomManagedUi
+  local fields = --[[---@type BomManagedUi]] {
+    uiElements = {},
+  }
   setmetatable(fields, managedUiClass)
-  fields.uiElements = {}
   return fields
 end
 
@@ -47,7 +47,8 @@ function managedUiModule.ButtonOnEnter(self)
       BomC_Tooltip:SetHyperlink(self.bomToolTipLink)
     else
       local add = ""
-      if self.bomReadVariable then -- add a checkbox to the tooltip
+      if self.bomReadVariable then
+        -- add a checkbox to the tooltip
         add = " " .. (self.bomReadVariable()
                 and managedUiModule.ICON_ON
                 or managedUiModule.ICON_OFF)

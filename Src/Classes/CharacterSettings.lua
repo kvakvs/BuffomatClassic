@@ -12,11 +12,14 @@ local profileModule = BomModuleManager.profileModule
 ---@shape BomSpellCooldownsTable
 ---@field [string] number
 
+---@shape BomHiddenCategoryTable
+---@field [string] boolean
+
 ---@shape BomCharacterSettings Current character state snapshots per profile
----@field UseProfiles boolean Checkbox to use profiles / automatic profiles
 ---@field [BomProfileName] BomProfile Access to subprofiles [solo, group, raid, battleground, ...]
----@field Duration BomSpellCooldownsTable Remaining aura duration on SELF, keyed with buff names
----@field LastTracking number Icon id for the last active tracking (not relevant in TBC?)
+---@field UseProfiles boolean [DO NOT RENAME] Checkbox to use profiles / automatic profiles
+---@field remainingDurations BomSpellCooldownsTable Remaining aura duration on SELF, keyed with buff names
+---@field lastTrackingIconId number|nil Icon id for the last active tracking (not relevant in TBC?)
 ---@field solo BomProfile
 ---@field group BomProfile
 ---@field raid BomProfile
@@ -25,10 +28,10 @@ local profileModule = BomModuleManager.profileModule
 ---@field group_spec2 BomProfile Alternate talents for WotLK dualspec
 ---@field raid_spec2 BomProfile Alternate talents for WotLK dualspec
 ---@field battleground_spec2 BomProfile Alternate talents for WotLK dualspec
----@field BuffCategoriesHidden table<string, boolean> True if category is hidden (control in options)
----@field WatchGroup table<number, boolean> True to watch buffs in group 1..8
----@field Spell BomBuffDefinition[]|nil # see also assignment to ["Spell"] in buffomatModule:InitGlobalStates()
----@field CancelBuff table|nil
+---@field BuffCategoriesHidden BomHiddenCategoryTable [DO NOT RENAME] True if category is hidden (control in options)
+---@field WatchGroup table<number, boolean> [DO NOT RENAME] True to watch buffs in group 1..8
+---@field Spell BomBuffDefinition[]|nil [DO NOT RENAME] Enabled/disabled buffs; see also assignment to ["Spell"] in buffomatModule:InitGlobalStates()
+---@field CancelBuff table|nil [DO NOT RENAME]
 ---@field LastSeal number|nil
 ---@field LastAura number|nil
 
@@ -40,8 +43,8 @@ characterStateClass.__index = characterStateClass
 function characterSettingsModule:New(init)
   local tab = init or self:Defaults()
   tab.Spell = tab.Spell or {}
-  tab.Duration = tab.Duration or {}
-  tab.LastTracking = tab.LastTracking or 0
+  tab.remainingDurations = tab.remainingDurations or {}
+  tab.lastTrackingIconId = tab.lastTrackingIconId or 0
 
   tab.solo = tab.solo or profileModule:New()
   tab.group = tab.group or profileModule:New()
