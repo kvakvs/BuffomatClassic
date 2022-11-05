@@ -13,7 +13,7 @@ local unitCacheModule = BomModuleManager.unitCacheModule
 ---Checks whether a tracking spell is now active
 ---@param spell BomBuffDefinition The tracking spell which might have tracking enabled
 function buffChecksModule:IsTrackingActive(spell)
-  if BOM.HaveTBC then
+  if BOM.haveTBC then
     for i = 1, GetNumTrackingTypes() do
       local _name, _texture, active, _category, _nesting, spellId = GetTrackingInfo(i)
       if spellId == spell.singleId then
@@ -73,11 +73,11 @@ function buffChecksModule:HasItem(list, cd)
   end
 
   local key = list[1] .. (cd and "CD" or "")
-  local cachedItem = BOM.CachedHasItems[key]
+  local cachedItem = BOM.cachedPlayerBag[key]
 
   if not cachedItem then
-    BOM.CachedHasItems[key] = {}
-    cachedItem = BOM.CachedHasItems[key]
+    BOM.cachedPlayerBag[key] = {}
+    cachedItem = BOM.cachedPlayerBag[key]
     cachedItem.a = false
     cachedItem.d = 0
 
@@ -127,7 +127,7 @@ end
 ---@param buff BomBuffDefinition
 ---@param playerUnit BomUnit
 function buffChecksModule:HunterPetNeedsBuff(buff, playerUnit, _party)
-  if not BOM.HaveTBC then
+  if not BOM.haveTBC then
     return -- pre-TBC this did not exist
   end
 
@@ -168,7 +168,7 @@ function buffChecksModule:PartyNeedsInfoBuff(buff, playerUnit, party)
       end
 
       if UnitIsUnit("player", partyMemberBuff.source or "") then
-        BOM.ItemListTarget[buff.buffId] = partyMember.name
+        BOM.itemListTarget[buff.buffId] = partyMember.name
       end
     end
   end
@@ -224,8 +224,8 @@ function buffChecksModule:PlayerNeedsTracking(buff, playerUnit, party)
     -- Do nothing - ignore herbs and minerals in catform if enabled track humanoids
 
   elseif not self:IsTrackingActive(buff)
-          and (BOM.ForceTracking == nil
-          or BOM.ForceTracking == buff.trackingIconId) then
+          and (BOM.forceTracking == nil
+          or BOM.forceTracking == buff.trackingIconId) then
     tinsert(buff.UnitsNeedBuff, playerUnit)
   end
 end
@@ -234,7 +234,7 @@ end
 ---@param playerUnit BomUnit
 ---@param party table<number, BomUnit>
 function buffChecksModule:PaladinNeedsAura(buff, playerUnit, party)
-  if BOM.ActivePaladinAura ~= buff.buffId
+  if BOM.activePaladinAura ~= buff.buffId
           and (buffomatModule.currentProfile.LastAura == nil
           or buffomatModule.currentProfile.LastAura == buff.buffId)
   then
@@ -246,7 +246,7 @@ end
 ---@param playerUnit BomUnit
 ---@param party table<number, BomUnit>
 function buffChecksModule:PaladinNeedsSeal(spell, playerUnit, party)
-  if BOM.ActivePaladinSeal ~= spell.buffId
+  if BOM.activePaladinSeal ~= spell.buffId
           and (buffomatModule.currentProfile.LastSeal == nil
           or buffomatModule.currentProfile.LastSeal == spell.buffId)
   then

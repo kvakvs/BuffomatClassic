@@ -50,28 +50,28 @@ function spellSetupModule:Setup_MaybeAddCustomSpells()
   bomBuffsImportedFromConfig = true
 
   for x, entry in ipairs(buffomatModule.shared.CustomSpells) do
-    tinsert(BOM.AllBuffomatBuffs, toolboxModule:CopyTable(entry))
+    tinsert(BOM.allBuffomatBuffs, toolboxModule:CopyTable(entry))
   end
 
   for x, entry in ipairs(buffomatModule.shared.CustomCancelBuff) do
-    tinsert(BOM.CancelBuffs, toolboxModule:CopyTable(entry))
+    tinsert(BOM.cancelBuffs, toolboxModule:CopyTable(entry))
   end
 end
 
 function spellSetupModule:Setup_ResetCaches()
   BOM.SelectedSpells = {}
   BOM.cancelForm = {}
-  BOM.AllSpellIds = {}
+  BOM.allSpellIds = {}
   BOM.SpellIdtoConfig = {}
   BOM.SpellIdIsSingle = {}
-  BOM.ConfigToSpell = {} ---@type BomAllBuffsTable
+  BOM.configToSpellLookup = {} ---@type BomAllBuffsTable
 
   buffomatModule.shared.Cache = buffomatModule.shared.Cache or {}
   buffomatModule.shared.Cache.Item2 = buffomatModule.shared.Cache.Item2 or {}
 end
 
 function spellSetupModule:Setup_CancelBuffs()
-  for i, spell in ipairs(BOM.CancelBuffs) do
+  for i, spell in ipairs(BOM.cancelBuffs) do
     -- save "buffId"
     --spell.buffId = spell.buffId or spell.singleId
 
@@ -89,7 +89,7 @@ function spellSetupModule:Setup_CancelBuffs()
     spell.singleLink = self:FormatSpellLink(spell_info)
     spell.spellIcon = spell_info.icon
 
-    BOM.Tool.iMerge(BOM.AllSpellIds, spell.singleFamily)
+    BOM.Tool.iMerge(BOM.allSpellIds, spell.singleFamily)
 
     for j, profil in ipairs(profileModule.ALL_PROFILES) do
       if buffomatModule.character[profil].CancelBuff[spell.buffId] == nil then
@@ -166,7 +166,7 @@ function spellSetupModule:Setup_EachSpell_CacheUpdate(spell)
     for sindex, sID in ipairs(spell.singleFamily) do
       BOM.SpellIdtoConfig[sID] = spell.buffId
       BOM.SpellIdIsSingle[sID] = true
-      BOM.ConfigToSpell[sID] = spell
+      BOM.configToSpellLookup[sID] = spell
 
       if IsSpellKnown(sID) then
         spell.singleId = sID
@@ -177,13 +177,13 @@ function spellSetupModule:Setup_EachSpell_CacheUpdate(spell)
   if spell.singleId then
     BOM.SpellIdtoConfig[spell.singleId] = spell.buffId
     BOM.SpellIdIsSingle[spell.singleId] = true
-    BOM.ConfigToSpell[spell.singleId] = spell
+    BOM.configToSpellLookup[spell.singleId] = spell
   end
 
   if spell.groupFamily then
     for sindex, sID in ipairs(spell.groupFamily) do
       BOM.SpellIdtoConfig[sID] = spell.buffId
-      BOM.ConfigToSpell[sID] = spell
+      BOM.configToSpellLookup[sID] = spell
 
       if IsSpellKnown(sID) then
         spell.groupId = sID
@@ -193,7 +193,7 @@ function spellSetupModule:Setup_EachSpell_CacheUpdate(spell)
 
   if spell.groupId then
     BOM.SpellIdtoConfig[spell.groupId] = spell.buffId
-    BOM.ConfigToSpell[spell.groupId] = spell
+    BOM.configToSpellLookup[spell.groupId] = spell
   end
 end
 
@@ -245,7 +245,7 @@ end
 ---@param spell BomBuffDefinition
 function spellSetupModule:Setup_EachSpell_Add(spell)
   tinsert(BOM.SelectedSpells, spell)
-  BOM.Tool.iMerge(BOM.AllSpellIds, spell.singleFamily, spell.groupFamily,
+  BOM.Tool.iMerge(BOM.allSpellIds, spell.singleFamily, spell.groupFamily,
           spell.singleId, spell.groupId)
 
   if spell.cancelForm then
@@ -294,7 +294,7 @@ end
 ---@param buff BomBuffDefinition
 function spellSetupModule:Setup_EachBuff(buff)
   buff.SkipList = {}
-  BOM.ConfigToSpell[buff.buffId] = buff
+  BOM.configToSpellLookup[buff.buffId] = buff
 
   self:Setup_EachSpell_CacheUpdate(buff)
 
@@ -366,18 +366,18 @@ function spellSetupModule:SetupAvailableSpells()
   --Spells selected for the current class/settings/profile etc
   self:Setup_ResetCaches()
 
-  if BOM.ArgentumDawn.Link == nil
-          or BOM.Carrot.Link == nil then
+  if BOM.reputationTrinketZones.Link == nil
+          or BOM.ridingSpeedZones.Link == nil then
     do
-      BOM.ArgentumDawn.Link = self:FormatSpellLink(BOM.GetSpellInfo(BOM.ArgentumDawn.spell))
-      BOM.Carrot.Link = self:FormatSpellLink(BOM.GetSpellInfo(BOM.Carrot.spell))
+      BOM.reputationTrinketZones.Link = self:FormatSpellLink(BOM.GetSpellInfo(BOM.reputationTrinketZones.spell))
+      BOM.ridingSpeedZones.Link = self:FormatSpellLink(BOM.GetSpellInfo(BOM.ridingSpeedZones.spell))
     end
   end
 
   self:Setup_CancelBuffs()
 
   ---@param buff BomBuffDefinition
-  for _i, buff in ipairs(BOM.AllBuffomatBuffs) do
+  for _i, buff in ipairs(BOM.allBuffomatBuffs) do
     self:Setup_EachBuff(buff)
   end -- for all BOM-supported spells
 end

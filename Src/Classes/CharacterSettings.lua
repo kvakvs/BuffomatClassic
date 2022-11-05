@@ -13,6 +13,7 @@ local profileModule = BomModuleManager.profileModule
 ---@field [string] number
 
 ---@shape BomCharacterSettings Current character state snapshots per profile
+---@field UseProfiles boolean Checkbox to use profiles / automatic profiles
 ---@field [BomProfileName] BomProfile Access to subprofiles [solo, group, raid, battleground, ...]
 ---@field Duration BomSpellCooldownsTable Remaining aura duration on SELF, keyed with buff names
 ---@field LastTracking number Icon id for the last active tracking (not relevant in TBC?)
@@ -47,7 +48,7 @@ function characterSettingsModule:New(init)
   tab.raid = tab.raid or profileModule:New()
   tab.battleground = tab.battleground or profileModule:New()
 
-  if BOM.HaveWotLK then
+  if BOM.haveWotLK then
     tab.solo_spec2 = tab.solo_spec2 or profileModule:New()
     tab.group_spec2 = tab.group_spec2 or profileModule:New()
     tab.raid_spec2 = tab.raid_spec2 or profileModule:New()
@@ -62,5 +63,5 @@ end
 
 ---@return BomCharacterSettings
 function characterSettingsModule:Defaults()
-  return {}
+  return --[[---@type BomCharacterSettings]] {}
 end

@@ -255,7 +255,7 @@ function unitCacheModule:GetPartyMembers()
   local player_zone = C_Map.GetBestMapForUnit("player")
 
   if IsAltKeyDown() then
-    BOM.DeclineHasResurrection = true
+    BOM.declineHasResurrection = true
     taskScanModule:ClearSkip()
   end
 
@@ -266,7 +266,7 @@ function unitCacheModule:GetPartyMembers()
             or member.unitId == "target"
 
     if not member.isDead
-            or BOM.DeclineHasResurrection
+            or BOM.declineHasResurrection
     then
       member.hasResurrection = false
       member.distance = toolboxModule:UnitDistanceSquared(member.unitId)
@@ -289,12 +289,12 @@ function unitCacheModule:GetPartyMembers()
   , hasOffHandEnchant, offHandExpiration, offHandCharges, offHandEnchantId = GetWeaponEnchantInfo()
 
   if hasMainHandEnchant and mainHandEnchantID
-          and BOM.EnchantToSpell[mainHandEnchantID] then
-    local enchantBuffId = BOM.EnchantToSpell[mainHandEnchantID]
+          and BOM.enchantToSpellLookup[mainHandEnchantID] then
+    local enchantBuffId = BOM.enchantToSpellLookup[mainHandEnchantID]
     local duration
 
-    if BOM.ConfigToSpell[enchantBuffId] and BOM.ConfigToSpell[enchantBuffId].singleDuration then
-      duration = BOM.ConfigToSpell[enchantBuffId].singleDuration
+    if BOM.configToSpellLookup[enchantBuffId] and BOM.configToSpellLookup[enchantBuffId].singleDuration then
+      duration = BOM.configToSpellLookup[enchantBuffId].singleDuration
     else
       duration = 300
     end
@@ -312,12 +312,12 @@ function unitCacheModule:GetPartyMembers()
 
   if hasOffHandEnchant
           and offHandEnchantId
-          and BOM.EnchantToSpell[offHandEnchantId] then
-    local enchantBuffId = BOM.EnchantToSpell[offHandEnchantId]
+          and BOM.enchantToSpellLookup[offHandEnchantId] then
+    local enchantBuffId = BOM.enchantToSpellLookup[offHandEnchantId]
     local duration
 
-    if BOM.ConfigToSpell[enchantBuffId] and BOM.ConfigToSpell[enchantBuffId].singleDuration then
-      duration = BOM.ConfigToSpell[enchantBuffId].singleDuration
+    if BOM.configToSpellLookup[enchantBuffId] and BOM.configToSpellLookup[enchantBuffId].singleDuration then
+      duration = BOM.configToSpellLookup[enchantBuffId].singleDuration
     else
       duration = 300
     end
@@ -342,7 +342,7 @@ function unitCacheModule:GetPartyMembers()
     buffomatModule:SetForceUpdate("offhandBuffChanged")
   end
 
-  BOM.DeclineHasResurrection = false
+  BOM.declineHasResurrection = false
 
   return party, playerUnit
 end

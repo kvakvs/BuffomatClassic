@@ -2,7 +2,7 @@
 local chineseModule = { }
 BomModuleManager.languageChineseModule = chineseModule
 
----@return BomLanguage
+---@return BomLocaleDict
 function chineseModule:Translations()
   return {
     ["options.OptionsTitle"]                    = "Buffomat",

@@ -13,15 +13,13 @@ local _t = BomModuleManager.languagesModule
 local groupBuffTargetClass = {}
 groupBuffTargetClass.__index = groupBuffTargetClass
 
---BOM.Class.GroupBuffTarget = {} ---@type BomGroupBuffTarget
---BOM.Class.GroupBuffTarget.__index = BOM.Class.GroupBuffTarget
-
 ---@return BomGroupBuffTarget
 function groupBuffTargetModule:New(groupNum)
-  local fields = {} ---@type BomGroupBuffTarget
+  local fields = --[[---@type BomGroupBuffTarget]] {
+    groupIndex = groupNum,
+  }
   setmetatable(fields, groupBuffTargetClass)
 
-  fields.groupIndex = groupNum
   return fields
 end
 
@@ -47,7 +45,7 @@ function groupBuffTargetClass:GetDistanceRaid()
 end
 
 function groupBuffTargetClass:GetDistanceParty()
-  if BOM.HaveWotLK then
+  if BOM.haveWotLK then
     -- in WotLK group buffs are cast on the whole group
     return 0 -- self always in range
   end

@@ -36,7 +36,7 @@ function BOM.GetItemList()
         local icon, itemCount, _locked, quality, readable, lootable, itemLink
         , isFiltered, noValue, itemID = GetContainerItemInfo(bag, slot)
 
-        for iList, list in ipairs(BOM.ItemList) do
+        for iList, list in ipairs(BOM.itemList) do
           if tContains(list, itemID) then
             tinsert(itemListCache, {
               Index   = iList,

@@ -5,8 +5,6 @@ local BOM = BuffomatAddon ---@type BomAddon
 local controlModule = {}
 BomModuleManager.controlModule = controlModule
 
-BOM.Class = BOM.Class or {}
-
 ---@class GPIMenuItem
 ---@field text string
 ---@field disabled boolean
@@ -14,10 +12,8 @@ BOM.Class = BOM.Class or {}
 ---@field arg1 any
 ---@field arg2 any
 ---@field MenuDepth number
-
----@type GPIMenuItem
-BOM.Class.GPIMenuItem = {}
-BOM.Class.GPIMenuItem.__index = BOM.Class.GPIMenuItem
+controlModule.GPIMenuItem = {}
+controlModule.GPIMenuItem.__index = controlModule.GPIMenuItem
 
 
 ---@class GPIMinimapButtonConfigData
@@ -26,10 +22,8 @@ BOM.Class.GPIMenuItem.__index = BOM.Class.GPIMenuItem
 ---@field visible boolean|nil
 ---@field lock boolean|nil
 ---@field lockDistance boolean|nil
-
----@type GPIMinimapButtonConfigData
-BOM.Class.GPIMinimapButtonConfigData = {}
-BOM.Class.GPIMinimapButtonConfigData.__index = BOM.Class.GPIMinimapButtonConfigData
+controlModule.GPIMinimapButtonConfigData = {}
+controlModule.GPIMinimapButtonConfigData.__index = controlModule.GPIMinimapButtonConfigData
 
 
 ---@class GPIMinimapButton
@@ -42,20 +36,19 @@ BOM.Class.GPIMinimapButtonConfigData.__index = BOM.Class.GPIMinimapButtonConfigD
 ---@field onClick function
 ---@field UpdatePosition function
 ---@field SetTexture fun(texturePath: string)
-
----@type GPIMinimapButton
-BOM.Class.GPIMinimapButton = {
+controlModule.GPIMinimapButton = {
   --UpdatePosition = minimapButtonClass:UpdatePosition ???
 }
-BOM.Class.GPIMinimapButton.__index = BOM.Class.GPIMinimapButton
+controlModule.GPIMinimapButton.__index = controlModule.GPIMinimapButton
 
 
 ---@class BomControl A blizzard UI frame but may contain private fields used by internal library by Buffomat
 ---@field bomToolTipLink string Mouseover will show the link
 ---@field bomToolTipText string Mouseover will show the text
 ---@field bomReadVariable function Returns value which the button can modify, boolean for toggle buttons
+---@field SetPoint fun(self: BomControl, point: string, relativeTo: BomControl, relativePoint: string, xOfs: number, yOfs: number)
 
----@class BomLegacyControl A blizzard UI frame but may contain private fields used by internal library by GPI
+---@class BomLegacyControl: BomControl A blizzard UI frame but may contain private fields used by internal library by GPI
 ---@field _privat_DB table Stores value when button is clicked
 ---@field _privat_Var string Variable name in the _privat_DB
 ---@field _privat_Set any Value to be set/reset to nil when the button is clicked, use nil to toggle a boolean
@@ -77,13 +70,11 @@ BOM.Class.GPIMinimapButton.__index = BOM.Class.GPIMinimapButton
 ---@field GPI_DoStop boolean
 ---@field GPI_SIZETYPE string
 ---@field Lib_GPI_MinimapButton GPIMinimapButton Stores extra values for minimap button control
----@field SetPoint fun(self: BomLegacyControl, point: string, relativeTo: table, relativePoint: string, xOfs: number, yOfs: number)
+-- -@field SetPoint fun(self: BomLegacyControl, point: string, relativeTo: table, relativePoint: string, xOfs: number, yOfs: number)
 ---@field SetScript fun(self: BomLegacyControl, script: string, handler: function)
 ---@field Hide fun(self: BomLegacyControl)
 ---@field Show fun(self: BomLegacyControl)
-
----@type BomLegacyControl
-BOM.Class.Control = {}
-BOM.Class.Control.__index = BOM.Class.Control
+controlModule.Control = {}
+controlModule.Control.__index = controlModule.Control
 
 local CLASS_TAG = "ui_control"

@@ -19,6 +19,7 @@ local profileModule = BomModuleManager.profileModule
 local spellButtonsTabModule = BomModuleManager.spellButtonsTabModule
 local spellIdsModule = BomModuleManager.spellIdsModule
 local taskListModule = BomModuleManager.taskListModule
+local taskModule = BomModuleManager.taskModule
 local unitCacheModule = BomModuleManager.unitCacheModule
 
 ---@deprecated
@@ -35,7 +36,7 @@ taskScanModule.saveSomeoneIsDead = false
 local tasklist ---@type BomTaskList
 
 function taskScanModule:IsFlying()
-  if BOM.IsTBC then
+  if BOM.isTBC then
     return IsFlying() and not buffomatModule.shared.AutoDismountFlying
   end
   return false
@@ -60,7 +61,7 @@ function taskScanModule:CancelBuff(list)
       local _, _, _, _, _, _, source, _, _, spellId = UnitBuff("player", i, "CANCELABLE")
       if tContains(list, spellId) then
         ret = true
-        BOM.CancelBuffSource = source or "player"
+        BOM.cancelBuffSource = source or "player"
         CancelUnitBuff("player", i)
         break
       end
@@ -80,7 +81,7 @@ end
 ---@field d number Count
 
 ---@type table<string, CachedItem>
-BOM.CachedHasItems = {}
+BOM.cachedPlayerBag = {}
 
 ---If player just left the raid or party, reset watched frames to "watch all 8"
 function taskScanModule:MaybeResetWatchGroups()
@@ -108,7 +109,7 @@ end
 ---@param spell BomBuffDefinition The tracking spell to activate
 ---@param value boolean Whether tracking should be enabled
 function taskScanModule:SetTracking(spell, value)
-  if BOM.IsTBC then
+  if BOM.isTBC then
     for i = 1, GetNumTrackingTypes() do
       local name, texture, active, _category, _nesting, spellId = GetTrackingInfo(i)
       if spellId == spell.singleId then
@@ -217,7 +218,7 @@ function taskScanModule:UpdateMacro(nextCast)
   wipe(macro.lines)
 
   --Downgrade-Check
-  local spell = BOM.ConfigToSpell[nextCast.spellId]
+  local spell = BOM.configToSpellLookup[nextCast.spellId]
   local rank = ""
 
   if spell == nil then
@@ -536,7 +537,7 @@ end
 ---Activate tracking spells
 function taskScanModule:ActivateSelectedTracking()
   --reset tracking
-  BOM.ForceTracking = nil
+  BOM.forceTracking = nil
 
   ---@param spell BomBuffDefinition
   for i, spell in ipairs(BOM.SelectedSpells) do
@@ -544,8 +545,8 @@ function taskScanModule:ActivateSelectedTracking()
       if buffDefModule:IsBuffEnabled(spell.buffId) then
         if spell.requiresForm ~= nil then
           if GetShapeshiftFormID() == spell.requiresForm
-                  and BOM.ForceTracking ~= spell.trackingIconId then
-            BOM.ForceTracking = spell.trackingIconId
+                  and BOM.forceTracking ~= spell.trackingIconId then
+            BOM.forceTracking = spell.trackingIconId
             spellButtonsTabModule:UpdateSpellsTab("ForceUp1")
           end
         elseif buffChecksModule:IsTrackingActive(spell)
@@ -563,16 +564,16 @@ function taskScanModule:ActivateSelectedTracking()
     end -- if tracking
   end -- for all spells
 
-  if BOM.ForceTracking == nil then
-    BOM.ForceTracking = buffomatModule.character.LastTracking
+  if BOM.forceTracking == nil then
+    BOM.forceTracking = buffomatModule.character.LastTracking
   end
 end
 
 ---@param playerUnit BomUnit
 function taskScanModule:GetActiveAuraAndSeal(playerUnit)
   --find activ aura / seal
-  BOM.ActivePaladinAura = nil
-  BOM.ActivePaladinSeal = nil
+  BOM.activePaladinAura = nil
+  BOM.activePaladinSeal = nil
 
   ---@param spell BomBuffDefinition
   for i, spell in ipairs(BOM.SelectedSpells) do
@@ -580,18 +581,18 @@ function taskScanModule:GetActiveAuraAndSeal(playerUnit)
 
     if player_buff then
       if spell.type == "aura" then
-        if (BOM.ActivePaladinAura == nil and BOM.LastAura == spell.buffId)
+        if (BOM.activePaladinAura == nil and BOM.LastAura == spell.buffId)
                 or UnitIsUnit(player_buff.source, "player")
         then
           if buffChecksModule:TimeCheck(player_buff.expirationTime, player_buff.duration) then
-            BOM.ActivePaladinAura = spell.buffId
+            BOM.activePaladinAura = spell.buffId
           end
         end
 
       elseif spell.type == "seal" then
         if UnitIsUnit(player_buff.source, "player") then
           if buffChecksModule:TimeCheck(player_buff.expirationTime, player_buff.duration) then
-            BOM.ActivePaladinSeal = spell.buffId
+            BOM.activePaladinSeal = spell.buffId
           end
         end
       end -- if is aura
@@ -605,7 +606,7 @@ function taskScanModule:CheckChangesAndUpdateSpelltab()
   for i, spell in ipairs(BOM.SelectedSpells) do
     if spell.type == "aura" then
       if buffDefModule:IsBuffEnabled(spell.buffId) then
-        if BOM.ActivePaladinAura == spell.buffId
+        if BOM.activePaladinAura == spell.buffId
                 and buffomatModule.currentProfile.LastAura ~= spell.buffId then
           buffomatModule.currentProfile.LastAura = spell.buffId
           spellButtonsTabModule:UpdateSpellsTab("ForceUp4")
@@ -620,7 +621,7 @@ function taskScanModule:CheckChangesAndUpdateSpelltab()
 
     elseif spell.type == "seal" then
       if buffDefModule:IsBuffEnabled(spell.buffId) then
-        if BOM.ActivePaladinSeal == spell.buffId
+        if BOM.activePaladinSeal == spell.buffId
                 and buffomatModule.currentProfile.LastSeal ~= spell.buffId then
           buffomatModule.currentProfile.LastSeal = spell.buffId
           spellButtonsTabModule:UpdateSpellsTab("ForceUp6")
@@ -663,7 +664,7 @@ end
 
 ---@param playerUnit BomUnit
 function taskScanModule:CancelBuffs(playerUnit)
-  for i, spell in ipairs(BOM.CancelBuffs) do
+  for i, spell in ipairs(BOM.cancelBuffs) do
     if buffomatModule.currentProfile.CancelBuff[spell.buffId].Enable
             and not spell.onlyCombat
     then
@@ -937,7 +938,7 @@ end
 ---@param minBuff number Option for minimum players with missing buffs to choose group buff
 ---@param inRange boolean Spell target is in range; TODO: Remove passing this parameter
 function taskScanModule:AddBuff_GroupBuff(buffDef, playerParty, playerUnit, minBuff, inRange)
-  if BOM.HaveWotLK then
+  if BOM.haveWotLK then
     -- For WotLK: Scan entire party as one
     inRange = self:FindAnyPartyTargetForGroupBuff(buffDef, playerParty, playerUnit, minBuff, inRange)
   else
@@ -1087,7 +1088,7 @@ function taskScanModule:AddResurrection(spell, playerUnit, inRange)
                 "",
                 buffTargetModule:FromUnit(unitNeedsBuff),
                 false,
-                BOM.TaskPriority.Resurrection)
+                taskModule.TaskPriority.Resurrection)
       else
         -- Text: Range Target "SpellName"
         tasklist:AddWithPrefix(
@@ -1097,7 +1098,7 @@ function taskScanModule:AddResurrection(spell, playerUnit, inRange)
                 "",
                 buffTargetModule:FromUnit(unitNeedsBuff),
                 true,
-                BOM.TaskPriority.Resurrection)
+                taskModule.TaskPriority.Resurrection)
       end
 
       -- If in range, we can res?
@@ -1356,7 +1357,7 @@ function taskScanModule:AddWeaponEnchant(buffDef, playerUnit,
   local blockOffhandEnchant = false -- set to true to block temporarily
 
   local _, self_class, _ = UnitClass("player")
-  if BOM.IsTBC and self_class == "SHAMAN" then
+  if BOM.isTBC and self_class == "SHAMAN" then
     -- Special handling for TBC shamans, you cannot specify slot for enchants,
     -- and it goes into main then offhand
     local hasMainhand, _mh_expire, _mh_charges, _mh_enchantid, hasOffhand, _oh_expire, _oh_charges, _oh_enchantid = GetWeaponEnchantInfo()
@@ -1451,18 +1452,18 @@ function taskScanModule:CheckReputationItems(playerMember)
   if buffomatModule.shared.ArgentumDawn then
     -- settings to remind to remove AD trinket != instance compatible with AD Commission
     --if playerMember.hasArgentumDawn ~= tContains(BOM.ArgentumDawn.zoneId, instanceID) then
-    local hasArgentumDawn = tContains(BOM.ArgentumDawn.itemIds, itemTrinket1) or
-            tContains(BOM.ArgentumDawn.itemIds, itemTrinket2)
-    if hasArgentumDawn and not tContains(BOM.ArgentumDawn.zoneId, instanceID) then
+    local hasArgentumDawn = tContains(BOM.reputationTrinketZones.itemIds, itemTrinket1) or
+            tContains(BOM.reputationTrinketZones.itemIds, itemTrinket2)
+    if hasArgentumDawn and not tContains(BOM.reputationTrinketZones.zoneId, instanceID) then
       -- Text: Unequip [Argent Dawn Commission]
       tasklist:Comment(_t("TASK_UNEQUIP") .. " " .. _t("AD_REPUTATION_REMINDER"))
     end
   end
 
   if buffomatModule.shared.Carrot then
-    local hasCarrot = tContains(BOM.Carrot.itemIds, itemTrinket1) or
-            tContains(BOM.Carrot.itemIds, itemTrinket2)
-    if hasCarrot and not tContains(BOM.Carrot.zoneId, instanceID) then
+    local hasCarrot = tContains(BOM.ridingSpeedZones.itemIds, itemTrinket1) or
+            tContains(BOM.ridingSpeedZones.itemIds, itemTrinket2)
+    if hasCarrot and not tContains(BOM.ridingSpeedZones.zoneId, instanceID) then
       -- Text: Unequip [Carrot on a Stick]
       tasklist:Comment(_t("TASK_UNEQUIP") .. " " .. _t("RIDING_SPEED_REMINDER"))
     end
@@ -1516,9 +1517,9 @@ function taskScanModule:CheckItemsAndContainers(playerMember, cast_button_title,
       elseif item.Link then
         ok = true
 
-        if BOM.ItemListSpell[item.ID] then
-          if BOM.ItemListTarget[BOM.ItemListSpell[item.ID]] then
-            target = BOM.ItemListTarget[BOM.ItemListSpell[item.ID]]
+        if BOM.itemListSpellLookup[item.ID] then
+          if BOM.itemListTarget[BOM.itemListSpellLookup[item.ID]] then
+            target = BOM.itemListTarget[BOM.itemListSpellLookup[item.ID]]
           end
         end
 
@@ -1907,7 +1908,7 @@ function taskScanModule:UpdateScan_PreCheck(from)
     return
   end
 
-  if BOM.InLoading then
+  if BOM.inLoadingScreen then
     return
   end
 
@@ -1933,7 +1934,7 @@ function taskScanModule:UpdateScan_PreCheck(from)
     local isBomActive, reasonDisabled = self:IsActive(playerUnit)
     if not isBomActive then
       buffomatModule:ClearForceUpdate()
-      BOM.CheckForError = false
+      BOM.checkForError = false
       buffomatModule:AutoClose()
       BOM.Macro:Clear()
       self:FadeBuffomatWindow()
@@ -1984,12 +1985,12 @@ function BOM.DoCancelBuffs()
     return
   end
 
-  for i, spell in ipairs(BOM.CancelBuffs) do
+  for i, spell in ipairs(BOM.cancelBuffs) do
     if buffomatModule.currentProfile.CancelBuff[spell.buffId].Enable
             and taskScanModule:CancelBuff(spell.singleFamily)
     then
       buffomatModule:P(string.format(_t("message.CancelBuff"), spell.singleLink or spell.singleText,
-              UnitName(BOM.CancelBuffSource) or ""))
+              UnitName(BOM.cancelBuffSource) or ""))
     end
   end
 end

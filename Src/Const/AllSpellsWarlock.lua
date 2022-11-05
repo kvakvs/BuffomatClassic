@@ -61,7 +61,7 @@ function warlockModule:SetupWarlockSpells(allBuffs, enchantments)
                :RequirePlayerClass("WARLOCK")
                :Category("class")
 
-  if BOM.HaveWotLK then
+  if BOM.haveWotLK then
     -- Create Firesone
     buffDefModule:createAndRegisterBuff(allBuffs, spellIdsModule.Warlock_CreateFirestone7, nil)
                  :IsOwn(true)
@@ -112,7 +112,7 @@ function warlockModule:SetupWarlockSpells(allBuffs, enchantments)
                  :Category("class")
   end
 
-  if BOM.HaveWotLK then
+  if BOM.haveWotLK then
     -- Conjure Mana Stone (Max Rank)
     buffDefModule:createAndRegisterBuff(allBuffs, spellIdsModule.Warlock_CreateSpellstone6, nil)
                  :IsOwn(true)

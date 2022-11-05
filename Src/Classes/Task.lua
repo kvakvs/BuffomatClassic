@@ -1,6 +1,5 @@
-local TOCNAME, _ = ...
-local BOM = BuffomatAddon ---@type BomAddon
-
+--local TOCNAME, _ = ...
+--local BOM = BuffomatAddon ---@type BomAddon
 ---@class BomTaskModule
 local taskModule = {}
 BomModuleManager.taskModule = taskModule
@@ -8,28 +7,28 @@ BomModuleManager.taskModule = taskModule
 local buffomatModule = BomModuleManager.buffomatModule
 
 ---@class BomTask
+--- @field target BomUnit|BomGroupBuffTarget Unit name
 --- @field distance string|boolean Unit name or group number as string, to calculate whether player is in range to perform the task. Boolean true for no distance check.
---- @field prefix_text string The message to show before the spell
---- @field action_text string The message to display if inactive: spell name
---- @field action_link string The message to display if active: spell link with icon
---- @field extra_text string The extra message to display after the spell
+--- @field prefixText string The message to show before the spell
+--- @field actionText string The message to display if inactive: spell name
+--- @field actionLink string The message to display if active: spell link with icon
+--- @field extraText string The extra message to display after the spell
 --- @field priority number Sorting for display purposes
 --- @field isInfo boolean Reports something to the user but no target or action
+local taskClass = {}
+taskClass.__index = taskClass
 
-BOM.TaskPriority = {
+taskModule.TaskPriority = {
   Resurrection = 1,
   Default      = 10,
   SelfBuff     = 10,
   GroupBuff    = 100,
 }
 
-local taskClass = {} ---@type BomTask
-taskClass.__index = taskClass
-
 --Creates a new TaskListItem
 ---@param priority number|nil Sorting priority to display
 ---@param target BomUnit|BomGroupBuffTarget Unit to calculate distance to or boolean true
----@param actionText string
+---@param actionText string|nil
 ---@param actionLink string
 ---@param prefixText string
 ---@param extraText string
@@ -42,16 +41,16 @@ function taskModule:New(prefixText, actionLink, actionText, extraText,
     distance = 0
   end
 
-  local fields = {}  ---@type BomTask
+  local fields = --[[---@type BomTask]] {}
   setmetatable(fields, taskClass)
 
-  fields.action_link = actionLink or ""
-  fields.action_text = actionText or actionLink
-  fields.prefix_text = prefixText or ""
-  fields.extra_text = extraText or ""
+  fields.actionLink = actionLink or ""
+  fields.actionText = actionText or actionLink
+  fields.prefixText = prefixText or ""
+  fields.extraText = extraText or ""
   fields.target = target
   fields.distance = distance -- scan member distance or nearest party member
-  fields.priority = priority or BOM.TaskPriority.Default
+  fields.priority = priority or taskModule.TaskPriority.Default
   fields.isInfo = isInfo
 
   return fields
@@ -69,9 +68,9 @@ function taskClass:Format()
   end
   return string.format("%s%s %s %s",
           target,
-          buffomatModule:Color(bomGray, self.prefix_text),
-          self.action_link,
-          buffomatModule:Color(bomGray, self.extra_text))
+          buffomatModule:Color(bomGray, self.prefixText),
+          self.actionLink,
+          buffomatModule:Color(bomGray, self.extraText))
 end
 
 function taskClass:FormatDisabledRed(reason)
@@ -82,5 +81,5 @@ function taskClass:FormatDisabledRed(reason)
   return string.format("%s %s %s",
           buffomatModule:Color(bomRed, reason),
           target,
-          buffomatModule:Color(bomBleakRed, self.action_text))
+          buffomatModule:Color(bomBleakRed, self.actionText))
 end

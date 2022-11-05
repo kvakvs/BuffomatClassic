@@ -7,6 +7,7 @@ BomModuleManager.unitBuffTargetModule = unitBuffTargetModule
 
 local toolboxModule = BomModuleManager.toolboxModule
 local buffomatModule = BomModuleManager.buffomatModule
+local _t = BomModuleManager.languagesModule
 
 ---@class BomUnitBuffTarget
 ---@field unitName string Just the name
@@ -48,7 +49,7 @@ end
 
 function buffTargetClass:GetText()
   if self.unitName == "player" then
-    return buffomatModule:Color("999999", BOM.L["task.target.Self"])
+    return buffomatModule:Color("999999", _t("task.target.Self"))
   end
   return self.link or self.unitName
 end

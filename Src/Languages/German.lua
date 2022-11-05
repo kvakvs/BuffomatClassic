@@ -2,7 +2,7 @@
 local germanModule = {}
 BomModuleManager.languageGermanModule = germanModule
 
----@return BomLanguage
+---@return BomLocaleDict
 function germanModule:Translations()
   return {
     AboutInfo                                   = "Ausdauer! Int! Wille! - klingt das bekannt? Buffomat überprüft alle "

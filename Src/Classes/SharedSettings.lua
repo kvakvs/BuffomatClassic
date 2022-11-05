@@ -10,7 +10,7 @@ sharedSettingsModule.defaults = {
   SomeoneIsDrinking = "low-prio",
 }
 
----@class BomMinimapSettings
+---@shape BomMinimapSettings
 ---@field visible boolean
 ---@field lock boolean
 ---@field lockDistance boolean
@@ -95,7 +95,7 @@ end
 
 ---@return BomSharedSettings
 function sharedSettingsModule:Defaults()
-  return {
+  return --[[---@type BomSharedSettings]] {
     UIWindowScale          = 1,
     AutoOpen               = true,
     FadeWhenNothingToDo    = 1.0,

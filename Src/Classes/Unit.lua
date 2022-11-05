@@ -29,8 +29,7 @@ local buffModule = BomModuleManager.buffModule
 ---@field NeedBuff boolean
 ---@field OffHandBuff number|nil Temporary enchant on off-hand
 ---@field unitId string
-
-local unitClass = {} ---@type BomUnit
+local unitClass = {}
 unitClass.__index = unitClass
 
 ---@return BomUnit
@@ -79,7 +78,7 @@ function unitClass:ForceUpdateBuffs(playerUnit)
 
       if spellId then
         -- Skip members who have a buff on the global ignore list - example phaseshifted imps
-        if tContains(BOM.BuffIgnoreAll, spellId) then
+        if tContains(BOM.buffIgnoreAll, spellId) then
           wipe(self.knownBuffs)
           self.NeedBuff = false
           break
@@ -93,7 +92,7 @@ function unitClass:ForceUpdateBuffs(playerUnit)
         --  self.hasCarrot = true
         --end
 
-        if tContains(BOM.AllSpellIds, spellId) then
+        if tContains(BOM.allSpellIds, spellId) then
           local configKey = BOM.SpellIdtoConfig[spellId]
 
           self.knownBuffs[configKey] = buffModule:New(

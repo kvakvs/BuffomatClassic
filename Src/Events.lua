@@ -75,17 +75,17 @@ local function Event_UNIT_POWER_UPDATE(unitTarget, powerType)
 end
 
 local function Event_PLAYER_STARTED_MOVING()
-  BOM.IsMoving = true
+  BOM.isPlayerMoving = true
 end
 
 local function Event_PLAYER_STOPPED_MOVING()
-  BOM.IsMoving = false
+  BOM.isPlayerMoving = false
 end
 
 ---On combat start will close the UI window and disable the UI. Will cancel the cancelable buffs.
 local function Event_CombatStart()
   buffomatModule:SetForceUpdate("combatStart")
-  BOM.DeclineHasResurrection = true
+  BOM.declineHasResurrection = true
   buffomatModule:AutoClose()
   if not InCombatLockdown() then
     BomC_ListTab_Button:Disable()
@@ -97,7 +97,7 @@ end
 local function Event_CombatStop()
   taskScanModule:ClearSkip()
   buffomatModule:SetForceUpdate("combatStop")
-  BOM.DeclineHasResurrection = true
+  BOM.declineHasResurrection = true
   BOM.AllowAutOpen()
 end
 
@@ -106,7 +106,7 @@ function eventsModule:OnCombatStop()
 end
 
 local function Event_LoadingStart()
-  BOM.InLoading = true
+  BOM.inLoadingScreen = true
   BOM.LoadingScreenTimeOut = nil
   Event_CombatStart()
   --print("loading start")
@@ -219,7 +219,7 @@ local function Event_UI_ERROR_MESSAGE(errorType, message)
 
   elseif tContains(eventsModule.ERR_IS_MOUNTED, message) then
     local flying = false -- prevent dismount in flight, OUCH!
-    if BOM.IsTBC then
+    if BOM.isTBC then
       flying = IsFlying() and not buffomatModule.shared.AutoDismountFlying
     end
     if not flying then
@@ -235,7 +235,7 @@ local function Event_UI_ERROR_MESSAGE(errorType, message)
     UIErrorsFrame:Clear()
 
   elseif not InCombatLockdown() then
-    if BOM.CheckForError then
+    if BOM.checkForError then
       if message == SPELL_FAILED_LOWLEVEL then
         buffomatModule:DownGrade()
       else
@@ -244,7 +244,7 @@ local function Event_UI_ERROR_MESSAGE(errorType, message)
     end
   end
 
-  BOM.CheckForError = false
+  BOM.checkForError = false
 end
 
 -----PLAYER_LEVEL_UP Event
@@ -275,7 +275,7 @@ end
 
 local function Event_UNIT_SPELLCAST_errors(unit)
   if UnitIsUnit(unit, "player") then
-    BOM.CheckForError = false
+    BOM.checkForError = false
     buffomatModule:SetForceUpdate("spellcastError")
   end
 end
@@ -291,7 +291,7 @@ local function Event_UNIT_SPELLCAST_STOP(unit)
   if UnitIsUnit(unit, "player") and BOM.PlayerCasting then
     BOM.PlayerCasting = nil
     buffomatModule:SetForceUpdate("castStop")
-    BOM.CheckForError = false
+    BOM.checkForError = false
   end
 end
 
@@ -306,7 +306,7 @@ local function Event_UNIT_SPELLCHANNEL_STOP(unit)
   if UnitIsUnit(unit, "player") and BOM.PlayerCasting then
     BOM.PlayerCasting = nil
     buffomatModule:SetForceUpdate("channelStop")
-    BOM.CheckForError = false
+    BOM.checkForError = false
   end
 end
 
@@ -330,8 +330,8 @@ local function Event_Bag()
   buffomatModule:SetForceUpdate("bagUpdate")
   BOM.WipeCachedItems = true
 
-  if BOM.CachedHasItems then
-    wipe(BOM.CachedHasItems)
+  if BOM.cachedPlayerBag then
+    wipe(BOM.cachedPlayerBag)
   end
 end
 
@@ -366,7 +366,7 @@ function eventsModule:InitEvents()
   BuffomatAddon:RegisterEvent("UNIT_SPELLCAST_FAILED", Event_UNIT_SPELLCAST_errors)
 
   -- Dualspec talent switch
-  if BOM.HaveWotLK then
+  if BOM.haveWotLK then
     BuffomatAddon:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED", Event_TALENT_GROUP_CHANGED)
   end
 

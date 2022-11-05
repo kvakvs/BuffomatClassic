@@ -37,58 +37,54 @@ local macroModule = BomModuleManager.macroModule
 
 ---global, visible from XML files and from script console and chat commands
 ---@class BomAddon
----@field InLoading boolean True while in the loading screen
----@field LoadingScreenTimeOut number
----@field PlayerBuffs BomBuffCollectionPerUnit
----@field ActivePaladinAura nil|number Spell id of aura if an unique aura was casted (only one can be active)
----@field ActivePaladinSeal nil|number Spell id of weapon seal, if an seal-type temporary enchant was used (only one can be active)
+---@field activePaladinAura nil|number Spell id of aura if an unique aura was casted (only one can be active)
+---@field activePaladinSeal nil|number Spell id of weapon seal, if an seal-type temporary enchant was used (only one can be active)
 ---@field ALL_PROFILES BomProfileName[] Lists all buffomat profile names (group, solo... etc)
----@field AllBuffomatBuffs BomAllBuffsTable All spells known to Buffomat
----@field AllSpellIds number[]
----@field ArgentumDawn table Equipped AD trinket: Spell to and zone ids to check
----@field BuffExchangeId table<number, number[]> Combines spell ids of spellrank flavours into main spell id
----@field BuffIgnoreAll number[] Having this buff on target excludes the target (phaseshifted imp for example)
----@field CachedHasItems table<string, CachedItem> Items in player's bag
----@field CancelBuffs BomBuffDefinition[] All spells to be canceled on detection
----@field CancelBuffSource string Unit who casted the buff to be auto-canceled
+---@field allBuffomatBuffs BomAllBuffsTable All spells known to Buffomat
+---@field allSpellIds number[]
+---@field reputationTrinketZones table Equipped AD trinket: Spell to and zone ids to check
+---@field buffExchangeId table<number, number[]> Combines spell ids of spellrank flavours into main spell id
+---@field buffIgnoreAll number[] Having this buff on target excludes the target (phaseshifted imp for example)
+---@field cachedPlayerBag table<string, CachedItem> Items in player's bag
+---@field cancelBuffs BomBuffDefinition[] All spells to be canceled on detection
+---@field cancelBuffSource string Unit who casted the buff to be auto-canceled
 ---@field cancelForm table<number, number> Spell ids which cancel shapeshift form
----@field Carrot table Equipped Riding trinket: Spell to and zone ids to check
+---@field ridingSpeedZones BomRidingSpeedZones Equipped Riding trinket: Spell to and zone ids to check
 ---@field castFailedBuff BomBuffDefinition|nil
 ---@field castFailedBuffTarget BomUnit|nil
 ---@field castFailedSpellId number
 ---@field checkCooldown number|nil Spell id to check cooldown for
----@field CheckForError boolean Used by error suppression code
----@field ConfigToSpell BomAllBuffsTable
----@field CurrentProfile BomProfile Current profile from CharacterState.Profiles
----@field DeclineHasResurrection boolean Set to true on combat start, stop, holding Alt, cleared on party update
----@field EnchantList table<number, number[]> Spell ids mapping to enchant ids
----@field EnchantToSpell table<number, number> Reverse-maps enchant ids back to spells
----@field ForceProfile string|nil Nil will choose profile name automatically, otherwise this profile will be used
----@field ForceTracking number|nil Defines icon id for enforced tracking
----@field ForceUpdate boolean Requests immediate spells/buffs refresh
----@field ForceUpdate boolean Set to true to force recheck buffs on timer
----@field HaveTBC boolean Whether we are running TBC classic or later
----@field HaveWotLK boolean Whether we are running Wrath of the Lich King or later
----@field IsClassic boolean Whether we are running Classic Era or Season of Mastery
----@field IsClassic boolean Whether we are running Classic Era or Season of Mastery
----@field IsMoving boolean Indicated that the player is moving (updated in event handlers)
----@field IsTBC boolean Whether we are running TBC classic
----@field IsWotLK boolean Whether we are running Wrath of the Lich King
----@field ItemCache table<number, BomItemCacheElement> Precreated precached items
----@field ItemId table<string, table<string, number>> Map of item name to id
----@field ItemList number[][] Group different ranks of item together
----@field ItemListSpell table<number, number> Map itemid to spell?
----@field ItemListTarget table<number, string> Remember who casted item buff on you?
----@field L BomLanguage The current locale @deprecated
+---@field checkForError boolean Used by error suppression code
+---@field configToSpellLookup BomAllBuffsTable
+---@field currentProfile BomProfile Current profile from CharacterState.Profiles
+---@field declineHasResurrection boolean Set to true on combat start, stop, holding Alt, cleared on party update
+---@field enchantList {[BomSpellId] number[]} Spell ids mapping to enchantment ids
+---@field enchantToSpellLookup {[number] BomSpellId} Reverse-maps enchantment ids back to spells
+---@field forceProfile BomProfileName|nil Nil will choose profile name automatically, otherwise this profile will be used
+---@field forceTracking number|nil Defines icon id for enforced tracking
+---@field forceUpdate boolean Requests immediate spells/buffs refresh
+---@field haveTBC boolean Whether we are running TBC classic or later
+---@field haveWotLK boolean Whether we are running Wrath of the Lich King or later
+---@field inLoadingScreen boolean True while in the loading screen
+---@field isClassic boolean Whether we are running Classic Era or Season of Mastery
+---@field isPlayerMoving boolean Indicated that the player is moving (updated in event handlers)
+---@field isTBC boolean Whether we are running TBC classic
+---@field isWotLK boolean Whether we are running Wrath of the Lich King
+---@field itemCache {[BomItemId] BomItemCacheElement} Precreated precached items
+---@field itemIdLookup {[string] table<string, number>} Map of item name to id
+---@field itemList number[][] Group different ranks of item together
+---@field itemListSpellLookup table<number, number> Map itemid to spell?
+---@field itemListTarget table<number, string> Remember who casted item buff on you?
 ---@field lastTarget string|nil Last player's target
 ---@field legacyOptions BomLegacyUiOptions
----@field locales BomTranslationsDict (same as BOM.L)
+---@field LoadingScreenTimeOut number
 ---@field Macro BomMacro
 ---@field MANA_CLASSES BomClass[] Classes with mana resource
 ---@field ManaLimit number Player max mana
 ---@field MinimapButton GPIMinimapButton Minimap button control
 ---@field nextCooldownDue number Set this to next spell cooldown to force update
 ---@field PartyUpdateNeeded boolean Requests player party update
+---@field PlayerBuffs BomBuffCollectionPerUnit
 ---@field PlayerCasting string|nil Indicates that the player is currently casting (updated in event handlers)
 ---@field PopupDynamic BomPopupDynamic
 ---@field QuickSingleBuff BomLegacyControl Button for single/group buff toggling next to cast button
@@ -97,6 +93,7 @@ local macroModule = BomModuleManager.macroModule
 ---@field ScanModifier boolean Will update buffomat when modifier key is held down
 ---@field SelectedSpells BomAllBuffsTable
 ---@field SetupAvailableSpells function
+---@field SomeBodyGhost boolean [unused?] Someone in the party is a ghost
 ---@field SpellId table<string, table<string, number>> Map of spell name to id
 ---@field SpellIdIsSingle table<number, boolean> Whether spell ids are single buffs
 ---@field SpellIdtoConfig table<number, number> Maps spell ids to the key id of spell in the AllSpells
@@ -110,13 +107,13 @@ BuffomatAddon = LibStub("AceAddon-3.0"):NewAddon(
 local BOM = BuffomatAddon
 
 local _, _, _, tocversion = GetBuildInfo()
-BOM.IsWotLK = (tocversion >= 30000 and tocversion <= 39999) -- TODO: change to WOTLK detection via WOW_PROJECT_..._CLASSIC
-BOM.HaveWotLK = BOM.IsWotLK
+BOM.isWotLK = (tocversion >= 30000 and tocversion <= 39999) -- TODO: change to WOTLK detection via WOW_PROJECT_..._CLASSIC
+BOM.haveWotLK = BOM.isWotLK
 
-BOM.IsTBC = WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC
-BOM.HaveTBC = BOM.IsWotLK or BOM.IsTBC
+BOM.isTBC = WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC
+BOM.haveTBC = BOM.isWotLK or BOM.isTBC
 
-BOM.IsClassic = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
+BOM.isClassic = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
 
 ---Print a text with "BomDebug: " prefix in the game chat window
 ---@param t string
@@ -202,9 +199,9 @@ end
 ---@param profile BomProfileName
 function buffomatModule.ChooseProfile(profile)
   if profile == nil or profile == "" or profile == "auto" then
-    BOM.ForceProfile = nil
+    BOM.forceProfile = nil
   elseif buffomatModule.character[profile] then
-    BOM.ForceProfile = profile
+    BOM.forceProfile = profile
   else
     buffomatModule:P("Unknown profile: " .. profile)
     return
@@ -404,7 +401,7 @@ function buffomatModule:InitGlobalStates()
   --BOM.SharedState = self.shared
   --BOM.CharacterState = self.character
   local soloProfile = profileModule:SoloProfile()
-  BOM.CurrentProfile = self.character[soloProfile or "solo"]
+  BOM.currentProfile = self.character[soloProfile or "solo"]
 end
 
 ---Called from event handler on Addon Loaded event
@@ -478,7 +475,7 @@ function BuffomatAddon:Init()
     { "_checkforerror", "",
       function()
         if not InCombatLockdown() then
-          BOM.CheckForError = true
+          BOM.checkForError = true
         end
       end },
     { "", _t("SlashOpen"), BOM.ShowWindow },
@@ -584,11 +581,11 @@ function buffomatModule.UpdateTimer(elapsed)
 
   local now = GetTime()
 
-  if BOM.InLoading and BOM.LoadingScreenTimeOut then
+  if BOM.inLoadingScreen and BOM.LoadingScreenTimeOut then
     if BOM.LoadingScreenTimeOut > now then
       return
     else
-      BOM.InLoading = false
+      BOM.inLoadingScreen = false
       eventsModule:OnCombatStop()
     end
   end
@@ -708,7 +705,7 @@ function buffomatModule:UnitAura(unitId, buffIndex, filter)
   , nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, castByPlayer
   , nameplateShowAll, timeMod = UnitAura(unitId, buffIndex, filter)
 
-  if spellId and BOM.AllSpellIds and tContains(BOM.AllSpellIds, spellId) then
+  if spellId and BOM.allSpellIds and tContains(BOM.allSpellIds, spellId) then
 
     if source ~= nil and source ~= "" and UnitIsUnit(source, "player") then
       if UnitIsUnit(unitId, "player") and duration ~= nil and duration > 0 then
@@ -896,11 +893,11 @@ function BOM.DebugBuffs(dest)
   dest = dest or "player"
 
   print("LastTracking:", buffomatModule.character.LastTracking, " ")
-  print("ForceTracking:", BOM.ForceTracking, " ")
-  print("ActivAura:", BOM.ActivePaladinAura, " ")
-  print("LastAura:", BOM.CurrentProfile.LastAura, " ")
-  print("ActivSeal:", BOM.ActivePaladinSeal, " ")
-  print("LastSeal:", BOM.CurrentProfile.LastSeal, " ")
+  print("ForceTracking:", BOM.forceTracking, " ")
+  print("ActivAura:", BOM.activePaladinAura, " ")
+  print("LastAura:", BOM.currentProfile.LastAura, " ")
+  print("ActivSeal:", BOM.activePaladinSeal, " ")
+  print("LastSeal:", BOM.currentProfile.LastSeal, " ")
   print("Shapeshift:", GetShapeshiftFormID(), " ")
   print("Weaponenchantment:", GetWeaponEnchantInfo())
 

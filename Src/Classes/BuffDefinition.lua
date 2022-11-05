@@ -2,8 +2,9 @@ local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BomAddon
 
 ---@alias BomElixirType "battle"|"guardian"|"both"
----@alias BomItemId number
----@alias BomSpellId number
+---@alias BomItemId number Wow Item ID
+---@alias BomZoneId number Wow Zone ID
+---@alias BomSpellId number Wow Spell ID
 
 ---@class BomBuffDefinitionModule
 local buffDefModule = {}
@@ -172,17 +173,17 @@ function buffDefModule:CheckLimitations(_spell, limitations)
     return true
   end
 
-  if limitations.requireTBC == true and not BOM.HaveTBC then
+  if limitations.requireTBC == true and not BOM.haveTBC then
     return false
   end
-  if limitations.hideInTBC == true and BOM.HaveTBC then
+  if limitations.hideInTBC == true and BOM.haveTBC then
     return false
   end
 
-  if limitations.requireWotLK == true and not BOM.HaveWotLK then
+  if limitations.requireWotLK == true and not BOM.haveWotLK then
     return false
   end
-  if limitations.hideInWotLK == true and BOM.HaveWotLK then
+  if limitations.hideInWotLK == true and BOM.haveWotLK then
     return false
   end
 
@@ -411,7 +412,7 @@ end
 
 function buffDefClass:ClassicBuffTypeIsSeal()
   -- for before TBC make this a seal spell, for TBC do not modify
-  if not BOM.HaveTBC then
+  if not BOM.haveTBC then
     self.type = "seal"
   end
   return self
@@ -504,7 +505,7 @@ function buffDefClass:RequirePlayerClass(className)
   return self
 end
 
----@param raceName BomRace Player race
+---@param raceName BomPlayerRace Player race
 ---@return BomBuffDefinition
 function buffDefClass:RequirePlayerRace(raceName)
   (--[[---@not nil]] self.limitations).playerRace = raceName

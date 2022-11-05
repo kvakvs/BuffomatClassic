@@ -2,7 +2,7 @@
 local englishModule = {}
 BomModuleManager.languageEnglishModule = englishModule
 
----@return BomLanguage
+---@return BomLocaleDict
 function englishModule:Translations()
   return {
     ["shaman.flametongueDownranked"]                  = "One rank down",

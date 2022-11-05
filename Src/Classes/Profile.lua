@@ -64,7 +64,7 @@ function profileModule:New()
 end
 
 function profileModule:Setup()
-  if BOM.HaveWotLK or GetActiveTalentGroup then
+  if BOM.haveWotLK or GetActiveTalentGroup then
     self.ALL_PROFILES = {
       "solo", "solo_spec2",
       "group", "group_spec2",
@@ -77,7 +77,7 @@ function profileModule:Setup()
 end
 
 local function bomGetActiveTalentGroup()
-  if BOM.HaveWotLK then
+  if BOM.haveWotLK then
     return GetActiveTalentGroup()
   else
     return nil
@@ -138,8 +138,8 @@ function profileModule:ChooseProfile()
   end
 
   -- TODO: Refactor isDisabled into a function, also return reason why is disabled
-  if BOM.ForceProfile then
-    selectedProfile = BOM.ForceProfile
+  if BOM.forceProfile then
+    selectedProfile = --[[---@not nil]] BOM.forceProfile
   elseif not buffomatModule.character.UseProfiles then
     selectedProfile = self:SoloProfile()
   elseif instanceType == "pvp" or instanceType == "arena" then

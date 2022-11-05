@@ -66,12 +66,12 @@ Src/Ui/SpellButtonsTab.lua
 Src/Ui/UiButton.lua
 
 Src/Events.lua
-Src/Languages.lua
-Src/LanguageEnglish.lua
-Src/LanguageGerman.lua
-Src/LanguageFrench.lua
-Src/LanguageRussian.lua
-Src/LanguageChinese.lua
+Src/Languages/Languages.lua
+Src/Languages/English.lua
+Src/Languages/German.lua
+Src/Languages/French.lua
+Src/Languages/Russian.lua
+Src/Languages/Chinese.lua
 Src/SpellSetup.lua
 Src/TaskScan.lua
 Src/BuffChecks.lua

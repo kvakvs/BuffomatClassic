@@ -101,7 +101,7 @@ allBuffsModule.DURATION_1H = allBuffsModule.DURATION_1M * 60
 
 --- From 2 choices return TBC if BOM.IsTBC is true, otherwise return classic
 local function tbcOrClassic(tbc, classic)
-  if BOM.HaveTBC then
+  if BOM.haveTBC then
     return tbc
   end
   return classic
@@ -110,10 +110,10 @@ allBuffsModule.TbcOrClassic = tbcOrClassic
 
 --- From 2 choices return TBC if BOM.IsTBC is true, otherwise return classic
 function allBuffsModule.ExpansionChoice(classic, tbc, wotlk)
-  if BOM.HaveWotLK then
+  if BOM.haveWotLK then
     return wotlk
   end
-  if BOM.HaveTBC then
+  if BOM.haveTBC then
     return tbc
   end
   return classic
@@ -248,19 +248,22 @@ function allBuffsModule:SetupSpells()
     end
   end
 
-  BOM.EnchantToSpell = {}
+  BOM.enchantToSpellLookup = {}
   for dest, list in pairs(enchantments) do
     for i, id in ipairs(list) do
-      BOM.EnchantToSpell[id] = dest
+      BOM.enchantToSpellLookup[id] = dest
     end
   end
 
   self.allBuffs = allBuffs
-  BOM.AllBuffomatBuffs = allBuffs
-  BOM.EnchantList = enchantments
+  BOM.allBuffomatBuffs = allBuffs
+  BOM.enchantList = enchantments
 end
 
-BOM.ArgentumDawn = {
+---@shape BomReputationTrinketZones
+---@field itemIds BomItemId[]
+---@field zones BomZoneId[]
+BOM.reputationTrinketZones = {
   itemIds = {
     12846, -- Simple AD trinket
     13209, -- Seal of the Dawn +81 AP
@@ -275,7 +278,10 @@ BOM.ArgentumDawn = {
   },
 }
 
-BOM.Carrot = {
+---@shape BomRidingSpeedZones
+---@field itemIds BomItemId[]
+---@field zones BomZoneId[]
+BOM.ridingSpeedZones = {
   itemIds = {
     11122, -- Classic: Item [Carrot on a Stick]
     25653, -- TBC: Item [Riding Crop]
@@ -292,26 +298,26 @@ BOM.Carrot = {
   },
 }
 
-BOM.BuffExchangeId = { -- combine-spell-ids to new one
+BOM.buffExchangeId = { -- combine-spell-ids to new one
   [18788] = { 18791, 18790, 18789, 18792 }, -- Demonic Sacrifice-Buffs to Demonic Sacrifice
   [16591] = { 16591, 16589, 16595, 16593 }, -- noggenfoger
 }
 
 BOM.SpellToSpell = {}
-for dest, list in pairs(BOM.BuffExchangeId) do
+for dest, list in pairs(BOM.buffExchangeId) do
   for i, id in ipairs(list) do
     BOM.SpellToSpell[id] = dest
   end
 end
 
-BOM.ItemList = {
+BOM.itemList = {
   --{6948}, -- Hearthstone | Ruhestein
   --{4604}, -- Forest Mushroom | Waldpilz
   --{8079},-- Water | wasser
   { 5232, 16892, 16893, 16895, -- Soulstone | Seelenstein
     16896 }, -- TBC: Major Soulstone
 }
-BOM.ItemListSpell = {
+BOM.itemListSpellLookup = {
   [8079]  = 432, -- Water | Wasser
   [5232]  = 20762,
   [16892] = 20762,
@@ -319,7 +325,7 @@ BOM.ItemListSpell = {
   [16895] = 20762,
   [16896] = 20762, -- Soulstone | Seelenstein
 }
-BOM.ItemListTarget = {}
+BOM.itemListTarget = {}
 
 -- -@return table<number, BomBuffDefinition>
 function allBuffsModule:SetupCancelBuffs()
@@ -347,7 +353,7 @@ function allBuffsModule:SetupCancelBuffs()
       tinsert(s, buff)
     end
 
-    if (UnitFactionGroup("player")) ~= "Horde" or BOM.IsTBC then
+    if (UnitFactionGroup("player")) ~= "Horde" or BOM.isTBC then
       local buff = buffDefModule:New(1038) --Blessing of Salvation
                                 :IsDefault(false)
                                 :SingleFamily({ 1038, 25895 })
@@ -355,11 +361,11 @@ function allBuffsModule:SetupCancelBuffs()
     end
   end
 
-  BOM.CancelBuffs = s
+  BOM.cancelBuffs = s
 end
 
 -- Having this buff on target excludes the target (phaseshifted imp for example)
-BOM.BuffIgnoreAll = {
+BOM.buffIgnoreAll = {
   4511 -- Phase Shift (imp)
 }
 
@@ -384,7 +390,7 @@ BOM.AllDrink = {
 
 ---For all spells database load data for spellids and items
 function allBuffsModule:LoadItemsAndSpells()
-  for _id, buffDef in pairs(BOM.AllBuffomatBuffs) do
+  for _id, buffDef in pairs(BOM.allBuffomatBuffs) do
     if type(buffDef.singleText) == "number" then
       spellCacheModule:LoadSpell(buffDef.singleText)
     end

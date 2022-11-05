@@ -76,7 +76,7 @@ function spellButtonsTabModule:AddSpellRow_ClassSelector(rowBuilder, playerIsHor
     classToggle:SetVariable(profileSpell.Class, class)
     rowBuilder:ChainToTheRight(nil, classToggle, 0)
 
-    if not BOM.HaveTBC and (-- if not TBC hide paladin for horde, hide shaman for alliance
+    if not BOM.haveTBC and (-- if not TBC hide paladin for horde, hide shaman for alliance
             (playerIsHorde and class == "PALADIN") or (not playerIsHorde and class == "SHAMAN")) then
       classToggle:Hide()
     else
@@ -367,7 +367,7 @@ function spellButtonsTabModule:CreateTab(playerIsHorde)
   -- Add spell cancel buttons for all spells in CancelBuffs
   -- (and CustomCancelBuffs which user can add manually in the config file)
   --
-  for i, spell in ipairs(BOM.CancelBuffs) do
+  for i, spell in ipairs(BOM.cancelBuffs) do
     self:AddSpellCancelRow(spell, rowBuilder)
   end
 
@@ -643,7 +643,7 @@ function spellButtonsTabModule:UpdateSpellsTab_Throttled()
     end
   end -- all spells
 
-  for _i, spell in ipairs(BOM.CancelBuffs) do
+  for _i, spell in ipairs(BOM.cancelBuffs) do
     spell.frames.checkboxEnable:SetVariable(buffomatModule.currentProfile.CancelBuff[spell.buffId], "Enable")
   end
 

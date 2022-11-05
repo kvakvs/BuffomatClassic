@@ -7,24 +7,23 @@ BomModuleManager.taskListModule = taskListModule
 
 local taskModule = BomModuleManager.taskModule
 local buffomatModule = BomModuleManager.buffomatModule
+local _t = BomModuleManager.languagesModule
 
----@class BomTaskList
+---@shape BomTaskList
 ---@field tasks table<number, BomTask> This potentially becomes a macro action on the buff bu
 ---@field comments table<number, string>
 ---@field lowPrioComments table<number, string>
-
-local taskListClass = {} ---@type BomTaskList
+local taskListClass = {}
 taskListClass.__index = taskListClass
 
 ---@return BomTaskList
 function taskListModule:New()
-  local fields = {} ---@type BomTaskList
+  local fields = --[[---@type BomTaskList]] {
+    tasks           = {},
+    comments        = {},
+    lowPrioComments = {},
+  }
   setmetatable(fields, taskListClass)
-
-  fields.tasks = {}
-  fields.comments = {}
-  fields.lowPrioComments = {}
-
   return fields
 end
 
@@ -34,7 +33,7 @@ end
 ---@param extraText string Text to display (extra comment)
 ---@param target BomUnit Distance to the party member, or group (if string)
 ---@param isInfo boolean Whether the text is info text or a cast
----@param prio number|nil Priority, a constant from BOM.TaskPriority
+---@param prio number|nil Priority, a constant from taskModule.TaskPriority
 function taskListClass:Add(actionLink, actionText, extraText,
                            target, isInfo, prio)
   local newTask = taskModule:New(
@@ -49,7 +48,7 @@ end
 ---@param extraText string Text to display (extra comment)
 ---@param target BomUnit Distance to the party member, or group (if string)
 ---@param isInfo boolean Whether the text is info text or a cast
----@param prio number|nil Priority, a constant from BOM.TaskPriority
+---@param prio number|nil Priority, a constant from taskModule.TaskPriority
 function taskListClass:AddWithPrefix(prefixText,
                                      actionLink, actionText, extraText,
                                      target, isInfo, prio)
@@ -121,7 +120,7 @@ function taskListClass:Display()
 
   for i, task in ipairs(self.tasks) do
     if task.distance > 43 * 43 then
-      taskFrame:AddMessage(task:FormatDisabledRed(BOM.L["task.error.range"]))
+      taskFrame:AddMessage(task:FormatDisabledRed(_t("task.error.range")))
     end
   end
 

@@ -2,7 +2,7 @@
 local frenchModule = {}
 BomModuleManager.languageFrenchModule = frenchModule
 
----@return BomLanguage
+---@return BomLocaleDict
 function frenchModule:Translations()
   return {
     FORMAT_BUFF_SINGLE                          = "%s %s",
