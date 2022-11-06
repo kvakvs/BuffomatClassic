@@ -1021,7 +1021,9 @@ function taskScanModule:AddBuff(buffDef, playerParty, playerUnit, inRange)
 
   local minBuff = buffomatModule.shared.MinBuff or 3
 
-  if buffDef.groupMana ~= nil and not buffomatModule.shared.NoGroupBuff then
+  if buffDef.groupMana ~= nil
+          and not buffomatModule.shared.NoGroupBuff
+          and #buffDef.UnitsNeedBuff >= buffomatModule.shared.MinBuff then
     -- Add GROUP BUFF
     -- if group buff spell costs mana
     inRange = self:AddBuff_GroupBuff(buffDef, playerParty, playerUnit, minBuff, inRange)

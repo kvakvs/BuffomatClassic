@@ -1,8 +1,10 @@
 # Changelog
 
-## Buffomat Classic 2022.11.1
+## Buffomat Classic 2022.11.0.1
 
 - Ignore Priest Spirit buff and Mage Intellect buff, when Warlock Fel Intelligence is active
+- [Bug] Respect MinBuff option (amount of missing buffs in party or on player 
+  to choose group buff)
 
 ## Buffomat Classic 2022.11.0
 
