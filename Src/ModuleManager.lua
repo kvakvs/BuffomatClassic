@@ -41,9 +41,11 @@
 ---@field myButtonModule BomUiMyButtonModule
 ---@field optionsModule BomOptionsModule
 ---@field optionsPopupModule BomOptionsPopupModule
+---@field popupModule BomPopupModule
 ---@field profileModule BomProfileModule
 ---@field rowBuilderModule BomRowBuilderModule
 ---@field sharedSettingsModule BomSharedSettingsModule
+---@field slashCommandsModule BomSlashCommandsModule
 ---@field spellButtonsTabModule BomSpellButtonsTabModule
 ---@field spellCacheModule BomSpellCacheModule
 ---@field spellIdsModule BomSpellIdsModule

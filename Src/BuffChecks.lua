@@ -16,7 +16,7 @@ function buffChecksModule:IsTrackingActive(spell)
   if BOM.haveTBC then
     for i = 1, GetNumTrackingTypes() do
       local _name, _texture, active, _category, _nesting, spellId = GetTrackingInfo(i)
-      if spellId == spell.singleId then
+      if tContains(spell.singleFamily, spellId)  then
         return active
       end
     end
@@ -66,7 +66,7 @@ end
 -- TODO: Can move into Buffomat main operation class together with item cache?
 ---@param list table - the item?
 ---@param cd boolean - respect the cooldown?
----@return boolean, number|nil, number|nil, number {HasItem, Bag, Slot, Count}
+---@return boolean, number|nil, number|nil, number|nil {HasItem, Bag, Slot, Count}
 function buffChecksModule:HasItem(list, cd)
   if list == nil then
     return true, nil, nil, 1 -- spell.items is nil, no items required
@@ -76,7 +76,7 @@ function buffChecksModule:HasItem(list, cd)
   local cachedItem = BOM.cachedPlayerBag[key]
 
   if not cachedItem then
-    BOM.cachedPlayerBag[key] = {}
+    BOM.cachedPlayerBag[key] = --[[---@type BomCachedBagItem]]{}
     cachedItem = BOM.cachedPlayerBag[key]
     cachedItem.a = false
     cachedItem.d = 0
@@ -93,7 +93,7 @@ function buffChecksModule:HasItem(list, cd)
 
           else
             cachedItem.a = true
-            return true
+            return true, nil, nil, nil
           end
         end
       end
@@ -109,7 +109,7 @@ function buffChecksModule:HasItem(list, cd)
     end
   end
 
-  return cachedItem.a
+  return cachedItem.a, cachedItem.b, cachedItem.c, cachedItem.d
 end
 
 ---@param buff BomBuffDefinition the spell to update

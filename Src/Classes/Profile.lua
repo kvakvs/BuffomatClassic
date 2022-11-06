@@ -38,7 +38,6 @@ local _t = BomModuleManager.languagesModule
 ---@field ShowTBCConsumables boolean Will show TBC consumables in the list
 ---@field UseRank boolean Use ranked spells
 ---@field SlowerHardware boolean Less frequent updates
----@field Cache table<number, table> Caches responses from GetItemInfo() and GetSpellInfo()
 ---@field CancelBuff table<BomBuffId, BomBuffDefinition>
 ---@field Spell BomBuffDefinition[]
 ---@field LastSeal number|nil

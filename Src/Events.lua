@@ -165,6 +165,7 @@ local partyCheckMask = COMBATLOG_OBJECT_AFFILIATION_RAID + COMBATLOG_OBJECT_AFFI
 --  BOM.PlayerBuffs cleanup in scan bom_get_party_members
 
 local function Event_COMBAT_LOG_EVENT_UNFILTERED()
+  ---@type number, any, boolean, string, string, any, any, string, string, any, any, number, string, number, number, number
   local timestamp, event, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags,
   spellId, spellName, spellSchool, auraType, amount = CombatLogGetCurrentEventInfo()
 

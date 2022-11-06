@@ -5,17 +5,6 @@
 local controlModule = {}
 BomModuleManager.controlModule = controlModule
 
----@class GPIMenuItem
----@field text string
----@field disabled boolean
----@field value any
----@field arg1 any
----@field arg2 any
----@field MenuDepth number
-controlModule.GPIMenuItem = {}
-controlModule.GPIMenuItem.__index = controlModule.GPIMenuItem
-
-
 ---@class GPIMinimapButtonConfigData
 ---@field position number|nil
 ---@field distance number|nil
@@ -45,34 +34,55 @@ controlModule.GPIMinimapButton.__index = controlModule.GPIMinimapButton
 
 
 ---@class WowTexture
----@field SetTexture fun(self: WowTexture, texturePath: string|nil, a: nil, ln: nil)
----@field SetTexCoord fun(self: WowTexture, coord: BomTexCoord)
----@field GetTexture fun(self: WowTexture): string
 ---@field GetTexCoord fun(self: WowTexture): BomTexCoord
----@field SetDesaturated fun(self: WowTexture, desaturated: boolean)
+---@field GetTexture fun(self: WowTexture): string
+---@field SetAllPoints function
 ---@field SetBlendMode fun(self: WowTexture, blendMode: string)
----@field SetVertexColor fun(self: WowTexture, r: number, g: number, b: number, a: number)
 ---@field SetColorTexture fun(self: WowTexture, r: number, g: number, b: number, a: number)
+---@field SetDesaturated fun(self: WowTexture, desaturated: boolean)
+---@field SetRotation fun(self: WowTexture, rotation: number, a: number|nil, b: number|nil)
+---@field SetTexCoord fun(self: WowTexture, coord: BomTexCoord)
+---@field SetTexture fun(self: WowTexture, texturePath: string|nil, a: nil, filterQuality: nil)
+---@field SetVertexColor fun(self: WowTexture, r: number, g: number, b: number, a: number)
 
 ---@class BomControl A blizzard UI frame but may contain private fields used by internal library by Buffomat
 ---@field bomToolTipLink string Mouseover will show the link
 ---@field bomToolTipText string Mouseover will show the text
 ---@field bomReadVariable function Returns value which the button can modify, boolean for toggle buttons
----@field SetPoint fun(self: BomControl, point: string, relativeTo: BomControl|nil, relativePoint: string, xOfs: number, yOfs: number)
----@field Hide fun(self: BomControl)
+---
 ---@field ClearAllPoints fun(self: BomControl)
----@field SetParent fun(self: BomControl, parent: BomControl|nil)
----@field SetScript fun(self: BomControl, script: string, handler: function)
+---@field CreateFontString fun(self: BomControl, name: string|nil, layer: string|nil, inherits: string): BomControl
+---@field CreateTexture fun(self: BomControl): WowTexture
+---@field GetParent fun(self: BomControl): BomControl
 ---@field Hide fun(self: BomControl)
----@field Show fun(self: BomControl)
----@field SetTextures fun(self: BomControl, sel: string|nil, unsel: string|nil, dis: string|nil, selCoord: number[]|nil, unselCoord: number[]|nil, disCoord: number[]|nil)
----@field SetText fun(self: BomControl, text: string)
----@field SetWidth fun(self: BomControl, width: number)
+---@field Hide fun(self: BomControl)
+---@field SetFrameStrata fun(self: BomControl, strata: string)
 ---@field SetHeight fun(self: BomControl, height: number)
+---@field SetOwner fun(self: BomControl, owner: BomControl, anchor: string)
+---@field SetParent fun(self: BomControl, parent: BomControl|nil)
+---@field SetPoint fun(self: BomControl, point: string, relativeTo: BomControl|nil, relativePoint: string, xOfs: number, yOfs: number)|fun(self: BomControl, point: string, x: number, y: number)
+---@field SetScript fun(self: BomControl, script: string, handler: function)
 ---@field SetState fun(self: BomGPIControl, state: any) GPI control handler but is here for simpler code where controls are mixed in same container
----@field CreateFontString fun(self: BomControl, name: string|nil, layer: string, inherits: string): BomControl
+---@field SetText fun(self: BomControl, text: string)
+---@field SetTextures fun(self: BomControl, sel: string|nil, unsel: string|nil, dis: string|nil, selCoord: number[]|nil, unselCoord: number[]|nil, disCoord: number[]|nil)
+---@field SetWidth fun(self: BomControl, width: number)
+---@field Show fun(self: BomControl)
+---@field StartSizing fun(self: BomControl, sizingType: string)
+---@field StopMovingOrSizing fun(self: BomControl)
+
+---@class BomTooltipControl: BomControl
+---@field AddFontStrings fun(self: BomControl, text: BomControl, subText: BomControl)
+---@field ClearLines fun(self: BomControl)
+---@field GetRegions fun(self: BomControl): table[]
+-- -@field [string] function
+
+---@shape BomGPIPopupItems
+---@field count number
+---@field [number] BomPopupInfo
 
 ---@class BomGPIControl: BomControl A blizzard UI frame but may contain private fields used by internal library by GPI
+---@field gpiCombatLock boolean
+---@field Texture WowTexture
 ---@field _icon WowTexture
 ---@field _text BomControl
 ---@field _iconHighlight WowTexture
@@ -88,17 +98,17 @@ controlModule.GPIMinimapButton.__index = controlModule.GPIMinimapButton
 ---@field _GPIPRIVAT_events table<string, function> Events
 ---@field _GPIPRIVAT_updates table<function> private field
 ---@field _GPIPRIVAT_MovingStopCallback any private field
----@field _GPIPRIVAT_TableCallback function
----@field _GPIPRIVAT_Items table<GPIMenuItem> Popup item list?
+---@field gpiPopupCallback function
+---@field gpiPopupMenuItems BomGPIPopupItems Popup menu items
 ---@field _GPIPRIVAT_MovingStopCallback function
 ---@field gpiCursor any
 ---@field gpiRotation number Rotation in degrees
----@field GPI_DoStart boolean
----@field GPI_DoStop boolean
 ---@field GPI_SIZETYPE string
 ---@field gpiMinimapButton BomGPIMinimapButton Stores extra values for minimap button control
 ---@field SetSpell fun(self: BomGPIControl, spell: BomSpellId)
 ---@field SetOnClick fun(self: BomGPIControl, func: function)
+---@field GPI_DoStop fun(control: BomControl) Note: no self
+---@field GPI_DoStart fun(control: BomControl) Note: no self
 local gpiControlClass = {}
 gpiControlClass.__index = gpiControlClass
 controlModule.gpiControlClass = gpiControlClass

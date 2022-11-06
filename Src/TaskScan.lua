@@ -74,15 +74,6 @@ function BOM.CancelShapeShift()
   return taskScanModule:CancelBuff(ShapeShiftTravel)
 end
 
----@class CachedItem
----@field a boolean Player has item
----@field b number Bag
----@field c number Slot
----@field d number Count
-
----@type table<string, CachedItem>
-BOM.cachedPlayerBag = {}
-
 ---If player just left the raid or party, reset watched frames to "watch all 8"
 function taskScanModule:MaybeResetWatchGroups()
   if UnitPlayerOrPetInParty("player") == false then

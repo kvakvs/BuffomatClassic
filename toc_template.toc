@@ -75,8 +75,9 @@ Src/Languages/Chinese.lua
 Src/SpellSetup.lua
 Src/TaskScan.lua
 Src/BuffChecks.lua
-Src/Toolbox.lua
-Src/Toolbox.lua
+Src/Toolbox/Toolbox.lua
+Src/Toolbox/SlashCommands.lua
+Src/Toolbox/Popup.lua
 
 Src/Ui/Buffomat.xml
 

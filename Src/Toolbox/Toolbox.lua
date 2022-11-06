@@ -2,24 +2,6 @@ local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BomAddon
 
 ---@class BomToolboxModule
-local toolboxModule = {}
-BomModuleManager.toolboxModule = toolboxModule
-
-local _t = BomModuleManager.languagesModule
-
----@deprecated
-local L = setmetatable(
-        {},
-        {
-          __index = function(_t, k)
-            if BOM.L and BOM.L[k] then
-              return BOM.L[k]
-            else
-              return "[" .. k .. "]"
-            end
-          end
-        })
----@class BuffomatTool
 ---@field IconClass table<string, string> Class icon strings indexed by class name
 ---@field IconClassBig table<string, string> Class icon strings indexed by class name
 ---@field RaidIconNames table<string, number>
@@ -28,10 +10,14 @@ local L = setmetatable(
 ---@field ClassName string[] Localized class names (male)
 ---@field ClassColor table<string, table> Localized class colors
 ---@field NameToClass table<string, string> Reverse class name lookup
----@field _EditBox BomGPIControl
+---@field _EditBox BomGPIControlEditBox
+local toolboxModule = {}
+BomModuleManager.toolboxModule = toolboxModule
 
-BOM.Tool = BOM.Tool or {} ---@type BuffomatTool
-local Tool = BOM.Tool ---@type BuffomatTool
+local _t = BomModuleManager.languagesModule
+
+---@class BomGPIControlEditBox: BomGPIControl
+---@field chatFrame BomControl
 
 ---Converts accented letters to ASCII equivalent for sorting
 local bom_special_letter_to_ascii = {
@@ -72,7 +58,7 @@ local function bom_on_leave_hyperlink(self)
   GameTooltip:Hide()
 end
 
-function Tool.EnableHyperlink(frame)
+function toolboxModule:EnableHyperlink(frame)
   frame:SetHyperlinksEnabled(true);
   frame:SetScript("OnHyperlinkEnter", bom_on_enter_hyperlink)
   frame:SetScript("OnHyperlinkLeave", bom_on_leave_hyperlink)
@@ -82,16 +68,17 @@ end
 --local eventFrame ---@type Control
 
 ---@param self BomGPIControl
+---@deprecated
 local function bom_gpiprivat_event_handler(self, event, ...)
-  for i, Entry in pairs(self._GPIPRIVAT_events) do
-    if Entry[1] == event then
-      Entry[2](...)
+  for key, callback in pairs(self._GPIPRIVAT_events) do
+    if key == event then
+      callback(...)
     end
   end
 end
 
 ---@param self BomGPIControl
-local function bom_gpiprivat_update_handler(self, ...)
+function toolboxModule.gpiprivat_update_handler(self, ...)
   for i, Entry in pairs(self._GPIPRIVAT_updates) do
     Entry(...)
   end
@@ -117,7 +104,7 @@ function toolboxModule:OnUpdate(func)
   end
   if eventFrame._GPIPRIVAT_updates == nil then
     eventFrame._GPIPRIVAT_updates = {}
-    eventFrame:SetScript("OnUpdate", bom_gpiprivat_update_handler)
+    eventFrame:SetScript("OnUpdate", self.gpiprivat_update_handler)
   end
   tinsert(eventFrame._GPIPRIVAT_updates, func)
 end
@@ -144,25 +131,24 @@ function toolboxModule:EnableMoving(frame, callback)
 end
 
 -- misc tools
-
-local MyScanningTooltip ---@type BomGPIControl
+local myScanningTooltip ---@type BomTooltipControl
 
 function toolboxModule:ScanToolTip(what, ...)
   local TextList = {}
-  if MyScanningTooltip == nil then
-    MyScanningTooltip = CreateFrame("GameTooltip", TOCNAME .. "_MyScanningTooltip", nil, "GameTooltipTemplate") -- Tooltip name cannot be nil
-    MyScanningTooltip:SetOwner(WorldFrame, "ANCHOR_NONE")
+  if myScanningTooltip == nil then
+    myScanningTooltip = CreateFrame("GameTooltip", TOCNAME .. "_MyScanningTooltip", nil, "GameTooltipTemplate") -- Tooltip name cannot be nil
+    myScanningTooltip:SetOwner(WorldFrame, "ANCHOR_NONE")
     -- Allow tooltip SetX() methods to dynamically add new lines based on these
-    MyScanningTooltip:AddFontStrings(
-            MyScanningTooltip:CreateFontString("$parentTextLeft1", nil, "GameTooltipText"),
-            MyScanningTooltip:CreateFontString("$parentTextRight1", nil, "GameTooltipText")
+    myScanningTooltip:AddFontStrings(
+            myScanningTooltip:CreateFontString("$parentTextLeft1", nil, "GameTooltipText"),
+            myScanningTooltip:CreateFontString("$parentTextRight1", nil, "GameTooltipText")
     )
   end
-  MyScanningTooltip:ClearLines()
-  MyScanningTooltip[what](MyScanningTooltip, ...)
+  myScanningTooltip:ClearLines()
+  myScanningTooltip[what](myScanningTooltip, ...)
 
   --print("do",TOCNAME.."_MyScanningTooltip")
-  for i, region in ipairs({ MyScanningTooltip:GetRegions() }) do
+  for i, region in ipairs({ myScanningTooltip:GetRegions() }) do
     if region and region:GetObjectType() == "FontString" then
       local text = region:GetText()
       if text then
@@ -178,7 +164,7 @@ function toolboxModule:CopyTable(from, to)
   to = to or {}
   for k, v in pairs(from) do
     if type(v) == "table" then
-      to[k] = self:CopyTable(v)
+      to[k] = self:CopyTable(v, nil)
     else
       to[k] = v
     end
@@ -186,7 +172,8 @@ function toolboxModule:CopyTable(from, to)
   return to
 end
 
-function Tool.GuildNameToIndex(name, searchOffline)
+---@deprecated
+function toolboxModule:GuildNameToIndex(name, searchOffline)
   name = string.lower(name)
   for i = 1, GetNumGuildMembers(searchOffline) do
     if string.lower(string.match((GetGuildRosterInfo(i)), "(.-)-")) == name then
@@ -195,18 +182,20 @@ function Tool.GuildNameToIndex(name, searchOffline)
   end
 end
 
-function Tool.RunSlashCmd(cmd)
-  if Tool._EditBox == nil then
-    Tool._EditBox = CreateFrame("EditBox", "GPILIB_myEditBox_" .. TOCNAME, UIParent)
-    Tool._EditBox.chatFrame = Tool._EditBox:GetParent();
-    ChatEdit_OnLoad(Tool._EditBox);
-    Tool._EditBox:Hide()
+---@deprecated
+function toolboxModule:RunSlashCmd(cmd)
+  if self._EditBox == nil then
+    self._EditBox = CreateFrame("EditBox", "GPILIB_myEditBox_" .. TOCNAME, UIParent)
+    self._EditBox.chatFrame = self._EditBox:GetParent()
+    ChatEdit_OnLoad(self._EditBox);
+    self._EditBox:Hide()
   end
-  Tool._EditBox:SetText(cmd)
+  self._EditBox:SetText(cmd)
   ChatEdit_SendText(Tool._EditBox)
 end
 
-function Tool.RGBtoEscape(r, g, b, a)
+---@deprecated
+function toolboxModule:RGBtoEscape(r, g, b, a)
   if type(r) == "table" then
     a = r.a
     g = r.g
@@ -221,13 +210,15 @@ function Tool.RGBtoEscape(r, g, b, a)
   return string.format("|c%02x%02x%02x%02x", a * 255, r * 255, g * 255, b * 255)
 end
 
-function Tool.GetRaidIcon(name)
+---@deprecated
+function toolboxModule:GetRaidIcon(name)
   local x = string.gsub(string.lower(name), "[%{%}]", "")
   return ICON_TAG_LIST[x] and Tool.RaidIcon[ICON_TAG_LIST[x]] or name
 end
 
 local TOO_FAR = 1000011 -- special value to find out that the range error originates from this module
 
+---@param uId string Unit to check distance from the player
 function toolboxModule:UnitDistanceSquared(uId)
   --partly copied from DBM
   --    * Paul Emmerich (Tandanu @ EU-Aegwynn) (DBM-Core)
@@ -265,7 +256,8 @@ function toolboxModule:UnitDistanceSquared(uId)
   return range
 end
 
-function Tool.Merge(t1, ...)
+---@deprecated
+function toolboxModule:Merge(t1, ...)
   for index = 1, select("#", ...) do
     for i, v in pairs(select(index, ...)) do
       t1[i] = v
@@ -274,7 +266,8 @@ function Tool.Merge(t1, ...)
   return t1
 end
 
-function Tool.iMerge(t1, ...)
+---@deprecated
+function toolboxModule:iMerge(t1, ...)
   for index = 1, select("#", ...) do
     local var = select(index, ...)
 
@@ -291,15 +284,17 @@ function Tool.iMerge(t1, ...)
   return t1
 end
 
+---@deprecated
 ---@param str string
 ---@return string
-function Tool.stripChars(str)
+function toolboxModule:stripChars(str)
   return string.gsub(str, "[%z\1-\127\194-\244][\128-\191]*", bom_special_letter_to_ascii)
 end
 
+---@deprecated
 ---@param pattern string
 ---@param maximize boolean
-function Tool.CreatePattern(pattern, maximize)
+function toolboxModule:CreatePattern(pattern, maximize)
   pattern = string.gsub(pattern, "[%(%)%-%+%[%]]", "%%%1")
 
   if not maximize then
@@ -323,7 +318,11 @@ function Tool.CreatePattern(pattern, maximize)
   return pattern
 end
 
-function Tool.Combine(t, sep, first, last)
+---@param t table
+---@param sep string
+---@param first number
+---@param last number
+function toolboxModule:Combine(t, sep, first, last)
   if type(t) ~= "table" then
     return ""
   end
@@ -375,7 +374,8 @@ end
 
 local ResizeCursor ---@type BomGPIControl
 
-local SizingStop = function(self, button)
+---@param self BomGPIControl
+local function SizingStop(self, button)
   self:GetParent():StopMovingOrSizing()
 
   if self.GPI_DoStop then
@@ -383,23 +383,25 @@ local SizingStop = function(self, button)
   end
 end
 
-local SizingStart = function(self, button)
+---@param self BomGPIControl
+local function SizingStart(self, button)
   self:GetParent():StartSizing(self.GPI_SIZETYPE)
   if self.GPI_DoStart then
     self.GPI_DoStart(self:GetParent())
   end
 end
 
----@type BomGPIControl
-local SizingEnter = function(self)
+---@param self BomGPIControl
+local function SizingEnter(self)
   if not (GetCursorInfo()) then
     ResizeCursor:Show()
-    ResizeCursor.Texture:SetTexture(self.gpiCursor)
+    ResizeCursor.Texture:SetTexture(self.gpiCursor, nil, nil)
     ResizeCursor.Texture:SetRotation(math.rad(self.gpiRotation), 0.5, 0.5)
   end
 end
 
-local SizingLeave = function(self, button)
+---@param self BomGPIControl
+local function SizingLeave(self, button)
   ResizeCursor:Hide()
 end
 
@@ -458,152 +460,11 @@ function toolboxModule:EnableSize(frame, border, OnStart, OnStop)
   CreateSizeBorder(frame, "BOTTOMRIGHT", "BOTTOMRIGHT", 0, 0, "BOTTOMRIGHT", -border, border, "Interface\\CURSOR\\UI-Cursor-SizeRight", 0, OnStart, OnStop)
 end
 
--- popup
-local PopupDepth ---@type number|nil
-
-local function PopupClick(self, arg1, arg2, checked)
-  if type(self.value) == "table" then
-    self.value[arg1] = not self.value[arg1]
-    self.checked = self.value[arg1]
-    if arg2 then
-      arg2(self.value, arg1, checked)
-    end
-
-  elseif type(self.value) == "function" then
-    self.value(arg1, arg2)
-  end
-end
-
-local function PopupAddItem(self, text, disabled, value, arg1, arg2)
-  local c = self._Frame._GPIPRIVAT_Items.count + 1
-  self._Frame._GPIPRIVAT_Items.count = c
-
-  if not self._Frame._GPIPRIVAT_Items[c] then
-    self._Frame._GPIPRIVAT_Items[c] = {}
-  end
-
-  local t = self._Frame._GPIPRIVAT_Items[c] ---@type GPIMenuItem
-
-  t.text = text or ""
-  t.disabled = disabled or false
-  t.value = value
-  t.arg1 = arg1
-  t.arg2 = arg2
-  t.MenuDepth = PopupDepth
-end
-
-local function PopupAddSubMenu(self, text, value)
-  if text ~= nil and text ~= "" then
-    PopupAddItem(self, text, "MENU", value)
-    PopupDepth = value
-  else
-    PopupDepth = nil
-  end
-end
-
-local PopupLastWipeName
-
----@param self BomGPIControl
-local function PopupWipe(self, WipeName)
-  self._Frame._GPIPRIVAT_Items.count = 0
-  PopupDepth = nil
-
-  if UIDROPDOWNMENU_OPEN_MENU == self._Frame then
-    ToggleDropDownMenu(nil, nil, self._Frame, self._where, self._x, self._y)
-    if WipeName == PopupLastWipeName then
-      return false
-    end
-  end
-
-  PopupLastWipeName = WipeName
-  return true
-end
-
----@param frame BomGPIControl
-local function PopupCreate(frame, level, menuList)
-  if level == nil then
-    return
-  end
-
-  local info = UIDropDownMenu_CreateInfo()
-
-  for i = 1, frame._GPIPRIVAT_Items.count do
-    local val = frame._GPIPRIVAT_Items[i]
-    if val.MenuDepth == menuList then
-      if val.disabled == "MENU" then
-        info.text = val.text
-        info.notCheckable = true
-        info.disabled = false
-        info.value = nil
-        info.arg1 = nil
-        info.arg2 = nil
-        info.func = nil
-        info.hasArrow = true
-        info.menuList = val.value
-        --info.isNotRadio=true
-      else
-        info.text = val.text
-        if type(val.value) == "table" then
-          info.checked = val.value[val.arg1] or false
-          info.notCheckable = false
-        else
-          info.notCheckable = true
-        end
-        info.disabled = (val.disabled == true or val.text == "")
-        info.keepShownOnClick = (val.disabled == "keep")
-        info.value = val.value
-        info.arg1 = val.arg1
-        if type(val.value) == "table" then
-          info.arg2 = frame._GPIPRIVAT_TableCallback
-        elseif type(val.value) == "function" then
-          info.arg2 = val.arg2
-        end
-        info.func = PopupClick
-        info.hasArrow = false
-        info.menuList = nil
-        --info.isNotRadio=true
-      end
-      UIDropDownMenu_AddButton(info, level)
-    end
-  end
-end
-
-local function PopupShow(self, where, x, y)
-  where = where or "cursor"
-  if UIDROPDOWNMENU_OPEN_MENU ~= self._Frame then
-    UIDropDownMenu_Initialize(self._Frame, PopupCreate, "MENU")
-  end
-  ToggleDropDownMenu(nil, nil, self._Frame, where, x, y)
-  self._where = where
-  self._x = x
-  self._y = y
-end
-
----@class BomPopupDynamic
----@field _Frame BomGPIControl
----@field AddItem function
----@field SubMenu function
----@field Show function
----@field Wipe function
-
----@return BomPopupDynamic
-function toolboxModule:CreatePopup(callbackFn)
-  local popup = {} ---@type BomPopupDynamic
-  popup._Frame = CreateFrame("Frame", nil, UIParent, "UIDropDownMenuTemplate") ---@type BomGPIControl
-  popup._Frame._GPIPRIVAT_TableCallback = callbackFn
-  popup._Frame._GPIPRIVAT_Items = {}
-  popup._Frame._GPIPRIVAT_Items.count = 0
-  popup.AddItem = PopupAddItem
-  popup.SubMenu = PopupAddSubMenu
-  popup.Show = PopupShow
-  popup.Wipe = PopupWipe
-  return popup
-end
-
 -- TAB
 
+---@param self BomGPIControl
 local function bomSelectTab(self)
-  if not self._gpi_combatlock or not InCombatLockdown() then
+  if not self.gpiCombatLock or not InCombatLockdown() then
     local parent = self:GetParent()
     PanelTemplates_SetTab(parent, self:GetID())
 
@@ -662,48 +523,66 @@ function Tool.GetSelectedTab(frame)
   return 0
 end
 
+---@class BomGPIControlFrame: BomGPIControl
+---@field numTabs number
+---@field Tabs BomGPIControlTab[]
+---@field GetName fun(self: BomGPIControlFrame): string
+
+---@class BomGPIControlTab: BomGPIControl
+---@field SetID fun(self: BomGPIControlTab, id: number): void
+---@field content BomGPIControlTab
+
 ---Adds a Tab to a frame (main window for example)
----@param frame BomGPIControl | string - where to add a tab
----@param name string - tab text
----@param tabFrame BomGPIControl | string - tab text
+---@param frame BomGPIControlFrame | string Where to add a tab; or a global name of a frame
+---@param name string Tab text
+---@param tabFrame BomGPIControlTab | string - tab text
 ---@param combatlockdown boolean - accessible in combat or not
 function toolboxModule:AddTab(frame, name, tabFrame, combatlockdown)
-  local frameName
+  local frameName ---@type string
 
   if type(frame) == "string" then
-    frameName = frame
+    frameName = --[[---@type string]] frame
     frame = _G[frameName]
   else
     frameName = frame:GetName()
   end
+
   if type(tabFrame) == "string" then
     tabFrame = _G[tabFrame]
   end
 
-  frame.numTabs = frame.numTabs and frame.numTabs + 1 or 1
-  if frame.Tabs == nil then
-    frame.Tabs = {}
+  local frameControl = --[[---@type BomGPIControlFrame]] frame
+  local tabFrameControl = --[[---@type BomGPIControlTab]] tabFrame
+
+  frameControl.numTabs = frameControl.numTabs and frameControl.numTabs + 1 or 1
+
+  if frameControl.Tabs == nil then
+    frameControl.Tabs = {}
   end
 
-  frame.Tabs[frame.numTabs] = CreateFrame(
-          "Button", frameName .. "Tab" .. frame.numTabs, frame,
+  frameControl.Tabs[frameControl.numTabs] = CreateFrame(
+          "Button", frameName .. "Tab" .. frameControl.numTabs, frame,
           "CharacterFrameTabButtonTemplate")
-  frame.Tabs[frame.numTabs]:SetID(frame.numTabs)
-  frame.Tabs[frame.numTabs]:SetText(name)
-  frame.Tabs[frame.numTabs]:SetScript("OnClick", bomSelectTab)
-  frame.Tabs[frame.numTabs]._gpi_combatlock = combatlockdown
-  frame.Tabs[frame.numTabs].content = tabFrame
-  tabFrame:Hide()
+  frameControl.Tabs[frameControl.numTabs]:SetID(frameControl.numTabs)
+  frameControl.Tabs[frameControl.numTabs]:SetText(name)
+  frameControl.Tabs[frameControl.numTabs]:SetScript("OnClick", bomSelectTab)
+  frameControl.Tabs[frameControl.numTabs].gpiCombatLock = combatlockdown
+  frameControl.Tabs[frameControl.numTabs].content = tabFrameControl
+  tabFrameControl:Hide()
 
-  if frame.numTabs == 1 then
-    frame.Tabs[frame.numTabs]:SetPoint("TOPLEFT", frame, "BOTTOMLEFT", 5, 4)
+  if frameControl.numTabs == 1 then
+    frameControl.Tabs[frameControl.numTabs]:SetPoint(
+            "TOPLEFT", frameControl, "BOTTOMLEFT",
+            5, 4)
   else
-    frame.Tabs[frame.numTabs]:SetPoint("TOPLEFT", frame.Tabs[frame.numTabs - 1], "TOPRIGHT", -14, 0)
+    frameControl.Tabs[frameControl.numTabs]:SetPoint(
+            "TOPLEFT", frameControl.Tabs[frameControl.numTabs - 1], "TOPRIGHT",
+            -14, 0)
   end
 
-  bomSelectTab(frame.Tabs[frame.numTabs])
-  bomSelectTab(frame.Tabs[1])
-  return frame.numTabs
+  bomSelectTab(frameControl.Tabs[frameControl.numTabs])
+  bomSelectTab(frameControl.Tabs[1])
+  return frameControl.numTabs
 end
 
 
@@ -724,100 +603,6 @@ function toolboxModule:AddDataBroker(icon, onClick, onTooltipShow, text)
       })
     end
   end
-end
-
--- Slashcommands
-
-local slash, slashCmd
-local function bom_slash_unpack(t, sep)
-  local ret = ""
-  if sep == nil then
-    sep = ", "
-  end
-  for i = 1, #t do
-    if i ~= 1 then
-      ret = ret .. sep
-    end
-    ret = ret .. t[i]
-  end
-  return ret
-end
-
-function toolboxModule:PrintSlashCommand(prefix, subSlash, p)
-  p = p or print
-  prefix = prefix or ""
-  subSlash = subSlash or slash
-
-  local colCmd = "|cFFFF9C00"
-
-  for i, subcmd in ipairs(subSlash) do
-    local words = (type(subcmd[1]) == "table") and "|r(" .. colCmd .. bom_slash_unpack(subcmd[1], "|r/" .. colCmd) .. "|r)" .. colCmd or subcmd[1]
-    if words == "%" then
-      words = "<value>"
-    end
-
-    if subcmd[2] ~= nil and subcmd[2] ~= "" then
-      p(colCmd .. ((type(slashCmd) == "table") and slashCmd[1] or slashCmd) .. " " .. prefix .. words .. "|r: " .. subcmd[2])
-    end
-    if type(subcmd[3]) == "table" then
-
-      toolboxModule:PrintSlashCommand(prefix .. words .. " ", subcmd[3], p)
-    end
-
-  end
-end
-
-local function bom_do_slash(deep, msg, subSlash)
-  for i, subcmd in ipairs(subSlash) do
-    local ok = (type(subcmd[1]) == "table") and tContains(subcmd[1], msg[deep]) or
-            (subcmd[1] == msg[deep] or (subcmd[1] == "" and msg[deep] == nil))
-
-    if subcmd[1] == "%" then
-      local para = Tool.iMerge({ unpack(subcmd, 4) }, { unpack(msg, deep) })
-      return subcmd[3](unpack(para))
-    end
-
-    if ok then
-      if type(subcmd[3]) == "function" then
-        return subcmd[3](unpack(subcmd, 4))
-      elseif type(subcmd[3]) == "table" then
-        return bom_do_slash(deep + 1, msg, subcmd[3])
-      end
-    end
-  end
-
-  toolboxModule:PrintSlashCommand(Tool.Combine(msg, " ", 1, deep - 1) .. " ", subSlash)
-
-  return nil
-end
-
-local function bom_handle_slash_command(msg)
-  if msg == "help" then
-    local colCmd = "|cFFFF9C00"
-    print("|cFFFF1C1C" .. GetAddOnMetadata(TOCNAME, "Title") .. " " .. GetAddOnMetadata(TOCNAME, "Version") .. " by " .. GetAddOnMetadata(TOCNAME, "Author"))
-    print(GetAddOnMetadata(TOCNAME, "Notes"))
-    if type(slashCmd) == "table" then
-      print("SlashCommand:", colCmd, bom_slash_unpack(slashCmd, "|r, " .. colCmd), "|r")
-    end
-
-    toolboxModule:PrintSlashCommand()
-  else
-    bom_do_slash(1, Tool.Split(msg, " "), slash)
-  end
-end
-
-function toolboxModule:SlashCommand(cmds, subcommand)
-  slash = subcommand
-  slashCmd = cmds
-  if type(cmds) == "table" then
-    for i, cmd in ipairs(cmds) do
-      _G["SLASH_" .. TOCNAME .. i] = cmd
-    end
-  else
-    _G["SLASH_" .. TOCNAME .. "1"] = cmds
-  end
-
-  SlashCmdList[TOCNAME] = bom_handle_slash_command
 end
 
 ---- quick copy&past
@@ -869,7 +654,7 @@ local function bom_create_copypaste()
     end
   end)
 
-  toolboxModule:EnableSize(frame)
+  toolboxModule:EnableSize(frame, nil, nil, nil)
 
   local button = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
   button:SetWidth(128)

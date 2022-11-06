@@ -18,6 +18,7 @@ sharedSettingsModule.defaults = {
 ---@field distance number
 
 ---@shape BomSharedSettings Current character state snapshots per profile
+---@field Cache BomItemCache Caches responses from GetItemInfo() and GetSpellInfo()
 ---@field X number Window horizontal position
 ---@field Y number Window vertical position
 ---@field Width number Window width
@@ -27,8 +28,8 @@ sharedSettingsModule.defaults = {
 ---@field Minimap BomMinimapSettings
 ---@field SpellGreaterEqualThan table
 ---@field CustomLocales table
----@field CustomSpells table Additional spells from the config file. Deprecated
----@field CustomCancelBuff table Additional cancel spells. Deprecated
+-- -@field CustomSpells table Additional spells from the config file. Deprecated
+-- -@field CustomCancelBuff table Additional cancel spells. Deprecated
 ---@field UIWindowScale number
 ---@field AutoOpen boolean
 ---@field FadeWhenNothingToDo boolean Allows Buffomat window to fade when nothing to do

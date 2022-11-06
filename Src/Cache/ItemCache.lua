@@ -5,6 +5,7 @@ local BOM = BuffomatAddon ---@type BomAddon
 
 ---@shape BomItemCache
 ---@field [BomItemCacheKey] BomItemCacheElement
+---@field Item2 table
 
 ---@class BomItemCacheModule
 ---@field cache BomItemCache Stores arg to results mapping for GetItemInfo

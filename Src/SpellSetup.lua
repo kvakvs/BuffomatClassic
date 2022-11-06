@@ -1,4 +1,4 @@
-local TOCNAME, _ = ...
+--local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BomAddon
 
 local buffomatModule = BomModuleManager.buffomatModule
@@ -11,15 +11,6 @@ BomModuleManager.spellSetupModule = spellSetupModule
 
 local toolboxModule = BomModuleManager.toolboxModule
 local profileModule = BomModuleManager.profileModule
-
----@deprecated
-local L = setmetatable({}, { __index = function(t, k)
-  if BOM.L and BOM.L[k] then
-    return BOM.L[k]
-  else
-    return "[" .. k .. "]"
-  end
-end })
 
 ---Flag set to true when custom spells and cancel-spells were imported from the config
 local bomBuffsImportedFromConfig = false
@@ -49,13 +40,13 @@ function spellSetupModule:Setup_MaybeAddCustomSpells()
 
   bomBuffsImportedFromConfig = true
 
-  for x, entry in ipairs(buffomatModule.shared.CustomSpells) do
-    tinsert(BOM.allBuffomatBuffs, toolboxModule:CopyTable(entry))
-  end
+  --for x, entry in ipairs(buffomatModule.shared.CustomSpells) do
+  --  tinsert(BOM.allBuffomatBuffs, toolboxModule:CopyTable(entry))
+  --end
 
-  for x, entry in ipairs(buffomatModule.shared.CustomCancelBuff) do
-    tinsert(BOM.cancelBuffs, toolboxModule:CopyTable(entry))
-  end
+  --for x, entry in ipairs(buffomatModule.shared.CustomCancelBuff) do
+  --  tinsert(BOM.cancelBuffs, toolboxModule:CopyTable(entry))
+  --end
 end
 
 function spellSetupModule:Setup_ResetCaches()
@@ -64,37 +55,39 @@ function spellSetupModule:Setup_ResetCaches()
   BOM.allSpellIds = {}
   BOM.spellIdtoBuffId = {}
   BOM.spellIdIsSingleLookup = {}
-  BOM.configToSpellLookup = {} ---@type BomAllBuffsTable
+  BOM.configToSpellLookup = --[[---@type BomAllBuffsTable]] {}
 
   buffomatModule.shared.Cache = buffomatModule.shared.Cache or {}
   buffomatModule.shared.Cache.Item2 = buffomatModule.shared.Cache.Item2 or {}
 end
 
 function spellSetupModule:Setup_CancelBuffs()
-  for i, spell in ipairs(BOM.cancelBuffs) do
+  for i, cancelBuff in ipairs(BOM.cancelBuffs) do
     -- save "buffId"
     --spell.buffId = spell.buffId or spell.singleId
 
-    if spell.singleFamily then
-      for sindex, sID in ipairs(spell.singleFamily) do
-        BOM.spellIdtoBuffId[sID] = spell.buffId
+    if cancelBuff.singleFamily then
+      for sindex, sID in ipairs(cancelBuff.singleFamily) do
+        BOM.spellIdtoBuffId[sID] = cancelBuff.buffId
       end
     end
 
     -- GetSpellNames and set default duration
-    local spell_info = BOM.GetSpellInfo(spell.singleId)
+    local spellInfo = BOM.GetSpellInfo(cancelBuff:GetFirstSingleId())
 
-    spell.singleText = spell_info.name
-    spell_info.rank = GetSpellSubtext(spell.singleId) or ""
-    spell.singleLink = self:FormatSpellLink(spell_info)
-    spell.spellIcon = spell_info.icon
+    if spellInfo then
+      cancelBuff.singleText = (--[[---@not nil]] spellInfo).name
+      (--[[---@not nil]] spellInfo).rank = GetSpellSubtext(cancelBuff.singleId) or ""
+      cancelBuff.singleLink = self:FormatSpellLink((--[[---@not nil]] spellInfo))
+      cancelBuff.spellIcon = (--[[---@not nil]] spellInfo).icon
+    end
 
-    BOM.Tool.iMerge(BOM.allSpellIds, spell.singleFamily)
+    toolboxModule:iMerge(BOM.allSpellIds, cancelBuff.singleFamily)
 
     for j, profil in ipairs(profileModule.ALL_PROFILES) do
-      if buffomatModule.character[profil].CancelBuff[spell.buffId] == nil then
-        buffomatModule.character[profil].CancelBuff[spell.buffId] = {}
-        buffomatModule.character[profil].CancelBuff[spell.buffId].Enable = spell.default or false
+      if buffomatModule.character[profil].CancelBuff[cancelBuff.buffId] == nil then
+        buffomatModule.character[profil].CancelBuff[cancelBuff.buffId] = {}
+        buffomatModule.character[profil].CancelBuff[cancelBuff.buffId].Enable = cancelBuff.default or false
       end
     end
   end

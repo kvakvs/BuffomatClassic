@@ -26,6 +26,7 @@ local spellButtonsTabModule = BomModuleManager.spellButtonsTabModule
 local taskScanModule = BomModuleManager.taskScanModule
 local toolboxModule = BomModuleManager.toolboxModule
 local macroModule = BomModuleManager.macroModule
+local popupModule = BomModuleManager.popupModule
 
 ---Collection of tables of buffs, indexed per unit name
 ---@shape BomBuffCollectionPerUnit
@@ -33,7 +34,7 @@ local macroModule = BomModuleManager.macroModule
 
 ---Table of buff expirations, indexed per buff name
 ---@shape BomBuffExpirations
----@field [string] number Expiration time
+---@field [string] number|nil Expiration time
 
 ---global, visible from XML files and from script console and chat commands
 ---@class BomAddon
@@ -45,7 +46,7 @@ local macroModule = BomModuleManager.macroModule
 ---@field reputationTrinketZones table Equipped AD trinket: Spell to and zone ids to check
 ---@field buffExchangeId table<number, number[]> Combines spell ids of spellrank flavours into main spell id
 ---@field buffIgnoreAll number[] Having this buff on target excludes the target (phaseshifted imp for example)
----@field cachedPlayerBag table<string, CachedItem> Items in player's bag
+---@field cachedPlayerBag BomCachedPlayerBag Items in player's bag
 ---@field cancelBuffs BomBuffDefinition[] All spells to be canceled on detection
 ---@field cancelBuffSource string Unit who casted the buff to be auto-canceled
 ---@field cancelForm table<number, number> Spell ids which cancel shapeshift form
@@ -77,13 +78,15 @@ local macroModule = BomModuleManager.macroModule
 ---@field itemListTarget table<number, string> Remember who casted item buff on you?
 ---@field lastTarget string|nil Last player's target
 ---@field legacyOptions BomLegacyUiOptions
----@field LoadingScreenTimeOut number
+---@field LoadingScreenTimeOut number|nil
+---@field SaveTargetName string|nil
 ---@field Macro BomMacro
 ---@field MANA_CLASSES BomClassName[] Classes with mana resource
 ---@field ManaLimit number Player max mana
 ---@field MinimapButton BomGPIMinimapButton Minimap button control
 ---@field nextCooldownDue number Set this to next spell cooldown to force update
 ---@field PartyUpdateNeeded boolean Requests player party update
+---@field PlayerManaMax number
 ---@field PlayerBuffs BomBuffCollectionPerUnit
 ---@field PlayerCasting string|nil Indicates that the player is currently casting (updated in event handlers)
 ---@field PopupDynamic BomPopupDynamic
@@ -100,6 +103,8 @@ local macroModule = BomModuleManager.macroModule
 ---@field spellTabsCreatedFlag boolean Indicated spells tab already populated with controls
 ---@field spellToSpellLookup table<number, number> Maps spells ids to other spell ids
 ---@field wipeCachedItems boolean Command to reset cached items
+---@field Print fun(self: BomAddon, msg: string): void
+---@field RegisterEvent fun(self: BomAddon, event: string, handler: function): void
 
 BuffomatAddon = LibStub("AceAddon-3.0"):NewAddon(
         "Buffomat", "AceConsole-3.0", "AceEvent-3.0") ---@type BomAddon
@@ -113,6 +118,17 @@ BOM.isTBC = WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC
 BOM.haveTBC = BOM.isWotLK or BOM.isTBC
 
 BOM.isClassic = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
+
+---@shape BomCachedBagItem
+---@field a boolean Player has item
+---@field b number Bag
+---@field c number Slot
+---@field d number Count
+
+---@alias BomCachedPlayerBag table<string, BomCachedBagItem>
+
+---@type table<string, BomCachedBagItem>
+BOM.cachedPlayerBag = {}
 
 ---Print a text with "BomDebug: " prefix in the game chat window
 ---@param t string
@@ -325,7 +341,7 @@ function buffomatModule:InitUI()
 
   toolboxModule:OnUpdate(self.UpdateTimer)
 
-  BOM.PopupDynamic = toolboxModule:CreatePopup(buffomatModule.OptionsUpdate)
+  BOM.PopupDynamic = popupModule:CreatePopup(buffomatModule.OptionsUpdate)
 
   BOM.MinimapButton.Init(
           self.shared.Minimap,
@@ -367,8 +383,8 @@ function buffomatModule:InitGlobalStates()
   if BomCharacterState then
     BomCharacterState = nil -- reset after reimport
   end
-  BuffomatCharacter = characterStateModule:New(loadedChar) ---@type BomCharacterSettings
-  buffomatModule.character = BuffomatCharacter
+  buffomatModule.character = characterStateModule:New(loadedChar)
+  BuffomatCharacter = buffomatModule.character
 
   if self.character.remainingDurations then
     self.shared.Duration = self.character.remainingDurations
@@ -379,8 +395,8 @@ function buffomatModule:InitGlobalStates()
 
   if not self.character[profileModule.ALL_PROFILES[1]] then
     local newProfile = profileModule:New()
-    newProfile.CancelBuff = self.character.CancelBuff
-    newProfile.Spell = self.character.Spell
+    newProfile.CancelBuff = self.character.CancelBuff or {}
+    newProfile.Spell = self.character.Spell or {}
     newProfile.LastAura = self.character.LastAura
     newProfile.LastSeal = self.character.LastSeal
     self.character[profileModule.ALL_PROFILES[1]] = newProfile
@@ -401,6 +417,37 @@ function buffomatModule:InitGlobalStates()
   --BOM.CharacterState = self.character
   local soloProfile = profileModule:SoloProfile()
   BOM.currentProfile = self.character[soloProfile or "solo"]
+end
+
+---@return BomSlashCommandConfig
+function BuffomatAddon:MakeSlashCommand()
+  return --[[---@type BomSlashCommandConfig]] {
+    { command = "debug", description = "", handler = {
+      { command = "buff", description = "", handler = buffomatModule.Slash_DebugBuffList },
+      { command = "target", description = "", handler = buffomatModule.Slash_DebugBuffs, target = "target" },
+    },
+    },
+    { command = "profile", description = "", handler = {
+      { command = "%", description = _t("SlashProfile"), handler = buffomatModule.ChooseProfile }
+    },
+    },
+    { command = "spellbook", description = _t("SlashSpellBook"), handler = BOM.SetupAvailableSpells },
+    { command = "update", description = _t("SlashUpdate"),
+      handler = function()
+        buffomatModule:SetForceUpdate("macro-/update")
+        taskScanModule:ScanNow("macro-/update")
+      end },
+    { command = "updatespellstab", description = "", handler = spellButtonsTabModule.UpdateSpellsTab },
+    { command = "close", description = _t("SlashClose"), handler = BOM.HideWindow },
+    { command = "reset", description = _t("SlashReset"), handler = BOM.ResetWindow },
+    { command = "_checkforerror", description = "",
+      handler = function()
+        if not InCombatLockdown() then
+          BOM.checkForError = true
+        end
+      end },
+    { command = "", description = _t("SlashOpen"), handler = BOM.ShowWindow },
+  }
 end
 
 ---Called from event handler on Addon Loaded event
@@ -452,33 +499,7 @@ function BuffomatAddon:Init()
     buffomatModule:OptionsUpdate()
   end
 
-  toolboxModule:SlashCommand({ "/bom", "/buffomat" }, {
-    { "debug", "", {
-      { "buff", "", BOM.DebugBuffList },
-      { "target", "", BOM.DebugBuffs, "target" },
-    },
-    },
-    { "profile", "", {
-      { "%", _t("SlashProfile"), buffomatModule.ChooseProfile }
-    },
-    },
-    { "spellbook", _t("SlashSpellBook"), BOM.SetupAvailableSpells },
-    { "update", _t("SlashUpdate"),
-      function()
-        buffomatModule:SetForceUpdate("macro-/update")
-        taskScanModule:ScanNow("macro-/update")
-      end },
-    { "updatespellstab", "", spellButtonsTabModule.UpdateSpellsTab },
-    { "close", _t("SlashClose"), BOM.HideWindow },
-    { "reset", _t("SlashReset"), BOM.ResetWindow },
-    { "_checkforerror", "",
-      function()
-        if not InCombatLockdown() then
-          BOM.checkForError = true
-        end
-      end },
-    { "", _t("SlashOpen"), BOM.ShowWindow },
-  })
+  toolboxModule:SlashCommand({ "/bom", "/buffomat" }, self:MakeSlashCommand())
 
   buffomatModule:InitUI()
 
@@ -719,7 +740,7 @@ function buffomatModule:UnitAura(unitId, buffIndex, filter)
         local destName = UnitFullName(unitId) ---@type string
 
         if BOM.PlayerBuffs[destName] and BOM.PlayerBuffs[destName][name] then
-          expirationTime = BOM.PlayerBuffs[destName][name] + duration
+          expirationTime = (BOM.PlayerBuffs[destName][name] or 0) + duration
 
           local now = GetTime()
 
@@ -888,7 +909,7 @@ function BOM.ClickHyperlink(self, link)
   end
 end
 
-function BOM.DebugBuffs(dest)
+function buffomatModule.Slash_DebugBuffs(dest)
   dest = dest or "player"
 
   print("LastTracking:", buffomatModule.character.lastTrackingIconId, " ")
@@ -914,7 +935,7 @@ function BOM.DebugBuffs(dest)
   end -- for 40 buffs
 end
 
-function BOM.DebugBuffList()
+function buffomatModule.Slash_DebugBuffList()
   print("PlayerBuffs stored ", #BOM.PlayerBuffs)
 
   for name, spellist in pairs(BOM.PlayerBuffs) do

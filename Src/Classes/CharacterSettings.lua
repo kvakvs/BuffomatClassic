@@ -31,7 +31,7 @@ local profileModule = BomModuleManager.profileModule
 ---@field BuffCategoriesHidden BomHiddenCategoryTable [⚠DO NOT RENAME] True if category is hidden (control in options)
 ---@field WatchGroup table<number, boolean> [⚠DO NOT RENAME] True to watch buffs in group 1..8
 ---@field Spell BomBuffDefinition[]|nil [⚠DO NOT RENAME] Enabled/disabled buffs; see also assignment to ["Spell"] in buffomatModule:InitGlobalStates()
----@field CancelBuff table|nil [⚠DO NOT RENAME]
+---@field CancelBuff table<BomBuffId, BomBuffDefinition>|nil [⚠DO NOT RENAME]
 ---@field LastSeal number|nil
 ---@field LastAura number|nil
 
