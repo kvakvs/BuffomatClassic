@@ -233,7 +233,7 @@ function buffChecksModule:PlayerNeedsTracking(buff, playerUnit)
   if (buff.highestRankSingleId == spellIdsModule.FindHerbs or
           buff.highestRankSingleId == spellIdsModule.FindMinerals)
           and GetShapeshiftFormID() == CAT_FORM
-          and buffDefModule:IsBuffEnabled(spellIdsModule.Druid_TrackHumanoids) then
+          and buffDefModule:IsBuffEnabled(spellIdsModule.Druid_TrackHumanoids, nil) then
     -- Do nothing - ignore herbs and minerals in catform if enabled track humanoids
 
   elseif not self:IsTrackingActive(buff)
@@ -267,39 +267,43 @@ function buffChecksModule:PaladinNeedsSeal(spell, playerUnit)
   end
 end
 
----@param spell BomBuffDefinition
+---@param buffDef BomBuffDefinition
 ---@param playerParty BomParty
 ---@param someoneIsDead boolean
 ---@return boolean someoneIsDead
-function buffChecksModule:PartyNeedsPaladinBlessing(spell, playerParty, someoneIsDead)
-  for i, partyMember in pairs(playerParty) do
+function buffChecksModule:PartyNeedsPaladinBlessing(buffDef, playerParty, someoneIsDead)
+  -- Blessing user settings (regardless of the current buff)
+  local currentBlessing = buffDefModule:GetProfileBlessing( nil)
+  -- Current user settings for the selected buff
+  local profileBuff = --[[---@not nil]] buffDefModule:GetProfileBuff(buffDef.buffId, nil)
+
+  ---@param partyMember BomUnit
+  for i, partyMember in ipairs(playerParty) do
     local ok = false
     local notGroup = false
-    local currentBlessing = buffDefModule:GetProfileBuff("blessing", nil)
-    local blessingBuff = buffDefModule:GetProfileBuff(spell.buffId, nil)
 
-    if currentBlessing and (--[[---@not nil]] currentBlessing)[partyMember.name] == spell.buffId
-            or (partyMember.isTank and blessingBuff.Class["tank"] and not blessingBuff.SelfCast)
+    if currentBlessing.buffsPerMember[partyMember.name] == buffDef.buffId
+            or (partyMember.isTank and profileBuff.Class["tank"] and not profileBuff.SelfCast)
     then
       ok = true
       notGroup = true
 
-    elseif currentBlessing[partyMember.name] == nil then
-      if blessingBuff.Class[partyMember.class]
+    elseif currentBlessing.buffsPerMember[partyMember.name] == nil then
+      if profileBuff.Class[partyMember.class]
               and (not IsInRaid() or buffomatModule.character.WatchGroup[partyMember.group])
-              and not blessingBuff.SelfCast then
+              and not profileBuff.SelfCast then
         ok = true
       end
-      if blessingBuff.SelfCast
+      if profileBuff.SelfCast
               and UnitIsUnit(partyMember.unitId, "player") then
         ok = true
       end
     end
 
-    if blessingBuff.ForcedTarget[partyMember.name] then
+    if profileBuff.ForcedTarget[partyMember.name] then
       ok = true
     end
-    if blessingBuff.ExcludedTarget[partyMember.name] then
+    if profileBuff.ExcludedTarget[partyMember.name] then
       ok = false
     end
 
@@ -308,12 +312,12 @@ function buffChecksModule:PartyNeedsPaladinBlessing(spell, playerParty, someoneI
             and partyMember.isConnected
             and (not buffomatModule.shared.SameZone or partyMember.isSameZone) then
       local found = false
-      local partyMemberBuff = partyMember.knownBuffs[spell.buffId]
+      local partyMemberBuff = partyMember.knownBuffs[buffDef.buffId]
 
       if partyMember.isDead then
         if partyMember.group ~= 9 and partyMember.class ~= "pet" then
           someoneIsDead = true
-          spell.GroupsHaveDead[partyMember.class] = true
+          buffDef.groupsHaveDead[partyMember.class] = true
         end
 
       elseif partyMemberBuff then
@@ -321,15 +325,15 @@ function buffChecksModule:PartyNeedsPaladinBlessing(spell, playerParty, someoneI
       end
 
       if not found then
-        tinsert(spell.UnitsNeedBuff, partyMember)
+        tinsert(buffDef.UnitsNeedBuff, partyMember)
         if not notGroup then
-          spell:IncrementNeedGroupBuff(partyMember.class)
+          buffDef:IncrementNeedGroupBuff(partyMember.class)
         end
       elseif not notGroup
               and buffomatModule.shared.ReplaceSingle
               and partyMemberBuff
               and partyMemberBuff.isSingle then
-        spell:IncrementNeedGroupBuff(partyMember.class)
+        buffDef:IncrementNeedGroupBuff(partyMember.class)
       end
 
     end
@@ -338,34 +342,32 @@ function buffChecksModule:PartyNeedsPaladinBlessing(spell, playerParty, someoneI
   return someoneIsDead
 end
 
----@param spell BomBuffDefinition
----@param playerUnit BomUnit
+---@param buffDef BomBuffDefinition
 ---@param party BomParty
 ---@param someoneIsDead boolean
-function buffChecksModule:PartyNeedsBuff(spell, playerUnit, party, someoneIsDead)
+function buffChecksModule:PartyNeedsBuff(buffDef, party, someoneIsDead)
   --spells
-  for i, partyMember in ipairs(party) do
+  for i, partyMember in pairs(party) do
     local ok = false
-    ---@type BomBuffDefinition
-    local profileSpell = buffomatModule.currentProfile.Spell[spell.buffId]
+    local profileBuff = buffomatModule.currentProfile.Spell[buffDef.buffId]
 
-    if profileSpell.Class[partyMember.class]
+    if profileBuff.Class[partyMember.class]
             and (not IsInRaid() or buffomatModule.character.WatchGroup[partyMember.group])
-            and not profileSpell.SelfCast then
+            and not profileBuff.SelfCast then
       ok = true
     end
-    if profileSpell.SelfCast
+    if profileBuff.SelfCast
             and UnitIsUnit(partyMember.unitId, "player") then
       ok = true
     end
-    if partyMember.isTank and profileSpell.Class["tank"]
-            and not profileSpell.SelfCast then
+    if partyMember.isTank and profileBuff.Class["tank"]
+            and not profileBuff.SelfCast then
       ok = true
     end
-    if profileSpell.ForcedTarget[partyMember.name] then
+    if profileBuff.ForcedTarget[partyMember.name] then
       ok = true
     end
-    if profileSpell.ExcludedTarget[partyMember.name] then
+    if profileBuff.ExcludedTarget[partyMember.name] then
       ok = false
     end
 
@@ -374,26 +376,27 @@ function buffChecksModule:PartyNeedsBuff(spell, playerUnit, party, someoneIsDead
             and partyMember.isConnected
             and (not buffomatModule.shared.SameZone
             or (partyMember.isSameZone
-            or partyMember.class == "pet" and partyMember.owner.isSameZone)) then
+            or partyMember.class == "pet" and (--[[---@not nil]] partyMember.owner).isSameZone))
+    then
       local found = false
-      local partyMemberBuff = partyMember.knownBuffs[spell.buffId]
+      local partyMemberBuff = partyMember.knownBuffs[buffDef.buffId]
 
       if partyMember.isDead then
         someoneIsDead = true
-        spell.GroupsHaveDead[partyMember.group] = true
+        buffDef.groupsHaveDead[partyMember.group] = true
 
       elseif partyMemberBuff then
         found = self:TimeCheck(partyMemberBuff.expirationTime, partyMemberBuff.duration)
       end
 
       if not found then
-        tinsert(spell.UnitsNeedBuff, partyMember)
-        spell.GroupsNeedBuff[partyMember.group] = (spell.GroupsNeedBuff[partyMember.group] or 0) + 1
+        tinsert(buffDef.UnitsNeedBuff, partyMember)
+        buffDef.GroupsNeedBuff[partyMember.group] = (buffDef.GroupsNeedBuff[partyMember.group] or 0) + 1
 
       elseif buffomatModule.shared.ReplaceSingle
               and partyMemberBuff
               and partyMemberBuff.isSingle then
-        spell.GroupsNeedBuff[partyMember.group] = (spell.GroupsNeedBuff[partyMember.group] or 0) + 1
+        buffDef.GroupsNeedBuff[partyMember.group] = (buffDef.GroupsNeedBuff[partyMember.group] or 0) + 1
       end
     end -- if needbuff and connected and samezone
   end -- for all in party

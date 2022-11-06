@@ -29,7 +29,7 @@ function spellSetupModule:FormatSpellLink(spellInfo)
 
   return "|Hspell:" .. spellInfo.spellId
           .. "|h|r |cff71d5ff"
-          .. BOM.FormatTexture(spellInfo.icon)
+          .. BOM.FormatTexture(--[[---@type string]] spellInfo.icon)
           .. spellInfo.name
           .. "|r|h"
 end
@@ -56,7 +56,7 @@ function spellSetupModule:Setup_ResetCaches()
   BOM.allSpellIds = {}
   BOM.spellIdtoBuffId = {}
   BOM.spellIdIsSingleLookup = {}
-  BOM.buffFromSpellIdLookup = --[[---@type BomAllBuffsTable]] {}
+  BOM.buffFromSpellIdLookup = --[[---@type {[BomSpellId]: BomBuffDefinition}]] {}
 
   buffomatModule.shared.Cache = buffomatModule.shared.Cache or {}
   buffomatModule.shared.Cache.Item2 = buffomatModule.shared.Cache.Item2 or {}
@@ -363,7 +363,7 @@ function spellSetupModule:SetupAvailableSpells()
   for i, eachProfile in ipairs(profileModule.ALL_PROFILES) do
     character[eachProfile].Spell = character[eachProfile].Spell or {}
     character[eachProfile].CancelBuff = character[eachProfile].CancelBuff or {}
-    character[eachProfile].Spell["blessing"] = character[eachProfile].Spell["blessing"] or {}
+    character[eachProfile].CurrentBlessing = character[eachProfile].CurrentBlessing or profileModule:NewBlessingState()
   end
 
   self:Setup_MaybeAddCustomSpells()

@@ -5,105 +5,142 @@ local BOM = BuffomatAddon ---@type BomAddon
 local slashModule = {}
 BomModuleManager.slashCommandsModule = slashModule
 
+local toolboxModule = BomModuleManager.toolboxModule
+
 ---@shape BomSlashCommand
 ---@field command string
 ---@field description string
----@field handler function|BomSlashCommand[]
+---@field handler BomSlashCommand[] | function
 ---@field target string|nil
 
----@alias BomSlashCommandConfig BomSlashCommand[]
+local slashCommandConf ---@type BomSlashCommand[]
+local slashCommandStrings ---@type string[]
 
-local slash, slashCmd
-function slashModule:SlashUnpack(t, sep)
+---@param slashStrings string[]
+---@param sep string|nil
+function slashModule:SlashUnpack(slashStrings, sep)
   local ret = ""
-  if sep == nil then
-    sep = ", "
-  end
-  for i = 1, #t do
+  sep = sep or ", "
+
+  for i = 1, #slashStrings do
     if i ~= 1 then
       ret = ret .. sep
     end
-    ret = ret .. t[i]
+    ret = ret .. slashStrings[i]
   end
   return ret
 end
 
----@param prefix string
----@param subSlash BomSlashCommand[]
----@param p fun(text: string): void
-function slashModule:PrintSlashCommand(prefix, subSlash, p)
-  p = p or print
+---@param prefix string|nil
+---@param conf BomSlashCommand[]|nil
+---@param printFn nil|fun(text: string): void
+function slashModule:PrintSlashCommand(prefix, conf, printFn)
+  printFn = printFn or print
   prefix = prefix or ""
-  subSlash = subSlash or slash
+  conf = conf or slashCommandConf
+  self:PrintSlashCommand_1(
+          --[[---@not nil]] prefix,
+          --[[---@not nil]] conf,
+          --[[---@not nil]] printFn)
+end
 
+---@param prefix string
+---@param conf BomSlashCommand[]
+---@param printFn fun(text: string): void
+function slashModule:PrintSlashCommand_1(prefix, conf, printFn)
   local colCmd = "|cFFFF9C00"
 
-  for i, subcmd in ipairs(subSlash) do
-    local words = (type(subcmd[1]) == "table") and "|r(" .. colCmd
-            .. slashModule:SlashUnpack(subcmd[1], "|r/" .. colCmd)
-            .. "|r)" .. colCmd or subcmd[1]
+  for i, subcmd in ipairs(conf) do
+    if false then
+      local maybeFormatTable = (type(subcmd.command) == "table") and "|r(" .. colCmd
+              .. slashModule:SlashUnpack(subcmd.command, "|r/" .. colCmd)
+              .. "|r)" .. colCmd
+    end
+    local maybeFormatTable = false
+    local words = maybeFormatTable or subcmd.command
     if words == "%" then
       words = "<value>"
     end
 
-    if subcmd[2] ~= nil and subcmd[2] ~= "" then
-      p(colCmd .. ((type(slashCmd) == "table") and slashCmd[1] or slashCmd) .. " " .. prefix .. words .. "|r: " .. subcmd[2])
+    if subcmd.description ~= nil and subcmd.description ~= "" then
+      local maybeTable = (type(slashCommandStrings) == "table") and slashCommandStrings[1]
+      printFn(colCmd .. (maybeTable or slashCommandStrings)
+              .. " " .. prefix .. words .. "|r: " .. subcmd.description)
     end
 
-    if type(subcmd[3]) == "table" then
-      slashModule:PrintSlashCommand(prefix .. words .. " ", subcmd[3], p)
+    if type(subcmd.handler) == "table" then
+      slashModule:PrintSlashCommand(prefix .. words .. " ",
+              --[[---@type BomSlashCommand[] ]] subcmd.handler, printFn)
     end
   end
 end
 
----@param deep number
----@param msg string[]
----@param subSlash BomSlashCommand[]
-function slashModule:DoSlash(deep, msg, subSlash)
-  for i, subcmd in ipairs(subSlash) do
-    local ok = (type(subcmd[1]) == "table") and tContains(subcmd[1], msg[deep]) or
-            (subcmd[1] == msg[deep] or (subcmd[1] == "" and msg[deep] == nil))
+---@param c BomSlashCommand
+function slashModule:UnpackCommand(c)
+  return c.command, c.description, c.handler, c.target
+end
 
-    if subcmd[1] == "%" then
-      local para = Tool.iMerge({ unpack(subcmd, 4) }, { unpack(msg, deep) })
-      return subcmd[3](unpack(para))
+---@param nestingLevel number
+---@param msg string[]
+---@param conf BomSlashCommand[]
+function slashModule:ParseAndExecute(nestingLevel, msg, conf)
+  for i, subcmd in ipairs(conf) do
+    local ok = (
+            type(subcmd.command) == "table") and tContains(subcmd.command, msg[nestingLevel])
+            or (subcmd.command == msg[nestingLevel]
+            or (subcmd.command == "" and msg[nestingLevel] == nil)
+    )
+
+    if subcmd.command == "%" then
+      local para = toolboxModule:iMerge(
+              { self:UnpackCommand(subcmd) }, { unpack(msg, nestingLevel) })
+      return (--[[---@type function]] subcmd.handler)(unpack(para))
     end
 
     if ok then
-      if type(subcmd[3]) == "function" then
-        return subcmd[3](unpack(subcmd, 4))
-      elseif type(subcmd[3]) == "table" then
-        return slashModule:DoSlash(deep + 1, msg, subcmd[3])
+      if type(subcmd.handler) == "function" then
+        return (--[[---@type function]] subcmd.handler)(self:UnpackCommand(subcmd))
+      elseif type(subcmd.handler) == "table" then
+        return self:ParseAndExecute(
+                nestingLevel + 1,
+                msg, --[[---@type BomSlashCommand[] ]] subcmd.handler) -- we need to go deeper
       end
     end
   end
 
-  slashModule:PrintSlashCommand(slashModule:Combine(msg, " ", 1, deep - 1) .. " ", subSlash)
+  self:PrintSlashCommand(toolboxModule:Combine(msg, " ", 1, nestingLevel - 1) .. " ", conf, nil)
 
   return nil
 end
 
----@param msg string|nil
-function slashModule.HandleSlashCommand(msg)
+---Here the game will send input text
+---@param msg string
+---@param editBox BomControl UI control, the user input box, can :Show, :SetText etc
+function slashModule.HandleSlashCommand(msg, editBox)
   if msg == "help" then
-    local colCmd = "|cFFFF9C00"
+    local color = "|cFFFF9C00"
     print("|cFFFF1C1C" .. GetAddOnMetadata(TOCNAME, "Title")
             .. " " .. GetAddOnMetadata(TOCNAME, "Version")
             .. " by " .. GetAddOnMetadata(TOCNAME, "Author"))
     print(GetAddOnMetadata(TOCNAME, "Notes"))
-    if type(slashCmd) == "table" then
-      print("SlashCommand:", colCmd, slashModule:SlashUnpack(slashCmd, "|r, " .. colCmd), "|r")
+    if type(slashCommandStrings) == "table" then
+      print("SlashCommand:", color, slashModule:SlashUnpack(slashCommandStrings, "|r, " .. color), "|r")
     end
 
-    slashModule:PrintSlashCommand(nil)
+    slashModule:PrintSlashCommand(nil, nil, nil)
   else
-    slashModule:DoSlash(1, Tool.Split(msg, " "), slash)
+    slashModule:ParseAndExecute(1, toolboxModule:Split(msg, " "), slashCommandConf)
   end
 end
 
-function slashModule:SlashCommand(cmds, subcommand)
-  slash = subcommand
-  slashCmd = cmds
+---Register slash commands as strings in the _G[SLASH_<BUFFOMAT>1..N] table, and register slash handler in SlashCmdList
+---See https://wowwiki-archive.fandom.com/wiki/Creating_a_slash_command
+---@param cmds string[] The commands as strings
+---@param subcommand BomSlashCommand[] The describing structure for slash commands
+function slashModule:RegisterSlashCommandHandler(cmds, subcommand)
+  slashCommandConf = subcommand
+  slashCommandStrings = cmds
+
   if type(cmds) == "table" then
     for i, cmd in ipairs(cmds) do
       _G["SLASH_" .. TOCNAME .. i] = cmd

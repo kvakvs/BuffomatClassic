@@ -149,7 +149,7 @@ function taskScanModule:UpdateSpellTargets(playerParty, buffDef, playerUnit)
   elseif buffDef.isBlessing then
     someoneIsDead = buffChecksModule:PartyNeedsPaladinBlessing(buffDef, playerParty, someoneIsDead)
   else
-    buffChecksModule:PartyNeedsBuff(buffDef, playerUnit, playerParty, someoneIsDead)
+    buffChecksModule:PartyNeedsBuff(buffDef, playerParty, someoneIsDead)
   end
 
   -- Check Spell CD
@@ -757,7 +757,7 @@ function taskScanModule:AddBlessing(buffDef, playerParty, playerUnit, inRange)
         end
 
         if classInRange ~= nil
-                and (not buffDef.GroupsHaveDead[eachClassName]
+                and (not buffDef.groupsHaveDead[eachClassName]
                 or not buffomatModule.shared.DeathBlock)
         then
           -- Group buff (Blessing)
@@ -866,7 +866,7 @@ function taskScanModule:FindTargetForGroupBuff(groupIndex, buffDef, playerParty,
     end
 
     --if groupInRange ~= nil and (not spell.GroupsHaveDead[groupIndex] or not buffomatModule.shared.DeathBlock) then
-    if (not buffDef.GroupsHaveDead[groupIndex] or not buffomatModule.shared.DeathBlock) then
+    if (not buffDef.groupsHaveDead[groupIndex] or not buffomatModule.shared.DeathBlock) then
       -- Text: Group 5 [Spell Name]
       tasklist:AddWithPrefix(
               _t("task.type.GroupBuff"),
@@ -1836,8 +1836,7 @@ function taskScanModule:UpdateScan_Scan(playerParty, playerUnit)
     self:CheckReputationItems(playerUnit)
     self:CheckMissingWeaponEnchantments(playerUnit) -- if option to warn is enabled
 
-    ---Check if someone has drink buff, print an info message
-    self:SomeoneIsDrinking()
+    ---Check if someone has drink buff, print an info message self:SomeoneIsDrinking()
 
     castButtonTitle, macroCommand = self:CheckItemsAndContainers(
             playerUnit, castButtonTitle, macroCommand)

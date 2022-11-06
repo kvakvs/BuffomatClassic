@@ -10,6 +10,7 @@
 local buffomatModule = { forceUpdateRequestedBy = {} }
 BomModuleManager.buffomatModule = buffomatModule
 
+local slashModule = BomModuleManager.slashCommandsModule
 local characterSettingsModule = BomModuleManager.characterSettingsModule
 local _t = BomModuleManager.languagesModule
 local allBuffsModule = BomModuleManager.allBuffsModule
@@ -390,14 +391,14 @@ function buffomatModule:InitGlobalStates()
 
   if not self.character[profileModule.ALL_PROFILES[1]] then
     local newProfile = profileModule:New()
-    newProfile.CancelBuff = self.character.CancelBuff or {}
+    --newProfile.CancelBuff = self.character.CancelBuff or {}
     newProfile.Spell = self.character.Spell or {}
     newProfile.LastAura = self.character.LastAura
     newProfile.LastSeal = self.character.LastSeal
     self.character[profileModule.ALL_PROFILES[1]] = newProfile
 
     self.character.CancelBuff = nil
-    self.character.Spell = nil
+    self.character.Spell = --[[---@type BomBuffDefinitionDict]] {}
     self.character.LastAura = nil
     self.character.LastSeal = nil
   end
@@ -414,9 +415,9 @@ function buffomatModule:InitGlobalStates()
   BOM.currentProfile = self.character[soloProfile or "solo"]
 end
 
----@return BomSlashCommandConfig
+---@return BomSlashCommand[]
 function BuffomatAddon:MakeSlashCommand()
-  return --[[---@type BomSlashCommandConfig]] {
+  return --[[---@type BomSlashCommand[] ]] {
     { command = "debug", description = "", handler = {
       { command = "buff", description = "", handler = buffomatModule.Slash_DebugBuffList },
       { command = "target", description = "", handler = buffomatModule.Slash_DebugBuffs, target = "target" },
@@ -494,7 +495,8 @@ function BuffomatAddon:Init()
     buffomatModule:OptionsUpdate()
   end
 
-  toolboxModule:SlashCommand({ "/bom", "/buffomat" }, self:MakeSlashCommand())
+  slashModule:RegisterSlashCommandHandler({ "/bom", "/buffomat" },
+          self:MakeSlashCommand())
 
   buffomatModule:InitUI()
 
@@ -507,8 +509,11 @@ function BuffomatAddon:Init()
   end
 
   buffomatModule:UpdateBuffTabText()
+  buffomatModule:RegisterBindings()
+end
 
-  -- Key Binding section header and key translations (see Bindings.XML)
+-- Key Binding section header and key translations (see Bindings.XML)
+function buffomatModule:RegisterBindings()
   _G["BINDING_HEADER_BUFFOMATHEADER"] = "Buffomat Classic"
   _G["BINDING_NAME_MACRO Buffomat Classic"] = _t("ButtonCastBuff")
   _G["BINDING_NAME_BUFFOMAT_WINDOW"] = _t("ButtonBuffomatWindow")

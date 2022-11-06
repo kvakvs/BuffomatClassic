@@ -1,4 +1,4 @@
-local TOCNAME, _ = ...
+--local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BomAddon
 
 ---@class BomProfileModule
@@ -9,8 +9,19 @@ BomModuleManager.profileModule = profileModule
 local buffomatModule = BomModuleManager.buffomatModule
 local _t = BomModuleManager.languagesModule
 
+---@shape BomBlessingState
+---@field buffsPerMember {[string]: BomBuffId}
+
+---@return BomBlessingState
+function profileModule:NewBlessingState()
+  return {
+    buffsPerMember = --[[---@type {[string]: BomBuffId}]] {}
+  }
+end
+
 ---@shape BomProfile Snapshot of current options state as selected by the player
 ---Named options: Are addressed by their string name in translations, control names, etc
+---@field CurrentBlessing BomBlessingState
 ---@field ArgentumDawn boolean Warn if AD trinket is equipped while in an instance 
 ---@field AutoDismount boolean Dismount if necessary for buff cast 
 ---@field AutoDisTravel boolean Remove travel form if necessary for buff cast 
@@ -43,7 +54,7 @@ local _t = BomModuleManager.languagesModule
 ---@field LastSeal number|nil
 ---@field LastAura number|nil
 
----@alias BomBuffDefinitionDict {[string|BomBuffId]: BomBuffDefinition}
+---@alias BomBuffDefinitionDict {[BomBuffId]: BomBuffDefinition}
 
 ---@return BomProfile
 function profileModule:New()
@@ -141,7 +152,7 @@ function profileModule:ChooseProfile()
   -- TODO: Refactor isDisabled into a function, also return reason why is disabled
   if BOM.forceProfile then
     selectedProfile = --[[---@not nil]] BOM.forceProfile
-  elseif not buffomatModule.character.useProfilesOption then
+  elseif not buffomatModule.character.UseProfiles then
     selectedProfile = self:SoloProfile()
   elseif instanceType == "pvp" or instanceType == "arena" then
     selectedProfile = self:BattlegroundProfile()

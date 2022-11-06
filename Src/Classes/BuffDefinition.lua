@@ -72,8 +72,8 @@ local allBuffsModule = BomModuleManager.allBuffsModule
 ---@field groupFamily number[] Family of group buff spell ids which are mutually exclusive
 ---@field groupLink string Printable link for group buff
 ---@field groupMana number Mana cost for group buff
----@field GroupsHaveBetterBuff table List of groups who have better version of this buff
----@field GroupsHaveDead table<string, boolean> Group/class members who might be dead but their class needs this buff
+---field GroupsHaveBetterBuff table List of groups who have better version of this buff
+---@field groupsHaveDead {[number|BomClassName]: boolean} Group/class members who might be dead but their class needs this buff
 ---@field GroupsNeedBuff table List of groups who might need this buff
 ---@field groupText string Name of group buff spell (from GetSpellInfo())
 ---@field hasCD boolean There's a cooldown on this spell
@@ -565,7 +565,7 @@ function buffDefClass:IncrementNeedGroupBuff(class_name)
   self.GroupsNeedBuff[class_name] = (self.GroupsNeedBuff[class_name] or 0) + 1
 end
 
----@param buffId BomBuffId|"blessing"
+---@param buffId BomBuffId
 ---@param profileName BomProfileName|nil
 ---@return BomBuffDefinition|nil
 function buffDefModule:GetProfileBuff(buffId, profileName)
@@ -580,6 +580,22 @@ function buffDefModule:GetProfileBuff(buffId, profileName)
   end
 
   return profile.Spell[buffId]
+end
+
+---@param profileName BomProfileName|nil
+---@return BomBlessingState
+function buffDefModule:GetProfileBlessing(profileName)
+  if profileName == nil then
+    return buffomatModule.currentProfile.CurrentBlessing
+    --return allBuffsModule.allBuffs[spellId]
+  end
+
+  local profile = buffomatModule.character[--[[---@not nil]] profileName]
+  if profile == nil then
+    return --[[---@type BomBlessingState]] {}
+  end
+
+  return profile.CurrentBlessing
 end
 
 ---Returns true whether spell is enabled by the player (has checkbox)
@@ -644,7 +660,7 @@ end
 function buffDefClass:ResetBuffTargets()
   wipe(self.GroupsNeedBuff)
   --wipe(self.GroupsHaveBetterBuff)
-  wipe(self.GroupsHaveDead)
+  wipe(self.groupsHaveDead)
   wipe(self.UnitsNeedBuff)
   wipe(self.UnitsHaveBetterBuff)
 end
