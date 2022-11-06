@@ -503,11 +503,11 @@ function spellButtonsTabModule:UpdateSelectedSpell(buffDef)
       forceCastButton:SetScript("OnClick", function(self)
         if lastTarget then
           if not spellForcedTarget[--[[---@not nil]] lastTarget] then
-            buffomatModule:P(BOM.FormatTexture(texturesModule.ICON_TARGET_ON) .. " "
+            BOM:Print(BOM.FormatTexture(texturesModule.ICON_TARGET_ON) .. " "
                     .. _t("MessageAddedForced") .. ": " .. lastTarget)
             spellForcedTarget[--[[---@not nil]] lastTarget] = true
           else
-            buffomatModule:P(BOM.FormatTexture(texturesModule.ICON_TARGET_ON) .. " "
+            BOM:Print(BOM.FormatTexture(texturesModule.ICON_TARGET_ON) .. " "
                     .. _t("MessageClearedForced") .. ": " .. lastTarget)
             spellForcedTarget[--[[---@not nil]] lastTarget] = nil
           end
@@ -522,11 +522,11 @@ function spellButtonsTabModule:UpdateSelectedSpell(buffDef)
       excludeButton:SetScript("OnClick", function(control)
         if lastTarget then
           if not spellExclude[--[[---@not nil]] lastTarget] then
-            buffomatModule:P(BOM.FormatTexture(texturesModule.ICON_TARGET_EXCLUDE) .. " "
+            BOM:Print(BOM.FormatTexture(texturesModule.ICON_TARGET_EXCLUDE) .. " "
                     .. _t("MessageAddedExcluded") .. ": " .. lastTarget)
             spellExclude[--[[---@not nil]] lastTarget] = true
           else
-            buffomatModule:P(BOM.FormatTexture(texturesModule.ICON_TARGET_EXCLUDE) .. " "
+            BOM:Print(BOM.FormatTexture(texturesModule.ICON_TARGET_EXCLUDE) .. " "
                     .. _t("MessageClearedExcluded") .. ": " .. lastTarget)
             spellExclude[--[[---@not nil]] lastTarget] = nil
           end

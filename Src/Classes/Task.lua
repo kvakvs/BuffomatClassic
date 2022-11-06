@@ -8,7 +8,7 @@ local buffomatModule = BomModuleManager.buffomatModule
 
 ---@class BomTask
 --- @field target BomUnit|BomGroupBuffTarget Unit name
---- @field distance string|boolean Unit name or group number as string, to calculate whether player is in range to perform the task. Boolean true for no distance check.
+--- @field distance number Distance to the target or nearest unit in the group target
 --- @field prefixText string The message to show before the spell
 --- @field actionText string The message to display if inactive: spell name
 --- @field actionLink string The message to display if active: spell link with icon

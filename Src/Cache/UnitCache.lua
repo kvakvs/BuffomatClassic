@@ -4,11 +4,13 @@ local BOM = BuffomatAddon ---@type BomAddon
 ---@class BomUnitCacheModule
 ---@field unitCache table<string, BomUnit>
 ---@field cachedPlayerUnit BomUnit
----@field cachedParty table<number, BomUnit>
+---@field cachedParty BomParty
 local unitCacheModule = {
   unitCache = {}
 }
 BomModuleManager.unitCacheModule = unitCacheModule
+
+---@alias BomParty {[number]: BomUnit}
 
 local buffModule = BomModuleManager.buffModule
 local buffomatModule = BomModuleManager.buffomatModule
@@ -17,9 +19,10 @@ local toolboxModule = BomModuleManager.toolboxModule
 local unitModule = BomModuleManager.unitModule
 
 ---@param unitid string Player name or special name like "raidpet#"
----@param nameGroup string|number
----@param nameRole string MAINTANK?
----@return BomUnit
+---@param nameGroup string|number|nil
+---@param nameRole string|nil MAINTANK?
+---@param specialName boolean|nil
+---@return BomUnit|nil
 function unitCacheModule:GetUnit(unitid, nameGroup, nameRole, specialName)
   local name, _unitRealm = UnitFullName(unitid)
   if name == nil then
@@ -176,10 +179,10 @@ function unitCacheModule:Get40manRaidMembers(playerUnit)
 end
 
 ---Retrieve a table with party members
----@return table<number, BomUnit>, BomUnit {Party, Player}
+---@return BomParty, BomUnit {Party, Player}
 function unitCacheModule:GetPartyMembers()
   -- and buffs
-  local party ---@type table<number, BomUnit>
+  local party ---@type BomParty
   local playerUnit --- @type BomUnit
   BOM.drinkingPersonCount = 0
 
@@ -293,8 +296,8 @@ function unitCacheModule:GetPartyMembers()
     local enchantBuffId = BOM.enchantToSpellLookup[mainHandEnchantID]
     local duration
 
-    if BOM.configToSpellLookup[enchantBuffId] and BOM.configToSpellLookup[enchantBuffId].singleDuration then
-      duration = BOM.configToSpellLookup[enchantBuffId].singleDuration
+    if BOM.buffFromSpellIdLookup[enchantBuffId] and BOM.buffFromSpellIdLookup[enchantBuffId].singleDuration then
+      duration = BOM.buffFromSpellIdLookup[enchantBuffId].singleDuration
     else
       duration = 300
     end
@@ -316,8 +319,8 @@ function unitCacheModule:GetPartyMembers()
     local enchantBuffId = BOM.enchantToSpellLookup[offHandEnchantId]
     local duration
 
-    if BOM.configToSpellLookup[enchantBuffId] and BOM.configToSpellLookup[enchantBuffId].singleDuration then
-      duration = BOM.configToSpellLookup[enchantBuffId].singleDuration
+    if BOM.buffFromSpellIdLookup[enchantBuffId] and BOM.buffFromSpellIdLookup[enchantBuffId].singleDuration then
+      duration = BOM.buffFromSpellIdLookup[enchantBuffId].singleDuration
     else
       duration = 300
     end

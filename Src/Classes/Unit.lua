@@ -19,6 +19,7 @@ local buffModule = BomModuleManager.buffModule
 ---@field hasCarrot boolean Has carrot riding trinket equipped
 ---@field hasResurrection boolean Was recently resurrected
 ---@field isConnected boolean Is online
+---@field isSameZone boolean Is in the same zone
 ---@field isDead boolean Is this member dead
 ---@field isGhost boolean Is dead and corpse released
 ---@field isPlayer boolean Is this a player

@@ -1,5 +1,5 @@
-local TOCNAME, _ = ...
-local BOM = BuffomatAddon ---@type BomAddon
+--local TOCNAME, _ = ...
+--local BOM = BuffomatAddon ---@type BomAddon
 
 ---@class BomTaskListModule
 local taskListModule = {}
@@ -10,9 +10,9 @@ local buffomatModule = BomModuleManager.buffomatModule
 local _t = BomModuleManager.languagesModule
 
 ---@shape BomTaskList
----@field tasks table<number, BomTask> This potentially becomes a macro action on the buff bu
----@field comments table<number, string>
----@field lowPrioComments table<number, string>
+---@field tasks BomTask[]
+---@field comments string[]
+---@field lowPrioComments string[]
 local taskListClass = {}
 taskListClass.__index = taskListClass
 
@@ -46,7 +46,7 @@ end
 ---@param actionText string|nil Text to display if inactive (just text). Nil to use action_link
 ---@param prefixText string Text to display before spell (a verb?)
 ---@param extraText string Text to display (extra comment)
----@param target BomUnit Distance to the party member, or group (if string)
+---@param target BomUnit|BomGroupBuffTarget Distance to the party member, or group (if string)
 ---@param isInfo boolean Whether the text is info text or a cast
 ---@param prio number|nil Priority, a constant from taskModule.TaskPriority
 function taskListClass:AddWithPrefix(prefixText,
@@ -75,9 +75,9 @@ function taskListClass:Clear()
   wipe(self.lowPrioComments)
 end
 
----@param a BomGroupBuffTarget|BomUnit
----@param b BomGroupBuffTarget|BomUnit
-local function bomCompareGroupsOrMembers(a, b)
+---@param a BomTask
+---@param b BomTask
+local function bomOrderTasksByDistance(a, b)
   if not b then
     return false
   end
@@ -100,15 +100,14 @@ function taskListClass:Display()
   --end)
 
   -- update distances if the players have moved
-  ---@param task BomTask
   for i, task in ipairs(self.tasks) do
     -- Refresh the copy of distance value
-    if task.t == "memberBuffTarget" or task.t == "groupBuffTarget" then
-      task.distance = task.target:GetDistance()
-    end
+    --if task.t == "memberBuffTarget" or task.t == "groupBuffTarget" then
+    task.distance = task.target:GetDistance()
+    --end
   end
 
-  table.sort(self.tasks, bomCompareGroupsOrMembers)
+  table.sort(self.tasks, bomOrderTasksByDistance)
 
   for i, text in ipairs(self.lowPrioComments) do
     taskFrame:AddMessage(buffomatModule:Color("aaaaaa", text))

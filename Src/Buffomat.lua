@@ -39,6 +39,7 @@ local popupModule = BomModuleManager.popupModule
 ---global, visible from XML files and from script console and chat commands
 ---@class BomAddon
 ---@field activePaladinAura nil|number Spell id of aura if an unique aura was casted (only one can be active)
+---@field LastAura BomBuffId|nil Buff id of active or last active aura
 ---@field activePaladinSeal nil|number Spell id of weapon seal, if an seal-type temporary enchant was used (only one can be active)
 ---@field ALL_PROFILES BomProfileName[] Lists all buffomat profile names (group, solo... etc)
 ---@field allBuffomatBuffs BomAllBuffsTable All spells known to Buffomat
@@ -53,16 +54,16 @@ local popupModule = BomModuleManager.popupModule
 ---@field ridingSpeedZones BomRidingSpeedZones Equipped Riding trinket: Spell to and zone ids to check
 ---@field castFailedBuff BomBuffDefinition|nil
 ---@field castFailedBuffTarget BomUnit|nil
----@field castFailedSpellId number
+---@field castFailedSpellId number|nil
 ---@field checkCooldown number|nil Spell id to check cooldown for
 ---@field checkForError boolean Used by error suppression code
----@field configToSpellLookup BomAllBuffsTable
+---@field buffFromSpellIdLookup {[BomSpellId]: BomBuffDefinition} Lookup table for buff definitions by spell id
 ---@field currentProfile BomProfile Current profile from CharacterState.Profiles
 ---@field declineHasResurrection boolean Set to true on combat start, stop, holding Alt, cleared on party update
 ---@field enchantList {[BomSpellId]: number[]} Spell ids mapping to enchantment ids
 ---@field enchantToSpellLookup {[number]: BomSpellId} Reverse-maps enchantment ids back to spells
 ---@field forceProfile BomProfileName|nil Nil will choose profile name automatically, otherwise this profile will be used
----@field forceTracking number|nil Defines icon id for enforced tracking
+---@field forceTracking WowIconId|nil Defines icon id for enforced tracking
 ---@field forceUpdate boolean Requests immediate spells/buffs refresh
 ---@field haveTBC boolean Whether we are running TBC classic or later
 ---@field haveWotLK boolean Whether we are running Wrath of the Lich King or later
@@ -136,12 +137,6 @@ function BOM:Debug(t)
   if buffomatModule.shared.DebugLogging then
     DEFAULT_CHAT_FRAME:AddMessage(tostring(GetTime()) .. " " .. buffomatModule:Color("883030", "BOM") .. t)
   end
-end
-
----@param t string
-function buffomatModule:P(t)
-  -- -@diagnostic disable-next-line
-  BOM:Print(t)
 end
 
 function buffomatModule:Color(hex, text)
@@ -218,7 +213,7 @@ function buffomatModule.ChooseProfile(profile)
   elseif buffomatModule.character[profile] then
     BOM.forceProfile = profile
   else
-    buffomatModule:P("Unknown profile: " .. profile)
+    BOM:Print("Unknown profile: " .. profile)
     return
   end
 
@@ -244,7 +239,7 @@ function buffomatModule:UseProfile(profileName)
   BomC_MainWindow_Title:SetText(BOM.FormatTexture(constModule.BOM_BEAR_ICON_FULLPATH) .. _t("profile_" .. profileName))
   -- .. " - " .. constModule.SHORT_TITLE
 
-  buffomatModule:P("Using profile " .. _t("profile_" .. profileName))
+  BOM:Print("Using profile " .. _t("profile_" .. profileName))
 end
 
 ---When BomCharacterState.WatchGroup has changed, update the buff tab text to show what's
@@ -495,7 +490,7 @@ function BuffomatAddon:Init()
       DB[var] = false
     end
 
-    buffomatModule:P("Set " .. var .. " to " .. tostring(DB[var]))
+    BOM:Print("Set " .. var .. " to " .. tostring(DB[var]))
     buffomatModule:OptionsUpdate()
   end
 
@@ -597,7 +592,7 @@ buffomatModule.lastSpellsTabUpdate = 0
 
 ---This runs every frame, do not do any excessive work here
 function buffomatModule.UpdateTimer(elapsed)
-  --if elapsed > 0.1 then buffomatModule:P("Elapsed: " .. elapsed) end
+  --if elapsed > 0.1 then BOM:Print("Elapsed: " .. elapsed) end
 
   local now = GetTime()
 
@@ -668,7 +663,7 @@ function buffomatModule.UpdateTimer(elapsed)
       if buffomatModule.slowCount >= 20 and updateTimerLimit < 1 then
         buffomatModule.updateTimerLimit = buffomatModule.BOM_THROTTLE_TIMER_LIMIT
         buffomatModule.slowerhardwareUpdateTimerLimit = buffomatModule.BOM_THROTTLE_SLOWER_HARDWARE_TIMER_LIMIT
-        buffomatModule:P("Overwhelmed - slowing down the scans!")
+        BOM:Print("Overwhelmed - slowing down the scans!")
       end
     else
       buffomatModule.slowCount = 0
@@ -709,7 +704,7 @@ function buffomatModule:PrintCallers(prefix, callersCollection)
         callers = callers .. string.format("%s; ", caller)
       end
     end
-    buffomatModule:P(prefix .. callers)
+    BOM:Print(prefix .. callers)
   end
 end
 
@@ -805,7 +800,7 @@ function BOM.ShowWindow(tab)
     end
     toolboxModule:SelectTab(BomC_MainWindow, tab or 1)
   else
-    buffomatModule:P(_t("message.ShowHideInCombat"))
+    BOM:Print(_t("message.ShowHideInCombat"))
   end
 end
 
@@ -869,7 +864,7 @@ function BOM.ResetWindow()
   BomC_MainWindow:SetHeight(200)
   BOM.SaveWindowPosition()
   BOM.ShowWindow(1)
-  buffomatModule:P("Window position is reset.")
+  BOM:Print("Window position is reset.")
 end
 
 local function perform_who_request(name)

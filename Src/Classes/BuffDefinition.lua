@@ -91,7 +91,7 @@ local allBuffsModule = BomModuleManager.allBuffsModule
 ---@field OffHandEnable boolean [⚠DO NOT RENAME]
 ---@field onlyUsableFor string[] list of classes which only can see this buff (hidden for others)
 ---@field optionText string Used to create sections in spell list in the options page
----@field reagentRequired BomItemId[] | BomItemId Reagent item ids required for group buff
+---@field reagentRequired BomItemId[] Reagent item ids required for group buff
 ---@field requiresForm number Required shapeshift form ID to cast this buff
 ---@field requiresOutdoors boolean Spell can only be cast outdoors
 ---@field requireWarlockPet boolean For Soul Link - must check if a demon pet is present
@@ -359,10 +359,14 @@ function buffDefClass:LockIfHaveItem(itemIds)
   return self
 end
 
----@param itemIds BomItemId[]
+---@param itemIds BomItemId[]|BomItemId
 ---@return BomBuffDefinition
 function buffDefClass:ReagentRequired(itemIds)
-  self.reagentRequired = itemIds
+  if type(itemIds) == "table" then
+    self.reagentRequired = --[[---@type BomItemId[] ]] itemIds
+  else
+    self.reagentRequired = { --[[---@type BomItemId]] itemIds }
+  end
   return self
 end
 
@@ -561,11 +565,12 @@ function buffDefClass:IncrementNeedGroupBuff(class_name)
   self.GroupsNeedBuff[class_name] = (self.GroupsNeedBuff[class_name] or 0) + 1
 end
 
----@param spellId number
+---@param buffId BomBuffId|"blessing"
 ---@param profileName BomProfileName|nil
-function buffDefModule:GetProfileBuff(spellId, profileName)
+---@return BomBuffDefinition|nil
+function buffDefModule:GetProfileBuff(buffId, profileName)
   if profileName == nil then
-    return buffomatModule.currentProfile.Spell[spellId]
+    return buffomatModule.currentProfile.Spell[buffId]
     --return allBuffsModule.allBuffs[spellId]
   end
 
@@ -574,7 +579,7 @@ function buffDefModule:GetProfileBuff(spellId, profileName)
     return nil
   end
 
-  return profile.Spell[spellId]
+  return profile.Spell[buffId]
 end
 
 ---Returns true whether spell is enabled by the player (has checkbox)

@@ -56,7 +56,7 @@ function spellSetupModule:Setup_ResetCaches()
   BOM.allSpellIds = {}
   BOM.spellIdtoBuffId = {}
   BOM.spellIdIsSingleLookup = {}
-  BOM.configToSpellLookup = --[[---@type BomAllBuffsTable]] {}
+  BOM.buffFromSpellIdLookup = --[[---@type BomAllBuffsTable]] {}
 
   buffomatModule.shared.Cache = buffomatModule.shared.Cache or {}
   buffomatModule.shared.Cache.Item2 = buffomatModule.shared.Cache.Item2 or {}
@@ -134,7 +134,7 @@ function spellSetupModule:Setup_EachSpell_Consumable(add, buffDef)
 
       buffomatModule.shared.Cache.Item2[buffDef.items] = itemInfo
     else
-      --buffomatModule:P("Item not found! Spell=" .. tostring(spell.singleId)
+      --BOM:Print("Item not found! Spell=" .. tostring(spell.singleId)
       --      .. " Item=" .. tostring(spell.item))
 
       -- Go delayed fetch
@@ -166,7 +166,7 @@ function spellSetupModule:Setup_EachSpell_CacheUpdate(spell)
     for sindex, eachSingleId in ipairs(spell.singleFamily) do
       BOM.spellIdtoBuffId[eachSingleId] = spell.buffId
       BOM.spellIdIsSingleLookup[eachSingleId] = true
-      BOM.configToSpellLookup[eachSingleId] = spell
+      BOM.buffFromSpellIdLookup[eachSingleId] = spell
 
       if IsSpellKnown(eachSingleId) then
         spell.highestRankSingleId = eachSingleId
@@ -177,13 +177,13 @@ function spellSetupModule:Setup_EachSpell_CacheUpdate(spell)
   if spell.highestRankSingleId then
     BOM.spellIdtoBuffId[spell.highestRankSingleId] = spell.buffId
     BOM.spellIdIsSingleLookup[spell.highestRankSingleId] = true
-    BOM.configToSpellLookup[spell.highestRankSingleId] = spell
+    BOM.buffFromSpellIdLookup[spell.highestRankSingleId] = spell
   end
 
   if spell.groupFamily then
     for sindex, eachGroupId in ipairs(spell.groupFamily) do
       BOM.spellIdtoBuffId[eachGroupId] = spell.buffId
-      BOM.configToSpellLookup[eachGroupId] = spell
+      BOM.buffFromSpellIdLookup[eachGroupId] = spell
 
       if IsSpellKnown(eachGroupId) then
         spell.highestRankGroupId = eachGroupId
@@ -193,7 +193,7 @@ function spellSetupModule:Setup_EachSpell_CacheUpdate(spell)
 
   if spell.highestRankGroupId then
     BOM.spellIdtoBuffId[spell.highestRankGroupId] = spell.buffId
-    BOM.configToSpellLookup[spell.highestRankGroupId] = spell
+    BOM.buffFromSpellIdLookup[spell.highestRankGroupId] = spell
   end
 end
 
@@ -298,7 +298,7 @@ end
 ---@param buff BomBuffDefinition
 function spellSetupModule:Setup_EachBuff(buff)
   buff.SkipList = {}
-  BOM.configToSpellLookup[buff.buffId] = buff
+  BOM.buffFromSpellIdLookup[buff.buffId] = buff
 
   self:Setup_EachSpell_CacheUpdate(buff)
 
