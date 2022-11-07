@@ -22,12 +22,12 @@ setmetatable(languagesModule, {
   end
 })
 
----@alias BomLanguageId "enEN" | "deDE" | "frFR" | "ruRU" | "zhCN"
+---@alias BomLanguageId "enUS" | "deDE" | "frFR" | "ruRU" | "zhCN"
 ---@alias BomLocaleDict table<string, string>
 
 ---@shape BomAllLocalesCollection
 ---@field [BomLanguageId] BomLocaleDict
----@field enEN BomLocaleDict
+---@field enUS BomLocaleDict
 ---@field deDE BomLocaleDict
 ---@field frFR BomLocaleDict
 ---@field ruRU BomLocaleDict
@@ -36,7 +36,7 @@ setmetatable(languagesModule, {
 function languagesModule:SetupTranslations()
   -- Always add english and add one language that is supported and is current
   self.locales = --[[---@type BomAllLocalesCollection]] {
-    enEN = englishModule:Translations(),
+    enUS = englishModule:Translations(),
     deDE = {},
     frFR = {},
     ruRU = {},
