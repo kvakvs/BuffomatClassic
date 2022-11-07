@@ -8,6 +8,7 @@ local profileModule = BomModuleManager.profileModule ---@type BomProfileModule
 local buffomatModule = BomModuleManager.buffomatModule
 local _t = BomModuleManager.languagesModule
 
+---A single blessing per unit name is possible
 ---@alias BomBlessingState {[string]: BomBuffId}
 
 ---@return BomBlessingState

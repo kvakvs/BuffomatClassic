@@ -29,9 +29,9 @@ constModule.TASK_NOTIFICATION_SOUNDS = {
   "projector-button-push",
 }
 
---Tool.IconClassTexture = "Interface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES"
---Tool.IconClassTextureWithoutBorder = "Interface\\WorldStateFrame\\ICONS-CLASSES"
---Tool.IconClassTextureCoord = CLASS_ICON_TCOORDS
+--constModule.IconClassTexture = "Interface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES"
+--constModule.IconClassTextureWithoutBorder = "Interface\\WorldStateFrame\\ICONS-CLASSES"
+--constModule.IconClassTextureCoord = CLASS_ICON_TCOORDS
 
 -- The texture is square 4x in a row, 64 px per icon
 -- https://github.com/Gethe/wow-ui-textures/blob/live/WorldStateFrame/ICONS-CLASSES.PNG

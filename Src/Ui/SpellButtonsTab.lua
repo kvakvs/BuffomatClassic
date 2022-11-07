@@ -277,7 +277,7 @@ function spellButtonsTabModule:AddSpellRow(rowBuilder, playerIsHorde, buff)
   --  spell.frames.toggleForceCast:Show()
   --  spell.frames.toggleExclude:Show()
   --
-  --  for ci, class in ipairs(BOM.Tool.Classes) do
+  --  for ci, class in ipairs(constModule.CLASSES) do
   --    if not BOM.IsTBC and -- if not TBC, hide paladin for horde, hide shaman for alliance
   --            ((playerIsHorde and class == "PALADIN") or (not playerIsHorde and class == "SHAMAN")) then
   --      spell.frames[class]:Hide()

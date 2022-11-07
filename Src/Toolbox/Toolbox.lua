@@ -14,6 +14,7 @@ local BOM = BuffomatAddon ---@type BomAddon
 local toolboxModule = BomModuleManager.toolboxModule ---@type BomToolboxModule
 
 local _t = BomModuleManager.languagesModule
+local constModule = BomModuleManager.constModule
 
 ---@class BomGPIControlEditBox: BomGPIControl
 ---@field chatFrame BomControl
@@ -190,7 +191,7 @@ function toolboxModule:RunSlashCmd(cmd)
     self._EditBox:Hide()
   end
   self._EditBox:SetText(cmd)
-  ChatEdit_SendText(Tool._EditBox)
+  ChatEdit_SendText(toolboxModule._EditBox)
 end
 
 ---@deprecated
@@ -212,7 +213,7 @@ end
 ---@deprecated
 function toolboxModule:GetRaidIcon(name)
   local x = string.gsub(string.lower(name), "[%{%}]", "")
-  return ICON_TAG_LIST[x] and Tool.RaidIcon[ICON_TAG_LIST[x]] or name
+  return ICON_TAG_LIST[x] and constModule.RAID_ICON[ICON_TAG_LIST[x]] or name
 end
 
 local TOO_FAR = 1000011 -- special value to find out that the range error originates from this module

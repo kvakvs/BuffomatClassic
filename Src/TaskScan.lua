@@ -688,12 +688,12 @@ end
 --local function bomFormatGroupBuffText(groupIndex, spell, classColorize)
 --  if classColorize then
 --    return string.format(_t("FORMAT_BUFF_GROUP"),
---            "|c" .. RAID_CLASS_COLORS[groupIndex].colorStr .. BOM.Tool.ClassName[groupIndex] .. "|r",
+--            "|c" .. RAID_CLASS_COLORS[groupIndex].colorStr .. constModule.CLASS_NAMES[groupIndex] .. "|r",
 --            spell.groupLink or spell.group or "")
 --  end
 --
 --  return string.format(_t("FORMAT_BUFF_GROUP"),
---          BOM.Tool.ClassName[groupIndex] or "?",
+--          constModule.CLASS_NAMES[groupIndex] or "?",
 --          spell.groupLink or spell.group or "")
 --end
 
@@ -734,7 +734,11 @@ end
 ---@return boolean in range
 function taskScanModule:AddBlessing(buffDef, playerParty, playerUnit, inRange)
   local ok, bag, slot, count
-  ok, bag, slot, count = buffChecksModule:HasItem(buffDef.reagentRequired, true)
+  if buffDef.reagentRequired then
+    ok, bag, slot, count = buffChecksModule:HasItem(buffDef.reagentRequired, true)
+  else
+    ok, bag, slot, count = true, 0, 0, 0
+  end
 
   if type(count) == "number" then
     count = " x" .. count .. " "
@@ -747,8 +751,8 @@ function taskScanModule:AddBlessing(buffDef, playerParty, playerUnit, inRange)
   then
     -- For each class name WARRIOR, PALADIN, PRIEST, SHAMAN... etc
     for i, eachClassName in ipairs(constModule.CLASSES) do
-      if buffDef.GroupsNeedBuff[eachClassName]
-              and buffDef.GroupsNeedBuff[eachClassName] >= buffomatModule.shared.MinBlessing
+      if buffDef.groupsNeedBuff[eachClassName]
+              and buffDef.groupsNeedBuff[eachClassName] >= buffomatModule.shared.MinBlessing
       then
         BOM.repeatUpdate = true
         local classInRange = self:GetClassInRange(
@@ -803,8 +807,8 @@ function taskScanModule:AddBlessing(buffDef, playerParty, playerUnit, inRange)
             and (buffomatModule.shared.NoGroupBuff
             or buffDef.groupMana == nil
             or needsBuff.class == "pet"
-            or buffDef.GroupsNeedBuff[needsBuff.class] == nil
-            or buffDef.GroupsNeedBuff[needsBuff.class] < buffomatModule.shared.MinBlessing) then
+            or buffDef.groupsNeedBuff[needsBuff.class] == nil
+            or buffDef.groupsNeedBuff[needsBuff.class] < buffomatModule.shared.MinBlessing) then
 
       if not needsBuff.isPlayer then
         BOM.repeatUpdate = true
@@ -861,8 +865,8 @@ end
 ---@param inRange boolean
 ---@return boolean inRange
 function taskScanModule:FindTargetForGroupBuff(groupIndex, buffDef, playerParty, playerUnit, minBuff, inRange)
-  if buffDef.GroupsNeedBuff[groupIndex]
-          and buffDef.GroupsNeedBuff[groupIndex] >= minBuff
+  if buffDef.groupsNeedBuff[groupIndex]
+          and buffDef.groupsNeedBuff[groupIndex] >= minBuff
   then
     BOM.repeatUpdate = true
     local groupInRange = self:GetGroupInRange(
@@ -954,8 +958,8 @@ function taskScanModule:AddBuff_SingleBuff(buffDef, minBuff, inRange)
             and (buffomatModule.shared.NoGroupBuff
             or buffDef.groupMana == nil
             or needBuff.group == 9
-            or buffDef.GroupsNeedBuff[needBuff.group] == nil
-            or buffDef.GroupsNeedBuff[needBuff.group] < minBuff)
+            or buffDef.groupsNeedBuff[needBuff.group] == nil
+            or buffDef.groupsNeedBuff[needBuff.group] < minBuff)
     then
       if not needBuff.isPlayer then
         BOM.repeatUpdate = true
@@ -1908,7 +1912,7 @@ end -- end function bomUpdateScan_Scan()
 
 function taskScanModule:UpdateScan_PreCheck(from)
   if BOM.selectedBuffs == nil then
-    BOM:Debug("UpdateScan_PreCheck: BOM.SelectedSpells is nil")
+    --BOM:Debug("UpdateScan_PreCheck: BOM.SelectedSpells is nil")
     return
   end
 

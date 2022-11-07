@@ -281,13 +281,13 @@ function buffChecksModule:PartyNeedsPaladinBlessing(buffDef, playerParty, someon
     local ok = false
     local notGroup = false
 
-    if currentBlessing.buffsPerMember[partyMember.name] == buffDef.buffId
+    if currentBlessing[partyMember.name] == buffDef.buffId
             or (partyMember.isTank and profileBuff.Class["tank"] and not profileBuff.SelfCast)
     then
       ok = true
       notGroup = true
 
-    elseif currentBlessing.buffsPerMember[partyMember.name] == nil then
+    elseif currentBlessing[partyMember.name] == nil then
       if profileBuff.Class[partyMember.class]
               and (not IsInRaid() or buffomatModule.character.WatchGroup[partyMember.group])
               and not profileBuff.SelfCast then
@@ -390,12 +390,12 @@ function buffChecksModule:PartyNeedsBuff(buffDef, party, someoneIsDead)
 
       if not found then
         tinsert(buffDef.unitsNeedBuff, partyMember)
-        buffDef.GroupsNeedBuff[partyMember.group] = (buffDef.GroupsNeedBuff[partyMember.group] or 0) + 1
+        buffDef.groupsNeedBuff[partyMember.group] = (buffDef.groupsNeedBuff[partyMember.group] or 0) + 1
 
       elseif buffomatModule.shared.ReplaceSingle
               and partyMemberBuff
               and partyMemberBuff.isSingle then
-        buffDef.GroupsNeedBuff[partyMember.group] = (buffDef.GroupsNeedBuff[partyMember.group] or 0) + 1
+        buffDef.groupsNeedBuff[partyMember.group] = (buffDef.groupsNeedBuff[partyMember.group] or 0) + 1
       end
     end -- if needbuff and connected and samezone
   end -- for all in party

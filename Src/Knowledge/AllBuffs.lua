@@ -3,9 +3,11 @@ local BOM = BuffomatAddon ---@type BomAddon
 
 ---@alias BomBuffCategoryName ""|"tracking"|"pet"|"aura"|"seal"|"blessing"|"class"|"classicPhysFood"|"classicSpellFood"|"classicFood"|"classicPhysElixir"|"classicPhysBuff"|"classicBuff"|"classicSpellElixir"|"classicElixir"|"classicFlask"|"tbcPhysFood"|"tbcSpellFood"|"tbcFood"|"tbcPhysElixir"|"tbcSpellElixir"|"tbcElixir"|"tbcFlask"|"wotlkPhysFood"|"wotlkSpellFood"|"wotlkFood"|"wotlkPhysElixir"|"wotlkSpellElixir"|"wotlkElixir"|"wotlkFlask"|"scroll"|"weaponEnchantment"|"classWeaponEnchantment"
 
+---@alias BomBuffidBuffLookup {[BomBuffId]: BomBuffDefinition}
+
 ---@shape BomAllBuffsModule
 ---@field buffCategories BomBuffCategoryName[] Category names for buffs
----@field allBuffs {[BomBuffId]: BomBuffDefinition} All buffs, same as BOM.AllBuffomatSpells for convenience
+---@field allBuffs BomBuffidBuffLookup All buffs, same as BOM.AllBuffomatSpells for convenience
 ---@field CrusaderAuraSpell BomBuffDefinition
 local allBuffsModule = BomModuleManager.allBuffsModule ---@type BomAllBuffsModule
 local _t = BomModuleManager.languagesModule
@@ -248,7 +250,10 @@ function allBuffsModule:SetupSpells()
   --Preload items!
   for x, spell in ipairs(allBuffs) do
     if spell.isConsumable and spell.items then
-      BOM.GetItemInfo(spell.items)
+      for _, item in ipairs(spell.items) do
+        BOM.GetItemInfo(item)
+      end
+
     end
   end
 
@@ -259,8 +264,13 @@ function allBuffsModule:SetupSpells()
     end
   end
 
-  self.allBuffs = allBuffs
-  BOM.allBuffomatBuffs = allBuffs
+  -- Move from list of buffs to buffid-keyed buff dictionary
+  self.allBuffs = --[[---@type BomBuffidBuffLookup]] {}
+  for _i, buff in ipairs(allBuffs) do
+    self.allBuffs[buff.buffId] = buff
+  end
+
+  BOM.allBuffomatBuffs = self.allBuffs
   BOM.enchantList = enchantments
 end
 

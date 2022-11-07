@@ -243,7 +243,7 @@ end
 
 ---@param tooltip string
 ---@param onClick function
---@return BomGPIControl
+---@return BomGPIControl
 function buffRowClass:CreateTankToggle(tooltip, onClick)
   if self.tank == nil then
     self.tank = managedUiModule:CreateManagedButton(
@@ -301,11 +301,12 @@ function buffRowClass:CreateForceCastToggle(tooltip, buffDef)
 end
 
 ---@param tooltip string
+---@param buffDef BomBuffDefinition
 ---@return BomGPIControl
-function buffRowClass:CreateExcludeToggle(tooltip, spell)
+function buffRowClass:CreateExcludeToggle(tooltip, buffDef)
   if self.toggleExclude == nil then
     self.toggleExclude = uiButtonModule:CreateSmallButton(
-            "Exclude" .. spell.singleId,
+            "Exclude" .. buffDef.highestRankSingleId,
             BomC_SpellTab_Scroll_Child,
             texturesModule.ICON_TARGET_EXCLUDE)
     managedUiModule:ManageControl(self.uniqueId .. ".excludeToggle", self.toggleExclude)

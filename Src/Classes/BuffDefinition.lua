@@ -73,7 +73,7 @@ local allBuffsModule = BomModuleManager.allBuffsModule
 ---@field groupMana number Mana cost for group buff
 ---field GroupsHaveBetterBuff table List of groups who have better version of this buff
 ---@field groupsHaveDead {[number|BomClassName]: boolean} Group/class members who might be dead but their class needs this buff
----@field GroupsNeedBuff table List of groups who might need this buff
+---@field groupsNeedBuff table List of groups who might need this buff
 ---@field groupText string Name of group buff spell (from GetSpellInfo())
 ---@field hasCD boolean There's a cooldown on this spell
 ---@field ignoreIfBetterBuffs BomSpellId[] If these auras are present on target, the buff is not queued
@@ -120,20 +120,20 @@ buffDefClass.__index = buffDefClass
 ---@param singleId BomSpellId Spell id also serving as buffId key
 ---@return BomBuffDefinition
 function buffDefModule:New(singleId)
-  local newSpell = --[[---@type BomBuffDefinition]] {
-    category            = "", -- special value no category
-    frames              = buffRowModule:New(tostring(singleId)), -- spell buttons from the UI go here
-    buffId              = singleId,
-    highestRankSingleId = singleId,
-    singleFamily        = { singleId },
-    limitations         = --[[---@type BomSpellLimitations]] {},
-    ForcedTarget        = {},
-    ExcludedTarget      = {},
-    UnitsNeedBuff       = {},
-    UnitsHaveBetterBuff = {},
-    GroupsNeedBuff      = {},
-    GroupsHaveDead      = {},
-  }
+  local newSpell = --[[---@type BomBuffDefinition]] {}
+  newSpell.category            = "" -- special value no category
+  newSpell.frames              = buffRowModule:New(tostring(singleId)) -- spell buttons from the UI go here
+  newSpell.buffId              = singleId
+  newSpell.highestRankSingleId = singleId
+  newSpell.singleFamily        = { singleId }
+  newSpell.limitations         = --[[---@type BomSpellLimitations]] {}
+  newSpell.ForcedTarget        = {}
+  newSpell.ExcludedTarget      = {}
+  newSpell.unitsNeedBuff       = {}
+  newSpell.unitsHaveBetterBuff = {}
+  newSpell.groupsNeedBuff      = {}
+  newSpell.groupsHaveDead      = {}
+
   setmetatable(newSpell, buffDefClass)
   return newSpell
 end
@@ -561,7 +561,7 @@ end
 
 ---@param class_name string
 function buffDefClass:IncrementNeedGroupBuff(class_name)
-  self.GroupsNeedBuff[class_name] = (self.GroupsNeedBuff[class_name] or 0) + 1
+  self.groupsNeedBuff[class_name] = (self.groupsNeedBuff[class_name] or 0) + 1
 end
 
 ---@param buffId BomBuffId
@@ -657,7 +657,7 @@ function buffDefClass:DoesUnitHaveBetterBuffs(unit)
 end
 
 function buffDefClass:ResetBuffTargets()
-  wipe(self.GroupsNeedBuff)
+  wipe(self.groupsNeedBuff)
   --wipe(self.GroupsHaveBetterBuff)
   wipe(self.groupsHaveDead)
   wipe(self.unitsNeedBuff)

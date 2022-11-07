@@ -10,24 +10,25 @@
 local buffomatModule = BomModuleManager.buffomatModule ---@type BomBuffomatModule
 buffomatModule.forceUpdateRequestedBy = {}
 
-local slashModule = BomModuleManager.slashCommandsModule
-local characterSettingsModule = BomModuleManager.characterSettingsModule
 local _t = BomModuleManager.languagesModule
 local allBuffsModule = BomModuleManager.allBuffsModule
+local characterSettingsModule = BomModuleManager.characterSettingsModule
 local characterStateModule = BomModuleManager.characterSettingsModule
 local constModule = BomModuleManager.constModule
 local eventsModule = BomModuleManager.eventsModule
 local languagesModule = BomModuleManager.languagesModule
+local macroModule = BomModuleManager.macroModule
 local managedUiModule = BomModuleManager.myButtonModule
 local optionsModule = BomModuleManager.optionsModule
 local optionsPopupModule = BomModuleManager.optionsPopupModule
+local popupModule = BomModuleManager.popupModule
 local profileModule = BomModuleManager.profileModule
 local sharedStateModule = BomModuleManager.sharedSettingsModule
+local slashModule = BomModuleManager.slashCommandsModule
 local spellButtonsTabModule = BomModuleManager.spellButtonsTabModule
 local taskScanModule = BomModuleManager.taskScanModule
+local texturesModule = BomModuleManager.texturesModule
 local toolboxModule = BomModuleManager.toolboxModule
-local macroModule = BomModuleManager.macroModule
-local popupModule = BomModuleManager.popupModule
 
 ---Collection of tables of buffs, indexed per unit name
 ---@shape BomBuffCollectionPerUnit
