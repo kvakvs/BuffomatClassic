@@ -1,9 +1,8 @@
 local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BomAddon
 
----@class BomMacroModule
-local macroModule = {}
-BomModuleManager.macroModule = macroModule
+---@shape BomMacroModule
+local macroModule = BomModuleManager.macroModule ---@type BomMacroModule
 
 local constModule = BomModuleManager.constModule
 local _t = BomModuleManager.languagesModule
@@ -61,7 +60,7 @@ end
 
 function macroClass:UpdateMacro()
   EditMacro(constModule.MACRO_NAME, nil, self.icon, self:GetText())
-  BOM.MinimapButton.SetTexture("Interface\\ICONS\\" .. self.icon)
+  BOM.minimapButton.SetTexture("Interface\\ICONS\\" .. self.icon)
 end
 
 function macroClass:Recreate()

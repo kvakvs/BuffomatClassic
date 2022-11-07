@@ -1,9 +1,8 @@
 local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BomAddon
 
----@class BomSharedSettingsModule
-local sharedSettingsModule = {}
-BomModuleManager.sharedSettingsModule = sharedSettingsModule
+---@shape BomSharedSettingsModule
+local sharedSettingsModule = BomModuleManager.sharedSettingsModule ---@type BomSharedSettingsModule
 
 --- Values to use when the saved data is evolving with an update, and the key doesn't exist
 sharedSettingsModule.defaults = {
@@ -30,7 +29,7 @@ sharedSettingsModule.defaults = {
 ---@field CustomLocales table
 ---@field UIWindowScale number
 ---@field AutoOpen boolean
----@field FadeWhenNothingToDo boolean Allows Buffomat window to fade when nothing to do
+---@field FadeWhenNothingToDo number Allows Buffomat window to fade when nothing to do
 ---@field UseProfiles boolean
 ---@field SlowerHardware boolean
 ---@field ScanInRestArea boolean
@@ -70,6 +69,7 @@ sharedSettingsModule.defaults = {
 ---@field Time1800 number
 ---@field Time3600 number
 ---@field Duration BomSpellCooldownsTable Copy from character settings
+---@field ShamanFlametongueRanked boolean Try and use rank 9 on mainhand for shaman when buffing double Flametongue
 
 local sharedStateClass = {}
 sharedStateClass.__index = sharedStateClass

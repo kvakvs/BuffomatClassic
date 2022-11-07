@@ -1,22 +1,18 @@
 --local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BomAddon
 
----@class BomProfileModule
+---@shape BomProfileModule
 ---@field ALL_PROFILES BomProfileName[]
-local profileModule = {}
-BomModuleManager.profileModule = profileModule
+local profileModule = BomModuleManager.profileModule ---@type BomProfileModule
 
 local buffomatModule = BomModuleManager.buffomatModule
 local _t = BomModuleManager.languagesModule
 
----@shape BomBlessingState
----@field buffsPerMember {[string]: BomBuffId}
+---@alias BomBlessingState {[string]: BomBuffId}
 
 ---@return BomBlessingState
 function profileModule:NewBlessingState()
-  return {
-    buffsPerMember = --[[---@type {[string]: BomBuffId}]] {}
-  }
+  return --[[---@type BomBlessingState]] {}
 end
 
 ---@shape BomProfile Snapshot of current options state as selected by the player

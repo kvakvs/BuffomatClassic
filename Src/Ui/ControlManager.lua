@@ -1,16 +1,11 @@
---local TOCNAME, _ = ...
---local BOM = BuffomatAddon ---@type BomAddon
-
 ---@alias BomManagedControlsTable {[string]: BomGPIControl|BomControl}
 
 ---@shape BomUiMyButtonModule
 ---@field managed BomManagedControlsTable Contains all MyButtons with uniqueId
 ---@field managedWithoutUniqueId BomControl[] Contains all MyButtons without uniqueId
-local managedUiModule = {
-  managed                = {},
-  managedWithoutUniqueId = {},
-}
-BomModuleManager.myButtonModule = managedUiModule
+local managedUiModule = BomModuleManager.myButtonModule ---@type BomUiMyButtonModule
+managedUiModule.managed = {}
+managedUiModule.managedWithoutUniqueId = {}
 
 local controlModule = BomModuleManager.controlModule
 

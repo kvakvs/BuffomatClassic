@@ -1,13 +1,10 @@
---local TOCNAME, _ = ...
---local BOM = BuffomatAddon ---@type BomAddon
----@class BomTaskModule
-local taskModule = {}
-BomModuleManager.taskModule = taskModule
+---@shape BomTaskModule
+local taskModule = BomModuleManager.taskModule ---@type BomTaskModule
 
 local buffomatModule = BomModuleManager.buffomatModule
 
 ---@class BomTask
---- @field target BomUnit|BomGroupBuffTarget Unit name
+--- @field target BomUnitBuffTarget|BomGroupBuffTarget Unit name
 --- @field distance number Distance to the target or nearest unit in the group target
 --- @field prefixText string The message to show before the spell
 --- @field actionText string The message to display if inactive: spell name
@@ -27,11 +24,11 @@ taskModule.TaskPriority = {
 
 --Creates a new TaskListItem
 ---@param priority number|nil Sorting priority to display
----@param target BomUnit|BomGroupBuffTarget Unit to calculate distance to or boolean true
+---@param target BomUnitBuffTarget|BomGroupBuffTarget Unit to calculate distance to or boolean true
 ---@param actionText string|nil
 ---@param actionLink string
 ---@param prefixText string
----@param extraText string
+---@param extraText string|nil
 function taskModule:New(prefixText, actionLink, actionText, extraText,
                         target, isInfo, priority)
   local distance

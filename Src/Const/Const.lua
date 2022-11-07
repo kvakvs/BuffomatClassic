@@ -1,8 +1,7 @@
 local TOCNAME, _ = ...
 
----@class BomConstModule
-local constModule = {}
-BomModuleManager.constModule = constModule
+---@shape BomConstModule
+local constModule = BomModuleManager.constModule ---@type BomConstModule
 
 constModule.TOC_VERSION = GetAddOnMetadata(TOCNAME, "Version") --used for display in options
 constModule.TOC_TITLE = GetAddOnMetadata(TOCNAME, "Title") -- Longer title like "Buffomat Classic TBC"
@@ -49,6 +48,8 @@ constModule.CLASS_ICONS = {
 
   ["PALADIN"]     = "|TInterface\\WorldStateFrame\\ICONS-CLASSES:0:0:0:0:256:256:0:64:128:192|t",
   ["DEATHKNIGHT"] = "|TInterface\\WorldStateFrame\\ICONS-CLASSES:0:0:0:0:256:256:64:128:128:192|t",
+  ["pet"]         = "Pet",
+  ["tank"]        = "Tank",
 }
 
 -- The texture is square 4x in a row, 64 px per icon

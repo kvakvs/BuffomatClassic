@@ -1,12 +1,12 @@
 local BOM = BuffomatAddon ---@type BomAddon
 
----@class BomAllConsumesEnchantmentsModule
-local enchantmentsModule = {}
-BomModuleManager.allConsumesEnchantmentsModule = enchantmentsModule
+---@shape BomAllConsumesEnchantmentsModule
+local enchantmentsModule = BomModuleManager.allConsumesEnchantmentsModule ---@type BomAllConsumesEnchantmentsModule
 
 local _t = BomModuleManager.languagesModule
 local allBuffsModule = BomModuleManager.allBuffsModule
 local buffDefModule = BomModuleManager.buffDefinitionModule
+local constModule = BomModuleManager.constModule
 
 ---SCROLLS
 ---@param allBuffs BomBuffDefinition[] A list of buffs (not dictionary)
@@ -18,6 +18,18 @@ function enchantmentsModule:SetupEnchantments(allBuffs, enchantments)
 end
 
 ---@param allBuffs BomBuffDefinition[] A list of buffs (not dictionary)
+---@param spellId BomSpellId
+---@return BomBuffDefinition
+function enchantmentsModule:RegisterEnchantment(allBuffs, spellId)
+  return buffDefModule:createAndRegisterBuff(allBuffs, spellId, nil)
+                      :IsConsumable(true)
+                      :SingleDuration(allBuffsModule.DURATION_30M)
+                      :IsDefault(false)
+                      :BuffType("weapon")
+                      :Category("weaponEnchantment")
+end
+
+---@param allBuffs BomBuffDefinition[] A list of buffs (not dictionary)
 ---@param enchantments table<number, number[]> Key is spell id, value is list of enchantment ids
 function enchantmentsModule:_SetupCasterEnchantments(allBuffs, enchantments)
   --if BOM.HaveTBC then
@@ -25,37 +37,32 @@ function enchantmentsModule:_SetupCasterEnchantments(allBuffs, enchantments)
   --          { item = 22522, items = { 22522 }, isConsumable = true,
   --            type = "weapon", duration = allBuffsModule.DURATION_1H, default = false
   --          })   :RequirePlayerClass(allBuffsModule.SPELL_CLASSES)
-  --               :Category(allBuffsModule.WEAPON_ENCHANTMENT)
+  --               :Category("weaponEnchantment")
   --end
-  buffDefModule:createAndRegisterBuff(allBuffs, 25123, --Minor, Lesser, Brilliant Mana Oil
-          { item     = 20748, isConsumable = true, type = "weapon",
-            items    = { 20748, 20747, 20745, -- Minor, Lesser, Brilliant Mana Oil
-                         22521, -- TBC: Superior Mana Oil
-                         36899 }, -- WotLK: Exceptional Mana Oil
-            duration = allBuffsModule.DURATION_30M, default = false
-          })   :RequirePlayerClass(allBuffsModule.MANA_CLASSES)
-               :Category(allBuffsModule.WEAPON_ENCHANTMENT)
+  --Minor, Lesser, Brilliant Mana Oil
+  self:RegisterEnchantment(allBuffs, 25123)
+      :CreatesOrProvidedByItem({ 20748, 20747, 20745, -- Minor, Lesser, Brilliant Mana Oil
+                                 22521, -- TBC: Superior Mana Oil
+                                 36899 }) -- WotLK: Exceptional Mana Oil
+      :RequirePlayerClass(allBuffsModule.MANA_CLASSES)
   enchantments[25123] = { 2624, 2625, 2629, -- Minor, Lesser, Brilliant Mana Oil (enchantment)
                           2677, -- TBC: Superior Mana Oil (enchantment)
                           3298 } -- WotLK: Exceptional Mana Oil (enchantment)
 
-  buffDefModule:createAndRegisterBuff(allBuffs, 25122, -- Wizard Oil
-          { item     = 20749, isConsumable = true, type = "weapon",
-            items    = { 20749, 20746, 20744, 20750, --Minor, Lesser, "regular", Brilliant Wizard Oil
-                         22522, -- TBC: Superior Wizard Oil
-                         36900 }, -- WotLK: Exceptional Wizard Oil
-            duration = allBuffsModule.DURATION_30M, default = false
-          })   :RequirePlayerClass(allBuffsModule.SPELL_CLASSES)
-               :Category(allBuffsModule.WEAPON_ENCHANTMENT)
+  -- Wizard Oil
+  self:RegisterEnchantment(allBuffs, 25122)
+      :CreatesOrProvidedByItem({ 20749, 20746, 20744, 20750, --Minor, Lesser, "regular", Brilliant Wizard Oil
+                                 22522, -- TBC: Superior Wizard Oil
+                                 36900 }) -- WotLK: Exceptional Wizard Oil
+      :RequirePlayerClass(allBuffsModule.SPELL_CLASSES)
   enchantments[25122] = { 2623, 2626, 2627, 2628, --Minor, Lesser, "regular", Brilliant Wizard Oil (enchantment)
                           2678, -- TBC: Superior Wizard Oil (enchantment)
                           3299 } -- WotLK: Exceptional Wizard Oil (enchantment)
 
-  buffDefModule:createAndRegisterBuff(allBuffs, 28898, --Blessed Wizard Oil
-          { item     = 23123, isConsumable = true, type = "weapon",
-            duration = allBuffsModule.DURATION_1H, default = false
-          })   :RequirePlayerClass(allBuffsModule.MANA_CLASSES)
-               :Category(allBuffsModule.WEAPON_ENCHANTMENT)
+  --Blessed Wizard Oil
+  self:RegisterEnchantment(allBuffs, 28898)
+      :CreatesOrProvidedByItem({ 23123 })
+      :RequirePlayerClass(allBuffsModule.MANA_CLASSES)
   enchantments[28898] = { 2685 } --Blessed Wizard Oil
 end
 
@@ -65,67 +72,58 @@ function enchantmentsModule:_SetupPhysicalEnchantments(allBuffs, enchantments)
   --
   -- Weightstones for blunt weapons
   --
-  buffDefModule:createAndRegisterBuff(allBuffs, 16622, --Weightstone
-          { item         = 12643, items = { 12643, 7965, 3241, 3240, 3239 },
-            isConsumable = true, type = "weapon", duration = allBuffsModule.DURATION_30M,
-            default      = false
-          })   :RequirePlayerClass(allBuffsModule.PHYSICAL_CLASSES)
-               :Category(allBuffsModule.WEAPON_ENCHANTMENT)
+  --Weightstone
+  self:RegisterEnchantment(allBuffs, 16622)
+      :CreatesOrProvidedByItem({ 12643, 7965, 3241, 3240, 3239 })
+      :RequirePlayerClass(allBuffsModule.PHYSICAL_CLASSES)
   enchantments[16622] = { 1703, 484, 21, 20, 19 } -- Weightstone
 
-  buffDefModule:createAndRegisterBuff(allBuffs, 34340, --TBC: Adamantite Weightstone +12 BLUNT +14 CRIT
-          { item     = 28421, items = { 28421 }, isConsumable = true, type = "weapon",
-            duration = allBuffsModule.DURATION_1H, default = false,
-          })   :RequirePlayerClass(allBuffsModule.PHYSICAL_CLASSES)
-               :RequireTBC()
-               :Category(allBuffsModule.WEAPON_ENCHANTMENT)
+  --TBC: Adamantite Weightstone +12 BLUNT +14 CRIT
+  self:RegisterEnchantment(allBuffs, 34340)
+      :CreatesOrProvidedByItem({ 28421 })
+      :RequirePlayerClass(allBuffsModule.PHYSICAL_CLASSES)
+      :RequireTBC()
   enchantments[34340] = { 2955 } --TBC: Adamantite Weightstone (Weight Weapon)
 
-  buffDefModule:createAndRegisterBuff(allBuffs, 34339, --TBC: Fel Weightstone +12 BLUNT
-          { item     = 28420, items = { 28420 }, isConsumable = true, type = "weapon",
-            duration = allBuffsModule.DURATION_1H, default = false
-          })   :RequirePlayerClass(allBuffsModule.PHYSICAL_CLASSES)
-               :RequireTBC()
-               :Category(allBuffsModule.WEAPON_ENCHANTMENT)
+  --TBC: Fel Weightstone +12 BLUNT
+  self:RegisterEnchantment(allBuffs, 34339)
+      :CreatesOrProvidedByItem({ 28420 })
+      :RequirePlayerClass(allBuffsModule.PHYSICAL_CLASSES)
+      :RequireTBC()
   enchantments[34339] = { 2954 } --TBC: Fel Weightstone (Weighted +12)
 
   --
   -- Sharpening Stones for sharp weapons
   --
-  buffDefModule:createAndRegisterBuff(allBuffs, 16138, --Sharpening Stone
-          { item         = 12404, items = { 12404, 7964, 2871, 2863, 2862 },
-            isConsumable = true, type = "weapon", duration = allBuffsModule.DURATION_30M, default = false,
-          })   :RequirePlayerClass(allBuffsModule.PHYSICAL_CLASSES)
-               :Category(allBuffsModule.WEAPON_ENCHANTMENT)
+  --Sharpening Stone
+  self:RegisterEnchantment(allBuffs, 16138)
+      :CreatesOrProvidedByItem({ 12404, 7964, 2871, 2863, 2862 })
+      :RequirePlayerClass(allBuffsModule.PHYSICAL_CLASSES)
   enchantments[16138] = { 1643, 483, 14, 13, 40 } --Sharpening Stone
 
-  buffDefModule:createAndRegisterBuff(allBuffs, 28891, --Consecrated Sharpening Stone
-          { item     = 23122, isConsumable = true, type = "weapon",
-            duration = allBuffsModule.DURATION_1H, default = false
-          })   :RequirePlayerClass(allBuffsModule.PHYSICAL_CLASSES)
-               :Category(allBuffsModule.WEAPON_ENCHANTMENT)
+  --Consecrated Sharpening Stone
+  self:RegisterEnchantment(allBuffs, 28891)
+      :CreatesOrProvidedByItem({ 23122 })
+      :RequirePlayerClass(allBuffsModule.PHYSICAL_CLASSES)
   enchantments[28891] = { 2684 } --Consecrated Sharpening Stone
 
-  buffDefModule:createAndRegisterBuff(allBuffs, 22756, --Elemental Sharpening Stone
-          { item     = 18262, isConsumable = true, type = "weapon",
-            duration = allBuffsModule.DURATION_30M, default = false
-          })   :RequirePlayerClass(allBuffsModule.PHYSICAL_CLASSES)
-               :Category(allBuffsModule.WEAPON_ENCHANTMENT)
+  --Elemental Sharpening Stone
+  self:RegisterEnchantment(allBuffs, 22756)
+      :CreatesOrProvidedByItem({ 18262 })
+      :RequirePlayerClass(allBuffsModule.PHYSICAL_CLASSES)
   enchantments[22756] = { 2506 } --Elemental Sharpening Stone
 
-  buffDefModule:createAndRegisterBuff(allBuffs, 29453, --TBC: Adamantite Sharpening Stone +12 WEAPON +14 CRIT
-          { item     = 23529, items = { 23529 }, isConsumable = true, type = "weapon",
-            duration = allBuffsModule.DURATION_1H, default = false
-          })   :RequirePlayerClass(allBuffsModule.PHYSICAL_CLASSES)
-               :RequireTBC()
-               :Category(allBuffsModule.WEAPON_ENCHANTMENT)
+  --TBC: Adamantite Sharpening Stone +12 WEAPON +14 CRIT
+  self:RegisterEnchantment(allBuffs, 29453)
+      :CreatesOrProvidedByItem({ 23529 })
+      :RequirePlayerClass(allBuffsModule.PHYSICAL_CLASSES)
+      :RequireTBC()
 
-  buffDefModule:createAndRegisterBuff(allBuffs, 29452, --TBC: Fel Sharpening Stone +12 WEAPON
-          { item     = 23528, items = { 23528 }, isConsumable = true, type = "weapon",
-            duration = allBuffsModule.DURATION_1H, default = false
-          })   :RequirePlayerClass(allBuffsModule.PHYSICAL_CLASSES)
-               :RequireTBC()
-               :Category(allBuffsModule.WEAPON_ENCHANTMENT)
+  --TBC: Fel Sharpening Stone +12 WEAPON
+  self:RegisterEnchantment(allBuffs, 29452)
+      :CreatesOrProvidedByItem({ 23528 })
+      :RequirePlayerClass(allBuffsModule.PHYSICAL_CLASSES)
+      :RequireTBC()
   enchantments[29452] = { 2712 } --TBC: Fel Sharpening Stone (Sharpened +12)
   enchantments[29453] = { 2713 } --TBC: Adamantite Sharpening Stone (Sharpened +14 Crit, +12)
 end
@@ -135,9 +133,14 @@ end
 function enchantmentsModule:_SetupOtherEnchantments(allBuffs, enchantments)
   -- Rune of Warding
   --
-  buffDefModule:createAndRegisterBuff(allBuffs, 32282, --TBC: Greater Rune of Warding
-          { item           = 25521, isConsumable = true, default = false, consumableTarget = "player",
-            singleDuration = allBuffsModule.DURATION_1H, targetClasses = allBuffsModule.BOM_ALL_CLASSES,
-          })   :RequirePlayerClass(allBuffsModule.MELEE_CLASSES)
-               :Category(allBuffsModule.WEAPON_ENCHANTMENT)
+  --TBC: Greater Rune of Warding
+  buffDefModule:createAndRegisterBuff(allBuffs, 32282, nil)
+               :CreatesOrProvidedByItem({ 25521 })
+               :IsConsumable(true)
+               :IsDefault(false)
+               :ConsumableTarget("player")
+               :SingleDuration(allBuffsModule.DURATION_1H)
+               :DefaultTargetClasses(allBuffsModule.ALL_CLASSES)
+               :RequirePlayerClass(allBuffsModule.MELEE_CLASSES)
+               :Category("weaponEnchantment")
 end

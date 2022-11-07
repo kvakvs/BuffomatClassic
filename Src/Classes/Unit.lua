@@ -2,9 +2,8 @@
 local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BomAddon
 
----@class BomUnitModule
-local unitModule = {}
-BomModuleManager.unitModule = unitModule
+---@shape BomUnitModule
+local unitModule = BomModuleManager.unitModule ---@type BomUnitModule
 
 local buffomatModule = BomModuleManager.buffomatModule
 local buffModule = BomModuleManager.buffModule
@@ -57,7 +56,7 @@ function unitClass:ForceUpdateBuffs(playerUnit)
   BOM.someBodyIsGhost = BOM.someBodyIsGhost or self.isGhost
 
   if self.isDead then
-    BOM.PlayerBuffs[self.name] = nil
+    BOM.playerBuffs[self.name] = nil
   else
     self.hasArgentumDawn = false
     self.hasCarrot = false

@@ -1,9 +1,8 @@
 local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BomAddon
 
----@class BomSlashCommandsModule
-local slashModule = {}
-BomModuleManager.slashCommandsModule = slashModule
+---@shape BomSlashCommandsModule
+local slashModule = BomModuleManager.slashCommandsModule ---@type BomSlashCommandsModule
 
 local toolboxModule = BomModuleManager.toolboxModule
 

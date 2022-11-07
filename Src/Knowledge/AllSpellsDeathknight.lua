@@ -1,8 +1,7 @@
 local BOM = BuffomatAddon ---@type BomAddon
 
----@class BomAllSpellsDeathknightModule
-local deathknightModule = {}
-BomModuleManager.allSpellsDeathknightModule = deathknightModule
+---@shape BomAllSpellsDeathknightModule
+local deathknightModule = BomModuleManager.allSpellsDeathknightModule ---@type BomAllSpellsDeathknightModule
 
 local _t = BomModuleManager.languagesModule
 local allBuffsModule = BomModuleManager.allBuffsModule

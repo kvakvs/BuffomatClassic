@@ -1,8 +1,7 @@
 local BOM = BuffomatAddon ---@type BomAddon
 
----@class BomAllConsumesScrollsModule
-local scrollsModule = {}
-BomModuleManager.allConsumesScrollsModule = scrollsModule
+---@shape BomAllConsumesScrollsModule
+local scrollsModule = BomModuleManager.allConsumesScrollsModule ---@type BomAllConsumesScrollsModule
 
 local _t = BomModuleManager.languagesModule
 local allBuffsModule = BomModuleManager.allBuffsModule

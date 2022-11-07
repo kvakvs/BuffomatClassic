@@ -2,17 +2,15 @@
 --local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BomAddon
 
----@class BomSpellButtonsTabModule
+---@shape BomSpellButtonsTabModule
 ---@field spellTabsCreatedFlag boolean True if spells tab is created and filled
 ---@field categoryLabels table<BomBuffCategoryName, BomGPIControl> Collection of category labels indexed per category name
 ---@field spellTabUpdateRequestedBy table<string, boolean> Contains the callers who last requested spells tab update, or nothing
 ---@field spellSettingsFrames table
-local spellButtonsTabModule = {
-  categoryLabels            = {},
-  spellTabUpdateRequestedBy = {},
-  spellSettingsFrames       = {} -- accessible from TaskScan.MaybeResetWatchGroups
-}
-BomModuleManager.spellButtonsTabModule = spellButtonsTabModule
+local spellButtonsTabModule = BomModuleManager.spellButtonsTabModule ---@type BomSpellButtonsTabModule
+spellButtonsTabModule.categoryLabels = {}
+spellButtonsTabModule.spellTabUpdateRequestedBy = {}
+spellButtonsTabModule.spellSettingsFrames = {} -- accessible from TaskScan.MaybeResetWatchGroups
 
 local _t = BomModuleManager.languagesModule
 local allBuffsModule = BomModuleManager.allBuffsModule

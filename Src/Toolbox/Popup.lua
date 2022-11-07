@@ -1,9 +1,8 @@
 local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BomAddon
 
----@class BomPopupModule
-local popupModule = {}
-BomModuleManager.popupModule = popupModule
+---@shape BomPopupModule
+local popupModule = BomModuleManager.popupModule ---@type BomPopupModule
 
 ---@class BomPopupDynamic
 ---@field _Frame BomGPIControl

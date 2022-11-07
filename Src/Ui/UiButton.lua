@@ -1,9 +1,5 @@
---local TOCNAME, _ = ...
---local BOM = BuffomatAddon ---@type BomAddon
-
----@class BomUiButtonModule
-local uiButtonModule = {}
-BomModuleManager.uiButtonModule = uiButtonModule
+---@shape BomUiButtonModule
+local uiButtonModule = BomModuleManager.uiButtonModule ---@type BomUiButtonModule
 
 ---@param id string Button ID
 ---@param parent BomGPIControl parent UI frame for the button

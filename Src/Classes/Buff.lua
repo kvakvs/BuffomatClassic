@@ -1,8 +1,7 @@
-local BOM = BuffomatAddon ---@type BomAddon
+--local BOM = BuffomatAddon ---@type BomAddon
 
----@class BomBuffModule
-local buffModule = {}
-BomModuleManager.buffModule = buffModule
+---@shape BomBuffModule
+local buffModule = BomModuleManager.buffModule ---@type BomBuffModule
 
 ---@class BomUnitBuff
 ---@field singleId number Spell id also serving as key

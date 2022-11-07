@@ -5,9 +5,8 @@ local buffomatModule = BomModuleManager.buffomatModule
 local constModule = BomModuleManager.constModule
 local itemCacheModule = BomModuleManager.itemCacheModule
 
----@class BomSpellSetupModule
-local spellSetupModule = {}
-BomModuleManager.spellSetupModule = spellSetupModule
+---@shape BomSpellSetupModule
+local spellSetupModule = BomModuleManager.spellSetupModule ---@type BomSpellSetupModule
 
 local buffDefinitionModule = BomModuleManager.buffDefinitionModule
 local toolboxModule = BomModuleManager.toolboxModule

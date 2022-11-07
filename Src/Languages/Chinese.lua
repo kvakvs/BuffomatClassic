@@ -1,6 +1,5 @@
----@class BomLanguageChineseModule
-local chineseModule = { }
-BomModuleManager.languageChineseModule = chineseModule
+---@shape BomLanguageChineseModule
+local chineseModule = BomModuleManager.languageChineseModule ---@type BomLanguageChineseModule
 
 ---@return BomLocaleDict
 function chineseModule:Translations()
@@ -104,10 +103,10 @@ function chineseModule:Translations()
     TASK_USE                                    = "使用",
     TASK_TBC_HUNTER_PET_BUFF                    = "对宠物使用",
     TASK_ACTIVATE                               = "启用",
-    TASK_UNEQUIP                                = "取下装备",
+    ["task.type.Unequip"]                       = "取下装备",
     ["task.error.range"]                        = "类别",
-    AD_REPUTATION_REMINDER                      = "银色黎明徽记",
-    RIDING_SPEED_REMINDER                       = "骑术/飞行速度饰品",
+    ["reminder.reputationTrinket"]              = "银色黎明徽记",
+    ["reminder.ridingSpeedTrinket"]             = "骑术/飞行速度饰品",
     OUT_OF_THAT_ITEM                            = "不在背包",
 
     CHAT_MSG_PREFIX                             = "Buffomat: ",

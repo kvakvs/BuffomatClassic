@@ -1,8 +1,7 @@
 local BOM = BuffomatAddon ---@type BomAddon
 
----@class BomBuffChecksModule
-local buffChecksModule = {}
-BomModuleManager.buffChecksModule = buffChecksModule
+---@shape BomBuffChecksModule
+local buffChecksModule = BomModuleManager.buffChecksModule ---@type BomBuffChecksModule
 
 local buffDefModule = BomModuleManager.buffDefinitionModule
 local buffomatModule = BomModuleManager.buffomatModule
@@ -134,7 +133,7 @@ function buffChecksModule:PlayerNeedsWeaponBuff(buff, playerUnit)
           and ((--[[---@not nil]] weaponBuff).MainHandEnable and playerUnit.MainHandBuff == nil)
           or ((--[[---@not nil]] weaponBuff).OffHandEnable and playerUnit.OffHandBuff == nil)
   then
-    tinsert(buff.UnitsNeedBuff, playerUnit)
+    tinsert(buff.unitsNeedBuff, playerUnit)
   end
 end
 
@@ -155,14 +154,14 @@ function buffChecksModule:HunterPetNeedsBuff(buff, playerUnit)
     return -- have pet, have buff
   end
 
-  tinsert(buff.UnitsNeedBuff, playerUnit) -- add player to buff list, because player must consume it
+  tinsert(buff.unitsNeedBuff, playerUnit) -- add player to buff list, because player must consume it
 end
 
 ---@param buff BomBuffDefinition
 ---@param playerUnit BomUnit
 function buffChecksModule:PlayerNeedsConsumable(buff, playerUnit)
   if not playerUnit.knownBuffs[buff.buffId] then
-    tinsert(buff.UnitsNeedBuff, playerUnit)
+    tinsert(buff.unitsNeedBuff, playerUnit)
   end
 
 end
@@ -174,7 +173,7 @@ function buffChecksModule:PartyNeedsInfoBuff(buff, playerParty)
     local partyMemberBuff = partyMember.knownBuffs[buff.buffId]
 
     if partyMemberBuff then
-      tinsert(buff.UnitsNeedBuff, partyMember)
+      tinsert(buff.unitsNeedBuff, partyMember)
 
       if partyMember.isPlayer then
         buff.buffSource = partyMemberBuff.source
@@ -197,14 +196,14 @@ function buffChecksModule:PlayerNeedsSelfBuff(buff, playerUnit)
     -- Check if the self-buff includes creating/conjuring an item
     if buff.lockIfHaveItem then
       if IsSpellKnown(buff.highestRankSingleId) and not (self:HasItem(buff.lockIfHaveItem, buff.hasCD)) then
-        tinsert(buff.UnitsNeedBuff, playerUnit)
+        tinsert(buff.unitsNeedBuff, playerUnit)
       end
 
       -- Else check if the buff is on player and timer is not too short
     elseif not (thisBuffOnPlayer
             and self:TimeCheck(thisBuffOnPlayer.expirationTime, thisBuffOnPlayer.duration))
     then
-      tinsert(buff.UnitsNeedBuff, playerUnit)
+      tinsert(buff.unitsNeedBuff, playerUnit)
     end
   end
 end
@@ -219,7 +218,7 @@ function buffChecksModule:DeadNeedsResurrection(buff, playerParty)
             and member.isConnected
             and member.class ~= "pet"
             and (not buffomatModule.shared.SameZone or member.isSameZone) then
-      tinsert(buff.UnitsNeedBuff, member)
+      tinsert(buff.unitsNeedBuff, member)
     end
   end
 end
@@ -239,7 +238,7 @@ function buffChecksModule:PlayerNeedsTracking(buff, playerUnit)
   elseif not self:IsTrackingActive(buff)
           and (BOM.forceTracking == nil
           or BOM.forceTracking == buff.trackingIconId) then
-    tinsert(buff.UnitsNeedBuff, playerUnit)
+    tinsert(buff.unitsNeedBuff, playerUnit)
   end
 end
 
@@ -251,7 +250,7 @@ function buffChecksModule:PaladinNeedsAura(buff, playerUnit)
           and (buffomatModule.currentProfile.LastAura == nil
           or buffomatModule.currentProfile.LastAura == buff.buffId)
   then
-    tinsert(buff.UnitsNeedBuff, playerUnit)
+    tinsert(buff.unitsNeedBuff, playerUnit)
   end
 end
 
@@ -263,7 +262,7 @@ function buffChecksModule:PaladinNeedsSeal(spell, playerUnit)
           and (buffomatModule.currentProfile.LastSeal == nil
           or buffomatModule.currentProfile.LastSeal == spell.buffId)
   then
-    tinsert(spell.UnitsNeedBuff, playerUnit)
+    tinsert(spell.unitsNeedBuff, playerUnit)
   end
 end
 
@@ -273,7 +272,7 @@ end
 ---@return boolean someoneIsDead
 function buffChecksModule:PartyNeedsPaladinBlessing(buffDef, playerParty, someoneIsDead)
   -- Blessing user settings (regardless of the current buff)
-  local currentBlessing = buffDefModule:GetProfileBlessing( nil)
+  local currentBlessing = buffDefModule:GetProfileBlessingState( nil)
   -- Current user settings for the selected buff
   local profileBuff = --[[---@not nil]] buffDefModule:GetProfileBuff(buffDef.buffId, nil)
 
@@ -325,7 +324,7 @@ function buffChecksModule:PartyNeedsPaladinBlessing(buffDef, playerParty, someon
       end
 
       if not found then
-        tinsert(buffDef.UnitsNeedBuff, partyMember)
+        tinsert(buffDef.unitsNeedBuff, partyMember)
         if not notGroup then
           buffDef:IncrementNeedGroupBuff(partyMember.class)
         end
@@ -390,7 +389,7 @@ function buffChecksModule:PartyNeedsBuff(buffDef, party, someoneIsDead)
       end
 
       if not found then
-        tinsert(buffDef.UnitsNeedBuff, partyMember)
+        tinsert(buffDef.unitsNeedBuff, partyMember)
         buffDef.GroupsNeedBuff[partyMember.group] = (buffDef.GroupsNeedBuff[partyMember.group] or 0) + 1
 
       elseif buffomatModule.shared.ReplaceSingle

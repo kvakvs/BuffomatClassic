@@ -1,6 +1,5 @@
----@class BomLanguageRussianModule
-local russianModule = {}
-BomModuleManager.languageRussianModule = russianModule
+---@shape BomLanguageRussianModule
+local russianModule = BomModuleManager.languageRussianModule ---@type BomLanguageRussianModule
 
 ---@return BomLocaleDict
 function russianModule:Translations()

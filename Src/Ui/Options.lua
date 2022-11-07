@@ -1,11 +1,10 @@
 --local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BomAddon
 
----@class BomOptionsModule
-local optionsModule = {
-  optionsOrder = 0
-}
-BomModuleManager.optionsModule = optionsModule
+---@shape BomOptionsModule
+---@field optionsOrder number Counter for increasing option id
+local optionsModule = BomModuleManager.optionsModule ---@type BomOptionsModule
+optionsModule.optionsOrder = 0
 
 local _t = BomModuleManager.languagesModule
 local allBuffsModule = BomModuleManager.allBuffsModule
@@ -235,9 +234,9 @@ function optionsModule:CreateGeneralOptionsTable()
               "ShowMinimapButton", buffomatModule.shared.Minimap, "visible",
               function(key, value)
                 if value then
-                  BOM.MinimapButton:Show()
+                  BOM.minimapButton:Show()
                 else
-                  BOM.MinimapButton:Hide()
+                  BOM.minimapButton:Hide()
                 end
               end),
       minimapButtonLock     = self:TemplateCheckbox(

@@ -2,9 +2,8 @@
 local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BomAddon
 
----@class BomSpellIdsModule
-local spellIdsModule = {}
-BomModuleManager.spellIdsModule = spellIdsModule
+---@shape BomSpellIdsModule
+local spellIdsModule = BomModuleManager.spellIdsModule ---@type BomSpellIdsModule
 
 BOM.spellIdLookup = {}
 
@@ -42,3 +41,5 @@ spellIdsModule.FindHerbs = 2383
 spellIdsModule.FindMinerals = 2580
 spellIdsModule.FindTreasure = 2481
 spellIdsModule.FindFish = 43308
+
+spellIdsModule.Shaman_Flametongue6 = 16342

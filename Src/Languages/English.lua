@@ -1,6 +1,5 @@
----@class BomLanguageEnglishModule
-local englishModule = {}
-BomModuleManager.languageEnglishModule = englishModule
+---@shape BomLanguageEnglishModule
+local englishModule = BomModuleManager.languageEnglishModule ---@type BomLanguageEnglishModule
 
 ---@return BomLocaleDict
 function englishModule:Translations()
@@ -160,10 +159,10 @@ function englishModule:Translations()
     TASK_USE                                          = "Use",
     TASK_TBC_HUNTER_PET_BUFF                          = "Use on pet",
     TASK_ACTIVATE                                     = "Activate",
-    TASK_UNEQUIP                                      = "Unequip",
+    ["task.type.Unequip"]                             = "Unequip",
     ["task.error.range"]                              = "Range",
-    AD_REPUTATION_REMINDER                            = "Argent Dawn trinket",
-    RIDING_SPEED_REMINDER                             = "Riding/Flight Speed trinket",
+    ["reminder.reputationTrinket"]                    = "Argent Dawn trinket",
+    ["reminder.ridingSpeedTrinket"]                   = "Riding/Flight Speed trinket",
     OUT_OF_THAT_ITEM                                  = "Not in bags",
 
     CHAT_MSG_PREFIX                                   = "Buffomat: ",

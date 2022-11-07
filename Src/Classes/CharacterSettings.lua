@@ -1,9 +1,8 @@
 local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BomAddon
 
----@class BomCharacterSettingsModule
-local characterSettingsModule = {}
-BomModuleManager.characterSettingsModule = characterSettingsModule
+---@shape BomCharacterSettingsModule
+local characterSettingsModule = BomModuleManager.characterSettingsModule ---@type BomCharacterSettingsModule
 
 local profileModule = BomModuleManager.profileModule
 

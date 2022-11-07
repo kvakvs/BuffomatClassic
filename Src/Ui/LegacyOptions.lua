@@ -1,34 +1,29 @@
 --local TOCNAME, _ = ...
 --local BOM = BuffomatAddon ---@type BomAddon
 --
------@class BomLegacyOptionsModule
---local legacyOptionsModule = {}
---BomModuleManager.legacyOptionsModule = legacyOptionsModule
---
---BOM.legacyOptions = BOM.legacyOptions or {}
---local Options = BOM.legacyOptions
---
------@class BomLegacyUiOptions
------@field Btn table
------@field CBox table<string, BomGPIControl> Checkboxes
------@field Color table
------@field CurrentPanel BomGPIControl used when building the panel
------@field Edit table<string, BomGPIControl> Controls
------@field Frames table<string, BomGPIControl>
------@field Index table<number, string> Maps sequential control id to control names
------@field inLine boolean
------@field LineRelativ string|nil
------@field NextRelativ BomGPIControl Used to anchor next control to it
------@field NextRelativX number Anchor offset X
------@field NextRelativY number Anchor offset Y
------@field oldNextRelativ BomGPIControl Used to anchor next control to it
------@field oldNextRelativX number Anchor offset X
------@field oldNextRelativY number Anchor offset Y
------@field Panel table<string, BomGPIControl>
------@field Prefix string the name prefix for controls: "BuffomatClassic_O_" .. <control name>
------@field RightSide BomGPIControl
------@field scale number Options GUI scale
------@field Vars table<string, table<string, any>>
+-- ---@shape BomLegacyOptionsModule
+
+-- ---@class BomLegacyUiOptions
+-- ---@field Btn table
+-- ---@field CBox table<string, BomGPIControl> Checkboxes
+-- ---@field Color table
+-- ---@field CurrentPanel BomGPIControl used when building the panel
+-- ---@field Edit table<string, BomGPIControl> Controls
+-- ---@field Frames table<string, BomGPIControl>
+-- ---@field Index table<number, string> Maps sequential control id to control names
+-- ---@field inLine boolean
+-- ---@field LineRelativ string|nil
+-- ---@field NextRelativ BomGPIControl Used to anchor next control to it
+-- ---@field NextRelativX number Anchor offset X
+-- ---@field NextRelativY number Anchor offset Y
+-- ---@field oldNextRelativ BomGPIControl Used to anchor next control to it
+-- ---@field oldNextRelativX number Anchor offset X
+-- ---@field oldNextRelativY number Anchor offset Y
+-- ---@field Panel table<string, BomGPIControl>
+-- ---@field Prefix string the name prefix for controls: "BuffomatClassic_O_" .. <control name>
+-- ---@field RightSide BomGPIControl
+-- ---@field scale number Options GUI scale
+-- ---@field Vars table<string, table<string, any>>
 --
 --local function options_check_button_right_click(self, button)
 --  if button == "RightButton" then

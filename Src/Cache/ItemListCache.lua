@@ -2,9 +2,8 @@ local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BomAddon
 
 ---@deprecated Not connected properly to any imports
----@class BomItemListCacheModule
-local itemListCacheModule = {}
-BomModuleManager.itemListCacheModule = itemListCacheModule
+---@shape BomItemListCacheModule
+local itemListCacheModule = BomModuleManager.itemListCacheModule ---@type BomItemListCacheModule
 
 local buffomatModule = BomModuleManager.buffomatModule
 local toolboxModule = BomModuleManager.toolboxModule
@@ -18,13 +17,17 @@ BOM.wipeCachedItems = true
 ---@field Link string
 ---@field Bag number
 ---@field Slot number
----@field Texture number|string
+---@field Lootable boolean
+---@field Texture WowIconId
+
+---@alias BomInventory GetContainerItemInfoResult[]
+-- alternative type? {[number]: GetContainerItemInfoResult}
 
 -- Stores copies of GetContainerItemInfo parse results
----@type GetContainerItemInfoResult[]
-local itemListCache = {}
+local itemListCache = --[[---@type BomInventory]] {}
 
-function BOM.GetItemList()
+---@return BomInventory
+function itemListCacheModule:GetItemList()
   if BOM.wipeCachedItems then
     wipe(itemListCache)
     BOM.wipeCachedItems = false

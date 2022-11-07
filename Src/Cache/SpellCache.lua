@@ -6,10 +6,10 @@ local BOM = BuffomatAddon ---@type BomAddon
 ---@shape BomSpellCache
 ---@field [BomSpellCacheKey] BomSpellCacheElement
 
----@class BomSpellCacheModule
+---@shape BomSpellCacheModule
 ---@field cache BomSpellCache Stores arg to results mapping for GetItemInfo
-local spellCacheModule = { cache = {} }
-BomModuleManager.spellCacheModule = spellCacheModule
+local spellCacheModule = BomModuleManager.spellCacheModule ---@type BomSpellCacheModule
+spellCacheModule.cache = {}
 
 local buffomatModule = BomModuleManager.buffomatModule
 local buffDefModule = BomModuleManager.buffDefinitionModule

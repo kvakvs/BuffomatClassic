@@ -1,9 +1,8 @@
 local BOM = BuffomatAddon ---@type BomAddon
 
----@class BomAllConsumesElixirsModule
-local elixirsModule = {}
-BomModuleManager.allConsumesElixirsModule = elixirsModule
+---@shape BomAllConsumesElixirsModule
 
+local elixirsModule = BomModuleManager.allConsumesElixirsModule ---@type BomAllConsumesElixirsModule
 local _t = BomModuleManager.languagesModule
 local allBuffsModule = BomModuleManager.allBuffsModule
 local buffDefModule = BomModuleManager.buffDefinitionModule

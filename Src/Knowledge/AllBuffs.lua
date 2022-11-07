@@ -3,14 +3,11 @@ local BOM = BuffomatAddon ---@type BomAddon
 
 ---@alias BomBuffCategoryName ""|"tracking"|"pet"|"aura"|"seal"|"blessing"|"class"|"classicPhysFood"|"classicSpellFood"|"classicFood"|"classicPhysElixir"|"classicPhysBuff"|"classicBuff"|"classicSpellElixir"|"classicElixir"|"classicFlask"|"tbcPhysFood"|"tbcSpellFood"|"tbcFood"|"tbcPhysElixir"|"tbcSpellElixir"|"tbcElixir"|"tbcFlask"|"wotlkPhysFood"|"wotlkSpellFood"|"wotlkFood"|"wotlkPhysElixir"|"wotlkSpellElixir"|"wotlkElixir"|"wotlkFlask"|"scroll"|"weaponEnchantment"|"classWeaponEnchantment"
 
----@class BomAllBuffsModule
+---@shape BomAllBuffsModule
 ---@field buffCategories BomBuffCategoryName[] Category names for buffs
 ---@field allBuffs {[BomBuffId]: BomBuffDefinition} All buffs, same as BOM.AllBuffomatSpells for convenience
 ---@field CrusaderAuraSpell BomBuffDefinition
-local allBuffsModule = {}
-
-BomModuleManager.allBuffsModule = allBuffsModule
-
+local allBuffsModule = BomModuleManager.allBuffsModule ---@type BomAllBuffsModule
 local _t = BomModuleManager.languagesModule
 local buffDefModule = BomModuleManager.buffDefinitionModule
 local deathknightModule = BomModuleManager.allSpellsDeathknightModule
@@ -48,44 +45,50 @@ local warriorModule = BomModuleManager.allSpellsWarriorModule
 
 ---@alias BomClassName "WARRIOR"|"MAGE"|"ROGUE"|"DRUID"|"HUNTER"|"PRIEST"|"WARLOCK"|"SHAMAN"|"PALADIN"|"DEATHKNIGHT"|"tank"|"pet"
 
-local BOM_ALL_CLASSES = { "WARRIOR", "MAGE", "ROGUE", "DRUID", "HUNTER", "PRIEST", "WARLOCK",
-                          "SHAMAN", "PALADIN", "DEATHKNIGHT" } ---@type BomClassName[]
-local BOM_NO_CLASS = { } ---@type BomClassName[]
-allBuffsModule.BOM_ALL_CLASSES = BOM_ALL_CLASSES
-allBuffsModule.BOM_NO_CLASSES = BOM_NO_CLASS
+allBuffsModule.ALL_CLASSES = { "WARRIOR", "MAGE", "ROGUE", "DRUID", "HUNTER", "PRIEST", "WARLOCK",
+                               "SHAMAN", "PALADIN", "DEATHKNIGHT" } ---@type BomClassName[]
+allBuffsModule.BOM_NO_CLASSES = { } ---@type BomClassName[]
 
+---TODO: Move to constModule
 ---Classes which have a resurrection ability
 ---@type BomClassName[]
 local RESURRECT_CLASSES = { "SHAMAN", "PRIEST", "PALADIN", "DRUID" } -- Druid in WotLK
 BOM.RESURRECT_CLASS = RESURRECT_CLASSES --used in TaskScan.lua
 allBuffsModule.RESURRECT_CLASSES = RESURRECT_CLASSES
 
+---TODO: Move to constModule
 --- Classes which have mana bar and benefit from mp/5 and spirit
 ---@type BomClassName[]
 local MANA_CLASSES = { "HUNTER", "WARLOCK", "MAGE", "DRUID", "SHAMAN", "PRIEST", "PALADIN" }
 BOM.MANA_CLASSES = MANA_CLASSES --used in TaskScan.lua
 allBuffsModule.MANA_CLASSES = MANA_CLASSES
 
+---TODO: Move to constModule
 --- Classes which deal spell damage
 ---@type BomClassName[]
 allBuffsModule.SPELL_CLASSES = { "WARLOCK", "MAGE", "DRUID", "SHAMAN", "PRIEST", "PALADIN", "DEATHKNIGHT", "HUNTER" }
 
+---TODO: Move to constModule
 --- Classes which hit with weapons or claws
 ---@type BomClassName[]
 allBuffsModule.MELEE_CLASSES = { "WARRIOR", "ROGUE", "DRUID", "SHAMAN", "PALADIN", "DEATHKNIGHT" }
 
+---TODO: Move to constModule
 --- Classes capable of dealing shadow damage
 ---@type BomClassName[]
 allBuffsModule.SHADOW_CLASSES = { "PRIEST", "WARLOCK", "DEATHKNIGHT" }
 
+---TODO: Move to constModule
 --- Classes capable of dealing fire damage
 ---@type BomClassName[]
 allBuffsModule.FIRE_CLASSES = { "MAGE", "WARLOCK", "SHAMAN", "HUNTER" }
 
+---TODO: Move to constModule
 --- Classes capable of dealing frost damage
 ---@type BomClassName[]
 allBuffsModule.FROST_CLASSES = { "MAGE", "SHAMAN", "DEATHKNIGHT" }
 
+---TODO: Move to constModule
 --- Classes dealing physical ranged or melee damage
 ---@type BomClassName[]
 allBuffsModule.PHYSICAL_CLASSES = { "HUNTER", "ROGUE", "SHAMAN", "WARRIOR", "DRUID", "PALADIN", "DEATHKNIGHT" }
@@ -263,7 +266,7 @@ end
 
 ---@shape BomReputationTrinketZones
 ---@field itemIds BomItemId[]
----@field zones BomZoneId[]
+---@field zoneId BomZoneId[]
 ---@field Link string
 ---@field spell BomSpellId
 BOM.reputationTrinketZones = {
@@ -283,7 +286,7 @@ BOM.reputationTrinketZones = {
 
 ---@shape BomRidingSpeedZones
 ---@field itemIds BomItemId[]
----@field zones BomZoneId[]
+---@field zoneId BomZoneId[]
 ---@field Link string
 ---@field spell BomSpellId
 BOM.ridingSpeedZones = {

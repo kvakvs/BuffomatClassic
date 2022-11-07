@@ -1,9 +1,8 @@
 --local TOCNAME, _ = ...
 --local BOM = BuffomatAddon ---@type BomAddon
 
----@class BomTaskListModule
-local taskListModule = {}
-BomModuleManager.taskListModule = taskListModule
+---@shape BomTaskListModule
+local taskListModule = BomModuleManager.taskListModule ---@type BomTaskListModule
 
 local taskModule = BomModuleManager.taskModule
 local buffomatModule = BomModuleManager.buffomatModule
@@ -28,10 +27,10 @@ function taskListModule:New()
 end
 
 ---Adds a text line to display in the message frame. The line is stored in DisplayCache
----@param actionText string Text to display (target of the action) with icon and color
+---@param actionText string|nil Text to display (target of the action) with icon and color
 ---@param actionLink string Text to display if inactive (just text)
 ---@param extraText string Text to display (extra comment)
----@param target BomUnit Distance to the party member, or group (if string)
+---@param target BomUnitBuffTarget|BomGroupBuffTarget Distance to the party member, or group (if string)
 ---@param isInfo boolean Whether the text is info text or a cast
 ---@param prio number|nil Priority, a constant from taskModule.TaskPriority
 function taskListClass:Add(actionLink, actionText, extraText,
@@ -45,8 +44,8 @@ end
 ---@param actionLink string Text to display (target of the action) with icon and color
 ---@param actionText string|nil Text to display if inactive (just text). Nil to use action_link
 ---@param prefixText string Text to display before spell (a verb?)
----@param extraText string Text to display (extra comment)
----@param target BomUnit|BomGroupBuffTarget Distance to the party member, or group (if string)
+---@param extraText string|nil Text to display (extra comment)
+---@param target BomUnitBuffTarget|BomGroupBuffTarget Distance to the party member, or group (if string)
 ---@param isInfo boolean Whether the text is info text or a cast
 ---@param prio number|nil Priority, a constant from taskModule.TaskPriority
 function taskListClass:AddWithPrefix(prefixText,

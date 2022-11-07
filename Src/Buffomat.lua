@@ -7,8 +7,8 @@
 ---@field currentProfileName string
 ---@field currentProfile BomProfile
 ---@field forceUpdateRequestedBy table<string, number> Reasons for force update, with count
-local buffomatModule = { forceUpdateRequestedBy = {} }
-BomModuleManager.buffomatModule = buffomatModule
+local buffomatModule = BomModuleManager.buffomatModule ---@type BomBuffomatModule
+buffomatModule.forceUpdateRequestedBy = {}
 
 local slashModule = BomModuleManager.slashCommandsModule
 local characterSettingsModule = BomModuleManager.characterSettingsModule
@@ -40,27 +40,25 @@ local popupModule = BomModuleManager.popupModule
 ---global, visible from XML files and from script console and chat commands
 ---@class BomAddon
 ---@field activePaladinAura nil|number Spell id of aura if an unique aura was casted (only one can be active)
----@field LastAura BomBuffId|nil Buff id of active or last active aura
 ---@field activePaladinSeal nil|number Spell id of weapon seal, if an seal-type temporary enchant was used (only one can be active)
 ---@field ALL_PROFILES BomProfileName[] Lists all buffomat profile names (group, solo... etc)
 ---@field allBuffomatBuffs BomAllBuffsTable All spells known to Buffomat
 ---@field allSpellIds number[]
----@field reputationTrinketZones BomReputationTrinketZones Equipped AD trinket: Spell to and zone ids to check
 ---@field buffExchangeId table<number, number[]> Combines spell ids of spellrank flavours into main spell id
+---@field buffFromSpellIdLookup {[BomSpellId]: BomBuffDefinition} Lookup table for buff definitions by spell id
 ---@field buffIgnoreAll number[] Having this buff on target excludes the target (phaseshifted imp for example)
 ---@field cachedPlayerBag BomCachedPlayerBag Items in player's bag
 ---@field cancelBuffs BomBuffDefinition[] All spells to be canceled on detection
 ---@field cancelBuffSource string Unit who casted the buff to be auto-canceled
 ---@field cancelForm table<number, number> Spell ids which cancel shapeshift form
----@field ridingSpeedZones BomRidingSpeedZones Equipped Riding trinket: Spell to and zone ids to check
 ---@field castFailedBuff BomBuffDefinition|nil
 ---@field castFailedBuffTarget BomUnit|nil
 ---@field castFailedSpellId number|nil
 ---@field checkCooldown number|nil Spell id to check cooldown for
 ---@field checkForError boolean Used by error suppression code
----@field buffFromSpellIdLookup {[BomSpellId]: BomBuffDefinition} Lookup table for buff definitions by spell id
 ---@field currentProfile BomProfile Current profile from CharacterState.Profiles
 ---@field declineHasResurrection boolean Set to true on combat start, stop, holding Alt, cleared on party update
+---@field drinkingPersonCount number Used for warning "X persons is/are drinking"
 ---@field enchantList {[BomSpellId]: number[]} Spell ids mapping to enchantment ids
 ---@field enchantToSpellLookup {[number]: BomSpellId} Reverse-maps enchantment ids back to spells
 ---@field forceProfile BomProfileName|nil Nil will choose profile name automatically, otherwise this profile will be used
@@ -70,6 +68,7 @@ local popupModule = BomModuleManager.popupModule
 ---@field haveWotLK boolean Whether we are running Wrath of the Lich King or later
 ---@field inLoadingScreen boolean True while in the loading screen
 ---@field isClassic boolean Whether we are running Classic Era or Season of Mastery
+---@field isPlayerCasting string|nil Indicates that the player is currently casting (updated in event handlers)
 ---@field isPlayerMoving boolean Indicated that the player is moving (updated in event handlers)
 ---@field isTBC boolean Whether we are running TBC classic
 ---@field isWotLK boolean Whether we are running Wrath of the Lich King
@@ -78,35 +77,36 @@ local popupModule = BomModuleManager.popupModule
 ---@field itemList number[][] Group different ranks of item together
 ---@field itemListSpellLookup table<number, number> Map itemid to spell?
 ---@field itemListTarget table<number, string> Remember who casted item buff on you?
+---@field lastAura BomBuffId|nil Buff id of active or last active aura
 ---@field lastTarget string|nil Last player's target
----@field legacyOptions BomLegacyUiOptions
----@field LoadingScreenTimeOut number|nil
----@field SaveTargetName string|nil
----@field Macro BomMacro
+---@field loadingScreenTimeOut number|nil
+---@field theMacro BomMacro
 ---@field MANA_CLASSES BomClassName[] Classes with mana resource
----@field ManaLimit number Player max mana
----@field MinimapButton BomGPIMinimapButton Minimap button control
+---@field playerManaLimit number Player max mana
+---@field minimapButton BomGPIMinimapButton Minimap button control
 ---@field nextCooldownDue number Set this to next spell cooldown to force update
----@field PartyUpdateNeeded boolean Requests player party update
----@field PlayerManaMax number
----@field PlayerBuffs BomBuffCollectionPerUnit
----@field PlayerCasting string|nil Indicates that the player is currently casting (updated in event handlers)
----@field PopupDynamic BomPopupDynamic
----@field QuickSingleBuff BomGPIControl Button for single/group buff toggling next to cast button
----@field RepeatUpdate boolean Requests some sort of spells update similar to ForceUpdate
+---@field isPartyUpdateNeeded boolean Requests player party update
+---@field playerBuffs BomBuffCollectionPerUnit Saved self buffs for the player
+---@field playerManaMax number
+---@field popupMenuDynamic BomPopupDynamic
+---@field quickSingleBuffToggleButton BomGPIControl Button for single/group buff toggling next to cast button
+---@field repeatUpdate boolean Requests some sort of spells update similar to ForceUpdate
+---@field reputationTrinketZones BomReputationTrinketZones Equipped AD trinket: Spell to and zone ids to check
 ---@field RESURRECT_CLASS BomClassName[] Classes who can resurrect others
----@field ScanModifier boolean Will update buffomat when modifier key is held down
+---@field ridingSpeedZones BomRidingSpeedZones Equipped Riding trinket: Spell to and zone ids to check
+---@field SaveTargetName string|nil
+---@field scanModifierKeyDown boolean Will update buffomat when modifier key is held down
 ---@field selectedBuffs BomBuffDefinition[]
----@field SetupAvailableSpells function
 ---@field someBodyIsGhost boolean [unused?] Someone in the party is a ghost
----@field spellIdLookup table<string, table<string, number>> Map of spell name to id
 ---@field spellIdIsSingleLookup table<number, boolean> Whether spell ids are single buffs
+---@field spellIdLookup table<string, table<string, number>> Map of spell name to id
 ---@field spellIdtoBuffId table<number, number> Maps spell ids to the key id of spell in the AllSpells
 ---@field spellTabsCreatedFlag boolean Indicated spells tab already populated with controls
 ---@field spellToSpellLookup table<number, number> Maps spells ids to other spell ids
----@field wipeCachedItems boolean Command to reset cached items
+---@field wipeCachedItems boolean Command to reset cached items on the next call to itemListCacheModule; TODO move to itemListCacheModule
 ---@field Print fun(self: BomAddon, msg: string): void
 ---@field RegisterEvent fun(self: BomAddon, event: string, handler: function): void
+---@field setupAvailableSpellsFn function
 
 BuffomatAddon = LibStub("AceAddon-3.0"):NewAddon(
         "Buffomat", "AceConsole-3.0", "AceEvent-3.0") ---@type BomAddon
@@ -145,8 +145,7 @@ function buffomatModule:Color(hex, text)
 end
 
 ---Creates a string which will display a picture in a FontString
----@param texture string - path to UI texture file (for example can come from
----  GetContainerItemInfo(bag, slot) or spell info etc
+---@param texture WowIconId - path to UI texture file (for example can come from GetContainerItemInfo(bag, slot) or spell info etc
 function BOM.FormatTexture(texture)
   return string.format(constModule.ICON_FORMAT, texture)
 end
@@ -188,7 +187,7 @@ function buffomatModule:OptionsUpdate()
 
   spellButtonsTabModule:UpdateSpellsTab("OptionsUpdate")
   managedUiModule:UpdateAll()
-  BOM.MinimapButton.UpdatePosition()
+  BOM.minimapButton.UpdatePosition()
   --BOM.legacyOptions.DoCancel()
 end
 
@@ -219,7 +218,7 @@ function buffomatModule.ChooseProfile(profile)
   end
 
   taskScanModule:ClearSkip()
-  BOM.PopupDynamic:Wipe()
+  BOM.popupMenuDynamic:Wipe()
   buffomatModule:SetForceUpdate("profileSelected")
   taskScanModule:ScanNow("profileSelected")
 
@@ -304,23 +303,23 @@ end
 
 ---Creates small mybutton which toggles group buff setting, next to CAST button
 function BOM.CreateSingleBuffButton(parent_frame)
-  if BOM.QuickSingleBuff == nil then
-    BOM.QuickSingleBuff = managedUiModule:CreateManagedButton(
+  if BOM.quickSingleBuffToggleButton == nil then
+    BOM.quickSingleBuffToggleButton = managedUiModule:CreateManagedButton(
             parent_frame,
             texturesModule.ICON_SELF_CAST_ON,
             texturesModule.ICON_SELF_CAST_OFF,
             nil, nil, nil, nil, nil)
-    BOM.QuickSingleBuff:SetPoint("BOTTOMLEFT", parent_frame, "BOTTOMRIGHT", -18, 0);
-    BOM.QuickSingleBuff:SetPoint("BOTTOMRIGHT", parent_frame, "BOTTOMRIGHT", -2, 12);
-    BOM.QuickSingleBuff:SetVariable(buffomatModule.shared, "NoGroupBuff", nil)
-    BOM.QuickSingleBuff:SetOnClick(BOM.MyButtonOnClick)
+    BOM.quickSingleBuffToggleButton:SetPoint("BOTTOMLEFT", parent_frame, "BOTTOMRIGHT", -18, 0);
+    BOM.quickSingleBuffToggleButton:SetPoint("BOTTOMRIGHT", parent_frame, "BOTTOMRIGHT", -2, 12);
+    BOM.quickSingleBuffToggleButton:SetVariable(buffomatModule.shared, "NoGroupBuff", nil)
+    BOM.quickSingleBuffToggleButton:SetOnClick(BOM.MyButtonOnClick)
     toolboxModule:TooltipText(
-            BOM.QuickSingleBuff,
+            BOM.quickSingleBuffToggleButton,
             BOM.FormatTexture(texturesModule.ICON_SELF_CAST_ON) .. " - " .. _t("options.long.NoGroupBuff")
                     .. "|n"
                     .. BOM.FormatTexture(texturesModule.ICON_SELF_CAST_OFF) .. " - " .. _t("options.long.GroupBuff"))
 
-    BOM.QuickSingleBuff:Show()
+    BOM.quickSingleBuffToggleButton:Show()
   end
 end
 
@@ -337,9 +336,9 @@ function buffomatModule:InitUI()
 
   toolboxModule:OnUpdate(self.UpdateTimer)
 
-  BOM.PopupDynamic = popupModule:CreatePopup(buffomatModule.OptionsUpdate)
+  BOM.popupMenuDynamic = popupModule:CreatePopup(buffomatModule.OptionsUpdate)
 
-  BOM.MinimapButton.Init(
+  BOM.minimapButton.Init(
           self.shared.Minimap,
           constModule.BOM_BEAR_ICON_FULLPATH,
           function(self, button)
@@ -352,8 +351,8 @@ function buffomatModule:InitUI()
           constModule.SHORT_TITLE)
 
   buffomatModule:OptionsInit()
-  BOM.PartyUpdateNeeded = true
-  BOM.RepeatUpdate = false
+  BOM.isPartyUpdateNeeded = true
+  BOM.repeatUpdate = false
 
   -- Make main frame draggable
   toolboxModule:EnableMoving(BomC_MainWindow, BOM.SaveWindowPosition)
@@ -427,7 +426,7 @@ function BuffomatAddon:MakeSlashCommand()
       { command = "%", description = _t("SlashProfile"), handler = buffomatModule.ChooseProfile }
     },
     },
-    { command = "spellbook", description = _t("SlashSpellBook"), handler = BOM.SetupAvailableSpells },
+    { command = "spellbook", description = _t("SlashSpellBook"), handler = BOM.setupAvailableSpellsFn },
     { command = "update", description = _t("SlashUpdate"),
       handler = function()
         buffomatModule:SetForceUpdate("macro-/update")
@@ -455,7 +454,7 @@ function BuffomatAddon:Init()
   --BOM.SetupItemCache()
   taskScanModule:SetupTasklist()
 
-  BOM.Macro = macroModule:NewMacro(constModule.MACRO_NAME, nil)
+  BOM.theMacro = macroModule:NewMacro(constModule.MACRO_NAME, nil)
 
   languagesModule:LocalizationInit()
 
@@ -601,8 +600,8 @@ function buffomatModule.UpdateTimer(elapsed)
 
   local now = GetTime()
 
-  if BOM.inLoadingScreen and BOM.LoadingScreenTimeOut then
-    if BOM.LoadingScreenTimeOut > now then
+  if BOM.inLoadingScreen and BOM.loadingScreenTimeOut then
+    if BOM.loadingScreenTimeOut > now then
       return
     else
       BOM.inLoadingScreen = false
@@ -629,7 +628,7 @@ function buffomatModule.UpdateTimer(elapsed)
     end
   end
 
-  if BOM.ScanModifier and buffomatModule.lastModifierKeyState ~= IsModifierKeyDown() then
+  if BOM.scanModifierKeyDown and buffomatModule.lastModifierKeyState ~= IsModifierKeyDown() then
     buffomatModule.lastModifierKeyState = IsModifierKeyDown()
     buffomatModule:SetForceUpdate("ModifierKeyDown")
   end
@@ -647,7 +646,7 @@ function buffomatModule.UpdateTimer(elapsed)
 
   local needForceUpdate = next(buffomatModule.forceUpdateRequestedBy) ~= nil
 
-  if (needForceUpdate or BOM.RepeatUpdate)
+  if (needForceUpdate or BOM.repeatUpdate)
           and now - (buffomatModule.lastUpdateTimestamp or 0) > updateTimerLimit
           and InCombatLockdown() == false
   then
@@ -662,7 +661,7 @@ function buffomatModule.UpdateTimer(elapsed)
     -- If updatescan call above took longer than 32 ms, and repeated update, then
     -- bump the slow alarm counter, once it reaches 32 we consider throttling.
     -- 1000 ms / 32 ms = 31.25 fps
-    if (debugprofilestop() - buffomatModule.fpsCheck) > 32 and BOM.RepeatUpdate then
+    if (debugprofilestop() - buffomatModule.fpsCheck) > 32 and BOM.repeatUpdate then
       buffomatModule.slowCount = buffomatModule.slowCount + 1
 
       if buffomatModule.slowCount >= 20 and updateTimerLimit < 1 then
@@ -680,7 +679,7 @@ function buffomatModule:FastUpdateTimer()
   buffomatModule.lastUpdateTimestamp = 0
 end
 
-BOM.PlayerBuffs = --[[---@type BomBuffCollectionPerUnit]] {}
+BOM.playerBuffs = --[[---@type BomBuffCollectionPerUnit]] {}
 
 ---@shape BomUnitAuraResult
 ---@field name string The name of the spell or effect of the debuff. This is the name shown in yellow when you mouse over the icon
@@ -739,13 +738,13 @@ function buffomatModule:UnitAura(unitId, buffIndex, filter)
       if duration > 0 and (expirationTime == nil or expirationTime == 0) then
         local destName = UnitFullName(unitId) ---@type string
 
-        if BOM.PlayerBuffs[destName] and BOM.PlayerBuffs[destName][name] then
-          expirationTime = (BOM.PlayerBuffs[destName][name] or 0) + duration
+        if BOM.playerBuffs[destName] and BOM.playerBuffs[destName][name] then
+          expirationTime = (BOM.playerBuffs[destName][name] or 0) + duration
 
           local now = GetTime()
 
           if expirationTime <= now then
-            BOM.PlayerBuffs[destName][name] = now
+            BOM.playerBuffs[destName][name] = now
             expirationTime = now + duration
           end
         end
@@ -936,9 +935,9 @@ function buffomatModule.Slash_DebugBuffs(dest)
 end
 
 function buffomatModule.Slash_DebugBuffList()
-  print("PlayerBuffs stored ", #BOM.PlayerBuffs)
+  print("PlayerBuffs stored ", #BOM.playerBuffs)
 
-  for name, spellist in pairs(BOM.PlayerBuffs) do
+  for name, spellist in pairs(BOM.playerBuffs) do
     print(name)
 
     for spellname, ti in pairs(spellist) do

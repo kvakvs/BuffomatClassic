@@ -1,12 +1,10 @@
 --local BOM = BuffomatAddon ---@type BomAddon
 
----@class BomLanguagesModule
+---@shape BomLanguagesModule
 ---@overload fun(key: string): string
 ---@field locales BomAllLocalesCollection
 ---@field currentLocale BomLocaleDict
-local languagesModule = {}
-BomModuleManager.languagesModule = languagesModule
-
+local languagesModule = BomModuleManager.languagesModule ---@type BomLanguagesModule
 local buffomatModule = BomModuleManager.buffomatModule
 local englishModule = BomModuleManager.languageEnglishModule
 local germanModule = BomModuleManager.languageGermanModule

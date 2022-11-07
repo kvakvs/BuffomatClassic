@@ -1,9 +1,8 @@
 --local TOCNAME, _ = ...
 --local BOM = BuffomatAddon ---@type BomAddon
 
----@class BomControlModule
-local controlModule = {}
-BomModuleManager.controlModule = controlModule
+---@shape BomControlModule
+local controlModule = BomModuleManager.controlModule ---@type BomControlModule
 
 ---@class GPIMinimapButtonConfigData
 ---@field position number|nil

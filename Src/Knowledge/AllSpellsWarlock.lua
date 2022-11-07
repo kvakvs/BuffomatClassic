@@ -1,8 +1,7 @@
 local BOM = BuffomatAddon ---@type BomAddon
 
----@class BomAllSpellsWarlockModule
-local warlockModule = {}
-BomModuleManager.allSpellsWarlockModule = warlockModule
+---@shape BomAllSpellsWarlockModule
+local warlockModule = BomModuleManager.allSpellsWarlockModule ---@type BomAllSpellsWarlockModule
 
 local allBuffsModule = BomModuleManager.allBuffsModule
 local buffDefModule = BomModuleManager.buffDefinitionModule
@@ -18,7 +17,7 @@ function warlockModule:SetupWarlockSpells(allBuffs, enchantments)
                :IsDefault(false)
                :SingleDuration(allBuffsModule.DURATION_10M)
                :RequirePlayerClass("WARLOCK")
-               :DefaultTargetClasses(allBuffsModule.BOM_ALL_CLASSES)
+               :DefaultTargetClasses(allBuffsModule.ALL_CLASSES)
                :Category("class")
 
   -- Detect Greater Invisibility | Große Unsichtbarkeit entdecken
@@ -28,7 +27,7 @@ function warlockModule:SetupWarlockSpells(allBuffs, enchantments)
                                2970, 11743 }) -- Some other stuff
                :SingleDuration(allBuffsModule.DURATION_10M)
                :RequirePlayerClass("WARLOCK")
-               :DefaultTargetClasses(allBuffsModule.BOM_ALL_CLASSES)
+               :DefaultTargetClasses(allBuffsModule.ALL_CLASSES)
                :Category("class")
 
   -- Shadow Ward / Schattenzauberschutz
@@ -81,7 +80,7 @@ function warlockModule:SetupWarlockSpells(allBuffs, enchantments)
                                  spellIdsModule.Warlock_CreateFirestone6,
                                  spellIdsModule.Warlock_CreateFirestone7 })
                  :RequirePlayerClass("WARLOCK")
-                 :Category("class"_WEAPON_ENCHANTMENT)
+                 :Category("classWeaponEnchantment")
     -- Firestone
     buffDefModule:createAndRegisterBuff(allBuffs, 60220, nil)
                  :CreatesOrProvidedByItem({ itemIdsModule.Warlock_Firestone1,
@@ -96,7 +95,7 @@ function warlockModule:SetupWarlockSpells(allBuffs, enchantments)
                  :IsDefault(false)
                  :SingleDuration(allBuffsModule.DURATION_1H)
                  :RequirePlayerClass("WARLOCK")
-                 :Category("class"_WEAPON_ENCHANTMENT)
+                 :Category("classWeaponEnchantment")
     enchantments[60220] = { 3609, 3610, 3611, 3612, 3597, 3613, 3614 } -- WotLK: Firestone 1-7
   else
     -- in WotLK firestone becomes a 5-charges conjured weapon enchantment item
@@ -130,7 +129,7 @@ function warlockModule:SetupWarlockSpells(allBuffs, enchantments)
                                  spellIdsModule.Warlock_CreateSpellstone5,
                                  spellIdsModule.Warlock_CreateSpellstone6 })
                  :RequirePlayerClass("WARLOCK")
-                 :Category("class"_WEAPON_ENCHANTMENT)
+                 :Category("classWeaponEnchantment")
 
     -- Spellstone
     buffDefModule:createAndRegisterBuff(allBuffs, 55194, nil)
@@ -145,7 +144,7 @@ function warlockModule:SetupWarlockSpells(allBuffs, enchantments)
                  :IsDefault(false)
                  :SingleDuration(allBuffsModule.DURATION_1H)
                  :RequirePlayerClass("WARLOCK")
-                 :Category("class"_WEAPON_ENCHANTMENT)
+                 :Category("classWeaponEnchantment")
     enchantments[55194] = {
       3615, 3616, 3617, 3618, 3619, 3620
     } -- WotLK: Spellstone 1-6 enchantIds

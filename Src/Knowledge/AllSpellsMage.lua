@@ -1,8 +1,7 @@
 local BOM = BuffomatAddon ---@type BomAddon
 
----@class BomAllSpellsMageModule
-local mageModule = {}
-BomModuleManager.allSpellsMageModule = mageModule
+---@shape BomAllSpellsMageModule
+local mageModule = BomModuleManager.allSpellsMageModule ---@type BomAllSpellsMageModule
 
 local spellIdsModule = BomModuleManager.spellIdsModule
 local allBuffsModule = BomModuleManager.allBuffsModule

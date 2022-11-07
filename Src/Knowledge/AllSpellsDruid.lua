@@ -1,8 +1,7 @@
 local BOM = BuffomatAddon ---@type BomAddon
 
----@class BomAllSpellsDruidModule
-local druidModule = {}
-BomModuleManager.allSpellsDruidModule = druidModule
+---@shape BomAllSpellsDruidModule
+local druidModule = BomModuleManager.allSpellsDruidModule ---@type BomAllSpellsDruidModule
 
 local _t = BomModuleManager.languagesModule
 local allBuffsModule = BomModuleManager.allBuffsModule
@@ -27,7 +26,7 @@ function druidModule:SetupDruidSpells(allBuffs, enchantments)
                :GroupDuration(allBuffsModule.DURATION_1H)
                :ReagentRequired({ 17021, 17026,
                                   44605 }) -- WotLK: Wild Spineleaf
-               :DefaultTargetClasses(allBuffsModule.BOM_ALL_CLASSES)
+               :DefaultTargetClasses(allBuffsModule.ALL_CLASSES)
                :RequirePlayerClass("DRUID")
                :Category("class")
 

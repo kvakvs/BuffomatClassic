@@ -1,9 +1,8 @@
 local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BomAddon
 
----@class BomEventsModule
-local eventsModule = {}
-BomModuleManager.eventsModule = eventsModule
+---@shape BomEventsModule
+local eventsModule = BomModuleManager.eventsModule ---@type BomEventsModule
 
 local allBuffsModule = BomModuleManager.allBuffsModule
 local buffomatModule = BomModuleManager.buffomatModule
@@ -65,7 +64,7 @@ end
 local function Event_UNIT_POWER_UPDATE(unitTarget, powerType)
   --UNIT_POWER_UPDATE: "unitTarget", "powerType"
   if powerType == "MANA" and UnitIsUnit(unitTarget, "player") then
-    local maxMana = BOM.PlayerManaMax or 0
+    local maxMana = BOM.playerManaMax or 0
     local actualMana = UnitPower("player", 0) or 0
 
     if maxMana <= actualMana then
@@ -107,7 +106,7 @@ end
 
 local function Event_LoadingStart()
   BOM.inLoadingScreen = true
-  BOM.LoadingScreenTimeOut = nil
+  BOM.loadingScreenTimeOut = nil
   Event_CombatStart()
   --print("loading start")
 end
@@ -120,7 +119,7 @@ local function Event_LoadingStop()
     allBuffsModule:LoadItemsAndSpells()
   end
 
-  BOM.LoadingScreenTimeOut = GetTime() + constModule.LOADING_SCREEN_TIMEOUT
+  BOM.loadingScreenTimeOut = GetTime() + constModule.LOADING_SCREEN_TIMEOUT
   buffomatModule:SetForceUpdate("loadingStop")
 end
 
@@ -182,24 +181,24 @@ local function Event_COMBAT_LOG_EVENT_UNFILTERED()
         if event == "SPELL_CAST_SUCCESS" then
 
         elseif event == "SPELL_AURA_REFRESH" then
-          BOM.PlayerBuffs[destName] = BOM.PlayerBuffs[destName] or {}
-          BOM.PlayerBuffs[destName][spellName] = GetTime()
+          BOM.playerBuffs[destName] = BOM.playerBuffs[destName] or {}
+          BOM.playerBuffs[destName][spellName] = GetTime()
 
         elseif event == "SPELL_AURA_APPLIED" then
-          BOM.PlayerBuffs[destName] = BOM.PlayerBuffs[destName] or {}
-          if BOM.PlayerBuffs[destName][spellName] == nil then
-            BOM.PlayerBuffs[destName][spellName] = GetTime()
+          BOM.playerBuffs[destName] = BOM.playerBuffs[destName] or {}
+          if BOM.playerBuffs[destName][spellName] == nil then
+            BOM.playerBuffs[destName][spellName] = GetTime()
           end
 
         elseif event == "SPELL_AURA_REMOVED" then
-          if BOM.PlayerBuffs[destName] and BOM.PlayerBuffs[destName][spellName] then
-            BOM.PlayerBuffs[destName][spellName] = nil
+          if BOM.playerBuffs[destName] and BOM.playerBuffs[destName][spellName] then
+            BOM.playerBuffs[destName][spellName] = nil
           end
         end
 
       elseif event == "SPELL_AURA_REFRESH" or event == "SPELL_AURA_APPLIED" and event == "SPELL_AURA_REMOVED" then
-        if BOM.PlayerBuffs[destName] and BOM.PlayerBuffs[destName][spellName] then
-          BOM.PlayerBuffs[destName][spellName] = nil
+        if BOM.playerBuffs[destName] and BOM.playerBuffs[destName][spellName] then
+          BOM.playerBuffs[destName][spellName] = nil
         end
       end
     end
@@ -257,7 +256,7 @@ end
 eventsModule.isPlayerInParty = IsInRaid() or IsInGroup()
 
 local function Event_PartyChanged()
-  BOM.PartyUpdateNeeded = true
+  BOM.isPartyUpdateNeeded = true
   buffomatModule:SetForceUpdate("partyChanged")
 
   -- if in_party changed from true to false, clear the watch groups
@@ -282,30 +281,30 @@ local function Event_UNIT_SPELLCAST_errors(unit)
 end
 
 local function Event_UNIT_SPELLCAST_START(unit)
-  if UnitIsUnit(unit, "player") and not BOM.PlayerCasting then
-    BOM.PlayerCasting = "cast"
+  if UnitIsUnit(unit, "player") and not BOM.isPlayerCasting then
+    BOM.isPlayerCasting = "cast"
     buffomatModule:SetForceUpdate("castStart")
   end
 end
 
 local function Event_UNIT_SPELLCAST_STOP(unit)
-  if UnitIsUnit(unit, "player") and BOM.PlayerCasting then
-    BOM.PlayerCasting = nil
+  if UnitIsUnit(unit, "player") and BOM.isPlayerCasting then
+    BOM.isPlayerCasting = nil
     buffomatModule:SetForceUpdate("castStop")
     BOM.checkForError = false
   end
 end
 
 local function Event_UNIT_SPELLCHANNEL_START(unit)
-  if UnitIsUnit(unit, "player") and not BOM.PlayerCasting then
-    BOM.PlayerCasting = "channel"
+  if UnitIsUnit(unit, "player") and not BOM.isPlayerCasting then
+    BOM.isPlayerCasting = "channel"
     buffomatModule:SetForceUpdate("channelStart")
   end
 end
 
 local function Event_UNIT_SPELLCHANNEL_STOP(unit)
-  if UnitIsUnit(unit, "player") and BOM.PlayerCasting then
-    BOM.PlayerCasting = nil
+  if UnitIsUnit(unit, "player") and BOM.isPlayerCasting then
+    BOM.isPlayerCasting = nil
     buffomatModule:SetForceUpdate("channelStop")
     BOM.checkForError = false
   end

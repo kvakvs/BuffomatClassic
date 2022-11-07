@@ -1,6 +1,3 @@
---local TOCNAME, _ = ...
---local BOM = BuffomatAddon ---@type BomAddon
-
 ---@alias WowIconId string|number
 
 ---@alias BomTexCoord number[]
@@ -36,8 +33,7 @@
 ---@field ICON_WHISPER_ON string
 ---@field ICON_COORD_09 BomTexCoord
 ---@field ICON_COORD_08 BomTexCoord
-local texturesModule = {}
-BomModuleManager.texturesModule = texturesModule
+local texturesModule = BomModuleManager.texturesModule ---@type BomTexturesModule
 
 texturesModule.ICON_COORD_09 = { 0.1, 0.9, 0.1, 0.9 }
 texturesModule.ICON_COORD_08 = { 0.2, 0.8, 0.2, 0.8 }

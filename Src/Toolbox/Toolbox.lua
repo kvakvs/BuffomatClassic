@@ -1,7 +1,7 @@
 local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BomAddon
 
----@class BomToolboxModule
+---@shape BomToolboxModule
 ---@field IconClass table<string, string> Class icon strings indexed by class name
 ---@field IconClassBig table<string, string> Class icon strings indexed by class name
 ---@field RaidIconNames table<string, number>
@@ -11,8 +11,7 @@ local BOM = BuffomatAddon ---@type BomAddon
 ---@field ClassColor table<string, table> Localized class colors
 ---@field NameToClass table<string, string> Reverse class name lookup
 ---@field _EditBox BomGPIControlEditBox
-local toolboxModule = {}
-BomModuleManager.toolboxModule = toolboxModule
+local toolboxModule = BomModuleManager.toolboxModule ---@type BomToolboxModule
 
 local _t = BomModuleManager.languagesModule
 
@@ -337,7 +336,7 @@ function toolboxModule:Combine(t, sep, first, last)
   return string.sub(ret, string.len(sep) + 1)
 end
 
-function Tool.iSplit(inputstr, sep)
+function toolboxModule:iSplit(inputstr, sep)
   if sep == nil then
     sep = "%s"
   end
@@ -480,7 +479,7 @@ local function bomSelectTab(self)
   end
 end
 
-function Tool.TabHide(frame, id)
+function toolboxModule:TabHide(frame, id)
   if id and frame.Tabs and frame.Tabs[id] then
     frame.Tabs[id]:Hide()
   elseif not id and frame.Tabs then
@@ -490,7 +489,7 @@ function Tool.TabHide(frame, id)
   end
 end
 
-function Tool.TabShow(frame, id)
+function toolboxModule:TabShow(frame, id)
   if id and frame.Tabs and frame.Tabs[id] then
     frame.Tabs[id]:Show()
   elseif not id and frame.Tabs then
@@ -506,13 +505,13 @@ function toolboxModule:SelectTab(frame, id)
   end
 end
 
-function Tool.TabOnSelect(frame, id, func)
+function toolboxModule:TabOnSelect(frame, id, func)
   if id and frame.Tabs and frame.Tabs[id] then
     frame.Tabs[id].OnSelect = func
   end
 end
 
-function Tool.GetSelectedTab(frame)
+function toolboxModule:GetSelectedTab(frame)
   if frame.Tabs then
     for i = 1, frame.numTabs do
       if frame.Tabs[i].content:IsShown() then
@@ -703,7 +702,7 @@ local function bom_create_copypaste()
   return frame
 end
 
-function Tool.CopyPast(Text)
+function toolboxModule:CopyPast(Text)
   if CopyPastFrame == nil then
     bom_create_copypaste()
   end
@@ -732,7 +731,7 @@ end
 ---This works when the tooltip is set too early before translations are loaded.
 ---@param control BomGPIControl
 ---@param translationKey string The key to translation
-function Tool.TooltipWithTranslationKey(control, translationKey)
+function toolboxModule:TooltipWithTranslationKey(control, translationKey)
   control:SetScript("OnEnter", function()
     GameTooltip:SetOwner(control, "ANCHOR_RIGHT")
     GameTooltip:AddLine(_t(translationKey))
@@ -804,7 +803,7 @@ end
 
 ---@param text string
 ---@param fn function
-function Tool.Profile(text, fn)
+function toolboxModule:Profile(text, fn)
   local t_start = debugprofilestop()
   local result = fn()
   local t_end = debugprofilestop()

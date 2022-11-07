@@ -1,12 +1,11 @@
 local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BomAddon
 
----@class BomUiMinimapButtonModule
-local uiMinimapButtonModule = {}
-BomModuleManager.uiMinimapButtonModule = uiMinimapButtonModule
+---@shape BomUiMinimapButtonModule
+local uiMinimapButtonModule = BomModuleManager.uiMinimapButtonModule ---@type BomUiMinimapButtonModule
 
-BOM.MinimapButton = BOM.MinimapButton or --[[---@type BomGPIMinimapButton]] {}
-local minimapButtonClass = BOM.MinimapButton
+BOM.minimapButton = BOM.minimapButton or --[[---@type BomGPIMinimapButton]] {}
+local minimapButtonClass = BOM.minimapButton
 
 ---Change minimap button texture position slightly
 ---@param button BomGPIControl

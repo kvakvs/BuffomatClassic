@@ -1,11 +1,11 @@
 local BOM = BuffomatAddon ---@type BomAddon
 
----@class BomAllSpellsShamanModule
-local shamanModule = {}
-BomModuleManager.allSpellsShamanModule = shamanModule
+---@shape BomAllSpellsShamanModule
+local shamanModule = BomModuleManager.allSpellsShamanModule ---@type BomAllSpellsShamanModule
 
 local allBuffsModule = BomModuleManager.allBuffsModule
 local buffDefModule = BomModuleManager.buffDefinitionModule
+local spellIdsModule = BomModuleManager.spellIdsModule
 
 ---Add SHAMAN spells
 ---@param allBuffs BomBuffDefinition[]
@@ -15,21 +15,23 @@ function shamanModule:SetupShamanSpells(allBuffs, enchants)
   local enchantmentDuration = allBuffsModule.TbcOrClassic(allBuffsModule.DURATION_30M, allBuffsModule.DURATION_5M) -- TBC: Shaman enchants become 30min
 
   -- Flametongue Weapon
-  buffDefModule:createAndRegisterBuff(allBuffs, 16342, nil)
+  buffDefModule:createAndRegisterBuff(allBuffs, spellIdsModule.Shaman_Flametongue6, nil)
                :BuffType("weapon")
                :ClassicBuffTypeIsSeal()
                :IsOwn(true)
                :IsConsumable(false)
                :IsDefault(false)
                :SingleDuration(enchantmentDuration)
-               :SingleFamily({ 8024, 8027, 8030, 16339, 16341, 16342, -- Flametongue Weapon 1-6
+               :SingleFamily({ 8024, 8027, 8030, 16339, 16341, spellIdsModule.Shaman_Flametongue6, -- Flametongue Weapon 1-6
                                25489, -- TBC: Flametongue Weapon 7
                                58785, 58789, 58790 }) -- WotLK: Flametongue Weapon 8-10
                :RequirePlayerClass("SHAMAN")
-               :Category("class"_WEAPON_ENCHANTMENT)
-  enchants[16342] = { 3, 4, 5, 523, 1665, 1666, -- Flametongue 1-6
-                      2634, -- TBC: Flametongue 7
-                      3779, 3780, 3781 } -- WotLK: Flametongue 8-10
+               :Category("classWeaponEnchantment")
+  enchants[spellIdsModule.Shaman_Flametongue6] = {
+    3, 4, 5, 523, 1665, 1666, -- Flametongue 1-6
+    2634, -- TBC: Flametongue 7
+    3779, 3780, 3781  -- WotLK: Flametongue 8-10
+  }
 
   -- Frostbrand Weapon
   buffDefModule:createAndRegisterBuff(allBuffs, 16356, nil)
@@ -43,7 +45,7 @@ function shamanModule:SetupShamanSpells(allBuffs, enchants)
                                25500, -- TBC: Frostbrand Weapon 6
                                58794, 58795, 58796 }) -- WotLK: Frostbrand Weapon 7-9
                :RequirePlayerClass("SHAMAN")
-               :Category("class"_WEAPON_ENCHANTMENT)
+               :Category("classWeaponEnchantment")
   enchants[16356] = { 2, 12, 524, 1667, 1668, -- Frostbrand
                       2635, -- TBC: Frostbrand 6
                       3782, 3783, 3784 } -- WotLK: Frostbrand 7-9
@@ -60,7 +62,7 @@ function shamanModule:SetupShamanSpells(allBuffs, enchants)
                                25479, 25485 }) -- TBC: Ranks 8-9
                :RequirePlayerClass("SHAMAN")
                :HideInWotLK()
-               :Category("class"_WEAPON_ENCHANTMENT)
+               :Category("classWeaponEnchantment")
 
   -- Note: in TBC all enchantIds for rockbiter have changed
   enchants[16316] = { 1, 6, 29, 503, 504, 683, 1663, 1664, -- Rockbiter, also 504 some special +80 Rockbiter?
@@ -80,7 +82,7 @@ function shamanModule:SetupShamanSpells(allBuffs, enchants)
                                25505, -- TBC: Windfury Weapon 5
                                58801, 58803, 58804 }) -- WotLK: Windfury Weapon 6-8
                :RequirePlayerClass("SHAMAN")
-               :Category("class"_WEAPON_ENCHANTMENT)
+               :Category("classWeaponEnchantment")
   enchants[16362] = { 283, 284, 525, 1669, -- Windfury 1-4
                       2636, -- TBC: Windfury 5
                       3785, 3786, 3787 } -- WotLK: Windfury 6-8
@@ -95,7 +97,7 @@ function shamanModule:SetupShamanSpells(allBuffs, enchants)
                :SingleDuration(enchantmentDuration)
                :SingleFamily({ 51730, 51988, 51991, 51992, 51993, 51994 }) -- WotLK: Earthliving Weapon 1-6
                :RequirePlayerClass("SHAMAN")
-               :Category("class"_WEAPON_ENCHANTMENT)
+               :Category("classWeaponEnchantment")
   enchants[51730] = { 3345, 3346, 3347, 3348, 3349, 3350 } -- WotLK: Earthliving 1-6
 
   -- Lightning Shield / Blitzschlagschild

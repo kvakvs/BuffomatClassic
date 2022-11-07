@@ -1,8 +1,7 @@
 local BOM = BuffomatAddon ---@type BomAddon
 
----@class BomAllSpellsPriestModule
-local priestModule = {}
-BomModuleManager.allSpellsPriestModule = priestModule
+---@shape BomAllSpellsPriestModule
+local priestModule = BomModuleManager.allSpellsPriestModule ---@type BomAllSpellsPriestModule
 
 local allBuffsModule = BomModuleManager.allBuffsModule
 local buffDefModule = BomModuleManager.buffDefinitionModule
@@ -61,7 +60,7 @@ function priestModule:SetupPriestSpells(allBuffs, enchants)
                :GroupDuration(allBuffsModule.DURATION_1H)
                :ReagentRequired({ 17028, 17029, -- Candle
                                   44615 })  -- WotLK: Devout Candle
-               :DefaultTargetClasses(allBuffsModule.BOM_ALL_CLASSES)
+               :DefaultTargetClasses(allBuffsModule.ALL_CLASSES)
                :Category("class")
                :IgnoreIfHaveBuff(46302) -- Kiru's Song of Victory (Sunwell)
                :RequirePlayerClass("PRIEST")
@@ -81,7 +80,7 @@ function priestModule:SetupPriestSpells(allBuffs, enchants)
                               48170 }) -- WotLK: Prayer of Shadow Protection 3
                :ReagentRequired({ 17028, 17029,
                                   44615 })  -- WotLK: Devout Candle
-               :DefaultTargetClasses(allBuffsModule.BOM_ALL_CLASSES)
+               :DefaultTargetClasses(allBuffsModule.ALL_CLASSES)
                :Category("class")
                :RequirePlayerClass("PRIEST")
 
@@ -90,7 +89,7 @@ function priestModule:SetupPriestSpells(allBuffs, enchants)
                :IsDefault(false)
                :SingleDuration(allBuffsModule.DURATION_10M)
                :HasCooldown(true)
-               :DefaultTargetClasses(allBuffsModule.BOM_ALL_CLASSES)
+               :DefaultTargetClasses(allBuffsModule.ALL_CLASSES)
                :Category("class")
                :RequirePlayerClass("PRIEST")
 

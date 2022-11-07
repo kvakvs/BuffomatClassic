@@ -1,4 +1,4 @@
-local TOCNAME, _ = ...
+--local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BomAddon
 
 ---@alias BomItemCacheKey number|string
@@ -7,12 +7,10 @@ local BOM = BuffomatAddon ---@type BomAddon
 ---@field [BomItemCacheKey] BomItemCacheElement
 ---@field Item2 table
 
----@class BomItemCacheModule
+---@shape BomItemCacheModule
 ---@field cache BomItemCache Stores arg to results mapping for GetItemInfo
-local itemCacheModule = {
-  cache = {}
-}
-BomModuleManager.itemCacheModule = itemCacheModule
+local itemCacheModule = BomModuleManager.itemCacheModule ---@type BomItemCacheModule
+itemCacheModule.cache = {}
 
 local buffomatModule = BomModuleManager.buffomatModule
 

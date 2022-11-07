@@ -6,9 +6,8 @@ local BOM = BuffomatAddon ---@type BomAddon
 ---@alias BomZoneId number Wow Zone ID
 ---@alias BomSpellId number Wow Spell ID
 
----@class BomBuffDefinitionModule
-local buffDefModule = {}
-BomModuleManager.buffDefinitionModule = buffDefModule
+---@shape BomBuffDefinitionModule
+local buffDefModule = BomModuleManager.buffDefinitionModule ---@type BomBuffDefinitionModule
 
 local buffomatModule = BomModuleManager.buffomatModule
 local spellCacheModule = BomModuleManager.spellCacheModule
@@ -64,9 +63,9 @@ local allBuffsModule = BomModuleManager.allBuffsModule
 ---@field default boolean Whether the spell auto-cast is enabled by default
 ---@field elixirType string|nil Use this for elixir mutual exclusions on elixirs
 ---@field Enable boolean [⚠DO NOT RENAME]  Whether buff is to be watched
----@field ExcludedTarget table<string, boolean> [⚠DO NOT RENAME] List of target names to never buff
+---@field ExcludedTarget {[string]: boolean} [⚠DO NOT RENAME] List of target names to never buff
 ---@field extraText string Added to the right of spell name in the spells config
----@field ForcedTarget table<string, boolean> [⚠DO NOT RENAME] List of extra targets to buff
+---@field ForcedTarget {[string]: boolean} [⚠DO NOT RENAME] List of extra targets to buff
 ---@field frames BomBuffRowFrames Dynamic list of controls associated with this spell in the UI
 ---@field groupDuration number Buff duration for group buff in seconds
 ---@field groupFamily number[] Family of group buff spell ids which are mutually exclusive
@@ -112,8 +111,8 @@ local allBuffsModule = BomModuleManager.allBuffsModule
 ---@field trackingIconId WowIconId Numeric id for the tracking texture icon
 ---@field trackingSpellName string For tracking spells, contains string name for the spell
 ---@field type BomBuffType Defines type: "aura", "consumable", "weapon" for Enchant Consumables, "seal", "tracking", "resurrection"
----@field UnitsHaveBetterBuff BomUnit[] List of group members who might need this buff but won't get it because they have better
----@field UnitsNeedBuff BomUnit[] List of group members who might need this buff
+---@field unitsHaveBetterBuff BomUnit[] List of group members who might need this buff but won't get it because they have better
+---@field unitsNeedBuff BomUnit[] List of group members who might need this buff
 local buffDefClass = {}
 buffDefClass.__index = buffDefClass
 
@@ -584,7 +583,7 @@ end
 
 ---@param profileName BomProfileName|nil
 ---@return BomBlessingState
-function buffDefModule:GetProfileBlessing(profileName)
+function buffDefModule:GetProfileBlessingState(profileName)
   if profileName == nil then
     return buffomatModule.currentProfile.CurrentBlessing
     --return allBuffsModule.allBuffs[spellId]
@@ -661,8 +660,8 @@ function buffDefClass:ResetBuffTargets()
   wipe(self.GroupsNeedBuff)
   --wipe(self.GroupsHaveBetterBuff)
   wipe(self.groupsHaveDead)
-  wipe(self.UnitsNeedBuff)
-  wipe(self.UnitsHaveBetterBuff)
+  wipe(self.unitsNeedBuff)
+  wipe(self.unitsHaveBetterBuff)
 end
 
 ---@param iconReadyFn fun(texture: string)|nil Call with result when icon value is ready

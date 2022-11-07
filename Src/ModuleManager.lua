@@ -35,7 +35,6 @@
 ---@field languageGermanModule BomLanguageGermanModule
 ---@field languageRussianModule BomLanguageRussianModule
 ---@field languagesModule BomLanguagesModule
----@field legacyOptionsModule BomLegacyOptionsModule
 ---@field macroModule BomMacroModule
 ---@field managedUiModule BomManagedUiModule
 ---@field myButtonModule BomUiMyButtonModule
@@ -60,7 +59,68 @@
 ---@field unitBuffTargetModule BomUnitBuffTargetModule
 ---@field unitCacheModule BomUnitCacheModule
 ---@field unitModule BomUnitModule
-BomModuleManager = {}
+BomModuleManager = {
+  allBuffsModule                = {},
+  allConsumesElixirsModule      = {},
+  allConsumesEnchantmentsModule = {},
+  allConsumesFlasksModule       = {},
+  allConsumesFoodModule         = {},
+  allConsumesOtherModule        = {},
+  allConsumesScrollsModule      = {},
+  allSpellsDeathknightModule    = {},
+  allSpellsDruidModule          = {},
+  allSpellsHunterModule         = {},
+  allSpellsMageModule           = {},
+  allSpellsPaladinModule        = {},
+  allSpellsPriestModule         = {},
+  allSpellsRogueModule          = {},
+  allSpellsShamanModule         = {},
+  allSpellsWarlockModule        = {},
+  allSpellsWarriorModule        = {},
+  buffChecksModule              = {},
+  buffDefinitionModule          = {},
+  buffModule                    = {},
+  buffomatModule                = {},
+  buffRowModule                 = {},
+  characterSettingsModule       = {},
+  constModule                   = {},
+  controlModule                 = {},
+  eventsModule                  = {},
+  groupBuffTargetModule         = {},
+  itemCacheModule               = {},
+  itemIdsModule                 = {},
+  itemListCacheModule           = {},
+  languageChineseModule         = {},
+  languageEnglishModule         = {},
+  languageFrenchModule          = {},
+  languageGermanModule          = {},
+  languageRussianModule         = {},
+  languagesModule               = {},
+  macroModule                   = {},
+  managedUiModule               = {},
+  myButtonModule                = {},
+  optionsModule                 = {},
+  optionsPopupModule            = {},
+  popupModule                   = {},
+  profileModule                 = {},
+  rowBuilderModule              = {},
+  sharedSettingsModule          = {},
+  slashCommandsModule           = {},
+  spellButtonsTabModule         = {},
+  spellCacheModule              = {},
+  spellIdsModule                = {},
+  spellSetupModule              = {},
+  taskListModule                = {},
+  taskModule                    = {},
+  taskScanModule                = {},
+  texturesModule                = {},
+  toolboxModule                 = {},
+  uiButtonModule                = {},
+  uiMinimapButtonModule         = {},
+  unitBuffTargetModule          = {},
+  unitCacheModule               = {},
+  unitModule                    = {},
+}
 
 ---For each known module call function by fnName and optional context will be
 ---passed as 1st argument, can be ignored (defaults to nil)
