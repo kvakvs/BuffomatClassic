@@ -17,7 +17,7 @@ local popupModule = BomModuleManager.popupModule ---@type BomPopupModule
 ---@field _x number X offset
 ---@field _y number Y offset
 
-local PopupDepth ---@type number|nil
+local popupDepth ---@type number|nil
 
 ---Handler for popup menu clicks
 ---@param self BomPopupInfo
@@ -34,50 +34,51 @@ function popupModule.PopupClick(self, arg1, arg2, checked)
   end
 end
 
+---@param self BomGPIControlPopup
 function popupModule.PopupAddItem(self, text, disabled, value, arg1, arg2)
-  local c = self._Frame._GPIPRIVAT_Items.count + 1
-  self._Frame._GPIPRIVAT_Items.count = c
+  local c = self._Frame.gpiPopupMenuItems.count + 1
+  self._Frame.gpiPopupMenuItems.count = c
 
-  if not self._Frame._GPIPRIVAT_Items[c] then
-    self._Frame._GPIPRIVAT_Items[c] = {}
+  if not self._Frame.gpiPopupMenuItems[c] then
+    self._Frame.gpiPopupMenuItems[c] = {}
   end
 
-  local t = self._Frame._GPIPRIVAT_Items[c] ---@type BomPopupInfo
+  local t = self._Frame.gpiPopupMenuItems[c] ---@type BomPopupInfo
 
   t.text = text or ""
   t.disabled = disabled or false
   t.value = value
   t.arg1 = arg1
   t.arg2 = arg2
-  t.MenuDepth = PopupDepth or 0
+  t.menuDepth = popupDepth or 0
 end
 
 ---@param self BomGPIControlPopup
 function popupModule.PopupAddSubMenu(self, text, value)
   if text ~= nil and text ~= "" then
     popupModule.PopupAddItem(self, text, "MENU", value, nil, nil)
-    PopupDepth = value
+    popupDepth = value
   else
-    PopupDepth = nil
+    popupDepth = nil
   end
 end
 
-local PopupLastWipeName ---@type string
+local popupLastWipeName ---@type string
 
 ---@param self BomGPIControlPopup
 ---@param WipeName string
 function popupModule.PopupWipe(self, WipeName)
   self._Frame.gpiPopupMenuItems.count = 0
-  PopupDepth = nil
+  popupDepth = nil
 
   if UIDROPDOWNMENU_OPEN_MENU == self._Frame then
     ToggleDropDownMenu(nil, nil, self._Frame, self._where, self._x, self._y)
-    if WipeName == PopupLastWipeName then
+    if WipeName == popupLastWipeName then
       return false
     end
   end
 
-  PopupLastWipeName = WipeName
+  popupLastWipeName = WipeName
   return true
 end
 
@@ -92,7 +93,7 @@ end
 ---@field func function|nil
 ---@field hasArrow boolean
 ---@field menuList any
----@field MenuDepth number
+---@field menuDepth number
 ---@field keepShownOnClick boolean
 
 ---@param frame BomGPIControl
@@ -107,7 +108,7 @@ function popupModule.PopupCreate(frame, level, menuList)
   for i = 1, frame.gpiPopupMenuItems.count do
     local val = frame.gpiPopupMenuItems[i]
 
-    if val.MenuDepth == menuList then
+    if val.menuDepth == menuList then
       if val.disabled == "MENU" then
         -- Submenu entry
         info.text = val.text

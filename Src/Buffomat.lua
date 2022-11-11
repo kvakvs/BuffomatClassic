@@ -182,7 +182,7 @@ function buffomatModule:SetForceUpdate(reason)
 end
 
 -- Something changed (buff gained possibly?) update all spells and spell tabs
-function buffomatModule:OptionsUpdate()
+function buffomatModule.OptionsUpdate()
   buffomatModule:SetForceUpdate("optionsUpdate")
   taskScanModule:ScanNow("OptionsUpdate")
 
@@ -534,13 +534,15 @@ function BuffomatAddon:OnEnable()
   -- the game that wasn't available in OnInitialize
   self:Init()
   eventsModule:InitEvents()
-  local onClick = function(self, button)
+
+  local onClick = function(control, button)
     if button == "LeftButton" then
       buffomatModule:ToggleWindow()
     else
-      optionsPopupModule:Setup(self, true)
+      optionsPopupModule:Setup(control, true)
     end
   end
+
   toolboxModule:AddDataBroker(
           constModule.BOM_BEAR_ICON_FULLPATH,
           onClick, nil, nil)

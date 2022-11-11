@@ -69,7 +69,7 @@ function russianModule:Translations()
             .. "или закрыть главное окно во время боя!",
     BtnCancel                                   = "Закрыть",
     BtnOpen                                     = "Открыть",
-    BtnSettings                                 = "Настройки",
+    ["optionsMenu.Settings"]                    = "Настройки",
     BtnSettingsSpells                           = "Настройки заклинаний",
 
     ["options.general.group.AutoActions"]       = "Реакция на события",

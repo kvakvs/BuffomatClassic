@@ -301,7 +301,7 @@ function englishModule:Translations()
     BtnOpen                                           = "Open",
     BtnCancel                                         = "Cancel",
     ["popup.QuickSettings"]                           = "Quick Settings",
-    BtnSettings                                       = "Settings Window",
+    ["optionsMenu.Settings"]                          = "Settings Window",
     BtnSettingsSpells                                 = "Settings Spells",
     BtnBuffs                                          = "Consumables",
     ButtonCastBuff                                    = "Cast buff",

@@ -44,7 +44,7 @@ function frenchModule:Translations()
 
     BtnOpen                                     = "Ouvrir",
     BtnCancel                                   = "Annuler",
-    BtnSettings                                 = "Réglages",
+    ["optionsMenu.Settings"]                    = "Réglages",
     BtnSettingsSpells                           = "Réglage sorts",
 
     Header_TRACKING                             = "Pistage",

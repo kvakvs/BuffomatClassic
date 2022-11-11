@@ -28,7 +28,7 @@ function germanModule:Translations()
     BtnCancel                                   = "Abbruch",
     BtnOpen                                     = "Öffnen",
     ButtonCastBuff                              = "Zaubere Buff",
-    BtnSettings                                 = "Einstellungen",
+    ["optionsMenu.Settings"]                    = "Einstellungen",
     BtnSettingsSpells                           = "Einstellungen Zauber",
 
     ["options.short.ArgentumDawn"]              = "Erinnere an die Anstecknadel der Argentumdämmerung",

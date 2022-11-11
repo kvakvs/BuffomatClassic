@@ -58,7 +58,7 @@ function optionsPopupModule:MakeSettingsRow(db, var)
   return _t("options.short." .. var), false, db, var
 end
 
-local function bomOpenOptions()
+function optionsPopupModule.OpenOptions()
   LibStub("AceConfigDialog-3.0"):Open(constModule.SHORT_TITLE)
 end
 
@@ -151,7 +151,8 @@ function optionsPopupModule:Setup(control, minimap)
 
   BOM.popupMenuDynamic:AddItem()
   --self:PopupQuickOptions()
-  BOM.popupMenuDynamic:AddItem(_t("BtnSettings"), false, bomOpenOptions, 1)
+  BOM.popupMenuDynamic:AddItem(_t("optionsMenu.Settings"), false, optionsPopupModule.OpenOptions, 1)
 
+  BOM:Print("Popup menu " .. tostring(control))
   BOM.popupMenuDynamic:Show(control or "cursor", 0, 0)
 end

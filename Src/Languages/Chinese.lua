@@ -211,7 +211,7 @@ function chineseModule:Translations()
     BtnOpen                                     = "打开",
     BtnCancel                                   = "取消",
     ["popup.QuickSettings"]                     = "快速设置",
-    BtnSettings                                 = "设置窗口",
+    ["optionsMenu.Settings"]                    = "设置窗口",
     BtnSettingsSpells                           = "设置技能",
     BtnBuffs                                    = "材料",
     ButtonCastBuff                              = "施放BUFF",
