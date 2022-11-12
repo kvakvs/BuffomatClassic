@@ -208,7 +208,7 @@ function chineseModule:Translations()
     --TabItems = "Items",
     --TabBehaviour = "Behaviour",
 
-    BtnOpen                                     = "打开",
+    ["popup.OpenBuffomat"]                      = "打开",
     BtnCancel                                   = "取消",
     ["popup.QuickSettings"]                     = "快速设置",
     ["optionsMenu.Settings"]                    = "设置窗口",
@@ -230,7 +230,7 @@ function chineseModule:Translations()
     HeaderSlashCommand                          = "可用命令",
     HeaderCredits                               = "Credits",
     HeaderCustomLocales                         = "本地化",
-    HeaderProfiles                              = "简介",
+    ["header.Profiles"]                         = "简介",
 
     SlashSpellBook                              = "重新扫描技能书",
     SlashUpdate                                 = "更新宏/列表",

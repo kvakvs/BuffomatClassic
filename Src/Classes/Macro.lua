@@ -60,7 +60,7 @@ end
 
 function macroClass:UpdateMacro()
   EditMacro(constModule.MACRO_NAME, nil, self.icon, self:GetText())
-  BOM.minimapButton.SetTexture("Interface\\ICONS\\" .. self.icon)
+  BOM.minimapButton:SetTexture("Interface\\ICONS\\" .. self.icon)
 end
 
 function macroClass:Recreate()

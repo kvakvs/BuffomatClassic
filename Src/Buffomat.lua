@@ -84,7 +84,7 @@ local toolboxModule = BomModuleManager.toolboxModule
 ---@field theMacro BomMacro
 ---@field MANA_CLASSES BomClassName[] Classes with mana resource
 ---@field playerManaLimit number Player max mana
----@field minimapButton BomGPIMinimapButton Minimap button control
+---@field minimapButton BomMinimapButtonPlaceholder Minimap button control
 ---@field nextCooldownDue number Set this to next spell cooldown to force update
 ---@field isPartyUpdateNeeded boolean Requests player party update
 ---@field playerBuffs BomBuffCollectionPerUnit Saved self buffs for the player
@@ -155,8 +155,8 @@ function BOM.BtnClose()
   BOM.HideWindow()
 end
 
-function BOM.BtnSettings(self)
-  optionsPopupModule:Setup(self, nil)
+function BOM.BtnSettings(settingsButton)
+  optionsPopupModule:Setup(settingsButton, false)
 end
 
 ---Bound the the macro cast button in the buff tab
@@ -188,7 +188,7 @@ function buffomatModule.OptionsUpdate()
 
   spellButtonsTabModule:UpdateSpellsTab("OptionsUpdate")
   managedUiModule:UpdateAll()
-  BOM.minimapButton.UpdatePosition()
+  BOM.minimapButton:UpdatePosition()
   --BOM.legacyOptions.DoCancel()
 end
 
@@ -219,7 +219,7 @@ function buffomatModule.ChooseProfile(profile)
   end
 
   taskScanModule:ClearSkip()
-  BOM.popupMenuDynamic:Wipe()
+  BOM.popupMenuDynamic:Wipe(nil)
   buffomatModule:SetForceUpdate("profileSelected")
   taskScanModule:ScanNow("profileSelected")
 
@@ -339,16 +339,17 @@ function buffomatModule:InitUI()
 
   BOM.popupMenuDynamic = popupModule:CreatePopup(buffomatModule.OptionsUpdate)
 
-  BOM.minimapButton.Init(
+  local function onMinimapClick(self1, button)
+    if button == "LeftButton" then
+      buffomatModule:ToggleWindow()
+    else
+      optionsPopupModule:Setup(self1.button, true)
+    end
+  end
+  BOM.minimapButton:Init(
           self.shared.Minimap,
           constModule.BOM_BEAR_ICON_FULLPATH,
-          function(self, button)
-            if button == "LeftButton" then
-              buffomatModule:ToggleWindow()
-            else
-              optionsPopupModule:Setup(self.button, true)
-            end
-          end,
+          onMinimapClick,
           constModule.SHORT_TITLE)
 
   buffomatModule:OptionsInit()

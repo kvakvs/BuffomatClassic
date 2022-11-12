@@ -13,25 +13,6 @@ local controlModule = BomModuleManager.controlModule ---@type BomControlModule
 controlModule.GPIMinimapButtonConfigData = {}
 controlModule.GPIMinimapButtonConfigData.__index = controlModule.GPIMinimapButtonConfigData
 
-
----@class BomGPIMinimapButton: BomGPIControl
----@field icon table
----@field isMouseDown boolean
----@field isDraggingButton boolean
----@field db GPIMinimapButtonConfigData Config database which will persist between addon reloads
----@field tooltip string
----@field isMinimapButton boolean
----@field button BomGPIControl
----@field Init function
----@field OnClick function
----@field UpdatePosition function
----@field SetTexture fun(texturePath: string)
-controlModule.GPIMinimapButton = {
-  --UpdatePosition = minimapButtonClass:UpdatePosition ???
-}
-controlModule.GPIMinimapButton.__index = controlModule.GPIMinimapButton
-
-
 ---@class WowTexture
 ---@field GetTexCoord fun(self: WowTexture): BomTexCoord
 ---@field GetTexture fun(self: WowTexture): string
@@ -42,18 +23,18 @@ controlModule.GPIMinimapButton.__index = controlModule.GPIMinimapButton
 ---@field SetRotation fun(self: WowTexture, rotation: number, a: number|nil, b: number|nil)
 ---@field SetTexCoord fun(self: WowTexture, coord: BomTexCoord)
 ---@field SetTexture fun(self: WowTexture, texturePath: string|nil, a: nil, filterQuality: nil)
+---@field SetPoint fun(self: WowTexture, point: string, x: number, y: number)
+---@field SetSize fun(self: WowTexture, width: number, height: number)
 ---@field SetVertexColor fun(self: WowTexture, r: number, g: number, b: number, a: number)
 
 ---@class BomControl A blizzard UI frame but may contain private fields used by internal library by Buffomat
 ---@field bomToolTipLink string Mouseover will show the link
 ---@field bomToolTipText string Mouseover will show the text
 ---@field bomReadVariable function Returns value which the button can modify, boolean for toggle buttons
----
 ---@field ClearAllPoints fun(self: BomControl)
 ---@field CreateFontString fun(self: BomControl, name: string|nil, layer: string|nil, inherits: string): BomControl
 ---@field CreateTexture fun(self: BomControl): WowTexture
 ---@field GetParent fun(self: BomControl): BomControl
----@field Hide fun(self: BomControl)
 ---@field Hide fun(self: BomControl)
 ---@field SetFrameStrata fun(self: BomControl, strata: string)
 ---@field SetHeight fun(self: BomControl, height: number)
@@ -75,9 +56,7 @@ controlModule.GPIMinimapButton.__index = controlModule.GPIMinimapButton
 ---@field GetRegions fun(self: BomControl): table[]
 -- -@field [string] function
 
----@shape BomGPIPopupItems
----@field count number
----@field [number] BomPopupInfo
+---@alias BomMenuItemDefList BomMenuItemDef[]
 
 ---@class BomGPIControl: BomControl A blizzard UI frame but may contain private fields used by internal library by GPI
 ---@field gpiCombatLock boolean
@@ -97,13 +76,13 @@ controlModule.GPIMinimapButton.__index = controlModule.GPIMinimapButton
 ---@field _GPIPRIVAT_events table<string, function> Events
 ---@field _GPIPRIVAT_updates table<function> private field
 ---@field _GPIPRIVAT_MovingStopCallback any private field
----@field gpiPopupCallback function
----@field gpiPopupMenuItems BomGPIPopupItems Popup menu items
+---@field bomPopupMenuCallback function
+---@field bomMenuItems BomMenuItemDefList Popup menu items
 ---@field _GPIPRIVAT_MovingStopCallback function
 ---@field gpiCursor any
 ---@field gpiRotation number Rotation in degrees
 ---@field GPI_SIZETYPE string
----@field gpiMinimapButton BomGPIMinimapButton Stores extra values for minimap button control
+---@field gpiMinimapButton BomMinimapButtonPlaceholder Stores extra values for minimap button control
 ---@field SetSpell fun(self: BomGPIControl, spell: BomSpellId)
 ---@field SetOnClick fun(self: BomGPIControl, func: function)
 ---@field GPI_DoStop fun(control: BomControl) Note: no self

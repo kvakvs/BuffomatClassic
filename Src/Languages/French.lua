@@ -42,7 +42,7 @@ function frenchModule:Translations()
     TabBuff                                     = "Buff",
     TabSpells                                   = "Sorts",
 
-    BtnOpen                                     = "Ouvrir",
+    ["popup.OpenBuffomat"]                      = "Ouvrir",
     BtnCancel                                   = "Annuler",
     ["optionsMenu.Settings"]                    = "Réglages",
     BtnSettingsSpells                           = "Réglage sorts",

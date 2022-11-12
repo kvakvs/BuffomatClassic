@@ -5,7 +5,7 @@ local russianModule = BomModuleManager.languageRussianModule ---@type BomLanguag
 function russianModule:Translations()
   return {
     ["Category_class"]                          = "Бафы вашего класса",
-    ["Category_classBlessing"]                  = "Благословения",
+    ["Category_blessing"]                       = "Благословения",
     ["Category_pet"]                            = "Питомец",
     ["Category_tracking"]                       = "Поиск вокруг",
     ["Category_aura"]                           = "Ауры",
@@ -68,7 +68,7 @@ function russianModule:Translations()
             .. "что игра не позволяет менять макросы во время боя. Кроме того, вы не можете открыть "
             .. "или закрыть главное окно во время боя!",
     BtnCancel                                   = "Закрыть",
-    BtnOpen                                     = "Открыть",
+    ["popup.OpenBuffomat"]                      = "Открыть",
     ["optionsMenu.Settings"]                    = "Настройки",
     BtnSettingsSpells                           = "Настройки заклинаний",
 

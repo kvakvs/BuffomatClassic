@@ -4,8 +4,20 @@ local BOM = BuffomatAddon ---@type BomAddon
 ---@shape BomUiMinimapButtonModule
 local uiMinimapButtonModule = BomModuleManager.uiMinimapButtonModule ---@type BomUiMinimapButtonModule
 
-BOM.minimapButton = BOM.minimapButton or --[[---@type BomGPIMinimapButton]] {}
-local minimapButtonClass = BOM.minimapButton
+---@shape BomMinimapButtonPlaceholder
+---@field icon WowTexture
+---@field isMouseDown boolean
+---@field isDraggingButton boolean
+---@field db GPIMinimapButtonConfigData Config database which will persist between addon reloads
+---@field tooltip string
+---@field isMinimapButton boolean
+---@field button BomGPIControl
+---@field OnClick function
+---@field SetTexture fun(texturePath: string)
+local minimapButtonClass = {}
+minimapButtonClass.__index = minimapButtonClass
+
+BOM.minimapButton = BOM.minimapButton or minimapButtonClass
 
 ---Change minimap button texture position slightly
 ---@param button BomGPIControl
@@ -43,7 +55,7 @@ local function minimap_button_drag_update(button)
 
   button.gpiMinimapButton.db.distance = dist
   button.gpiMinimapButton.db.position = math.deg(math.atan2(dy, dx)) % 360
-  button.gpiMinimapButton.UpdatePosition()
+  button.gpiMinimapButton:UpdatePosition()
 end
 
 local function minimap_button_drag_start(button)
@@ -98,16 +110,16 @@ local function minimap_button_mouse_up(button)
   minimap_button_texture_zoom(button)
 end
 
-function minimapButtonClass.Init(Database, Texture, DoOnClick, Tooltip)
-  minimapButtonClass.db = Database
-  minimapButtonClass.OnClick = DoOnClick
-  minimapButtonClass.tooltip = Tooltip
-  minimapButtonClass.isMinimapButton = true
+function minimapButtonClass:Init(Database, Texture, DoOnClick, Tooltip)
+  self.db = Database
+  self.OnClick = DoOnClick
+  self.tooltip = Tooltip
+  self.isMinimapButton = true
 
   local button = CreateFrame("Button", "Lib_GPI_Minimap_" .. TOCNAME, Minimap)
 
-  minimapButtonClass.button = button
-  button.gpiMinimapButton = minimapButtonClass
+  self.button = button
+  button.gpiMinimapButton = self
 
   button:SetFrameStrata("MEDIUM")
   button:SetSize(31, 31)
@@ -128,9 +140,9 @@ function minimapButtonClass.Init(Database, Texture, DoOnClick, Tooltip)
   icon:SetTexture(Texture)
   icon:SetPoint("TOPLEFT", 7, -6)
 
-  minimapButtonClass.icon = icon
-  minimapButtonClass.isMouseDown = false
-  minimapButtonClass.isDraggingButton = false
+  self.icon = icon
+  self.isMouseDown = false
+  self.isDraggingButton = false
 
   button:SetScript("OnEnter", minimap_button_mouse_enter)
   button:SetScript("OnLeave", minimap_button_mouse_leave)
@@ -143,24 +155,24 @@ function minimapButtonClass.Init(Database, Texture, DoOnClick, Tooltip)
   button:SetScript("OnMouseDown", minimap_button_mouse_down)
   button:SetScript("OnMouseUp", minimap_button_mouse_up)
 
-  if minimapButtonClass.db.position == nil then
-    minimapButtonClass.db.position = 225
+  if self.db.position == nil then
+    self.db.position = 225
   end
-  if minimapButtonClass.db.distance == nil then
-    minimapButtonClass.db.distance = 1
+  if self.db.distance == nil then
+    self.db.distance = 1
   end
-  if minimapButtonClass.db.visible == nil then
-    minimapButtonClass.db.visible = true
+  if self.db.visible == nil then
+    self.db.visible = true
   end
-  if minimapButtonClass.db.lock == nil then
-    minimapButtonClass.db.lock = false
+  if self.db.lock == nil then
+    self.db.lock = false
   end
-  if minimapButtonClass.db.lockDistance == nil then
-    minimapButtonClass.db.lockDistance = false
+  if self.db.lockDistance == nil then
+    self.db.lockDistance = false
   end
 
   minimap_button_texture_zoom(button)
-  minimapButtonClass.UpdatePosition()
+  self:UpdatePosition()
 end
 
 local MinimapShapes = {
@@ -183,13 +195,13 @@ local MinimapShapes = {
   ["TRICORNER-BOTTOMRIGHT"] = { false, true, true, true },
 }
 
-function minimapButtonClass.UpdatePosition()
-  local w = ((Minimap:GetWidth() / 2) + 10) * minimapButtonClass.db.distance
-  local h = ((Minimap:GetHeight() / 2) + 10) * minimapButtonClass.db.distance
+function minimapButtonClass:UpdatePosition()
+  local w = ((Minimap:GetWidth() / 2) + 10) * self.db.distance
+  local h = ((Minimap:GetHeight() / 2) + 10) * self.db.distance
   --local r=math.rad(MinimapButton.db.position)
   --MinimapButton.button:SetPoint("CENTER", Minimap, "CENTER", w * math.cos(r), h * math.sin(r))
   local rounding = 10
-  local angle = math.rad(minimapButtonClass.db.position) -- determine position on your own
+  local angle = math.rad(self.db.position) -- determine position on your own
   local y = math.sin(angle)
   local x = math.cos(angle)
   local q = 1;
@@ -216,33 +228,34 @@ function minimapButtonClass.UpdatePosition()
     y = math.max(-h, math.min(y * diagRadius, h))
   end
 
-  minimapButtonClass.button:SetPoint("CENTER", Minimap, "CENTER", x, y)
+  self.button:SetPoint("CENTER", Minimap, "CENTER", x, y)
 
-  if minimapButtonClass.db.visible then
-    minimapButtonClass.Show()
+  if self.db.visible then
+    self:Show()
   else
-    minimapButtonClass.Hide()
+    self:Hide()
   end
 end
 
-function minimapButtonClass.Show()
-  minimapButtonClass.db.visible = true
-  minimapButtonClass.button:SetParent(Minimap)
-  minimapButtonClass.button:Show()
+function minimapButtonClass:Show()
+  self.db.visible = true
+  self.button:SetParent(Minimap)
+  self.button:Show()
 end
 
-function minimapButtonClass.Hide()
-  minimapButtonClass.db.visible = false
-  minimapButtonClass.button:Hide()
-  minimapButtonClass.button:SetParent(nil)
+function minimapButtonClass:Hide()
+  self.db.visible = false
+  self.button:Hide()
+  self.button:SetParent(nil)
 end
 
-function minimapButtonClass.SetTexture(Texture)
-  minimapButtonClass.icon:SetTexture(Texture)
-  minimapButtonClass.icon:SetPoint("TOPLEFT", 7, -6)
-  minimapButtonClass.icon:SetSize(17, 17)
+---@param Texture string
+function minimapButtonClass:SetTexture(Texture)
+  self.icon:SetTexture(Texture, nil, nil)
+  self.icon:SetPoint("TOPLEFT", 7, -6)
+  self.icon:SetSize(17, 17)
 end
 
-function minimapButtonClass.SetTooltip(Text)
-  minimapButtonClass.tooltip = Text
+function minimapButtonClass:SetTooltip(Text)
+  self.tooltip = Text
 end

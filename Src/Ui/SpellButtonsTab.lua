@@ -173,14 +173,14 @@ function spellButtonsTabModule:AddGroupScanSelector(rowBuilder)
 
   self.spellSettingsFrames.Settings:Show()
 
-  for i, setting in ipairs(optionsPopupModule.behaviourSettings) do
-    if self.spellSettingsFrames[setting.name] then
-      self.spellSettingsFrames[setting.name]:Show()
-    end
-    if self.spellSettingsFrames[setting.name .. "txt"] then
-      self.spellSettingsFrames[setting.name .. "txt"]:Show()
-    end
-  end
+  --for i, setting in ipairs(optionsPopupModule.behaviourSettings) do
+  --  if self.spellSettingsFrames[setting.name] then
+  --    self.spellSettingsFrames[setting.name]:Show()
+  --  end
+  --  if self.spellSettingsFrames[setting.name .. "txt"] then
+  --    self.spellSettingsFrames[setting.name .. "txt"]:Show()
+  --  end
+  --end
 end
 
 ---TODO: Move this to spelldef

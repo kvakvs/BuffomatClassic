@@ -1,74 +1,81 @@
-local TOCNAME, _ = ...
+--local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BomAddon
 
 ---@shape BomPopupModule
 local popupModule = BomModuleManager.popupModule ---@type BomPopupModule
 
 ---@class BomPopupDynamic
----@field _Frame BomGPIControl
----@field AddItem function
----@field SubMenu function
----@field Show function
----@field Wipe function
+---@field _Frame BomGPIControl Popup currently open in the game (to see if its our popup or not)
+---@field _where string Where the popup was displayed (cursor, mouse, center)
+---@field _x number X offset where it was displayed
+---@field _y number Y offset where it was displayed
+local popupDynamicClass = {}
+popupDynamicClass.__index = popupDynamicClass
 
 ---@class BomGPIControlPopup: BomGPIControl
----@field _Frame BomGPIControl Popup currently open in the game (to see if its our popup or not)
----@field _where string Where to show the popup (cursor, mouse, center)
----@field _x number X offset
----@field _y number Y offset
 
-local popupDepth ---@type number|nil
+--local popupDepth ---@type number|nil
 
----Handler for popup menu clicks
----@param self BomPopupInfo
-function popupModule.PopupClick(self, arg1, arg2, checked)
-  if type(self.value) == "table" then
-    self.value[arg1] = not self.value[arg1]
-    self.checked = self.value[arg1]
-    if arg2 then
-      arg2(self.value, arg1, checked)
-    end
+-----Handler for popup menu clicks
+-----@param self BomMenuItemDef
+--function popupModule.PopupClick(self, arg1, arg2, checked)
+--  if type(self.value) == "table" then
+--    self.value[arg1] = not self.value[arg1]
+--    self.checked = self.value[arg1]
+--    if arg2 then
+--      arg2(self.value, arg1, checked)
+--    end
+--
+--  elseif type(self.value) == "function" then
+--    self.value(arg1, arg2)
+--  end
+--end
 
-  elseif type(self.value) == "function" then
-    self.value(arg1, arg2)
-  end
+---@return BomMenuItemDef
+function popupModule:Separator()
+  local newSep = --[[---@type BomMenuItemDef]] {}
+  newSep.type = "separator"
+  return newSep
 end
 
----@param self BomGPIControlPopup
-function popupModule.PopupAddItem(self, text, disabled, value, arg1, arg2)
-  local c = self._Frame.gpiPopupMenuItems.count + 1
-  self._Frame.gpiPopupMenuItems.count = c
-
-  if not self._Frame.gpiPopupMenuItems[c] then
-    self._Frame.gpiPopupMenuItems[c] = {}
-  end
-
-  local t = self._Frame.gpiPopupMenuItems[c] ---@type BomPopupInfo
-
-  t.text = text or ""
-  t.disabled = disabled or false
-  t.value = value
-  t.arg1 = arg1
-  t.arg2 = arg2
-  t.menuDepth = popupDepth or 0
+---@return BomMenuItemDef
+function popupModule:Clickable(text, onClick, arg1, arg2)
+  local newClickable = --[[---@type BomMenuItemDef]] {}
+  newClickable.text = text or ""
+  newClickable.type = "click"
+  newClickable.onClick = onClick
+  newClickable.arg1 = arg1
+  newClickable.arg2 = arg2
+  return newClickable
 end
 
----@param self BomGPIControlPopup
-function popupModule.PopupAddSubMenu(self, text, value)
-  if text ~= nil and text ~= "" then
-    popupModule.PopupAddItem(self, text, "MENU", value, nil, nil)
-    popupDepth = value
-  else
-    popupDepth = nil
-  end
+---@return BomMenuItemDef
+function popupModule:Boolean(text, dict, key)
+  local newItem = --[[---@type BomMenuItemDef]] {}
+  newItem.text = text or ""
+  newItem.type = "boolean"
+  newItem.value = dict
+  newItem.arg1 = key
+  return newItem
 end
 
-local popupLastWipeName ---@type string
+---@return BomMenuItemDef
+---@param level number
+---@param nested BomMenuItemDefList
+function popupModule:SubMenu(text, level, nested)
+  local subMenu = --[[---@type BomMenuItemDef]] {}
+  subMenu.text = text
+  subMenu.type = "submenu"
+  subMenu.level = level
+  subMenu.nested = nested
+  return subMenu
+end
 
----@param self BomGPIControlPopup
----@param WipeName string
-function popupModule.PopupWipe(self, WipeName)
-  self._Frame.gpiPopupMenuItems.count = 0
+local popupLastWipeName ---@type string|nil
+
+---@param WipeName string|nil
+function popupDynamicClass:Wipe(WipeName)
+  wipe(self._Frame.bomMenuItems)
   popupDepth = nil
 
   if UIDROPDOWNMENU_OPEN_MENU == self._Frame then
@@ -82,7 +89,19 @@ function popupModule.PopupWipe(self, WipeName)
   return true
 end
 
----@class BomPopupInfo
+---@alias BomMenuItemType "separator"|"submenu"|"click"|"boolean" Submenu=nested, click=call onClick handler, boolean=toggle self.value[arg1]
+
+---@class BomMenuItemDef
+---@field text string
+---@field type BomMenuItemType
+---@field level number
+---@field nested BomMenuItemDefList
+---@field value any
+---@field arg1 any
+---@field arg2 any
+---@field onClick function
+
+---@class WowPopupMenuItem
 ---@field text string
 ---@field notCheckable boolean
 ---@field checked boolean
@@ -93,66 +112,88 @@ end
 ---@field func function|nil
 ---@field hasArrow boolean
 ---@field menuList any
----@field menuDepth number
 ---@field keepShownOnClick boolean
 
+---@param menuItemDef BomMenuItemDef
+local function generateSubmenu(level, menuItemDef)
+  local info = --[[---@type WowPopupMenuItem]] {}
+  info.text = menuItemDef.text
+  info.notCheckable = true
+  info.disabled = false
+  info.hasArrow = true
+  info.menuList = menuItemDef.nested
+  UIDropDownMenu_AddButton(info, level)
+end
+
+---@param level number
+local function generateMenuSeparator(level)
+  local info = --[[---@type WowPopupMenuItem]] {}
+  info.disabled = true
+  info.notCheckable = true
+  UIDropDownMenu_AddSeparator(level)
+end
+
+---@param level number
 ---@param frame BomGPIControl
----@param menuList any
-function popupModule.PopupCreate(frame, level, menuList)
+---@param menuItemDef BomMenuItemDef
+local function generateClickableMenuItem(level, frame, menuItemDef)
+  local info = --[[---@type WowPopupMenuItem]] {}
+  info.text = menuItemDef.text
+  info.notCheckable = true
+  --info.keepShownOnClick = (val.disabled == "keep")
+  info.value = menuItemDef.onClick
+  info.arg1 = menuItemDef.arg1
+  info.arg2 = menuItemDef.arg2
+  info.func = function(menuItm, a1, a2, chk)
+    menuItm.value(a1, a2)
+  end
+  info.hasArrow = false
+  UIDropDownMenu_AddButton(info, level)
+end
+
+---@param level number
+---@param menuItemDef BomMenuItemDef
+local function generateBooleanMenuItem(level, menuItemDef)
+  local info = --[[---@type WowPopupMenuItem]] {}
+  info.text = menuItemDef.text
+  info.value = menuItemDef.value
+  info.arg1 = menuItemDef.arg1
+  info.arg2 = menuItemDef.arg2
+  info.checked = menuItemDef.value[menuItemDef.arg1]
+  info.func = function(menuItm, a1, a2, chk)
+    menuItm.value[a1] = not menuItm.value[a1]
+    -- TODO: notification call?
+  end
+  info.hasArrow = false
+  UIDropDownMenu_AddButton(info, level)
+end
+
+---@param frame BomGPIControl
+---@param menuList nil|BomMenuItemDefList
+function popupModule.GenerateMenuItems(frame, level, menuList)
   if level == nil then
     return
   end
 
-  local info = UIDropDownMenu_CreateInfo() ---@type BomPopupInfo
-
-  for i = 1, frame.gpiPopupMenuItems.count do
-    local val = frame.gpiPopupMenuItems[i]
-
-    if val.menuDepth == menuList then
-      if val.disabled == "MENU" then
-        -- Submenu entry
-        info.text = val.text
-        info.notCheckable = true
-        info.disabled = false
-        info.value = nil
-        info.arg1 = nil
-        info.arg2 = nil
-        info.func = nil
-        info.hasArrow = true
-        info.menuList = val.value
-        --info.isNotRadio=true
-      else
-        -- Normal menu item
-        info.text = val.text
-        if type(val.value) == "table" then
-          info.checked = val.value[val.arg1] or false
-          info.notCheckable = false
-        else
-          info.notCheckable = true
-        end
-        info.disabled = (val.disabled == true or val.text == "")
-        info.keepShownOnClick = (val.disabled == "keep")
-        info.value = val.value
-        info.arg1 = val.arg1
-        if type(val.value) == "table" then
-          info.arg2 = frame.gpiPopupCallback
-        elseif type(val.value) == "function" then
-          info.arg2 = val.arg2
-        end
-        info.func = popupModule.PopupClick
-        info.hasArrow = false
-        info.menuList = nil
-        --info.isNotRadio=true
-      end
-      UIDropDownMenu_AddButton(info, level)
+  for _index, menuItemDef in ipairs(menuList or frame.bomMenuItems) do
+    --if val.menuDepth == menuList then
+    if menuItemDef.type == "submenu" then
+      generateSubmenu(level, menuItemDef) -- Submenu entry
+    elseif menuItemDef.type == "click" then
+      generateClickableMenuItem(level, frame, menuItemDef) -- Normal menu item, with click handler
+    elseif menuItemDef.type == "boolean" then
+      generateBooleanMenuItem(level, menuItemDef) -- Menu item which toggles a boolean value
+    elseif menuItemDef.type == "separator" then
+      generateMenuSeparator(level) -- Just a narrow empty row
     end
+    --end
   end
 end
 
-function popupModule.PopupShow(self, where, x, y)
+function popupDynamicClass:Show(where, x, y)
   where = where or "cursor"
   if UIDROPDOWNMENU_OPEN_MENU ~= self._Frame then
-    UIDropDownMenu_Initialize(self._Frame, popupModule.PopupCreate, "MENU")
+    UIDropDownMenu_Initialize(self._Frame, popupModule.GenerateMenuItems, "MENU")
   end
   ToggleDropDownMenu(nil, nil, self._Frame, where, x, y)
   self._where = where
@@ -160,16 +201,18 @@ function popupModule.PopupShow(self, where, x, y)
   self._y = y
 end
 
+function popupDynamicClass:SetMenuItems(items)
+  self._Frame.bomMenuItems = items
+end
+
 ---@return BomPopupDynamic
 ---@param callbackFn function
 function popupModule:CreatePopup(callbackFn)
   local popup = --[[---@type BomPopupDynamic]] {}
+  setmetatable(popup, popupDynamicClass)
+
   popup._Frame = CreateFrame("Frame", nil, UIParent, "UIDropDownMenuTemplate") ---@type BomGPIControl
-  popup._Frame.gpiPopupCallback = callbackFn
-  popup._Frame.gpiPopupMenuItems = --[[---@type BomGPIPopupItems]] { count = 0 }
-  popup.AddItem = popupModule.PopupAddItem
-  popup.SubMenu = popupModule.PopupAddSubMenu
-  popup.Show = popupModule.PopupShow
-  popup.Wipe = popupModule.PopupWipe
+  popup._Frame.bomPopupMenuCallback = callbackFn
+  popup._Frame.bomMenuItems = --[[---@type BomMenuItemDefList]] { }
   return popup
 end

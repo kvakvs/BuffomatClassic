@@ -7,7 +7,7 @@ function englishModule:Translations()
     ["shaman.flametongueDownranked"]                  = "One rank down",
 
     ["Category_class"]                                = "Class Buffs",
-    ["Category_classBlessing"]                        = "Blessings",
+    ["Category_blessing"]                             = "Blessings",
     ["Category_pet"]                                  = "Pet",
     ["Category_tracking"]                             = "Tracking",
     ["Category_aura"]                                 = "Auras",
@@ -298,7 +298,7 @@ function englishModule:Translations()
     --TabItems = "Items",
     --TabBehaviour = "Behaviour",
 
-    BtnOpen                                           = "Open",
+    ["popup.OpenBuffomat"]                            = "Open",
     BtnCancel                                         = "Cancel",
     ["popup.QuickSettings"]                           = "Quick Settings",
     ["optionsMenu.Settings"]                          = "Settings Window",
@@ -320,7 +320,7 @@ function englishModule:Translations()
     HeaderSlashCommand                                = "Slash commands",
     HeaderCredits                                     = "Credits",
     HeaderCustomLocales                               = "Localization",
-    HeaderProfiles                                    = "Profiles",
+    ["header.Profiles"]                               = "Profiles",
 
     SlashSpellBook                                    = "Rescan spellbook",
     SlashUpdate                                       = "Update macro / list",
