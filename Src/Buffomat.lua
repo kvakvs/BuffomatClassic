@@ -600,7 +600,9 @@ buffomatModule.lastSpellsTabUpdate = 0
 
 ---This runs every frame, do not do any excessive work here
 function buffomatModule.UpdateTimer(elapsed)
-  --if elapsed > 0.1 then BOM:Print("Elapsed: " .. elapsed) end
+  if InCombatLockdown() then
+    return
+  end
 
   local now = GetTime()
 

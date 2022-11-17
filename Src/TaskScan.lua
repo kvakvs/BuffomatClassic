@@ -1270,13 +1270,13 @@ function taskScanModule:AddConsumableWeaponBuff(buffDef, playerUnit,
 
   if haveItem then
     -- Have item, display the cast message and setup the cast button
-    local texture, _, _, _, _, _, item_link, _, _, _ = GetContainerItemInfo(bag, slot)
+    local texture, _, _, _, _, _, itemLink, _, _, _ = GetContainerItemInfo(bag, slot)
     local profileBuff = buffDefModule:GetProfileBuff(buffDef.buffId, nil)
 
     if profileBuff and (--[[---@not nil]] profileBuff).OffHandEnable
             and playerUnit.OffHandBuff == nil then
       local function offhand_message()
-        return BOM.FormatTexture(texture) .. item_link .. "x" .. count
+        return BOM.FormatTexture(texture) .. itemLink .. "x" .. count
       end
 
       if buffomatModule.shared.DontUseConsumables
@@ -1305,7 +1305,7 @@ function taskScanModule:AddConsumableWeaponBuff(buffDef, playerUnit,
     if profileBuff and (--[[---@not nil]] profileBuff).MainHandEnable
             and playerUnit.MainHandBuff == nil then
       local function mainhand_message()
-        return BOM.FormatTexture(texture) .. item_link .. "x" .. count
+        return BOM.FormatTexture(texture) .. itemLink .. "x" .. count
       end
 
       if buffomatModule.shared.DontUseConsumables
@@ -1959,6 +1959,10 @@ end -- end function bomUpdateScan_PreCheck()
 ---and what would be their priority?
 ---@param from string Debug value to trace the caller of this function
 function taskScanModule:ScanNow(from)
+  if InCombatLockdown() then
+    return
+  end
+
   -- to avoid re-playing the same sound, only play when task list changes from 0 to some tasks
   self.taskListSizeBeforeScan = #tasklist.tasks
 

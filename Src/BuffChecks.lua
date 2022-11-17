@@ -65,11 +65,11 @@ end
 ---@param cd boolean respect the cooldown?
 ---@return boolean, number|nil, number|nil, number|nil {HasItem, Bag, Slot, Count}
 function buffChecksModule:HasOneItem(itemToCheck, cd)
-  if itemsToCheck == nil then
+  if itemToCheck == nil then
     return true, nil, nil, 1 -- spell.items is nil, no items required
   end
 
-  local key = itemsToCheck[1] .. (cd and "CD" or "")
+  local key = itemToCheck .. (cd and "CD" or "")
   local cachedItem = BOM.cachedPlayerBag[key]
 
   if not cachedItem then
@@ -83,7 +83,7 @@ function buffChecksModule:HasOneItem(itemToCheck, cd)
         local icon, itemCount, locked, quality, readable, lootable, itemLink
         , isFiltered, noValue, itemID = GetContainerItemInfo(bag, slot)
 
-        if tContains(itemsToCheck, itemID) then
+        if itemToCheck == itemID then
           if cd then
             cachedItem.a, cachedItem.b, cachedItem.c = true, bag, slot
             cachedItem.d = cachedItem.d + itemCount
