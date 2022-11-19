@@ -16,8 +16,8 @@ popupDynamicClass.__index = popupDynamicClass
 
 --local popupDepth ---@type number|nil
 
------Handler for popup menu clicks
------@param self BomMenuItemDef
+-- ---Handler for popup menu clicks
+-- ---@param self BomMenuItemDef
 --function popupModule.PopupClick(self, arg1, arg2, checked)
 --  if type(self.value) == "table" then
 --    self.value[arg1] = not self.value[arg1]

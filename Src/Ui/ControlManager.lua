@@ -4,7 +4,7 @@
 ---@field managed BomManagedControlsTable Contains all MyButtons with uniqueId
 ---@field managedWithoutUniqueId BomControl[] Contains all MyButtons without uniqueId
 local managedUiModule = BomModuleManager.myButtonModule ---@type BomUiMyButtonModule
-managedUiModule.managed = {}
+managedUiModule.managed = --[[---@type BomManagedControlsTable]] {}
 managedUiModule.managedWithoutUniqueId = {}
 
 local controlModule = BomModuleManager.controlModule
@@ -51,7 +51,7 @@ end
 function managedUiModule:UpdateAll()
   for uniq, control in pairs(self.managed) do
     if control.SetState then
-      control:SetState()
+      control:SetState(nil)
     end
   end
   for i, control in ipairs(self.managedWithoutUniqueId) do

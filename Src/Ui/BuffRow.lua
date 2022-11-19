@@ -9,7 +9,7 @@ local uiButtonModule = BomModuleManager.uiButtonModule
 local toolboxModule = BomModuleManager.toolboxModule
 local texturesModule = BomModuleManager.texturesModule
 
----@class BomBuffRowFrames
+---@shape BomBuffRowFrames
 ---@field [BomClassName] BomGPIControl Used for class toggle buttons
 ---@field uniqueId string Used for ManageControl() calls as prefix
 ---@field iconInfo BomControl Icon for spell or item which provides the buff
@@ -51,7 +51,7 @@ end
 ---@return BomControl[]
 function buffRowClass:AllControls()
   local result = {}
-  for _, v in ipairs(self) do
+  for _, v in pairs(self) do
     if type(v) == "table" then
       table.insert(result, v)
     end

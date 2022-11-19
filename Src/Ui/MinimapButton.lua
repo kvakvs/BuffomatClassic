@@ -175,7 +175,7 @@ function minimapButtonClass:Init(Database, Texture, DoOnClick, Tooltip)
   self:UpdatePosition()
 end
 
-local MinimapShapes = {
+local MinimapShapes = --[[---@type {[string]: boolean[]}]] {
   -- quadrant booleans (same order as SetTexCoord)
   -- {upper-left, lower-left, upper-right, lower-right}
   -- true = rounded, false = squared
@@ -201,7 +201,7 @@ function minimapButtonClass:UpdatePosition()
   --local r=math.rad(MinimapButton.db.position)
   --MinimapButton.button:SetPoint("CENTER", Minimap, "CENTER", w * math.cos(r), h * math.sin(r))
   local rounding = 10
-  local angle = math.rad(self.db.position) -- determine position on your own
+  local angle = math.rad(self.db.position or 0) -- determine position on your own
   local y = math.sin(angle)
   local x = math.cos(angle)
   local q = 1;
@@ -214,7 +214,7 @@ function minimapButtonClass:UpdatePosition()
     q = q + 2;        -- right
   end
 
-  local minimapShape = GetMinimapShape and GetMinimapShape() or "ROUND"
+  local minimapShape = --[[---@type string]] (GetMinimapShape and GetMinimapShape() or "ROUND")
   local quadTable = MinimapShapes[minimapShape];
 
   if quadTable[q] then

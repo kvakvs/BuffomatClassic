@@ -136,7 +136,7 @@ function controlModule.MyButton_OnEnter(self)
     BomC_Tooltip:Show()
   end
   if ((self.gpiDict and self.gpiVariableName) or self._privat_isSecure) and not self._privat_disabled then
-    self._iconHighlight:SetTexture(self._icon:GetTexture())
+    self._iconHighlight:SetTexture(self._icon:GetTexture(), nil, nil)
     self._iconHighlight:SetTexCoord(self._icon:GetTexCoord())
     if (self._iconHighlight:SetDesaturated(true)) then
       self._iconHighlight:SetVertexColor(1, 0.75, 0.25, 0.75);

@@ -8,17 +8,15 @@ local _t = BomModuleManager.languagesModule
 ---@class BomUnitBuffTarget
 ---@field unitName string Just the name
 ---@field link string|nil Colored unit name with class icon
-
-local buffTargetClass = {} ---@type BomUnitBuffTarget
+local buffTargetClass = {}
 buffTargetClass.__index = buffTargetClass
 
 ---@return BomUnitBuffTarget
 function buffTargetModule:New(unitName, link)
-  local fields = {} ---@type BomUnitBuffTarget
-  setmetatable(fields, buffTargetClass)
-
+  local fields = --[[---@type BomUnitBuffTarget]] {}
   fields.unitName = unitName
   fields.link = link
+  setmetatable(fields, buffTargetClass)
 
   return fields
 end

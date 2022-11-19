@@ -68,8 +68,8 @@ end
 ---@param itemId number
 ---@param onLoaded function Called with loaded BomItemCacheElement
 function itemCacheModule:LoadItem(itemId, onLoaded)
-  if itemCacheModule.cache[arg] ~= nil then
-    onLoaded(itemCacheModule.cache[arg])
+  if itemCacheModule.cache[itemId] ~= nil then
+    onLoaded(itemCacheModule.cache[itemId])
     return
   end
 

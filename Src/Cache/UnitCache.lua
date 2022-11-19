@@ -3,18 +3,16 @@ local BOM = BuffomatAddon ---@type BomAddon
 
 ---@shape BomUnitCacheModule
 ---@field unitCache table<string, BomUnit>
----@field cachedPlayerUnit BomUnit
 ---@field cachedParty BomParty
 local unitCacheModule = BomModuleManager.unitCacheModule ---@type BomUnitCacheModule
 unitCacheModule.unitCache = {}
 
----@alias BomParty {[number]: BomUnit}
-
-local texturesModule = BomModuleManager.texturesModule
-local constModule = BomModuleManager.constModule
 local buffModule = BomModuleManager.buffModule
 local buffomatModule = BomModuleManager.buffomatModule
+local constModule = BomModuleManager.constModule
+local partyModule = BomModuleManager.partyModule
 local taskScanModule = BomModuleManager.taskScanModule
+local texturesModule = BomModuleManager.texturesModule
 local toolboxModule = BomModuleManager.toolboxModule
 local unitModule = BomModuleManager.unitModule
 
@@ -49,7 +47,7 @@ function unitCacheModule:GetUnit(unitid, nameGroupMap, nameRoleMap, specialName)
   if guid then
     _, class = GetPlayerInfoByGUID(guid)
     if class then
-      link = constModule.CLASS_ICONS[class] .. "|Hunit:" .. guid .. ":" .. name
+      link = constModule.CLASS_ICONS[--[[---@not ""]] class] .. "|Hunit:" .. guid .. ":" .. name
               .. "|h|c" .. RAID_CLASS_COLORS[class].colorStr .. name .. "|r|h"
     else
       class = ""
@@ -63,99 +61,64 @@ function unitCacheModule:GetUnit(unitid, nameGroupMap, nameRoleMap, specialName)
   if specialName then
     -- do not cache just construct
     local unit1 = unitModule:New({})
-    unit1:Construct(unitid, name, group, class, link, isTank)
+    unit1:Construct(unitid, name, group, class, link or "", isTank)
     return unit1
   else
     -- store in cache
     unitCacheModule.unitCache[unitid] = unitCacheModule.unitCache[unitid] or unitModule:New({})
     local unit2 = unitCacheModule.unitCache[unitid]
-    unit2:Construct(unitid, name, group, class, link, isTank)
+    unit2:Construct(unitid, name, group, class, link or "", isTank)
     return unit2
   end
 end
 
----@return number Party size including pets
-local function bomGetPartySize()
-  local countTo
-  local prefix
-  local count
-
-  if IsInRaid() then
-    countTo = 40
-    prefix = "raid"
-    count = 0
-  else
-    countTo = 4
-    prefix = "party"
-
-    if UnitPlayerOrPetInParty("pet") then
-      count = 2
-    else
-      count = 1
-    end
-  end
-
-  for i = 1, countTo do
-    if UnitPlayerOrPetInParty(prefix .. i) then
-      count = count + 1
-
-      if UnitPlayerOrPetInParty(prefix .. "pet" .. i) then
-        count = count + 1
-      end
-    end
-  end
-
-  return count
-end
-
----@param playerUnit BomUnit
----@return BomParty, BomUnit Returns party table and player unit
-function unitCacheModule:Get5manPartyMembers(playerUnit)
-  local party = {}
-  local partyMember ---@type BomUnit
+---@return BomParty Returns party table and player unit
+function unitCacheModule:Get5manPartyMembers()
+  local party = partyModule:New()
 
   for groupIndex = 1, 4 do
-    partyMember = self:GetUnit("party" .. groupIndex)
-
+    local partyMember = self:GetUnit("party" .. groupIndex, nil, nil, nil)
     if partyMember then
-      tinsert(party, partyMember)
+      party:Add(--[[---@not nil]] partyMember)
     end
 
-    partyMember = self:GetUnit("partypet" .. groupIndex, nil, nil, true)
-
-    if partyMember then
-      partyMember.owner = self:GetUnit("party" .. groupIndex)
-      partyMember.class = "pet"
-      tinsert(party, partyMember)
+    local partyPet = self:GetUnit("partypet" .. groupIndex, nil, nil, true)
+    if partyPet then
+      local pet = --[[---@not nil]] partyPet
+      pet.owner = partyMember
+      pet.class = "pet"
+      party:Add(pet)
     end
   end
 
-  playerUnit = self:GetUnit("player")
-  tinsert(party, playerUnit)
+  -- Get player and get pet
+  local playerUnit = self:GetUnit("player", nil, nil, nil)
+  party:Add(--[[---@not nil]] playerUnit)
+  party.player = --[[---@not nil]] playerUnit
 
-  partyMember = self:GetUnit("pet", nil, nil, true)
-
-  if partyMember then
-    partyMember.owner = self:GetUnit("player")
-    partyMember.class = "pet"
-    tinsert(party, partyMember)
+  local playerPet = self:GetUnit("pet", nil, nil, true)
+  if playerPet then
+    local pet = --[[---@not nil]] playerPet
+    pet.owner = playerUnit
+    pet.class = "pet"
+    party:Add(pet)
   end
 
-  return party, playerUnit
+  return party
 end
 
 ---For when player is in raid, retrieve all 40 raid members
----@param playerUnit BomUnit
----@return BomParty, BomUnit Returns party table and player unit
-function unitCacheModule:Get40manRaidMembers(playerUnit)
+---@return BomParty Returns the party
+function unitCacheModule:Get40manRaidMembers()
   local nameGroupMap = --[[---@type BomNameGroupMap]] {}
   local nameRoleMap = --[[---@type BomNameRoleMap]] {}
-  local party = {}
+  local party = partyModule:New()
+  local numRaidMembers = GetNumGroupMembers() ---@type number
 
-  for raid_index = 1, 40 do
+  for raidIndex = 1, numRaidMembers do
     ---@type string, string, number, number, BomClassName, string, number, boolean, boolean, BomRaidRole, boolean, string
     local name, rank, subgroup, level, class, fileName, zone, online, isDead
-    , role, isML, combatRole = GetRaidRosterInfo(raid_index)
+    , role, isML, combatRole = GetRaidRosterInfo(raidIndex)
 
     if name then
       name = toolboxModule:Split(name, "-")[1]
@@ -164,43 +127,41 @@ function unitCacheModule:Get40manRaidMembers(playerUnit)
     end
   end
 
-  for raidIndex = 1, 40 do
-    local raidMember = self:GetUnit("raid" .. raidIndex, nameGroupMap, nameRoleMap)
+  for raidIndex = 1, numRaidMembers do
+    local raidMember = self:GetUnit("raid" .. raidIndex, nameGroupMap, nameRoleMap, nil)
 
     if raidMember then
-      if UnitIsUnit((--[[---@not nil]] raidMember).unitId, "player") then
-        playerUnit = --[[---@not nil]] raidMember
+      local member = --[[---@not nil]] raidMember
+      if UnitIsUnit(member.unitId, "player") then
+        party.player = member
       end
-      tinsert(party, raidMember)
+      party:Add(member)
 
-      raidMember = self:GetUnit("raidpet" .. raidIndex, nameGroupMap, nil, true)
-      if raidMember then
-        local raidMemberVal = --[[---@not nil]] raidMember
-        raidMemberVal.owner = self:GetUnit("raid" .. raidIndex, nameGroupMap, nameRoleMap, nil)
-        raidMemberVal.class = "pet"
-        tinsert(party, raidMember)
+      local raidPet = self:GetUnit("raidpet" .. raidIndex, nameGroupMap, nil, true)
+      if raidPet then
+        local pet = --[[---@not nil]] raidPet
+        pet.owner = raidMember
+        pet.class = "pet"
+        party:Add(pet)
       end
     end
   end
-  return party, playerUnit
+  return party
 end
 
----Retrieve a table with party members
----@return BomParty, BomUnit {Party, Player}
+---@return BomParty
 function unitCacheModule:GetPartyMembers()
   -- and buffs
   local party ---@type BomParty
-  local playerUnit --- @type BomUnit
   BOM.drinkingPersonCount = 0
 
   -- check if stored party is correct!
   if not BOM.isPartyUpdateNeeded
-          and self.cachedParty ~= nil
-          and self.cachedPlayerUnit ~= nil then
+          and self.cachedParty ~= nil then
 
-    if #self.cachedParty == bomGetPartySize() + (BOM.SaveTargetName and 1 or 0) then
+    if #self.cachedParty == partyModule:GetPartySize() + (BOM.SaveTargetName and 1 or 0) then
       local ok = true
-      for i, member in pairs(self.cachedParty) do
+      for i, member in pairs(self.cachedParty.members) do
         local name = UnitFullName(member.unitId)
 
         if name ~= member.name then
@@ -211,17 +172,16 @@ function unitCacheModule:GetPartyMembers()
 
       if ok then
         party = self.cachedParty
-        playerUnit = self.cachedPlayerUnit
       end
     end
   end
 
   -- read party data
-  if party == nil or playerUnit == nil then
+  if party == nil then
     if IsInRaid() then
-      party, playerUnit = self:Get40manRaidMembers(playerUnit)
+      party = self:Get40manRaidMembers()
     else
-      party, playerUnit = self:Get5manPartyMembers(playerUnit)
+      party = self:Get5manPartyMembers()
     end
 
     if buffomatModule.shared.BuffTarget
@@ -234,28 +194,13 @@ function unitCacheModule:GetPartyMembers()
       local targetedUnit = self:GetUnit("target", nil, nil, nil)
       if targetedUnit then
         (--[[---@not nil]] targetedUnit).group = 9 --move them outside of 8 buff groups
-        tinsert(party, targetedUnit)
+        party:Add(--[[---@not nil]] targetedUnit)
       end
     end
 
     self.cachedParty = party
-    self.cachedPlayerUnit = playerUnit
 
-    -- Cleanup BOM.PlayerBuffs
-    for name, val in pairs(BOM.playerBuffs) do
-      local ok = false
-
-      for i, member in ipairs(party) do
-        if member.name == name then
-          ok = true
-        end
-      end
-
-      if ok == false then
-        BOM.playerBuffs[name] = nil
-      end
-    end
-
+    partyModule:CleanUpBuffs(party)
     buffomatModule:SetForceUpdate("joinedParty") -- always read all buffs on new party!
   end
 
@@ -270,7 +215,7 @@ function unitCacheModule:GetPartyMembers()
   end
 
   -- For every party member which is in same zone, not a ghost or is a target
-  for i, member in ipairs(party) do
+  for _i, member in pairs(party.members) do
     member.isSameZone = (C_Map.GetBestMapForUnit(member.unitId) == player_zone)
             or member.isGhost
             or member.unitId == "target"
@@ -286,15 +231,16 @@ function unitCacheModule:GetPartyMembers()
     end
 
     if next(buffomatModule.forceUpdateRequestedBy) ~= nil then
-      member:ForceUpdateBuffs(playerUnit)
+      member:ForceUpdateBuffs(party.player)
     end -- if force update
   end -- for all in party
 
   -- weapon-buffs
   -- Clear old
-  local OldMainHandBuff = playerUnit.MainHandBuff
-  local OldOffHandBuff = playerUnit.OffHandBuff
+  local OldMainHandBuff = party.player.MainHandBuff
+  local OldOffHandBuff = party.player.OffHandBuff
 
+  ---@type boolean, number, number, BomEnchantmentId, boolean, number, number, BomEnchantmentId
   local hasMainHandEnchant, mainHandExpiration, mainHandCharges, mainHandEnchantID
   , hasOffHandEnchant, offHandExpiration, offHandCharges, offHandEnchantId = GetWeaponEnchantInfo()
 
@@ -309,15 +255,15 @@ function unitCacheModule:GetPartyMembers()
       duration = 300
     end
 
-    playerUnit.knownBuffs[enchantBuffId] = buffModule:New(
+    party.player.knownBuffs[enchantBuffId] = buffModule:New(
             enchantBuffId,
             duration,
             GetTime() + mainHandExpiration / 1000,
             "player",
             true)
-    playerUnit.MainHandBuff = enchantBuffId
+    party.player.MainHandBuff = enchantBuffId
   else
-    playerUnit.MainHandBuff = nil
+    party.player.MainHandBuff = nil
   end
 
   if hasOffHandEnchant
@@ -332,32 +278,31 @@ function unitCacheModule:GetPartyMembers()
       duration = 300
     end
 
-    playerUnit.knownBuffs[-enchantBuffId] = buffModule:New(
+    party.player.knownBuffs[-enchantBuffId] = buffModule:New(
             -enchantBuffId,
             duration,
             GetTime() + offHandExpiration / 1000,
             "player",
             true)
 
-    playerUnit.OffHandBuff = enchantBuffId
+    party.player.OffHandBuff = enchantBuffId
   else
-    playerUnit.OffHandBuff = nil
+    party.player.OffHandBuff = nil
   end
 
-  if OldMainHandBuff ~= playerUnit.MainHandBuff then
+  if OldMainHandBuff ~= party.player.MainHandBuff then
     buffomatModule:SetForceUpdate("mainHandBuffChanged")
   end
 
-  if OldOffHandBuff ~= playerUnit.OffHandBuff then
+  if OldOffHandBuff ~= party.player.OffHandBuff then
     buffomatModule:SetForceUpdate("offhandBuffChanged")
   end
 
   BOM.declineHasResurrection = false
 
-  return party, playerUnit
+  return party
 end
 
 function unitCacheModule:ClearCache()
-  self.cachedParty = nil
-  self.cachedPlayerUnit = nil
+  self.cachedParty = partyModule:New()
 end

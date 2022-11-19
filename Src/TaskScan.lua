@@ -109,47 +109,59 @@ end
 
 ---Check for party, spell and player, which targets that spell goes onto
 ---Update spell.NeedMember, spell.NeedGroup and spell.DeathGroup
----@param playerParty BomParty - the party
+---@param party BomParty - the party
 ---@param buffDef BomBuffDefinition the spell to update
----@param playerUnit BomUnit the player
 ---@return boolean someoneIsDead
-function taskScanModule:UpdateSpellTargets(playerParty, buffDef, playerUnit)
+function taskScanModule:UpdateSpellTargets(party, buffDef)
   local someoneIsDead = false
   --local thisBuffOnPlayer = playerUnit.knownBuffs[spell.buffId]
   buffDef:ResetBuffTargets()
 
   -- Save skipped unit and do nothing
-  if buffDef:DoesUnitHaveBetterBuffs(playerUnit) then
-    tinsert(buffDef.unitsHaveBetterBuff, playerUnit)
+  if buffDef:DoesUnitHaveBetterBuffs(party.player) then
+    tinsert(buffDef.unitsHaveBetterBuff, party.player)
+
   elseif not buffDefModule:IsBuffEnabled(buffDef.buffId, nil) then
     --nothing, the spell is not enabled!
+
   elseif spellButtonsTabModule:CategoryIsHidden(buffDef.category) then
     --nothing, the category is not showing!
+
   elseif buffDef.type == "weapon" then
-    buffChecksModule:PlayerNeedsWeaponBuff(buffDef, playerUnit)
+    buffChecksModule:PlayerNeedsWeaponBuff(buffDef, party.player)
     -- NOTE: This must go before spell.IsConsumable clause
     -- For TBC hunter pet buffs we check if the pet is missing the buff
     -- but then the hunter must consume it
+
   elseif buffDef.tbcHunterPetBuff then
-    buffChecksModule:HunterPetNeedsBuff(buffDef, playerUnit)
+    buffChecksModule:HunterPetNeedsBuff(buffDef, party.player)
+
   elseif buffDef.isConsumable then
-    buffChecksModule:PlayerNeedsConsumable(buffDef, playerUnit)
+    buffChecksModule:PlayerNeedsConsumable(buffDef, party.player)
+
   elseif buffDef.isInfo then
-    buffChecksModule:PartyNeedsInfoBuff(buffDef, playerParty)
+    buffChecksModule:PartyNeedsInfoBuff(buffDef, party)
+
   elseif buffDef.isOwn then
-    buffChecksModule:PlayerNeedsSelfBuff(buffDef, playerUnit)
+    buffChecksModule:PlayerNeedsSelfBuff(buffDef, party.player)
+
   elseif buffDef.type == "resurrection" then
-    buffChecksModule:DeadNeedsResurrection(buffDef, playerParty)
+    buffChecksModule:DeadNeedsResurrection(buffDef, party)
+
   elseif buffDef.type == "tracking" then
-    buffChecksModule:PlayerNeedsTracking(buffDef, playerUnit)
+    buffChecksModule:PlayerNeedsTracking(buffDef, party.player)
+
   elseif buffDef.type == "aura" then
-    buffChecksModule:PaladinNeedsAura(buffDef, playerUnit)
+    buffChecksModule:PaladinNeedsAura(buffDef, party.player)
+
   elseif buffDef.type == "seal" then
-    buffChecksModule:PaladinNeedsSeal(buffDef, playerUnit)
+    buffChecksModule:PaladinNeedsSeal(buffDef, party.player)
+
   elseif buffDef.isBlessing then
-    someoneIsDead = buffChecksModule:PartyNeedsPaladinBlessing(buffDef, playerParty, someoneIsDead)
+    someoneIsDead = buffChecksModule:PartyNeedsPaladinBlessing(buffDef, party, someoneIsDead)
+
   else
-    buffChecksModule:PartyNeedsBuff(buffDef, playerParty, someoneIsDead)
+    buffChecksModule:PartyNeedsBuff(buffDef, party, someoneIsDead)
   end
 
   -- Check Spell CD
@@ -263,13 +275,13 @@ function taskScanModule:UpdateMacro(nextCast)
 end
 
 ---@param spellName string
----@param playerParty BomParty
+---@param party BomParty
 ---@param groupIndex number|nil
 ---@param spell BomBuffDefinition
-function taskScanModule:GetGroupInRange(spellName, playerParty, groupIndex, spell)
+function taskScanModule:GetGroupInRange(spellName, party, groupIndex, spell)
   local minDist
   local ret
-  for i, member in pairs(playerParty) do
+  for i, member in pairs(party.members) do
     if member.group == groupIndex then
       if not (IsSpellInRange(spellName, member.unitId) == 1 or member.isDead) then
         if member.distance > 2000 then
@@ -323,14 +335,14 @@ end
 
 ---Return list of members of class in spell range
 ---@param spellName string
----@param playerParty BomParty
+---@param party BomParty
 ---@param class string
 ---@param spell BomBuffDefinition
-function taskScanModule:GetClassInRange(spellName, playerParty, class, spell)
+function taskScanModule:GetClassInRange(spellName, party, class, spell)
   local minDist
   local ret
 
-  for i, member in pairs(playerParty) do
+  for i, member in pairs(party.members) do
     if member.class == class then
       if member.isDead then
         return nil
@@ -622,13 +634,12 @@ function taskScanModule:CheckChangesAndUpdateSpelltab()
   end
 end
 
----@param playerParty BomParty - the party
----@param playerUnit BomUnit - the player
-function taskScanModule:ForceUpdate(playerParty, playerUnit)
+---@param party BomParty - the party
+function taskScanModule:ForceUpdate(party)
   self:ActivateSelectedTracking()
 
   -- Get the running aura and the running seal
-  self:GetActiveAuraAndSeal(playerUnit)
+  self:GetActiveAuraAndSeal(party.player)
 
   -- Check changes to auras and seals and update the spell tab
   self:CheckChangesAndUpdateSpelltab()
@@ -640,7 +651,7 @@ function taskScanModule:ForceUpdate(playerParty, playerUnit)
   -- For each selected spell check the targets
   ---@param spell BomBuffDefinition
   for i, spell in ipairs(BOM.selectedBuffs) do
-    someoneIsDead = self:UpdateSpellTargets(playerParty, spell, playerUnit)
+    someoneIsDead = self:UpdateSpellTargets(party, spell)
   end
 
   taskScanModule.saveSomeoneIsDead = someoneIsDead
@@ -1826,16 +1837,15 @@ function taskScanModule:PlayTaskSound()
   end
 end
 
----@param playerParty BomParty
----@param playerUnit BomUnit
-function taskScanModule:UpdateScan_Scan(playerParty, playerUnit)
+---@param party BomParty
+function taskScanModule:UpdateScan_Scan(party)
   local someoneIsDead = taskScanModule.saveSomeoneIsDead
   if next(buffomatModule.forceUpdateRequestedBy) ~= nil then
-    someoneIsDead = self:ForceUpdate(playerParty, playerUnit)
+    someoneIsDead = self:ForceUpdate(party)
   end
 
   -- cancel buffs
-  self:CancelBuffs(playerUnit)
+  self:CancelBuffs(party.player)
 
   -- fill list and find cast
   bomCurrentPlayerMana = UnitPower("player", 0) or 0 --mana
@@ -1857,15 +1867,15 @@ function taskScanModule:UpdateScan_Scan(playerParty, playerUnit)
     BOM.scanModifierKeyDown = false
 
     inRange, castButtonTitle, macroCommand = self:ScanSelectedSpells(
-            playerUnit, playerParty, inRange, castButtonTitle, macroCommand)
+            party.player, party, inRange, castButtonTitle, macroCommand)
 
-    self:CheckReputationItems(playerUnit)
-    self:CheckMissingWeaponEnchantments(playerUnit) -- if option to warn is enabled
+    self:CheckReputationItems(party.player)
+    self:CheckMissingWeaponEnchantments(party.player) -- if option to warn is enabled
 
     ---Check if someone has drink buff, print an info message self:SomeoneIsDrinking()
 
     castButtonTitle, macroCommand = self:CheckItemsAndContainers(
-            playerUnit, castButtonTitle, macroCommand)
+            party.player, castButtonTitle, macroCommand)
   end
 
   -- Open Buffomat if any cast tasks were added to the task list
@@ -1934,12 +1944,12 @@ function taskScanModule:UpdateScan_PreCheck(from)
   end
 
   unitCacheModule:ClearCache()
-  local playerParty, playerUnit = unitCacheModule:GetPartyMembers()
+  local party = unitCacheModule:GetPartyMembers()
 
   -- Check whether BOM is disabled due to some option and a matching condition
   if not self:IsMountedAndCrusaderAuraRequired() then
     -- If mounted and crusader aura enabled, then do not do further checks, allow the crusader aura
-    local isBomActive, reasonDisabled = self:IsActive(playerUnit)
+    local isBomActive, reasonDisabled = self:IsActive(party.player)
     if not isBomActive then
       buffomatModule:ClearForceUpdate()
       BOM.checkForError = false
@@ -1952,7 +1962,7 @@ function taskScanModule:UpdateScan_PreCheck(from)
   end
 
   -- All pre-checks passed
-  self:UpdateScan_Scan(playerParty, playerUnit)
+  self:UpdateScan_Scan(party)
 end -- end function bomUpdateScan_PreCheck()
 
 ---Scan the available spells and group members to find who needs the rebuff/res

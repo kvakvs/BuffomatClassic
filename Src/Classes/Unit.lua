@@ -7,6 +7,7 @@ local unitModule = BomModuleManager.unitModule ---@type BomUnitModule
 
 local buffomatModule = BomModuleManager.buffomatModule
 local buffModule = BomModuleManager.buffModule
+local partyModule = BomModuleManager.partyModule
 
 ---@class BomUnit
 ---@field allBuffs table<number, boolean> Availability of all auras even those not supported by BOM, by id, no extra detail stored
@@ -22,7 +23,7 @@ local buffModule = BomModuleManager.buffModule
 ---@field isPlayer boolean Is this a player
 ---@field isSameZone boolean Is in the same zone
 ---@field isTank boolean Is this member marked as tank
----@field knownBuffs table<number, BomUnitBuff> Buffs on player keyed by spell id, only buffs supported by Buffomat are stored
+---@field knownBuffs {[BomSpellId]: BomUnitBuff} Buffs on player keyed by spell id, only buffs supported by Buffomat are stored
 ---@field link string
 ---@field MainHandBuff number|nil Temporary enchant on main hand
 ---@field name string
@@ -56,7 +57,7 @@ function unitClass:ForceUpdateBuffs(playerUnit)
   BOM.someBodyIsGhost = BOM.someBodyIsGhost or self.isGhost
 
   if self.isDead then
-    BOM.playerBuffs[self.name] = nil
+    partyModule.buffs[self.name] = nil
   else
     self.hasArgentumDawn = false
     self.hasCarrot = false
@@ -112,7 +113,7 @@ end
 ---@param unitid string
 ---@param name string
 ---@param group number
----@param class string
+---@param class BomClassName
 ---@param link string
 ---@param isTank boolean
 function unitClass:Construct(unitid, name, group, class, link, isTank)
@@ -132,6 +133,7 @@ function unitClass:GetDistance()
   return self.distance
 end
 
+---@param id BomSpellId
 function unitClass:HaveBuff(id)
   return self.knownBuffs[id] ~= nil or self.allBuffs[id] ~= nil
 end

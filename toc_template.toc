@@ -48,6 +48,7 @@ Src/Classes/RowBuilder.lua
 Src/Classes/SharedSettings.lua
 Src/Classes/BuffDefinition.lua
 Src/Classes/Task.lua
+Src/Classes/Party.lua
 Src/Classes/TaskList.lua
 
 Src/Cache/ItemCache.lua
@@ -57,7 +58,6 @@ Src/Cache/UnitCache.lua
 
 Src/Ui/BuffRow.lua
 Src/Ui/ControlManager.lua
-# Src/Ui/LegacyOptions.lua
 Src/Ui/ManagedUi.lua
 Src/Ui/MinimapButton.lua
 Src/Ui/Options.lua

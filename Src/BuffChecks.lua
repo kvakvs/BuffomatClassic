@@ -167,9 +167,9 @@ function buffChecksModule:PlayerNeedsConsumable(buff, playerUnit)
 end
 
 ---@param buff BomBuffDefinition
----@param playerParty BomParty
-function buffChecksModule:PartyNeedsInfoBuff(buff, playerParty)
-  for _i, partyMember in pairs(playerParty) do
+---@param party BomParty
+function buffChecksModule:PartyNeedsInfoBuff(buff, party)
+  for _i, partyMember in pairs(party.members) do
     local partyMemberBuff = partyMember.knownBuffs[buff.buffId]
 
     if partyMemberBuff then
@@ -209,10 +209,9 @@ function buffChecksModule:PlayerNeedsSelfBuff(buff, playerUnit)
 end
 
 ---@param buff BomBuffDefinition
----@param playerUnit BomUnit
----@param playerParty BomParty
-function buffChecksModule:DeadNeedsResurrection(buff, playerParty)
-  for i, member in pairs(playerParty) do
+---@param party BomParty
+function buffChecksModule:DeadNeedsResurrection(buff, party)
+  for i, member in pairs(party.members) do
     if member.isDead
             and not member.hasResurrection
             and member.isConnected
@@ -267,17 +266,17 @@ function buffChecksModule:PaladinNeedsSeal(spell, playerUnit)
 end
 
 ---@param buffDef BomBuffDefinition
----@param playerParty BomParty
+---@param party BomParty
 ---@param someoneIsDead boolean
 ---@return boolean someoneIsDead
-function buffChecksModule:PartyNeedsPaladinBlessing(buffDef, playerParty, someoneIsDead)
+function buffChecksModule:PartyNeedsPaladinBlessing(buffDef, party, someoneIsDead)
   -- Blessing user settings (regardless of the current buff)
   local currentBlessing = buffDefModule:GetProfileBlessingState( nil)
   -- Current user settings for the selected buff
   local profileBuff = --[[---@not nil]] buffDefModule:GetProfileBuff(buffDef.buffId, nil)
 
   ---@param partyMember BomUnit
-  for i, partyMember in ipairs(playerParty) do
+  for i, partyMember in ipairs(party.members) do
     local ok = false
     local notGroup = false
 
@@ -346,7 +345,7 @@ end
 ---@param someoneIsDead boolean
 function buffChecksModule:PartyNeedsBuff(buffDef, party, someoneIsDead)
   --spells
-  for i, partyMember in pairs(party) do
+  for i, partyMember in pairs(party.members) do
     local ok = false
     local profileBuff = buffomatModule.currentProfile.Spell[buffDef.buffId]
 

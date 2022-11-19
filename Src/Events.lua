@@ -7,6 +7,7 @@ local eventsModule = BomModuleManager.eventsModule ---@type BomEventsModule
 local allBuffsModule = BomModuleManager.allBuffsModule
 local buffomatModule = BomModuleManager.buffomatModule
 local constModule = BomModuleManager.constModule
+local partyModule = BomModuleManager.partyModule
 local profileModule = BomModuleManager.profileModule
 local spellButtonsTabModule = BomModuleManager.spellButtonsTabModule
 local spellSetupModule = BomModuleManager.spellSetupModule
@@ -64,7 +65,7 @@ end
 local function Event_UNIT_POWER_UPDATE(unitTarget, powerType)
   --UNIT_POWER_UPDATE: "unitTarget", "powerType"
   if powerType == "MANA" and UnitIsUnit(unitTarget, "player") then
-    local maxMana = BOM.playerManaMax or 0
+    --local maxMana = BOM.manaMax or 0
     local actualMana = UnitPower("player", 0) or 0
 
     if maxMana <= actualMana then
@@ -161,7 +162,7 @@ local function Event_PLAYER_TARGET_CHANGED()
 end
 
 local partyCheckMask = COMBATLOG_OBJECT_AFFILIATION_RAID + COMBATLOG_OBJECT_AFFILIATION_PARTY + COMBATLOG_OBJECT_AFFILIATION_MINE
---  BOM.PlayerBuffs cleanup in scan bom_get_party_members
+--  partyModule.buffs cleanup in scan bom_get_party_members
 
 local function Event_COMBAT_LOG_EVENT_UNFILTERED()
   ---@type number, any, boolean, string, string, any, any, string, string, any, any, number, string, number, number, number
@@ -171,7 +172,7 @@ local function Event_COMBAT_LOG_EVENT_UNFILTERED()
   if bit.band(destFlags, partyCheckMask) > 0 and destName ~= nil and destName ~= "" then
     --print(event,spellName,bit.band(destFlags,partyCheckMask)>0,bit.band(sourceFlags,COMBATLOG_OBJECT_AFFILIATION_MINE)>0)
     if event == "UNIT_DIED" then
-      --BOM.PlayerBuffs[destName]=nil -- problem with hunters and fake-deaths!
+      --partyModule.buffs[destName]=nil -- problem with hunters and fake-deaths!
       --additional check in bom_get_party_members
       --print("dead",destName)
       buffomatModule:SetForceUpdate("unitDied")
@@ -181,24 +182,24 @@ local function Event_COMBAT_LOG_EVENT_UNFILTERED()
         if event == "SPELL_CAST_SUCCESS" then
 
         elseif event == "SPELL_AURA_REFRESH" then
-          BOM.playerBuffs[destName] = BOM.playerBuffs[destName] or {}
-          BOM.playerBuffs[destName][spellName] = GetTime()
+          partyModule.buffs[destName] = partyModule.buffs[destName] or {}
+          partyModule.buffs[destName][spellName] = GetTime()
 
         elseif event == "SPELL_AURA_APPLIED" then
-          BOM.playerBuffs[destName] = BOM.playerBuffs[destName] or {}
-          if BOM.playerBuffs[destName][spellName] == nil then
-            BOM.playerBuffs[destName][spellName] = GetTime()
+          partyModule.buffs[destName] = partyModule.buffs[destName] or {}
+          if partyModule.buffs[destName][spellName] == nil then
+            partyModule.buffs[destName][spellName] = GetTime()
           end
 
         elseif event == "SPELL_AURA_REMOVED" then
-          if BOM.playerBuffs[destName] and BOM.playerBuffs[destName][spellName] then
-            BOM.playerBuffs[destName][spellName] = nil
+          if partyModule.buffs[destName] and partyModule.buffs[destName][spellName] then
+            partyModule.buffs[destName][spellName] = nil
           end
         end
 
       elseif event == "SPELL_AURA_REFRESH" or event == "SPELL_AURA_APPLIED" and event == "SPELL_AURA_REMOVED" then
-        if BOM.playerBuffs[destName] and BOM.playerBuffs[destName][spellName] then
-          BOM.playerBuffs[destName][spellName] = nil
+        if partyModule.buffs[destName] and partyModule.buffs[destName][spellName] then
+          partyModule.buffs[destName][spellName] = nil
         end
       end
     end

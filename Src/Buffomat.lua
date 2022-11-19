@@ -21,6 +21,7 @@ local macroModule = BomModuleManager.macroModule
 local managedUiModule = BomModuleManager.myButtonModule
 local optionsModule = BomModuleManager.optionsModule
 local optionsPopupModule = BomModuleManager.optionsPopupModule
+local partyModule = BomModuleManager.partyModule
 local popupModule = BomModuleManager.popupModule
 local profileModule = BomModuleManager.profileModule
 local sharedStateModule = BomModuleManager.sharedSettingsModule
@@ -60,8 +61,9 @@ local toolboxModule = BomModuleManager.toolboxModule
 ---@field currentProfile BomProfile Current profile from CharacterState.Profiles
 ---@field declineHasResurrection boolean Set to true on combat start, stop, holding Alt, cleared on party update
 ---@field drinkingPersonCount number Used for warning "X persons is/are drinking"
+---@field AllDrink BomSpellId[] Used for warning "X persons is/are drinking"
 ---@field enchantList {[BomSpellId]: number[]} Spell ids mapping to enchantment ids
----@field enchantToSpellLookup {[number]: BomSpellId} Reverse-maps enchantment ids back to spells
+---@field enchantToSpellLookup {[BomEnchantmentId]: BomSpellId} Reverse-maps enchantment ids back to spells
 ---@field forceProfile BomProfileName|nil Nil will choose profile name automatically, otherwise this profile will be used
 ---@field forceTracking WowIconId|nil Defines icon id for enforced tracking
 ---@field forceUpdate boolean Requests immediate spells/buffs refresh
@@ -87,8 +89,6 @@ local toolboxModule = BomModuleManager.toolboxModule
 ---@field minimapButton BomMinimapButtonPlaceholder Minimap button control
 ---@field nextCooldownDue number Set this to next spell cooldown to force update
 ---@field isPartyUpdateNeeded boolean Requests player party update
----@field playerBuffs BomBuffCollectionPerUnit Saved self buffs for the player
----@field playerManaMax number
 ---@field popupMenuDynamic BomPopupDynamic
 ---@field quickSingleBuffToggleButton BomGPIControl Button for single/group buff toggling next to cast button
 ---@field repeatUpdate boolean Requests some sort of spells update similar to ForceUpdate
@@ -385,9 +385,9 @@ function buffomatModule:InitGlobalStates()
 
   if self.character.remainingDurations then
     self.shared.Duration = self.character.remainingDurations
-    self.character.remainingDurations = --[[---@type BomSpellCooldownsTable]] {}
+    self.character.remainingDurations = --[[---@type BomSpellDurationsTable]] {}
   elseif not self.shared.Duration then
-    self.shared.Duration = --[[---@type BomSpellCooldownsTable]] {}
+    self.shared.Duration = --[[---@type BomSpellDurationsTable]] {}
   end
 
   if not self.character[profileModule.ALL_PROFILES[1]] then
@@ -685,7 +685,7 @@ function buffomatModule:FastUpdateTimer()
   buffomatModule.lastUpdateTimestamp = 0
 end
 
-BOM.playerBuffs = --[[---@type BomBuffCollectionPerUnit]] {}
+partyModule.buffs = --[[---@type BomBuffCollectionPerUnit]] {}
 
 ---@shape BomUnitAuraResult
 ---@field name string The name of the spell or effect of the debuff. This is the name shown in yellow when you mouse over the icon
@@ -719,7 +719,7 @@ function buffomatModule:PrintCallers(prefix, callersCollection)
 end
 
 ---Handles UnitAura WOW API call.
----For spells that are tracked by Buffomat the data is also stored in BOM.PlayerBuffs
+---For spells that are tracked by Buffomat the data is also stored in partyModule.buffs
 ---@param unitId string
 ---@param buffIndex number Index of buff/debuff slot starts 1 max 40?
 ---@param filter string Filter string like "HELPFUL", "PLAYER", "RAID"... etc
@@ -743,14 +743,15 @@ function buffomatModule:UnitAura(unitId, buffIndex, filter)
 
       if duration > 0 and (expirationTime == nil or expirationTime == 0) then
         local destName = UnitFullName(unitId) ---@type string
+        local buffOnPlayer = partyModule.buffs[destName]
 
-        if BOM.playerBuffs[destName] and BOM.playerBuffs[destName][name] then
-          expirationTime = (BOM.playerBuffs[destName][name] or 0) + duration
+        if buffOnPlayer and buffOnPlayer[name] then
+          expirationTime = (buffOnPlayer[name] or 0) + duration
 
           local now = GetTime()
 
           if expirationTime <= now then
-            BOM.playerBuffs[destName][name] = now
+            buffOnPlayer[name] = now
             expirationTime = now + duration
           end
         end
@@ -941,9 +942,9 @@ function buffomatModule.Slash_DebugBuffs(dest)
 end
 
 function buffomatModule.Slash_DebugBuffList()
-  print("PlayerBuffs stored ", #BOM.playerBuffs)
+  print("PlayerBuffs stored ", #partyModule.buffs)
 
-  for name, spellist in pairs(BOM.playerBuffs) do
+  for name, spellist in pairs(partyModule.buffs) do
     print(name)
 
     for spellname, ti in pairs(spellist) do

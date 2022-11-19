@@ -9,10 +9,11 @@ local BOM = BuffomatAddon ---@type BomAddon
 ---@shape BomSpellCacheModule
 ---@field cache BomSpellCache Stores arg to results mapping for GetItemInfo
 local spellCacheModule = BomModuleManager.spellCacheModule ---@type BomSpellCacheModule
-spellCacheModule.cache = {}
+spellCacheModule.cache = --[[---@type BomSpellCache]] {}
 
 local buffomatModule = BomModuleManager.buffomatModule
 local buffDefModule = BomModuleManager.buffDefinitionModule
+local allBuffsModule = BomModuleManager.allBuffsModule
 
 ---@class BomSpellCacheElement
 ---@field name string
@@ -62,8 +63,8 @@ end
 ---@param spellId number
 ---@param onLoaded function Called with loaded BomSpellCacheElement
 function spellCacheModule:LoadSpell(spellId, onLoaded)
-  if spellCacheModule.cache[arg] ~= nil then
-    onLoaded(spellCacheModule.cache[arg])
+  if spellCacheModule.cache[spellId] ~= nil then
+    onLoaded(spellCacheModule.cache[spellId])
     return
   end
 
@@ -73,8 +74,6 @@ function spellCacheModule:LoadSpell(spellId, onLoaded)
   cacheSpell.spellId = spellId
 
   local spellInfoReady_func = function()
-    local spellDef = buffDefModule.allSpells[spellId]
-
     -- Assume the spell info is loaded here and the response is instant
     local name, rank, icon, castTime, minRange, maxRange, _spellId = GetSpellInfo(spellId)
     if name == nil then
@@ -82,7 +81,8 @@ function spellCacheModule:LoadSpell(spellId, onLoaded)
     end
 
     cacheSpell.name = spellMixin:GetSpellName()
-    spellDef.name = cacheSpell.name
+    --local buffDef = allBuffsModule.allBuffs[spellId]
+    --buffDef.name = cacheSpell.name
 
     cacheSpell.rank = rank
     cacheSpell.icon = icon

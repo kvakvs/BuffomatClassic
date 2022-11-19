@@ -48,9 +48,9 @@ local allBuffsModule = BomModuleManager.allBuffsModule
 -- -@shape BomBuffDefinitionTable
 -- -@field [BomSpellId] BomBuffDefinition
 
+---@alias BomForcedTargets {[string]: boolean}
+
 ---@shape BomBuffDefinition
----@field highestRankSingleId BomSpellId Updated in SpellSetup for each spell cache update
----@field highestRankGroupId BomSpellId Updated in SpellSetup for each spell cache update
 ---@field AllowWhisper boolean [⚠DO NOT RENAME] Allow whispering expired soulstone to the warlock
 ---@field buffId BomBuffId Spell id of level 60 spell used as key everywhere else
 ---@field buffSource string Unit/player who gave this buff
@@ -63,19 +63,20 @@ local allBuffsModule = BomModuleManager.allBuffsModule
 ---@field default boolean Whether the spell auto-cast is enabled by default
 ---@field elixirType string|nil Use this for elixir mutual exclusions on elixirs
 ---@field Enable boolean [⚠DO NOT RENAME]  Whether buff is to be watched
----@field ExcludedTarget {[string]: boolean} [⚠DO NOT RENAME] List of target names to never buff
+---@field ExcludedTarget BomForcedTargets [⚠DO NOT RENAME] List of target names to never buff
 ---@field extraText string Added to the right of spell name in the spells config
----@field ForcedTarget {[string]: boolean} [⚠DO NOT RENAME] List of extra targets to buff
+---@field ForcedTarget BomForcedTargets [⚠DO NOT RENAME] List of extra targets to buff
 ---@field frames BomBuffRowFrames Dynamic list of controls associated with this spell in the UI
 ---@field groupDuration number Buff duration for group buff in seconds
----@field groupFamily number[] Family of group buff spell ids which are mutually exclusive
+---@field groupFamily number[]|nil Family of group buff spell ids which are mutually exclusive
 ---@field groupLink string Printable link for group buff
 ---@field groupMana number Mana cost for group buff
----field GroupsHaveBetterBuff table List of groups who have better version of this buff
 ---@field groupsHaveDead {[number|BomClassName]: boolean} Group/class members who might be dead but their class needs this buff
 ---@field groupsNeedBuff table List of groups who might need this buff
 ---@field groupText string Name of group buff spell (from GetSpellInfo())
 ---@field hasCD boolean There's a cooldown on this spell
+---@field highestRankGroupId BomSpellId Updated in SpellSetup for each spell cache update
+---@field highestRankSingleId BomSpellId Updated in SpellSetup for each spell cache update
 ---@field ignoreIfBetterBuffs BomSpellId[] If these auras are present on target, the buff is not queued
 ---@field isBlessing boolean Spell will be cast on group members of the same class
 ---@field isConsumable boolean Is an item-based buff; the spell must have 'items' field too
@@ -83,10 +84,11 @@ local allBuffsModule = BomModuleManager.allBuffsModule
 ---@field isOwn boolean Spell only casts on self
 ---@field isScanned boolean
 ---@field itemIcon string|number
----@field items BomItemId[] Conjuration spells create these items. Or buff is granted by an item in user's bag. Number is item id shows as the icon.
+---@field items BomItemId[]|nil Conjuration spells create these items. Or buff is granted by an item in user's bag. Number is item id shows as the icon.
 ---@field limitations BomSpellLimitations|nil [Temporary] field for post-filtering on spell list creation, later zeroed
 ---@field lockIfHaveItem BomItemId[] Item ids which prevent this buff (unique conjured items for example)
 ---@field MainHandEnable boolean [⚠DO NOT RENAME]
+---@field name string Loaded in spellcache.
 ---@field OffHandEnable boolean [⚠DO NOT RENAME]
 ---@field onlyUsableFor string[] list of classes which only can see this buff (hidden for others)
 ---@field optionText string Used to create sections in spell list in the options page
@@ -113,6 +115,7 @@ local allBuffsModule = BomModuleManager.allBuffsModule
 ---@field type BomBuffType Defines type: "aura", "consumable", "weapon" for Enchant Consumables, "seal", "tracking", "resurrection"
 ---@field unitsHaveBetterBuff BomUnit[] List of group members who might need this buff but won't get it because they have better
 ---@field unitsNeedBuff BomUnit[] List of group members who might need this buff
+---field GroupsHaveBetterBuff table List of groups who have better version of this buff
 local buffDefClass = {}
 buffDefClass.__index = buffDefClass
 
@@ -121,18 +124,18 @@ buffDefClass.__index = buffDefClass
 ---@return BomBuffDefinition
 function buffDefModule:New(singleId)
   local newSpell = --[[---@type BomBuffDefinition]] {}
-  newSpell.category            = "" -- special value no category
-  newSpell.frames              = buffRowModule:New(tostring(singleId)) -- spell buttons from the UI go here
-  newSpell.buffId              = singleId
+  newSpell.category = "" -- special value no category
+  newSpell.frames = buffRowModule:New(tostring(singleId)) -- spell buttons from the UI go here
+  newSpell.buffId = singleId
   newSpell.highestRankSingleId = singleId
-  newSpell.singleFamily        = { singleId }
-  newSpell.limitations         = --[[---@type BomSpellLimitations]] {}
-  newSpell.ForcedTarget        = {}
-  newSpell.ExcludedTarget      = {}
-  newSpell.unitsNeedBuff       = {}
+  newSpell.singleFamily = { singleId }
+  newSpell.limitations = --[[---@type BomSpellLimitations]] {}
+  newSpell.ForcedTarget = --[[---@type BomForcedTargets]] {}
+  newSpell.ExcludedTarget = --[[---@type BomForcedTargets]] {}
+  newSpell.unitsNeedBuff = {}
   newSpell.unitsHaveBetterBuff = {}
-  newSpell.groupsNeedBuff      = {}
-  newSpell.groupsHaveDead      = {}
+  newSpell.groupsNeedBuff = {}
+  newSpell.groupsHaveDead = {}
 
   setmetatable(newSpell, buffDefClass)
   return newSpell
@@ -715,4 +718,22 @@ end
 function buffDefClass:GetFirstItem()
   local _, itemId = next(self.items)
   return itemId
+end
+
+function buffDefClass:Preload()
+  local noAction = function()
+    -- ok
+  end
+
+  for singleId in pairs(self.singleFamily) do
+    spellCacheModule:LoadSpell(singleId, noAction)
+  end
+
+  for _index, groupId in pairs(self.groupFamily or {}) do
+    spellCacheModule:LoadSpell(groupId, noAction)
+  end
+
+  for _index, itemId in pairs(self.items or {}) do
+    itemCacheModule:LoadItem(itemId, noAction)
+  end
 end

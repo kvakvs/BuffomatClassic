@@ -40,6 +40,7 @@
 ---@field myButtonModule BomUiMyButtonModule
 ---@field optionsModule BomOptionsModule
 ---@field optionsPopupModule BomOptionsPopupModule
+---@field partyModule BomPartyModule
 ---@field popupModule BomPopupModule
 ---@field profileModule BomProfileModule
 ---@field rowBuilderModule BomRowBuilderModule
@@ -101,6 +102,7 @@ BomModuleManager = {
   myButtonModule                = {},
   optionsModule                 = {},
   optionsPopupModule            = {},
+  partyModule                   = {},
   popupModule                   = {},
   profileModule                 = {},
   rowBuilderModule              = {},

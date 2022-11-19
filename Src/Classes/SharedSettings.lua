@@ -68,7 +68,7 @@ sharedSettingsModule.defaults = {
 ---@field Time600 number
 ---@field Time1800 number
 ---@field Time3600 number
----@field Duration BomSpellCooldownsTable Copy from character settings
+---@field Duration BomSpellDurationsTable Copy from character settings
 ---@field ShamanFlametongueRanked boolean Try and use rank 9 on mainhand for shaman when buffing double Flametongue
 
 local sharedStateClass = {}
@@ -81,8 +81,6 @@ function sharedSettingsModule:New(init)
   tab.Minimap = tab.Minimap or {}
   tab.SpellGreaterEqualThan = tab.SpellGreaterEqualThan or {}
   tab.CustomLocales = tab.CustomLocales or {}
-  tab.CustomSpells = tab.CustomSpells or {}
-  tab.CustomCancelBuff = tab.CustomCancelBuff or {}
 
   -- Upgrades from older versions (SomeoneIsDrinking was renamed from HideSomeoneIsDrinking)
   tab.HideSomeoneIsDrinking = nil -- delete old key

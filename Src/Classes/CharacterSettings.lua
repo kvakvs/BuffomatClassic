@@ -8,7 +8,7 @@ local profileModule = BomModuleManager.profileModule
 
 ---@alias BomProfileName "solo"|"group"|"raid"|"battleground"|"solo_spec2"|"group_spec2"|"raid_spec2"|"battleground_spec2"
 
----@shape BomSpellCooldownsTable
+---@shape BomSpellDurationsTable
 ---@field [string] number
 
 ---@shape BomHiddenCategoryTable
@@ -17,7 +17,7 @@ local profileModule = BomModuleManager.profileModule
 ---@shape BomCharacterSettings Current character state snapshots per profile
 ---@field [BomProfileName] BomProfile Access to subprofiles [solo, group, raid, battleground, ...]
 ---@field UseProfiles boolean [⚠DO NOT RENAME] Checkbox to use profiles / automatic profiles
----@field remainingDurations BomSpellCooldownsTable Remaining aura duration on SELF, keyed with buff names
+---@field remainingDurations BomSpellDurationsTable Remaining aura duration on SELF, keyed with buff names
 ---@field lastTrackingIconId WowIconId|nil Icon id for the last active tracking (not relevant in TBC?)
 ---@field solo BomProfile
 ---@field group BomProfile

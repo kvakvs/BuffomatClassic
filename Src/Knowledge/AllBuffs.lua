@@ -128,20 +128,28 @@ end
 ---@param allBuffs BomBuffDefinition[]
 ---@param enchantments BomEnchantmentsMapping
 function allBuffsModule:SetupTrackingSpells(allBuffs, enchantments)
-  buffDefModule:createAndRegisterBuff(allBuffs, spellIdsModule.FindHerbs, -- Find Herbs / kräuter
-          { type = "tracking", default = true })
+  -- Find Herbs / kräuter
+  buffDefModule:createAndRegisterBuff(allBuffs, spellIdsModule.FindHerbs, nil)
+               :BuffType("tracking")
+               :IsDefault(true)
                :Category("tracking")
 
-  buffDefModule:createAndRegisterBuff(allBuffs, spellIdsModule.FindMinerals, -- Find Minerals / erz
-          { type = "tracking", default = true })
+  -- Find Minerals / erz
+  buffDefModule:createAndRegisterBuff(allBuffs, spellIdsModule.FindMinerals, nil)
+               :BuffType("tracking")
+               :IsDefault(true)
                :Category("tracking")
 
-  buffDefModule:createAndRegisterBuff(allBuffs, spellIdsModule.FindTreasure, -- Find Treasure / Schatzsuche / Zwerge
-          { type = "tracking", default = true })
+  -- Find Treasure / Schatzsuche / Zwerge
+  buffDefModule:createAndRegisterBuff(allBuffs, spellIdsModule.FindTreasure, nil)
+               :BuffType("tracking")
+               :IsDefault(true)
                :Category("tracking")
 
-  buffDefModule:createAndRegisterBuff(allBuffs, spellIdsModule.FindFish, -- Find Fish (TBC daily quest reward)
-          { type = "tracking", default = false })
+  -- Find Fish (TBC daily quest reward)
+  buffDefModule:createAndRegisterBuff(allBuffs, spellIdsModule.FindFish, nil)
+               :BuffType("tracking")
+               :IsDefault(false)
                :Category("tracking")
 
   return allBuffs
@@ -199,7 +207,7 @@ function allBuffsModule:ApplyPostLimitations(allBuffs)
 
   for _i, buff in ipairs(allBuffs) do
     if buff.limitations ~= nil then
-      if buffDefModule:CheckLimitations(buff, buff.limitations) then
+      if buffDefModule:CheckLimitations(buff, --[[---@not nil]] buff.limitations) then
         tinsert(result, buff)
       end
     end
@@ -210,7 +218,7 @@ function allBuffsModule:ApplyPostLimitations(allBuffs)
 end
 
 ---@alias BomBuffId number
----@alias BomEnchantmentId number
+---@alias BomEnchantmentId number #Wow Enchantment ID https://wowwiki-archive.fandom.com/wiki/EnchantId/Enchant_IDs
 
 ---@shape BomAllBuffsTable
 ---@field [BomBuffId] BomBuffDefinition
@@ -392,7 +400,7 @@ local ShapeShiftTravel = {
   783
 } --Ghost wolf and travel druid
 
-BOM.drinkingPersonCount = false
+BOM.drinkingPersonCount = 0
 BOM.AllDrink = {
   30024, -- Restores 20% mana
   430, -- level 5 drink
@@ -408,20 +416,7 @@ BOM.AllDrink = {
 
 ---For all spells database load data for spellids and items
 function allBuffsModule:LoadItemsAndSpells()
-  for _id, buffDef in pairs(BOM.allBuffomatBuffs) do
-    if type(buffDef.singleText) == "number" then
-      spellCacheModule:LoadSpell(buffDef.singleText)
-    end
-    if type(buffDef.groupText) == "number" then
-      spellCacheModule:LoadSpell(buffDef.groupText)
-    end
-
-    if type(buffDef.items) == "table" then
-      for _index, itemId in ipairs(buffDef.items) do
-        itemCacheModule:LoadItem(itemId)
-      end
-    elseif type(buffDef.items) == "number" then
-      itemCacheModule:LoadItem(buffDef.items)
-    end
+  for _index, buffDef in pairs(BOM.allBuffomatBuffs) do
+    buffDef:Preload()
   end
 end
