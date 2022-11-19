@@ -81,7 +81,7 @@ function russianModule:Translations()
     ["options.general.group.Class"]             = "Классы",
 
     ["options.short.ActivateBomOnSpiritTap"]    = "Запретить Бафомёт, при 'Захвате духа' жреца",
-    ["options.short.ArgentumDawn"]              = "Не забудьте (снять)экипировать Жетон Серебряного Рассвета",
+    ["options.short.ReputationTrinket"]         = "Не забудьте (снять)экипировать Жетон Серебряного Рассвета",
     ["options.short.AutoOpen"]                  = "Автоматическое открытие/закрытие",
     ["options.short.DeathBlock"]                = "Не применять групповые эффекты, когда кто-то мертв",
     ["options.short.GroupBuff"]                 = "Групповые бафы, если это экономит ману (увеличенный расход реагентов)",

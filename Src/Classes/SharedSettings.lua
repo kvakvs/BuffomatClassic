@@ -49,7 +49,7 @@ sharedSettingsModule.defaults = {
 ---@field NoGroupBuff boolean
 ---@field ResGhost boolean
 ---@field ReplaceSingle boolean
----@field ArgentumDawn boolean
+---@field ReputationTrinket boolean
 ---@field Carrot boolean
 ---@field MainHand boolean
 ---@field SecondaryHand boolean
@@ -118,7 +118,7 @@ function sharedSettingsModule:Defaults()
     NoGroupBuff            = false,
     ResGhost               = false,
     ReplaceSingle          = true,
-    ArgentumDawn           = true,
+    ReputationTrinket           = true,
     Carrot                 = true,
     MainHand               = false,
     SecondaryHand          = false,

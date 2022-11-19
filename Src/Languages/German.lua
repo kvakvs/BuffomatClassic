@@ -31,7 +31,7 @@ function germanModule:Translations()
     ["optionsMenu.Settings"]                    = "Einstellungen",
     BtnSettingsSpells                           = "Einstellungen Zauber",
 
-    ["options.short.ArgentumDawn"]              = "Erinnere an die Anstecknadel der Argentumdämmerung",
+    ["options.short.ReputationTrinket"]              = "Erinnere an die Anstecknadel der Argentumdämmerung",
     ["options.short.AutoDismount"]              = "Automatisches Absitzen beim Zaubern",
     ["options.short.AutoDisTravel"]             = "Automatisch  Reiseform abbrechen beim Zaubern",
     ["options.short.AutoOpen"]                  = "Automatisches öffnen/schließen",

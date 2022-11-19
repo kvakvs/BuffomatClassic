@@ -100,9 +100,9 @@ texturesModule.ICON_GEAR = "Interface\\ICONS\\INV_Misc_Gear_01"
 --BOM.IconReplaceSingleOn = "Interface\\ICONS\\Spell_Holy_PrayerofSpirit"
 --BOM.IconReplaceSingleOnCoord = texturesModule.ICON_COORD_09
 --
---BOM.IconArgentumDawnOff = texturesModule.ICON_EMPTY
---BOM.IconArgentumDawnOn = "Interface\\ICONS\\INV_Jewelry_Talisman_07"
---BOM.IconArgentumDawnOnCoord = texturesModule.ICON_COORD_09
+--BOM.IconReputationTrinketOff = texturesModule.ICON_EMPTY
+--BOM.IconReputationTrinketOn = "Interface\\ICONS\\INV_Jewelry_Talisman_07"
+--BOM.IconReputationTrinketOnCoord = texturesModule.ICON_COORD_09
 --
 --BOM.IconCarrotOff = texturesModule.ICON_EMPTY
 --BOM.IconCarrotOn = "Interface\\ICONS\\INV_Misc_Food_54"

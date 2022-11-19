@@ -98,7 +98,7 @@ local toolboxModule = BomModuleManager.toolboxModule
 ---@field SaveTargetName string|nil
 ---@field scanModifierKeyDown boolean Will update buffomat when modifier key is held down
 ---@field selectedBuffs BomBuffDefinition[]
----@field someBodyIsGhost boolean [unused?] Someone in the party is a ghost
+---@field somebodyIsGhost boolean [unused?] Someone in the party is a ghost
 ---@field spellIdIsSingleLookup table<number, boolean> Whether spell ids are single buffs
 ---@field spellIdLookup table<string, table<string, number>> Map of spell name to id
 ---@field spellIdtoBuffId table<number, number> Maps spell ids to the key id of spell in the AllSpells
@@ -353,7 +353,7 @@ function buffomatModule:InitUI()
           constModule.SHORT_TITLE)
 
   buffomatModule:OptionsInit()
-  BOM.isPartyUpdateNeeded = true
+  partyModule:InvalidatePartyCache(nil)
   BOM.repeatUpdate = false
 
   -- Make main frame draggable
@@ -558,7 +558,7 @@ function buffomatModule:DownGrade()
   if BOM.castFailedBuff
           and (--[[---@not nil]] BOM.castFailedBuff).SkipList
           and BOM.castFailedBuffTarget then
-    local level = UnitLevel((--[[---@not nil]] BOM.castFailedBuffTarget).unitId)
+    local level = UnitLevel((--[[---@not nil]] BOM.castFailedBuffTarget).unitGUID)
 
     if level ~= nil and level > -1 then
       if self.shared.SpellGreaterEqualThan[BOM.castFailedSpellId] == nil

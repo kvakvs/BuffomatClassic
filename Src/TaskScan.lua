@@ -2,8 +2,10 @@ local BOM = BuffomatAddon ---@type BomAddon
 
 ---@shape BomTaskScanModule
 ---@field taskListSizeBeforeScan number Saved size before scan
+---@field roundRobinGroup number Group number to refresh, rotates from 1 to 8 in raid, or stays always 1 otherwise
 local taskScanModule = BomModuleManager.taskScanModule ---@type BomTaskScanModule
 taskScanModule.taskListSizeBeforeScan = 0
+taskScanModule.roundRobinGroup = 0
 
 local _t = BomModuleManager.languagesModule
 local allBuffsModule = BomModuleManager.allBuffsModule
@@ -14,6 +16,7 @@ local buffTargetModule = BomModuleManager.unitBuffTargetModule
 local constModule = BomModuleManager.constModule
 local groupBuffTargetModule = BomModuleManager.groupBuffTargetModule
 local itemListCacheModule = BomModuleManager.itemListCacheModule
+local partyModule = BomModuleManager.partyModule
 local profileModule = BomModuleManager.profileModule
 local spellButtonsTabModule = BomModuleManager.spellButtonsTabModule
 local spellIdsModule = BomModuleManager.spellIdsModule
@@ -220,9 +223,9 @@ function taskScanModule:UpdateMacro(nextCast)
   end
 
   if buffomatModule.shared.UseRank
-          or (nextCast.targetUnit and (--[[---@not nil]] nextCast.targetUnit).unitId == "target")
+          or (nextCast.targetUnit and (--[[---@not nil]] nextCast.targetUnit).unitGUID == "target")
           or nextCast.temporaryDownrank then
-    local level = UnitLevel((--[[---@not nil]] nextCast.targetUnit).unitId)
+    local level = UnitLevel((--[[---@not nil]] nextCast.targetUnit).unitGUID)
 
     if buffDef and level ~= nil and level > 0 then
       local spellChoices
@@ -268,7 +271,7 @@ function taskScanModule:UpdateMacro(nextCast)
     tinsert(macro.lines, "/cancelform [nocombat]")
   end
   tinsert(macro.lines, "/bom _checkforerror")
-  tinsert(macro.lines, "/cast [@" .. (--[[---@not nil]] nextCast.targetUnit).unitId .. ",nocombat]" .. name .. rank)
+  tinsert(macro.lines, "/cast [@" .. (--[[---@not nil]] nextCast.targetUnit).unitGUID .. ",nocombat]" .. name .. rank)
   macro.icon = constModule.MACRO_ICON
 
   macro:UpdateMacro()
@@ -281,9 +284,9 @@ end
 function taskScanModule:GetGroupInRange(spellName, party, groupIndex, spell)
   local minDist
   local ret
-  for i, member in pairs(party.members) do
+  for i, member in pairs(party.byUnitGUID) do
     if member.group == groupIndex then
-      if not (IsSpellInRange(spellName, member.unitId) == 1 or member.isDead) then
+      if not (IsSpellInRange(spellName, member.unitGUID) == 1 or member.isDead) then
         if member.distance > 2000 then
           return nil
         end
@@ -311,15 +314,15 @@ function taskScanModule:GetAnyPartyMemberInRange(spellName, buffDef, party, play
   end
 
   for i, member in ipairs(buffDef.unitsNeedBuff) do
-    --BOM:Debug(string.format("test %s %s %s", spellName, member.unitId, member.name))
-    if IsSpellInRange(spellName, member.unitId) == 1
+    --BOM:Debug(string.format("test %s %s %s", spellName, member.unitGUID, member.name))
+    if IsSpellInRange(spellName, member.unitGUID) == 1
             and not member.isDead
             and (minDist == nil or member.distance < minDist)
             and not tContains(buffDef.SkipList, member.name) then
       minDist = member.distance
       ret = member
     end
-    --if not (IsSpellInRange(spellName, member.unitId) == 1 or member.isDead) then
+    --if not (IsSpellInRange(spellName, member.unitGUID) == 1 or member.isDead) then
     --  if member.distance > 2000 then
     --    return nil
     --  end
@@ -342,12 +345,12 @@ function taskScanModule:GetClassInRange(spellName, party, class, spell)
   local minDist
   local ret
 
-  for i, member in pairs(party.members) do
+  for i, member in pairs(party.byUnitGUID) do
     if member.class == class then
       if member.isDead then
         return nil
 
-      elseif not (IsSpellInRange(spellName, member.unitId) == 1) then
+      elseif not (IsSpellInRange(spellName, member.unitGUID) == 1) then
         if member.distance > 2000 then
           return nil
         end
@@ -831,7 +834,7 @@ function taskScanModule:AddBlessing(buffDef, playerParty, playerUnit, inRange)
         add = string.format(constModule.PICTURE_FORMAT, texturesModule.ICON_TARGET_ON)
       end
 
-      local test_in_range = IsSpellInRange(buffDef.singleText, needsBuff.unitId) == 1
+      local test_in_range = IsSpellInRange(buffDef.singleText, needsBuff.unitGUID) == 1
               and not tContains(buffDef.SkipList, needsBuff.name)
       if self:PreventPvpTagging(buffDef.singleLink, buffDef.singleText, needsBuff) then
         -- Nothing, prevent poison function has already added the text
@@ -987,7 +990,7 @@ function taskScanModule:AddBuff_SingleBuff(buffDef, minBuff, inRange)
         add = string.format(constModule.PICTURE_FORMAT, texturesModule.ICON_TARGET_ON)
       end
 
-      local unitIsInRange = (IsSpellInRange(buffDef.singleText, needBuff.unitId) == 1)
+      local unitIsInRange = (IsSpellInRange(buffDef.singleText, needBuff.unitGUID) == 1)
               and not tContains(buffDef.SkipList, needBuff.name)
 
       if self:PreventPvpTagging(buffDef.singleLink, buffDef.singleText, needBuff) then
@@ -1088,7 +1091,7 @@ function taskScanModule:AddResurrection(spell, playerUnit, inRange)
       BOM.repeatUpdate = true
 
       -- Is the body in range?
-      local targetIsInRange = (IsSpellInRange(spell.singleText, unitNeedsBuff.unitId) == 1)
+      local targetIsInRange = (IsSpellInRange(spell.singleText, unitNeedsBuff.unitGUID) == 1)
               and not tContains(spell.SkipList, unitNeedsBuff.name)
 
       if targetIsInRange then
@@ -1285,7 +1288,7 @@ function taskScanModule:AddConsumableWeaponBuff(buffDef, playerUnit,
     local profileBuff = buffDefModule:GetProfileBuff(buffDef.buffId, nil)
 
     if profileBuff and (--[[---@not nil]] profileBuff).OffHandEnable
-            and playerUnit.OffHandBuff == nil then
+            and playerUnit.OffhandBuff == nil then
       local function offhand_message()
         return BOM.FormatTexture(texture) .. itemLink .. "x" .. count
       end
@@ -1314,7 +1317,7 @@ function taskScanModule:AddConsumableWeaponBuff(buffDef, playerUnit,
     end
 
     if profileBuff and (--[[---@not nil]] profileBuff).MainHandEnable
-            and playerUnit.MainHandBuff == nil then
+            and playerUnit.MainhandBuff == nil then
       local function mainhand_message()
         return BOM.FormatTexture(texture) .. itemLink .. "x" .. count
       end
@@ -1391,7 +1394,7 @@ function taskScanModule:AddWeaponEnchant(buffDef, playerUnit,
   -- OFFHAND FIRST
   -- Because offhand sets a temporaryDownrank flag in nextCastSpell and it somehow doesn't reset when offhand is queued second
   if profileBuff and (--[[---@not nil]] profileBuff).OffHandEnable
-          and playerUnit.OffHandBuff == nil then
+          and playerUnit.OffhandBuff == nil then
     if blockOffhandEnchant then
       -- Text: [Spell Name] (Off-hand) Blocked waiting
       tasklist:Add(
@@ -1413,7 +1416,7 @@ function taskScanModule:AddWeaponEnchant(buffDef, playerUnit,
   -- MAINHAND AFTER OFFHAND
   -- Because offhand sets a temporaryDownrank flag in nextCastSpell and it somehow doesn't reset when offhand is queued second
   if profileBuff and (--[[---@not nil]] profileBuff).MainHandEnable
-          and playerUnit.MainHandBuff == nil then
+          and playerUnit.MainhandBuff == nil then
     -- Special case is ruled by the option `ShamanFlametongueRanked`
     -- Flametongue enchant for spellhancement shamans only!
     local isDownrank = buffDef.buffId == spellIdsModule.Shaman_Flametongue6
@@ -1467,9 +1470,9 @@ function taskScanModule:CheckReputationItems(playerMember)
   local itemTrinket1, _ = GetInventoryItemID("player", 13)
   local itemTrinket2, _ = GetInventoryItemID("player", 14)
 
-  if buffomatModule.shared.ArgentumDawn then
+  if buffomatModule.shared.ReputationTrinket then
     -- settings to remind to remove AD trinket != instance compatible with AD Commission
-    --if playerMember.hasArgentumDawn ~= tContains(BOM.ArgentumDawn.zoneId, instanceID) then
+    --if playerMember.hasReputationTrinket ~= tContains(BOM.ReputationTrinket.zoneId, instanceID) then
     local hasReputationTrinket = tContains(BOM.reputationTrinketZones.itemIds, itemTrinket1) or
             tContains(BOM.reputationTrinketZones.itemIds, itemTrinket2)
     if hasReputationTrinket and not tContains(BOM.reputationTrinketZones.zoneId, instanceID) then
@@ -1920,9 +1923,27 @@ function taskScanModule:UpdateScan_Scan(party)
   end -- if not player casting
 end -- end function bomUpdateScan_Scan()
 
+---For raid, invalidated group is rotated 1 to 8. For solo and party it does not rotate.
+---Reloads party members and refreshes their buffs as necessary.
+---@return BomParty
+function taskScanModule:RotateInvalidatedGroup()
+  if IsInRaid() then
+    -- In raid we rotate groups 1 till 8 every refresh
+    self.roundRobinGroup = self.roundRobinGroup + 1
+    if self.roundRobinGroup > 8 then
+      self.roundRobinGroup = 1
+    end
+  else
+    self.roundRobinGroup = 1 -- always reload group 1 (also this is ignored in solo or 5man)
+  end
+
+  --BOM:Debug("Reload group " .. self.roundRobinGroup)
+  partyModule:InvalidatePartyCache({ self.roundRobinGroup })
+  return unitCacheModule:GetPartyMembers()
+end
+
 function taskScanModule:UpdateScan_PreCheck(from)
   if BOM.selectedBuffs == nil then
-    --BOM:Debug("UpdateScan_PreCheck: BOM.SelectedSpells is nil")
     return
   end
 
@@ -1943,8 +1964,8 @@ function taskScanModule:UpdateScan_PreCheck(from)
     buffomatModule:SetForceUpdate("profileChanged")
   end
 
-  unitCacheModule:ClearCache()
-  local party = unitCacheModule:GetPartyMembers()
+  --unitCacheModule:ClearCache()
+  local party = self:RotateInvalidatedGroup()
 
   -- Check whether BOM is disabled due to some option and a matching condition
   if not self:IsMountedAndCrusaderAuraRequired() then

@@ -298,7 +298,7 @@ function optionsModule:CreateConvenienceOptionsTable()
       noGroupBuff            = self:TemplateCheckbox("NoGroupBuff", nil, nil, nil),
       resGhost               = self:TemplateCheckbox("ResGhost", nil, nil, nil),
       replaceSingle          = self:TemplateCheckbox("ReplaceSingle", nil, nil, nil),
-      argentumDawn           = self:TemplateCheckbox("ArgentumDawn", nil, nil, nil),
+      argentumDawn           = self:TemplateCheckbox("ReputationTrinket", nil, nil, nil),
       carrot                 = self:TemplateCheckbox("Carrot", nil, nil, nil),
       mainHand               = self:TemplateCheckbox("MainHand", nil, nil, nil),
       secondaryHand          = self:TemplateCheckbox("SecondaryHand", nil, nil, nil),

@@ -8,14 +8,15 @@ local unitModule = BomModuleManager.unitModule ---@type BomUnitModule
 local buffomatModule = BomModuleManager.buffomatModule
 local buffModule = BomModuleManager.buffModule
 local partyModule = BomModuleManager.partyModule
+local toolboxModule = BomModuleManager.toolboxModule
 
 ---@class BomUnit
 ---@field allBuffs table<number, boolean> Availability of all auras even those not supported by BOM, by id, no extra detail stored
 ---@field class BomClassName
 ---@field distance number
 ---@field group number Raid group number (9 if temporary moved out of the raid by BOM)
----@field hasArgentumDawn boolean Has AD reputation trinket equipped
----@field hasCarrot boolean Has carrot riding trinket equipped
+---@field hasReputationTrinket boolean Has AD reputation trinket equipped
+---@field hasRidingTrinket boolean Has carrot riding trinket equipped
 ---@field hasResurrection boolean Was recently resurrected
 ---@field isConnected boolean Is online
 ---@field isDead boolean Is this member dead
@@ -25,12 +26,12 @@ local partyModule = BomModuleManager.partyModule
 ---@field isTank boolean Is this member marked as tank
 ---@field knownBuffs {[BomSpellId]: BomUnitBuff} Buffs on player keyed by spell id, only buffs supported by Buffomat are stored
 ---@field link string
----@field MainHandBuff number|nil Temporary enchant on main hand
+---@field MainhandBuff number|nil Temporary enchant on main hand
 ---@field name string
 ---@field NeedBuff boolean
----@field OffHandBuff number|nil Temporary enchant on off-hand
+---@field OffhandBuff number|nil Temporary enchant on off-hand
 ---@field owner BomUnit|nil Owner for pet
----@field unitId string
+---@field unitGUID string
 local unitClass = {}
 unitClass.__index = unitClass
 
@@ -45,29 +46,30 @@ end
 ---@param playerUnit BomUnit
 function unitClass:ForceUpdateBuffs(playerUnit)
   self.isPlayer = (self == playerUnit)
-  self.isDead = UnitIsDeadOrGhost(self.unitId) and not UnitIsFeignDeath(self.unitId)
-  self.isGhost = UnitIsGhost(self.unitId)
-  self.isConnected = UnitIsConnected(self.unitId)
+  self.isDead = UnitIsDeadOrGhost(self.unitGUID) and not UnitIsFeignDeath(self.unitGUID)
+  self.isGhost = UnitIsGhost(self.unitGUID)
+  self.isConnected = UnitIsConnected(self.unitGUID)
 
   self.NeedBuff = true
 
   wipe(self.knownBuffs)
   wipe(self.allBuffs)
 
-  BOM.someBodyIsGhost = BOM.someBodyIsGhost or self.isGhost
+  BOM.somebodyIsGhost = BOM.somebodyIsGhost or self.isGhost
 
   if self.isDead then
+    -- Clear known buffs for self, as we're very dead atm
     partyModule.buffs[self.name] = nil
   else
-    self.hasArgentumDawn = false
-    self.hasCarrot = false
+    self.hasReputationTrinket = false
+    self.hasRidingTrinket = false
 
     local buffIndex = 0
 
     repeat
       buffIndex = buffIndex + 1
 
-      local unitAura = buffomatModule:UnitAura(self.unitId, buffIndex, "HELPFUL")
+      local unitAura = buffomatModule:UnitAura(self.unitGUID, buffIndex, "HELPFUL")
 
       if unitAura.spellId then
         self.allBuffs[unitAura.spellId] = true -- save all buffids even those not supported
@@ -86,8 +88,8 @@ function unitClass:ForceUpdateBuffs(playerUnit)
           break
         end
 
-        --if tContains(BOM.ArgentumDawn.spells, spellId) then
-        --  self.hasArgentumDawn = true
+        --if tContains(BOM.ReputationTrinket.spells, spellId) then
+        --  self.hasReputationTrinket = true
         --end
 
         --if tContains(BOM.Carrot.spells, spellId) then
@@ -118,7 +120,7 @@ end
 ---@param isTank boolean
 function unitClass:Construct(unitid, name, group, class, link, isTank)
   self.distance = 1000044 -- special value to find out that the range error originates from this module
-  self.unitId = unitid
+  self.unitGUID = unitid
   self.name = name
   self.group = group
   self.hasResurrection = self.hasResurrection or false
@@ -140,4 +142,87 @@ end
 
 function unitClass:GetText()
   return self.link or self.name
+end
+
+function unitClass:ClearMainhandBuff()
+  self.MainhandBuff = nil
+end
+
+---@param enchantmentId BomEnchantmentId
+---@param expiration number
+function unitClass:SetMainhandBuff(enchantmentId, expiration)
+  local enchantBuffId = BOM.enchantToSpellLookup[enchantmentId]
+  local duration
+
+  if BOM.buffFromSpellIdLookup[enchantBuffId]
+          and BOM.buffFromSpellIdLookup[enchantBuffId].singleDuration
+  then
+    duration = BOM.buffFromSpellIdLookup[enchantBuffId].singleDuration
+  else
+    duration = 300
+  end
+
+  self.knownBuffs[enchantBuffId] = buffModule:New(
+          enchantBuffId,
+          duration,
+          GetTime() + expiration / 1000,
+          "player",
+          true)
+  self.MainhandBuff = enchantBuffId
+end
+
+function unitClass:ClearOffhandBuff()
+  self.OffhandBuff = nil
+end
+
+---@param enchantmentId BomEnchantmentId
+---@param expiration number
+function unitClass:SetOffhandBuff(enchantmentId, expiration)
+  local enchantBuffId = BOM.enchantToSpellLookup[enchantmentId]
+  local duration
+
+  if BOM.buffFromSpellIdLookup[enchantBuffId]
+          and BOM.buffFromSpellIdLookup[enchantBuffId].singleDuration
+  then
+    duration = BOM.buffFromSpellIdLookup[enchantBuffId].singleDuration
+  else
+    duration = 300
+  end
+
+  self.knownBuffs[-enchantBuffId] = buffModule:New(
+          -enchantBuffId,
+          duration,
+          GetTime() + expiration / 1000,
+          "player",
+          true)
+
+  self.OffhandBuff = enchantBuffId
+end
+
+
+---@param party BomParty
+---@param playerZone number
+function unitClass:UpdateBuffs(party, playerZone)
+  self.isSameZone = (C_Map.GetBestMapForUnit(self.unitGUID) == playerZone)
+          or self.isGhost
+          or self.unitGUID == "target"
+
+  if not self.isDead
+          or BOM.declineHasResurrection
+  then
+    self.hasResurrection = false
+    self.distance = toolboxModule:UnitDistanceSquared(self.unitGUID)
+  else
+    self.hasResurrection = UnitHasIncomingResurrection(self.unitGUID)
+            or self.hasResurrection
+  end
+
+  local invalidation = partyModule.partyCacheInvalidation
+  local updateBuffs = next(buffomatModule.forceUpdateRequestedBy) ~= nil
+          or (invalidation == "clear")
+          or (type(invalidation) == "table" and tContains(invalidation, self.group))
+
+  if updateBuffs then
+    self:ForceUpdateBuffs(party.player)
+  end -- if force update
 end

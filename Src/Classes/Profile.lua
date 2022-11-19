@@ -19,7 +19,7 @@ end
 ---@shape BomProfile Snapshot of current options state as selected by the player
 ---Named options: Are addressed by their string name in translations, control names, etc
 ---@field CurrentBlessing BomBlessingState
----@field ArgentumDawn boolean Warn if AD trinket is equipped while in an instance 
+---@field ReputationTrinket boolean Warn if AD trinket is equipped while in an instance
 ---@field AutoDismount boolean Dismount if necessary for buff cast 
 ---@field AutoDisTravel boolean Remove travel form if necessary for buff cast 
 ---@field AutoOpen boolean Open buffomat if required 

@@ -32,7 +32,7 @@ local popupModule = BomModuleManager.popupModule
 --  { name = "SameZone", value = false },
 --  { name = "ResGhost", value = false },
 --  { name = "ReplaceSingle", value = true },
---  { name = "ArgentumDawn", value = false },
+--  { name = "ReputationTrinket", value = false },
 --  { name = "Carrot", value = false },
 --  { name = "MainHand", value = false },
 --  { name = "SecondaryHand", value = false },

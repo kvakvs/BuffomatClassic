@@ -257,7 +257,7 @@ end
 eventsModule.isPlayerInParty = IsInRaid() or IsInGroup()
 
 local function Event_PartyChanged()
-  BOM.isPartyUpdateNeeded = true
+  partyModule:InvalidatePartyCache(nil)
   buffomatModule:SetForceUpdate("partyChanged")
 
   -- if in_party changed from true to false, clear the watch groups

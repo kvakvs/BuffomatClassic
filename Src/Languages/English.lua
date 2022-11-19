@@ -55,7 +55,7 @@ function englishModule:Translations()
     ["options.general.group.Class"]                   = "Class Options",
 
     ["options.short.ActivateBomOnSpiritTap"]          = "Activate on Spirit Tap below mana %",
-    ["options.short.ArgentumDawn"]                    = "Warn about reputation items",
+    ["options.short.ReputationTrinket"]               = "Warn about reputation items",
     ["options.short.AutoCrusaderAura"]                = "Suggest crusader aura",
     ["options.short.AutoDismount"]                    = "Auto dismount",
     ["options.short.AutoDismountFlying"]              = "Auto dismount flying",
@@ -99,7 +99,7 @@ function englishModule:Translations()
 
     ["options.long.FadeWhenNothingToDo"]              = "Set Alpha opacity of the Buffomat window when there's nothing to do",
     ["options.long.ActivateBomOnSpiritTap"]           = "Disable Buffomat if priest 'Spirit tap' is active and player mana is below %",
-    ["options.long.ArgentumDawn"]                     = "Remind to unequip Argent Dawn trinket",
+    ["options.long.ReputationTrinket"]                = "Remind to unequip reputation trinket",
     ["options.long.AutoCrusaderAura"]                 = "Paladin: Auto crusader aura when mounted",
     ["options.long.AutoDismount"]                     = "Auto-dismount from the ground mount on cast",
     ["options.long.AutoDismountFlying"]               = "Auto-drop from the flying mount on cast (OUCH)",
@@ -161,7 +161,7 @@ function englishModule:Translations()
     TASK_ACTIVATE                                     = "Activate",
     ["task.type.Unequip"]                             = "Unequip",
     ["task.error.range"]                              = "Range",
-    ["reminder.reputationTrinket"]                    = "Argent Dawn trinket",
+    ["reminder.reputationTrinket"]                    = "Reputation trinket",
     ["reminder.ridingSpeedTrinket"]                   = "Riding/Flight Speed trinket",
     OUT_OF_THAT_ITEM                                  = "Not in bags",
 

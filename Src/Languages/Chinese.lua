@@ -13,7 +13,7 @@ function chineseModule:Translations()
     ["options.general.group.Buffing"]           = "增益",
 
     ["options.short.ActivateBomOnSpiritTap"]    = "在低于 % 的精神激活",
-    ["options.short.ArgentumDawn"]              = "警告:声望物品",
+    ["options.short.ReputationTrinket"]              = "警告:声望物品",
     ["options.short.AutoCrusaderAura"]          = "提醒：十字军光环",
     ["options.short.AutoDismount"]              = "自动离开坐骑",
     ["options.short.AutoDismountFlying"]        = "自动离开飞行坐骑",
@@ -48,7 +48,7 @@ function chineseModule:Translations()
     ["options.short.UseRank"]                   = "使用等级增益",
 
     ["options.long.ActivateBomOnSpiritTap"]     = "如果牧师的'精神' 处于活跃状态且玩家法力低于 % ,则禁用",
-    ["options.long.ArgentumDawn"]               = "提醒更换银色黎明饰品",
+    ["options.long.ReputationTrinket"]               = "提醒更换银色黎明饰品",
     ["options.long.AutoCrusaderAura"]           = "圣骑士: 骑乘时自动开启十字军光环",
     ["options.long.AutoDismount"]               = "施法时自动取消地面坐骑",
     ["options.long.AutoDismountFlying"]         = "施法时自动取消飞行坐骑 (小心摔死)",
