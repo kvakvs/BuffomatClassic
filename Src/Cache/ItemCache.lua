@@ -97,7 +97,7 @@ function itemCacheModule:LoadItem(itemId, onLoaded)
     }
 
     itemCacheModule.cache[itemId] = cacheItem
-    buffomatModule:SetForceUpdate(string.format("item%d", itemId))
+    buffomatModule:RequestTaskRescan(string.format("item%d", itemId))
 
     if onLoaded ~= nil then
       onLoaded(cacheItem)

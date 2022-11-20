@@ -6,9 +6,9 @@
 ---@field character BomCharacterSettings Refers to BuffomatCharacter global
 ---@field currentProfileName string
 ---@field currentProfile BomProfile
----@field forceUpdateRequestedBy table<string, number> Reasons for force update, with count
+---@field taskRescanRequestedBy {[string]: number} Reasons for force update, with count
 local buffomatModule = BomModuleManager.buffomatModule ---@type BomBuffomatModule
-buffomatModule.forceUpdateRequestedBy = {}
+buffomatModule.taskRescanRequestedBy = --[[---@type {[string]: number}]] {}
 
 local _t = BomModuleManager.languagesModule
 local allBuffsModule = BomModuleManager.allBuffsModule
@@ -151,18 +151,18 @@ function buffomatModule:ClearForceUpdate(debugCallerLocation)
   if debugCallerLocation then
     BOM:Debug("clearForceUpdate from " .. debugCallerLocation)
   end
-  wipe(self.forceUpdateRequestedBy)
+  wipe(self.taskRescanRequestedBy)
 end
 
 ---@param reason string
-function buffomatModule:SetForceUpdate(reason)
-  self.forceUpdateRequestedBy[reason] = (self.forceUpdateRequestedBy[reason] or 0) + 1
+function buffomatModule:RequestTaskRescan(reason)
+  self.taskRescanRequestedBy[reason] = (self.taskRescanRequestedBy[reason] or 0) + 1
 end
 
 -- Something changed (buff gained possibly?) update all spells and spell tabs
 function buffomatModule.OptionsUpdate()
-  buffomatModule:SetForceUpdate("optionsUpdate")
-  taskScanModule:ScanNow("OptionsUpdate")
+  buffomatModule:RequestTaskRescan("optionsUpdate")
+  taskScanModule:ScanTasks("OptionsUpdate")
 
   spellButtonsTabModule:UpdateSpellsTab("OptionsUpdate")
   managedUiModule:UpdateAll()
@@ -198,8 +198,8 @@ function buffomatModule.ChooseProfile(profile)
 
   taskScanModule:ClearSkip()
   BOM.popupMenuDynamic:Wipe(nil)
-  buffomatModule:SetForceUpdate("profileSelected")
-  taskScanModule:ScanNow("profileSelected")
+  buffomatModule:RequestTaskRescan("profileSelected")
+  taskScanModule:ScanTasks("profileSelected")
 
   buffomatModule:UseProfile(profile)
 end
@@ -409,8 +409,8 @@ function BuffomatAddon:MakeSlashCommand()
     { command = "spellbook", description = _t("SlashSpellBook"), handler = BOM.setupAvailableSpellsFn },
     { command = "update", description = _t("SlashUpdate"),
       handler = function()
-        buffomatModule:SetForceUpdate("macro-/update")
-        taskScanModule:ScanNow("macro-/update")
+        buffomatModule:RequestTaskRescan("macro-/update")
+        taskScanModule:ScanTasks("macro-/update")
       end },
     { command = "updatespellstab", description = "", handler = spellButtonsTabModule.UpdateSpellsTab },
     { command = "close", description = _t("SlashClose"), handler = BOM.HideWindow },
@@ -544,7 +544,7 @@ function buffomatModule:DownGrade()
       then
         self.shared.SpellGreaterEqualThan[BOM.castFailedSpellId] = level
         self:FastUpdateTimer()
-        self:SetForceUpdate("Downgrade")
+        self:RequestTaskRescan("Downgrade")
         self:P(string.format(_t("MsgDownGrade"),
                 (--[[---@not nil]] BOM.castFailedBuff).singleText,
                 ((--[[---@not nil]] BOM.castFailedBuffTarget).name)))
@@ -601,20 +601,20 @@ function buffomatModule.UpdateTimer(elapsed)
   end
 
   if BOM.nextCooldownDue and BOM.nextCooldownDue <= now then
-    buffomatModule:SetForceUpdate("cdDue")
+    buffomatModule:RequestTaskRescan("cdDue")
   end
 
   if BOM.checkCooldown then
     local cdtest = GetSpellCooldown(BOM.checkCooldown)
     if cdtest == 0 then
       BOM.checkCooldown = nil
-      buffomatModule:SetForceUpdate("checkCd")
+      buffomatModule:RequestTaskRescan("checkCd")
     end
   end
 
   if BOM.scanModifierKeyDown and buffomatModule.lastModifierKeyState ~= IsModifierKeyDown() then
     buffomatModule.lastModifierKeyState = IsModifierKeyDown()
-    buffomatModule:SetForceUpdate("ModifierKeyDown")
+    buffomatModule:RequestTaskRescan("ModifierKeyDown")
   end
 
   --
@@ -628,7 +628,7 @@ function buffomatModule.UpdateTimer(elapsed)
     updateTimerLimit = buffomatModule.slowerhardwareUpdateTimerLimit
   end
 
-  local needForceUpdate = next(buffomatModule.forceUpdateRequestedBy) ~= nil
+  local needForceUpdate = next(buffomatModule.taskRescanRequestedBy) ~= nil
 
   if (needForceUpdate or BOM.repeatUpdate)
           and now - (buffomatModule.lastUpdateTimestamp or 0) > updateTimerLimit
@@ -640,7 +640,7 @@ function buffomatModule.UpdateTimer(elapsed)
     -- Debug: Print the callers as reasons to force update
     -- buffomatModule:PrintCallers("Update: ", buffomatModule.forceUpdateRequestedBy)
     buffomatModule:ClearForceUpdate(nil)
-    taskScanModule:ScanNow("timer")
+    taskScanModule:ScanTasks("timer")
 
     -- If updatescan call above took longer than 32 ms, and repeated update, then
     -- bump the slow alarm counter, once it reaches 32 we consider throttling.
@@ -770,8 +770,8 @@ function BOM.HideWindow()
     if BOM.WindowVisible() then
       BomC_MainWindow:Hide()
       buffomatModule.autoHelper = "KeepClose"
-      buffomatModule:SetForceUpdate("hideWindow")
-      taskScanModule:ScanNow("hideWindow")
+      buffomatModule:RequestTaskRescan("hideWindow")
+      taskScanModule:ScanTasks("hideWindow")
     end
   end
 end
@@ -803,8 +803,8 @@ function buffomatModule:ToggleWindow()
   if BomC_MainWindow:IsVisible() then
     BOM.HideWindow()
   else
-    buffomatModule:SetForceUpdate("toggleWindow")
-    taskScanModule:ScanNow("toggleWindow")
+    buffomatModule:RequestTaskRescan("toggleWindow")
+    taskScanModule:ScanTasks("toggleWindow")
     BOM.ShowWindow(nil)
   end
 end

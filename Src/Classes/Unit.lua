@@ -25,7 +25,7 @@ local toolboxModule = BomModuleManager.toolboxModule
 ---@field isPlayer boolean Is this a player
 ---@field isSameZone boolean Is in the same zone
 ---@field isTank boolean Is this member marked as tank
----@field knownBuffs {[BomSpellId]: BomUnitBuff} Buffs on player keyed by spell id, only buffs supported by Buffomat are stored
+---@field knownBuffs {[BomBuffId]: BomUnitBuff} Buffs on player keyed by spell id, only buffs supported by Buffomat are stored
 ---@field link string
 ---@field mainhandEnchantment BomBuffId|nil Temporary enchant on main hand
 ---@field name string
@@ -50,7 +50,6 @@ function unitClass:ForceUpdateBuffs(playerUnit)
   self.isDead = UnitIsDeadOrGhost(self.unitId) and not UnitIsFeignDeath(self.unitId)
   self.isGhost = UnitIsGhost(self.unitId)
   self.isConnected = UnitIsConnected(self.unitId)
-
   self.NeedBuff = true
 
   wipe(self.knownBuffs)
@@ -79,16 +78,23 @@ function unitClass:ForceUpdateBuffs(playerUnit)
         end
       end
 
-      local spellId = allBuffsModule.spellToSpellLookup[unitAura.spellId] or unitAura.spellId
+      local lookupBuff = allBuffsModule.selectedBuffsSpellIds[unitAura.spellId]
 
-      if spellId then
+      if lookupBuff then
         -- Skip members who have a buff on the global ignore list - example phaseshifted imps
-        if tContains(BOM.buffIgnoreAll, spellId) then
+        if tContains(BOM.buffIgnoreAll, unitAura.spellId) then
           wipe(self.knownBuffs)
           self.NeedBuff = false
           break
+        else
+          local buffOnUnit = buffModule:New(
+                  unitAura.spellId,
+                  unitAura.duration,
+                  unitAura.expirationTime,
+                  unitAura.source,
+                  allBuffsModule.spellIdIsSingleLookup[unitAura.spellId] ~= nil)
+          self.knownBuffs[lookupBuff.buffId] = buffOnUnit
         end
-
         --if tContains(BOM.ReputationTrinket.spells, spellId) then
         --  self.hasReputationTrinket = true
         --end
@@ -96,17 +102,6 @@ function unitClass:ForceUpdateBuffs(playerUnit)
         --if tContains(BOM.Carrot.spells, spellId) then
         --  self.hasCarrot = true
         --end
-
-        if tContains(allBuffsModule.allSpellIds, spellId) then
-          local configKey = allBuffsModule.spellIdtoBuffId[spellId]
-
-          self.knownBuffs[configKey] = buffModule:New(
-                  spellId,
-                  unitAura.duration,
-                  unitAura.expirationTime,
-                  unitAura.source,
-                  allBuffsModule.spellIdIsSingleLookup[spellId])
-        end
       end
 
     until (not unitAura.name)
@@ -200,9 +195,9 @@ function unitClass:SetOffhandBuff(enchantmentId, expiration)
   self.offhandEnchantment = enchantBuffId
 end
 
-
 ---@param party BomParty
 ---@param playerZone number
+---@return BomUnit
 function unitClass:UpdateBuffs(party, playerZone)
   self.isSameZone = (C_Map.GetBestMapForUnit(self.unitId) == playerZone)
           or self.isGhost
@@ -218,14 +213,9 @@ function unitClass:UpdateBuffs(party, playerZone)
             or self.hasResurrection
   end
 
-  local invalidation = partyModule.partyCacheInvalidation
-  local updateBuffs = next(buffomatModule.forceUpdateRequestedBy) ~= nil
-          or (invalidation == "clear")
-          or (type(invalidation) == "table" and tContains(invalidation, self.group))
+  self:ForceUpdateBuffs(party.player)
 
-  if updateBuffs then
-    self:ForceUpdateBuffs(party.player)
-  end -- if force update
+  return self
 end
 
 function unitClass:UpdatePlayerWeaponEnchantments()

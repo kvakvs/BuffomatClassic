@@ -80,7 +80,7 @@ local allBuffsModule = BomModuleManager.allBuffsModule
 ---@field ignoreIfBetterBuffs BomSpellId[] If these auras are present on target, the buff is not queued
 ---@field isBlessing boolean Spell will be cast on group members of the same class
 ---@field isConsumable boolean Is an item-based buff; the spell must have 'items' field too
----@field isInfo boolean
+---@field isInfo boolean Set true to send expiration whispers?
 ---@field isOwn boolean Spell only casts on self
 ---@field isScanned boolean
 ---@field itemIcon string|number

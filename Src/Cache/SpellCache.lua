@@ -91,7 +91,7 @@ function spellCacheModule:LoadSpell(spellId, onLoaded)
     cacheSpell.maxRange = maxRange
 
     self.cache[spellId] = cacheSpell
-    buffomatModule:SetForceUpdate(string.format("sp:%d", spellId))
+    buffomatModule:RequestTaskRescan(string.format("sp:%d", spellId))
 
     if onLoaded ~= nil then
       onLoaded(cacheSpell)

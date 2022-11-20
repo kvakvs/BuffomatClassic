@@ -14,13 +14,15 @@ local BOM = BuffomatAddon ---@type BomAddon
 ---@field CrusaderAuraSpell BomBuffDefinition
 ---@field enchantToSpellLookup BomEnchantToSpellLookup Reverse-maps enchantment ids back to spells
 ---@field itemListSpellLookup table<number, number> Map itemid to spell?
----@field selectedBuffs BomBuffDefinition[]
+---@field selectedBuffs BomBuffDefinition[] Buffs available to the player
+---@field selectedBuffsSpellIds {[BomSpellId]: BomBuffDefinition} All spellids from selected buffs
 ---@field spellIdIsSingleLookup table<number, boolean> Whether spell ids are single buffs
 ---@field spellIdtoBuffId table<number, number> Maps spell ids to the key id of spell in the AllSpells
 ---@field spellToSpellLookup table<number, number> Maps spells ids to other spell ids
 local allBuffsModule = BomModuleManager.allBuffsModule ---@type BomAllBuffsModule
 
 allBuffsModule.selectedBuffs = {}
+allBuffsModule.selectedBuffsSpellIds = {}
 allBuffsModule.spellIdIsSingleLookup = {}
 allBuffsModule.buffFromSpellIdLookup = --[[---@type {[BomSpellId]: BomBuffDefinition}]] {}
 allBuffsModule.enchantToSpellLookup = --[[---@type BomEnchantToSpellLookup]] {}

@@ -35,7 +35,9 @@ function spellSetupModule:FormatSpellLink(spellInfo)
 end
 
 function spellSetupModule:Setup_ResetCaches()
-  allBuffsModule.selectedBuffs = {}
+  wipe(allBuffsModule.selectedBuffs)
+  wipe(allBuffsModule.selectedBuffsSpellIds)
+
   BOM.cancelForm = {}
   allBuffsModule.allSpellIds = {}
   allBuffsModule.spellIdtoBuffId = {}
@@ -227,37 +229,45 @@ function spellSetupModule:Setup_EachSpell_SetupGroupBuff(spell)
 end
 
 ---Adds a spell to the palette of spells to configure and use, for each profile
----@param spell BomBuffDefinition
-function spellSetupModule:Setup_EachSpell_Add(spell)
-  tinsert(allBuffsModule.selectedBuffs, spell)
-  toolboxModule:iMerge(allBuffsModule.allSpellIds, spell.singleFamily, spell.groupFamily or {},
-          spell.highestRankSingleId, spell.highestRankGroupId)
+---@param buffDef BomBuffDefinition
+function spellSetupModule:Setup_EachBuff_AddKnown(buffDef)
+  tinsert(allBuffsModule.selectedBuffs, buffDef)
 
-  if spell.cancelForm then
-    toolboxModule:iMerge(BOM.cancelForm, spell.singleFamily, spell.groupFamily or {},
-            spell.highestRankSingleId, spell.highestRankGroupId)
+  for _, spellId in ipairs(buffDef.singleFamily) do
+    allBuffsModule.selectedBuffsSpellIds[spellId] = buffDef
+  end
+  for _, spellId in ipairs(buffDef.groupFamily or {}) do
+    allBuffsModule.selectedBuffsSpellIds[spellId] = buffDef
+  end
+
+  toolboxModule:iMerge(allBuffsModule.allSpellIds, buffDef.singleFamily, buffDef.groupFamily or {},
+          buffDef.highestRankSingleId, buffDef.highestRankGroupId)
+
+  if buffDef.cancelForm then
+    toolboxModule:iMerge(BOM.cancelForm, buffDef.singleFamily, buffDef.groupFamily or {},
+            buffDef.highestRankSingleId, buffDef.highestRankGroupId)
   end
 
   --setDefaultValues!
   for j, eachProfile in ipairs(profileModule.ALL_PROFILES) do
     ---@type BomBuffDefinition
-    local profileSpell = buffomatModule.character[eachProfile].Spell[spell.buffId]
+    local profileSpell = buffomatModule.character[eachProfile].Spell[buffDef.buffId]
 
     if profileSpell == nil then
-      buffomatModule.character[eachProfile].Spell[spell.buffId] = buffDefinitionModule:New(0)
-      profileSpell = buffomatModule.character[eachProfile].Spell[spell.buffId]
+      buffomatModule.character[eachProfile].Spell[buffDef.buffId] = buffDefinitionModule:New(0)
+      profileSpell = buffomatModule.character[eachProfile].Spell[buffDef.buffId]
 
       profileSpell.Class = profileSpell.Class or {}
       profileSpell.ForcedTarget = profileSpell.ForcedTarget or {}
       profileSpell.ExcludedTarget = profileSpell.ExcludedTarget or {}
-      profileSpell.Enable = spell.default or false
+      profileSpell.Enable = buffDef.default or false
 
-      if spell:HasClasses() then
+      if buffDef:HasClasses() then
         local SelfCast = true
         profileSpell.SelfCast = false
 
         for ci, class in ipairs(constModule.CLASSES) do
-          profileSpell.Class[class] = tContains(spell.targetClasses, class)
+          profileSpell.Class[class] = tContains(buffDef.targetClasses, class)
           SelfCast = profileSpell.Class[class] and false or SelfCast
         end
 
@@ -334,7 +344,7 @@ function spellSetupModule:Setup_EachBuff(buff)
   end
 
   if add then
-    self:Setup_EachSpell_Add(buff)
+    self:Setup_EachBuff_AddKnown(buff)
   end -- if spell is OK to be added
 end
 

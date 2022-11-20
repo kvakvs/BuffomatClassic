@@ -314,7 +314,6 @@ function taskScanModule:GetAnyPartyMemberInRange(spellName, buffDef, party, play
   end
 
   for i, member in ipairs(buffDef.unitsNeedBuff) do
-    --BOM:Debug(string.format("test %s %s %s", spellName, member.unitGUID, member.name))
     if IsSpellInRange(spellName, member.unitId) == 1
             and not member.isDead
             and (minDist == nil or member.distance < minDist)
@@ -739,11 +738,10 @@ end
 
 ---Add a paladin blessing
 ---@param buffDef BomBuffDefinition - spell to cast
----@param playerParty BomParty - the party
----@param playerUnit BomUnit
+---@param party BomParty - the party
 ---@param inRange boolean - spell target is in range
 ---@return boolean in range
-function taskScanModule:AddBlessing(buffDef, playerParty, playerUnit, inRange)
+function taskScanModule:AddBlessing(buffDef, party, inRange)
   local ok, bag, slot, count
   if buffDef.reagentRequired then
     ok, bag, slot, count = buffChecksModule:HasItem(buffDef.reagentRequired, true)
@@ -770,7 +768,7 @@ function taskScanModule:AddBlessing(buffDef, playerParty, playerUnit, inRange)
                 buffDef.groupText, --[[---@type BomParty]] buffDef.unitsNeedBuff, eachClassName, buffDef)
 
         if classInRange == nil then
-          classInRange = self:GetClassInRange(buffDef.groupText, playerParty, eachClassName, buffDef)
+          classInRange = self:GetClassInRange(buffDef.groupText, party, eachClassName, buffDef)
         end
 
         if classInRange ~= nil
@@ -871,11 +869,10 @@ end
 ---This is pre-WotLK style buffing when group buff covered only 5-man parties in a raid.
 ---@param groupIndex number|nil
 ---@param buffDef BomBuffDefinition
----@param playerParty BomParty The party
----@param playerUnit BomUnit The player; TODO: Remove passing this parameter
+---@param party BomParty The party
 ---@param inRange boolean
 ---@return boolean inRange
-function taskScanModule:FindTargetForGroupBuff(groupIndex, buffDef, playerParty, playerUnit, minBuff, inRange)
+function taskScanModule:FindTargetForGroupBuff(groupIndex, buffDef, party, minBuff, inRange)
   if buffDef.groupsNeedBuff[groupIndex]
           and buffDef.groupsNeedBuff[groupIndex] >= minBuff
   then
@@ -884,7 +881,7 @@ function taskScanModule:FindTargetForGroupBuff(groupIndex, buffDef, playerParty,
             buffDef.groupText, --[[---@type BomParty]] buffDef.unitsNeedBuff, groupIndex, buffDef)
 
     if groupInRange == nil then
-      groupInRange = self:GetGroupInRange(buffDef.groupText, playerParty, groupIndex, buffDef)
+      groupInRange = self:GetGroupInRange(buffDef.groupText, party, groupIndex, buffDef)
     end
 
     --if groupInRange ~= nil and (not spell.GroupsHaveDead[groupIndex] or not buffomatModule.shared.DeathBlock) then
@@ -901,7 +898,7 @@ function taskScanModule:FindTargetForGroupBuff(groupIndex, buffDef, playerParty,
       inRange = true
 
       self:QueueSpell(buffDef.groupMana, buffDef.highestRankGroupId,
-              buffDef.groupLink, groupInRange or playerUnit, buffDef, false)
+              buffDef.groupLink, groupInRange or party.player, buffDef, false)
     end -- if group not nil
   end
 
@@ -911,15 +908,14 @@ end
 ---Search for any party member in any size party, which is in range and needs the group buff.
 ---This is for WotLK style group buffing
 ---@param buffDef BomBuffDefinition
----@param playerParty BomParty The party
----@param playerUnit BomUnit The player; TODO: Remove passing this parameter
+---@param party BomParty The party
 ---@param inRange boolean
 ---@return boolean inRange
-function taskScanModule:FindAnyPartyTargetForGroupBuff(buffDef, playerParty, playerUnit, minBuff, inRange)
+function taskScanModule:FindAnyPartyTargetForGroupBuff(buffDef, party, minBuff, inRange)
   -- In WotLK group buffs do not allow range checking and are just generic 100+ yards line of sight spells
   -- Use single spell name instead for range check
   --local groupInRange = self:GetAnyPartyMemberInRange(buffDef.groupText, buffDef, playerParty, playerUnit)
-  local groupInRange = self:GetAnyPartyMemberInRange(buffDef.singleText, buffDef, playerParty, playerUnit)
+  local groupInRange = self:GetAnyPartyMemberInRange(buffDef.singleText, buffDef, party, playerUnit)
 
   --if (not buffDef.GroupsHaveDead[groupIndex] or not buffomatModule.shared.DeathBlock) then
   if groupInRange ~= nil then
@@ -934,25 +930,24 @@ function taskScanModule:FindAnyPartyTargetForGroupBuff(buffDef, playerParty, pla
     inRange = true
 
     self:QueueSpell(buffDef.groupMana, buffDef.highestRankGroupId, buffDef.groupLink,
-            groupInRange or playerUnit, buffDef, false)
+            groupInRange or party.player, buffDef, false)
   end -- if group not nil
 
   return inRange
 end
 
 ---@param buffDef BomBuffDefinition The spell to cast
----@param playerParty BomParty The party
----@param playerUnit BomUnit The player; TODO: Remove passing this parameter
+---@param party BomParty The party
 ---@param minBuff number Option for minimum players with missing buffs to choose group buff
 ---@param inRange boolean Spell target is in range; TODO: Remove passing this parameter
-function taskScanModule:AddBuff_GroupBuff(buffDef, playerParty, playerUnit, minBuff, inRange)
+function taskScanModule:AddBuff_GroupBuff(buffDef, party, minBuff, inRange)
   if BOM.haveWotLK then
     -- For WotLK: Scan entire party as one
-    inRange = self:FindAnyPartyTargetForGroupBuff(buffDef, playerParty, playerUnit, minBuff, inRange)
+    inRange = self:FindAnyPartyTargetForGroupBuff(buffDef, party, minBuff, inRange)
   else
     -- For non-WotLK: Scan 5man groups in current party
     for groupIndex = 1, 8 do
-      inRange = self:FindTargetForGroupBuff(groupIndex, buffDef, playerParty, playerUnit, minBuff, inRange)
+      inRange = self:FindTargetForGroupBuff(groupIndex, buffDef, party, minBuff, inRange)
     end -- for all 8 groups
   end
 
@@ -1022,10 +1017,9 @@ end
 
 ---Add a generic buff of some sorts, or a group buff
 ---@param buffDef BomBuffDefinition The spell to cast
----@param playerParty BomParty The party
----@param playerUnit BomUnit The player; TODO: Remove passing this parameter
+---@param party BomParty The party
 ---@param inRange boolean Spell target is in range; TODO: Remove passing this parameter
-function taskScanModule:AddBuff(buffDef, playerParty, playerUnit, inRange)
+function taskScanModule:AddBuff(buffDef, party, inRange)
   local ok, bag, slot, count
   if buffDef.reagentRequired then
     ok, bag, slot, count = buffChecksModule:HasItem(buffDef.reagentRequired, true)
@@ -1044,7 +1038,7 @@ function taskScanModule:AddBuff(buffDef, playerParty, playerUnit, inRange)
           and #buffDef.unitsNeedBuff >= minBuff then
     -- Add GROUP BUFF
     -- if group buff spell costs mana
-    inRange = self:AddBuff_GroupBuff(buffDef, playerParty, playerUnit, minBuff, inRange)
+    inRange = self:AddBuff_GroupBuff(buffDef, party, minBuff, inRange)
   else
     -- Add SINGLE BUFF
     inRange = self:AddBuff_SingleBuff(buffDef, minBuff, inRange)
@@ -1353,7 +1347,7 @@ function taskScanModule:AddConsumableWeaponBuff(buffDef, playerUnit,
               buffTargetModule:FromSelf(playerUnit),
               true, nil)
     else
-      buffomatModule:SetForceUpdate("weaponConsumableBuff") -- try rescan?
+      buffomatModule:RequestTaskRescan("weaponConsumableBuff") -- try rescan?
     end
   end
 
@@ -1577,14 +1571,12 @@ function taskScanModule:CheckItemsAndContainers(playerMember, castButtonTitle, m
 end
 
 ---@param buffDef BomBuffDefinition
----@param playerUnit BomUnit
----@param playerParty BomParty
+---@param party BomParty
 ---@param inRange boolean TODO: Remove passing this parameter
 ---@param castButtonTitle string
 ---@param macroCommand string
 ---@return boolean, string, string {in_range, cast_button_title, macro_command}
-function taskScanModule:ScanOneSpell(buffDef, playerParty, playerUnit, inRange,
-                                     castButtonTitle, macroCommand)
+function taskScanModule:ScanOneSpell(buffDef, party, inRange, castButtonTitle, macroCommand)
   if #buffDef.unitsNeedBuff > 0
           and not buffDef.isInfo
           and not buffDef.isConsumable
@@ -1602,22 +1594,24 @@ function taskScanModule:ScanOneSpell(buffDef, playerParty, playerUnit, inRange,
   end
 
   if buffDef.type == "summon" then
-    self:AddSummonSpell(buffDef, playerUnit)
+    self:AddSummonSpell(buffDef, party.player)
 
   elseif buffDef.type == "weapon" then
     if #buffDef.unitsNeedBuff > 0 then
       if buffDef.isConsumable then
         castButtonTitle, macroCommand = self:AddConsumableWeaponBuff(
-                buffDef, playerUnit, castButtonTitle, macroCommand)
+                buffDef, party.player, castButtonTitle, macroCommand)
       else
-        castButtonTitle, macroCommand = self:AddWeaponEnchant(buffDef, playerUnit, castButtonTitle, macroCommand)
+        castButtonTitle, macroCommand = self:AddWeaponEnchant(
+                buffDef, party.player, castButtonTitle, macroCommand)
       end
     end
 
   elseif buffDef.isConsumable then
     if #buffDef.unitsNeedBuff > 0 then
       castButtonTitle, macroCommand = self:AddConsumableSelfbuff(
-              buffDef, playerUnit, castButtonTitle, macroCommand, buffDef.consumableTarget)
+              buffDef, party.player, castButtonTitle, macroCommand,
+              buffDef.consumableTarget)
       inRange = true
     end
 
@@ -1646,7 +1640,7 @@ function taskScanModule:ScanOneSpell(buffDef, playerParty, playerUnit, inRange,
                 buffDef.singleLink or buffDef.singleText,
                 buffDef.singleText,
                 _t("task.type.Tracking"),
-                buffTargetModule:FromSelf(playerUnit),
+                buffTargetModule:FromSelf(party.player),
                 false, nil)
       end
     end
@@ -1660,29 +1654,29 @@ function taskScanModule:ScanOneSpell(buffDef, playerParty, playerUnit, inRange,
       -- if spell is shapeshift, and is already active, skip it
     elseif #buffDef.unitsNeedBuff > 0 then
       -- self buffs are not pvp-guarded
-      self:AddSelfbuff(buffDef, playerUnit)
+      self:AddSelfbuff(buffDef, party.player)
     end
 
   elseif buffDef.type == "resurrection" then
-    inRange = self:AddResurrection(buffDef, playerUnit, inRange)
+    inRange = self:AddResurrection(buffDef, party.player, inRange)
 
   elseif buffDef.isBlessing then
-    inRange = self:AddBlessing(buffDef, playerParty, playerUnit, inRange)
+    inRange = self:AddBlessing(buffDef, party, inRange)
 
   else
-    inRange = self:AddBuff(buffDef, playerParty, playerUnit, inRange)
+    inRange = self:AddBuff(buffDef, party, inRange)
   end
 
   return inRange, castButtonTitle, macroCommand
 end
 
----@param playerUnit BomUnit
----@param playerParty BomParty
+---@param party BomParty
 ---@param inRange boolean TODO: Remove passing this parameter
 ---@param castButtonTitle string
 ---@param macroCommand string
 ---@return boolean, string, string {inRange, castButtonTitle, macroCommand}
-function taskScanModule:ScanSelectedSpells(playerUnit, playerParty, inRange, castButtonTitle, macroCommand)
+function taskScanModule:ScanSelectedSpells(party, inRange, castButtonTitle, macroCommand)
+  -- Go through all available and selected player buffs
   for _, buffDef in ipairs(allBuffsModule.selectedBuffs) do
     local profileBuff = buffDefModule:GetProfileBuff(buffDef.buffId, nil)
 
@@ -1696,7 +1690,7 @@ function taskScanModule:ScanSelectedSpells(playerUnit, playerParty, inRange, cas
             and (buffDef.requiresForm == nil or GetShapeshiftFormID() == buffDef.requiresForm)
     then
       inRange, castButtonTitle, macroCommand = self:ScanOneSpell(
-              buffDef, playerParty, playerUnit, inRange, castButtonTitle, macroCommand)
+              buffDef, party, inRange, castButtonTitle, macroCommand)
     end
   end
 
@@ -1825,7 +1819,7 @@ function taskScanModule:UpdateScan_Button_HaveTasks(inRange)
 
     if skipreset then
       buffomatModule:FastUpdateTimer()
-      buffomatModule:SetForceUpdate("skipReset")
+      buffomatModule:RequestTaskRescan("skipReset")
     end
   end -- if inrange
 end
@@ -1840,7 +1834,7 @@ end
 ---@param party BomParty
 function taskScanModule:UpdateScan_Scan(party)
   local someoneIsDead = taskScanModule.saveSomeoneIsDead
-  if next(buffomatModule.forceUpdateRequestedBy) ~= nil then
+  if next(buffomatModule.taskRescanRequestedBy) ~= nil then
     someoneIsDead = self:ForceUpdate(party)
   end
 
@@ -1866,8 +1860,11 @@ function taskScanModule:UpdateScan_Scan(party)
     -- Otherwise scan all enabled spells
     BOM.scanModifierKeyDown = false
 
+    -- ================
+    -- Scan entry point
+    -- ================
     inRange, castButtonTitle, macroCommand = self:ScanSelectedSpells(
-            party.player, party, inRange, castButtonTitle, macroCommand)
+            party, inRange, castButtonTitle, macroCommand)
 
     self:CheckReputationItems(party.player)
     self:CheckMissingWeaponEnchantments(party.player) -- if option to warn is enabled
@@ -1923,7 +1920,7 @@ end -- end function bomUpdateScan_Scan()
 ---For raid, invalidated group is rotated 1 to 8. For solo and party it does not rotate.
 ---Reloads party members and refreshes their buffs as necessary.
 ---@return BomParty
-function taskScanModule:RotateInvalidatedGroup()
+function taskScanModule:RotateInvalidatedGroup_GetGroup()
   if IsInRaid() then
     -- In raid we rotate groups 1 till 8 every refresh
     self.roundRobinGroup = self.roundRobinGroup + 1
@@ -1934,7 +1931,6 @@ function taskScanModule:RotateInvalidatedGroup()
     self.roundRobinGroup = 1 -- always reload group 1 (also this is ignored in solo or 5man)
   end
 
-  --BOM:Debug("Reload group " .. self.roundRobinGroup)
   partyModule:InvalidatePartyGroup(self.roundRobinGroup)
   return partyModule:GetParty()
 end
@@ -1958,11 +1954,11 @@ function taskScanModule:UpdateScan_PreCheck(from)
   if buffomatModule.currentProfileName ~= selectedProfileName then
     buffomatModule:UseProfile(selectedProfileName)
     spellButtonsTabModule:UpdateSpellsTab("profileChanged")
-    buffomatModule:SetForceUpdate("profileChanged")
+    buffomatModule:RequestTaskRescan("profileChanged")
   end
 
   --unitCacheModule:ClearCache()
-  local party = self:RotateInvalidatedGroup()
+  local party = self:RotateInvalidatedGroup_GetGroup()
 
   -- Check whether BOM is disabled due to some option and a matching condition
   if not self:IsMountedAndCrusaderAuraRequired() then
@@ -1986,7 +1982,7 @@ end -- end function bomUpdateScan_PreCheck()
 ---Scan the available spells and group members to find who needs the rebuff/res
 ---and what would be their priority?
 ---@param from string Debug value to trace the caller of this function
-function taskScanModule:ScanNow(from)
+function taskScanModule:ScanTasks(from)
   if InCombatLockdown() then
     return
   end
@@ -2010,7 +2006,7 @@ function BOM.AddMemberToSkipList()
             and BOM.castFailedBuffTarget then
       tinsert(castFailedBuffVal.SkipList, castFailedTarget.name)
       buffomatModule:FastUpdateTimer()
-      buffomatModule:SetForceUpdate("skipListMemberAdded")
+      buffomatModule:RequestTaskRescan("skipListMemberAdded")
     end
   end
 end
