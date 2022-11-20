@@ -31,23 +31,12 @@ local taskScanModule = BomModuleManager.taskScanModule
 local texturesModule = BomModuleManager.texturesModule
 local toolboxModule = BomModuleManager.toolboxModule
 
----Collection of tables of buffs, indexed per unit name
----@shape BomBuffCollectionPerUnit
----@field [string] BomBuffExpirations Buffs on that unit
-
----Table of buff expirations, indexed per buff name
----@shape BomBuffExpirations
----@field [string] number|nil Expiration time
-
 ---global, visible from XML files and from script console and chat commands
 ---@class BomAddon
 ---@field activePaladinAura nil|number Spell id of aura if an unique aura was casted (only one can be active)
 ---@field activePaladinSeal nil|number Spell id of weapon seal, if an seal-type temporary enchant was used (only one can be active)
 ---@field ALL_PROFILES BomProfileName[] Lists all buffomat profile names (group, solo... etc)
----@field allBuffomatBuffs BomAllBuffsTable All spells known to Buffomat
----@field allSpellIds number[]
 ---@field buffExchangeId table<number, number[]> Combines spell ids of spellrank flavours into main spell id
----@field buffFromSpellIdLookup {[BomSpellId]: BomBuffDefinition} Lookup table for buff definitions by spell id
 ---@field buffIgnoreAll number[] Having this buff on target excludes the target (phaseshifted imp for example)
 ---@field cachedPlayerBag BomCachedPlayerBag Items in player's bag
 ---@field cancelBuffs BomBuffDefinition[] All spells to be canceled on detection
@@ -63,7 +52,6 @@ local toolboxModule = BomModuleManager.toolboxModule
 ---@field drinkingPersonCount number Used for warning "X persons is/are drinking"
 ---@field AllDrink BomSpellId[] Used for warning "X persons is/are drinking"
 ---@field enchantList {[BomSpellId]: number[]} Spell ids mapping to enchantment ids
----@field enchantToSpellLookup {[BomEnchantmentId]: BomSpellId} Reverse-maps enchantment ids back to spells
 ---@field forceProfile BomProfileName|nil Nil will choose profile name automatically, otherwise this profile will be used
 ---@field forceTracking WowIconId|nil Defines icon id for enforced tracking
 ---@field forceUpdate boolean Requests immediate spells/buffs refresh
@@ -75,17 +63,12 @@ local toolboxModule = BomModuleManager.toolboxModule
 ---@field isPlayerMoving boolean Indicated that the player is moving (updated in event handlers)
 ---@field isTBC boolean Whether we are running TBC classic
 ---@field isWotLK boolean Whether we are running Wrath of the Lich King
----@field itemCache {[BomItemId]: BomItemCacheElement} Precreated precached items
----@field itemIdLookup {[string]: table<string, number>} Map of item name to id
 ---@field itemList number[][] Group different ranks of item together
----@field itemListSpellLookup table<number, number> Map itemid to spell?
----@field itemListTarget table<number, string> Remember who casted item buff on you?
 ---@field lastAura BomBuffId|nil Buff id of active or last active aura
 ---@field lastTarget string|nil Last player's target
 ---@field loadingScreenTimeOut number|nil
 ---@field theMacro BomMacro
 ---@field MANA_CLASSES BomClassName[] Classes with mana resource
----@field playerManaLimit number Player max mana
 ---@field minimapButton BomMinimapButtonPlaceholder Minimap button control
 ---@field nextCooldownDue number Set this to next spell cooldown to force update
 ---@field isPartyUpdateNeeded boolean Requests player party update
@@ -97,13 +80,8 @@ local toolboxModule = BomModuleManager.toolboxModule
 ---@field ridingSpeedZones BomRidingSpeedZones Equipped Riding trinket: Spell to and zone ids to check
 ---@field SaveTargetName string|nil
 ---@field scanModifierKeyDown boolean Will update buffomat when modifier key is held down
----@field selectedBuffs BomBuffDefinition[]
 ---@field somebodyIsGhost boolean [unused?] Someone in the party is a ghost
----@field spellIdIsSingleLookup table<number, boolean> Whether spell ids are single buffs
----@field spellIdLookup table<string, table<string, number>> Map of spell name to id
----@field spellIdtoBuffId table<number, number> Maps spell ids to the key id of spell in the AllSpells
 ---@field spellTabsCreatedFlag boolean Indicated spells tab already populated with controls
----@field spellToSpellLookup table<number, number> Maps spells ids to other spell ids
 ---@field wipeCachedItems boolean Command to reset cached items on the next call to itemListCacheModule; TODO move to itemListCacheModule
 ---@field Print fun(self: BomAddon, msg: string): void
 ---@field RegisterEvent fun(self: BomAddon, event: string, handler: function): void
@@ -353,7 +331,7 @@ function buffomatModule:InitUI()
           constModule.SHORT_TITLE)
 
   buffomatModule:OptionsInit()
-  partyModule:InvalidatePartyCache(nil)
+  partyModule:InvalidatePartyCache()
   BOM.repeatUpdate = false
 
   -- Make main frame draggable
@@ -558,7 +536,7 @@ function buffomatModule:DownGrade()
   if BOM.castFailedBuff
           and (--[[---@not nil]] BOM.castFailedBuff).SkipList
           and BOM.castFailedBuffTarget then
-    local level = UnitLevel((--[[---@not nil]] BOM.castFailedBuffTarget).unitGUID)
+    local level = UnitLevel((--[[---@not nil]] BOM.castFailedBuffTarget).unitId)
 
     if level ~= nil and level > -1 then
       if self.shared.SpellGreaterEqualThan[BOM.castFailedSpellId] == nil
@@ -685,7 +663,7 @@ function buffomatModule:FastUpdateTimer()
   buffomatModule.lastUpdateTimestamp = 0
 end
 
-partyModule.buffs = --[[---@type BomBuffCollectionPerUnit]] {}
+partyModule.unitAurasLastUpdated = --[[---@type BomBuffUpdatesPerUnit]] {}
 
 ---@shape BomUnitAuraResult
 ---@field name string The name of the spell or effect of the debuff. This is the name shown in yellow when you mouse over the icon
@@ -730,7 +708,9 @@ function buffomatModule:UnitAura(unitId, buffIndex, filter)
   , nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, castByPlayer
   , nameplateShowAll, timeMod = UnitAura(unitId, buffIndex, filter)
 
-  if spellId and BOM.allSpellIds and tContains(BOM.allSpellIds, spellId) then
+  if spellId
+          and allBuffsModule.allSpellIds
+          and tContains(allBuffsModule.allSpellIds, spellId) then
 
     if source ~= nil and source ~= "" and UnitIsUnit(source, "player") then
       if UnitIsUnit(unitId, "player") and duration ~= nil and duration > 0 then
@@ -743,7 +723,7 @@ function buffomatModule:UnitAura(unitId, buffIndex, filter)
 
       if duration > 0 and (expirationTime == nil or expirationTime == 0) then
         local destName = UnitFullName(unitId) ---@type string
-        local buffOnPlayer = partyModule.buffs[destName]
+        local buffOnPlayer = partyModule.unitAurasLastUpdated[destName]
 
         if buffOnPlayer and buffOnPlayer[name] then
           expirationTime = (buffOnPlayer[name] or 0) + duration
@@ -942,9 +922,9 @@ function buffomatModule.Slash_DebugBuffs(dest)
 end
 
 function buffomatModule.Slash_DebugBuffList()
-  print("PlayerBuffs stored ", #partyModule.buffs)
+  print("PlayerBuffs stored ", #partyModule.unitAurasLastUpdated)
 
-  for name, spellist in pairs(partyModule.buffs) do
+  for name, spellist in pairs(partyModule.unitAurasLastUpdated) do
     print(name)
 
     for spellname, ti in pairs(spellist) do

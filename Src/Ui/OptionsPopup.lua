@@ -140,7 +140,7 @@ function optionsPopupModule:Setup(control, minimap)
   -- Selected spells check on/off
   -- --------------------------------------------
   if true then
-    for i, buffDef in ipairs(BOM.selectedBuffs) do
+    for i, buffDef in ipairs(allBuffsModule.selectedBuffs) do
       if not buffDef.isConsumable then
         table.insert(menuItems, popupModule:Boolean(
                 buffDef.singleLink or buffDef.singleText,

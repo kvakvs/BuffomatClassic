@@ -5,7 +5,7 @@ local buffChecksModule = BomModuleManager.buffChecksModule ---@type BomBuffCheck
 
 local buffDefModule = BomModuleManager.buffDefinitionModule
 local buffomatModule = BomModuleManager.buffomatModule
-local constModule = BomModuleManager.constModule
+local partyModule = BomModuleManager.partyModule
 local spellIdsModule = BomModuleManager.spellIdsModule
 local unitCacheModule = BomModuleManager.unitCacheModule
 
@@ -130,8 +130,8 @@ function buffChecksModule:PlayerNeedsWeaponBuff(buff, playerUnit)
   local weaponBuff = buffDefModule:GetProfileBuff(buff.buffId, nil)
 
   if weaponBuff
-          and ((--[[---@not nil]] weaponBuff).MainHandEnable and playerUnit.MainhandBuff == nil)
-          or ((--[[---@not nil]] weaponBuff).OffHandEnable and playerUnit.OffhandBuff == nil)
+          and ((--[[---@not nil]] weaponBuff).MainHandEnable and playerUnit.mainhandEnchantment == nil)
+          or ((--[[---@not nil]] weaponBuff).OffHandEnable and playerUnit.offhandEnchantment == nil)
   then
     tinsert(buff.unitsNeedBuff, playerUnit)
   end
@@ -169,7 +169,7 @@ end
 ---@param buff BomBuffDefinition
 ---@param party BomParty
 function buffChecksModule:PartyNeedsInfoBuff(buff, party)
-  for _i, partyMember in pairs(party.byUnitGUID) do
+  for _i, partyMember in pairs(party.byUnitId) do
     local partyMemberBuff = partyMember.knownBuffs[buff.buffId]
 
     if partyMemberBuff then
@@ -180,7 +180,7 @@ function buffChecksModule:PartyNeedsInfoBuff(buff, party)
       end
 
       if UnitIsUnit("player", partyMemberBuff.source or "") then
-        BOM.itemListTarget[buff.buffId] = partyMember.name
+        partyModule.itemListTarget[buff.buffId] = partyMember.name
       end
     end
   end
@@ -211,7 +211,7 @@ end
 ---@param buff BomBuffDefinition
 ---@param party BomParty
 function buffChecksModule:DeadNeedsResurrection(buff, party)
-  for _i, member in pairs(party.byUnitGUID) do
+  for _i, member in pairs(party.byUnitId) do
     if member.isDead
             and not member.hasResurrection
             and member.isConnected
@@ -276,7 +276,7 @@ function buffChecksModule:PartyNeedsPaladinBlessing(buffDef, party, someoneIsDea
   local profileBuff = --[[---@not nil]] buffDefModule:GetProfileBuff(buffDef.buffId, nil)
 
   ---@param partyMember BomUnit
-  for i, partyMember in ipairs(party.byUnitGUID) do
+  for i, partyMember in ipairs(party.byUnitId) do
     local ok = false
     local notGroup = false
 
@@ -293,7 +293,7 @@ function buffChecksModule:PartyNeedsPaladinBlessing(buffDef, party, someoneIsDea
         ok = true
       end
       if profileBuff.SelfCast
-              and UnitIsUnit(partyMember.unitGUID, "player") then
+              and UnitIsUnit(partyMember.unitId, "player") then
         ok = true
       end
     end
@@ -345,7 +345,7 @@ end
 ---@param someoneIsDead boolean
 function buffChecksModule:PartyNeedsBuff(buffDef, party, someoneIsDead)
   --spells
-  for i, partyMember in pairs(party.byUnitGUID) do
+  for i, partyMember in pairs(party.byUnitId) do
     local ok = false
     local profileBuff = buffomatModule.currentProfile.Spell[buffDef.buffId]
 
@@ -355,7 +355,7 @@ function buffChecksModule:PartyNeedsBuff(buffDef, party, someoneIsDead)
       ok = true
     end
     if profileBuff.SelfCast
-            and UnitIsUnit(partyMember.unitGUID, "player") then
+            and UnitIsUnit(partyMember.unitId, "player") then
       ok = true
     end
     if partyMember.isTank and profileBuff.Class["tank"]

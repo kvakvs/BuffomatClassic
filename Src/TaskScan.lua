@@ -215,7 +215,7 @@ function taskScanModule:UpdateMacro(nextCast)
   wipe(macro.lines)
 
   --Downgrade-Check
-  local buffDef = BOM.buffFromSpellIdLookup[--[[---@not nil]] nextCast.spellId]
+  local buffDef = allBuffsModule.buffFromSpellIdLookup[--[[---@not nil]] nextCast.spellId]
   local rank = ""
 
   if buffDef == nil then
@@ -223,9 +223,9 @@ function taskScanModule:UpdateMacro(nextCast)
   end
 
   if buffomatModule.shared.UseRank
-          or (nextCast.targetUnit and (--[[---@not nil]] nextCast.targetUnit).unitGUID == "target")
+          or (nextCast.targetUnit and (--[[---@not nil]] nextCast.targetUnit).unitId == "target")
           or nextCast.temporaryDownrank then
-    local level = UnitLevel((--[[---@not nil]] nextCast.targetUnit).unitGUID)
+    local level = UnitLevel((--[[---@not nil]] nextCast.targetUnit).unitId)
 
     if buffDef and level ~= nil and level > 0 then
       local spellChoices
@@ -271,7 +271,7 @@ function taskScanModule:UpdateMacro(nextCast)
     tinsert(macro.lines, "/cancelform [nocombat]")
   end
   tinsert(macro.lines, "/bom _checkforerror")
-  tinsert(macro.lines, "/cast [@" .. (--[[---@not nil]] nextCast.targetUnit).unitGUID .. ",nocombat]" .. name .. rank)
+  tinsert(macro.lines, "/cast [@" .. (--[[---@not nil]] nextCast.targetUnit).unitId .. ",nocombat]" .. name .. rank)
   macro.icon = constModule.MACRO_ICON
 
   macro:UpdateMacro()
@@ -284,9 +284,9 @@ end
 function taskScanModule:GetGroupInRange(spellName, party, groupIndex, spell)
   local minDist
   local ret
-  for i, member in pairs(party.byUnitGUID) do
+  for i, member in pairs(party.byUnitId) do
     if member.group == groupIndex then
-      if not (IsSpellInRange(spellName, member.unitGUID) == 1 or member.isDead) then
+      if not (IsSpellInRange(spellName, member.unitId) == 1 or member.isDead) then
         if member.distance > 2000 then
           return nil
         end
@@ -315,7 +315,7 @@ function taskScanModule:GetAnyPartyMemberInRange(spellName, buffDef, party, play
 
   for i, member in ipairs(buffDef.unitsNeedBuff) do
     --BOM:Debug(string.format("test %s %s %s", spellName, member.unitGUID, member.name))
-    if IsSpellInRange(spellName, member.unitGUID) == 1
+    if IsSpellInRange(spellName, member.unitId) == 1
             and not member.isDead
             and (minDist == nil or member.distance < minDist)
             and not tContains(buffDef.SkipList, member.name) then
@@ -345,12 +345,12 @@ function taskScanModule:GetClassInRange(spellName, party, class, spell)
   local minDist
   local ret
 
-  for i, member in pairs(party.byUnitGUID) do
+  for i, member in pairs(party.byUnitId) do
     if member.class == class then
       if member.isDead then
         return nil
 
-      elseif not (IsSpellInRange(spellName, member.unitGUID) == 1) then
+      elseif not (IsSpellInRange(spellName, member.unitId) == 1) then
         if member.distance > 2000 then
           return nil
         end
@@ -374,9 +374,6 @@ end
 ---@field manaCost number
 ---@field temporaryDownrank boolean Pick previous rank for certain spells, like Flametongue 10
 local nextCastSpell = {} ---@type BomScan_NextCastSpell
-
----@type number
-local bomCurrentPlayerMana = 0
 
 ---@param link string Clickable spell link with icon
 ---@param inactiveText string Spell name as text
@@ -407,7 +404,7 @@ end
 ---@param buffDef BomBuffDefinition the spell to be added
 ---@param temporaryDownrank boolean Pick previous rank for certain spells, like Flametongue 10
 function taskScanModule:QueueSpell(cost, spellId, link, targetUnit, buffDef, temporaryDownrank)
-  if cost > bomCurrentPlayerMana then
+  if cost > partyModule.playerMana then
     return -- ouch
   end
 
@@ -518,7 +515,7 @@ function taskScanModule:IsActive(playerUnit)
   -- Cancel buff tasks if is in stealth, and option to scan is not set
   -- and current mana is < 90%
   local spiritTapManaPercent = (buffomatModule.shared.ActivateBomOnSpiritTap or 0) * 0.01
-  local currentMana = bomCurrentPlayerMana or UnitPower("player", 0)
+  local currentMana = partyModule.playerMana or UnitPower("player", 0)
   if playerUnit.allBuffs[spellIdsModule.Priest_SpiritTap]
           and currentMana < UnitPowerMax("player", 0) * spiritTapManaPercent then
     return false, _t("castButton.inactive.PriestSpiritTap")
@@ -540,7 +537,7 @@ function taskScanModule:ActivateSelectedTracking()
   --reset tracking
   BOM.forceTracking = nil
 
-  for i, buffDef in ipairs(BOM.selectedBuffs) do
+  for i, buffDef in ipairs(allBuffsModule.selectedBuffs) do
     if buffDef.type == "tracking" then
       if buffDefModule:IsBuffEnabled(buffDef.buffId, nil) then
         if buffDef.requiresForm ~= nil then
@@ -576,7 +573,7 @@ function taskScanModule:GetActiveAuraAndSeal(playerUnit)
   BOM.activePaladinSeal = nil
 
   ---@param buffDef BomBuffDefinition
-  for i, buffDef in ipairs(BOM.selectedBuffs) do
+  for i, buffDef in ipairs(allBuffsModule.selectedBuffs) do
     local player_buff = playerUnit.knownBuffs[buffDef.buffId]
 
     if player_buff then
@@ -603,7 +600,7 @@ end
 function taskScanModule:CheckChangesAndUpdateSpelltab()
   --reset aura/seal
   ---@param buffDef BomBuffDefinition
-  for i, buffDef in ipairs(BOM.selectedBuffs) do
+  for i, buffDef in ipairs(allBuffsModule.selectedBuffs) do
     if buffDef.type == "aura" then
       if buffDefModule:IsBuffEnabled(buffDef.buffId, nil) then
         if BOM.activePaladinAura == buffDef.buffId
@@ -653,7 +650,7 @@ function taskScanModule:ForceUpdate(party)
 
   -- For each selected spell check the targets
   ---@param spell BomBuffDefinition
-  for i, spell in ipairs(BOM.selectedBuffs) do
+  for i, spell in ipairs(allBuffsModule.selectedBuffs) do
     someoneIsDead = self:UpdateSpellTargets(party, spell)
   end
 
@@ -834,7 +831,7 @@ function taskScanModule:AddBlessing(buffDef, playerParty, playerUnit, inRange)
         add = string.format(constModule.PICTURE_FORMAT, texturesModule.ICON_TARGET_ON)
       end
 
-      local test_in_range = IsSpellInRange(buffDef.singleText, needsBuff.unitGUID) == 1
+      local test_in_range = IsSpellInRange(buffDef.singleText, needsBuff.unitId) == 1
               and not tContains(buffDef.SkipList, needsBuff.name)
       if self:PreventPvpTagging(buffDef.singleLink, buffDef.singleText, needsBuff) then
         -- Nothing, prevent poison function has already added the text
@@ -990,7 +987,7 @@ function taskScanModule:AddBuff_SingleBuff(buffDef, minBuff, inRange)
         add = string.format(constModule.PICTURE_FORMAT, texturesModule.ICON_TARGET_ON)
       end
 
-      local unitIsInRange = (IsSpellInRange(buffDef.singleText, needBuff.unitGUID) == 1)
+      local unitIsInRange = (IsSpellInRange(buffDef.singleText, needBuff.unitId) == 1)
               and not tContains(buffDef.SkipList, needBuff.name)
 
       if self:PreventPvpTagging(buffDef.singleLink, buffDef.singleText, needBuff) then
@@ -1091,7 +1088,7 @@ function taskScanModule:AddResurrection(spell, playerUnit, inRange)
       BOM.repeatUpdate = true
 
       -- Is the body in range?
-      local targetIsInRange = (IsSpellInRange(spell.singleText, unitNeedsBuff.unitGUID) == 1)
+      local targetIsInRange = (IsSpellInRange(spell.singleText, unitNeedsBuff.unitId) == 1)
               and not tContains(spell.SkipList, unitNeedsBuff.name)
 
       if targetIsInRange then
@@ -1288,7 +1285,7 @@ function taskScanModule:AddConsumableWeaponBuff(buffDef, playerUnit,
     local profileBuff = buffDefModule:GetProfileBuff(buffDef.buffId, nil)
 
     if profileBuff and (--[[---@not nil]] profileBuff).OffHandEnable
-            and playerUnit.OffhandBuff == nil then
+            and playerUnit.offhandEnchantment == nil then
       local function offhand_message()
         return BOM.FormatTexture(texture) .. itemLink .. "x" .. count
       end
@@ -1317,7 +1314,7 @@ function taskScanModule:AddConsumableWeaponBuff(buffDef, playerUnit,
     end
 
     if profileBuff and (--[[---@not nil]] profileBuff).MainHandEnable
-            and playerUnit.MainhandBuff == nil then
+            and playerUnit.mainhandEnchantment == nil then
       local function mainhand_message()
         return BOM.FormatTexture(texture) .. itemLink .. "x" .. count
       end
@@ -1394,7 +1391,7 @@ function taskScanModule:AddWeaponEnchant(buffDef, playerUnit,
   -- OFFHAND FIRST
   -- Because offhand sets a temporaryDownrank flag in nextCastSpell and it somehow doesn't reset when offhand is queued second
   if profileBuff and (--[[---@not nil]] profileBuff).OffHandEnable
-          and playerUnit.OffhandBuff == nil then
+          and playerUnit.offhandEnchantment == nil then
     if blockOffhandEnchant then
       -- Text: [Spell Name] (Off-hand) Blocked waiting
       tasklist:Add(
@@ -1416,7 +1413,7 @@ function taskScanModule:AddWeaponEnchant(buffDef, playerUnit,
   -- MAINHAND AFTER OFFHAND
   -- Because offhand sets a temporaryDownrank flag in nextCastSpell and it somehow doesn't reset when offhand is queued second
   if profileBuff and (--[[---@not nil]] profileBuff).MainHandEnable
-          and playerUnit.MainhandBuff == nil then
+          and playerUnit.mainhandEnchantment == nil then
     -- Special case is ruled by the option `ShamanFlametongueRanked`
     -- Flametongue enchant for spellhancement shamans only!
     local isDownrank = buffDef.buffId == spellIdsModule.Shaman_Flametongue6
@@ -1538,9 +1535,9 @@ function taskScanModule:CheckItemsAndContainers(playerMember, castButtonTitle, m
       elseif item.Link then
         ok = true
 
-        if BOM.itemListSpellLookup[item.ID] then
-          if BOM.itemListTarget[BOM.itemListSpellLookup[item.ID]] then
-            target = BOM.itemListTarget[BOM.itemListSpellLookup[item.ID]]
+        if allBuffsModule.itemListSpellLookup[item.ID] then
+          if partyModule.itemListTarget[allBuffsModule.itemListSpellLookup[item.ID]] then
+            target = partyModule.itemListTarget[allBuffsModule.itemListSpellLookup[item.ID]]
           end
         end
 
@@ -1592,15 +1589,15 @@ function taskScanModule:ScanOneSpell(buffDef, playerParty, playerUnit, inRange,
           and not buffDef.isInfo
           and not buffDef.isConsumable
   then
-    if buffDef.singleMana < BOM.playerManaLimit
-            and buffDef.singleMana > bomCurrentPlayerMana then
-      BOM.playerManaLimit = buffDef.singleMana
+    if buffDef.singleMana < partyModule.playerManaLimit
+            and buffDef.singleMana > partyModule.playerMana then
+      partyModule.playerManaLimit = buffDef.singleMana
     end
 
     if buffDef.groupMana
-            and buffDef.groupMana < BOM.playerManaLimit
-            and buffDef.groupMana > bomCurrentPlayerMana then
-      BOM.playerManaLimit = buffDef.groupMana
+            and buffDef.groupMana < partyModule.playerManaLimit
+            and buffDef.groupMana > partyModule.playerMana then
+      partyModule.playerManaLimit = buffDef.groupMana
     end
   end
 
@@ -1686,7 +1683,7 @@ end
 ---@param macroCommand string
 ---@return boolean, string, string {inRange, castButtonTitle, macroCommand}
 function taskScanModule:ScanSelectedSpells(playerUnit, playerParty, inRange, castButtonTitle, macroCommand)
-  for _, buffDef in ipairs(BOM.selectedBuffs) do
+  for _, buffDef in ipairs(allBuffsModule.selectedBuffs) do
     local profileBuff = buffDefModule:GetProfileBuff(buffDef.buffId, nil)
 
     if buffDef.isInfo and profileBuff
@@ -1798,7 +1795,7 @@ function taskScanModule:UpdateScan_Button_Nothing()
   --Clear the cast button
   self:CastButton(_t("castButton.NothingToDo"), false)
 
-  for _i, spell in ipairs(BOM.selectedBuffs) do
+  for _i, spell in ipairs(allBuffsModule.selectedBuffs) do
     if #spell.SkipList > 0 then
       wipe(spell.SkipList)
     end
@@ -1819,7 +1816,7 @@ function taskScanModule:UpdateScan_Button_HaveTasks(inRange)
     self:CastButton(ERR_SPELL_OUT_OF_RANGE, false)
     local skipreset = false
 
-    for spellIndex, spell in ipairs(BOM.selectedBuffs) do
+    for spellIndex, spell in ipairs(allBuffsModule.selectedBuffs) do
       if #spell.SkipList > 0 then
         skipreset = true
         wipe(spell.SkipList)
@@ -1851,8 +1848,8 @@ function taskScanModule:UpdateScan_Scan(party)
   self:CancelBuffs(party.player)
 
   -- fill list and find cast
-  bomCurrentPlayerMana = UnitPower("player", 0) or 0 --mana
-  BOM.playerManaLimit = UnitPowerMax("player", 0) or 0
+  partyModule.playerMana = UnitPower("player", 0) or 0 --mana
+  partyModule.playerManaLimit = UnitPowerMax("player", 0) or 0
 
   self:ClearNextCastSpell()
 
@@ -1938,12 +1935,12 @@ function taskScanModule:RotateInvalidatedGroup()
   end
 
   --BOM:Debug("Reload group " .. self.roundRobinGroup)
-  partyModule:InvalidatePartyCache({ self.roundRobinGroup })
-  return unitCacheModule:GetPartyMembers()
+  partyModule:InvalidatePartyGroup(self.roundRobinGroup)
+  return partyModule:GetParty()
 end
 
 function taskScanModule:UpdateScan_PreCheck(from)
-  if BOM.selectedBuffs == nil then
+  if allBuffsModule.selectedBuffs == nil then
     return
   end
 
@@ -2019,7 +2016,7 @@ function BOM.AddMemberToSkipList()
 end
 
 function taskScanModule:ClearSkip()
-  for spellIndex, spell in ipairs(BOM.selectedBuffs) do
+  for spellIndex, spell in ipairs(allBuffsModule.selectedBuffs) do
     if spell.SkipList then
       wipe(spell.SkipList)
     end
@@ -2028,7 +2025,7 @@ end
 
 ---On Combat Start go through cancel buffs list and cancel those bufs
 function BOM.DoCancelBuffs()
-  if BOM.selectedBuffs == nil or buffomatModule.currentProfile == nil then
+  if allBuffsModule.selectedBuffs == nil or buffomatModule.currentProfile == nil then
     return
   end
 

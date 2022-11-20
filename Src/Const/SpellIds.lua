@@ -5,8 +5,6 @@ local BOM = BuffomatAddon ---@type BomAddon
 ---@shape BomSpellIdsModule
 local spellIdsModule = BomModuleManager.spellIdsModule ---@type BomSpellIdsModule
 
-BOM.spellIdLookup = {}
-
 spellIdsModule.WotlkFood80 = 45548
 
 spellIdsModule.Mage_ConjureManaSapphire = 42985

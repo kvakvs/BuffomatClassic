@@ -8,6 +8,7 @@ local itemCacheModule = BomModuleManager.itemCacheModule
 ---@shape BomSpellSetupModule
 local spellSetupModule = BomModuleManager.spellSetupModule ---@type BomSpellSetupModule
 
+local allBuffsModule = BomModuleManager.allBuffsModule
 local buffDefinitionModule = BomModuleManager.buffDefinitionModule
 local toolboxModule = BomModuleManager.toolboxModule
 local profileModule = BomModuleManager.profileModule
@@ -33,29 +34,12 @@ function spellSetupModule:FormatSpellLink(spellInfo)
           .. "|r|h"
 end
 
-function spellSetupModule:Setup_MaybeAddCustomSpells()
-  if bomBuffsImportedFromConfig then
-    return
-  end
-
-  bomBuffsImportedFromConfig = true
-
-  --for x, entry in ipairs(buffomatModule.shared.CustomSpells) do
-  --  tinsert(BOM.allBuffomatBuffs, toolboxModule:CopyTable(entry))
-  --end
-
-  --for x, entry in ipairs(buffomatModule.shared.CustomCancelBuff) do
-  --  tinsert(BOM.cancelBuffs, toolboxModule:CopyTable(entry))
-  --end
-end
-
 function spellSetupModule:Setup_ResetCaches()
-  BOM.selectedBuffs = {}
+  allBuffsModule.selectedBuffs = {}
   BOM.cancelForm = {}
-  BOM.allSpellIds = {}
-  BOM.spellIdtoBuffId = {}
-  BOM.spellIdIsSingleLookup = {}
-  BOM.buffFromSpellIdLookup = --[[---@type {[BomSpellId]: BomBuffDefinition}]] {}
+  allBuffsModule.allSpellIds = {}
+  allBuffsModule.spellIdtoBuffId = {}
+  allBuffsModule.buffFromSpellIdLookup = --[[---@type {[BomSpellId]: BomBuffDefinition}]] {}
 
   buffomatModule.shared.Cache = buffomatModule.shared.Cache or {}
   buffomatModule.shared.Cache.Item2 = buffomatModule.shared.Cache.Item2 or {}
@@ -68,7 +52,7 @@ function spellSetupModule:Setup_CancelBuffs()
 
     if cancelBuff.singleFamily then
       for sindex, sID in ipairs(cancelBuff.singleFamily) do
-        BOM.spellIdtoBuffId[sID] = cancelBuff.buffId
+        allBuffsModule.spellIdtoBuffId[sID] = cancelBuff.buffId
       end
     end
 
@@ -84,7 +68,7 @@ function spellSetupModule:Setup_CancelBuffs()
       cancelBuff.spellIcon = spellInfoValue.icon
     end
 
-    toolboxModule:iMerge(BOM.allSpellIds, cancelBuff.singleFamily)
+    toolboxModule:iMerge(allBuffsModule.allSpellIds, cancelBuff.singleFamily)
 
     for j, profil in ipairs(profileModule.ALL_PROFILES) do
       if buffomatModule.character[profil].CancelBuff[cancelBuff.buffId] == nil then
@@ -161,9 +145,9 @@ function spellSetupModule:Setup_EachSpell_CacheUpdate(spell)
   -- get highest rank and store SpellID=buffId
   if spell.singleFamily then
     for sindex, eachSingleId in ipairs(spell.singleFamily) do
-      BOM.spellIdtoBuffId[eachSingleId] = spell.buffId
-      BOM.spellIdIsSingleLookup[eachSingleId] = true
-      BOM.buffFromSpellIdLookup[eachSingleId] = spell
+      allBuffsModule.spellIdtoBuffId[eachSingleId] = spell.buffId
+      allBuffsModule.spellIdIsSingleLookup[eachSingleId] = true
+      allBuffsModule.buffFromSpellIdLookup[eachSingleId] = spell
 
       if IsSpellKnown(eachSingleId) then
         spell.highestRankSingleId = eachSingleId
@@ -172,15 +156,15 @@ function spellSetupModule:Setup_EachSpell_CacheUpdate(spell)
   end
 
   if spell.highestRankSingleId then
-    BOM.spellIdtoBuffId[spell.highestRankSingleId] = spell.buffId
-    BOM.spellIdIsSingleLookup[spell.highestRankSingleId] = true
-    BOM.buffFromSpellIdLookup[spell.highestRankSingleId] = spell
+    allBuffsModule.spellIdtoBuffId[spell.highestRankSingleId] = spell.buffId
+    allBuffsModule.spellIdIsSingleLookup[spell.highestRankSingleId] = true
+    allBuffsModule.buffFromSpellIdLookup[spell.highestRankSingleId] = spell
   end
 
   if spell.groupFamily then
     for sindex, eachGroupId in ipairs(--[[---@not nil]] spell.groupFamily) do
-      BOM.spellIdtoBuffId[eachGroupId] = spell.buffId
-      BOM.buffFromSpellIdLookup[eachGroupId] = spell
+      allBuffsModule.spellIdtoBuffId[eachGroupId] = spell.buffId
+      allBuffsModule.buffFromSpellIdLookup[eachGroupId] = spell
 
       if IsSpellKnown(eachGroupId) then
         spell.highestRankGroupId = eachGroupId
@@ -189,8 +173,8 @@ function spellSetupModule:Setup_EachSpell_CacheUpdate(spell)
   end
 
   if spell.highestRankGroupId then
-    BOM.spellIdtoBuffId[spell.highestRankGroupId] = spell.buffId
-    BOM.buffFromSpellIdLookup[spell.highestRankGroupId] = spell
+    allBuffsModule.spellIdtoBuffId[spell.highestRankGroupId] = spell.buffId
+    allBuffsModule.buffFromSpellIdLookup[spell.highestRankGroupId] = spell
   end
 end
 
@@ -245,8 +229,8 @@ end
 ---Adds a spell to the palette of spells to configure and use, for each profile
 ---@param spell BomBuffDefinition
 function spellSetupModule:Setup_EachSpell_Add(spell)
-  tinsert(BOM.selectedBuffs, spell)
-  toolboxModule:iMerge(BOM.allSpellIds, spell.singleFamily, spell.groupFamily or {},
+  tinsert(allBuffsModule.selectedBuffs, spell)
+  toolboxModule:iMerge(allBuffsModule.allSpellIds, spell.singleFamily, spell.groupFamily or {},
           spell.highestRankSingleId, spell.highestRankGroupId)
 
   if spell.cancelForm then
@@ -295,7 +279,7 @@ end
 ---@param buff BomBuffDefinition
 function spellSetupModule:Setup_EachBuff(buff)
   buff.SkipList = {}
-  BOM.buffFromSpellIdLookup[buff.buffId] = buff
+  allBuffsModule.buffFromSpellIdLookup[buff.buffId] = buff
 
   self:Setup_EachSpell_CacheUpdate(buff)
 
@@ -363,8 +347,6 @@ function spellSetupModule:SetupAvailableSpells()
     character[eachProfile].CurrentBlessing = character[eachProfile].CurrentBlessing or profileModule:NewBlessingState()
   end
 
-  self:Setup_MaybeAddCustomSpells()
-
   --Spells selected for the current class/settings/profile etc
   self:Setup_ResetCaches()
 
@@ -382,7 +364,7 @@ function spellSetupModule:SetupAvailableSpells()
   self:Setup_CancelBuffs()
 
   ---@param buff BomBuffDefinition
-  for _buffId, buff in pairs(BOM.allBuffomatBuffs) do
+  for _buffId, buff in pairs(allBuffsModule.allBuffs) do
     self:Setup_EachBuff(buff)
   end -- for all BOM-supported spells
 end

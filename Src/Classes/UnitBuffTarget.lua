@@ -24,7 +24,7 @@ end
 ---@param m BomUnit
 ---@return BomUnitBuffTarget
 function buffTargetModule:FromUnit(m)
-  return self:New(m.unitGUID, m.link)
+  return self:New(m.unitId, m.link)
 end
 
 ---@param m BomUnit

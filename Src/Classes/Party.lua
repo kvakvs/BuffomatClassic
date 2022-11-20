@@ -1,23 +1,36 @@
 --local TOCNAME, _ = ...
---local BOM = BuffomatAddon ---@type BomAddon
+local BOM = BuffomatAddon ---@type BomAddon
+
+---Collection of tables of buffs, indexed per unit name
+---@alias BomBuffUpdatesPerUnit {[string]: number} Time when buffs updated on that unit
 
 ---@shape BomPartyModule
----@field buffs BomBuffCollectionPerUnit Saved self buffs for everyone
----@field partyCacheInvalidation "clear"|number[]|nil Set 'clear' for full invalidation, number[] array for partial invalidation, nil to validate
+---@field theParty BomParty Synchronized party cache, invalidated on party change events
+---@field unitAurasLastUpdated BomBuffUpdatesPerUnit When each unit got their aura last updated, indexed by spellid
+---@field partyCacheInvalidation {[number]: boolean} Set 'clear' for full invalidation, number[] array for partial invalidation, nil to validate
+---@field itemListTarget table<number, string> Remember who casted item buff on you?
+---@field playerManaLimit number Player max mana
+---@field playerMana number Player current mana
 local partyModule = BomModuleManager.partyModule ---@type BomPartyModule
-partyModule.buffs = --[[---@type BomBuffCollectionPerUnit]] {}
+
+partyModule.unitAurasLastUpdated = --[[---@type BomBuffUpdatesPerUnit]] {}
+partyModule.partyCacheInvalidation = --[[---@type {[number]: boolean}]] {}
+partyModule.itemListTarget = {}
+partyModule.playerMana = 0
+partyModule.playerManaLimit = 0
 
 local buffomatModule = BomModuleManager.buffomatModule
 local toolboxModule = BomModuleManager.toolboxModule
 local unitCacheModule = BomModuleManager.unitCacheModule
+local taskScanModule = BomModuleManager.taskScanModule
 
----@alias BomUnitDictByGroup {[number]: BomUnit}
----@alias BomUnitDictByUnitGUID {[string]: BomUnit}
+---@alias BomUnitDictByUnitId {[string]: BomUnit}
 ---@alias BomUnitDictByName {[string]: BomUnit}
+---@alias BomUnitDictByGroup {[number]: BomUnitDictByName}
 
 ---@class BomParty
 ---@field byGroup BomUnitDictByGroup Party members by group number
----@field byUnitGUID BomUnitDictByUnitGUID Party members by group number
+---@field byUnitId BomUnitDictByUnitId Party members by group number
 ---@field byName BomUnitDictByName Party members by name
 ---@field player BomUnit
 ---@field playerPet BomUnit|nil
@@ -28,22 +41,35 @@ partyClass.__index = partyClass
 function partyModule:New()
   local p = --[[---@type BomParty]] {}
   p.byGroup = --[[---@type BomUnitDictByGroup]] {}
-  p.byUnitGUID = --[[---@type BomUnitDictByUnitGUID]] {}
+  p.byUnitId = --[[---@type BomUnitDictByUnitId]] {}
   p.byName = --[[---@type BomUnitDictByName]] {}
   setmetatable(p, partyClass)
   return p
 end
 
+---@param unitName string
+---@param evType string
+function partyModule:OnBuffsChangedEvent(unitName, spellId, evType)
+  if self.theParty and self.theParty:IsNameInParty(unitName) == false then
+    return
+  end
+  self.unitAurasLastUpdated[unitName] = self.unitAurasLastUpdated[unitName] or {}
+  self.unitAurasLastUpdated[unitName] = GetTime()
+end
+
 ---@param member BomUnit
 function partyClass:Add(member)
-  self.byUnitGUID[member.unitGUID] = member
-  self.byGroup[member.group] = member
+  self.byUnitId[member.unitId] = member
+
+  self.byGroup[member.group] = self.byGroup[member.group] or {}
+  self.byGroup[member.group][member.name] = member
+
   self.byName[member.name] = member
 end
 
 ---@param name string
 ---@return boolean
-function partyClass:IsPartyMember(name)
+function partyClass:IsNameInParty(name)
   return self.byName[name] ~= nil
 end
 
@@ -51,11 +77,11 @@ end
 ---@param party BomParty
 function partyModule:CleanUpBuffs(party)
   -- Clean partyModule.buffs up
-  for name, val in pairs(self.buffs) do
+  for name, val in pairs(self.unitAurasLastUpdated) do
     local ok = false
 
-    if not party:IsPartyMember(name) then
-      self.buffs[name] = nil
+    if not party:IsNameInParty(name) then
+      self.unitAurasLastUpdated[name] = nil
     end
   end
 end
@@ -94,19 +120,30 @@ function partyModule:GetPartySize()
   return count
 end
 
----@param groups number[]|nil
-function partyModule:InvalidatePartyCache(groups)
-  self.partyCacheInvalidation = groups or "clear"
+function partyModule:InvalidatePartyCache()
+  self.partyCacheInvalidation[1] = true
+  self.partyCacheInvalidation[2] = true
+  self.partyCacheInvalidation[3] = true
+  self.partyCacheInvalidation[4] = true
+  self.partyCacheInvalidation[5] = true
+  self.partyCacheInvalidation[6] = true
+  self.partyCacheInvalidation[7] = true
+  self.partyCacheInvalidation[8] = true
+end
+
+---@param group number
+function partyModule:InvalidatePartyGroup(group)
+  self.partyCacheInvalidation[group] = true
 end
 
 function partyModule:ValidatePartyCache()
-  self.partyCacheInvalidation = nil
+  wipe(self.partyCacheInvalidation)
 end
 
 ---@return number[]
 function partyModule:GetInvalidGroups()
   if self.partyCacheInvalidation == "clear" then
-    return {1, 2, 3, 4, 5, 6, 7, 8}
+    return { 1, 2, 3, 4, 5, 6, 7, 8 }
   end
   if type(self.partyCacheInvalidation) == "table" then
     return --[[---@type number[] ]] self.partyCacheInvalidation
@@ -118,9 +155,9 @@ end
 ---@param invalidGroups number[]
 function partyModule:RefreshParty(party, invalidGroups)
   if IsInRaid() then
-    party:Get40manRaidMembers(invalidGroups)
+    party:Get40manMembers(invalidGroups)
   else
-    party:Get5manPartyMembers()
+    party:Get5manMembers()
   end
 
   if buffomatModule.shared.BuffTarget
@@ -159,9 +196,25 @@ function partyClass:GetPlayerAndPetUnit()
   else
     self.playerPet = nil
   end
+
+  -- Refresh weapon-buffs
+  -- Clear old
+  local OldMainHandBuff = self.player.mainhandEnchantment
+  local OldOffHandBuff = self.player.offhandEnchantment
+
+  self.player:UpdatePlayerWeaponEnchantments()
+
+  if OldMainHandBuff ~= self.player.mainhandEnchantment then
+    buffomatModule:SetForceUpdate("mainHandBuffChanged")
+  end
+
+  if OldOffHandBuff ~= self.player.offhandEnchantment then
+    buffomatModule:SetForceUpdate("offhandBuffChanged")
+  end
 end
 
-function partyClass:Get5manPartyMembers()
+---@return BomParty
+function partyClass:Get5manMembers()
   for groupIndex = 1, 4 do
     local partyMember = unitCacheModule:GetUnit("party" .. groupIndex, nil, nil, nil)
     if partyMember then
@@ -178,12 +231,14 @@ function partyClass:Get5manPartyMembers()
   end
 
   self:GetPlayerAndPetUnit()
+  return self
 end
 
 ---For when player is in raid, retrieve all 40 raid members
 ---InvalidGroups parameter allows reloading partially 5 members at a time
 ---@param invalidGroups number[] Groups to reload
-function partyClass:Get40manRaidMembers(invalidGroups)
+---@return BomParty
+function partyClass:Get40manMembers(invalidGroups)
   local nameGroupMap = --[[---@type BomNameGroupMap]] {}
   local nameRoleMap = --[[---@type BomNameRoleMap]] {}
 
@@ -204,4 +259,78 @@ function partyClass:Get40manRaidMembers(invalidGroups)
   end -- invalidated groups
 
   self:GetPlayerAndPetUnit()
+  return self
+end
+
+---Fail if unit full name doesn't match saved member name
+---@param party BomParty
+---@return boolean
+local function validatePartyMembers(party)
+  for i, member in pairs(party.byUnitId) do
+    local name = UnitFullName(member.unitId)
+
+    if name ~= member.name then
+      return false
+    end
+  end
+
+  return true
+end
+
+---@return BomParty
+function partyModule:GetParty()
+  -- and buffs
+  local party ---@type BomParty
+  local invalidGroups = self:GetInvalidGroups()
+
+  BOM.drinkingPersonCount = 0
+
+  -- check if stored party is correct!
+  if partyModule.partyCacheInvalidation ~= "clear"
+          and self.theParty ~= nil then
+
+    if #self.theParty == partyModule:GetPartySize() + (BOM.SaveTargetName and 1 or 0) then
+      if validatePartyMembers(self.theParty) then
+        -- Cache is valid, take that as a start value
+        party = self.theParty
+      end
+    end
+  end
+
+  if party ~= nil then
+    -- Partial refresh of existing raid or full party refresh
+    party = partyModule:RefreshParty(party, invalidGroups)
+  else
+    -- If previous cache partial refresh failed, do full refresh
+    party = partyModule:RefreshParty(partyModule:New(), {})
+  end
+
+  BOM.somebodyIsGhost = false
+
+  local playerZone = C_Map.GetBestMapForUnit("player")
+
+  if IsAltKeyDown() then
+    BOM.declineHasResurrection = true
+    taskScanModule:ClearSkip()
+  end
+
+  -- For every party member which is in same zone, not a ghost or is a target
+  for _i, member in pairs(party.byUnitId) do
+    if tContains(invalidGroups, member.group) then
+      member:UpdateBuffs(party, playerZone)
+    end
+  end -- for all in party
+
+  -- For group 1 always refresh self and self-pet
+  if tContains(invalidGroups, 1) then
+    party.player:UpdateBuffs(party, playerZone)
+
+    if party.playerPet ~= nil then
+      (--[[---@not nil]] party.playerPet):UpdateBuffs(party, playerZone)
+    end
+  end
+
+  BOM.declineHasResurrection = false
+  self.theParty = party
+  return party
 end

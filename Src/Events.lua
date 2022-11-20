@@ -166,10 +166,10 @@ local partyCheckMask = COMBATLOG_OBJECT_AFFILIATION_RAID + COMBATLOG_OBJECT_AFFI
 
 local function Event_COMBAT_LOG_EVENT_UNFILTERED()
   ---@type number, any, boolean, string, string, any, any, string, string, any, any, number, string, number, number, number
-  local timestamp, event, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags,
+  local timestamp, event, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, unitName, destFlags, destRaidFlags,
   spellId, spellName, spellSchool, auraType, amount = CombatLogGetCurrentEventInfo()
 
-  if bit.band(destFlags, partyCheckMask) > 0 and destName ~= nil and destName ~= "" then
+  if bit.band(destFlags, partyCheckMask) > 0 and unitName ~= nil and unitName ~= "" then
     --print(event,spellName,bit.band(destFlags,partyCheckMask)>0,bit.band(sourceFlags,COMBATLOG_OBJECT_AFFILIATION_MINE)>0)
     if event == "UNIT_DIED" then
       --partyModule.buffs[destName]=nil -- problem with hunters and fake-deaths!
@@ -177,31 +177,23 @@ local function Event_COMBAT_LOG_EVENT_UNFILTERED()
       --print("dead",destName)
       buffomatModule:SetForceUpdate("unitDied")
 
-    elseif buffomatModule.shared.Duration[spellName] then
-      if bit.band(sourceFlags, COMBATLOG_OBJECT_AFFILIATION_MINE) > 0 then
-        if event == "SPELL_CAST_SUCCESS" then
+    elseif allBuffsModule.spellIdtoBuffId
+            and allBuffsModule.spellIdtoBuffId[spellId] ~= nil then
+      -- a known buff
+      --if bit.band(sourceFlags, COMBATLOG_OBJECT_AFFILIATION_MINE) > 0 then
+      if event == "SPELL_CAST_SUCCESS" then
+        -- nothing
 
-        elseif event == "SPELL_AURA_REFRESH" then
-          partyModule.buffs[destName] = partyModule.buffs[destName] or {}
-          partyModule.buffs[destName][spellName] = GetTime()
+      elseif event == "SPELL_AURA_REFRESH" then
+        partyModule:OnBuffsChangedEvent(unitName, spellId, "refreshed")
 
-        elseif event == "SPELL_AURA_APPLIED" then
-          partyModule.buffs[destName] = partyModule.buffs[destName] or {}
-          if partyModule.buffs[destName][spellName] == nil then
-            partyModule.buffs[destName][spellName] = GetTime()
-          end
+      elseif event == "SPELL_AURA_APPLIED" then
+        partyModule:OnBuffsChangedEvent(unitName, spellId, "applied")
 
-        elseif event == "SPELL_AURA_REMOVED" then
-          if partyModule.buffs[destName] and partyModule.buffs[destName][spellName] then
-            partyModule.buffs[destName][spellName] = nil
-          end
-        end
-
-      elseif event == "SPELL_AURA_REFRESH" or event == "SPELL_AURA_APPLIED" and event == "SPELL_AURA_REMOVED" then
-        if partyModule.buffs[destName] and partyModule.buffs[destName][spellName] then
-          partyModule.buffs[destName][spellName] = nil
-        end
+      elseif event == "SPELL_AURA_REMOVED" then
+        partyModule:OnBuffsChangedEvent(unitName, spellId, "removed")
       end
+      --end
     end
   end
 end
@@ -257,7 +249,7 @@ end
 eventsModule.isPlayerInParty = IsInRaid() or IsInGroup()
 
 local function Event_PartyChanged()
-  partyModule:InvalidatePartyCache(nil)
+  partyModule:InvalidatePartyCache()
   buffomatModule:SetForceUpdate("partyChanged")
 
   -- if in_party changed from true to false, clear the watch groups

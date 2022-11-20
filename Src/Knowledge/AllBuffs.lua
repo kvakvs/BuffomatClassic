@@ -4,12 +4,27 @@ local BOM = BuffomatAddon ---@type BomAddon
 ---@alias BomBuffCategoryName ""|"tracking"|"pet"|"aura"|"seal"|"blessing"|"class"|"classicPhysFood"|"classicSpellFood"|"classicFood"|"classicPhysElixir"|"classicPhysBuff"|"classicBuff"|"classicSpellElixir"|"classicElixir"|"classicFlask"|"tbcPhysFood"|"tbcSpellFood"|"tbcFood"|"tbcPhysElixir"|"tbcSpellElixir"|"tbcElixir"|"tbcFlask"|"wotlkPhysFood"|"wotlkSpellFood"|"wotlkFood"|"wotlkPhysElixir"|"wotlkSpellElixir"|"wotlkElixir"|"wotlkFlask"|"scroll"|"weaponEnchantment"|"classWeaponEnchantment"
 
 ---@alias BomBuffidBuffLookup {[BomBuffId]: BomBuffDefinition}
+---@alias BomEnchantToSpellLookup {[BomEnchantmentId]: BomSpellId}
 
 ---@shape BomAllBuffsModule
----@field buffCategories BomBuffCategoryName[] Category names for buffs
 ---@field allBuffs BomBuffidBuffLookup All buffs, same as BOM.AllBuffomatSpells for convenience
+---@field allSpellIds number[]
+---@field buffCategories BomBuffCategoryName[] Category names for buffs
+---@field buffFromSpellIdLookup {[BomSpellId]: BomBuffDefinition} Lookup table for buff definitions by spell id
 ---@field CrusaderAuraSpell BomBuffDefinition
+---@field enchantToSpellLookup BomEnchantToSpellLookup Reverse-maps enchantment ids back to spells
+---@field itemListSpellLookup table<number, number> Map itemid to spell?
+---@field selectedBuffs BomBuffDefinition[]
+---@field spellIdIsSingleLookup table<number, boolean> Whether spell ids are single buffs
+---@field spellIdtoBuffId table<number, number> Maps spell ids to the key id of spell in the AllSpells
+---@field spellToSpellLookup table<number, number> Maps spells ids to other spell ids
 local allBuffsModule = BomModuleManager.allBuffsModule ---@type BomAllBuffsModule
+
+allBuffsModule.selectedBuffs = {}
+allBuffsModule.spellIdIsSingleLookup = {}
+allBuffsModule.buffFromSpellIdLookup = --[[---@type {[BomSpellId]: BomBuffDefinition}]] {}
+allBuffsModule.enchantToSpellLookup = --[[---@type BomEnchantToSpellLookup]] {}
+
 local _t = BomModuleManager.languagesModule
 local buffDefModule = BomModuleManager.buffDefinitionModule
 local deathknightModule = BomModuleManager.allSpellsDeathknightModule
@@ -19,7 +34,6 @@ local enchantmentsModule = BomModuleManager.allConsumesEnchantmentsModule
 local flasksModule = BomModuleManager.allConsumesFlasksModule
 local foodModule = BomModuleManager.allConsumesFoodModule
 local hunterModule = BomModuleManager.allSpellsHunterModule
-local itemCacheModule = BomModuleManager.itemCacheModule
 local mageModule = BomModuleManager.allSpellsMageModule
 local otherModule = BomModuleManager.allConsumesOtherModule
 local paladinModule = BomModuleManager.allSpellsPaladinModule
@@ -265,10 +279,10 @@ function allBuffsModule:SetupSpells()
     end
   end
 
-  BOM.enchantToSpellLookup = {}
+  allBuffsModule.enchantToSpellLookup = {}
   for dest, list in pairs(enchantments) do
     for i, id in ipairs(list) do
-      BOM.enchantToSpellLookup[id] = dest
+      allBuffsModule.enchantToSpellLookup[id] = dest
     end
   end
 
@@ -278,7 +292,6 @@ function allBuffsModule:SetupSpells()
     self.allBuffs[buff.buffId] = buff
   end
 
-  BOM.allBuffomatBuffs = self.allBuffs
   BOM.enchantList = enchantments
 end
 
@@ -329,13 +342,14 @@ BOM.buffExchangeId = { -- combine-spell-ids to new one
   [16591] = { 16591, 16589, 16595, 16593 }, -- noggenfoger
 }
 
-BOM.spellToSpellLookup = {}
+allBuffsModule.spellToSpellLookup = {}
 for dest, list in pairs(BOM.buffExchangeId) do
   for i, id in ipairs(list) do
-    BOM.spellToSpellLookup[id] = dest
+    allBuffsModule.spellToSpellLookup[id] = dest
   end
 end
 
+---@deprecated
 BOM.itemList = {
   --{6948}, -- Hearthstone | Ruhestein
   --{4604}, -- Forest Mushroom | Waldpilz
@@ -343,7 +357,7 @@ BOM.itemList = {
   { 5232, 16892, 16893, 16895, -- Soulstone | Seelenstein
     16896 }, -- TBC: Major Soulstone
 }
-BOM.itemListSpellLookup = {
+allBuffsModule.itemListSpellLookup = {
   [8079]  = 432, -- Water | Wasser
   [5232]  = 20762,
   [16892] = 20762,
@@ -351,7 +365,6 @@ BOM.itemListSpellLookup = {
   [16895] = 20762,
   [16896] = 20762, -- Soulstone | Seelenstein
 }
-BOM.itemListTarget = {}
 
 -- -@return table<number, BomBuffDefinition>
 function allBuffsModule:SetupCancelBuffs()
@@ -416,7 +429,7 @@ BOM.AllDrink = {
 
 ---For all spells database load data for spellids and items
 function allBuffsModule:LoadItemsAndSpells()
-  for _index, buffDef in pairs(BOM.allBuffomatBuffs) do
+  for _index, buffDef in pairs(self.allBuffs) do
     buffDef:Preload()
   end
 end

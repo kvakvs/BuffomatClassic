@@ -5,6 +5,7 @@ local BOM = BuffomatAddon ---@type BomAddon
 ---@shape BomUnitModule
 local unitModule = BomModuleManager.unitModule ---@type BomUnitModule
 
+local allBuffsModule = BomModuleManager.allBuffsModule
 local buffomatModule = BomModuleManager.buffomatModule
 local buffModule = BomModuleManager.buffModule
 local partyModule = BomModuleManager.partyModule
@@ -26,12 +27,12 @@ local toolboxModule = BomModuleManager.toolboxModule
 ---@field isTank boolean Is this member marked as tank
 ---@field knownBuffs {[BomSpellId]: BomUnitBuff} Buffs on player keyed by spell id, only buffs supported by Buffomat are stored
 ---@field link string
----@field MainhandBuff number|nil Temporary enchant on main hand
+---@field mainhandEnchantment BomBuffId|nil Temporary enchant on main hand
 ---@field name string
 ---@field NeedBuff boolean
----@field OffhandBuff number|nil Temporary enchant on off-hand
+---@field offhandEnchantment BomBuffId|nil Temporary enchant on off-hand
 ---@field owner BomUnit|nil Owner for pet
----@field unitGUID string
+---@field unitId string
 local unitClass = {}
 unitClass.__index = unitClass
 
@@ -46,9 +47,9 @@ end
 ---@param playerUnit BomUnit
 function unitClass:ForceUpdateBuffs(playerUnit)
   self.isPlayer = (self == playerUnit)
-  self.isDead = UnitIsDeadOrGhost(self.unitGUID) and not UnitIsFeignDeath(self.unitGUID)
-  self.isGhost = UnitIsGhost(self.unitGUID)
-  self.isConnected = UnitIsConnected(self.unitGUID)
+  self.isDead = UnitIsDeadOrGhost(self.unitId) and not UnitIsFeignDeath(self.unitId)
+  self.isGhost = UnitIsGhost(self.unitId)
+  self.isConnected = UnitIsConnected(self.unitId)
 
   self.NeedBuff = true
 
@@ -59,7 +60,7 @@ function unitClass:ForceUpdateBuffs(playerUnit)
 
   if self.isDead then
     -- Clear known buffs for self, as we're very dead atm
-    partyModule.buffs[self.name] = nil
+    partyModule.unitAurasLastUpdated[self.name] = nil
   else
     self.hasReputationTrinket = false
     self.hasRidingTrinket = false
@@ -69,7 +70,7 @@ function unitClass:ForceUpdateBuffs(playerUnit)
     repeat
       buffIndex = buffIndex + 1
 
-      local unitAura = buffomatModule:UnitAura(self.unitGUID, buffIndex, "HELPFUL")
+      local unitAura = buffomatModule:UnitAura(self.unitId, buffIndex, "HELPFUL")
 
       if unitAura.spellId then
         self.allBuffs[unitAura.spellId] = true -- save all buffids even those not supported
@@ -78,7 +79,7 @@ function unitClass:ForceUpdateBuffs(playerUnit)
         end
       end
 
-      local spellId = BOM.spellToSpellLookup[unitAura.spellId] or unitAura.spellId
+      local spellId = allBuffsModule.spellToSpellLookup[unitAura.spellId] or unitAura.spellId
 
       if spellId then
         -- Skip members who have a buff on the global ignore list - example phaseshifted imps
@@ -96,15 +97,15 @@ function unitClass:ForceUpdateBuffs(playerUnit)
         --  self.hasCarrot = true
         --end
 
-        if tContains(BOM.allSpellIds, spellId) then
-          local configKey = BOM.spellIdtoBuffId[spellId]
+        if tContains(allBuffsModule.allSpellIds, spellId) then
+          local configKey = allBuffsModule.spellIdtoBuffId[spellId]
 
           self.knownBuffs[configKey] = buffModule:New(
                   spellId,
                   unitAura.duration,
                   unitAura.expirationTime,
                   unitAura.source,
-                  BOM.spellIdIsSingleLookup[spellId])
+                  allBuffsModule.spellIdIsSingleLookup[spellId])
         end
       end
 
@@ -112,15 +113,15 @@ function unitClass:ForceUpdateBuffs(playerUnit)
   end -- if is not dead
 end
 
----@param unitid string
+---@param unitId string
 ---@param name string
 ---@param group number
 ---@param class BomClassName
 ---@param link string
 ---@param isTank boolean
-function unitClass:Construct(unitid, name, group, class, link, isTank)
+function unitClass:Construct(unitId, name, group, class, link, isTank)
   self.distance = 1000044 -- special value to find out that the range error originates from this module
-  self.unitGUID = unitid
+  self.unitId = unitId
   self.name = name
   self.group = group
   self.hasResurrection = self.hasResurrection or false
@@ -145,19 +146,19 @@ function unitClass:GetText()
 end
 
 function unitClass:ClearMainhandBuff()
-  self.MainhandBuff = nil
+  self.mainhandEnchantment = nil
 end
 
 ---@param enchantmentId BomEnchantmentId
 ---@param expiration number
 function unitClass:SetMainhandBuff(enchantmentId, expiration)
-  local enchantBuffId = BOM.enchantToSpellLookup[enchantmentId]
+  local enchantBuffId = allBuffsModule.enchantToSpellLookup[enchantmentId]
   local duration
 
-  if BOM.buffFromSpellIdLookup[enchantBuffId]
-          and BOM.buffFromSpellIdLookup[enchantBuffId].singleDuration
+  if allBuffsModule.buffFromSpellIdLookup[enchantBuffId]
+          and allBuffsModule.buffFromSpellIdLookup[enchantBuffId].singleDuration
   then
-    duration = BOM.buffFromSpellIdLookup[enchantBuffId].singleDuration
+    duration = allBuffsModule.buffFromSpellIdLookup[enchantBuffId].singleDuration
   else
     duration = 300
   end
@@ -168,23 +169,23 @@ function unitClass:SetMainhandBuff(enchantmentId, expiration)
           GetTime() + expiration / 1000,
           "player",
           true)
-  self.MainhandBuff = enchantBuffId
+  self.mainhandEnchantment = enchantBuffId
 end
 
 function unitClass:ClearOffhandBuff()
-  self.OffhandBuff = nil
+  self.offhandEnchantment = nil
 end
 
 ---@param enchantmentId BomEnchantmentId
 ---@param expiration number
 function unitClass:SetOffhandBuff(enchantmentId, expiration)
-  local enchantBuffId = BOM.enchantToSpellLookup[enchantmentId]
+  local enchantBuffId = allBuffsModule.enchantToSpellLookup[enchantmentId]
   local duration
 
-  if BOM.buffFromSpellIdLookup[enchantBuffId]
-          and BOM.buffFromSpellIdLookup[enchantBuffId].singleDuration
+  if allBuffsModule.buffFromSpellIdLookup[enchantBuffId]
+          and allBuffsModule.buffFromSpellIdLookup[enchantBuffId].singleDuration
   then
-    duration = BOM.buffFromSpellIdLookup[enchantBuffId].singleDuration
+    duration = allBuffsModule.buffFromSpellIdLookup[enchantBuffId].singleDuration
   else
     duration = 300
   end
@@ -196,24 +197,24 @@ function unitClass:SetOffhandBuff(enchantmentId, expiration)
           "player",
           true)
 
-  self.OffhandBuff = enchantBuffId
+  self.offhandEnchantment = enchantBuffId
 end
 
 
 ---@param party BomParty
 ---@param playerZone number
 function unitClass:UpdateBuffs(party, playerZone)
-  self.isSameZone = (C_Map.GetBestMapForUnit(self.unitGUID) == playerZone)
+  self.isSameZone = (C_Map.GetBestMapForUnit(self.unitId) == playerZone)
           or self.isGhost
-          or self.unitGUID == "target"
+          or self.unitId == "target"
 
   if not self.isDead
           or BOM.declineHasResurrection
   then
     self.hasResurrection = false
-    self.distance = toolboxModule:UnitDistanceSquared(self.unitGUID)
+    self.distance = toolboxModule:UnitDistanceSquared(self.unitId)
   else
-    self.hasResurrection = UnitHasIncomingResurrection(self.unitGUID)
+    self.hasResurrection = UnitHasIncomingResurrection(self.unitId)
             or self.hasResurrection
   end
 
@@ -225,4 +226,27 @@ function unitClass:UpdateBuffs(party, playerZone)
   if updateBuffs then
     self:ForceUpdateBuffs(party.player)
   end -- if force update
+end
+
+function unitClass:UpdatePlayerWeaponEnchantments()
+  ---@type boolean, number, number, BomEnchantmentId, boolean, number, number, BomEnchantmentId
+  local hasMainHandEnchant, mainHandExpiration, mainHandCharges, mainHandEnchantID
+  , hasOffHandEnchant, offHandExpiration, offHandCharges, offHandEnchantId = GetWeaponEnchantInfo()
+
+  if hasMainHandEnchant and mainHandEnchantID
+          and allBuffsModule.enchantToSpellLookup[mainHandEnchantID] then
+    self:SetMainhandBuff(mainHandEnchantID, mainHandExpiration)
+  else
+    self:ClearMainhandBuff()
+  end
+
+  if hasOffHandEnchant
+          and offHandEnchantId
+          and allBuffsModule.enchantToSpellLookup[offHandEnchantId] then
+    self:SetOffhandBuff(offHandEnchantId, offHandExpiration)
+  else
+    self:ClearOffhandBuff()
+  end
+
+  return self
 end
