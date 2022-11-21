@@ -6,15 +6,12 @@ local constModule = BomModuleManager.constModule
 local itemCacheModule = BomModuleManager.itemCacheModule
 
 ---@shape BomSpellSetupModule
-local spellSetupModule = BomModuleManager.spellSetupModule ---@type BomSpellSetupModule
+local spellSetupModule = BomModuleManager.spellSetupModule
 
 local allBuffsModule = BomModuleManager.allBuffsModule
 local buffDefinitionModule = BomModuleManager.buffDefinitionModule
 local toolboxModule = BomModuleManager.toolboxModule
 local profileModule = BomModuleManager.profileModule
-
----Flag set to true when custom spells and cancel-spells were imported from the config
-local bomBuffsImportedFromConfig = false
 
 ---Formats a spell icon + spell name as a link
 -- TODO: Move to SpellDef class
@@ -37,10 +34,10 @@ end
 function spellSetupModule:Setup_ResetCaches()
   wipe(allBuffsModule.selectedBuffs)
   wipe(allBuffsModule.selectedBuffsSpellIds)
+  wipe(allBuffsModule.spellIdtoBuffId)
 
-  BOM.cancelForm = {}
+  allBuffsModule.cancelForm = {}
   allBuffsModule.allSpellIds = {}
-  allBuffsModule.spellIdtoBuffId = {}
   allBuffsModule.buffFromSpellIdLookup = --[[---@type {[BomSpellId]: BomBuffDefinition}]] {}
 
   buffomatModule.shared.Cache = buffomatModule.shared.Cache or {}
@@ -240,11 +237,15 @@ function spellSetupModule:Setup_EachBuff_AddKnown(buffDef)
     allBuffsModule.selectedBuffsSpellIds[spellId] = buffDef
   end
 
-  toolboxModule:iMerge(allBuffsModule.allSpellIds, buffDef.singleFamily, buffDef.groupFamily or {},
+  toolboxModule:iMerge(
+          allBuffsModule.allSpellIds,
+          buffDef.singleFamily, buffDef.groupFamily or {},
           buffDef.highestRankSingleId, buffDef.highestRankGroupId)
 
   if buffDef.cancelForm then
-    toolboxModule:iMerge(BOM.cancelForm, buffDef.singleFamily, buffDef.groupFamily or {},
+    toolboxModule:iMerge(
+            allBuffsModule.cancelForm,
+            buffDef.singleFamily, buffDef.groupFamily or {},
             buffDef.highestRankSingleId, buffDef.highestRankGroupId)
   end
 

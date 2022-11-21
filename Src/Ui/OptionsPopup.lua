@@ -15,6 +15,7 @@ local constModule = BomModuleManager.constModule
 local buffDefModule = BomModuleManager.buffDefinitionModule
 local profileModule = BomModuleManager.profileModule
 local popupModule = BomModuleManager.popupModule
+local allBuffsModule = BomModuleManager.allBuffsModule
 
 -----@deprecated See options.lua, and defaults in sharedState.lua and characterState.lua
 --optionsPopupModule.behaviourSettings = --[[---@type BomBehaviourSetting[] ]] {

@@ -41,7 +41,6 @@ local toolboxModule = BomModuleManager.toolboxModule
 ---@field cachedPlayerBag BomCachedPlayerBag Items in player's bag
 ---@field cancelBuffs BomBuffDefinition[] All spells to be canceled on detection
 ---@field cancelBuffSource string Unit who casted the buff to be auto-canceled
----@field cancelForm table<number, number> Spell ids which cancel shapeshift form
 ---@field castFailedBuff BomBuffDefinition|nil
 ---@field castFailedBuffTarget BomUnit|nil
 ---@field castFailedSpellId number|nil

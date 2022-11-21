@@ -3,7 +3,7 @@ local BOM = BuffomatAddon ---@type BomAddon
 ---@shape BomTaskScanModule
 ---@field taskListSizeBeforeScan number Saved size before scan
 ---@field roundRobinGroup number Group number to refresh, rotates from 1 to 8 in raid, or stays always 1 otherwise
-local taskScanModule = BomModuleManager.taskScanModule ---@type BomTaskScanModule
+local taskScanModule = BomModuleManager.taskScanModule
 taskScanModule.taskListSizeBeforeScan = 0
 taskScanModule.roundRobinGroup = 0
 
@@ -267,7 +267,7 @@ function taskScanModule:UpdateMacro(nextCast)
     BOM:Print("Update macro: Bad spell spellid=" .. nextCast.spellId)
   end
 
-  if tContains(BOM.cancelForm, nextCast.spellId) then
+  if tContains(allBuffsModule.cancelForm, nextCast.spellId) then
     tinsert(macro.lines, "/cancelform [nocombat]")
   end
   tinsert(macro.lines, "/bom _checkforerror")
@@ -278,13 +278,13 @@ function taskScanModule:UpdateMacro(nextCast)
 end
 
 ---@param spellName string
----@param party BomParty
+---@param units BomUnit[]
 ---@param groupIndex number|nil
 ---@param spell BomBuffDefinition
-function taskScanModule:GetGroupInRange(spellName, party, groupIndex, spell)
+function taskScanModule:GetGroupInRange(spellName, units, groupIndex, spell)
   local minDist
   local ret
-  for i, member in pairs(party.byUnitId) do
+  for i, member in pairs(units) do
     if member.group == groupIndex then
       if not (IsSpellInRange(spellName, member.unitId) == 1 or member.isDead) then
         if member.distance > 2000 then
@@ -870,6 +870,7 @@ end
 ---@param groupIndex number|nil
 ---@param buffDef BomBuffDefinition
 ---@param party BomParty The party
+---@param minBuff number How many missing buffs mandate the group buff
 ---@param inRange boolean
 ---@return boolean inRange
 function taskScanModule:FindTargetForGroupBuff(groupIndex, buffDef, party, minBuff, inRange)
@@ -877,12 +878,11 @@ function taskScanModule:FindTargetForGroupBuff(groupIndex, buffDef, party, minBu
           and buffDef.groupsNeedBuff[groupIndex] >= minBuff
   then
     BOM.repeatUpdate = true
-    local groupInRange = self:GetGroupInRange(
-            buffDef.groupText, --[[---@type BomParty]] buffDef.unitsNeedBuff, groupIndex, buffDef)
+    local groupInRange = self:GetGroupInRange(buffDef.groupText, buffDef.unitsNeedBuff, groupIndex, buffDef)
 
-    if groupInRange == nil then
-      groupInRange = self:GetGroupInRange(buffDef.groupText, party, groupIndex, buffDef)
-    end
+    --if groupInRange == nil then
+    --  groupInRange = self:GetGroupInRange(buffDef.groupText, party, groupIndex, buffDef)
+    --end
 
     --if groupInRange ~= nil and (not spell.GroupsHaveDead[groupIndex] or not buffomatModule.shared.DeathBlock) then
     if (groupIndex and not buffDef.groupsHaveDead[--[[---@not nil]] groupIndex])
@@ -905,20 +905,45 @@ function taskScanModule:FindTargetForGroupBuff(groupIndex, buffDef, party, minBu
   return inRange
 end
 
----Search for any party member in any size party, which is in range and needs the group buff.
----This is for WotLK style group buffing
----@param buffDef BomBuffDefinition
----@param party BomParty The party
----@param inRange boolean
----@return boolean inRange
-function taskScanModule:FindAnyPartyTargetForGroupBuff(buffDef, party, minBuff, inRange)
-  -- In WotLK group buffs do not allow range checking and are just generic 100+ yards line of sight spells
-  -- Use single spell name instead for range check
-  --local groupInRange = self:GetAnyPartyMemberInRange(buffDef.groupText, buffDef, playerParty, playerUnit)
-  local groupInRange = self:GetAnyPartyMemberInRange(buffDef.singleText, buffDef, party, playerUnit)
+-----Search for any party member in any size party, which is in range and needs the group buff.
+-----This is for WotLK style group buffing
+-----@param buffDef BomBuffDefinition
+-----@param party BomParty The party
+-----@param inRange boolean
+-----@return boolean inRange
+--function taskScanModule:FindAnyPartyTargetForGroupBuff(buffDef, party, minBuff, inRange)
+--  -- In WotLK group buffs do not allow range checking and are just generic 100+ yards line of sight spells
+--  -- Use single spell name instead for range check
+--  --local groupInRange = self:GetAnyPartyMemberInRange(buffDef.groupText, buffDef, playerParty, playerUnit)
+--  local groupInRange = self:GetAnyPartyMemberInRange(buffDef.singleText, buffDef, party, playerUnit)
+--
+--  --if (not buffDef.GroupsHaveDead[groupIndex] or not buffomatModule.shared.DeathBlock) then
+--  if groupInRange ~= nil then
+--    -- Text: Group 5 [Spell Name]
+--    tasklist:AddWithPrefix(
+--            _t("task.type.GroupBuff"),
+--            buffDef.groupLink or buffDef.groupText,
+--            buffDef.singleText,
+--            "",
+--            groupBuffTargetModule:New(0),
+--            false, nil)
+--    inRange = true
+--
+--    self:QueueSpell(buffDef.groupMana, buffDef.highestRankGroupId, buffDef.groupLink,
+--            groupInRange or party.player, buffDef, false)
+--  end -- if group not nil
+--
+--  return inRange
+--end
 
-  --if (not buffDef.GroupsHaveDead[groupIndex] or not buffomatModule.shared.DeathBlock) then
-  if groupInRange ~= nil then
+---@param buffDef BomBuffDefinition The spell to cast
+---@param party BomParty The party
+---@param minBuff number Option for minimum players with missing buffs to choose group buff
+---@param inRange boolean Spell target is in range; TODO: Remove passing this parameter
+function taskScanModule:AddBuff_GroupBuff(buffDef, party, minBuff, inRange)
+  if BOM.haveWotLK then
+    -- For WotLK: Scan entire party as one
+    --inRange = self:FindAnyPartyTargetForGroupBuff(buffDef, party, minBuff, inRange)
     -- Text: Group 5 [Spell Name]
     tasklist:AddWithPrefix(
             _t("task.type.GroupBuff"),
@@ -929,21 +954,9 @@ function taskScanModule:FindAnyPartyTargetForGroupBuff(buffDef, party, minBuff, 
             false, nil)
     inRange = true
 
+    -- WotLK buff self for group buffs
     self:QueueSpell(buffDef.groupMana, buffDef.highestRankGroupId, buffDef.groupLink,
-            groupInRange or party.player, buffDef, false)
-  end -- if group not nil
-
-  return inRange
-end
-
----@param buffDef BomBuffDefinition The spell to cast
----@param party BomParty The party
----@param minBuff number Option for minimum players with missing buffs to choose group buff
----@param inRange boolean Spell target is in range; TODO: Remove passing this parameter
-function taskScanModule:AddBuff_GroupBuff(buffDef, party, minBuff, inRange)
-  if BOM.haveWotLK then
-    -- For WotLK: Scan entire party as one
-    inRange = self:FindAnyPartyTargetForGroupBuff(buffDef, party, minBuff, inRange)
+            party.player, buffDef, false)
   else
     -- For non-WotLK: Scan 5man groups in current party
     for groupIndex = 1, 8 do
@@ -958,7 +971,7 @@ end
 ---@param minBuff number Option for minimum players with missing buffs to choose group buff
 ---@param inRange boolean Spell target is in range; TODO: Remove passing this parameter
 function taskScanModule:AddBuff_SingleBuff(buffDef, minBuff, inRange)
-  for _i, needBuff in ipairs(buffDef.unitsNeedBuff) do
+  for _i, needBuff in pairs(buffDef.unitsNeedBuff) do
     if not needBuff.isDead
             and buffDef.singleMana ~= nil
             and (buffomatModule.shared.NoGroupBuff
@@ -1206,7 +1219,7 @@ end
 ---@param target string Insert this text into macro where [@player] target text would go
 ---@return string, string {cast_button_title, bag_macro_command}
 function taskScanModule:AddConsumableSelfbuff(buffDef, playerUnit, castButtonTitle, macroCommand, target)
-  local haveItemOffCD, bag, slot, count = buffChecksModule:HasItem(buffDef.items, true)
+  local haveItemOffCD, bag, slot, count = buffChecksModule:HasItem(buffDef.items or {}, true)
   count = count or 0
 
   local taskText = _t("TASK_USE")
@@ -1270,7 +1283,7 @@ end
 function taskScanModule:AddConsumableWeaponBuff(buffDef, playerUnit,
                                                 castButtonTitle, macroCommand)
   -- count - reagent count remaining for the spell
-  local haveItem, bag, slot, count = buffChecksModule:HasItem(buffDef.items, true)
+  local haveItem, bag, slot, count = buffChecksModule:HasItem(buffDef.items or {}, true)
   count = count or 0
 
   if haveItem then

@@ -1,8 +1,8 @@
-local TOCNAME, _ = ...
+--local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BomAddon
 
 ---@shape BomEventsModule
-local eventsModule = BomModuleManager.eventsModule ---@type BomEventsModule
+local eventsModule = BomModuleManager.eventsModule
 
 local allBuffsModule = BomModuleManager.allBuffsModule
 local buffomatModule = BomModuleManager.buffomatModule
@@ -161,13 +161,16 @@ local function Event_PLAYER_TARGET_CHANGED()
   end
 end
 
-local partyCheckMask = COMBATLOG_OBJECT_AFFILIATION_RAID + COMBATLOG_OBJECT_AFFILIATION_PARTY + COMBATLOG_OBJECT_AFFILIATION_MINE
+local partyCheckMask = COMBATLOG_OBJECT_AFFILIATION_RAID
+        + COMBATLOG_OBJECT_AFFILIATION_PARTY
+        + COMBATLOG_OBJECT_AFFILIATION_MINE
 --  partyModule.buffs cleanup in scan bom_get_party_members
 
 local function Event_COMBAT_LOG_EVENT_UNFILTERED()
   ---@type number, any, boolean, string, string, any, any, string, string, any, any, number, string, number, number, number
-  local timestamp, event, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, unitName, destFlags, destRaidFlags,
-  spellId, spellName, spellSchool, auraType, amount = CombatLogGetCurrentEventInfo()
+  local timestamp, event, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags
+  , destGUID, unitName, destFlags, destRaidFlags, spellId, spellName, spellSchool
+  , auraType, amount = CombatLogGetCurrentEventInfo()
 
   if bit.band(destFlags, partyCheckMask) > 0 and unitName ~= nil and unitName ~= "" then
     --print(event,spellName,bit.band(destFlags,partyCheckMask)>0,bit.band(sourceFlags,COMBATLOG_OBJECT_AFFILIATION_MINE)>0)

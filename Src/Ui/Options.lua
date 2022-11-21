@@ -11,6 +11,7 @@ local allBuffsModule = BomModuleManager.allBuffsModule
 local buffomatModule = BomModuleManager.buffomatModule
 local constModule = BomModuleManager.constModule
 local eventsModule = BomModuleManager.eventsModule
+local taskScanModule = BomModuleManager.taskScanModule
 
 function optionsModule:ValueToText(type, value)
   if type == "string" then
@@ -63,6 +64,24 @@ function optionsModule:TemplateCheckbox(name, dict, key, notify)
         return nil
       end
     end,
+  }
+end
+
+---@param name string
+---@param onClick function Call this when button is pressed
+function optionsModule:TemplateButton(name, onClick)
+  self.optionsOrder = self.optionsOrder + 1
+
+  dict = dict or buffomatModule.shared
+  key = key or name
+
+  return {
+    name  = _t("options.short." .. name),
+    desc  = _t("options.long." .. name),
+    type  = "execute",
+    width = "half",
+    order = self.optionsOrder,
+    func   = onClick,
   }
 end
 
@@ -252,7 +271,11 @@ function optionsModule:CreateGeneralOptionsTable()
               end
       ),
       -- Play from Interface/Addons/Buffomat/Sounds/...
-      playSoundWhenTask     = self:TemplateSelect("PlaySoundWhenTask", sounds, "dropdown", nil, nil, nil, nil),
+      playSoundWhenTask     = self:TemplateSelect("PlaySoundWhenTask", sounds, "dropdown",
+              nil, nil, nil, nil),
+      soundTest = self:TemplateButton("PlaySoundWhenTask.test", function()
+        taskScanModule:PlayTaskSound()
+      end),
       debugLogging          = self:TemplateCheckbox("DebugLogging", nil, nil, nil),
     }
   }

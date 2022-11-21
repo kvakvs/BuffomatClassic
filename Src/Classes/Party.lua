@@ -251,6 +251,11 @@ function partyClass:Get40manMembers(invalidGroups)
         nameGroupMap[name] = subgroup
         nameRoleMap[name] = role
       end
+
+      local partyMember = unitCacheModule:GetUnit("raid" .. raidIndex, nameGroupMap, nameRoleMap, nil)
+      if partyMember then
+        self:Add(--[[---@not nil]] partyMember)
+      end
     end -- each member of invalidated group
   end -- invalidated groups
 
@@ -302,7 +307,7 @@ function partyModule:GetParty()
     party = partyModule:RefreshParty(party, self.partyCacheInvalidation)
   else
     -- If previous cached party failed, do full refresh
-    --BOM:Debug("party checkpoint 2")
+    --BOM:Debug("party checkpoint 2 (all groups)")
     party = partyModule:RefreshParty(partyModule:New(), self.ALL_INVALID_GROUPS)
   end
 

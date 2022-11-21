@@ -5,24 +5,28 @@ local BOM = BuffomatAddon ---@type BomAddon
 
 ---@alias BomBuffidBuffLookup {[BomBuffId]: BomBuffDefinition}
 ---@alias BomEnchantToSpellLookup {[BomEnchantmentId]: BomSpellId}
+---@alias BomBuffBySpellId {[BomSpellId]: BomBuffDefinition}
 
 ---@shape BomAllBuffsModule
 ---@field allBuffs BomBuffidBuffLookup All buffs, same as BOM.AllBuffomatSpells for convenience
 ---@field allSpellIds number[]
 ---@field buffCategories BomBuffCategoryName[] Category names for buffs
----@field buffFromSpellIdLookup {[BomSpellId]: BomBuffDefinition} Lookup table for buff definitions by spell id
+---@field buffFromSpellIdLookup BomBuffBySpellId Lookup table for buff definitions by spell id
 ---@field CrusaderAuraSpell BomBuffDefinition
 ---@field enchantToSpellLookup BomEnchantToSpellLookup Reverse-maps enchantment ids back to spells
 ---@field itemListSpellLookup table<number, number> Map itemid to spell?
 ---@field selectedBuffs BomBuffDefinition[] Buffs available to the player
----@field selectedBuffsSpellIds {[BomSpellId]: BomBuffDefinition} All spellids from selected buffs
+---@field selectedBuffsSpellIds BomBuffBySpellId All spellids from selected buffs
 ---@field spellIdIsSingleLookup table<number, boolean> Whether spell ids are single buffs
----@field spellIdtoBuffId table<number, number> Maps spell ids to the key id of spell in the AllSpells
----@field spellToSpellLookup table<number, number> Maps spells ids to other spell ids
-local allBuffsModule = BomModuleManager.allBuffsModule ---@type BomAllBuffsModule
+---@field spellIdtoBuffId {[BomSpellId]: BomBuffId} Maps spell ids to the key id of spell in the AllSpells
+---@field spellToSpellLookup {[BomSpellId]: BomSpellId} Maps spells ids to other spell ids
+---@field cancelForm BomSpellId[] Spell ids which cancel shapeshift form
+local allBuffsModule = BomModuleManager.allBuffsModule
 
+allBuffsModule.cancelForm = {}
+allBuffsModule.spellIdtoBuffId = {}
 allBuffsModule.selectedBuffs = {}
-allBuffsModule.selectedBuffsSpellIds = {}
+allBuffsModule.selectedBuffsSpellIds = --[[---@type BomBuffBySpellId]] {}
 allBuffsModule.spellIdIsSingleLookup = {}
 allBuffsModule.buffFromSpellIdLookup = --[[---@type {[BomSpellId]: BomBuffDefinition}]] {}
 allBuffsModule.enchantToSpellLookup = --[[---@type BomEnchantToSpellLookup]] {}
