@@ -35,7 +35,7 @@ function managedUiClass:NewButton(sel, unsel, selCoord, unselCoord)
   return newButton
 end
 
----@param self BomControl
+---@param self WowControl
 function managedUiModule.ButtonOnEnter(self)
   if self.bomToolTipLink or self.bomToolTipText then
     GameTooltip_SetDefaultAnchor(BomC_Tooltip, UIParent)
@@ -60,7 +60,7 @@ function managedUiModule.ButtonOnEnter(self)
   end
 end
 
----@param self BomControl
+---@param self WowControl
 function managedUiModule.ButtonOnLeave(self)
 
 end

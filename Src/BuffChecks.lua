@@ -344,7 +344,8 @@ function buffChecksModule:PartyNeedsBuff(buffDef, party, buffCtx)
   --spells
   for i, partyMember in pairs(party.byUnitId) do
     local ok = false
-    local profileBuff = buffomatModule.currentProfile.Spell[buffDef.buffId]
+    --local profileBuff = buffomatModule.currentProfile.Spell[buffDef.buffId]
+    local profileBuff = --[[---@not nil]] buffDefModule:GetProfileBuff(buffDef.buffId, nil)
 
     if profileBuff.Class[partyMember.class]
             and (not IsInRaid() or buffomatModule.character.WatchGroup[partyMember.group])

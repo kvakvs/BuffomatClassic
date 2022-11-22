@@ -65,7 +65,7 @@ end
 local function Event_UNIT_POWER_UPDATE(unitTarget, powerType)
   --UNIT_POWER_UPDATE: "unitTarget", "powerType"
   if powerType == "MANA" and UnitIsUnit(unitTarget, "player") then
-    --local maxMana = BOM.manaMax or 0
+    local maxMana = partyModule.playerManaLimit or 0
     local actualMana = UnitPower("player", 0) or 0
 
     if maxMana <= actualMana then
@@ -129,7 +129,7 @@ end
 local function Event_PLAYER_TARGET_CHANGED()
   if not InCombatLockdown() then
     if UnitInParty("target") or UnitInRaid("target") or UnitIsUnit("target", "player") then
-      BOM.lastTarget = (UnitFullName("target"))
+      BOM.lastTarget = UnitFullName("target")
       spellButtonsTabModule:UpdateSpellsTab("PL_TAR_CHANGED1")
 
     elseif BOM.lastTarget then

@@ -5,8 +5,8 @@ local BOM = BuffomatAddon ---@type BomAddon
 local rowBuilderModule = BomModuleManager.rowBuilderModule ---@type BomRowBuilderModule
 
 ---@class BomRowBuilder
----@field prevControl BomControl|nil Previous control in the row
----@field rowStartControl BomControl|nil First control in the row, to align next row
+---@field prevControl WowControl|nil Previous control in the row
+---@field rowStartControl WowControl|nil First control in the row, to align next row
 ---@field categories table<string, boolean> True if category label was created already
 local rowBuilderClass = {}
 rowBuilderClass.__index = rowBuilderClass
@@ -25,7 +25,7 @@ function rowBuilderModule:new()
   return fields
 end
 
----@param control BomControl
+---@param control WowControl
 ---@param betweenLinesOffset number|nil If defined, will step down extra before new line except the first line
 ---@param afterOffset number|nil
 function rowBuilderClass:PositionAtNewRow(control, betweenLinesOffset, afterOffset)
@@ -45,8 +45,8 @@ function rowBuilderClass:PositionAtNewRow(control, betweenLinesOffset, afterOffs
   self.rowStartControl = control
 end
 
----@param anchor BomControl|nil
----@param control BomControl
+---@param anchor WowControl|nil
+---@param control WowControl
 ---@param spaceAfter number|nil
 function rowBuilderClass:ChainToTheRight(anchor, control, spaceAfter)
   if anchor == nil then

@@ -12,14 +12,14 @@ local texturesModule = BomModuleManager.texturesModule
 ---@shape BomBuffRowFrames
 ---@field [BomClassName] BomGPIControl Used for class toggle buttons
 ---@field uniqueId string Used for ManageControl() calls as prefix
----@field iconInfo BomControl Icon for spell or item which provides the buff
+---@field iconInfo WowControl Icon for spell or item which provides the buff
 ---@field checkboxEnable BomGPIControl Checkbox for enable/disable buff
 ---@field checkboxSet BomGPIControl Status checkbox for tracking/auras/seals
 ---@field toggleSelfCast BomGPIControl Checkbox toggle to self cast only
 ---@field toggleForceCast BomGPIControl Button to add/remove from force cast list
 ---@field toggleExclude BomGPIControl Button to add/remove from exclude list
 ---@field toggleWhisper BomGPIControl Button to whisper on buff expiration
----@field labelBuff BomControl Text label with buff name
+---@field labelBuff WowControl Text label with buff name
 ---@field toggleMainHand BomGPIControl Toggle to enchant main hand
 ---@field toggleOffHand BomGPIControl Toggle to enchant off-hand
 ---@field tank BomGPIControl Toggle to buff tanks
@@ -48,7 +48,7 @@ function buffRowModule:New(uniqueId)
   return newRow
 end
 
----@return BomControl[]
+---@return WowControl[]
 function buffRowClass:AllControls()
   local result = {}
   for _, v in pairs(self) do

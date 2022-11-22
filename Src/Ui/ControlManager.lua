@@ -1,8 +1,8 @@
----@alias BomManagedControlsTable {[string]: BomGPIControl|BomControl}
+---@alias BomManagedControlsTable {[string]: BomGPIControl|WowControl}
 
 ---@shape BomUiMyButtonModule
 ---@field managed BomManagedControlsTable Contains all MyButtons with uniqueId
----@field managedWithoutUniqueId BomControl[] Contains all MyButtons without uniqueId
+---@field managedWithoutUniqueId WowControl[] Contains all MyButtons without uniqueId
 local managedUiModule = BomModuleManager.myButtonModule ---@type BomUiMyButtonModule
 managedUiModule.managed = --[[---@type BomManagedControlsTable]] {}
 managedUiModule.managedWithoutUniqueId = {}
@@ -29,7 +29,7 @@ function managedUiModule:CreateManagedButton(parent, sel, unsel, dis, selCoord, 
 end
 
 ---@param uniqueId string|nil Pass a nil to not add button to bom_managed_mybuttons, or provide an unique id
----@param control BomControl
+---@param control WowControl
 function managedUiModule:ManageControl(uniqueId, control)
   if uniqueId ~= nil then
     self.managed[--[[---@not nil]]uniqueId] = control

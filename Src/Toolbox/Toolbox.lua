@@ -17,7 +17,7 @@ local _t = BomModuleManager.languagesModule
 local constModule = BomModuleManager.constModule
 
 ---@class BomGPIControlEditBox: BomGPIControl
----@field chatFrame BomControl
+---@field chatFrame WowControl
 
 ---Converts accented letters to ASCII equivalent for sorting
 local bom_special_letter_to_ascii = {
@@ -533,7 +533,7 @@ end
 ---@field content BomGPIControlTab
 
 ---Adds a Tab to a frame (main window for example)
----@param frame BomGPIControlFrame | string Where to add a tab; or a global name of a frame
+---@param frame BomGPIControlFrame|WowControl|string Where to add a tab; or a global name of a frame
 ---@param name string Tab text
 ---@param tabFrame BomGPIControlTab | string - tab text
 ---@param combatlockdown boolean - accessible in combat or not
@@ -605,115 +605,6 @@ function toolboxModule:AddDataBroker(icon, onClick, onTooltipShow, text)
   end
 end
 
----- quick copy&past
-
-local CopyPastFrame
-local CopyPastSavedText
-local CopyPastText
-
-local function bom_create_copypaste()
-  local frame
-
-  if BOM.isTBC then
-    frame = CreateFrame("Frame", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate")
-  else
-    frame = CreateFrame("Frame", nil, UIParent)
-    frame:SetBackdrop({
-      bgFile   = "Interface/DialogFrame/UI-DialogBox-Background",
-      tile     = true,
-      edgeFile = "Interface/DialogFrame/UI-DialogBox-Border",
-      edgeSize = 32,
-      insets   = {
-        left   = 11,
-        right  = 12,
-        top    = 12,
-        bottom = 11,
-      },
-    })
-  end
-
-  frame:SetFrameStrata("DIALOG")
-  frame:SetSize(700, 450)
-  frame:SetPoint("CENTER")
-  frame:EnableMouse(true)
-  frame:EnableKeyboard(true)
-  frame:SetMovable(true)
-  frame:SetResizable(true)
-  frame:SetMinResize(200, 200)
-  frame:RegisterForDrag("LeftButton")
-  frame:SetScript("OnDragStart", function()
-    CopyPastFrame:StartMoving()
-  end)
-  frame:SetScript("OnDragStop", function()
-    CopyPastFrame:StopMovingOrSizing();
-    CopyPastText:SetSize(CopyPastText:GetParent(scrollFrame):GetWidth(), 10)
-  end)
-  frame:SetScript("OnSizeChanged", function()
-    if CopyPastText then
-      CopyPastText:SetSize(CopyPastText:GetParent(scrollFrame):GetWidth(), 10)
-    end
-  end)
-
-  toolboxModule:EnableSize(frame, nil, nil, nil)
-
-  local button = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
-  button:SetWidth(128)
-  button:SetPoint("BOTTOM", 0, 16)
-  button:SetText("OK")
-  button:SetScript("OnClick", function()
-    CopyPastFrame:Hide()
-  end)
-
-  local scrollFrame = CreateFrame("ScrollFrame", nil, frame, "UIPanelScrollFrameTemplate")
-  scrollFrame:SetSize(10, 10)
-  scrollFrame:ClearAllPoints()
-  scrollFrame:SetPoint("TOPLEFT", frame, "TOPLEFT", 20, -20)
-  scrollFrame:SetPoint("RIGHT", -40, 0)
-  scrollFrame:SetPoint("BOTTOM", button, "TOP", 0, 10)
-
-  scrollFrame:Show()
-
-  local editBox = CreateFrame("EditBox", nil, scrollFrame)
-  editBox:SetMaxLetters(999999)
-  editBox:SetSize(editBox:GetParent(scrollFrame):GetWidth(), 10)
-  editBox:ClearAllPoints()
-  --editBox:SetPoint("TOPLEFT",scrollFrame,"TOPLEFT")
-  editBox:SetPoint("RIGHT", scrollFrame, "RIGHT")
-
-  editBox:SetFont(ChatFontNormal:GetFont())
-  editBox:SetAutoFocus(true)
-  editBox:SetMultiLine(true)
-  editBox:Show()
-  editBox:SetScript("OnEscapePressed", function(self)
-    CopyPastFrame:Hide()
-  end)
-  editBox:SetScript("OnEnterPressed", function(self)
-    CopyPastFrame:Hide()
-  end)
-  editBox:SetScript("OnTextChanged", function(self)
-    CopyPastText:SetText(CopyPastSavedText)
-    CopyPastText:HighlightText()
-  end)
-
-  scrollFrame:SetScrollChild(editBox)
-
-  CopyPastFrame = frame
-  CopyPastTitle = title
-  CopyPastText = editBox
-  return frame
-end
-
-function toolboxModule:CopyPast(Text)
-  if CopyPastFrame == nil then
-    bom_create_copypaste()
-  end
-  CopyPastText:SetText(Text)
-  CopyPastText:HighlightText()
-  CopyPastFrame:Show()
-  CopyPastText:SetFocus()
-  CopyPastSavedText = Text
-end
-
 ---If maybe_label is nil, creates a text label under the parent. Calls position_fn
 ---on the label to set its position.
 ---@param maybeLabel BomGPIControl|nil the existing label or nil
@@ -758,7 +649,7 @@ function toolboxModule:Tooltip(control, text)
 end
 
 ---Add onenter/onleave scripts to show the tooltip with TEXT
----@param control BomControl
+---@param control WowControl
 ---@param text string - the localized text to display
 function toolboxModule:TooltipText(control, text)
   control:SetScript("OnEnter", function()
@@ -771,25 +662,8 @@ function toolboxModule:TooltipText(control, text)
   end)
 end
 
----@param spellName string
-local function bom_find_spellid(spellName)
-  local i = 1;
-  while true do
-    local spellAndRank = My_GetSpellName(i, BOOKTYPE_SPELL);
-    if (not spellAndRank) then
-      break ;
-    end
-    if (spellName == spellAndRank) then
-      --print at this point like "Fireball(Rank 13)"
-      return i;
-    end
-    i = i + 1;
-  end
-  return nil;
-end
-
 ---Add onenter/onleave scripts to show the tooltip with spell
----@param control BomControl
+---@param control WowControl
 ---@param link string The string in format "spell:<id>" or "item:<id>"
 function toolboxModule:TooltipLink(control, link)
   control:SetScript("OnEnter", function()

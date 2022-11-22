@@ -114,7 +114,7 @@ end
 
 ---Here the game will send input text
 ---@param msg string
----@param editBox BomControl UI control, the user input box, can :Show, :SetText etc
+---@param editBox WowControl UI control, the user input box, can :Show, :SetText etc
 function slashModule.HandleSlashCommand(msg, editBox)
   if msg == "help" then
     local color = "|cFFFF9C00"
