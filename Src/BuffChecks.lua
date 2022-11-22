@@ -133,7 +133,7 @@ function buffChecksModule:PlayerNeedsWeaponBuff(buff, playerUnit)
           and ((--[[---@not nil]] weaponBuff).MainHandEnable and playerUnit.mainhandEnchantment == nil)
           or ((--[[---@not nil]] weaponBuff).OffHandEnable and playerUnit.offhandEnchantment == nil)
   then
-    tinsert(buff.unitsNeedBuff, playerUnit)
+    table.insert(buff.unitsNeedBuff, playerUnit)
   end
 end
 
@@ -154,14 +154,14 @@ function buffChecksModule:HunterPetNeedsBuff(buff, playerUnit)
     return -- have pet, have buff
   end
 
-  tinsert(buff.unitsNeedBuff, playerUnit) -- add player to buff list, because player must consume it
+  table.insert(buff.unitsNeedBuff, playerUnit) -- add player to buff list, because player must consume it
 end
 
 ---@param buff BomBuffDefinition
 ---@param playerUnit BomUnit
 function buffChecksModule:PlayerNeedsConsumable(buff, playerUnit)
   if not playerUnit.knownBuffs[buff.buffId] then
-    tinsert(buff.unitsNeedBuff, playerUnit)
+    table.insert(buff.unitsNeedBuff, playerUnit)
   end
 
 end
@@ -173,7 +173,7 @@ function buffChecksModule:PartyNeedsInfoBuff(buff, party)
     local partyMemberBuff = partyMember.knownBuffs[buff.buffId]
 
     if partyMemberBuff then
-      tinsert(buff.unitsNeedBuff, partyMember)
+      table.insert(buff.unitsNeedBuff, partyMember)
 
       if partyMember.isPlayer then
         buff.buffSource = partyMemberBuff.source
@@ -196,14 +196,14 @@ function buffChecksModule:PlayerNeedsSelfBuff(buff, playerUnit)
     -- Check if the self-buff includes creating/conjuring an item
     if buff.lockIfHaveItem then
       if IsSpellKnown(buff.highestRankSingleId) and not (self:HasItem(buff.lockIfHaveItem, buff.hasCD)) then
-        tinsert(buff.unitsNeedBuff, playerUnit)
+        table.insert(buff.unitsNeedBuff, playerUnit)
       end
 
       -- Else check if the buff is on player and timer is not too short
     elseif not (thisBuffOnPlayer
             and self:TimeCheck(thisBuffOnPlayer.expirationTime, thisBuffOnPlayer.duration))
     then
-      tinsert(buff.unitsNeedBuff, playerUnit)
+      table.insert(buff.unitsNeedBuff, playerUnit)
     end
   end
 end
@@ -217,7 +217,7 @@ function buffChecksModule:DeadNeedsResurrection(buff, party)
             and member.isConnected
             and member.class ~= "pet"
             and (not buffomatModule.shared.SameZone or member.isSameZone) then
-      tinsert(buff.unitsNeedBuff, member)
+      table.insert(buff.unitsNeedBuff, member)
     end
   end
 end
@@ -237,7 +237,7 @@ function buffChecksModule:PlayerNeedsTracking(buff, playerUnit)
   elseif not self:IsTrackingActive(buff)
           and (BOM.forceTracking == nil
           or BOM.forceTracking == buff.trackingIconId) then
-    tinsert(buff.unitsNeedBuff, playerUnit)
+    table.insert(buff.unitsNeedBuff, playerUnit)
   end
 end
 
@@ -249,7 +249,7 @@ function buffChecksModule:PaladinNeedsAura(buff, playerUnit)
           and (buffomatModule.currentProfile.LastAura == nil
           or buffomatModule.currentProfile.LastAura == buff.buffId)
   then
-    tinsert(buff.unitsNeedBuff, playerUnit)
+    table.insert(buff.unitsNeedBuff, playerUnit)
   end
 end
 
@@ -261,22 +261,21 @@ function buffChecksModule:PaladinNeedsSeal(spell, playerUnit)
           and (buffomatModule.currentProfile.LastSeal == nil
           or buffomatModule.currentProfile.LastSeal == spell.buffId)
   then
-    tinsert(spell.unitsNeedBuff, playerUnit)
+    table.insert(spell.unitsNeedBuff, playerUnit)
   end
 end
 
 ---@param buffDef BomBuffDefinition
 ---@param party BomParty
----@param someoneIsDead boolean
----@return boolean someoneIsDead
-function buffChecksModule:PartyNeedsPaladinBlessing(buffDef, party, someoneIsDead)
+---@param buffCtx BomBuffScanContext
+function buffChecksModule:PartyNeedsPaladinBlessing(buffDef, party, buffCtx)
   -- Blessing user settings (regardless of the current buff)
   local currentBlessing = buffDefModule:GetProfileBlessingState( nil)
   -- Current user settings for the selected buff
   local profileBuff = --[[---@not nil]] buffDefModule:GetProfileBuff(buffDef.buffId, nil)
 
   ---@param partyMember BomUnit
-  for i, partyMember in ipairs(party.byUnitId) do
+  for i, partyMember in pairs(party.byUnitId) do
     local ok = false
     local notGroup = false
 
@@ -314,7 +313,7 @@ function buffChecksModule:PartyNeedsPaladinBlessing(buffDef, party, someoneIsDea
 
       if partyMember.isDead then
         if partyMember.group ~= 9 and partyMember.class ~= "pet" then
-          someoneIsDead = true
+          buffCtx.someoneIsDead = true
           buffDef.groupsHaveDead[partyMember.class] = true
         end
 
@@ -323,7 +322,7 @@ function buffChecksModule:PartyNeedsPaladinBlessing(buffDef, party, someoneIsDea
       end
 
       if not found then
-        tinsert(buffDef.unitsNeedBuff, partyMember)
+        table.insert(buffDef.unitsNeedBuff, partyMember)
         if not notGroup then
           buffDef:IncrementNeedGroupBuff(partyMember.class)
         end
@@ -336,14 +335,12 @@ function buffChecksModule:PartyNeedsPaladinBlessing(buffDef, party, someoneIsDea
 
     end
   end
-
-  return someoneIsDead
 end
 
 ---@param buffDef BomBuffDefinition
 ---@param party BomParty
----@param someoneIsDead boolean
-function buffChecksModule:PartyNeedsBuff(buffDef, party, someoneIsDead)
+---@param buffCtx BomBuffScanContext
+function buffChecksModule:PartyNeedsBuff(buffDef, party, buffCtx)
   --spells
   for i, partyMember in pairs(party.byUnitId) do
     local ok = false
@@ -380,7 +377,7 @@ function buffChecksModule:PartyNeedsBuff(buffDef, party, someoneIsDead)
       local partyMemberBuff = partyMember.knownBuffs[buffDef.buffId]
 
       if partyMember.isDead then
-        someoneIsDead = true
+        buffCtx.someoneIsDead = true
         buffDef.groupsHaveDead[partyMember.group] = true
 
       elseif partyMemberBuff then
@@ -388,7 +385,7 @@ function buffChecksModule:PartyNeedsBuff(buffDef, party, someoneIsDead)
       end
 
       if not found then
-        tinsert(buffDef.unitsNeedBuff, partyMember)
+        table.insert(buffDef.unitsNeedBuff, partyMember)
         buffDef.groupsNeedBuff[partyMember.group] = (buffDef.groupsNeedBuff[partyMember.group] or 0) + 1
 
       elseif buffomatModule.shared.ReplaceSingle

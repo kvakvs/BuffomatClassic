@@ -37,7 +37,7 @@ function taskListClass:Add(actionLink, actionText, extraText,
                            target, isInfo, prio)
   local newTask = taskModule:New(
           "", actionLink, actionText, extraText, target, isInfo, prio)
-  tinsert(self.tasks, newTask)
+  table.insert(self.tasks, newTask)
 end
 
 ---Adds a text line to display in the message frame. The line is stored in DisplayCache
@@ -53,17 +53,17 @@ function taskListClass:AddWithPrefix(prefixText,
                                      target, isInfo, prio)
   local newTask = taskModule:New(
           prefixText, actionLink, actionText, extraText, target, isInfo, prio)
-  tinsert(self.tasks, newTask)
+  table.insert(self.tasks, newTask)
 end
 
 ---Add a comment text which WILL auto open buffomat window when it is displayed
 function taskListClass:Comment(text)
-  tinsert(self.comments, text)
+  table.insert(self.comments, text)
 end
 
 ---Add a comment text which WILL NOT auto open buffomat window and will display in grey
 function taskListClass:LowPrioComment(text)
-  tinsert(self.lowPrioComments, text)
+  table.insert(self.lowPrioComments, text)
 end
 
 ---Clear the cached text, and clear the message frame

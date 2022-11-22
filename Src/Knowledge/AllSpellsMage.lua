@@ -35,7 +35,7 @@ end
 ---@param allBuffs BomBuffDefinition[]
 ---@param enchantments BomEnchantmentsMapping
 function mageModule:SetupMageSpells(allBuffs, enchantments)
-  tinsert(allBuffs, self:CreateIntelligenceBuff())
+  table.insert(allBuffs, self:CreateIntelligenceBuff())
 
   --Dampen Magic
   buffDefModule:createAndRegisterBuff(allBuffs, 10174, nil)

@@ -228,7 +228,7 @@ function allBuffsModule:ApplyPostLimitations(allBuffs)
   for _i, buff in ipairs(allBuffs) do
     if buff.limitations ~= nil then
       if buffDefModule:CheckLimitations(buff, --[[---@not nil]] buff.limitations) then
-        tinsert(result, buff)
+        table.insert(result, buff)
       end
     end
     buff.limitations = nil -- do not need to store this
@@ -395,7 +395,7 @@ function allBuffsModule:SetupCancelBuffs()
                                 :OnlyCombat(true)
                                 :IsDefault(true)
                                 :SingleFamily({ 5118, 13159 })
-      tinsert(s, buff)
+      table.insert(s, buff)
     end
 
     if (UnitFactionGroup("player")) ~= "Horde" or BOM.isTBC then

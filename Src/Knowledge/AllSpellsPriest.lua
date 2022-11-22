@@ -65,7 +65,7 @@ function priestModule:SetupPriestSpells(allBuffs, enchants)
                :IgnoreIfHaveBuff(46302) -- Kiru's Song of Victory (Sunwell)
                :RequirePlayerClass("PRIEST")
 
-  tinsert(allBuffs, priestModule:CreatePrayerOfSpiritBuff())
+  table.insert(allBuffs, priestModule:CreatePrayerOfSpiritBuff())
 
   -- Shadow Protection / Prayer of Shadow / Schattenschutz
   buffDefModule:createAndRegisterBuff(allBuffs, 10958, nil)
@@ -93,7 +93,7 @@ function priestModule:SetupPriestSpells(allBuffs, enchants)
                :Category("class")
                :RequirePlayerClass("PRIEST")
 
-  tinsert(allBuffs, self:CreatePowerWordShieldBuff())
+  table.insert(allBuffs, self:CreatePowerWordShieldBuff())
 
   -- Touch of Weakness / Berührung der Schwäche (Clasic and TBC only)
   buffDefModule:createAndRegisterBuff(allBuffs, 19266, nil)

@@ -49,6 +49,7 @@ local allBuffsModule = BomModuleManager.allBuffsModule
 -- -@field [BomSpellId] BomBuffDefinition
 
 ---@alias BomForcedTargets {[string]: boolean}
+---@alias BomDeadMap {[number|BomClassName]: boolean}
 
 ---@shape BomBuffDefinition
 ---@field AllowWhisper boolean [⚠DO NOT RENAME] Allow whispering expired soulstone to the warlock
@@ -71,7 +72,7 @@ local allBuffsModule = BomModuleManager.allBuffsModule
 ---@field groupFamily number[]|nil Family of group buff spell ids which are mutually exclusive
 ---@field groupLink string Printable link for group buff
 ---@field groupMana number Mana cost for group buff
----@field groupsHaveDead {[number|BomClassName]: boolean} Group/class members who might be dead but their class needs this buff
+---@field groupsHaveDead BomDeadMap Group/class members who might be dead but their class needs this buff
 ---@field groupsNeedBuff table List of groups who might need this buff
 ---@field groupText string Name of group buff spell (from GetSpellInfo())
 ---@field hasCD boolean There's a cooldown on this spell
@@ -106,7 +107,7 @@ local allBuffsModule = BomModuleManager.allBuffsModule
 ---@field singleLink string Printable link for single buff
 ---@field singleMana number Mana cost
 ---@field singleText string Name of single buff spell (from GetSpellInfo())
----@field SkipList table If spell cast failed, contains recently failed targets
+---@field skipList string[] If spell cast failed, contains recently failed targets
 ---@field spellIcon WowIconId
 ---@field targetClasses BomClassName[] List of target classes which are shown as toggle boxes to enable cast per class
 ---@field tbcHunterPetBuff boolean True for TBC hunter pet consumable which places aura on the hunter pet
@@ -123,22 +124,23 @@ buffDefClass.__index = buffDefClass
 ---@param singleId BomSpellId Spell id also serving as buffId key
 ---@return BomBuffDefinition
 function buffDefModule:New(singleId)
-  local newSpell = --[[---@type BomBuffDefinition]] {}
-  newSpell.category = "" -- special value no category
-  newSpell.frames = buffRowModule:New(tostring(singleId)) -- spell buttons from the UI go here
-  newSpell.buffId = singleId
-  newSpell.highestRankSingleId = singleId
-  newSpell.singleFamily = { singleId }
-  newSpell.limitations = --[[---@type BomSpellLimitations]] {}
-  newSpell.ForcedTarget = --[[---@type BomForcedTargets]] {}
-  newSpell.ExcludedTarget = --[[---@type BomForcedTargets]] {}
-  newSpell.unitsNeedBuff = {}
-  newSpell.unitsHaveBetterBuff = {}
-  newSpell.groupsNeedBuff = {}
-  newSpell.groupsHaveDead = {}
+  local buff = --[[---@type BomBuffDefinition]] {}
+  buff.category = "" -- special value no category
+  buff.frames = buffRowModule:New(tostring(singleId)) -- spell buttons from the UI go here
+  buff.buffId = singleId
+  buff.highestRankSingleId = singleId
+  buff.singleFamily = { singleId }
+  buff.limitations = --[[---@type BomSpellLimitations]] {}
+  buff.ForcedTarget = --[[---@type BomForcedTargets]] {}
+  buff.ExcludedTarget = --[[---@type BomForcedTargets]] {}
+  buff.unitsNeedBuff = {}
+  buff.unitsHaveBetterBuff = {}
+  buff.groupsNeedBuff = {}
+  buff.groupsHaveDead = --[[---@type BomDeadMap]] {}
+  buff.skipList = {}
 
-  setmetatable(newSpell, buffDefClass)
-  return newSpell
+  setmetatable(buff, buffDefClass)
+  return buff
 end
 
 function buffDefModule:tbcConsumable(dst, singleId, itemId)
@@ -244,7 +246,7 @@ end
 ---@param dst BomBuffDefinition[]
 ---@return BomBuffDefinition
 function buffDefModule:registerBuff(dst, spell)
-  tinsert(dst, spell)
+  table.insert(dst, spell)
   return spell
 end
 

@@ -94,7 +94,7 @@ end
 --    eventFrame:SetScript("OnEvent", bom_gpiprivat_event_handler)
 --  end
 --
---  tinsert(eventFrame._GPIPRIVAT_events, { event, func })
+--  table.insert(eventFrame._GPIPRIVAT_events, { event, func })
 --  eventFrame:RegisterEvent(event)
 --end
 
@@ -106,7 +106,7 @@ function toolboxModule:OnUpdate(func)
     eventFrame._GPIPRIVAT_updates = {}
     eventFrame:SetScript("OnUpdate", self.gpiprivat_update_handler)
   end
-  tinsert(eventFrame._GPIPRIVAT_updates, func)
+  table.insert(eventFrame._GPIPRIVAT_updates, func)
 end
 
 -- move frame
@@ -152,7 +152,7 @@ function toolboxModule:ScanToolTip(what, ...)
     if region and region:GetObjectType() == "FontString" then
       local text = region:GetText()
       if text then
-        tinsert(TextList, text)
+        table.insert(TextList, text)
       end
     end
   end
@@ -274,7 +274,7 @@ function toolboxModule:iMerge(t1, ...)
     if type(var) == "table" then
       for i, v in ipairs(var) do
         if tContains(t1, v) == false then
-          tinsert(t1, v)
+          table.insert(t1, v)
         end
       end
     else

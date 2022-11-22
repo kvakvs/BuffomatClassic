@@ -31,7 +31,7 @@ function managedUiClass:NewButton(sel, unsel, selCoord, unselCoord)
   local newButton = CreateFrame("Button", nil, parent, "BomC_MyButtonSecure")
   managedUiModule:SetupButton(newButton, true)
   newButton:SetTextures(sel, unsel, nil, selCoord, unselCoord, nil)
-  tinsert(self.uiElements, newButton)
+  table.insert(self.uiElements, newButton)
   return newButton
 end
 

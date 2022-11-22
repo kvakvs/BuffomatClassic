@@ -289,7 +289,6 @@ end
 ---category where it will go. Build mapping tables to quickly find spells
 ---@param buff BomBuffDefinition
 function spellSetupModule:Setup_EachBuff(buff)
-  buff.SkipList = {}
   allBuffsModule.buffFromSpellIdLookup[buff.buffId] = buff
 
   self:Setup_EachSpell_CacheUpdate(buff)

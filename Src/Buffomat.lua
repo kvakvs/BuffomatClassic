@@ -533,7 +533,7 @@ end
 
 function buffomatModule:DownGrade()
   if BOM.castFailedBuff
-          and (--[[---@not nil]] BOM.castFailedBuff).SkipList
+          and (--[[---@not nil]] BOM.castFailedBuff).skipList
           and BOM.castFailedBuffTarget then
     local level = UnitLevel((--[[---@not nil]] BOM.castFailedBuffTarget).unitId)
 
