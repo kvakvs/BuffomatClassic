@@ -79,6 +79,7 @@ end
 ---Clear the cached text, and clear the message frame
 function taskListClass:Clear()
   BomC_ListTab_MessageFrame:Clear()
+  self.firstToCast = nil
   wipe(self.tasks)
   wipe(self.comments)
   wipe(self.lowPrioComments)

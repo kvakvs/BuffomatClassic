@@ -1,5 +1,6 @@
 UIErrorsFrame = --[[---@type WowUIErrorsFrame]] {}
 DEFAULT_CHAT_FRAME = --[[---@type WowChatFrame]] {}
+UIDROPDOWNMENU_OPEN_MENU = --[[---@type WowChatFrame]] {}
 UIParent = --[[---@type WowControl]] {}
 BomC_ListTab_Button = --[[---@type WowControl]] {}
 BomC_MainWindow = --[[---@type WowControl]] {}

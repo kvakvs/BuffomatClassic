@@ -1767,29 +1767,31 @@ function taskScanModule:CreateBuffTasks_Button(buffCtx)
     return self:CastButton_TargetedSpell()
 
   else
-    self:WipeMacro(tasklist.firstToCast.macro)
+    if tasklist.firstToCast then
+      self:WipeMacro(tasklist.firstToCast.macro)
 
-    if #tasklist.tasks == 0 or not tasklist.firstToCast.actionText then
-      return self:CastButton_Nothing()
-
-    else
-      if buffCtx.someoneIsDead and buffomatModule.shared.DeathBlock then
-        -- Have tasks and someone died and option is set to not buff
-        return self:CastButton_SomeoneIsDead()
+      if #tasklist.tasks == 0 or not tasklist.firstToCast.actionText then
+        return self:CastButton_Nothing()
 
       else
-        if tasklist.firstToCast.inRange == false then
-          return self:CastButton_OutOfRange()
+        if buffCtx.someoneIsDead and buffomatModule.shared.DeathBlock then
+          -- Have tasks and someone died and option is set to not buff
+          return self:CastButton_SomeoneIsDead()
+
         else
-          if tasklist.firstToCast:CanCast() == false then
-            return self:CastButton_CantCast()
+          if tasklist.firstToCast.inRange == false then
+            return self:CastButton_OutOfRange()
           else
-            return self:CastButton(tasklist.firstToCast.actionText, true)
-          end
-        end -- if somebodydeath and deathblock
-      end -- if #display == 0
-    end
-  end -- if not player casting
+            if tasklist.firstToCast:CanCast() == false then
+              return self:CastButton_CantCast()
+            else
+              return self:CastButton(tasklist.firstToCast.actionText, true)
+            end
+          end -- if somebodydeath and deathblock
+        end -- if #display == 0
+      end
+    end -- if not player casting
+  end -- tasklist.firstToCast is not nil
 end -- end function bomUpdateScan_Scan()
 
 ---For raid, invalidated group is rotated 1 to 8. For solo and party it does not rotate.
