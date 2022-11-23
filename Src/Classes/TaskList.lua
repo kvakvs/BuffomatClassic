@@ -12,6 +12,7 @@ local _t = BomModuleManager.languagesModule
 ---@field tasks BomTask[]
 ---@field comments string[]
 ---@field lowPrioComments string[]
+---@field firstToCast BomTask
 local taskListClass = {}
 taskListClass.__index = taskListClass
 
@@ -26,42 +27,51 @@ function taskListModule:New()
   return fields
 end
 
----Adds a text line to display in the message frame. The line is stored in DisplayCache
----@param actionText string|nil Text to display (target of the action) with icon and color
----@param actionLink string Text to display if inactive (just text)
----@param extraText string Text to display (extra comment)
----@param target BomUnitBuffTarget|BomGroupBuffTarget Distance to the party member, or group (if string)
----@param isInfo boolean Whether the text is info text or a cast
----@param prio number|nil Priority, a constant from taskModule.TaskPriority
-function taskListClass:Add(actionLink, actionText, extraText,
-                           target, isInfo, prio)
-  local newTask = taskModule:New(
-          "", actionLink, actionText, extraText, target, isInfo, prio)
-  table.insert(self.tasks, newTask)
+-- ---Adds a text line to display in the message frame. The line is stored in DisplayCache
+-- ---@param actionText string|nil Text to display (target of the action) with icon and color
+-- ---@param actionLink string Text to display if inactive (just text)
+-- ---@param extraText string Text to display (extra comment)
+-- ---@param target BomUnitBuffTarget|BomGroupBuffTarget Distance to the party member, or group (if string)
+-- ---@param isInfo boolean Whether the text is info text or a cast
+-- ---@param prio number|nil Priority, a constant from taskModule.TaskPriority
+-- ---@deprecated
+--function taskListClass:Add_0(actionLink, actionText, extraText,
+--                             target, isInfo, prio)
+--  local newTask = taskModule:Create(
+--          "", actionLink, actionText, extraText, target, isInfo, prio)
+--  table.insert(self.tasks, newTask)
+--end
+
+---@param t BomTask
+function taskListClass:Add(t)
+  table.insert(self.tasks, t)
+  self.firstToCast = t -- always first to cast is most recent; TODO: Respect prio
 end
 
----Adds a text line to display in the message frame. The line is stored in DisplayCache
----@param actionLink string Text to display (target of the action) with icon and color
----@param actionText string|nil Text to display if inactive (just text). Nil to use action_link
----@param prefixText string Text to display before spell (a verb?)
----@param extraText string|nil Text to display (extra comment)
----@param target BomUnitBuffTarget|BomGroupBuffTarget Distance to the party member, or group (if string)
----@param isInfo boolean Whether the text is info text or a cast
----@param prio number|nil Priority, a constant from taskModule.TaskPriority
-function taskListClass:AddWithPrefix(prefixText,
-                                     actionLink, actionText, extraText,
-                                     target, isInfo, prio)
-  local newTask = taskModule:New(
-          prefixText, actionLink, actionText, extraText, target, isInfo, prio)
-  table.insert(self.tasks, newTask)
-end
+-- ---Adds a text line to display in the message frame. The line is stored in DisplayCache
+-- ---@param actionLink string Text to display (target of the action) with icon and color
+-- ---@param actionText string|nil Text to display if inactive (just text). Nil to use action_link
+-- ---@param prefixText string Text to display before spell (a verb?)
+-- ---@param extraText string|nil Text to display (extra comment)
+-- ---@param target BomUnitBuffTarget|BomGroupBuffTarget Distance to the party member, or group (if string)
+-- ---@param isInfo boolean Whether the text is info text or a cast
+-- ---@param prio number|nil Priority, a constant from taskModule.TaskPriority
+--function taskListClass:AddWithPrefix_0(prefixText,
+--                                       actionLink, actionText, extraText,
+--                                       target, isInfo, prio)
+--  local newTask = taskModule:Create(
+--          prefixText, actionLink, actionText, extraText, target, isInfo, prio)
+--  table.insert(self.tasks, newTask)
+--end
 
 ---Add a comment text which WILL auto open buffomat window when it is displayed
+---@param text string
 function taskListClass:Comment(text)
   table.insert(self.comments, text)
 end
 
 ---Add a comment text which WILL NOT auto open buffomat window and will display in grey
+---@param text string
 function taskListClass:LowPrioComment(text)
   table.insert(self.lowPrioComments, text)
 end

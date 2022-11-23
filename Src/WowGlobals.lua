@@ -239,9 +239,9 @@ function UnitOnTaxi(u)
   return false
 end
 ---@param u string
----@return BomClassName
+---@return string, BomClassName, string
 function UnitClass(u)
-  return "WARRIOR"
+  return "", "WARRIOR", ""
 end
 ---@return boolean,
 function IsModifierKeyDown()
