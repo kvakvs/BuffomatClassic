@@ -3,12 +3,12 @@ local BOM = BuffomatAddon ---@type BomAddon
 
 ---@alias BomBuffCategoryName ""|"tracking"|"pet"|"aura"|"seal"|"blessing"|"class"|"classicPhysFood"|"classicSpellFood"|"classicFood"|"classicPhysElixir"|"classicPhysBuff"|"classicBuff"|"classicSpellElixir"|"classicElixir"|"classicFlask"|"tbcPhysFood"|"tbcSpellFood"|"tbcFood"|"tbcPhysElixir"|"tbcSpellElixir"|"tbcElixir"|"tbcFlask"|"wotlkPhysFood"|"wotlkSpellFood"|"wotlkFood"|"wotlkPhysElixir"|"wotlkSpellElixir"|"wotlkElixir"|"wotlkFlask"|"scroll"|"weaponEnchantment"|"classWeaponEnchantment"
 
----@alias BomBuffidBuffLookup {[BomBuffId]: BomBuffDefinition}
+---@alias BomBuffidBuffdefLookup {[BomBuffId]: BomBuffDefinition}
 ---@alias BomEnchantToSpellLookup {[BomEnchantmentId]: BomSpellId}
 ---@alias BomBuffBySpellId {[BomSpellId]: BomBuffDefinition}
 
 ---@shape BomAllBuffsModule
----@field allBuffs BomBuffidBuffLookup All buffs, same as BOM.AllBuffomatSpells for convenience
+---@field allBuffs BomBuffidBuffdefLookup All buffs, same as BOM.AllBuffomatSpells for convenience
 ---@field allSpellIds number[]
 ---@field buffCategories BomBuffCategoryName[] Category names for buffs
 ---@field buffFromSpellIdLookup BomBuffBySpellId Lookup table for buff definitions by spell id
@@ -293,7 +293,7 @@ function allBuffsModule:SetupSpells()
   end
 
   -- Move from list of buffs to buffid-keyed buff dictionary
-  self.allBuffs = --[[---@type BomBuffidBuffLookup]] {}
+  self.allBuffs = --[[---@type BomBuffidBuffdefLookup]] {}
   for _i, buff in ipairs(allBuffs) do
     self.allBuffs[buff.buffId] = buff
   end

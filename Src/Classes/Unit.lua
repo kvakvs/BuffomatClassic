@@ -25,7 +25,7 @@ local toolboxModule = BomModuleManager.toolboxModule
 ---@field isPlayer boolean Is this a player
 ---@field isSameZone boolean Is in the same zone
 ---@field isTank boolean Is this member marked as tank
----@field knownBuffs {[BomBuffId]: BomUnitBuff} Buffs on player keyed by spell id, only buffs supported by Buffomat are stored
+---@field knownBuffs BomBuffidBuffLookup Buffs on player keyed by spell id, only buffs supported by Buffomat are stored
 ---@field link string
 ---@field mainhandEnchantment BomBuffId|nil Temporary enchant on main hand
 ---@field name string

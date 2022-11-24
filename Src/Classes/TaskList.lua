@@ -12,7 +12,7 @@ local _t = BomModuleManager.languagesModule
 ---@field tasks BomTask[]
 ---@field comments string[]
 ---@field lowPrioComments string[]
----@field firstToCast BomTask
+---@field firstToCast BomTask|nil
 local taskListClass = {}
 taskListClass.__index = taskListClass
 
@@ -113,7 +113,11 @@ function taskListClass:Display()
   for i, task in ipairs(self.tasks) do
     -- Refresh the copy of distance value
     --if task.t == "memberBuffTarget" or task.t == "groupBuffTarget" then
-    task.distance = task.target:GetDistance()
+    if not task.target then
+      task.distance = 0
+    else
+      task.distance = (--[[---@not nil]] task.target):GetDistance()
+    end
     --end
   end
 

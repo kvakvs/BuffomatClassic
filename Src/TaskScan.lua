@@ -1767,31 +1767,31 @@ function taskScanModule:CreateBuffTasks_Button(buffCtx)
     return self:CastButton_TargetedSpell()
 
   else
-    if tasklist.firstToCast then
-      self:WipeMacro(tasklist.firstToCast.macro)
+    if not tasklist.firstToCast then
+      return self:CastButton_Nothing() -- this is basically equal to if #tasklist.tasks == 0 below
+    end
 
-      if #tasklist.tasks == 0 or not tasklist.firstToCast.actionText then
-        return self:CastButton_Nothing()
+    self:WipeMacro((--[[---@not nil]] tasklist.firstToCast).macro)
 
+    --if #tasklist.tasks == 0 or not tasklist.firstToCast.actionText then
+    --  return self:CastButton_Nothing()
+
+    if buffCtx.someoneIsDead and buffomatModule.shared.DeathBlock then
+      -- Have tasks and someone died and option is set to not buff
+      return self:CastButton_SomeoneIsDead()
+
+    else
+      if (--[[---@not nil]] tasklist.firstToCast).inRange == false then
+        return self:CastButton_OutOfRange()
       else
-        if buffCtx.someoneIsDead and buffomatModule.shared.DeathBlock then
-          -- Have tasks and someone died and option is set to not buff
-          return self:CastButton_SomeoneIsDead()
-
+        if (--[[---@not nil]] tasklist.firstToCast):CanCast() == false then
+          return self:CastButton_CantCast()
         else
-          if tasklist.firstToCast.inRange == false then
-            return self:CastButton_OutOfRange()
-          else
-            if tasklist.firstToCast:CanCast() == false then
-              return self:CastButton_CantCast()
-            else
-              return self:CastButton(tasklist.firstToCast.actionText, true)
-            end
-          end -- if somebodydeath and deathblock
-        end -- if #display == 0
-      end
-    end -- if not player casting
-  end -- tasklist.firstToCast is not nil
+          return self:CastButton((--[[---@not nil]] tasklist.firstToCast).actionText, true)
+        end
+      end -- if somebodydeath and deathblock
+    end -- if #display == 0
+  end -- if not player casting
 end -- end function bomUpdateScan_Scan()
 
 ---For raid, invalidated group is rotated 1 to 8. For solo and party it does not rotate.

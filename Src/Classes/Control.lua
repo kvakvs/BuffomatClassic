@@ -59,6 +59,7 @@ controlModule.GPIMinimapButtonConfigData.__index = controlModule.GPIMinimapButto
 
 ---@class WowChatFrame: WowControl
 ---@field AddMessage function
+---@field Clear function
 ---
 ---@class WowGameTooltip: WowControl
 ---@field AddLine fun(m: string)

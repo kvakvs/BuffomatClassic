@@ -13,6 +13,8 @@ local buffModule = BomModuleManager.buffModule ---@type BomBuffModule
 local buffClass = {}
 buffClass.__index = buffClass
 
+---@alias BomBuffidBuffLookup {[BomBuffId]: BomUnitBuff}
+
 ---Creates a new Buff
 ---@param singleId number Spell id also serving as key
 ---@param duration number

@@ -5,7 +5,7 @@ local buffomatModule = BomModuleManager.buffomatModule
 
 -- TODO: Range check and power check and spellId can be stored here and postponed till we're ready to cast
 ---@class BomTask
---- @field target BomUnitBuffTarget|BomGroupBuffTarget Unit name
+--- @field target BomUnitBuffTarget|BomGroupBuffTarget|nil Unit name
 --- @field distance number Distance to the target or nearest unit in the group target
 --- @field prefixText string The message to show before the spell
 --- @field actionText string The message to display if inactive: spell name
@@ -106,19 +106,29 @@ local bomRed = "cc4444"
 local bomBleakRed = "bb5555"
 
 function taskClass:Format()
-  local target = self.target:GetText() .. " "
+  local targetText
+  if self.target then
+    targetText = (--[[---@not nil]] self.target):GetText() .. " "
+  else
+    targetText = ""
+  end
   if self.isInfo then
-    target = ""
+    targetText = ""
   end
   return string.format("%s%s %s %s",
-          target,
+          targetText,
           buffomatModule:Color(bomGray, self.prefixText),
           self.actionLink,
           buffomatModule:Color(bomGray, self.extraText))
 end
 
 function taskClass:FormatDisabledRed(reason)
-  local target = self.target:GetText() .. " "
+  local targetText
+  if self.target then
+    targetText = (--[[---@not nil]] self.target):GetText() .. " "
+  else
+    tate = ""
+  end
   if self.isInfo then
     target = ""
   end

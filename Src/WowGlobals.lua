@@ -5,7 +5,7 @@ UIParent = --[[---@type WowControl]] {}
 BomC_ListTab_Button = --[[---@type WowControl]] {}
 BomC_MainWindow = --[[---@type WowControl]] {}
 BomC_MainWindow_Title = --[[---@type WowControl]] {}
-BomC_ListTab_MessageFrame = --[[---@type WowControl]] {}
+BomC_ListTab_MessageFrame = --[[---@type WowChatFrame]] {}
 BomC_ListTab_Button = --[[---@type WowControl]] {}
 GameTooltip = --[[---@type WowGameTooltip]] {}
 
