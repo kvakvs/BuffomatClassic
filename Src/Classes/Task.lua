@@ -1,22 +1,35 @@
+local BOM = BuffomatAddon ---@type BomAddon
+
 ---@shape BomTaskModule
 local taskModule = BomModuleManager.taskModule ---@type BomTaskModule
 
 local buffomatModule = BomModuleManager.buffomatModule
+local partyModule = BomModuleManager.partyModule
+local taskScanModule = BomModuleManager.taskScanModule
 
 -- TODO: Range check and power check and spellId can be stored here and postponed till we're ready to cast
 ---@class BomTask
---- @field target BomUnitBuffTarget|BomGroupBuffTarget|nil Unit name
---- @field distance number Distance to the target or nearest unit in the group target
---- @field prefixText string The message to show before the spell
---- @field actionText string The message to display if inactive: spell name
---- @field actionLink string The message to display if active: spell link with icon
---- @field extraText string The extra message to display after the spell
---- @field priority number Sorting for display purposes
---- @field isInfo boolean Reports something to the user but no target or action. Macro and cast button not updated.
---- @field macro string
---- @field inRange boolean|nil Boolean if range check was done
+---@field target BomUnitBuffTarget|BomGroupBuffTarget|nil Unit name
+---@field distance number Distance to the target or nearest unit in the group target
+---@field prefixText string The message to show before the spell
+---@field actionText string The message to display if inactive: spell name
+---@field actionLink string The message to display if active: spell link with icon
+---@field extraText string The extra message to display after the spell
+---@field priority number Sorting for display purposes
+---@field isInfo boolean Reports something to the user but no target or action. Macro and cast button not updated.
+---@field macro string
+---@field inRange boolean|nil Boolean if range check was done
+---@field action BomTaskAction|nil
 local taskClass = {}
 taskClass.__index = taskClass
+
+---@class BomTaskAction Defines the action on button click
+---@field buffDef BomBuffDefinition|nil
+---@field spellLink string|nil
+---@field spellId number|nil
+---@field manaCost number
+---@field temporaryDownrank boolean Pick previous rank for certain spells, like Flametongue 10
+---@field target BomUnit
 
 taskModule.TaskPriority = {
   Resurrection = 1,
@@ -98,6 +111,63 @@ end
 function taskClass:PrefixText(t)
   self.prefixText = t
   return self
+end
+
+---@param cost number Resource cost (mana cost)
+---@param spellId number Spell id to capture
+---@param link string Spell link for a picture
+---@param targetUnit BomUnit player to benefit from the spell
+---@param buffDef BomBuffDefinition the spell to be added
+---@param temporaryDownrank boolean Pick previous rank for certain spells, like Flametongue 10
+---@return BomTask
+function taskClass:Action(cost, spellId, link, targetUnit, buffDef, temporaryDownrank)
+  if cost > partyModule.playerMana then
+    self.action = nil -- too expensive
+    return self -- ouch
+  end
+
+  if not buffDef.type == "resurrection" and targetUnit.isDead then
+    -- Cannot cast buffs on deads, only resurrections
+    self.action = nil
+    return self
+  end
+
+  if buffDef.type == "resurrection" then
+    -- If resurrection
+    -- TODO: Prioritize other ressers, prioritize mana classes
+    --if nextCastSpell.buffDef
+    --        and (--[[---@not nil]] nextCastSpell.buffDef).type == "resurrection"
+    --then
+    --  local ncTargetUnit = --[[---@not nil]] nextCastSpell.targetUnit
+    --  if (tContains(BOM.RESURRECT_CLASS, ncTargetUnit.class) and not tContains(BOM.RESURRECT_CLASS, ncTargetUnit.class))
+    --          or (tContains(BOM.MANA_CLASSES, ncTargetUnit.class) and not tContains(BOM.MANA_CLASSES, ncTargetUnit.class))
+    --          or (not ncTargetUnit.isGhost and ncTargetUnit.isGhost)
+    --          or (ncTargetUnit.distance < ncTargetUnit.distance) then
+    --    return self
+    --  end
+    --end
+  end
+
+  -- -- TODO: Prioritize self buffs
+  --if (buffomatModule.shared.SelfFirst
+  --        and (--[[---@not nil]] nextCastSpell.targetUnit).isPlayer and not targetUnit.isPlayer)
+  --        or ((--[[---@not nil]] nextCastSpell.targetUnit).group ~= 9 and targetUnit.group == 9) then
+  --  return self
+  --elseif (not buffomatModule.shared.SelfFirst
+  --        or ((--[[---@not nil]] nextCastSpell.targetUnit).isPlayer == targetUnit.isPlayer))
+  --        and (((--[[---@not nil]] nextCastSpell.targetUnit).group == 9) == (targetUnit.group == 9))
+  --        and nextCastSpell.manaCost > cost then
+  --  return self
+  --end
+
+  local a = --[[---@type BomTaskAction]] {}
+  a.temporaryDownrank = temporaryDownrank
+  a.manaCost = cost
+  a.spellId = spellId
+  a.spellLink = link
+  a.buffDef = buffDef
+  a.target = targetUnit
+  self.action = a
 end
 
 -- TODO move to const module

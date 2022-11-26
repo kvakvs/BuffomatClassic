@@ -36,15 +36,23 @@ controlModule.GPIMinimapButtonConfigData.__index = controlModule.GPIMinimapButto
 ---@field CreateTexture fun(self: WowControl): WowTexture
 ---@field Disable fun(self: WowControl)
 ---@field Enable fun(self: WowControl)
----@field IsEnabled fun(self: WowControl): boolean
----@field SetAlpha fun(self: WowControl, a: number)
+---@field GetHeight fun(self: WowControl): number
+---@field GetLeft fun(self: WowControl): number
 ---@field GetParent fun(self: WowControl): WowControl
+---@field GetTop fun(self: WowControl): number
+---@field GetWidth fun(self: WowControl): number
 ---@field Hide fun(self: WowControl)
+---@field IsEnabled fun(self: WowControl): boolean
+---@field IsVisible fun(self: WowControl): boolean
+---@field SetAlpha fun(self: WowControl, a: number)
+---@field SetAttribute function
 ---@field SetFrameStrata fun(self: WowControl, strata: string)
 ---@field SetHeight fun(self: WowControl, height: number)
+---@field SetMinResize function
 ---@field SetOwner fun(self: WowControl, owner: WowControl, anchor: string)
 ---@field SetParent fun(self: WowControl, parent: WowControl|nil)
 ---@field SetPoint fun(self: WowControl, point: string, relativeTo: WowControl|nil, relativePoint: string, xOfs: number, yOfs: number)|fun(self: WowControl, point: string, x: number, y: number)
+---@field SetScale function
 ---@field SetScript fun(self: WowControl, script: string, handler: function)
 ---@field SetState fun(self: BomGPIControl, state: any) GPI control handler but is here for simpler code where controls are mixed in same container
 ---@field SetText fun(self: WowControl, text: string)
@@ -58,8 +66,14 @@ controlModule.GPIMinimapButtonConfigData.__index = controlModule.GPIMinimapButto
 ---@field Clear function
 
 ---@class WowChatFrame: WowControl
+---@field editBox WowControl
 ---@field AddMessage function
 ---@field Clear function
+---@field SetFading function
+---@field SetFontObject function
+---@field SetJustifyH function
+---@field SetHyperlinksEnabled function
+---@field SetMaxLines function
 ---
 ---@class WowGameTooltip: WowControl
 ---@field AddLine fun(m: string)

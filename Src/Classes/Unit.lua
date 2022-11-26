@@ -11,6 +11,8 @@ local buffModule = BomModuleManager.buffModule
 local partyModule = BomModuleManager.partyModule
 local toolboxModule = BomModuleManager.toolboxModule
 
+---@alias BomBuffidBuffLookup {[BomBuffId]: BomUnitBuff}
+
 ---@class BomUnit
 ---@field allBuffs table<number, boolean> Availability of all auras even those not supported by BOM, by id, no extra detail stored
 ---@field class BomClassName
@@ -43,6 +45,73 @@ function unitModule:New(fields)
   return fields
 end
 
+---Handles UnitAura WOW API call.
+---For spells that are tracked by Buffomat the data is also stored in partyModule.buffs
+---@param unitId string
+---@param buffIndex number Index of buff/debuff slot starts 1 max 40?
+---@param filter string Filter string like "HELPFUL", "PLAYER", "RAID"... etc
+---@return BomUnitAuraResult
+function unitModule:UnitAura(unitId, buffIndex, filter)
+  ---@type string, string, number, string, number, number, string, boolean, boolean, number, boolean, boolean, boolean, boolean, number
+  local name, icon, count, debuffType, duration, expirationTime, source, isStealable
+  , nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, castByPlayer
+  , nameplateShowAll, timeMod = UnitAura(unitId, buffIndex, filter)
+
+  if spellId
+          and allBuffsModule.allSpellIds
+          and tContains(allBuffsModule.allSpellIds, spellId) then
+
+    if source ~= nil and source ~= "" and UnitIsUnit(source, "player") then
+      if UnitIsUnit(unitId, "player") and duration ~= nil and duration > 0 then
+        buffomatModule.shared.Duration[name] = duration
+      end
+
+      if duration == nil or duration == 0 then
+        duration = buffomatModule.shared.Duration[name] or 0
+      end
+
+      if duration > 0 and (expirationTime == nil or expirationTime == 0) then
+        local destName = UnitFullName(unitId) ---@type string
+        local buffOnPlayer = partyModule.unitAurasLastUpdated[destName]
+
+        if buffOnPlayer and buffOnPlayer[name] then
+          expirationTime = (buffOnPlayer[name] or 0) + duration
+
+          local now = GetTime()
+
+          if expirationTime <= now then
+            buffOnPlayer[name] = now
+            expirationTime = now + duration
+          end
+        end
+      end
+
+      if expirationTime == 0 then
+        duration = 0
+      end
+    end
+
+  end
+
+  return {
+    name                  = name,
+    icon                  = icon,
+    count                 = count,
+    debuffType            = debuffType,
+    duration              = duration,
+    expirationTime        = expirationTime,
+    source                = source,
+    isStealable           = isStealable,
+    nameplateShowPersonal = nameplateShowPersonal,
+    spellId               = spellId,
+    canApplyAura          = canApplyAura,
+    isBossDebuff          = isBossDebuff,
+    castByPlayer          = castByPlayer,
+    nameplateShowAll      = nameplateShowAll,
+    timeMod               = timeMod
+  }
+end
+
 ---Force updates buffs for one party member
 ---@param playerUnit BomUnit
 function unitClass:ForceUpdateBuffs(playerUnit)
@@ -69,7 +138,7 @@ function unitClass:ForceUpdateBuffs(playerUnit)
     repeat
       buffIndex = buffIndex + 1
 
-      local unitAura = buffomatModule:UnitAura(self.unitId, buffIndex, "HELPFUL")
+      local unitAura = unitModule:UnitAura(self.unitId, buffIndex, "HELPFUL")
 
       if unitAura.spellId then
         self.allBuffs[unitAura.spellId] = true -- save all buffids even those not supported

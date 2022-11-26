@@ -2,6 +2,9 @@
 --local BOM = BuffomatAddon ---@type BomAddon
 
 ---@shape BomManagedUiModule
+---@field ICON_OFF string
+---@field ICON_ON string
+
 local managedUiModule = BomModuleManager.managedUiModule ---@type BomManagedUiModule
 
 managedUiModule.ICON_ON = "|TInterface\\RAIDFRAME\\ReadyCheck-Ready:0:0:0:0:64:64:4:60:4:60|t"

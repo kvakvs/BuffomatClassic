@@ -337,8 +337,8 @@ function buffomatModule:InitUI()
   toolboxModule:EnableMoving(BomC_MainWindow, BOM.SaveWindowPosition)
   BomC_MainWindow:SetMinResize(180, 90)
 
-  toolboxModule:AddTab(BomC_MainWindow, _t("TabBuff"), BomC_ListTab, true)
-  toolboxModule:AddTab(BomC_MainWindow, _t("TabSpells"), BomC_SpellTab, true)
+  toolboxModule:AddTab(--[[---@type WowControl]] BomC_MainWindow, _t("TabBuff"), BomC_ListTab, true)
+  toolboxModule:AddTab(--[[---@type WowControl]] BomC_MainWindow, _t("TabSpells"), BomC_SpellTab, true)
   toolboxModule:SelectTab(BomC_MainWindow, 1)
 end
 
@@ -430,8 +430,6 @@ function BuffomatAddon:Init()
   languagesModule:SetupTranslations()
   allBuffsModule:SetupSpells()
   allBuffsModule:SetupCancelBuffs()
-  --BOM.SetupItemCache()
-  taskScanModule:SetupTasklist()
 
   BOM.theMacro = macroModule:NewMacro(constModule.MACRO_NAME, nil)
 
@@ -458,20 +456,20 @@ function BuffomatAddon:Init()
 
   -- slash command
   -- Unused?
-  local function slash_command_db_set(DB, var, value)
-    if value == nil then
-      DB[var] = not DB[var]
-
-    elseif tContains({ "true", "1", "enable" }, value) then
-      DB[var] = true
-
-    elseif tContains({ "false", "0", "disable" }, value) then
-      DB[var] = false
-    end
-
-    BOM:Print("Set " .. var .. " to " .. tostring(DB[var]))
-    buffomatModule:OptionsUpdate()
-  end
+  --local function slash_command_db_set(DB, var, value)
+  --  if value == nil then
+  --    DB[var] = not DB[var]
+  --
+  --  elseif tContains({ "true", "1", "enable" }, value) then
+  --    DB[var] = true
+  --
+  --  elseif tContains({ "false", "0", "disable" }, value) then
+  --    DB[var] = false
+  --  end
+  --
+  --  BOM:Print("Set " .. var .. " to " .. tostring(DB[var]))
+  --  buffomatModule:OptionsUpdate()
+  --end
 
   slashModule:RegisterSlashCommandHandler({ "/bom", "/buffomat" },
           self:MakeSlashCommand())
@@ -695,73 +693,6 @@ function buffomatModule:PrintCallers(prefix, callersCollection)
   end
 end
 
----Handles UnitAura WOW API call.
----For spells that are tracked by Buffomat the data is also stored in partyModule.buffs
----@param unitId string
----@param buffIndex number Index of buff/debuff slot starts 1 max 40?
----@param filter string Filter string like "HELPFUL", "PLAYER", "RAID"... etc
----@return BomUnitAuraResult
-function buffomatModule:UnitAura(unitId, buffIndex, filter)
-  ---@type string, string, number, string, number, number, string, boolean, boolean, number, boolean, boolean, boolean, boolean, number
-  local name, icon, count, debuffType, duration, expirationTime, source, isStealable
-  , nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, castByPlayer
-  , nameplateShowAll, timeMod = UnitAura(unitId, buffIndex, filter)
-
-  if spellId
-          and allBuffsModule.allSpellIds
-          and tContains(allBuffsModule.allSpellIds, spellId) then
-
-    if source ~= nil and source ~= "" and UnitIsUnit(source, "player") then
-      if UnitIsUnit(unitId, "player") and duration ~= nil and duration > 0 then
-        self.shared.Duration[name] = duration
-      end
-
-      if duration == nil or duration == 0 then
-        duration = self.shared.Duration[name] or 0
-      end
-
-      if duration > 0 and (expirationTime == nil or expirationTime == 0) then
-        local destName = UnitFullName(unitId) ---@type string
-        local buffOnPlayer = partyModule.unitAurasLastUpdated[destName]
-
-        if buffOnPlayer and buffOnPlayer[name] then
-          expirationTime = (buffOnPlayer[name] or 0) + duration
-
-          local now = GetTime()
-
-          if expirationTime <= now then
-            buffOnPlayer[name] = now
-            expirationTime = now + duration
-          end
-        end
-      end
-
-      if expirationTime == 0 then
-        duration = 0
-      end
-    end
-
-  end
-
-  return {
-    name                  = name,
-    icon                  = icon,
-    count                 = count,
-    debuffType            = debuffType,
-    duration              = duration,
-    expirationTime        = expirationTime,
-    source                = source,
-    isStealable           = isStealable,
-    nameplateShowPersonal = nameplateShowPersonal,
-    spellId               = spellId,
-    canApplyAura          = canApplyAura,
-    isBossDebuff          = isBossDebuff,
-    castByPlayer          = castByPlayer,
-    nameplateShowAll      = nameplateShowAll,
-    timeMod               = timeMod
-  }
-end
-
 buffomatModule.autoHelper = "open"
 
 function BOM.HideWindow()
@@ -894,42 +825,42 @@ function BOM.ClickHyperlink(self, link)
   end
 end
 
-function buffomatModule.Slash_DebugBuffs(dest)
-  dest = dest or "player"
-
-  print("LastTracking:", buffomatModule.character.lastTrackingIconId, " ")
-  print("ForceTracking:", BOM.forceTracking, " ")
-  print("ActivAura:", BOM.activePaladinAura, " ")
-  print("LastAura:", BOM.currentProfile.LastAura, " ")
-  print("ActivSeal:", BOM.activePaladinSeal, " ")
-  print("LastSeal:", BOM.currentProfile.LastSeal, " ")
-  print("Shapeshift:", GetShapeshiftFormID(), " ")
-  print("Weaponenchantment:", GetWeaponEnchantInfo())
-
-  --local name, icon, count, debuffType, duration, expirationTime, source,
-  --isStealable, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff,
-  --castByPlayer, nameplateShowAll, timeMod
-  for buffIndex = 1, 40 do
-    local unitAura = buffomatModule:UnitAura(dest, buffIndex, "HELPFUL")
-
-    if unitAura.name or unitAura.icon or unitAura.count or unitAura.debuffType then
-      print("Help:", unitAura.name, unitAura.spellId, unitAura.duration,
-              unitAura.expirationTime, unitAura.source,
-              (unitAura.expirationTime or 0) - GetTime())
-    end
-  end -- for 40 buffs
-end
+--function buffomatModule.Slash_DebugBuffs(dest)
+--  dest = dest or "player"
+--
+--  print("LastTracking:", buffomatModule.character.lastTrackingIconId, " ")
+--  print("ForceTracking:", BOM.forceTracking, " ")
+--  print("ActivAura:", BOM.activePaladinAura, " ")
+--  print("LastAura:", BOM.currentProfile.LastAura, " ")
+--  print("ActivSeal:", BOM.activePaladinSeal, " ")
+--  print("LastSeal:", BOM.currentProfile.LastSeal, " ")
+--  print("Shapeshift:", GetShapeshiftFormID(), " ")
+--  print("Weaponenchantment:", GetWeaponEnchantInfo())
+--
+--  --local name, icon, count, debuffType, duration, expirationTime, source,
+--  --isStealable, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff,
+--  --castByPlayer, nameplateShowAll, timeMod
+--  for buffIndex = 1, 40 do
+--    local unitAura = buffomatModule:UnitAura(dest, buffIndex, "HELPFUL")
+--
+--    if unitAura.name or unitAura.icon or unitAura.count or unitAura.debuffType then
+--      print("Help:", unitAura.name, unitAura.spellId, unitAura.duration,
+--              unitAura.expirationTime, unitAura.source,
+--              (unitAura.expirationTime or 0) - GetTime())
+--    end
+--  end -- for 40 buffs
+--end
 
 function buffomatModule.Slash_DebugBuffList()
-  print("PlayerBuffs stored ", #partyModule.unitAurasLastUpdated)
-
-  for name, spellist in pairs(partyModule.unitAurasLastUpdated) do
-    print(name)
-
-    for spellname, ti in pairs(spellist) do
-      print(name, spellname, ti, GetTime() - ti)
-    end
-  end
+--  print("PlayerBuffs stored ", #partyModule.unitAurasLastUpdated)
+--
+--  for name, spellist in pairs(partyModule.unitAurasLastUpdated) do
+--    print(name)
+--
+--    for spellname, ti in pairs(spellist) do
+--      print(name, spellname, ti, GetTime() - ti)
+--    end
+--  end
 end
 
 function BOM.ShowSpellSettings()
@@ -940,4 +871,16 @@ end
 
 function BOM.MyButtonOnClick(self)
   buffomatModule:OptionsUpdate()
+end
+
+function buffomatModule:FadeBuffomatWindow()
+  if BomC_ListTab_Button:IsEnabled() then
+    BomC_MainWindow:SetAlpha(1.0)
+  else
+    local fade = self.shared.FadeWhenNothingToDo
+    if type(fade) ~= "number" then
+      fade = 0.65
+    end
+    BomC_MainWindow:SetAlpha(fade) -- fade the window, default 65%
+  end
 end

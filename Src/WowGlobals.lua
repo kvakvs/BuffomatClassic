@@ -1,13 +1,21 @@
-UIErrorsFrame = --[[---@type WowUIErrorsFrame]] {}
-DEFAULT_CHAT_FRAME = --[[---@type WowChatFrame]] {}
-UIDROPDOWNMENU_OPEN_MENU = --[[---@type WowChatFrame]] {}
-UIParent = --[[---@type WowControl]] {}
+BomC_ListTab = --[[---@type BomWindowTab]] {}
 BomC_ListTab_Button = --[[---@type WowControl]] {}
-BomC_MainWindow = --[[---@type WowControl]] {}
-BomC_MainWindow_Title = --[[---@type WowControl]] {}
 BomC_ListTab_MessageFrame = --[[---@type WowChatFrame]] {}
-BomC_ListTab_Button = --[[---@type WowControl]] {}
+BomC_SpellTab = --[[---@type BomWindowTab]] {}
+BomC_MainWindow = --[[---@type BomMainWindowFrame]] {}
+BomC_MainWindow_Title = --[[---@type WowControl]] {}
+DEFAULT_CHAT_FRAME = --[[---@type WowChatFrame]] {}
 GameTooltip = --[[---@type WowGameTooltip]] {}
+UIDROPDOWNMENU_OPEN_MENU = --[[---@type WowChatFrame]] {}
+UIErrorsFrame = --[[---@type WowUIErrorsFrame]] {}
+UIParent = --[[---@type WowControl]] {}
+InterfaceOptionsFrame = --[[---@type WowControl]] {}
+GameMenuFrame = --[[---@type WowControl]] {}
+
+---@class BomWindowTab: WowControl
+
+---@class BomMainWindowFrame: WowControl
+---@field Tabs BomWindowTab[]
 
 BackdropTemplateMixin = ""
 ERR_SPELL_OUT_OF_RANGE = "Out of range." ---@type string

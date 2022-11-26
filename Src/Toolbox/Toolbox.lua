@@ -535,8 +535,8 @@ end
 ---Adds a Tab to a frame (main window for example)
 ---@param frame BomGPIControlFrame|WowControl|string Where to add a tab; or a global name of a frame
 ---@param name string Tab text
----@param tabFrame BomGPIControlTab | string - tab text
----@param combatlockdown boolean - accessible in combat or not
+---@param tabFrame BomWindowTab
+---@param combatlockdown boolean accessible in combat or not
 function toolboxModule:AddTab(frame, name, tabFrame, combatlockdown)
   local frameName ---@type string
 
