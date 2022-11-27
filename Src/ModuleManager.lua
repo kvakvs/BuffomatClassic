@@ -1,4 +1,7 @@
 ---@shape BomModuleManagerModule
+---@field actionCastModule BomActionCastModule
+---@field actionUseModule BomActionUseModule
+---@field actionMacroModule BomActionMacroModule
 ---@field allBuffsModule BomAllBuffsModule
 ---@field allConsumesElixirsModule BomAllConsumesElixirsModule
 ---@field allConsumesEnchantmentsModule BomAllConsumesEnchantmentsModule
@@ -62,6 +65,9 @@
 ---@field unitModule BomUnitModule
 BomModuleManager = {}
 
+BomModuleManager.actionCastModule = --[[---@type BomActionCastModule]] {}
+BomModuleManager.actionUseModule = --[[---@type BomActionUseModule]] {}
+BomModuleManager.actionMacroModule = --[[---@type BomActionMacroModule]] {}
 BomModuleManager.allBuffsModule = --[[---@type BomAllBuffsModule]] {}
 BomModuleManager.allConsumesElixirsModule = --[[---@type BomAllConsumesElixirsModule]] {}
 BomModuleManager.allConsumesEnchantmentsModule = --[[---@type BomAllConsumesEnchantmentsModule]] {}

@@ -47,9 +47,14 @@ Src/Classes/Profile.lua
 Src/Classes/RowBuilder.lua
 Src/Classes/SharedSettings.lua
 Src/Classes/BuffDefinition.lua
-Src/Classes/Task.lua
 Src/Classes/Party.lua
-Src/Classes/TaskList.lua
+
+Src/Task/Task.lua
+Src/Task/TaskList.lua
+Src/Task/TaskScan.lua
+Src/Task/ActionCast.lua
+Src/Task/ActionUse.lua
+Src/Task/ActionMacro.lua
 
 Src/Cache/ItemCache.lua
 Src/Cache/SpellCache.lua
@@ -73,7 +78,6 @@ Src/Languages/French.lua
 Src/Languages/Russian.lua
 Src/Languages/Chinese.lua
 Src/SpellSetup.lua
-Src/TaskScan.lua
 Src/BuffChecks.lua
 Src/Toolbox/Toolbox.lua
 Src/Toolbox/SlashCommands.lua

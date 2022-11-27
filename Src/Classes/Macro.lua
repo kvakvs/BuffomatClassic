@@ -1,22 +1,11 @@
-local TOCNAME, _ = ...
+--local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BomAddon
 
 ---@shape BomMacroModule
-local macroModule = BomModuleManager.macroModule ---@type BomMacroModule
+local macroModule = BomModuleManager.macroModule
 
 local constModule = BomModuleManager.constModule
 local _t = BomModuleManager.languagesModule
-
------@deprecated
---local L = setmetatable({}, { __index = function(t, k)
---  if BOM.L and BOM.L[k] then
---    return BOM.L[k]
---  else
---    return "[" .. k .. "]"
---  end
---end })
-
---BOM.Class = BOM.Class or {}
 
 ---@shape BomMacro
 ---@field name string Macro name, default Buff'o'mat
@@ -59,8 +48,9 @@ function macroClass:GetText()
 end
 
 function macroClass:UpdateMacro()
-  EditMacro(constModule.MACRO_NAME, nil, self.icon, self:GetText())
-  BOM.minimapButton:SetTexture("Interface\\ICONS\\" .. self.icon)
+  local icon = self.icon or constModule.MACRO_ICON
+  EditMacro(constModule.MACRO_NAME, nil, icon, self:GetText())
+  BOM.minimapButton:SetTexture("Interface\\ICONS\\" .. icon)
 end
 
 function macroClass:Recreate()

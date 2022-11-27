@@ -22,7 +22,9 @@ ERR_SPELL_OUT_OF_RANGE = "Out of range." ---@type string
 ShapeShiftTravel = 0
 
 ---@return number
-function debugprofilestop() return 0 end
+function debugprofilestop()
+  return 0
+end
 ---@param a string
 ---@param b string
 function GetAddOnMetadata(a, b)
@@ -291,4 +293,25 @@ end
 ---@return number
 function UnitPowerMax(u, pow)
   return 0
+end
+MAX_CHARACTER_MACROS = 0
+MAX_ACCOUNT_MACROS = 0
+---@param name string
+function GetMacroInfo(name)
+end
+---@param name string
+---@param icon string
+---@param c string
+---@param isChar boolean
+function CreateMacro(name, icon, c, isChar)
+end
+---@param name string
+---@param x nil
+---@param icon string
+---@param text string
+function EditMacro(name, x, icon, text)
+end
+---@return number, number
+function GetNumMacros()
+  return 0, 0
 end

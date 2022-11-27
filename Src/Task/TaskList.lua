@@ -90,7 +90,6 @@ end
 ---Clear the cached text, and clear the message frame
 function taskListClass:Clear()
   BomC_ListTab_MessageFrame:Clear()
-  self.firstToCast = nil
   wipe(self.tasks)
   wipe(self.comments)
   wipe(self.lowPrioComments)
@@ -158,7 +157,7 @@ end
 function taskListClass:CastButton_Nothing()
   --If don't have any strings to display, and nothing to do -
   --Clear the cast button
-  self:CastButton(_t("castButton.NothingToDo"), false)
+  self:CastButtonText(_t("castButton.NothingToDo"), false)
 
   for _i, spell in ipairs(allBuffsModule.selectedBuffs) do
     if #spell.skipList > 0 then
@@ -169,6 +168,7 @@ end
 
 ---@param task BomTask
 ---@param buffCtx BomBuffScanContext
+---@deprecated Use :CastButton(task)
 function taskListClass:SetupButton(task, buffCtx)
   -- TOO FAR
   if task.inRange == false then
@@ -188,28 +188,17 @@ function taskListClass:SetupButton(task, buffCtx)
     return self:CastButton_SomeoneIsDead()
   end
 
-  -- ============================
-  -- OK to cast 1 spell on target
-  -- ============================
-  if task:CanCast() == false then
-    return self:CastButton_CantCast()
-  end
+  --if task:CanCast() == false then
+  --  return self:CastButton_CantCast()
+  --end
 
-  if task.action then
-    if (--[[---@not nil]] task.action).target
-            and (--[[---@not nil]] task.action).spellId then
-      return self:CastButton_TargetedSpell(task)
-    end
-
-    return self:CastButton(task.actionText, true)
-
-  end
+  self:CastButton(task)
 end
 
 ---Set text and enable the cast button (or disable)
 ---@param t string - text for the cast button
 ---@param enable boolean - whether to enable the button or not
-function taskListClass:CastButton(t, enable)
+function taskListClass:CastButtonText(t, enable)
   -- not really a necessary check but for safety
   if InCombatLockdown()
           or BomC_ListTab_Button == nil
@@ -230,47 +219,42 @@ end
 
 function taskListClass:CastButton_Busy()
   --Print player is busy (casting normal spell)
-  self:CastButton(_t("castButton.Busy"), false)
+  self:CastButtonText(_t("castButton.Busy"), false)
   taskListModule:WipeMacro(nil)
 end
 
 function taskListClass:CastButton_BusyChanneling()
   --Print player is busy (casting channeled spell)
-  self:CastButton(_t("castButton.BusyChanneling"), false)
+  self:CastButtonText(_t("castButton.BusyChanneling"), false)
   taskListModule:WipeMacro(nil)
 end
 
+---Success case, cast is allowed, macro will be set and button will be enabled
 ---@param task BomTask
-function taskListClass:CastButton_TargetedSpell(task)
-  --Next cast is already defined - update the button text
-  self:CastButton((--[[---@not nil]] task.action).spellLink or "?", true)
-  taskListModule:UpdateMacro(--[[---@not nil]] task.action)
+function taskListClass:CastButton(task)
+  BOM.theMacro:Recreate()
+  wipe(BOM.theMacro.lines)
 
-  local cdtest = GetSpellCooldown((--[[---@not nil]] task.action).spellId) or 0
+  local action = --[[---@not nil]] task.action
+  self:CastButtonText(action:GetButtonText(), true)
 
-  if cdtest ~= 0 then
-    BOM.checkCooldown = (--[[---@not nil]] task.action).spellId
-    BomC_ListTab_Button:Disable()
-  else
-    BomC_ListTab_Button:Enable()
-  end
-
-  BOM.castFailedBuff = (--[[---@not nil]] task.action).buffDef
-  BOM.castFailedBuffTarget = (--[[---@not nil]] task.action).target
+  -- Set the macro lines and update the Buffomat macro
+  action:UpdateMacro(BOM.theMacro)
+  BOM.theMacro:UpdateMacro()
 end
 
 function taskListClass:CastButton_SomeoneIsDead()
-  self:CastButton(_t("InactiveReason_DeadMember"), false)
+  self:CastButtonText(_t("InactiveReason_DeadMember"), false)
 end
 
-function taskListClass:CastButton_CantCast()
-  -- Range is good but cast is not possible
-  --self:CastButton(ERR_OUT_OF_MANA, false)
-  self:CastButton(_t("castButton.CantCastMaybeOOM"), false)
-end
+--function taskListClass:CastButton_CantCast()
+--  -- Range is good but cast is not possible
+--  --self:CastButton(ERR_OUT_OF_MANA, false)
+--  self:CastButtonText(_t("castButton.CantCastMaybeOOM"), false)
+--end
 
 function taskListClass:CastButton_OutOfRange()
-  self:CastButton(ERR_SPELL_OUT_OF_RANGE, false)
+  self:CastButtonText(ERR_SPELL_OUT_OF_RANGE, false)
   local skipreset = false
 
   for spellIndex, spell in ipairs(allBuffsModule.selectedBuffs) do
@@ -306,75 +290,14 @@ end
 -- -@param command string - bag command
 -- -@param temporaryDownrank boolean Choose previous rank for some spells like Flametongue 10 on offhand
 --function taskScanModule:UpdateMacro(member, spellId, command, temporaryDownrank)
----@param action BomTaskAction
-function taskListModule:UpdateMacro(action)
-  local macro = BOM.theMacro
-  macro:Recreate()
-  wipe(macro.lines)
-
-  --Downgrade-Check
-  local buffDef = allBuffsModule.buffFromSpellIdLookup[--[[---@not nil]] action.spellId]
-  local rank = ""
-
-  if buffDef == nil then
-    print("Update macro: NIL SPELL for spellid=", action.spellId)
-  end
-
-  if buffomatModule.shared.UseRank
-          or (action.target and (--[[---@not nil]] action.target).unitId == "target")
-          or action.temporaryDownrank then
-    local level = UnitLevel((--[[---@not nil]] action.target).unitId)
-
-    if buffDef and level ~= nil and level > 0 then
-      local spellChoices
-
-      if buffDef.singleFamily
-              and tContains(buffDef.singleFamily, action.spellId) then
-        spellChoices = buffDef.singleFamily
-      elseif buffDef.groupFamily
-              and tContains(--[[---@not nil]] buffDef.groupFamily, action.spellId) then
-        spellChoices = buffDef.groupFamily
-      end
-
-      if spellChoices then
-        local newSpellId
-
-        for i, id in ipairs(spellChoices) do
-          if buffomatModule.shared.SpellGreaterEqualThan[id] == nil
-                  or buffomatModule.shared.SpellGreaterEqualThan[id] < level then
-            newSpellId = id
-          else
-            break
-          end
-          if id == action.spellId then
-            break
-          end
-        end
-        action.spellId = newSpellId or action.spellId
-      end
-    end -- if spell and level
-
-    rank = GetSpellSubtext(--[[---@not nil]] action.spellId) or ""
-
-    if rank ~= "" then
-      rank = "(" .. rank .. ")"
-    end
-  end
-
-  BOM.castFailedSpellId = action.spellId
-  local name = GetSpellInfo(--[[---@not nil]] action.spellId)
-  if name == nil then
-    BOM:Print("Update macro: Bad spell spellid=" .. action.spellId)
-  end
-
-  if tContains(allBuffsModule.cancelForm, action.spellId) then
-    table.insert(macro.lines, "/cancelform [nocombat]")
-  end
-  table.insert(macro.lines, "/bom _checkforerror")
-  table.insert(macro.lines, "/cast [@"
-          .. (--[[---@not nil]] action.target).unitId
-          .. ",nocombat]" .. name .. rank)
-  macro.icon = constModule.MACRO_ICON
-
-  macro:UpdateMacro()
-end
+-- ---@param action BomTaskAction
+--function taskListModule:UpdateMacro(action)
+--  local macro = BOM.theMacro
+--  macro:Recreate()
+--  wipe(macro.lines)
+--
+--  action:UpdateMacro(macro)
+--  macro.icon = constModule.MACRO_ICON
+--
+--  macro:UpdateMacro()
+--end
