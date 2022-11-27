@@ -20,8 +20,13 @@ taskListClass.__index = taskListClass
 ---@return BomTask|nil
 function taskListClass:SelectTask()
   for _, t in ipairs(self.tasks) do
-    if t:CanCast() then
+    local canCast = t:CanCast()
+    if canCast == taskModule.CAN_CAST_OK then
       return t
+    else
+      if canCast ~= taskModule.CAN_CAST_ON_CD then
+        BOM:Debug(string.format("Can't cast %s = %s", t.actionLink or "?", canCast))
+      end
     end
   end
   return nil
@@ -236,7 +241,7 @@ function taskListClass:CastButton(task)
   wipe(BOM.theMacro.lines)
 
   local action = --[[---@not nil]] task.action
-  self:CastButtonText(action:GetButtonText(), true)
+  self:CastButtonText(action:GetButtonText(task), true)
 
   -- Set the macro lines and update the Buffomat macro
   action:UpdateMacro(BOM.theMacro)

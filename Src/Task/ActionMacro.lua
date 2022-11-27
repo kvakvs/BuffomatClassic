@@ -27,8 +27,9 @@ function actionMacroClass:CanCast()
   return taskModule.CAN_CAST_OK
 end
 
-function actionMacroClass:GetButtonText()
-  return self.buttonText
+---@param task BomTask
+function actionMacroClass:GetButtonText(task)
+  return self.buttonText .. " " .. task.extraText
 end
 
 ---@param m BomMacro

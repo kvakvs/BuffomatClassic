@@ -48,7 +48,8 @@ function actionUseClass:UpdateMacro(m)
   end
 end
 
-function actionUseClass:GetButtonText()
+---@param task BomTask
+function actionUseClass:GetButtonText(task)
   if self.buffDef == nil then
     return _t("task.UseOrOpen") .. " " .. (self.extraText or "")
   end

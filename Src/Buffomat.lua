@@ -114,7 +114,7 @@ BOM.cachedPlayerBag = {}
 ---@param t string
 function BOM:Debug(t)
   if buffomatModule.shared.DebugLogging then
-    DEFAULT_CHAT_FRAME:AddMessage(tostring(GetTime()) .. " " .. buffomatModule:Color("883030", "BOM") .. t)
+    DEFAULT_CHAT_FRAME:AddMessage(tostring(GetTime()) .. " " .. buffomatModule:Color("883030", "BOM ") .. t)
   end
 end
 

@@ -1087,70 +1087,56 @@ function taskScanModule:AddConsumableWeaponBuff(buffDef, playerUnit, buffCtx)
   end
 end
 
+local function getMainhandEnchantTaskText(isDownrank)
+  if isDownrank then
+    return _t("TooltipMainHand") .. ": " .. _t("shaman.flametongueDownranked")
+  end
+  return _t("TooltipMainHand")
+end
+
 ---Adds a display text for a weapon buff created by a spell (shamans and paladins)
 ---@param buffDef BomBuffDefinition - the spell to cast
 ---@param playerUnit BomUnit - the player
 ---@param buffCtx BomBuffScanContext
 function taskScanModule:AddWeaponEnchant(buffDef, playerUnit, buffCtx)
-  local blockOffhandEnchant = false -- set to true to block temporarily
-
   local _, selfClass, _ = UnitClass("player")
-  if BOM.isTBC and selfClass == "SHAMAN" then
-    -- Special handling for TBC shamans, you cannot specify slot for enchants,
-    -- and it goes into main then offhand
-    local hasMainhand, _mhExpire, _mhCharges, _mhEnchantid
-    , hasOffhand, _ohExpire, _ohCharges, _ohEnchantid = GetWeaponEnchantInfo()
-
-    if not hasMainhand then
-      -- shamans in TBC can't enchant offhand if MH enchant is missing
-      blockOffhandEnchant = true
-    end
-
-    if hasOffhand then
-      blockOffhandEnchant = true
-    end
+  if not BOM.haveTBC or selfClass ~= "SHAMAN" then
+    return
   end
+
+  -- Special handling for TBC shamans, you cannot specify slot for enchants,
+  -- and it goes into main then offhand
+  local hasMainhand, _mhExpire, _mhCharges, _mhEnchantid
+  , hasOffhand, _ohExpire, _ohCharges, _ohEnchantid = GetWeaponEnchantInfo()
 
   local profileBuff = buffDefModule:GetProfileBuff(buffDef.buffId, nil)
 
   -- OFFHAND FIRST
-  -- Because offhand sets a temporaryDownrank flag in nextCastSpell and it somehow doesn't reset when offhand is queued second
-  if profileBuff and (--[[---@not nil]] profileBuff).OffHandEnable
+  if profileBuff
+          and hasMainhand
+          and (--[[---@not nil]] profileBuff).OffHandEnable
           and playerUnit.offhandEnchantment == nil then
-    if blockOffhandEnchant then
-      -- Text: [Spell Name] (Off-hand) Blocked waiting
-      tasklist:Add(
-              taskModule:Create(buffDef.singleLink, buffDef.singleText)
-                        :ExtraText(_t("TooltipOffHand") .. ": " .. _t("ShamanEnchantBlocked"))
-                        :Target(buffTargetModule:FromSelf(playerUnit))
-                        :IsInfo())
-    else
-      -- Text: [Spell Name] (Off-hand)
-      -- or:   [Spell Name] (Off-hand) Downranked
-      tasklist:Add(
-              taskModule:Create(buffDef.singleLink, buffDef.singleText)
-                        :ExtraText(_t("TooltipOffHand"))
-                        :Target(buffTargetModule:FromSelf(playerUnit))
-                        :Action(actionCastModule:New(
-                      buffDef.singleMana, buffDef.highestRankSingleId, buffDef.singleLink,
-                      playerUnit, buffDef, false)))
-    end
+    -- Text: [Spell Name] (Off-hand)
+    tasklist:Add(
+            taskModule:Create(buffDef.singleLink, buffDef.singleText)
+                      :ExtraText(_t("TooltipOffHand"))
+                      :Target(buffTargetModule:FromSelf(playerUnit))
+                      :Action(actionCastModule:New(
+                    buffDef.singleMana, buffDef.highestRankSingleId, buffDef.singleLink,
+                    playerUnit, buffDef, false)))
+    --end
   end
 
   -- MAINHAND AFTER OFFHAND
-  -- Because offhand sets a temporaryDownrank flag in nextCastSpell and it somehow doesn't reset when offhand is queued second
-  if profileBuff and (--[[---@not nil]] profileBuff).MainHandEnable
+  if profileBuff
+          and (--[[---@not nil]] profileBuff).MainHandEnable
           and playerUnit.mainhandEnchantment == nil then
     -- Special case is ruled by the option `ShamanFlametongueRanked`
     -- Flametongue enchant for spellhancement shamans only!
     local isDownrank = buffDef.buffId == spellIdsModule.Shaman_Flametongue6
             and buffomatModule.shared.ShamanFlametongueRanked
-    local taskText = ""
-    if isDownrank then
-      taskText = _t("TooltipMainHand") .. ": " .. _t("shaman.flametongueDownranked")
-    else
-      taskText = _t("TooltipMainHand")
-    end
+
+    local taskText =getMainhandEnchantTaskText(isDownrank)
 
     -- Text: [Spell Name] (Main hand)
     tasklist:Add(
@@ -1501,11 +1487,8 @@ function taskScanModule:UpdateScan_Scan(party)
   buffomatModule:ClearForceUpdate()
 
   local firstToCast = tasklist:SelectTask()
-  --BOM.ftc = firstToCast
   if firstToCast then
-    --tasklist:SetupButton(--[[---@not nil]] firstToCast, buffCtx)
-    --taskListModule:WipeMacro((--[[---@not nil]] firstToCast):GetMacro())
-    tasklist:CastButton(firstToCast)
+    tasklist:CastButton(--[[---@not nil]] firstToCast)
   else
     -- Nothing to do
     return tasklist:CastButton_Nothing() -- this is basically equal to if #tasklist.tasks == 0 below

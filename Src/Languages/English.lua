@@ -13,7 +13,7 @@ function englishModule:Translations()
     ["Category_aura"]                                 = "Auras",
     ["Category_seal"]                                 = "Seals",
 
-    ["Category_classicPhysicalFood"]                  = "Physical Food (Classic)",
+    ["Category_classicPhysFood"]                      = "Physical Food (Classic)",
     ["Category_classicSpellFood"]                     = "Spell Food (Classic)",
     ["Category_classicFood"]                          = "Other Food (Classic)",
     ["Category_classicPhysElixir"]                    = "Physical Elixirs (Classic)",
@@ -23,7 +23,7 @@ function englishModule:Translations()
     ["Category_classicElixir"]                        = "Elixirs (Classic)",
     ["Category_classicFlask"]                         = "Flasks (Classic)",
 
-    ["Category_tbcPhysicalFood"]                      = "Physical Food (TBC)",
+    ["Category_tbcPhysFood"]                          = "Physical Food (TBC)",
     ["Category_tbcSpellFood"]                         = "Spell Food (TBC)",
     ["Category_tbcFood"]                              = "Other Food (TBC)",
     ["Category_tbcPhysElixir"]                        = "Physical Elixirs (TBC)",
@@ -31,7 +31,7 @@ function englishModule:Translations()
     ["Category_tbcElixir"]                            = "Other Elixirs (TBC)",
     ["Category_tbcFlask"]                             = "Flasks (TBC)",
 
-    ["Category_wotlkPhysicalFood"]                    = "Physical Food (WotLK)",
+    ["Category_wotlkPhysFood"]                        = "Physical Food (WotLK)",
     ["Category_wotlkSpellFood"]                       = "Spell Food (WotLK)",
     ["Category_wotlkFood"]                            = "Other Food (WotLK)",
     ["Category_wotlkPhysElixir"]                      = "Physical Elixirs (WotLK)",

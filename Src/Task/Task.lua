@@ -9,7 +9,7 @@ local taskScanModule = BomModuleManager.taskScanModule
 
 ---BomTaskActionUse|BomTaskActionCast|BomTaskActionMacro
 ---@class BomTaskAction
----@field GetButtonText fun(self: any):string
+---@field GetButtonText fun(self: any, task: BomTask): string
 ---@field UpdateMacro fun(self: any, m: BomMacro)
 ---@field CanCast fun(self: any): BomCanCastResult
 
@@ -52,15 +52,20 @@ function taskModule:Create(actionLink, actionText)
 end
 
 ---@alias BomCanCastResult number
-taskModule.CAN_CAST_OK = 1
-taskModule.CAN_CAST_NO_ACTION = 2
-taskModule.CAN_CAST_OOM = 3
-taskModule.CAN_CAST_IS_DEAD = 3
-taskModule.CAN_CAST_ON_CD = 4
+taskModule.CAN_CAST_OK = 1 -- ready to cast
+taskModule.CAN_CAST_NO_ACTION = 2 -- task doesn't have an action
+taskModule.CAN_CAST_OOM = 3 -- not enough mana for this buff
+taskModule.CAN_CAST_IS_DEAD = 3 -- target is dead and the spell is not a resurrection
+taskModule.CAN_CAST_ON_CD = 4 -- spell not ready yet
+taskModule.CAN_CAST_IS_INFO = 5 -- isInfo is true, not a real action
 
 function taskClass:CanCast()
   if not self.action then
     return taskModule.CAN_CAST_NO_ACTION
+  end
+
+  if self.isInfo then
+    return taskModule.CAN_CAST_IS_INFO
   end
 
   return (--[[---@not nil]] self.action):CanCast()

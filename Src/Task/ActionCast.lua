@@ -60,10 +60,12 @@ function actionCastClass:CanCast()
     return taskModule.CAN_CAST_OOM
   end
 
+  return taskModule.CAN_CAST_OK
 end
 
-function actionCastClass:GetButtonText()
-  return self.spellLink or "?"
+---@param task BomTask
+function actionCastClass:GetButtonText(task)
+  return (self.spellLink or "?") .. " " .. task.extraText
 end
 
 ---@param m BomMacro
@@ -73,12 +75,13 @@ function actionCastClass:UpdateMacro(m)
   local rank = ""
 
   if buffDef == nil then
-    print("Update macro: NIL SPELL for spellid=", self.spellId)
+    BOM:Debug("Update macro: buffDef is nil for spellid=" .. tostring(self.spellId))
+    return
   end
 
   if buffomatModule.shared.UseRank
           or (self.target and (--[[---@not nil]] self.target).unitId == "target")
-          or self.temporaryDownrank then
+  then
     local level = UnitLevel((--[[---@not nil]] self.target).unitId)
 
     if buffDef and level ~= nil and level > 0 then
@@ -109,24 +112,30 @@ function actionCastClass:UpdateMacro(m)
         self.spellId = newSpellId or self.spellId
       end
     end -- if spell and level
+  end
 
+  if self.temporaryDownrank then
+    self.spellId = self.buffDef:GetDownRank(self.spellId)
     rank = GetSpellSubtext(--[[---@not nil]] self.spellId) or ""
 
     if rank ~= "" then
       rank = "(" .. rank .. ")"
     end
+    --BOM:Debug("rank=" .. rank .. " spellid=" .. self.spellId)
   end
 
   BOM.castFailedSpellId = self.spellId
   local name = GetSpellInfo(--[[---@not nil]] self.spellId)
   if name == nil then
-    BOM:Print("Update macro: Bad spell spellid=" .. self.spellId)
+    BOM:Debug("Update macro: Bad spellid=" .. tostring(self.spellId))
+    return
   end
 
   if tContains(allBuffsModule.cancelForm, self.spellId) then
     table.insert(m.lines, "/cancelform [nocombat]")
   end
   table.insert(m.lines, "/bom _checkforerror")
+
   table.insert(m.lines, "/cast [@"
           .. (--[[---@not nil]] self.target).unitId
           .. ",nocombat]" .. name .. rank)

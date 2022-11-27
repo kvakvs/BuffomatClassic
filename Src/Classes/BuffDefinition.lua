@@ -739,3 +739,14 @@ function buffDefClass:Preload()
     itemCacheModule:LoadItem(itemId, noAction)
   end
 end
+
+function buffDefClass:GetDownRank(spellId)
+  local downrank = spellId
+  for _i, eachSingleId in ipairs(self.singleFamily) do
+    if eachSingleId == spellId then
+      return downrank
+    end
+    downrank = eachSingleId
+  end
+  return downrank -- unsuccessful but return whatever found
+end

@@ -211,7 +211,7 @@ end
 function allBuffsModule:GetBuffCategories()
   local result = {}
   for _i, cat in ipairs(self.buffCategories) do
-    if type(cat) == "string" then
+    if type(cat) == "string" and cat ~= "" then
       result[--[[---@type string]]cat] = _t("Category_" .. cat)
     end
   end
