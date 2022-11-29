@@ -989,6 +989,56 @@ function taskScanModule:AddSummonSpell(spell, playerMember)
   end
 end
 
+---@param buffDef BomBuffDefinition - the spell to cast
+---@param count number
+---@param playerUnit BomUnit the player
+function taskScanModule:AddConsumableSelfbuff_NoItem(buffDef, count, playerUnit)
+  -- Text: "ConsumableName" x Count
+  tasklist:Add(
+          taskModule:Create(self:FormatItemBuffInactiveText(buffDef.singleText, --[[---@not nil]] count), nil)
+                    :PrefixText(_t("task.type.Use"))
+                    :Target(buffTargetModule:FromSelf(playerUnit))
+                    :Prio(taskModule.PRIO_CONSUMABLE)
+                    :IsInfo())
+end
+
+---@param buffDef BomBuffDefinition - the spell to cast
+---@param bag number
+---@param slot number
+---@param count number
+---@param playerUnit BomUnit the player
+---@param target string
+function taskScanModule:AddConsumableSelfbuff_HaveItemReady(buffDef, bag, slot, count, playerUnit, target)
+  local taskText = _t("task.type.Use")
+  if buffDef.tbcHunterPetBuff then
+    taskText = _t("task.type.tbcHunterPetBuff")
+  end
+
+  local task = taskModule:Create(self:FormatItemBuffText(bag, slot, count or 0), nil)
+                         :PrefixText(taskText)
+                         :Target(buffTargetModule:FromSelf(playerUnit))
+
+  if buffomatModule.shared.DontUseConsumables
+          and not IsModifierKeyDown() then
+    -- Text: [Icon] [Consumable Name] x Count
+    tasklist:Add(task:ExtraText(_t("task.hint.HoldShiftConsumable"))
+                     :IsInfo())
+  else
+    if bag ~= nil and slot ~= nil then
+      local action = actionUseModule:New(buffDef, target, bag, slot, nil)
+
+      -- Text: [Icon] [Consumable Name] x Count
+      tasklist:Add(task
+              :Action(action)
+              :InRange(true))
+    else
+      BOM:Debug(string.format("Taskscan: bag %s slot %s", tostring(bag), tostring(slot)))
+    end
+  end
+
+  BOM.scanModifierKeyDown = buffomatModule.shared.DontUseConsumables
+end
+
 ---Adds a display text for a weapon buff
 ---@param buffDef BomBuffDefinition - the spell to cast
 ---@param playerUnit BomUnit the player
@@ -996,48 +1046,11 @@ end
 ---@param buffCtx BomBuffScanContext
 function taskScanModule:AddConsumableSelfbuff(buffDef, playerUnit, target, buffCtx)
   local haveItemOffCD, bag, slot, count = buffChecksModule:HasItem(buffDef.items or {}, true)
-  count = count or 0
-
-  local taskText = _t("TASK_USE")
-  if buffDef.tbcHunterPetBuff then
-    taskText = _t("TASK_TBC_HUNTER_PET_BUFF")
-  end
 
   if haveItemOffCD then
-    local task = taskModule:Create(self:FormatItemBuffText(bag, slot, count), nil)
-                           :PrefixText(taskText)
-                           :Target(buffTargetModule:FromSelf(playerUnit))
-
-    if buffomatModule.shared.DontUseConsumables
-            and not IsModifierKeyDown() then
-      -- Text: [Icon] [Consumable Name] x Count
-      tasklist:Add(task:ExtraText(_t("task.hint.HoldShiftConsumable"))
-                       :IsInfo())
-    else
-      if bag ~= nil and slot ~= nil then
-        local action = actionUseModule:New(buffDef, target, bag, slot, nil)
-
-        -- Text: [Icon] [Consumable Name] x Count
-        tasklist:Add(task
-                :Action(action)
-                :InRange(true))
-      else
-        BOM:Debug(string.format("Taskscan: bag %s slot %s", tostring(bag), tostring(slot)))
-      end
-    end
-
-    BOM.scanModifierKeyDown = buffomatModule.shared.DontUseConsumables
+    self:AddConsumableSelfbuff_HaveItemReady(buffDef, bag, slot, count, playerUnit, target)
   else
-    -- Text: "ConsumableName" x Count
-    if buffDef.singleText then
-      -- safety, can crash on load
-      tasklist:Add(
-              taskModule:Create(self:FormatItemBuffInactiveText(buffDef.singleText, --[[---@not nil]] count), nil)
-                        :PrefixText(_t("TASK_USE"))
-                        :Target(buffTargetModule:FromSelf(playerUnit))
-                        :Prio(taskModule.PRIO_CONSUMABLE)
-                        :IsInfo())
-    end
+    self:AddConsumableSelfbuff_NoItem(buffDef, count or 0, playerUnit)
   end
 end
 
@@ -1057,20 +1070,19 @@ function taskScanModule:AddConsumableWeaponBuff_HaveItem_Mainhand(buffDef, bag, 
     -- Text: [Icon] [Consumable Name] x Count (Main hand)
     tasklist:Add(
             taskModule:Create(mainhandMessage, nil)
-                      :ExtraText("(" .. _t("TooltipMainHand") .. ") " .. _t("task.hint.HoldShiftConsumable"))
+                      :ExtraText("(" .. _t("tooltip.mainhand") .. ") " .. _t("task.hint.HoldShiftConsumable"))
                       :Target(buffTargetModule:FromSelf(playerUnit))
                       :IsInfo())
   else
     -- Text: [Icon] [Consumable Name] x Count (Main hand)
     tasklist:Add(
             taskModule:Create(mainhandMessage, nil)
-                      :ExtraText("(" .. _t("TooltipMainHand") .. ")")
+                      :ExtraText("(" .. _t("tooltip.mainhand") .. ")")
                       :Target(buffTargetModule:FromSelf(playerUnit))
-                      :IsInfo()
                       :Prio(taskModule.PRIO_ENCHANTMENT)
                       :Action(actionMacroModule:New(
                     "/use " .. bag .. " " .. slot .. "\n/use 16",
-                    buffDef.singleText))) -- mainhand
+                    buffDef.singleLink .. " " .. _t("tooltip.mainhand")))) -- mainhand
   end
 end
 
@@ -1089,19 +1101,19 @@ function taskScanModule:AddConsumableWeaponBuff_HaveItem_Offhand(buffDef, bag, s
     -- Text: [Icon] [Consumable Name] x Count (Off-hand)
     tasklist:Add(
             taskModule:Create(offhandMessage, nil)
-                      :ExtraText("(" .. _t("TooltipOffHand") .. ") " .. _t("task.hint.HoldShiftConsumable"))
+                      :ExtraText("(" .. _t("tooltip.offhand") .. ") " .. _t("task.hint.HoldShiftConsumable"))
                       :Target(buffTargetModule:FromSelf(playerUnit))
                       :IsInfo())
   else
     -- Text: [Icon] [Consumable Name] x Count (Off-hand)
     tasklist:Add(
             taskModule:Create(offhandMessage, nil)
-                      :ExtraText("(" .. _t("TooltipOffHand") .. ") ")
+                      :ExtraText("(" .. _t("tooltip.offhand") .. ") ")
                       :Target(buffTargetModule:FromSelf(playerUnit))
                       :Prio(taskModule.PRIO_ENCHANTMENT)
                       :Action(actionMacroModule:New(
                     "/use " .. bag .. " " .. slot .. "\n/use 17",
-                    buffDef.singleText))) -- offhand
+                    buffDef.singleLink .. " " .. _t("tooltip.offhand")))) -- offhand
   end
 end
 
@@ -1168,9 +1180,9 @@ end
 
 local function getMainhandEnchantTaskText(isDownrank)
   if isDownrank then
-    return _t("TooltipMainHand") .. ": " .. _t("shaman.flametongueDownranked")
+    return _t("tooltip.mainhand") .. ": " .. _t("shaman.flametongueDownranked")
   end
-  return _t("TooltipMainHand")
+  return _t("tooltip.mainhand")
 end
 
 ---Adds a display text for a weapon buff created by a spell (shamans and paladins)
@@ -1198,7 +1210,7 @@ function taskScanModule:AddWeaponEnchant(buffDef, playerUnit, buffCtx)
     -- Text: [Spell Name] (Off-hand)
     tasklist:Add(
             taskModule:Create(buffDef.singleLink, buffDef.singleText)
-                      :ExtraText(_t("TooltipOffHand"))
+                      :ExtraText(_t("tooltip.offhand"))
                       :Target(buffTargetModule:FromSelf(playerUnit))
                       :Prio(taskModule.PRIO_ENCHANTMENT)
                       :Action(actionCastModule:New(

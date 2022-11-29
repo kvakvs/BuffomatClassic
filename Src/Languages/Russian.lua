@@ -197,12 +197,13 @@ function russianModule:Translations()
     HintCancelThisBuff_Always                   = "Сразу",
 
     TooltipWhisperWhenExpired                   = "Сообщить игроку, который дал этот баф, когда время бафа истечёт",
-    TooltipMainHand                             = "Правая рука",
-    TooltipOffHand                              = "Левая рука",
+    ["tooltip.mainhand"]                        = "Правая рука",
+    ["tooltip.offhand"]                         = "Левая рука",
     ShamanEnchantBlocked                        = "Ожидание бафа на другую руку", -- TBC
     TooltipIncludesAllRanks                     = "Любой вариант этого бафа",
     TooltipSimilarFoods                         = "Любая подобная еда",
 
+    ["tooltip.buff.conjure"]                    = "Сотворить",
     ["tooltip.buff.agility"]                    = "+Ловк.",
     ["tooltip.buff.allResist"]                  = "+Сопр. магии всех школ",
     ["tooltip.buff.attackPower"]                = "+Атака",

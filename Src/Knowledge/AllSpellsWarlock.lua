@@ -7,6 +7,7 @@ local allBuffsModule = BomModuleManager.allBuffsModule
 local buffDefModule = BomModuleManager.buffDefinitionModule
 local spellIdsModule = BomModuleManager.spellIdsModule
 local itemIdsModule = BomModuleManager.itemIdsModule
+local _t = BomModuleManager.languagesModule
 
 ---Add WARLOCK spells
 ---@param allBuffs BomBuffDefinition[]
@@ -79,6 +80,7 @@ function warlockModule:SetupWarlockSpells(allBuffs, enchantments)
                                  spellIdsModule.Warlock_CreateFirestone5,
                                  spellIdsModule.Warlock_CreateFirestone6,
                                  spellIdsModule.Warlock_CreateFirestone7 })
+                 :ExtraText(_t("tooltip.buff.conjure"))
                  :RequirePlayerClass("WARLOCK")
                  :Category("classWeaponEnchantment")
     -- Firestone
@@ -128,6 +130,7 @@ function warlockModule:SetupWarlockSpells(allBuffs, enchantments)
                                  spellIdsModule.Warlock_CreateSpellstone4,
                                  spellIdsModule.Warlock_CreateSpellstone5,
                                  spellIdsModule.Warlock_CreateSpellstone6 })
+                 :ExtraText(_t("tooltip.buff.conjure"))
                  :RequirePlayerClass("WARLOCK")
                  :Category("classWeaponEnchantment")
 
@@ -178,6 +181,7 @@ function warlockModule:SetupWarlockSpells(allBuffs, enchantments)
                                27230, -- TBC: Healthstone 6
                                47871, 47878 })  -- WotLK: Demonic and Fel Healthstone (rank 7-8)
                :RequirePlayerClass("WARLOCK")
+               :ExtraText(_t("tooltip.buff.conjure"))
                :Category("class")
 
   --Soulstone

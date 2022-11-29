@@ -237,12 +237,12 @@ function spellButtonsTabModule:AddSpellRow(rowBuilder, playerIsHorde, buff)
   ----------------------------------
   if buff.type == "weapon" then
     -- Add choices for mainhand & offhand
-    local mainhandToggle = buff.frames:CreateMainhandToggle(_t("TooltipMainHand"))
+    local mainhandToggle = buff.frames:CreateMainhandToggle(_t("tooltip.mainhand"))
     mainhandToggle:SetPoint("TOPLEFT", rowBuilder.prevControl, "TOPRIGHT", rowBuilder.dx, 0)
     mainhandToggle:SetVariable(--[[---@not nil]] profileBuff, "MainHandEnable", nil)
     rowBuilder:SpaceToTheRight(mainhandToggle, 2)
 
-    local offhandToggle = buff.frames:CreateOffhandToggle(_t("TooltipOffHand"))
+    local offhandToggle = buff.frames:CreateOffhandToggle(_t("tooltip.offhand"))
     offhandToggle:SetPoint("TOPLEFT", rowBuilder.prevControl, "TOPRIGHT", rowBuilder.dx, 0)
     offhandToggle:SetVariable(--[[---@not nil]] profileBuff, "OffHandEnable", nil)
     rowBuilder:SpaceToTheRight(offhandToggle, 2)

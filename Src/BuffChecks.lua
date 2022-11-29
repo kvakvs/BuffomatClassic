@@ -195,7 +195,6 @@ end
 
 ---@param buff BomBuffDefinition
 ---@param playerUnit BomUnit
----@param party BomParty
 function buffChecksModule:PlayerNeedsSelfBuff(buff, playerUnit)
   if not playerUnit.isDead then
     local thisBuffOnPlayer = playerUnit.knownBuffs[buff.buffId]

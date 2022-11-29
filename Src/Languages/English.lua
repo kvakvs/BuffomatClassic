@@ -157,8 +157,8 @@ function englishModule:Translations()
     TASK_BLESS                                        = "Bless",
     TASK_SUMMON                                       = "Summon",
     TASK_CAST                                         = "Cast",
-    TASK_USE                                          = "Use",
-    TASK_TBC_HUNTER_PET_BUFF                          = "Use on pet",
+    ["task.type.Use"]                                 = "Use",
+    ["task.type.tbcHunterPetBuff"]                    = "Use on pet",
     TASK_ACTIVATE                                     = "Activate",
     ["task.type.Unequip"]                             = "Unequip",
     ["task.error.range"]                              = "Range",
@@ -260,14 +260,15 @@ function englishModule:Translations()
     HintCancelThisBuff_Always                         = "Always",
 
     TooltipWhisperWhenExpired                         = "Whisper the player who casted the buff, when the buff has expired",
-    TooltipMainHand                                   = "Main hand",
-    TooltipOffHand                                    = "Off hand",
+    ["tooltip.mainhand"]                              = "Main hand",
+    ["tooltip.offhand"]                               = "Off hand",
     ShamanEnchantBlocked                              = "Waiting for main hand", -- TBC: Shown when shaman cannot enchant this hand because the other hand goes first
     PreventPVPTagBlocked                              = "Target is PvP", -- PreventPVPTag option enabled, player is non-PVP and target is PVP
     TooltipIncludesAllRanks                           = "Any buff of this type",
     TooltipSimilar                                    = "Any similar",
     TooltipSimilarFoods                               = "Any similar food",
 
+    ["tooltip.buff.conjure"]                          = "Conjure",
     ["tooltip.buff.agility"]                          = "+Agi",
     ["tooltip.buff.allResist"]                        = "+All Res",
     ["tooltip.buff.attackPower"]                      = "+Attack",

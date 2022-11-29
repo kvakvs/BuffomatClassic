@@ -53,5 +53,7 @@ function actionUseClass:GetButtonText(task)
   if self.buffDef == nil then
     return _t("task.UseOrOpen") .. " " .. (self.extraText or "")
   end
-  return _t("TASK_USE") .. " " .. (--[[---@not nil]] self.buffDef).singleText
+
+  local bdef = (--[[---@not nil]] self.buffDef)
+  return _t("task.type.Use") .. " " .. (bdef.singleLink or bdef.singleText)
 end

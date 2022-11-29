@@ -13,7 +13,7 @@ function chineseModule:Translations()
     ["options.general.group.Buffing"]           = "增益",
 
     ["options.short.ActivateBomOnSpiritTap"]    = "在低于 % 的精神激活",
-    ["options.short.ReputationTrinket"]              = "警告:声望物品",
+    ["options.short.ReputationTrinket"]         = "警告:声望物品",
     ["options.short.AutoCrusaderAura"]          = "提醒：十字军光环",
     ["options.short.AutoDismount"]              = "自动离开坐骑",
     ["options.short.AutoDismountFlying"]        = "自动离开飞行坐骑",
@@ -48,7 +48,7 @@ function chineseModule:Translations()
     ["options.short.UseRank"]                   = "使用等级增益",
 
     ["options.long.ActivateBomOnSpiritTap"]     = "如果牧师的'精神' 处于活跃状态且玩家法力低于 % ,则禁用",
-    ["options.long.ReputationTrinket"]               = "提醒更换银色黎明饰品",
+    ["options.long.ReputationTrinket"]          = "提醒更换银色黎明饰品",
     ["options.long.AutoCrusaderAura"]           = "圣骑士: 骑乘时自动开启十字军光环",
     ["options.long.AutoDismount"]               = "施法时自动取消地面坐骑",
     ["options.long.AutoDismountFlying"]         = "施法时自动取消飞行坐骑 (小心摔死)",
@@ -100,8 +100,8 @@ function chineseModule:Translations()
     TASK_BLESS                                  = "祝福",
     TASK_SUMMON                                 = "召唤",
     TASK_CAST                                   = "施放",
-    TASK_USE                                    = "使用",
-    TASK_TBC_HUNTER_PET_BUFF                    = "对宠物使用",
+    ["task.type.Use"]                           = "使用",
+    ["task.type.tbcHunterPetBuff"]              = "对宠物使用",
     TASK_ACTIVATE                               = "启用",
     ["task.type.Unequip"]                       = "取下装备",
     ["task.error.range"]                        = "类别",
@@ -193,8 +193,8 @@ function chineseModule:Translations()
     HintCancelThisBuff_Always                   = "一直",
 
     TooltipWhisperWhenExpired                   = "当BUFF过期时，对施放者密语提醒",
-    TooltipMainHand                             = "主手",
-    TooltipOffHand                              = "副手",
+    ["tooltip.mainhand"]                        = "主手",
+    ["tooltip.offhand"]                         = "副手",
     ShamanEnchantBlocked                        = "主手等待", -- TBC: Shown when shaman cannot enchant this hand because the other hand goes first
     PreventPVPTagBlocked                        = "目标开启 PvP", -- PreventPVPTag option enabled, player is non-PVP and target is PVP
     TooltipIncludesAllRanks                     = "所有这种类型的BUFF",
