@@ -48,13 +48,42 @@ local taskListModule = BomModuleManager.taskListModule
 local tasklist ---@type BomTaskList
 
 function taskScanModule:IsFlying()
-  if BOM.isTBC then
+  if BOM.haveTBC then
     return IsFlying() and not buffomatModule.shared.AutoDismountFlying
   end
   return false
 end
 
+-- Global Cooldown Check
+-- Call it with: if not GCDDone() then return; end
+-- https://www.ownedcore.com/forums/world-of-warcraft/world-of-warcraft-general/wow-ui-macros-talent-specs/372421-lua-function-check-if-global-cooldown-done.html
+function taskScanModule:IsInGlobalCooldown()
+  local spellID = 61304
+  local minValue = 0.05
+  local maxValue = 0.3
+  local kbsDown, kbsUp, lagHome, lagWorld = GetNetStats()
+  local curPing = (lagHome + lagWorld) / 1000 + .025
+
+  if curPing < minValue then
+    curPing = minValue
+  elseif curPing > maxValue then
+    curPing = maxValue
+  end
+
+  local start, cdDuration = GetSpellCooldown(spellID)
+  if cdDuration - curPing <= 0 then
+    return false
+  end
+  return true
+end
+
+---@return boolean
 function taskScanModule:IsMountedAndCrusaderAuraRequired()
+  if UnitOnTaxi("player")
+          or UnitInVehicle and UnitInVehicle("player")
+  then
+    return false
+  end
   return buffomatModule.shared.AutoCrusaderAura -- if setting enabled
           and IsSpellKnown(spellIdsModule.Paladin_CrusaderAura) -- and has the spell
           and (IsMounted() or self:IsFlying()) -- and flying
@@ -316,7 +345,7 @@ end
 ---@param playerUnit BomUnit
 ---@return boolean, string {Active, WhyNotActive: string}
 function taskScanModule:IsActive(playerUnit)
-  local in_instance, instance_type = IsInInstance()
+  local inInstance, instanceType = IsInInstance()
 
   -- Cancel buff tasks if in combat (ALWAYS FIRST CHECK)
   if InCombatLockdown() then
@@ -327,14 +356,14 @@ function taskScanModule:IsActive(playerUnit)
     return false, _t("castButton.inactive.IsDead")
   end
 
-  if instance_type == "pvp" or instance_type == "arena" then
+  if instanceType == "pvp" or instanceType == "arena" then
     if not buffomatModule.shared.InPVP then
       return false, _t("castButton.inactive.PvpZone")
     end
 
-  elseif instance_type == "party"
-          or instance_type == "raid"
-          or instance_type == "scenario"
+  elseif instanceType == "party"
+          or instanceType == "raid"
+          or instanceType == "scenario"
   then
     if not buffomatModule.shared.InInstance then
       return false, _t("castButton.inactive.Instance")
@@ -861,13 +890,18 @@ function taskScanModule:AddResurrection(spell, playerUnit, buffCtx)
     if not tContains(spell.skipList, unitNeedsBuff.name) then
       BOM.repeatUpdate = true
 
+      local prio = taskModule.PRIO_RESURRECTION
+      if tContains(allBuffsModule.RESURRECT_CLASSES, unitNeedsBuff.class) then
+        prio = taskModule.PRIO_RESURRECTION_FIRST
+      end
+
       -- Is the body in range?
       local targetIsInRange = (IsSpellInRange(spell.singleText, unitNeedsBuff.unitId) == 1)
               and not tContains(spell.skipList, unitNeedsBuff.name)
       local task = taskModule:Create(spell.singleLink or spell.singleText, spell.singleText)
                              :PrefixText(_t("task.type.Resurrect"))
                              :Target(buffTargetModule:FromUnit(unitNeedsBuff))
-                             :Prio(taskModule.PRIO_RESURRECTION)
+                             :Prio(prio)
       if targetIsInRange then
         -- Text: Target [Spell Name]
         tasklist:Add(task:InRange(true))
@@ -1001,8 +1035,116 @@ function taskScanModule:AddConsumableSelfbuff(buffDef, playerUnit, target, buffC
               taskModule:Create(self:FormatItemBuffInactiveText(buffDef.singleText, --[[---@not nil]] count), nil)
                         :PrefixText(_t("TASK_USE"))
                         :Target(buffTargetModule:FromSelf(playerUnit))
+                        :Prio(taskModule.PRIO_CONSUMABLE)
                         :IsInfo())
     end
+  end
+end
+
+---@param buffDef BomBuffDefinition
+---@param bag number
+---@param slot number
+---@param count number
+---@param playerUnit BomUnit
+---@param texture string
+---@param itemLink string
+function taskScanModule:AddConsumableWeaponBuff_HaveItem_Mainhand(buffDef, bag, slot, count, playerUnit, texture, itemLink)
+
+  local mainhandMessage = BOM.FormatTexture(--[[---@type string]] texture) .. itemLink .. "x" .. count
+
+  if buffomatModule.shared.DontUseConsumables
+          and not IsModifierKeyDown() then
+    -- Text: [Icon] [Consumable Name] x Count (Main hand)
+    tasklist:Add(
+            taskModule:Create(mainhandMessage, nil)
+                      :ExtraText("(" .. _t("TooltipMainHand") .. ") " .. _t("task.hint.HoldShiftConsumable"))
+                      :Target(buffTargetModule:FromSelf(playerUnit))
+                      :IsInfo())
+  else
+    -- Text: [Icon] [Consumable Name] x Count (Main hand)
+    tasklist:Add(
+            taskModule:Create(mainhandMessage, nil)
+                      :ExtraText("(" .. _t("TooltipMainHand") .. ")")
+                      :Target(buffTargetModule:FromSelf(playerUnit))
+                      :IsInfo()
+                      :Prio(taskModule.PRIO_ENCHANTMENT)
+                      :Action(actionMacroModule:New(
+                    "/use " .. bag .. " " .. slot .. "\n/use 16",
+                    buffDef.singleText))) -- mainhand
+  end
+end
+
+---@param buffDef BomBuffDefinition
+---@param bag number
+---@param slot number
+---@param count number
+---@param playerUnit BomUnit
+---@param texture string
+---@param itemLink string
+function taskScanModule:AddConsumableWeaponBuff_HaveItem_Offhand(buffDef, bag, slot, count, playerUnit, texture, itemLink)
+  local offhandMessage = BOM.FormatTexture(--[[---@type string]] texture) .. itemLink .. "x" .. count
+
+  if buffomatModule.shared.DontUseConsumables
+          and not IsModifierKeyDown() then
+    -- Text: [Icon] [Consumable Name] x Count (Off-hand)
+    tasklist:Add(
+            taskModule:Create(offhandMessage, nil)
+                      :ExtraText("(" .. _t("TooltipOffHand") .. ") " .. _t("task.hint.HoldShiftConsumable"))
+                      :Target(buffTargetModule:FromSelf(playerUnit))
+                      :IsInfo())
+  else
+    -- Text: [Icon] [Consumable Name] x Count (Off-hand)
+    tasklist:Add(
+            taskModule:Create(offhandMessage, nil)
+                      :ExtraText("(" .. _t("TooltipOffHand") .. ") ")
+                      :Target(buffTargetModule:FromSelf(playerUnit))
+                      :Prio(taskModule.PRIO_ENCHANTMENT)
+                      :Action(actionMacroModule:New(
+                    "/use " .. bag .. " " .. slot .. "\n/use 17",
+                    buffDef.singleText))) -- offhand
+  end
+end
+
+---@param buffDef BomBuffDefinition
+---@param bag number
+---@param slot number
+---@param count number
+---@param playerUnit BomUnit
+function taskScanModule:AddConsumableWeaponBuff_HaveItem(buffDef, bag, slot, count, playerUnit)
+  -- Have item, display the cast message and setup the cast button
+  local texture, _, _, _, _, _, itemLink, _, _, _ = GetContainerItemInfo(bag, slot)
+  local profileBuff = buffDefModule:GetProfileBuff(buffDef.buffId, nil)
+
+  if profileBuff and (--[[---@not nil]] profileBuff).OffHandEnable
+          and playerUnit.offhandEnchantment == nil
+  then
+    self:AddConsumableWeaponBuff_HaveItem_Offhand(buffDef, bag, slot, count, playerUnit, texture, itemLink)
+  end
+
+  if profileBuff and (--[[---@not nil]] profileBuff).MainHandEnable
+          and playerUnit.mainhandEnchantment == nil
+  then
+    self:AddConsumableWeaponBuff_HaveItem_Mainhand(buffDef, bag, slot, count, playerUnit, texture, itemLink)
+  end
+  BOM.scanModifierKeyDown = buffomatModule.shared.DontUseConsumables
+end
+
+---@param buffDef BomBuffDefinition
+---@param count number
+---@param playerUnit BomUnit
+function taskScanModule:AddConsumableWeaponBuff_DontHaveItem(buffDef, count, playerUnit)
+  -- Don't have item but display the intent
+  -- Text: [Icon] [Consumable Name] x Count
+  if buffDef.singleText then
+    -- spell.single can be nil on addon load
+    tasklist:Add(
+            taskModule:Create(buffDef.singleText .. " x" .. count, nil)
+                      :PrefixText(_t("task.type.Enchantment"))
+                      :ExtraText(_t("task.type.MissingConsumable"))
+                      :Target(buffTargetModule:FromSelf(playerUnit))
+                      :IsInfo())
+  else
+    buffomatModule:RequestTaskRescan("weaponConsumableBuff") -- try rescan?
   end
 end
 
@@ -1016,74 +1158,11 @@ function taskScanModule:AddConsumableWeaponBuff(buffDef, playerUnit, buffCtx)
   count = count or 0
 
   if haveItem then
-    -- Have item, display the cast message and setup the cast button
-    local texture, _, _, _, _, _, itemLink, _, _, _ = GetContainerItemInfo(
-            --[[---@not nil]] bag,
-            --[[---@not nil]] slot)
-    local profileBuff = buffDefModule:GetProfileBuff(buffDef.buffId, nil)
-
-    if profileBuff and (--[[---@not nil]] profileBuff).OffHandEnable
-            and playerUnit.offhandEnchantment == nil then
-      local offhandMessage = BOM.FormatTexture(--[[---@type string]] texture) .. itemLink .. "x" .. count
-
-      if buffomatModule.shared.DontUseConsumables
-              and not IsModifierKeyDown() then
-        -- Text: [Icon] [Consumable Name] x Count (Off-hand)
-        tasklist:Add(
-                taskModule:Create(offhandMessage, nil)
-                          :ExtraText("(" .. _t("TooltipOffHand") .. ") " .. _t("task.hint.HoldShiftConsumable"))
-                          :Target(buffTargetModule:FromSelf(playerUnit))
-                          :IsInfo())
-      else
-        -- Text: [Icon] [Consumable Name] x Count (Off-hand)
-        tasklist:Add(
-                taskModule:Create(offhandMessage, nil)
-                          :ExtraText("(" .. _t("TooltipOffHand") .. ") ")
-                          :Target(buffTargetModule:FromSelf(playerUnit))
-                          :Action(actionMacroModule:New(
-                        "/use " .. bag .. " " .. slot .. "\n/use 17",
-                        buffDef.singleText))) -- offhand
-      end
-    end
-
-    if profileBuff and (--[[---@not nil]] profileBuff).MainHandEnable
-            and playerUnit.mainhandEnchantment == nil then
-      local mainhandMessage = BOM.FormatTexture(--[[---@type string]] texture) .. itemLink .. "x" .. count
-
-      if buffomatModule.shared.DontUseConsumables
-              and not IsModifierKeyDown() then
-        -- Text: [Icon] [Consumable Name] x Count (Main hand)
-        tasklist:Add(
-                taskModule:Create(mainhandMessage, nil)
-                          :ExtraText("(" .. _t("TooltipMainHand") .. ") " .. _t("task.hint.HoldShiftConsumable"))
-                          :Target(buffTargetModule:FromSelf(playerUnit))
-                          :IsInfo())
-      else
-        -- Text: [Icon] [Consumable Name] x Count (Main hand)
-        tasklist:Add(
-                taskModule:Create(mainhandMessage, nil)
-                          :ExtraText("(" .. _t("TooltipMainHand") .. ")")
-                          :Target(buffTargetModule:FromSelf(playerUnit))
-                          :IsInfo()
-                          :Action(actionMacroModule:New(
-                        "/use " .. bag .. " " .. slot .. "\n/use 16",
-                        buffDef.singleText))) -- mainhand
-      end
-    end
-    BOM.scanModifierKeyDown = buffomatModule.shared.DontUseConsumables
+    self:AddConsumableWeaponBuff_HaveItem(buffDef,
+            --[[---@not nil]] bag, --[[---@not nil]] slot, --[[---@not nil]] count,
+            playerUnit)
   else
-    -- Don't have item but display the intent
-    -- Text: [Icon] [Consumable Name] x Count
-    if buffDef.singleText then
-      -- spell.single can be nil on addon load
-      tasklist:Add(
-              taskModule:Create(buffDef.singleText .. "x" .. count, nil)
-                        :ExtraText(_t("task.type.MissingConsumable"))
-                        :Target(buffTargetModule:FromSelf(playerUnit))
-                        :IsInfo())
-    else
-      buffomatModule:RequestTaskRescan("weaponConsumableBuff") -- try rescan?
-    end
+    self:AddConsumableWeaponBuff_DontHaveItem(buffDef, --[[---@not nil]] count, playerUnit)
   end
 end
 
@@ -1121,6 +1200,7 @@ function taskScanModule:AddWeaponEnchant(buffDef, playerUnit, buffCtx)
             taskModule:Create(buffDef.singleLink, buffDef.singleText)
                       :ExtraText(_t("TooltipOffHand"))
                       :Target(buffTargetModule:FromSelf(playerUnit))
+                      :Prio(taskModule.PRIO_ENCHANTMENT)
                       :Action(actionCastModule:New(
                     buffDef.singleMana, buffDef.highestRankSingleId, buffDef.singleLink,
                     playerUnit, buffDef, false)))
@@ -1136,13 +1216,14 @@ function taskScanModule:AddWeaponEnchant(buffDef, playerUnit, buffCtx)
     local isDownrank = buffDef.buffId == spellIdsModule.Shaman_Flametongue6
             and buffomatModule.shared.ShamanFlametongueRanked
 
-    local taskText =getMainhandEnchantTaskText(isDownrank)
+    local taskText = getMainhandEnchantTaskText(isDownrank)
 
     -- Text: [Spell Name] (Main hand)
     tasklist:Add(
             taskModule:Create(buffDef.singleLink, buffDef.singleText)
                       :ExtraText(taskText)
                       :Target(buffTargetModule:FromSelf(playerUnit))
+                      :Prio(taskModule.PRIO_ENCHANTMENT)
                       :Action(actionCastModule:New(
                     buffDef.singleMana, buffDef.highestRankSingleId, buffDef.singleLink,
                     playerUnit, buffDef, isDownrank)))
@@ -1248,6 +1329,7 @@ function taskScanModule:CheckItemsAndContainers(playerUnit, buffCtx)
       -- Text: [Icon] [Item Link] @Target
       local task = taskModule:Create(actionText, nil)
                              :ExtraText("(" .. _t("task.UseOrOpen") .. ") " .. extraMsg)
+                             :Prio(taskModule.PRIO_OPEN_CONTAINER)
                              :Target(buffTargetModule:FromSelf(playerUnit))
 
       if buffomatModule.shared.DontUseConsumables and not IsModifierKeyDown() then
@@ -1462,14 +1544,16 @@ function taskScanModule:UpdateScan_Scan(party)
     -- ================
     self:CreateBuffTasks(party, buffCtx)
 
-    self:CheckReputationItems(party.player)
     self:CheckMissingWeaponEnchantments(party.player) -- if option to warn is enabled
+    self:CheckReputationItems(party.player)
 
     ---Check if someone has drink buff, print an info message self:SomeoneIsDrinking()
 
     self:CheckItemsAndContainers(party.player, buffCtx)
   end
+end
 
+function taskScanModule:UpdateScan_Finalize()
   -- Open Buffomat if any cast tasks were added to the task list
   if #tasklist.tasks > 0 or #tasklist.comments > 0 then
     buffomatModule:AutoOpen()
@@ -1482,6 +1566,7 @@ function taskScanModule:UpdateScan_Scan(party)
     buffomatModule:AutoClose()
   end
 
+  tasklist:Sort()
   tasklist:Display() -- Show all tasks and comments
 
   buffomatModule:ClearForceUpdate()
@@ -1543,19 +1628,28 @@ function taskScanModule:UpdateScan_PreCheck(from)
     -- If mounted and crusader aura enabled, then do not do further checks, allow the crusader aura
     local isBomActive, reasonDisabled = self:IsActive(party.player)
     if not isBomActive then
-      buffomatModule:ClearForceUpdate()
-      BOM.checkForError = false
-      buffomatModule:AutoClose()
-      BOM.theMacro:Clear()
-      buffomatModule:FadeBuffomatWindow()
-      tasklist:CastButtonText(reasonDisabled, false)
-      return
+      return self:ShowInactive(reasonDisabled)
     end
   end
 
+  -- If in global cooldown
+  --if self:IsInGlobalCooldown() then
+  --  return self:ShowInactive(_t("castbutton.inactive.GCD"))
+  --end
+
   -- All pre-checks passed
   self:UpdateScan_Scan(party)
+  self:UpdateScan_Finalize()
 end -- end function bomUpdateScan_PreCheck()
+
+function taskScanModule:ShowInactive(reason)
+  buffomatModule:ClearForceUpdate()
+  BOM.checkForError = false
+  buffomatModule:AutoClose()
+  BOM.theMacro:Clear()
+  buffomatModule:FadeBuffomatWindow()
+  tasklist:CastButtonText(reason, false)
+end
 
 ---Scan the available spells and group members to find who needs the rebuff/res
 ---and what would be their priority?

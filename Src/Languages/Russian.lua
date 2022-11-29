@@ -11,7 +11,7 @@ function russianModule:Translations()
     ["Category_aura"]                           = "Ауры",
     ["Category_seal"]                           = "Печати",
 
-    ["Category_classicPhysFood"]            = "Еда для физ. атак (Classic)",
+    ["Category_classicPhysFood"]                = "Еда для физ. атак (Classic)",
     ["Category_classicSpellFood"]               = "Еда для заклинаний (Classic)",
     ["Category_classicFood"]                    = "Прочая еда (Classic)",
     ["Category_classicPhysElixir"]              = "Эликсиры для физ. атак (Classic)",
@@ -21,7 +21,7 @@ function russianModule:Translations()
     ["Category_classicElixir"]                  = "Эликсиры (Classic)",
     ["Category_classicFlask"]                   = "Настои (Classic)",
 
-    ["Category_tbcPhysFood"]                = "Еда для физ. атак (TBC)",
+    ["Category_tbcPhysFood"]                    = "Еда для физ. атак (TBC)",
     ["Category_tbcSpellFood"]                   = "Еда для заклинаний (TBC)",
     ["Category_tbcFood"]                        = "Прочая еда (TBC)",
     ["Category_tbcPhysElixir"]                  = "Эликсиры для физ. атак (TBC)",
@@ -29,7 +29,7 @@ function russianModule:Translations()
     ["Category_tbcElixir"]                      = "Эликсиры (TBC)",
     ["Category_tbcFlask"]                       = "Настои (TBC)",
 
-    ["Category_wotlkPhysFood"]              = "Еда для физ. атак (WotLK)",
+    ["Category_wotlkPhysFood"]                  = "Еда для физ. атак (WotLK)",
     ["Category_wotlkSpellFood"]                 = "Еда для заклинаний (WotLK)",
     ["Category_wotlkFood"]                      = "Прочая еда (WotLK)",
     ["Category_wotlkPhysElixir"]                = "Эликсиры для физ. атак (WotLK)",
@@ -136,6 +136,7 @@ function russianModule:Translations()
     ["task.target.Self"]                        = "На себя", -- use instead of name when buffing self
     ["task.target.SelfOnly"]                    = "Самобаф",
     ["task.type.RegularBuff"]                   = "Баф",
+    ["task.type.Enchantment"]                   = "Зачарование",
     ["task.type.GroupBuff"]                     = "Групповой",
     ["task.type.GroupBuff.Self"]                = "Групповой (на себя)",
     ["task.type.Tracking"]                      = "Слежение",

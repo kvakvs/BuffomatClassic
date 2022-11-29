@@ -143,13 +143,14 @@ function englishModule:Translations()
     ["tasklist.IgnoredBuffOn"]                        = "Ignored %s: %s", -- when a buff is not listed because a better buff exists
     ["task.target.Self"]                              = "Self", -- use instead of name when buffing self
     ["task.target.SelfOnly"]                          = "Self-buff",
+    ["task.type.Enchantment"]                         = "Enchantment",
     ["task.type.RegularBuff"]                         = "Buff",
     ["task.type.GroupBuff"]                           = "Buff group",
     ["task.type.GroupBuff.Self"]                      = "Target self",
     ["task.type.Tracking"]                            = "Tracking",
     ["task.type.Reminder"]                            = "Reminder",
     ["task.type.Resurrect"]                           = "Resurrect",
-    ["task.type.MissingConsumable"]                   = "Missing consumable", -- deprecated?
+    ["task.type.MissingConsumable"]                   = "Missing consumable",
     ["task.type.Consumable"]                          = "Consumable", -- deprecated?
     ["task.hint.HoldShiftConsumable"]                 = "Hold Shift/Ctrl or Alt",
     TASK_BLESS_GROUP                                  = "Bless Group",
@@ -201,6 +202,7 @@ function englishModule:Translations()
     ["castButton.inactive.Instance"]                  = "Buffing in dungeons disabled",
     ["castButton.inactive.OpenWorld"]                 = "Buffing in the world disabled",
     ["castButton.inactive.Mounted"]                   = "Buffing on mount disabled",
+    ["castbutton.inactive.GCD"]                       = "Global cooldown",
 
     MsgDownGrade                                      = "Spell rank downgrade %s for %s. Please cast again.",
 
@@ -288,7 +290,7 @@ function englishModule:Translations()
     ["tooltip.food.multipleFoodItems"]                = " (various food w/same buff)",
     ["tooltip.buff.armorPenetration"]                 = "+Armor Pen",
     ["tooltip.buff.petStrength"]                      = "Pet +Str",
-    --["tooltip.buff.alchemistOnly"]                    = "Alchemist-only",
+    ["tooltip.buff.alchemistOnly"]                    = "Alchemist-only",
 
     ["tooltip.alcohol.stamina"]                       = "Alcohol +Stamina",
     ["tooltip.alcohol.spirit"]                        = "Alcohol +Spirit",

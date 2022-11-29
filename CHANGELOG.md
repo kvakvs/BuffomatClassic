@@ -6,6 +6,8 @@
 - Some bugs might have just disappeared
 - Some new bugs possibly added, but should be minor and short lasting while i'm 
 finding and fixing them.
+- Crusader aura prompt will not pop up on the taxi or in a vehicle.
+- Alchemist-only Flask of the North added
 
 ## Buffomat Classic 2022.11.0.2
 

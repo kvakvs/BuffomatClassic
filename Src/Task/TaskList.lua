@@ -23,10 +23,12 @@ function taskListClass:SelectTask()
     local canCast = t:CanCast()
     if canCast == taskModule.CAN_CAST_OK then
       return t
-    else
-      if canCast ~= taskModule.CAN_CAST_ON_CD then
-        BOM:Debug(string.format("Can't cast %s = %s", t.actionLink or "?", canCast))
-      end
+    --else
+    --  if canCast ~= taskModule.CAN_CAST_ON_CD
+    --          and canCast ~= taskModule.CAN_CAST_IS_INFO
+    --  then
+    --    BOM:Debug(string.format("Can't cast %s = %s", t.actionLink or "?", canCast))
+    --  end
     end
   end
   return nil
@@ -102,7 +104,7 @@ end
 
 ---@param a BomTask
 ---@param b BomTask
-local function bomOrderTasksByDistance(a, b)
+function taskListModule.OrderTasksByDistance(a, b)
   if not b then
     return false
   end
@@ -110,12 +112,27 @@ local function bomOrderTasksByDistance(a, b)
     return true
   end
   return a.distance < b.distance -- or
-  --a.priority < b.priority or
-  --a.action_text < b.action_text
 end
 
----Unload the contents of DisplayInfo cache into BomC_ListTab_MessageFrame
----The messages (tasks) are sorted
+---@param a BomTask
+---@param b BomTask
+function taskListModule.OrderTasksByPriority(a, b)
+  if not b then
+    return false
+  end
+  if not a then
+    return true
+  end
+  return a.priority < b.priority -- or
+end
+
+function taskListClass:Sort()
+  --table.sort(self.tasks, taskListModule.OrderTasksByDistance)
+  table.sort(self.tasks, taskListModule.OrderTasksByPriority)
+end
+
+  ---Unload the contents of DisplayInfo cache into BomC_ListTab_MessageFrame
+  ---The messages (tasks) are sorted
 function taskListClass:Display()
   local taskFrame = BomC_ListTab_MessageFrame
   taskFrame:Clear()
@@ -135,8 +152,6 @@ function taskListClass:Display()
     end
     --end
   end
-
-  table.sort(self.tasks, bomOrderTasksByDistance)
 
   for i, text in ipairs(self.lowPrioComments) do
     taskFrame:AddMessage(buffomatModule:Color("aaaaaa", text))
@@ -171,34 +186,34 @@ function taskListClass:CastButton_Nothing()
   end
 end
 
----@param task BomTask
----@param buffCtx BomBuffScanContext
----@deprecated Use :CastButton(task)
-function taskListClass:SetupButton(task, buffCtx)
-  -- TOO FAR
-  if task.inRange == false then
-    return self:CastButton_OutOfRange()
-  end
-  -- CASTING something else
-  if BOM.isPlayerCasting == "cast" then
-    return self:CastButton_Busy()
-  end
-  -- CHANNELING something else
-  if BOM.isPlayerCasting == "channel" then
-    return self:CastButton_BusyChanneling()
-  end
-  -- No buffing if someone is dead
-  if buffCtx.someoneIsDead and buffomatModule.shared.DeathBlock then
-    -- Have tasks and someone died and option is set to not buff
-    return self:CastButton_SomeoneIsDead()
-  end
-
-  --if task:CanCast() == false then
-  --  return self:CastButton_CantCast()
-  --end
-
-  self:CastButton(task)
-end
+-- ---@param task BomTask
+-- ---@param buffCtx BomBuffScanContext
+-- ---@deprecated Use :CastButton(task)
+--function taskListClass:SetupButton(task, buffCtx)
+--  -- TOO FAR
+--  if task.inRange == false then
+--    return self:CastButton_OutOfRange()
+--  end
+--  -- CASTING something else
+--  if BOM.isPlayerCasting == "cast" then
+--    return self:CastButton_Busy()
+--  end
+--  -- CHANNELING something else
+--  if BOM.isPlayerCasting == "channel" then
+--    return self:CastButton_BusyChanneling()
+--  end
+--  -- No buffing if someone is dead
+--  if buffCtx.someoneIsDead and buffomatModule.shared.DeathBlock then
+--    -- Have tasks and someone died and option is set to not buff
+--    return self:CastButton_SomeoneIsDead()
+--  end
+--
+--  --if task:CanCast() == false then
+--  --  return self:CastButton_CantCast()
+--  --end
+--
+--  self:CastButton(task)
+--end
 
 ---Set text and enable the cast button (or disable)
 ---@param t string - text for the cast button

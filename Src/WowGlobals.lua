@@ -4,6 +4,7 @@ BomC_ListTab_MessageFrame = --[[---@type WowChatFrame]] {}
 BomC_SpellTab = --[[---@type BomWindowTab]] {}
 BomC_MainWindow = --[[---@type BomMainWindowFrame]] {}
 BomC_MainWindow_Title = --[[---@type WowControl]] {}
+BomC_SpellTab_Scroll_Child = --[[---@type WowControl]] {}
 DEFAULT_CHAT_FRAME = --[[---@type WowChatFrame]] {}
 GameTooltip = --[[---@type WowGameTooltip]] {}
 UIDROPDOWNMENU_OPEN_MENU = --[[---@type WowChatFrame]] {}
@@ -247,6 +248,11 @@ end
 ---@param u string
 ---@return boolean
 function UnitOnTaxi(u)
+  return false
+end
+---@param u string
+---@return boolean
+function UnitInVehicle(u)
   return false
 end
 ---@param u string

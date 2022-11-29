@@ -608,7 +608,7 @@ end
 ---If maybe_label is nil, creates a text label under the parent. Calls position_fn
 ---on the label to set its position.
 ---@param maybeLabel BomGPIControl|nil the existing label or nil
----@param parent BomGPIControl parent where the label is created
+---@param parent WowControl parent where the label is created
 ---@param positionFn function applies function after creating the label
 ---@return BomGPIControl
 function toolboxModule:CreateSmalltextLabel(maybeLabel, parent, positionFn)

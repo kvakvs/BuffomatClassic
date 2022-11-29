@@ -169,9 +169,10 @@ function flasksModule:_SetupFlasksWotLK(allBuffs, enchantments)
                :ElixirType("both")
 
   ---- Alchemist self-flask: Flask of the North 67016...19
-  --buffDefModule:genericConsumable(buffs, 67016, 47499) --WotLK: Flask of the North
-  --             :ExtraText(_t("tooltip.buff.alchemistOnly"))
-  --             :RequireWotLK()
-  --             :Category("wotlkFlask")
-  --             :ElixirType("both")
+  buffDefModule:genericConsumable(allBuffs, 67016, 47499) --WotLK: Flask of the North
+                :ProvidesAuras({67016, 67017, 67018})
+               :ExtraText(_t("tooltip.buff.alchemistOnly"))
+               :RequireWotLK()
+               :Category("wotlkFlask")
+               :ElixirType("both")
 end

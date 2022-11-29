@@ -103,6 +103,7 @@ local allBuffsModule = BomModuleManager.allBuffsModule
 ---@field shapeshiftFormId BomShapeshiftFormId Class-based form id (coming from GetShapeshiftFormID LUA API) if active, the spell is skipped
 ---@field shapeshiftFormId number Check this shapeshift form to know whether spell is already casted
 ---@field singleDuration number - buff duration for single buff in seconds
+---@field providesAuras BomSpellId[]|nil Check these if not nil; For special items which create multiple varied buffs
 ---@field singleFamily BomSpellId[] Family of single buff spell ids which are mutually exclusive
 ---@field singleLink string Printable link for single buff
 ---@field singleMana number Mana cost
@@ -522,6 +523,13 @@ end
 ---@param text string
 function buffDefClass:ExtraText(text)
   self.extraText = text
+  return self
+end
+
+---@param auras BomSpellId[]
+---@return BomBuffDefinition
+function buffDefClass:ProvidesAuras(auras)
+  self.providesAuras = auras
   return self
 end
 

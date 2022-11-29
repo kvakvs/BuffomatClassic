@@ -33,6 +33,7 @@ local texturesModule = BomModuleManager.texturesModule
 ---@field PRIEST BomGPIControl Per class setting for class-specific buffs
 ---@field WARLOCK BomGPIControl Per class setting for class-specific buffs
 ---@field PALADIN BomGPIControl Per class setting for class-specific buffs
+---@field DEATHKNIGHT BomGPIControl Per class setting for class-specific buffs
 ---@field cancelBuffLabel BomGPIControl Text label for buff cancel row (in combat or always)
 local buffRowClass = {}
 buffRowClass.__index = buffRowClass
@@ -50,13 +51,30 @@ end
 
 ---@return WowControl[]
 function buffRowClass:AllControls()
-  local result = {}
-  for _, v in pairs(self) do
-    if type(v) == "table" then
-      table.insert(result, v)
-    end
-  end
-  return result
+  return {
+    self.iconInfo,
+    self.checkboxSet,
+    self.checkboxEnable,
+    self.toggleOffHand,
+    self.toggleExclude,
+    self.toggleForceCast,
+    self.toggleMainHand,
+    self.labelBuff,
+    self.toggleSelfCast,
+    self.toggleWhisper,
+    self.tank,
+    self.pet,
+    self.WARRIOR,
+    self.MAGE,
+    self.ROGUE,
+    self.DRUID,
+    self.HUNTER,
+    self.SHAMAN,
+    self.PRIEST,
+    self.WARLOCK,
+    self.PALADIN,
+    self.DEATHKNIGHT,
+  }
 end
 
 function buffRowClass:Hide()
@@ -286,7 +304,7 @@ end
 ---@return BomGPIControl
 function buffRowClass:CreateForceCastToggle(tooltip, buffDef)
   if self.toggleForceCast == nil then
-    self.toggleForceCast = uiButtonModule:CreateSmallButton(
+    self.toggleForceCast = --[[---@type BomGPIControl]] uiButtonModule:CreateSmallButton(
             "ForceCast" .. buffDef.buffId,
             BomC_SpellTab_Scroll_Child,
             texturesModule.ICON_TARGET_ON)

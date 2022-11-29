@@ -160,10 +160,17 @@ end
 ---@param buff BomBuffDefinition
 ---@param playerUnit BomUnit
 function buffChecksModule:PlayerNeedsConsumable(buff, playerUnit)
+  if buff.providesAuras then
+    for i, aura in pairs(--[[---@not nil]] buff.providesAuras) do
+      if playerUnit.allBuffs[aura] then
+        return -- have one of known provided auras, means we don't need that consumable
+      end
+    end
+  end
+
   if not playerUnit.knownBuffs[buff.buffId] then
     table.insert(buff.unitsNeedBuff, playerUnit)
   end
-
 end
 
 ---@param buff BomBuffDefinition

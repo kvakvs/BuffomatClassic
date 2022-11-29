@@ -28,8 +28,13 @@ local taskScanModule = BomModuleManager.taskScanModule
 local taskClass = {}
 taskClass.__index = taskClass
 
+-- Priorities, lower = first
 taskModule.PRIO_RESURRECTION = 100
-taskModule.PRIO_DEFAULT = 200
+taskModule.PRIO_RESURRECTION_FIRST = 50 -- resurrecter-classes get a higher prio
+taskModule.PRIO_DEFAULT = 500
+taskModule.PRIO_ENCHANTMENT = 600
+taskModule.PRIO_CONSUMABLE = 700
+taskModule.PRIO_OPEN_CONTAINER = 1000
 
 --Creates a new TaskListItem
 ---@param actionText string|nil
