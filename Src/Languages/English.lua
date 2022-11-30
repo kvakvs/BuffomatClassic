@@ -164,7 +164,7 @@ function englishModule:Translations()
     ["task.error.range"]                              = "Range",
     ["reminder.reputationTrinket"]                    = "Reputation trinket",
     ["reminder.ridingSpeedTrinket"]                   = "Riding/Flight Speed trinket",
-    OUT_OF_THAT_ITEM                                  = "Not in bags",
+    ["task.hint.DontHaveItem"]                        = "Not in bags",
 
     CHAT_MSG_PREFIX                                   = "Buffomat: ",
     Buffomat                                          = "Buffomat", -- addon title in the main window

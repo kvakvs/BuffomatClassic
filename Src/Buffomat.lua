@@ -31,6 +31,8 @@ local taskScanModule = BomModuleManager.taskScanModule
 local texturesModule = BomModuleManager.texturesModule
 local toolboxModule = BomModuleManager.toolboxModule
 
+---@alias BomCastingState "cast"|"channel"|nil
+
 ---global, visible from XML files and from script console and chat commands
 ---@class BomAddon
 ---@field activePaladinAura nil|number Spell id of aura if an unique aura was casted (only one can be active)
@@ -58,7 +60,7 @@ local toolboxModule = BomModuleManager.toolboxModule
 ---@field haveWotLK boolean Whether we are running Wrath of the Lich King or later
 ---@field inLoadingScreen boolean True while in the loading screen
 ---@field isClassic boolean Whether we are running Classic Era or Season of Mastery
----@field isPlayerCasting string|nil Indicates that the player is currently casting (updated in event handlers)
+---@field isPlayerCasting BomCastingState Indicates that the player is currently casting (updated in event handlers)
 ---@field isPlayerMoving boolean Indicated that the player is moving (updated in event handlers)
 ---@field isTBC boolean Whether we are running TBC classic
 ---@field isWotLK boolean Whether we are running Wrath of the Lich King
@@ -156,6 +158,11 @@ end
 ---@param reason string
 function buffomatModule:RequestTaskRescan(reason)
   self.taskRescanRequestedBy[reason] = (self.taskRescanRequestedBy[reason] or 0) + 1
+end
+
+---@param castingState BomCastingState
+function buffomatModule:SetPlayerCasting(castingState)
+  BOM.isPlayerCasting = castingState
 end
 
 -- Something changed (buff gained possibly?) update all spells and spell tabs

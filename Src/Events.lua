@@ -4,6 +4,7 @@ local BOM = BuffomatAddon ---@type BomAddon
 ---@shape BomEventsModule
 local eventsModule = BomModuleManager.eventsModule
 
+local taskListModule = BomModuleManager.taskListModule
 local allBuffsModule = BomModuleManager.allBuffsModule
 local buffomatModule = BomModuleManager.buffomatModule
 local constModule = BomModuleManager.constModule
@@ -278,31 +279,40 @@ local function Event_UNIT_SPELLCAST_errors(unit)
   end
 end
 
-local function Event_UNIT_SPELLCAST_START(unit)
-  if UnitIsUnit(unit, "player") and not BOM.isPlayerCasting then
-    BOM.isPlayerCasting = "cast"
+function eventsModule:SafeWipeMacro()
+  if not InCombatLockdown() then
+    -- To prevent same macro being recast when player quickly mashes the shortcut key
+    taskListModule:WipeMacro(nil)
+  end
+end
+
+local function Event_UNIT_SPELLCAST_START(eventType, unit)
+  if UnitIsUnit(unit, "player") then
+    buffomatModule:SetPlayerCasting("cast")
+    eventsModule:SafeWipeMacro() -- not sure if this has any effect
     buffomatModule:RequestTaskRescan("castStart")
   end
 end
 
-local function Event_UNIT_SPELLCAST_STOP(unit)
-  if UnitIsUnit(unit, "player") and BOM.isPlayerCasting then
-    BOM.isPlayerCasting = nil
+local function Event_UNIT_SPELLCAST_STOP(eventType, unit)
+  if UnitIsUnit(unit, "player") then
+    buffomatModule:SetPlayerCasting(nil)
     buffomatModule:RequestTaskRescan("castStop")
     BOM.checkForError = false
   end
 end
 
-local function Event_UNIT_SPELLCHANNEL_START(unit)
-  if UnitIsUnit(unit, "player") and not BOM.isPlayerCasting then
-    BOM.isPlayerCasting = "channel"
+local function Event_UNIT_SPELLCHANNEL_START(eventType, unit)
+  if UnitIsUnit(unit, "player") then
+    buffomatModule:SetPlayerCasting("channel")
+    eventsModule:SafeWipeMacro() -- not sure if this has any effect
     buffomatModule:RequestTaskRescan("channelStart")
   end
 end
 
-local function Event_UNIT_SPELLCHANNEL_STOP(unit)
-  if UnitIsUnit(unit, "player") and BOM.isPlayerCasting then
-    BOM.isPlayerCasting = nil
+local function Event_UNIT_SPELLCHANNEL_STOP(eventType, unit)
+  if UnitIsUnit(unit, "player") then
+    buffomatModule:SetPlayerCasting(nil)
     buffomatModule:RequestTaskRescan("channelStop")
     BOM.checkForError = false
   end
@@ -313,13 +323,6 @@ function eventsModule.Event_SpellsChanged()
   buffomatModule:RequestTaskRescan("spellsChanged")
   spellButtonsTabModule:UpdateSpellsTab("spellsChanged")
 end
-
---local function Event_ADDON_LOADED(arg1)
---end
-
---local function Event_GenericUpdate()
---  buffomatModule:SetForceUpdate("generic")
---end
 
 local function Event_Bag()
   buffomatModule:RequestTaskRescan("bagUpdate")

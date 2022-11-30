@@ -23,12 +23,12 @@ function taskListClass:SelectTask()
     local canCast = t:CanCast()
     if canCast == taskModule.CAN_CAST_OK then
       return t
-    --else
-    --  if canCast ~= taskModule.CAN_CAST_ON_CD
-    --          and canCast ~= taskModule.CAN_CAST_IS_INFO
-    --  then
-    --    BOM:Debug(string.format("Can't cast %s = %s", t.actionLink or "?", canCast))
-    --  end
+      --else
+      --  if canCast ~= taskModule.CAN_CAST_ON_CD
+      --          and canCast ~= taskModule.CAN_CAST_IS_INFO
+      --  then
+      --    BOM:Debug(string.format("Can't cast %s = %s", t.actionLink or "?", canCast))
+      --  end
     end
   end
   return nil
@@ -131,7 +131,7 @@ function taskListClass:Sort()
   table.sort(self.tasks, taskListModule.OrderTasksByPriority)
 end
 
-  ---Unload the contents of DisplayInfo cache into BomC_ListTab_MessageFrame
+---Unload the contents of DisplayInfo cache into BomC_ListTab_MessageFrame
   ---The messages (tasks) are sorted
 function taskListClass:Display()
   local taskFrame = BomC_ListTab_MessageFrame
@@ -231,6 +231,7 @@ function taskListClass:CastButtonText(t, enable)
   if enable then
     BomC_ListTab_Button:Enable()
   else
+    taskListModule:WipeMacro(nil)
     BomC_ListTab_Button:Disable()
   end
 
@@ -252,7 +253,7 @@ end
 ---Success case, cast is allowed, macro will be set and button will be enabled
 ---@param task BomTask
 function taskListClass:CastButton(task)
-  BOM.theMacro:Recreate()
+  BOM.theMacro:EnsureExists()
   wipe(BOM.theMacro.lines)
 
   local action = --[[---@not nil]] task.action
@@ -293,14 +294,15 @@ end -- if inrange
 ---@param command string|nil
 function taskListModule:WipeMacro(command)
   local macro = BOM.theMacro
-  macro:Recreate()
+
+  macro:EnsureExists()
   wipe(macro.lines)
 
   if command then
     table.insert(macro.lines, --[[---@not nil]] command)
   end
-  macro.icon = constModule.MACRO_ICON_DISABLED
 
+  macro.icon = constModule.MACRO_ICON_DISABLED
   macro:UpdateMacro()
 end
 

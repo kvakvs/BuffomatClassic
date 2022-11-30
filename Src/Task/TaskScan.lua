@@ -579,7 +579,7 @@ end
 ---@param count number How many of that consumable is available
 function taskScanModule:FormatItemBuffInactiveText(name, count)
   if count == 0 then
-    return string.format("%s (%s)", name, _t("OUT_OF_THAT_ITEM"))
+    return string.format("%s (%s)", name, _t("task.hint.DontHaveItem"))
   end
 
   return string.format("%s (x%d)", name, count)
@@ -1648,6 +1648,15 @@ function taskScanModule:UpdateScan_PreCheck(from)
   --if self:IsInGlobalCooldown() then
   --  return self:ShowInactive(_t("castbutton.inactive.GCD"))
   --end
+
+  -- If currently casting
+  if BOM.isPlayerCasting == "cast" then
+    return self:ShowInactive(_t("castButton.Busy"))
+  else
+    if BOM.isPlayerCasting == "channel" then
+      return self:ShowInactive(_t("castButton.BusyChanneling"))
+    end
+  end
 
   -- All pre-checks passed
   self:UpdateScan_Scan(party)

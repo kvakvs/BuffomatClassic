@@ -107,7 +107,7 @@ function chineseModule:Translations()
     ["task.error.range"]                        = "类别",
     ["reminder.reputationTrinket"]              = "银色黎明徽记",
     ["reminder.ridingSpeedTrinket"]             = "骑术/飞行速度饰品",
-    OUT_OF_THAT_ITEM                            = "不在背包",
+    ["task.hint.DontHaveItem"]                  = "不在背包",
 
     CHAT_MSG_PREFIX                             = "Buffomat: ",
     Buffomat                                    = "Buffomat", -- addon title in the main window

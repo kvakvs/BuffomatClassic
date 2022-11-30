@@ -32,7 +32,7 @@ function macroClass:Clear()
     return
   end
 
-  self:Recreate()
+  self:EnsureExists()
   self.lines = {}
   self.icon = constModule.MACRO_ICON_DISABLED
   EditMacro(self.name, nil, self.icon, self:GetText())
@@ -53,7 +53,7 @@ function macroClass:UpdateMacro()
   BOM.minimapButton:SetTexture("Interface\\ICONS\\" .. icon)
 end
 
-function macroClass:Recreate()
+function macroClass:EnsureExists()
   if (GetMacroInfo(constModule.MACRO_NAME)) == nil then
     local perAccount, perChar = GetNumMacros()
     local isChar

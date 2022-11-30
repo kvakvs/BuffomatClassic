@@ -1,6 +1,6 @@
 # Changelog
 
-## Buffomat Classic 2022.11.1 Alpha
+## Buffomat Classic 2022.11.3
 
 - Large refactor and type specs for most fields and functions, using Luanalysis
 - Some bugs might have just disappeared
