@@ -291,6 +291,7 @@ function englishModule:Translations()
     ["tooltip.food.multipleFoodItems"]                = " (various food w/same buff)",
     ["tooltip.buff.armorPenetration"]                 = "+Armor Pen",
     ["tooltip.buff.petStrength"]                      = "Pet +Str",
+    ["tooltip.buff.petStamina"]                       = "Pet +Stam",
     ["tooltip.buff.alchemistOnly"]                    = "Alchemist-only",
 
     ["tooltip.alcohol.stamina"]                       = "Alcohol +Stamina",

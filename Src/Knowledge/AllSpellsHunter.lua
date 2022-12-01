@@ -141,25 +141,22 @@ end
 ---@param allBuffs BomBuffDefinition[]
 ---@param enchantments BomEnchantmentsMapping
 function hunterModule:_SetupPetBuffs(allBuffs, enchantments)
-  -- TODO: Do not use tbc_consumable function, add new flags for pet-buff
+  -- Kibler's Bits (TBC)
   buffDefModule:genericConsumable(allBuffs, 65247, 33874)
-               :RequireTBC()
-               :HunterPetFood()
-               :Category("pet")
-  buffDefModule:genericConsumable(allBuffs, 33272, 27656)
                :RequireTBC()
                :HunterPetFood()
                :ExtraText(_t("tooltip.buff.petStrength"))
                :Category("pet")
+  -- Sporeling Snack (TBC)
+  buffDefModule:genericConsumable(allBuffs, 33272, 27656)
+               :RequireTBC()
+               :HunterPetFood()
+               :ExtraText(_t("tooltip.buff.petStamina"))
+               :Category("pet")
+  -- Spiced Mammoth Treats (WotLK)
   buffDefModule:genericConsumable(allBuffs, 43771, 43005)
                :RequireWotLK()
                :HunterPetFood()
                :ExtraText(_t("tooltip.buff.petStrength"))
                :Category("pet")
-  --buffDefModule:genericConsumable(buffs, 43771, 43005) -- WotLK: Spiced Mammoth Treats +30 Str/30 Stam for pet
-  --             :RequireWotLK()
-  --             :HunterPetFood()
-  --             :ExtraText(_t("tooltip.buff.petStrength"))
-  --             :RequirePlayerClass("HUNTER")
-  --             :Category("pet")
 end

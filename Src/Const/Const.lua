@@ -3,6 +3,10 @@ local TOCNAME, _ = ...
 ---@shape BomConstModule
 local constModule = BomModuleManager.constModule ---@type BomConstModule
 
+constModule.TASKCOLOR_GRAY = "777777"
+constModule.TASKCOLOR_RED = "cc4444"
+constModule.TASKCOLOR_BLEAK_RED = "bb5555"
+
 constModule.TOC_VERSION = GetAddOnMetadata(TOCNAME, "Version") --used for display in options
 constModule.TOC_TITLE = GetAddOnMetadata(TOCNAME, "Title") -- Longer title like "Buffomat Classic TBC"
 constModule.SHORT_TITLE = "Buffomat"

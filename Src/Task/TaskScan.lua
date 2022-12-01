@@ -819,7 +819,8 @@ function taskScanModule:AddBuff_SingleBuff(buffDef, minBuff, buffCtx)
         -- Text: Target "SpellName"
         tasklist:Add(
                 taskModule:Create(buffDef.singleLink or buffDef.singleText, buffDef.singleText)
-                          :PrefixText(_t("task.type.RegularBuff"))
+                          :PrefixText(buffomatModule:Color(constModule.TASKCOLOR_BLEAK_RED, _t("task.error.range"))
+                        .. " " .. _t("task.type.RegularBuff"))
                           :Target(buffTargetModule:FromUnit(needBuff))
                           :IsInfo())
       end

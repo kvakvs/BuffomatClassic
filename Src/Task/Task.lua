@@ -6,6 +6,7 @@ local taskModule = BomModuleManager.taskModule
 local buffomatModule = BomModuleManager.buffomatModule
 local partyModule = BomModuleManager.partyModule
 local taskScanModule = BomModuleManager.taskScanModule
+local constModule = BomModuleManager.constModule
 
 ---BomTaskActionUse|BomTaskActionCast|BomTaskActionMacro
 ---@class BomTaskAction
@@ -126,11 +127,6 @@ function taskClass:Action(action)
   return self
 end
 
--- TODO move to const module
-local bomGray = "777777"
-local bomRed = "cc4444"
-local bomBleakRed = "bb5555"
-
 function taskClass:Format()
   local targetText
   if self.target then
@@ -143,9 +139,9 @@ function taskClass:Format()
   end
   return string.format("%s%s %s %s",
           targetText,
-          buffomatModule:Color(bomGray, self.prefixText),
+          buffomatModule:Color(constModule.TASKCOLOR_GRAY, self.prefixText),
           self.actionLink,
-          buffomatModule:Color(bomGray, self.extraText))
+          buffomatModule:Color(constModule.TASKCOLOR_GRAY, self.extraText))
 end
 
 function taskClass:FormatDisabledRed(reason)
@@ -153,13 +149,18 @@ function taskClass:FormatDisabledRed(reason)
   if self.target then
     targetText = (--[[---@not nil]] self.target):GetText() .. " "
   else
-    tate = ""
-  end
-  if self.isInfo then
-    target = ""
+    targetText = ""
   end
   return string.format("%s %s %s",
-          buffomatModule:Color(bomRed, reason),
-          target,
-          buffomatModule:Color(bomBleakRed, self.actionText))
+          buffomatModule:Color(constModule.TASKCOLOR_RED, reason),
+          self:GetTarget(),
+          buffomatModule:Color(constModule.TASKCOLOR_BLEAK_RED, self.actionText))
+end
+
+---@return string
+function taskClass:GetTarget()
+  if self.target then
+    return (--[[---@not nil]] self.target):GetText() or ""
+  end
+  return ""
 end
