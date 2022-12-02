@@ -4,8 +4,8 @@ local BOM = BuffomatAddon ---@type BomAddon
 ---@alias BomBuffCategoryName ""|"tracking"|"pet"|"aura"|"seal"|"blessing"|"class"|"classicPhysFood"|"classicSpellFood"|"classicFood"|"classicPhysElixir"|"classicPhysBuff"|"classicBuff"|"classicSpellElixir"|"classicElixir"|"classicFlask"|"tbcPhysFood"|"tbcSpellFood"|"tbcFood"|"tbcPhysElixir"|"tbcSpellElixir"|"tbcElixir"|"tbcFlask"|"wotlkPhysFood"|"wotlkSpellFood"|"wotlkFood"|"wotlkPhysElixir"|"wotlkSpellElixir"|"wotlkElixir"|"wotlkFlask"|"scroll"|"weaponEnchantment"|"classWeaponEnchantment"
 
 ---@alias BomBuffidBuffdefLookup {[BomBuffId]: BomBuffDefinition}
----@alias BomEnchantToSpellLookup {[BomEnchantmentId]: BomSpellId}
----@alias BomBuffBySpellId {[BomSpellId]: BomBuffDefinition}
+---@alias BomEnchantToSpellLookup {[BomEnchantmentId]: WowSpellId}
+---@alias BomBuffBySpellId {[WowSpellId]: BomBuffDefinition}
 
 ---@shape BomAllBuffsModule
 ---@field allBuffs BomBuffidBuffdefLookup All buffs, same as BOM.AllBuffomatSpells for convenience
@@ -18,9 +18,9 @@ local BOM = BuffomatAddon ---@type BomAddon
 ---@field selectedBuffs BomBuffDefinition[] Buffs available to the player
 ---@field selectedBuffsSpellIds BomBuffBySpellId All spellids from selected buffs
 ---@field spellIdIsSingleLookup table<number, boolean> Whether spell ids are single buffs
----@field spellIdtoBuffId {[BomSpellId]: BomBuffId} Maps spell ids to the key id of spell in the AllSpells
----@field spellToSpellLookup {[BomSpellId]: BomSpellId} Maps spells ids to other spell ids
----@field cancelForm BomSpellId[] Spell ids which cancel shapeshift form
+---@field spellIdtoBuffId {[WowSpellId]: BomBuffId} Maps spell ids to the key id of spell in the AllSpells
+---@field spellToSpellLookup {[WowSpellId]: WowSpellId} Maps spells ids to other spell ids
+---@field cancelForm WowSpellId[] Spell ids which cancel shapeshift form
 local allBuffsModule = BomModuleManager.allBuffsModule
 
 allBuffsModule.cancelForm = {}
@@ -28,7 +28,7 @@ allBuffsModule.spellIdtoBuffId = {}
 allBuffsModule.selectedBuffs = {}
 allBuffsModule.selectedBuffsSpellIds = --[[---@type BomBuffBySpellId]] {}
 allBuffsModule.spellIdIsSingleLookup = {}
-allBuffsModule.buffFromSpellIdLookup = --[[---@type {[BomSpellId]: BomBuffDefinition}]] {}
+allBuffsModule.buffFromSpellIdLookup = --[[---@type {[WowSpellId]: BomBuffDefinition}]] {}
 allBuffsModule.enchantToSpellLookup = --[[---@type BomEnchantToSpellLookup]] {}
 
 local _t = BomModuleManager.languagesModule
@@ -243,7 +243,7 @@ end
 ---@shape BomAllBuffsTable
 ---@field [BomBuffId] BomBuffDefinition
 
----@alias BomEnchantmentsMapping {[BomSpellId]: BomEnchantmentId[]}
+---@alias BomEnchantmentsMapping {[WowSpellId]: BomEnchantmentId[]}
 
 ---All spells known to Buffomat
 ---Note: you can add your own spell in the "WTF\Account\<accountname>\SavedVariables\buffOmat.lua"
@@ -302,10 +302,10 @@ function allBuffsModule:SetupSpells()
 end
 
 ---@shape BomReputationTrinketZones
----@field itemIds BomItemId[]
----@field zoneId BomZoneId[]
+---@field itemIds WowItemId[]
+---@field zoneId WowZoneId[]
 ---@field Link string
----@field spell BomSpellId
+---@field spell WowSpellId
 BOM.reputationTrinketZones = {
   itemIds = {
     12846, -- Simple AD trinket
@@ -322,10 +322,10 @@ BOM.reputationTrinketZones = {
 }
 
 ---@shape BomRidingSpeedZones
----@field itemIds BomItemId[]
----@field zoneId BomZoneId[]
+---@field itemIds WowItemId[]
+---@field zoneId WowZoneId[]
 ---@field Link string
----@field spell BomSpellId
+---@field spell WowSpellId
 BOM.ridingSpeedZones = {
   itemIds = {
     11122, -- Classic: Item [Carrot on a Stick]

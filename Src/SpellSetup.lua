@@ -38,7 +38,7 @@ function spellSetupModule:Setup_ResetCaches()
 
   allBuffsModule.cancelForm = {}
   allBuffsModule.allSpellIds = {}
-  allBuffsModule.buffFromSpellIdLookup = --[[---@type {[BomSpellId]: BomBuffDefinition}]] {}
+  allBuffsModule.buffFromSpellIdLookup = --[[---@type {[WowSpellId]: BomBuffDefinition}]] {}
 
   buffomatModule.shared.Cache = buffomatModule.shared.Cache or {}
   buffomatModule.shared.Cache.Item2 = buffomatModule.shared.Cache.Item2 or {}

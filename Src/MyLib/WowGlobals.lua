@@ -1,3 +1,7 @@
+---@alias WowItemId number Wow Item ID
+---@alias WowZoneId number Wow Zone ID
+---@alias WowSpellId number Wow Spell ID
+
 BomC_ListTab = --[[---@type BomWindowTab]] {}
 BomC_ListTab_Button = --[[---@type WowControl]] {}
 BomC_ListTab_MessageFrame = --[[---@type WowChatFrame]] {}
@@ -26,26 +30,7 @@ ShapeShiftTravel = 0
 function debugprofilestop()
   return 0
 end
----@param a string
----@param b string
-function GetAddOnMetadata(a, b)
-end
----@param name string
----@param x WowControl|nil
----@param parent WowControl
----@param template string|nil
----@return WowControl
-function CreateFrame(name, x, parent, template)
-  return --[[---@type WowControl]] {}
-end
----@param t WowControl
----@param n number
-function PanelTemplates_TabResize(t, n)
-end
----@param name string
-function PickupMacro(name)
-end
----@return number, string, boolean, string, string, number, number, string, string, number, number, BomSpellId, string, number, number, number
+---@return number, string, boolean, string, string, number, number, string, string, number, number, WowSpellId, string, number, number, number
 function CombatLogGetCurrentEventInfo()
   return 0, "", false, "", "", 0, 0, "", "", 0, 0, 0, "", 0, 0, 0
 end
@@ -109,14 +94,6 @@ end
 function UnitPlayerOrPetInRaid(unitId)
   return false
 end
-function SetTracking(...)
-end
-function GetNumTrackingTypes(...)
-end
----@return string, string, boolean, string, number, BomSpellId
-function GetTrackingInfo(...)
-  return "", "", false, "", 0, 0
-end
 function CastSpellByID(...)
 end
 ---@return boolean
@@ -170,22 +147,16 @@ end
 function UnitIsUnit(a, b)
   return false
 end
----@param s string
----@param msg string
----@param lang string|nil
----@param name string
-function SendChatMessage(s, msg, lang, name)
-end
 ---@return number
 function UnitLevel(u)
   return 0
 end
----@param spellId BomSpellId
+---@param spellId WowSpellId
 ---@return string
 function GetSpellSubtext(spellId)
   return ""
 end
----@param spellId BomSpellId
+---@param spellId WowSpellId
 ---@return string
 function GetSpellInfo(spellId)
   return ""
@@ -320,4 +291,8 @@ end
 ---@return number, number
 function GetNumMacros()
   return 0, 0
+end
+---@return number, number, number, number
+function GetNetStats()
+  return 0, 0, 0, 0
 end

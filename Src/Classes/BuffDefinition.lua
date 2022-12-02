@@ -2,9 +2,6 @@ local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BomAddon
 
 ---@alias BomElixirType "battle"|"guardian"|"both"
----@alias BomItemId number Wow Item ID
----@alias BomZoneId number Wow Zone ID
----@alias BomSpellId number Wow Spell ID
 
 ---@shape BomBuffDefinitionModule
 local buffDefModule = BomModuleManager.buffDefinitionModule ---@type BomBuffDefinitionModule
@@ -76,35 +73,35 @@ local allBuffsModule = BomModuleManager.allBuffsModule
 ---@field groupsNeedBuff table List of groups who might need this buff
 ---@field groupText string Name of group buff spell (from GetSpellInfo())
 ---@field hasCD boolean There's a cooldown on this spell
----@field highestRankGroupId BomSpellId Updated in SpellSetup for each spell cache update
----@field highestRankSingleId BomSpellId Updated in SpellSetup for each spell cache update
----@field ignoreIfBetterBuffs BomSpellId[] If these auras are present on target, the buff is not queued
+---@field highestRankGroupId WowSpellId Updated in SpellSetup for each spell cache update
+---@field highestRankSingleId WowSpellId Updated in SpellSetup for each spell cache update
+---@field ignoreIfBetterBuffs WowSpellId[] If these auras are present on target, the buff is not queued
 ---@field isBlessing boolean Spell will be cast on group members of the same class
 ---@field isConsumable boolean Is an item-based buff; the spell must have 'items' field too
 ---@field isInfo boolean Set true to send expiration whispers?
 ---@field isOwn boolean Spell only casts on self
 ---@field isScanned boolean
 ---@field itemIcon string|number
----@field items BomItemId[]|nil Conjuration spells create these items. Or buff is granted by an item in user's bag. Number is item id shows as the icon.
+---@field items WowItemId[]|nil Conjuration spells create these items. Or buff is granted by an item in user's bag. Number is item id shows as the icon.
 ---@field limitations BomSpellLimitations|nil [Temporary] field for post-filtering on spell list creation, later zeroed
----@field lockIfHaveItem BomItemId[] Item ids which prevent this buff (unique conjured items for example)
+---@field lockIfHaveItem WowItemId[] Item ids which prevent this buff (unique conjured items for example)
 ---@field MainHandEnable boolean [⚠DO NOT RENAME]
 ---@field name string Loaded in spellcache.
 ---@field OffHandEnable boolean [⚠DO NOT RENAME]
 ---@field onlyUsableFor string[] list of classes which only can see this buff (hidden for others)
 ---@field optionText string Used to create sections in spell list in the options page
----@field reagentRequired BomItemId[] Reagent item ids required for group buff
+---@field reagentRequired WowItemId[] Reagent item ids required for group buff
 ---@field requiresForm number Required shapeshift form ID to cast this buff
 ---@field requiresOutdoors boolean Spell can only be cast outdoors
 ---@field requireWarlockPet boolean For Soul Link - must check if a demon pet is present
----@field sacrificeAuraIds BomSpellId[]|nil Aura id for demonic sacrifice of that pet. Do not summon if buff is present.
+---@field sacrificeAuraIds WowSpellId[]|nil Aura id for demonic sacrifice of that pet. Do not summon if buff is present.
 ---@field section string Custom section to begin new spells group in the row builder
 ---@field SelfCast boolean [⚠DO NOT RENAME]
 ---@field shapeshiftFormId BomShapeshiftFormId Class-based form id (coming from GetShapeshiftFormID LUA API) if active, the spell is skipped
 ---@field shapeshiftFormId number Check this shapeshift form to know whether spell is already casted
 ---@field singleDuration number - buff duration for single buff in seconds
----@field providesAuras BomSpellId[]|nil Check these if not nil; For special items which create multiple varied buffs
----@field singleFamily BomSpellId[] Family of single buff spell ids which are mutually exclusive
+---@field providesAuras WowSpellId[]|nil Check these if not nil; For special items which create multiple varied buffs
+---@field singleFamily WowSpellId[] Family of single buff spell ids which are mutually exclusive
 ---@field singleLink string Printable link for single buff
 ---@field singleMana number Mana cost
 ---@field singleText string Name of single buff spell (from GetSpellInfo())
@@ -122,7 +119,7 @@ local buffDefClass = {}
 buffDefClass.__index = buffDefClass
 
 ---Creates a new SpellDef
----@param singleId BomSpellId Spell id also serving as buffId key
+---@param singleId WowSpellId Spell id also serving as buffId key
 ---@return BomBuffDefinition
 function buffDefModule:New(singleId)
   local buff = --[[---@type BomBuffDefinition]] {}
@@ -155,8 +152,8 @@ function buffDefModule:wotlkConsumable(dst, singleId, itemId)
 end
 
 ---@param allBuffs BomBuffDefinition[]
----@param singleId BomSpellId
----@param providedByItem BomItemId|BomItemId[] Item or multiple items giving this buff
+---@param singleId WowSpellId
+---@param providedByItem WowItemId|WowItemId[] Item or multiple items giving this buff
 ---@return BomBuffDefinition
 function buffDefModule:genericConsumable(allBuffs, singleId, providedByItem)
   local b = buffDefModule:createAndRegisterBuff(allBuffs, singleId, nil)
@@ -283,18 +280,18 @@ function buffDefClass:IsConsumable(isConsum)
   return self
 end
 
----@param itemId BomItemId|BomItemId[]
+---@param itemId WowItemId|WowItemId[]
 ---@return BomBuffDefinition
 function buffDefClass:CreatesOrProvidedByItem(itemId)
   if type(itemId) == "number" then
-    self.items = { --[[---@type BomItemId]] itemId }
+    self.items = { --[[---@type WowItemId]] itemId }
   else
-    self.items = --[[---@type BomItemId[] ]] itemId
+    self.items = --[[---@type WowItemId[] ]] itemId
   end
   return self
 end
 
----@param auraIds BomSpellId[]
+---@param auraIds WowSpellId[]
 ---@return BomBuffDefinition
 function buffDefClass:SacrificeAuraIds(auraIds)
   self.sacrificeAuraIds = auraIds
@@ -357,32 +354,32 @@ function buffDefClass:ShapeshiftFormId(formId)
   return self
 end
 
----@param itemIds BomItemId[]
+---@param itemIds WowItemId[]
 ---@return BomBuffDefinition
 function buffDefClass:LockIfHaveItem(itemIds)
   self.lockIfHaveItem = itemIds
   return self
 end
 
----@param itemIds BomItemId[]|BomItemId
+---@param itemIds WowItemId[]|WowItemId
 ---@return BomBuffDefinition
 function buffDefClass:ReagentRequired(itemIds)
   if type(itemIds) == "table" then
-    self.reagentRequired = --[[---@type BomItemId[] ]] itemIds
+    self.reagentRequired = --[[---@type WowItemId[] ]] itemIds
   else
-    self.reagentRequired = { --[[---@type BomItemId]] itemIds }
+    self.reagentRequired = { --[[---@type WowItemId]] itemIds }
   end
   return self
 end
 
----@param spellIds BomSpellId[]
+---@param spellIds WowSpellId[]
 ---@return BomBuffDefinition
 function buffDefClass:SingleFamily(spellIds)
   self.singleFamily = spellIds
   return self
 end
 
----@param spellIds BomSpellId[]
+---@param spellIds WowSpellId[]
 ---@return BomBuffDefinition
 function buffDefClass:GroupFamily(spellIds)
   self.groupFamily = spellIds
@@ -526,7 +523,7 @@ function buffDefClass:ExtraText(text)
   return self
 end
 
----@param auras BomSpellId[]
+---@param auras WowSpellId[]
 ---@return BomBuffDefinition
 function buffDefClass:ProvidesAuras(auras)
   self.providesAuras = auras
@@ -541,13 +538,13 @@ function buffDefClass:SingleManaCost(manaCost)
 end
 
 ---@return BomBuffDefinition
----@param spellId BomSpellId|BomSpellId[]
+---@param spellId WowSpellId|WowSpellId[]
 function buffDefClass:IgnoreIfHaveBuff(spellId)
   self.ignoreIfBetterBuffs = self.ignoreIfBetterBuffs or {}
   if type(spellId) == "number" then
     tinsert(self.ignoreIfBetterBuffs, spellId)
   else
-    for _i, spell in ipairs(--[[---@type BomSpellId[] ]] spellId) do
+    for _i, spell in ipairs(--[[---@type WowSpellId[] ]] spellId) do
       tinsert(self.ignoreIfBetterBuffs, spell)
     end
   end
@@ -718,13 +715,13 @@ function buffDefClass:RefreshTextAndIcon(iconReadyFn, nameReadyFn)
   -- nil otherwise
 end
 
------@return BomSpellId
+-----@return WowSpellId
 --function buffDefClass:GetFirstSingleId()
 --  local _, singleId = next(self.singleFamily)
 --  return singleId
 --end
 
----@return BomItemId|nil
+---@return WowItemId|nil
 function buffDefClass:GetFirstItem()
   local _, itemId = next(self.items)
   return itemId

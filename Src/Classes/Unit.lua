@@ -200,7 +200,7 @@ function unitClass:GetDistance()
   return self.distance
 end
 
----@param id BomSpellId
+---@param id WowSpellId
 function unitClass:HaveBuff(id)
   return self.knownBuffs[id] ~= nil or self.allBuffs[id] ~= nil
 end

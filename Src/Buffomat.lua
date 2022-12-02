@@ -51,8 +51,8 @@ local toolboxModule = BomModuleManager.toolboxModule
 ---@field currentProfile BomProfile Current profile from CharacterState.Profiles
 ---@field declineHasResurrection boolean Set to true on combat start, stop, holding Alt, cleared on party update
 ---@field drinkingPersonCount number Used for warning "X persons is/are drinking"
----@field AllDrink BomSpellId[] Used for warning "X persons is/are drinking"
----@field enchantList {[BomSpellId]: number[]} Spell ids mapping to enchantment ids
+---@field AllDrink WowSpellId[] Used for warning "X persons is/are drinking"
+---@field enchantList {[WowSpellId]: number[]} Spell ids mapping to enchantment ids
 ---@field forceProfile BomProfileName|nil Nil will choose profile name automatically, otherwise this profile will be used
 ---@field forceTracking WowIconId|nil Defines icon id for enforced tracking
 ---@field forceUpdate boolean Requests immediate spells/buffs refresh

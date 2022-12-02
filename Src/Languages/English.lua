@@ -175,8 +175,6 @@ function englishModule:Translations()
     FORMAT_GROUP_NUM                                  = "G%s",
     ["castButton.Next"]                               = "%s @ %s",
     --MsgNoSpell="Out of Range or Mana",
-    ["castButton.inactive.Flying"]                    = "Flying; Dismount disabled",
-    ["castButton.inactive.Taxi"]                      = "No buffing on taxi",
     ["castButton.Busy"]                               = "Busy / Casting",
     ["castButton.BusyChanneling"]                     = "Busy / Channeling",
     ["castButton.NothingToDo"]                        = "Nothing to do",
@@ -192,6 +190,9 @@ function englishModule:Translations()
     InfoSomeoneIsDrinking                             = "1 person is drinking",
     InfoMultipleDrinking                              = "%d persons are drinking",
 
+    ["castButton.inactive.Flying"]                    = "Flying; Dismount disabled",
+    ["castButton.inactive.Taxi"]                      = "No buffing on taxi",
+    ["castButton.inactive.Vehicle"]                   = "No buffing in a vehicle",
     ["castButton.inactive.IsDead"]                    = "You are dead",
     ["castButton.inactive.InCombat"]                  = "You are in combat",
     ["castButton.inactive.RestArea"]                  = "Buffing in rest areas disabled",

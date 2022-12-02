@@ -18,7 +18,7 @@ function enchantmentsModule:SetupEnchantments(allBuffs, enchantments)
 end
 
 ---@param allBuffs BomBuffDefinition[] A list of buffs (not dictionary)
----@param spellId BomSpellId
+---@param spellId WowSpellId
 ---@return BomBuffDefinition
 function enchantmentsModule:RegisterEnchantment(allBuffs, spellId)
   return buffDefModule:createAndRegisterBuff(allBuffs, spellId, nil)

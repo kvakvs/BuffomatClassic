@@ -77,10 +77,13 @@ function taskScanModule:IsInGlobalCooldown()
   return true
 end
 
+function taskScanModule:IsInVehicle()
+  return type(UnitInVehicle) == "function" and UnitInVehicle("player")
+end
+
 ---@return boolean
 function taskScanModule:IsMountedAndCrusaderAuraRequired()
-  if UnitOnTaxi("player")
-          or UnitInVehicle and UnitInVehicle("player")
+  if UnitOnTaxi("player") or self:IsInVehicle()
   then
     return false
   end
@@ -383,7 +386,10 @@ function taskScanModule:IsActive(playerUnit)
   if UnitOnTaxi("player") then
     return false, _t("castButton.inactive.Taxi")
   end
-  if not buffomatModule.shared.ScanWhileMounted and IsMounted() then
+  if self:IsInVehicle() then
+    return false, _t("castButton.inactive.Vehicle")
+  end
+  if not buffomatModule.shared.ScanWhileMounted and (IsMounted()) then
     return false, _t("castButton.inactive.Mounted")
   end
 

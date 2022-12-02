@@ -1,13 +1,16 @@
 # Changelog
 
-## Buffomat Classic 2022.11.3
+## Buffomat Classic 2022.12.0
 
 - Large refactor and type specs for most fields and functions, using Luanalysis
 - Some bugs might have just disappeared
 - Some new bugs possibly added, but should be minor and short lasting while i'm 
-finding and fixing them.
+  finding and fixing them.
 - Crusader aura prompt will not pop up on the taxi or in a vehicle.
 - Alchemist-only Flask of the North added
+- Visual fixes to the task list
+- Won't be tagging releases for TBC and classic anymore. They are not tested 
+  for that but might still work.
 
 ## Buffomat Classic 2022.11.0.2
 

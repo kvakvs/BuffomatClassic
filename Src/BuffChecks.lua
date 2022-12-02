@@ -61,7 +61,7 @@ function buffChecksModule:TimeCheck(expirationTime, maxDuration)
   return false
 end
 
----@param itemToCheck BomItemId
+---@param itemToCheck WowItemId
 ---@param cd boolean respect the cooldown?
 ---@return boolean, number|nil, number|nil, number|nil {HasItem, Bag, Slot, Count}
 function buffChecksModule:HasOneItem(itemToCheck, cd)
@@ -111,7 +111,7 @@ end
 
 ---Check whether the player has item
 -- TODO: Can move into Buffomat main operation class together with item cache?
----@param itemsToCheck BomItemId[]
+---@param itemsToCheck WowItemId[]
 ---@param cd boolean respect the cooldown?
 ---@return boolean, number|nil, number|nil, number|nil {HasItem, Bag, Slot, Count}
 function buffChecksModule:HasItem(itemsToCheck, cd)
