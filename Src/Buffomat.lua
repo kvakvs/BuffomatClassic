@@ -10,6 +10,7 @@
 local buffomatModule = BomModuleManager.buffomatModule ---@type BomBuffomatModule
 buffomatModule.taskRescanRequestedBy = --[[---@type {[string]: number}]] {}
 
+local kvEnvModule = KvModuleManager.envModule
 local _t = BomModuleManager.languagesModule
 local allBuffsModule = BomModuleManager.allBuffsModule
 local characterSettingsModule = BomModuleManager.characterSettingsModule
@@ -494,6 +495,7 @@ function BuffomatAddon:OnInitialize()
   -- or setting up slash commands.
   profileModule:Setup()
   buffomatModule:InitGlobalStates()
+  kvEnvModule:DetectVersions()
 end
 
 ---AceAddon handler

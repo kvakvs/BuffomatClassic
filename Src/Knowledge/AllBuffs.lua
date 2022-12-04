@@ -66,7 +66,7 @@ local warriorModule = BomModuleManager.allSpellsWarriorModule
 --          end
 --        })
 
----@alias BomClassName "WARRIOR"|"MAGE"|"ROGUE"|"DRUID"|"HUNTER"|"PRIEST"|"WARLOCK"|"SHAMAN"|"PALADIN"|"DEATHKNIGHT"|"tank"|"pet"
+---@alias BomClassName WowClassName|"tank"|"pet"
 
 allBuffsModule.ALL_CLASSES = { "WARRIOR", "MAGE", "ROGUE", "DRUID", "HUNTER", "PRIEST", "WARLOCK",
                                "SHAMAN", "PALADIN", "DEATHKNIGHT" } ---@type BomClassName[]
