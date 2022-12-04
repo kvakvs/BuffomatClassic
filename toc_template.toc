@@ -12,8 +12,10 @@
 
 embeds.xml
 Src/ModuleManager.lua
-Src/KvLib/Env.lua
+Src/KvLib/KvEnv.lua
 Src/Buffomat.lua
+
+Src/KvLib/KvOptions.lua
 
 Src/Const/Const.lua
 Src/Const/Textures.lua

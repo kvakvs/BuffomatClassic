@@ -8,8 +8,10 @@ local envModule = { }
 
 ---@class KvModuleManager
 ---@field envModule KvLibEnvModule
+---@field optionsModule KvOptionsModule
 KvModuleManager = {
-  envModule = envModule
+  envModule = envModule,
+  optionsModule = --[[---@type KvOptionsModule]] {},
 }
 
 function envModule:DetectVersions()
