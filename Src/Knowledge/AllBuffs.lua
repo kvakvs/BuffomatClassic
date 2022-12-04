@@ -37,6 +37,7 @@ local deathknightModule = BomModuleManager.allSpellsDeathknightModule
 local druidModule = BomModuleManager.allSpellsDruidModule
 local elixirsModule = BomModuleManager.allConsumesElixirsModule
 local enchantmentsModule = BomModuleManager.allConsumesEnchantmentsModule
+local envModule = KvModuleManager.envModule
 local flasksModule = BomModuleManager.allConsumesFlasksModule
 local foodModule = BomModuleManager.allConsumesFoodModule
 local hunterModule = BomModuleManager.allSpellsHunterModule
@@ -126,7 +127,7 @@ allBuffsModule.DURATION_1H = allBuffsModule.DURATION_1M * 60
 
 --- From 2 choices return TBC if BOM.IsTBC is true, otherwise return classic
 local function tbcOrClassic(tbc, classic)
-  if BOM.haveTBC then
+  if envModule.haveTBC then
     return tbc
   end
   return classic
@@ -135,10 +136,10 @@ allBuffsModule.TbcOrClassic = tbcOrClassic
 
 --- From 2 choices return TBC if BOM.IsTBC is true, otherwise return classic
 function allBuffsModule.ExpansionChoice(classic, tbc, wotlk)
-  if BOM.haveWotLK then
+  if envModule.haveWotLK then
     return wotlk
   end
-  if BOM.haveTBC then
+  if envModule.haveTBC then
     return tbc
   end
   return classic
@@ -398,11 +399,11 @@ function allBuffsModule:SetupCancelBuffs()
       table.insert(s, buff)
     end
 
-    if (UnitFactionGroup("player")) ~= "Horde" or BOM.isTBC then
+    if (UnitFactionGroup("player")) ~= "Horde" or envModule.haveTBC then
       local buff = buffDefModule:New(1038) --Blessing of Salvation
                                 :IsDefault(false)
                                 :SingleFamily({ 1038, 25895 })
-      tinsert(s, buff)
+      table.insert(s, buff)
     end
   end
 

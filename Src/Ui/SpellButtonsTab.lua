@@ -14,16 +14,16 @@ spellButtonsTabModule.spellSettingsFrames = {} -- accessible from TaskScan.Maybe
 
 local _t = BomModuleManager.languagesModule
 local allBuffsModule = BomModuleManager.allBuffsModule
-local constModule = BomModuleManager.constModule
 local buffDefModule = BomModuleManager.buffDefinitionModule
-local buffomatModule = BomModuleManager.buffomatModule
 local buffRowModule = BomModuleManager.buffRowModule
+local buffomatModule = BomModuleManager.buffomatModule
+local constModule = BomModuleManager.constModule
+local envModule = KvModuleManager.envModule
 local managedUiModule = BomModuleManager.myButtonModule
-local optionsPopupModule = BomModuleManager.optionsPopupModule
 local profileModule = BomModuleManager.profileModule
 local rowBuilderModule = BomModuleManager.rowBuilderModule
-local toolboxModule = BomModuleManager.toolboxModule
 local texturesModule = BomModuleManager.texturesModule
+local toolboxModule = BomModuleManager.toolboxModule
 
 local function bomDoBlessingOnClick(self)
   local saved = self.gpiDict[self.gpiVariableName]
@@ -66,7 +66,7 @@ function spellButtonsTabModule:AddSpellRow_ClassSelector(rowBuilder, playerIsHor
     classToggle:SetVariable(profileSpell.Class, class, nil)
     rowBuilder:ChainToTheRight(nil, classToggle, 0)
 
-    if not BOM.haveTBC and (-- if not TBC hide paladin for horde, hide shaman for alliance
+    if not envModule.haveTBC and (-- if not TBC hide paladin for horde, hide shaman for alliance
             (playerIsHorde and class == "PALADIN") or (not playerIsHorde and class == "SHAMAN")) then
       classToggle:Hide()
     else

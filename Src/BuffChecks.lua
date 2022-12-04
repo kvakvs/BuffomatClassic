@@ -8,11 +8,12 @@ local buffomatModule = BomModuleManager.buffomatModule
 local partyModule = BomModuleManager.partyModule
 local spellIdsModule = BomModuleManager.spellIdsModule
 local unitCacheModule = BomModuleManager.unitCacheModule
+local envModule = KvModuleManager.envModule
 
 ---Checks whether a tracking spell is now active
 ---@param spell BomBuffDefinition The tracking spell which might have tracking enabled
 function buffChecksModule:IsTrackingActive(spell)
-  if BOM.haveTBC then
+  if envModule.haveTBC then
     for i = 1, GetNumTrackingTypes() do
       local _name, _texture, active, _category, _nesting, spellId = GetTrackingInfo(i)
       if tContains(spell.singleFamily, spellId)  then
@@ -140,7 +141,7 @@ end
 ---@param buff BomBuffDefinition
 ---@param playerUnit BomUnit
 function buffChecksModule:HunterPetNeedsBuff(buff, playerUnit)
-  if not BOM.haveTBC then
+  if not envModule.haveTBC then
     return -- pre-TBC this did not exist
   end
 

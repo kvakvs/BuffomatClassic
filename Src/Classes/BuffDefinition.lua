@@ -6,6 +6,7 @@ local BOM = BuffomatAddon ---@type BomAddon
 ---@shape BomBuffDefinitionModule
 local buffDefModule = BomModuleManager.buffDefinitionModule ---@type BomBuffDefinitionModule
 
+local envModule = KvModuleManager.envModule
 local buffomatModule = BomModuleManager.buffomatModule
 local spellCacheModule = BomModuleManager.spellCacheModule
 local itemCacheModule = BomModuleManager.itemCacheModule
@@ -13,8 +14,6 @@ local buffRowModule = BomModuleManager.buffRowModule
 local allBuffsModule = BomModuleManager.allBuffsModule
 
 --BOM.Class = BOM.Class or {}
-
----@alias BomShapeshiftFormId number Shapeshift form for various classes
 
 ---type="aura" Auras are no target buff check. True if the buff affects others in radius, and not a target buff
 ---type="seal" Seals are 1hand enchants which are unique for equipped weapon. Paladins use seals. Shamans also use seals but in TBC shamans have 2 independent seals.
@@ -97,7 +96,7 @@ local allBuffsModule = BomModuleManager.allBuffsModule
 ---@field sacrificeAuraIds WowSpellId[]|nil Aura id for demonic sacrifice of that pet. Do not summon if buff is present.
 ---@field section string Custom section to begin new spells group in the row builder
 ---@field SelfCast boolean [⚠DO NOT RENAME]
----@field shapeshiftFormId BomShapeshiftFormId Class-based form id (coming from GetShapeshiftFormID LUA API) if active, the spell is skipped
+---@field shapeshiftFormId WowShapeshiftFormId Class-based form id (coming from GetShapeshiftFormID LUA API) if active, the spell is skipped
 ---@field shapeshiftFormId number Check this shapeshift form to know whether spell is already casted
 ---@field singleDuration number - buff duration for single buff in seconds
 ---@field providesAuras WowSpellId[]|nil Check these if not nil; For special items which create multiple varied buffs
@@ -173,17 +172,17 @@ function buffDefModule:CheckLimitations(_spell, limitations)
     return true
   end
 
-  if limitations.requireTBC == true and not BOM.haveTBC then
+  if limitations.requireTBC == true and not envModule.haveTBC then
     return false
   end
-  if limitations.hideInTBC == true and BOM.haveTBC then
+  if limitations.hideInTBC == true and envModule.haveTBC then
     return false
   end
 
-  if limitations.requireWotLK == true and not BOM.haveWotLK then
+  if limitations.requireWotLK == true and not envModule.haveWotLK then
     return false
   end
-  if limitations.hideInWotLK == true and BOM.haveWotLK then
+  if limitations.hideInWotLK == true and envModule.haveWotLK then
     return false
   end
 
@@ -196,7 +195,7 @@ function buffDefModule:CheckLimitations(_spell, limitations)
 
   if type(limitations.playerClass) == "table" then
     -- Fail if val is a table and player class is not in it
-    if not tContains(limitations.playerClass, playerClass) then
+    if not tContains(--[[---@type BomClassName[] ]] limitations.playerClass, playerClass) then
       return false
     end
   end
@@ -319,7 +318,7 @@ function buffDefClass:RequiresCancelForm(cancel)
   return self
 end
 
----@param form BomShapeshiftFormId
+---@param form WowShapeshiftFormId
 ---@return BomBuffDefinition
 function buffDefClass:RequiresForm(form)
   self.requiresForm = form
@@ -347,7 +346,7 @@ function buffDefClass:IsDefault(enabled)
   return self
 end
 
----@param formId BomShapeshiftFormId
+---@param formId WowShapeshiftFormId
 ---@return BomBuffDefinition
 function buffDefClass:ShapeshiftFormId(formId)
   self.shapeshiftFormId = formId
@@ -409,7 +408,7 @@ end
 
 function buffDefClass:ClassicBuffTypeIsSeal()
   -- for before TBC make this a seal spell, for TBC do not modify
-  if not BOM.haveTBC then
+  if not envModule.haveTBC then
     self.type = "seal"
   end
   return self

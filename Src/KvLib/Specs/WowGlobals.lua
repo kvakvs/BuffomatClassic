@@ -1,7 +1,19 @@
+---@alias WowShapeshiftFormId number Shapeshift form for various classes
 ---@alias WowItemId number Wow Item ID
 ---@alias WowZoneId number Wow Zone ID
 ---@alias WowSpellId number Wow Spell ID
 
+C_Seasons = {
+  HasActiveSeason = function()
+    return false
+  end,
+  GetActiveSeason = function()
+    return 0
+  end
+}
+WOW_PROJECT_ID = 0
+WOW_PROJECT_BURNING_CRUSADE_CLASSIC = 0
+WOW_PROJECT_CLASSIC = 0
 BomC_ListTab = --[[---@type BomWindowTab]] {}
 BomC_ListTab_Button = --[[---@type WowControl]] {}
 BomC_ListTab_MessageFrame = --[[---@type WowChatFrame]] {}
@@ -26,6 +38,12 @@ BackdropTemplateMixin = ""
 ERR_SPELL_OUT_OF_RANGE = "Out of range." ---@type string
 ShapeShiftTravel = 0
 
+---@param sep string
+---@param str string
+---@param count number|nil
+function strsplit(sep, str, count)
+  return "", ""
+end
 ---@return number
 function debugprofilestop()
   return 0
@@ -77,10 +95,12 @@ end
 function GetInventorySlotInfo(slot)
   return 0
 end
+---https://wowpedia.fandom.com/wiki/API_GetContainerItemInfo
 ---@param b number bag
 ---@param s number slot
+---@return string, number, boolean, any, any, any, string, any, any, number {icon, itemCount, locked, quality, readable, lootable, itemLink, isFiltered, noValue, itemID, isBound}
 function GetContainerItemInfo(b, s)
-  return string, nil, nil, nil, nil, nil, string, nil, nil, nil
+  return "", 0, false, nil, nil, nil, "", nil, nil, 0
 end
 ---@return number, number
 function GetSpellCooldown(spellId)
@@ -89,6 +109,12 @@ end
 ---@return boolean
 function UnitPlayerOrPetInParty(unitId)
   return false
+end
+---@param a string
+---@param b string
+---@return number
+function UnitReaction(a, b)
+  return 0
 end
 ---@return boolean
 function UnitPlayerOrPetInRaid(unitId)
@@ -108,11 +134,11 @@ end
 function IsSpellKnown(...)
   return false
 end
----@return BomShapeshiftFormId
+---@return WowShapeshiftFormId
 function GetShapeshiftForm(...)
   return 0
 end
----@return BomShapeshiftFormId
+---@return WowShapeshiftFormId
 function GetShapeshiftFormID(...)
   return 0
 end
@@ -271,6 +297,11 @@ end
 function UnitPowerMax(u, pow)
   return 0
 end
+---@return string, string, number {localisedRace, englishRace, numericId}
+---@param unit string
+function UnitRace(unit)
+  return "", "", 0
+end
 MAX_CHARACTER_MACROS = 0
 MAX_ACCOUNT_MACROS = 0
 ---@param name string
@@ -295,4 +326,42 @@ end
 ---@return number, number, number, number
 function GetNetStats()
   return 0, 0, 0, 0
+end
+---@return number
+function GetActiveTalentGroup()
+  return 0
+end
+---@return string, string, number, number
+function GetBuildInfo()
+  return "", "", 0, 0
+end
+---@param name number|string Item id or item name or link
+---@param includeBank boolean
+---@param includeCharges boolean
+function GetItemCount(name, includeBank, includeCharges)
+  return 0
+end
+---@return number Count of merchant offerings
+function GetMerchantNumItems()
+  return 0
+end
+---https://wowwiki-archive.fandom.com/wiki/API_GetMerchantItemInfo
+---@param i number
+---@return string, string, number, number, number, boolean, number {name, texture, price, stackCount, numAvailable, isUsable, extendedCost}
+function GetMerchantItemInfo(i)
+  return "", "", 0, 0, 0, false, 0
+end
+---@param i number
+---@return string
+function GetMerchantItemLink(i)
+  return ""
+end
+---@param i number
+---@param count number
+function BuyMerchantItem(i, count)
+end
+---@param arg number|string
+---@return string, string, number, number, number, string, string, number, string, number, number, number, number, number, number, number, boolean
+function GetItemInfo(arg)
+  return "", "", 0, 0, 0, "", "", 0, "", 0, 0, 0, 0, 0, 0, 0, false
 end

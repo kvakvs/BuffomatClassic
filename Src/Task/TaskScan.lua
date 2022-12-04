@@ -11,25 +11,25 @@ taskScanModule.saveSomeoneIsDead = false
 
 local _t = BomModuleManager.languagesModule
 local actionCastModule = BomModuleManager.actionCastModule
-local actionUseModule = BomModuleManager.actionUseModule
 local actionMacroModule = BomModuleManager.actionMacroModule
+local actionUseModule = BomModuleManager.actionUseModule
 local allBuffsModule = BomModuleManager.allBuffsModule
 local buffChecksModule = BomModuleManager.buffChecksModule
 local buffDefModule = BomModuleManager.buffDefinitionModule
-local buffomatModule = BomModuleManager.buffomatModule
 local buffTargetModule = BomModuleManager.unitBuffTargetModule
+local buffomatModule = BomModuleManager.buffomatModule
 local constModule = BomModuleManager.constModule
+local envModule = KvModuleManager.envModule
 local groupBuffTargetModule = BomModuleManager.groupBuffTargetModule
 local itemListCacheModule = BomModuleManager.itemListCacheModule
 local partyModule = BomModuleManager.partyModule
 local profileModule = BomModuleManager.profileModule
 local spellButtonsTabModule = BomModuleManager.spellButtonsTabModule
 local spellIdsModule = BomModuleManager.spellIdsModule
+local taskListModule = BomModuleManager.taskListModule
 local taskModule = BomModuleManager.taskModule
 local texturesModule = BomModuleManager.texturesModule
 local unitCacheModule = BomModuleManager.unitCacheModule
-local taskListModule = BomModuleManager.taskListModule
-
 
 ---@shape BomBuffScanContext
 ---@field someoneIsDead boolean
@@ -48,7 +48,7 @@ local taskListModule = BomModuleManager.taskListModule
 local tasklist ---@type BomTaskList
 
 function taskScanModule:IsFlying()
-  if BOM.haveTBC then
+  if envModule.haveTBC then
     return IsFlying() and not buffomatModule.shared.AutoDismountFlying
   end
   return false
@@ -140,7 +140,8 @@ end
 ---@param spell BomBuffDefinition The tracking spell to activate
 ---@param value boolean Whether tracking should be enabled
 function taskScanModule:SetTracking(spell, value)
-  if BOM.isTBC then
+  -- From TBC onwards tracking is a setting and not a spell
+  if envModule.haveTBC then
     for i = 1, GetNumTrackingTypes() do
       local _name, _texture, _active, _category, _nesting, spellId = GetTrackingInfo(i)
       if spellId == spell.highestRankSingleId then
@@ -755,7 +756,7 @@ end
 ---@param minBuff number Option for minimum players with missing buffs to choose group buff
 ---@param buffCtx BomBuffScanContext
 function taskScanModule:AddBuff_GroupBuff(buffDef, party, minBuff, buffCtx)
-  if BOM.haveWotLK then
+  if envModule.haveWotLK then
     -- For WotLK: Scan entire party as one
     --inRange = self:FindAnyPartyTargetForGroupBuff(buffDef, party, minBuff, inRange)
     -- Text: Group 5 [Spell Name]
@@ -1198,7 +1199,7 @@ end
 ---@param buffCtx BomBuffScanContext
 function taskScanModule:AddWeaponEnchant(buffDef, playerUnit, buffCtx)
   local _, selfClass, _ = UnitClass("player")
-  if not BOM.haveTBC or selfClass ~= "SHAMAN" then
+  if not envModule.haveTBC or selfClass ~= "SHAMAN" then
     return
   end
 

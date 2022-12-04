@@ -8,6 +8,7 @@ local buffDefModule = BomModuleManager.buffDefinitionModule
 local spellIdsModule = BomModuleManager.spellIdsModule
 local itemIdsModule = BomModuleManager.itemIdsModule
 local _t = BomModuleManager.languagesModule
+local envModule = KvModuleManager.envModule
 
 ---Add WARLOCK spells
 ---@param allBuffs BomBuffDefinition[]
@@ -61,7 +62,7 @@ function warlockModule:SetupWarlockSpells(allBuffs, enchantments)
                :RequirePlayerClass("WARLOCK")
                :Category("class")
 
-  if BOM.haveWotLK then
+  if envModule.haveWotLK then
     -- Create Firesone
     buffDefModule:createAndRegisterBuff(allBuffs, spellIdsModule.Warlock_CreateFirestone7, nil)
                  :IsOwn(true)
@@ -113,7 +114,7 @@ function warlockModule:SetupWarlockSpells(allBuffs, enchantments)
                  :Category("class")
   end
 
-  if BOM.haveWotLK then
+  if envModule.haveWotLK then
     -- Conjure Mana Stone (Max Rank)
     buffDefModule:createAndRegisterBuff(allBuffs, spellIdsModule.Warlock_CreateSpellstone6, nil)
                  :IsOwn(true)

@@ -56,14 +56,9 @@ local toolboxModule = BomModuleManager.toolboxModule
 ---@field forceProfile BomProfileName|nil Nil will choose profile name automatically, otherwise this profile will be used
 ---@field forceTracking WowIconId|nil Defines icon id for enforced tracking
 ---@field forceUpdate boolean Requests immediate spells/buffs refresh
----@field haveTBC boolean Whether we are running TBC classic or later
----@field haveWotLK boolean Whether we are running Wrath of the Lich King or later
 ---@field inLoadingScreen boolean True while in the loading screen
----@field isClassic boolean Whether we are running Classic Era or Season of Mastery
 ---@field isPlayerCasting BomCastingState Indicates that the player is currently casting (updated in event handlers)
 ---@field isPlayerMoving boolean Indicated that the player is moving (updated in event handlers)
----@field isTBC boolean Whether we are running TBC classic
----@field isWotLK boolean Whether we are running Wrath of the Lich King
 ---@field itemList number[][] Group different ranks of item together
 ---@field lastAura BomBuffId|nil Buff id of active or last active aura
 ---@field lastTarget string|nil Last player's target
@@ -91,15 +86,6 @@ local toolboxModule = BomModuleManager.toolboxModule
 BuffomatAddon = LibStub("AceAddon-3.0"):NewAddon(
         "Buffomat", "AceConsole-3.0", "AceEvent-3.0") ---@type BomAddon
 local BOM = BuffomatAddon
-
-local _, _, _, tocversion = GetBuildInfo()
-BOM.isWotLK = (tocversion >= 30000 and tocversion <= 39999) -- TODO: change to WOTLK detection via WOW_PROJECT_..._CLASSIC
-BOM.haveWotLK = BOM.isWotLK
-
-BOM.isTBC = WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC
-BOM.haveTBC = BOM.isWotLK or BOM.isTBC
-
-BOM.isClassic = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
 
 ---@shape BomCachedBagItem
 ---@field a boolean Player has item

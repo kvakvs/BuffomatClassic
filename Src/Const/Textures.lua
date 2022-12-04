@@ -1,10 +1,8 @@
 ---@alias WowIconId string|number
 
----@alias BomTexCoord number[]
-
 ---@shape BomTexturesModule
 ---@field CLASS_ICONS_ATLAS string
----@field CLASS_ICONS_ATLAS_TEX_COORD {[BomClassName]: BomTexCoord}
+---@field CLASS_ICONS_ATLAS_TEX_COORD {[BomClassName]: WowTexCoord}
 ---@field ICON_BUFF_OFF string
 ---@field ICON_BUFF_ON string
 ---@field ICON_CHECKED string
@@ -19,20 +17,20 @@
 ---@field ICON_OPT_DISABLED string
 ---@field ICON_OPT_ENABLED string
 ---@field ICON_PET string
----@field ICON_PET_COORD BomTexCoord
+---@field ICON_PET_COORD WowTexCoord
 ---@field ICON_SELF_CAST_OFF string
 ---@field ICON_SELF_CAST_ON string
 ---@field ICON_SETTING_OFF string
 ---@field ICON_SETTING_ON string
 ---@field ICON_TANK string
----@field ICON_TANK_COORD BomTexCoord
+---@field ICON_TANK_COORD WowTexCoord
 ---@field ICON_TARGET_EXCLUDE string
 ---@field ICON_TARGET_OFF string
 ---@field ICON_TARGET_ON string
 ---@field ICON_WHISPER_OFF string
 ---@field ICON_WHISPER_ON string
----@field ICON_COORD_09 BomTexCoord
----@field ICON_COORD_08 BomTexCoord
+---@field ICON_COORD_09 WowTexCoord
+---@field ICON_COORD_08 WowTexCoord
 local texturesModule = BomModuleManager.texturesModule ---@type BomTexturesModule
 
 texturesModule.ICON_COORD_09 = { 0.1, 0.9, 0.1, 0.9 }
@@ -45,7 +43,7 @@ texturesModule.ICON_SELF_CAST_ON = "Interface\\FriendsFrame\\UI-Toast-FriendOnli
 texturesModule.ICON_SELF_CAST_OFF = "Interface\\FriendsFrame\\UI-Toast-ChatInviteIcon"
 
 texturesModule.CLASS_ICONS_ATLAS = "Interface\\WorldStateFrame\\ICONS-CLASSES"
-texturesModule.CLASS_ICONS_ATLAS_TEX_COORD = --[[---@type {[BomClassName]: BomTexCoord} ]] CLASS_ICON_TCOORDS
+texturesModule.CLASS_ICONS_ATLAS_TEX_COORD = --[[---@type {[BomClassName]: WowTexCoord} ]] CLASS_ICON_TCOORDS
 texturesModule.ICON_EMPTY = "Interface\\Buttons\\UI-MultiCheck-Disabled"
 
 ---@deprecated Unused

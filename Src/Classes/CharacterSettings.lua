@@ -5,6 +5,7 @@ local BOM = BuffomatAddon ---@type BomAddon
 local characterSettingsModule = BomModuleManager.characterSettingsModule ---@type BomCharacterSettingsModule
 
 local profileModule = BomModuleManager.profileModule
+local envModule = KvModuleManager.envModule
 
 ---@alias BomProfileName "solo"|"group"|"raid"|"battleground"|"solo_spec2"|"group_spec2"|"raid_spec2"|"battleground_spec2"
 
@@ -50,7 +51,7 @@ function characterSettingsModule:New(init)
   tab.raid = tab.raid or profileModule:New()
   tab.battleground = tab.battleground or profileModule:New()
 
-  if BOM.haveWotLK then
+  if envModule.haveWotLK then
     tab.solo_spec2 = tab.solo_spec2 or profileModule:New()
     tab.group_spec2 = tab.group_spec2 or profileModule:New()
     tab.raid_spec2 = tab.raid_spec2 or profileModule:New()

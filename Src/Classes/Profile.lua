@@ -7,6 +7,7 @@ local profileModule = BomModuleManager.profileModule ---@type BomProfileModule
 
 local buffomatModule = BomModuleManager.buffomatModule
 local _t = BomModuleManager.languagesModule
+local envModule = KvModuleManager.envModule
 
 ---A single blessing per unit name is possible
 ---@alias BomBlessingState {[string]: BomBuffId}
@@ -73,7 +74,7 @@ function profileModule:New()
 end
 
 function profileModule:Setup()
-  if BOM.haveWotLK or GetActiveTalentGroup then
+  if envModule.haveWotLK or GetActiveTalentGroup ~= nil then
     self.ALL_PROFILES = {
       "solo", "solo_spec2",
       "group", "group_spec2",
@@ -86,7 +87,7 @@ function profileModule:Setup()
 end
 
 local function bomGetActiveTalentGroup()
-  if BOM.haveWotLK then
+  if envModule.haveWotLK then
     return GetActiveTalentGroup()
   else
     return nil

@@ -13,6 +13,7 @@ local profileModule = BomModuleManager.profileModule
 local spellButtonsTabModule = BomModuleManager.spellButtonsTabModule
 local spellSetupModule = BomModuleManager.spellSetupModule
 local taskScanModule = BomModuleManager.taskScanModule
+local envModule = KvModuleManager.envModule
 
 --"UNIT_POWER_UPDATE","UNIT_SPELLCAST_START","UNIT_SPELLCAST_STOP","PLAYER_STARTED_MOVING","PLAYER_STOPPED_MOVING"
 eventsModule.EVT_COMBAT_STOP = { "PLAYER_REGEN_ENABLED" }
@@ -216,7 +217,7 @@ local function Event_UI_ERROR_MESSAGE(errorType, message)
 
   elseif tContains(eventsModule.ERR_IS_MOUNTED, message) then
     local flying = false -- prevent dismount in flight, OUCH!
-    if BOM.isTBC then
+    if envModule.haveTBC then
       flying = IsFlying() and not buffomatModule.shared.AutoDismountFlying
     end
     if not flying then
@@ -364,7 +365,7 @@ function eventsModule:InitEvents()
   BuffomatAddon:RegisterEvent("UNIT_SPELLCAST_FAILED", Event_UNIT_SPELLCAST_errors)
 
   -- Dualspec talent switch
-  if BOM.haveWotLK then
+  if envModule.haveWotLK then
     BuffomatAddon:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED", Event_TALENT_GROUP_CHANGED)
   end
 

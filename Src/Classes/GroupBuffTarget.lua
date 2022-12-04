@@ -6,6 +6,7 @@ local groupBuffTargetModule = BomModuleManager.groupBuffTargetModule ---@type Bo
 
 local toolboxModule = BomModuleManager.toolboxModule
 local _t = BomModuleManager.languagesModule
+local envModule = KvModuleManager.envModule
 
 ---@class BomGroupBuffTarget
 ---@field groupIndex number
@@ -44,7 +45,7 @@ function groupBuffTargetClass:GetDistanceRaid()
 end
 
 function groupBuffTargetClass:GetDistanceParty()
-  if BOM.haveWotLK then
+  if envModule.haveWotLK then
     -- in WotLK group buffs are cast on the whole group
     return 0 -- self always in range
   end
