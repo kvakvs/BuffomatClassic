@@ -4,13 +4,55 @@ local chineseModule = BomModuleManager.languageChineseModule ---@type BomLanguag
 ---@return BomLocaleDict
 function chineseModule:Translations()
   return {
-    ["options.OptionsTitle"]                    = "Buffomat",
+    ["shaman.flametongueDownranked"]                  = "One rank down",
+
+    ["Category_class"]                                = "Class Buffs",
+    ["Category_blessing"]                             = "祝福",
+    ["Category_pet"]                                  = "宠物",
+    ["Category_tracking"]                             = "Tracking",
+    ["Category_aura"]                                 = "Auras",
+    ["Category_seal"]                                 = "Seals",
+
+    ["Category_classicPhysFood"]                      = "Physical Food (Classic)",
+    ["Category_classicSpellFood"]                     = "Spell Food (Classic)",
+    ["Category_classicFood"]                          = "Other Food (Classic)",
+    ["Category_classicPhysElixir"]                    = "Physical Elixirs (Classic)",
+    ["Category_classicPhysBuff"]                      = "Physical Buffs (Classic)",
+    ["Category_classicSpellElixir"]                   = "Spell Elixirs (Classic)",
+    ["Category_classicBuff"]                          = "Buffs (Classic)",
+    ["Category_classicElixir"]                        = "Elixirs (Classic)",
+    ["Category_classicFlask"]                         = "Flasks (Classic)",
+
+    ["Category_tbcPhysFood"]                          = "Physical Food (TBC)",
+    ["Category_tbcSpellFood"]                         = "Spell Food (TBC)",
+    ["Category_tbcFood"]                              = "Other Food (TBC)",
+    ["Category_tbcPhysElixir"]                        = "Physical Elixirs (TBC)",
+    ["Category_tbcSpellElixir"]                       = "Spell Elixirs (TBC)",
+    ["Category_tbcElixir"]                            = "Other Elixirs (TBC)",
+    ["Category_tbcFlask"]                             = "Flasks (TBC)",
+
+    ["Category_wotlkPhysFood"]                        = "Physical Food (WotLK)",
+    ["Category_wotlkSpellFood"]                       = "Spell Food (WotLK)",
+    ["Category_wotlkFood"]                            = "Other Food (WotLK)",
+    ["Category_wotlkPhysElixir"]                      = "Physical Elixirs (WotLK)",
+    ["Category_wotlkSpellElixir"]                     = "Spell Elixirs (WotLK)",
+    ["Category_wotlkElixir"]                          = "Other Elixirs (WotLK)",
+    ["Category_wotlkFlask"]                           = "Flasks (WotLK)",
+
+    ["Category_scroll"]                               = "Scrolls",
+    ["Category_weaponEnchantment"]                    = "Weapon Enchantments",
+    ["Category_classWeaponEnchantment"]               = "Class Enchantments",
+    ["Category_none"]                                 = "Uncategorized",
+
+    ["options.OptionsTitle"]                          = "Buffomat",
 
     ["options.general.group.AutoActions"]       = "自动操作",
     ["options.general.group.Convenience"]       = "便利性",
     ["options.general.group.General"]           = "常规",
     ["options.general.group.Scan"]              = "扫描",
     ["options.general.group.Buffing"]           = "增益",
+    ["options.general.group.Visibility"]              = "Show Categories",
+    ["options.general.group.Class"]                   = "Class Options",
 
     ["options.short.ActivateBomOnSpiritTap"]    = "在低于 % 的精神激活",
     ["options.short.ReputationTrinket"]         = "警告:声望物品",
@@ -24,6 +66,11 @@ function chineseModule:Translations()
     ["options.short.Carrot"]                    = "装备物品的警告",
     ["options.short.DeathBlock"]                = "如果有人死亡就暂停",
     ["options.short.DontUseConsumables"]        = "不使用消耗品",
+    ["options.short.ShamanFlametongueRanked"]         = "Shaman: Use downranked Flametongue on mainhand",
+    ["options.short.SomeoneIsDrinking"]               = "When someone is drinking...",
+    ["options.convenience.SomeoneIsDrinking.Hide"]    = "Ignore the fact",
+    ["options.convenience.SomeoneIsDrinking.LowPrio"] = "Show note in tasks",
+    ["options.convenience.SomeoneIsDrinking.Show"]    = "Show note in tasks and show Buffomat",
     ["options.short.InInstance"]                = "在地下城/团本扫描",
     ["options.short.InPVP"]                     = "在战场扫描",
     ["options.short.InWorld"]                   = "在世界扫描",
@@ -46,6 +93,8 @@ function chineseModule:Translations()
     ["options.short.SomeoneIsDrinking"]         = "隐藏'有人在喝酒'",
     ["options.short.UseProfiles"]               = "使用配置文档",
     ["options.short.UseRank"]                   = "使用等级增益",
+    ["options.short.VisibleCategories"]         = "Show buffs (per character setting)",
+    ["options.short.FadeWhenNothingToDo"]       = "无任务时淡化Buffomat窗口",
 
     ["options.long.ActivateBomOnSpiritTap"]     = "如果牧师的'精神' 处于活跃状态且玩家法力低于 % ,则禁用",
     ["options.long.ReputationTrinket"]          = "提醒更换银色黎明饰品",
@@ -85,11 +134,17 @@ function chineseModule:Translations()
     ["options.long.UseProfiles"]                = "使用配置文档",
     ["options.long.UseProfiles"]                = "根据玩家个人/队伍/团队/战场使用配置文档",
     ["options.long.UseRank"]                    = "使用有等级的技能",
+    ["options.long.ShamanFlametongueRanked"]          = "Shaman: For spellhancement shamans use downranked Flametongue "
+            .. "on main hand and max rank on the offhand. Use this when your weapon speeds are matching and you "
+            .. "have a spell power mainhand weapon.",
 
+    ["tasklist.IgnoredBuffOn"]                        = "Ignored %s: %s", -- when a buff is not listed because a better buff exists
     ["task.target.Self"]                        = "自己", -- use instead of name when buffing self
     ["task.target.SelfOnly"]                    = "自己-Buff",
+    ["task.type.Enchantment"]                   = "Enchantment",
     ["task.type.RegularBuff"]                   = "Buff",
     ["task.type.GroupBuff"]                     = "团队-Buff ",
+    ["task.type.GroupBuff.Self"]                = "Target self",
     ["task.type.Tracking"]                      = "追踪",
     ["task.type.Reminder"]                      = "提醒",
     ["task.type.Resurrect"]                     = "复活",
@@ -124,6 +179,7 @@ function chineseModule:Translations()
     ["castButton.BusyChanneling"]               = "繁忙中/聊天信息",
     ["castButton.NothingToDo"]                  = "无事可做",
     ["castButton.NoMacroSlots"]                 = "需要一个宏!",
+    ["castButton.CantCastMaybeOOM"]             = "Can't buff, out of mana or something else",
     --MsgLocalRestart                             = "重载界面后才能更新设置 (/reload))",
     ["message.CancelBuff"]                      = "%s 取消增益 %s",
     ["message.BuffExpired"]                     = "%s 时间到了",
@@ -134,16 +190,18 @@ function chineseModule:Translations()
     InfoSomeoneIsDrinking                       = "1 在喝酒",
     InfoMultipleDrinking                        = "%d 在喝酒",
 
-    InactiveReason_DeadMember                   = "队友死亡",
+
     ["castButton.inactive.IsDead"]              = "你已死亡",
     ["castButton.inactive.InCombat"]            = "你在战斗中",
     ["castButton.inactive.RestArea"]            = "休息区禁用检查",
+    InactiveReason_DeadMember                   = "队友死亡",
     ["castButton.inactive.IsStealth"]           = "隐身禁用检查",
     ["castButton.inactive.PriestSpiritTap"]     = "牧师的 <精神> 处于活跃状态",
     ["castButton.inactive.PvpZone"]             = "战场禁用检查",
     ["castButton.inactive.Instance"]            = "地下城禁用检查",
-    ["castButton.inactive.OpenWorld"]           = "野外禁用检查",
     ["castButton.inactive.Mounted"]             = "坐骑上禁用检查",
+    ["castButton.inactive.OpenWorld"]           = "野外禁用检查",
+
 
     MsgDownGrade                                = "%s 的技能等级降级为 %s。请再补一次。",
 
@@ -159,7 +217,11 @@ function chineseModule:Translations()
     ["options.short.UIWindowScale"]             = "UI 比例",
     ["options.short.MinBuff"]                   = "群体增益需达到多少人以上使用",
     ["options.short.MinBlessing"]               = "强效祝福需达到多少人以上使用",
+    ["options.short.PlaySoundWhenTask"]               = "Play sound when there are buff tasks",
+    ["options.short.PlaySoundWhenTask.test"]          = "Play", -- test button for the sound
+    ["options.short.DebugLogging"]                    = "[Developer] Print extra debug messages (noisy!)",
 
+    ["options.general.sound.None"]                    = "- no sound effect -", -- play no sound on task
     ["options.long.Time60"]                     = "刷新增益的时间，如何剩余时间少于 <=60 秒 ",
     ["options.long.Time300"]                    = "刷新增益的时间，如何剩余时间少于 <=5 分",
     ["options.long.Time600"]                    = "刷新增益的时间，如何剩余时间少于 <=10 分",
@@ -168,6 +230,9 @@ function chineseModule:Translations()
     ["options.long.UIWindowScale"]              = "UI 比例 (默认 1; 隐藏和显示Buffomat设置)",
     ["options.long.MinBuff"]                    = "群体增益使用需要缺失的数量",
     ["options.long.MinBlessing"]                = "强效祝福使用需要缺失祝福的数量",
+    ["options.long.PlaySoundWhenTask"]                = "Play sound when task list is not empty",
+    ["options.long.PlaySoundWhenTask.test"]           = "Click to test the selected sound",
+    ["options.long.DebugLogging"]                     = "For development purposes, output extra messages helping the developer find problems, do not use!",
 
     TooltipSelfCastCheckbox_Self                = "仅自己",
     TooltipSelfCastCheckbox_Party               = "队伍/团队的Buff",
@@ -201,6 +266,34 @@ function chineseModule:Translations()
     TooltipSimilar                              = "任何类似的",
     TooltipSimilarFoods                         = "所有类型的食物",
 
+    ["tooltip.buff.conjure"]                          = "Conjure",
+    ["tooltip.buff.agility"]                          = "+Agi",
+    ["tooltip.buff.allResist"]                        = "+All Res",
+    ["tooltip.buff.attackPower"]                      = "+Attack",
+    ["tooltip.buff.crit"]                             = "+Crit",
+    ["tooltip.buff.fireResist"]                       = "+Fire Res",
+    ["tooltip.buff.frostResist"]                      = "+Frost Res",
+    ["tooltip.buff.haste"]                            = "+Haste",
+    ["tooltip.buff.healing"]                          = "+Heal",
+    ["tooltip.buff.hit"]                              = "+Hit",
+    ["tooltip.buff.intellect"]                        = "+Int",
+    ["tooltip.buff.maxHealth"]                        = "+Max HP",
+    ["tooltip.buff.mp5"]                              = "+Mana/5",
+    ["tooltip.buff.resilience"]                       = "+Resil",
+    ["tooltip.buff.spellPower"]                       = "+Spell",
+    ["tooltip.buff.spellCrit"]                        = "+Spell Crit",
+    ["tooltip.buff.spirit"]                           = "+Spirit",
+    ["tooltip.buff.stamina"]                          = "+Stam",
+    ["tooltip.buff.strength"]                         = "+Str",
+    ["tooltip.buff.comboMealWotlk"]                   = "+Attack/+Spell",
+    ["tooltip.food.multipleFoodItems"]                = " (various food w/same buff)",
+    ["tooltip.buff.armorPenetration"]                 = "+Armor Pen",
+    ["tooltip.buff.petStrength"]                      = "Pet +Str",
+    ["tooltip.buff.petStamina"]                       = "Pet +Stam",
+    ["tooltip.buff.alchemistOnly"]                    = "Alchemist-only",
+
+    ["tooltip.alcohol.stamina"]                       = "Alcohol +Stamina",
+    ["tooltip.alcohol.spirit"]                        = "Alcohol +Spirit",
     TabBuff                                     = "Buff",
     TabDoNotBuff                                = "不要 Buff",
     TabBuffOnlySelf                             = "Buff 仅限自己", -- Shown when all raid groups are deselected
@@ -245,10 +338,15 @@ function chineseModule:Translations()
     TooltipCastOnTank                           = "给坦克施法",
     TooltipCastOnPet                            = "给宠物施法",
 
+    ["profile.activeProfileMenuTag"]                  = "[active]",
     profile_solo                                = "个人",
+    profile_solo_spec2                                = "Solo (Second talents)",
     profile_group                               = "队伍",
+    profile_group_spec2                               = "Group (Second talents)",
     profile_raid                                = "团队",
+    profile_raid_spec2                                = "Raid (Second talents)",
     profile_battleground                        = "战场",
+    profile_battleground_spec2                        = "Battleground (Second talents)",
     profile_auto                                = "自动",
 
     AboutInfo                                   = "耐力!智力!精神! - 这听起来很熟悉吗？ Buffomat 监控 "

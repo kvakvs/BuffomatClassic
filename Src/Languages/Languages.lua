@@ -22,7 +22,7 @@ setmetatable(languagesModule, {
   end
 })
 
----@alias BomLanguageId "enUS" | "deDE" | "frFR" | "ruRU" | "zhCN"
+---@alias BomLanguageId "enUS" | "deDE" | "frFR" | "ruRU" | "zhCN" | "zhTW"
 ---@alias BomLocaleDict table<string, string>
 
 ---@shape BomAllLocalesCollection
@@ -32,6 +32,7 @@ setmetatable(languagesModule, {
 ---@field frFR BomLocaleDict
 ---@field ruRU BomLocaleDict
 ---@field zhCN BomLocaleDict
+---@field zhTW BomLocaleDict
 
 function languagesModule:SetupTranslations()
   -- Always add english and add one language that is supported and is current
@@ -41,6 +42,7 @@ function languagesModule:SetupTranslations()
     frFR = {},
     ruRU = {},
     zhCN = {},
+    zhTW = {},
   }
 
   local currentLang = GetLocale()
@@ -58,6 +60,10 @@ function languagesModule:SetupTranslations()
 
   if currentLang == "zhCN" then
     self.locales.zhCN = chineseModule:Translations()
+  end
+
+  if currentLang == "zhTW" then
+    self.locales.zhTW = chineseModule:Translations()
   end
 
   self.currentLocale = self.locales[GetLocale()] or {}
