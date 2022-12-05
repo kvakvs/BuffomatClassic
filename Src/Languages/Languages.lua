@@ -2,9 +2,10 @@
 
 ---@shape BomLanguagesModule
 ---@overload fun(key: string): string
----@field locales BomAllLocalesCollection
 ---@field currentLocale BomLocaleDict
+---@field english BomLocaleDict
 local languagesModule = BomModuleManager.languagesModule ---@type BomLanguagesModule
+
 local buffomatModule = BomModuleManager.buffomatModule
 local englishModule = BomModuleManager.languageEnglishModule
 local germanModule = BomModuleManager.languageGermanModule
@@ -13,9 +14,10 @@ local russianModule = BomModuleManager.languageRussianModule
 local chineseModule = BomModuleManager.languageChineseModule
 
 setmetatable(languagesModule, {
-  __call = function(_, k)
-    if languagesModule.currentLocale and languagesModule.currentLocale[--[[---@type BomLanguageId]] k] then
-      return languagesModule.currentLocale[--[[---@type BomLanguageId]] k] or ("¶" .. k)
+  __call = ---@param k string
+  function(_, k)
+    if languagesModule.currentLocale and languagesModule.currentLocale[k] then
+      return languagesModule.currentLocale[k] or ("¶" .. k)
     else
       return "¶" .. k
     end
@@ -33,34 +35,31 @@ setmetatable(languagesModule, {
 ---@field ruRU BomLocaleDict
 ---@field zhCN BomLocaleDict
 
-function languagesModule:SetupTranslations()
-  -- Always add english and add one language that is supported and is current
-  self.locales = --[[---@type BomAllLocalesCollection]] {
-    enUS = englishModule:Translations(),
-    deDE = {},
-    frFR = {},
-    ruRU = {},
-    zhCN = {},
-  }
-
+function languagesModule:LoadLanguage(locale)
   local currentLang = GetLocale()
 
   if currentLang == "deDE" then
-    self.locales.deDE = germanModule:Translations()
+    return germanModule:Translations()
   end
   if currentLang == "frFR" then
-    self.locales.frFR = frenchModule:Translations()
+    return frenchModule:Translations()
   end
-
   if currentLang == "ruRU" then
-    self.locales.ruRU = russianModule:Translations()
+    return russianModule:Translations()
   end
-
   if currentLang == "zhCN" then
-    self.locales.zhCN = chineseModule:Translations()
+    return chineseModule:Translations()
   end
+end
 
-  self.currentLocale = self.locales[GetLocale()] or {}
+function languagesModule:SetupTranslations()
+  self.currentLocale = self:LoadLanguage(GetLocale()) or {}
+
+  for englishKey, englishText in pairs(englishModule:Translations()) do
+    if not self.currentLocale[englishKey] then
+      self.currentLocale[englishKey] = englishText
+    end
+  end
 
   self.currentLocale["AboutCredits"] = "nanjuekaien1 & wellcat for the Chinese translation|n" ..
           "OlivBEL for the french translation|n" ..

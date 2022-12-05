@@ -1,5 +1,10 @@
 # Changelog
 
+## Buffomat Classic 2022.12.1
+
+- [Fix] Locales other than English fixed
+- German language updated a bit
+
 ## Buffomat Classic 2022.12.0
 
 - Large refactor and type specs for most fields and functions, using Luanalysis
