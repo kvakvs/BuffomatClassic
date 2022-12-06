@@ -315,3 +315,9 @@ end
 function GetBuildInfo()
   return "", "", 0, 0
 end
+---@return string, any, string
+function GetCursorInfo()
+  return "", 0, ""
+end
+function ClearCursor()
+end

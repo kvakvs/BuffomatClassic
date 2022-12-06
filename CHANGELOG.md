@@ -1,8 +1,15 @@
 # Changelog
 
+## Buffomat Classic 2022.12.2
+
+- Added no sound option in the play sound dropdown in the settings.
+- Prayer of Spirit, Fortitude and Intellect buffs skip lists cleared (previously
+  would skip these buffs if Sunwell aura is up or if fel intelligence from a warlock is present)
+
 ## Buffomat Classic 2022.12.1
 
 - [Fix] Locales other than English fixed
+- [Fix] Some sneaky bugs where buffs introduced in TBC were only allowed in TBC and not in WotLK
 - German language updated a bit
 
 ## Buffomat Classic 2022.12.0

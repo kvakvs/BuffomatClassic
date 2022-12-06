@@ -22,12 +22,12 @@ function mageModule:CreateIntelligenceBuff()
                       :ReagentRequired({ 17020 }) -- Arcane Powder
                       :DefaultTargetClasses(allBuffsModule.MANA_CLASSES)
                       :RequirePlayerClass("MAGE")
-                      :IgnoreIfHaveBuff(46302) -- Kiru's Song of Victory (Sunwell)
-                      :IgnoreIfHaveBuff(54424) -- Fel Intelligence 1 (Wotlk Warlock)
-                      :IgnoreIfHaveBuff(57564) -- Fel Intelligence 2 (Wotlk Warlock)
-                      :IgnoreIfHaveBuff(57565) -- Fel Intelligence 3 (Wotlk Warlock)
-                      :IgnoreIfHaveBuff(57566) -- Fel Intelligence 4 (Wotlk Warlock)
-                      :IgnoreIfHaveBuff(57567) -- Fel Intelligence 5 (Wotlk Warlock)
+                      --:IgnoreIfHaveBuff({ 46302, -- Kiru's Song of Victory (Sunwell)
+                      --                    54424, -- Fel Intelligence 1 (Wotlk Warlock)
+                      --                    57564, -- Fel Intelligence 2 (Wotlk Warlock)
+                      --                    57565, -- Fel Intelligence 3 (Wotlk Warlock)
+                      --                    57566, -- Fel Intelligence 4 (Wotlk Warlock)
+                      --                    57567 }) -- Fel Intelligence 5 (Wotlk Warlock)
                       :Category("class")
 end
 

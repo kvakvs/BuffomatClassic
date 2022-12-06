@@ -165,6 +165,7 @@ function englishModule:Translations()
     ["reminder.reputationTrinket"] = "Reputation trinket",
     ["reminder.ridingSpeedTrinket"] = "Riding/Flight Speed trinket",
     ["task.hint.DontHaveItem"] = "Not in bags",
+    ["task.notifications.no-sound"] = "No sound",
 
     CHAT_MSG_PREFIX = "Buffomat: ",
     Buffomat = "Buffomat", -- addon title in the main window

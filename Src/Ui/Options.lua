@@ -56,7 +56,8 @@ function optionsModule:TemplateRange(name, rangeFrom, rangeTo, step, dict, key, 
 end
 
 function optionsModule:CreateGeneralOptionsTable()
-  local sounds = {}
+  local sounds = --[[---@type {[string]: string} ]] {}
+  sounds[_t("task.notifications.no-sound")] = "-"
   for i, sound in ipairs(constModule.TASK_NOTIFICATION_SOUNDS) do
     sounds[sound .. ".mp3"] = sound
   end

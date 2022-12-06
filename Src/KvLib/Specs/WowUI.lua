@@ -14,7 +14,7 @@
 ---@field SetSize fun(self: WowTexture, width: number, height: number)
 ---@field SetVertexColor fun(self: WowTexture, r: number, g: number, b: number, a: number)
 
----@class WowControl A blizzard UI frame but may contain private fields used by internal library by Buffomat
+---@shape WowControl A blizzard UI frame but may contain private fields used by internal library by Buffomat
 ---@field bomReadVariable function Returns value which the button can modify, boolean for toggle buttons
 ---@field bomToolTipLink string Mouseover will show the link
 ---@field bomToolTipText string Mouseover will show the text
@@ -33,6 +33,7 @@
 ---@field Hide fun(self: WowControl)
 ---@field IsEnabled fun(self: WowControl): boolean
 ---@field IsVisible fun(self: WowControl): boolean
+---@field RegisterForDrag fun(self: WowControl, button: string)
 ---@field SetAlpha fun(self: WowControl, a: number)
 ---@field SetAttribute function
 ---@field SetFrameStrata fun(self: WowControl, strata: string)
@@ -98,7 +99,7 @@ end
 function GetAddOnMetadata(a, b)
 end
 ---@param name string
----@param x WowControl|nil
+---@param x WowControl|string|nil
 ---@param parent WowControl
 ---@param template string|nil
 ---@return WowControl

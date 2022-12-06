@@ -22,7 +22,7 @@ constModule.MACRO_NAME = "Buff'o'mat"
 constModule.LOADING_SCREEN_TIMEOUT = 2
 
 -- Play MP3 from Sounds/ directory when task list is not empty
-constModule.TASK_NOTIFICATION_SOUNDS = {
+constModule.TASK_NOTIFICATION_SOUNDS = --[[---@type string[] ]] {
   "bubble-pop-up-alert",
   "computer-processing-short-click",
   "correct-answer-tone",
