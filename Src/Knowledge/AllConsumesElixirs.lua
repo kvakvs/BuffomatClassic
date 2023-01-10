@@ -63,7 +63,7 @@ function elixirsModule:_SetupBattleCasterElixirsTBC(allBuffs, enchantments)
                :ElixirType("battle")
 
   --TBC: Adept's Elixir +24 SPELL, +24 SPELLCRIT
-  buffDefModule:genericConsumable(allBuffs, 33721, 28103)
+  buffDefModule:genericConsumable(allBuffs, 54452, 28103) -- old TBC spell id 33721
                :RequireTBC()
                :RequirePlayerClass(allBuffsModule.SPELL_CLASSES)
                :Category("tbcSpellElixir")
@@ -130,7 +130,7 @@ end
 ---@param enchantments table<number, number[]> Key is spell id, value is list of enchantment ids
 function elixirsModule:_SetupBattlePhysicalElixirsTBC(allBuffs, enchantments)
   --TBC: Elixir of Major Agility +35 AGI +20 CRIT
-  buffDefModule:genericConsumable(allBuffs, 28497, 22831)
+  buffDefModule:genericConsumable(allBuffs, 54494, 22831) -- old TBC spell id 28497
                :RequireTBC()
                :RequirePlayerClass(allBuffsModule.PHYSICAL_CLASSES)
                :Category("tbcPhysElixir")

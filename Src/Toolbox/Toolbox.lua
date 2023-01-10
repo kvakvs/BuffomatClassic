@@ -396,7 +396,7 @@ local function SizingEnter(self)
   if not (GetCursorInfo()) then
     ResizeCursor:Show()
     ResizeCursor.Texture:SetTexture(self.gpiCursor, nil, nil)
-    ResizeCursor.Texture:SetRotation(math.rad(self.gpiRotation), 0.5, 0.5)
+    ResizeCursor.Texture:SetRotation(math.rad(self.gpiRotation or 0))
   end
 end
 
@@ -415,7 +415,7 @@ local function CreateSizeBorder(frame, name, a1, x1, y1, a2, x2, y2, cursor, rot
   FrameSizeBorder:SetPoint("BOTTOMRIGHT", frame, a2, x2, y2)
   FrameSizeBorder.GPI_SIZETYPE = name
   FrameSizeBorder.gpiCursor = cursor
-  FrameSizeBorder.gpiRotation = rot
+  FrameSizeBorder.gpiRotation = rot or 0
   FrameSizeBorder.GPI_DoStart = OnStart
   FrameSizeBorder.GPI_DoStop = OnStop
   FrameSizeBorder:SetScript("OnMouseDown", SizingStart)

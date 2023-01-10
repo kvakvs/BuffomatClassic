@@ -329,7 +329,7 @@ function buffomatModule:InitUI()
 
   -- Make main frame draggable
   toolboxModule:EnableMoving(BomC_MainWindow, BOM.SaveWindowPosition)
-  BomC_MainWindow:SetMinResize(180, 90)
+  if BomC_MainWindow.SetMinResize ~= nil then BomC_MainWindow:SetMinResize(180, 90) end
 
   toolboxModule:AddTab(--[[---@type WowControl]] BomC_MainWindow, _t("TabBuff"), BomC_ListTab, true)
   toolboxModule:AddTab(--[[---@type WowControl]] BomC_MainWindow, _t("TabSpells"), BomC_SpellTab, true)

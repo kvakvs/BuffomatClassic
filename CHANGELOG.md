@@ -1,5 +1,11 @@
 # Changelog
 
+## Buffomat Classic 2023.1.0
+
+- 3.4.1: Version increase for Ulduar patch
+- Flask of the North support
+- 2 elixirs changed item ID from TBC into WotLK, now changed.
+
 ## Buffomat Classic 2022.12.2
 
 - Added no sound option in the play sound dropdown in the settings.

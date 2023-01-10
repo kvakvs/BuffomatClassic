@@ -586,7 +586,7 @@ end
 ---@param count number How many of that consumable is available
 function taskScanModule:FormatItemBuffInactiveText(name, count)
   if count == 0 then
-    return string.format("%s (%s)", name, _t("task.hint.DontHaveItem"))
+    return string.format("%s (%s)", tostring(name), _t("task.hint.DontHaveItem"))
   end
 
   return string.format("%s (x%d)", name, count)
