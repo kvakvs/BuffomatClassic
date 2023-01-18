@@ -33,47 +33,49 @@ function itemListCacheModule:GetItemList()
     BOM.wipeCachedItems = false
 
     for bag = BACKPACK_CONTAINER, NUM_BAG_SLOTS do
-      for slot = 1, GetContainerNumSlots(bag) do
+      for slot = 1, C_Container.GetContainerNumSlots(bag) do
         --local itemID = GetContainerItemID(bag,slot)
+        local itemInfo = C_Container.GetContainerItemInfo(bag, slot)
 
-        local icon, itemCount, _locked, quality, readable, lootable, itemLink
-        , isFiltered, noValue, itemID = GetContainerItemInfo(bag, slot)
-
-        for iList, list in ipairs(BOM.itemList) do
-          if tContains(list, itemID) then
-            tinsert(itemListCache, {
-              Index   = iList,
-              ID      = itemID,
-              CD      = { },
-              Link    = itemLink,
-              Bag     = bag,
-              Slot    = slot,
-              Texture = icon
-            })
-          end
-        end
-
-        if lootable and buffomatModule.shared.OpenLootable then
-          local locked = false
-
-          for i, text in ipairs(toolboxModule:ScanToolTip("SetBagItem", bag, slot)) do
-            if text == LOCKED then
-              locked = true
-              break
+        if itemInfo then
+          for iList, list in ipairs(BOM.itemList) do
+            if tContains(list, itemInfo.itemID) then
+              table.insert(itemListCache, --[[---@type GetContainerItemInfoResult]] {
+                Index = iList,
+                ID = itemInfo.itemID,
+                CD = { },
+                Link = itemInfo.hyperlink,
+                Bag = bag,
+                Slot = slot,
+                Texture = itemInfo.iconFileID
+              })
             end
-          end
+          end -- for itemList
 
-          if not locked then
-            tinsert(itemListCache, { Index    = 0,
-                                     ID       = itemID,
-                                     CD       = nil,
-                                     Link     = itemLink,
-                                     Bag      = bag,
-                                     Slot     = slot,
-                                     Lootable = true,
-                                     Texture  = icon })
-          end -- not locked
-        end -- lootable & sharedState.openLootable
+          if itemInfo.hasLoot and buffomatModule.shared.OpenLootable then
+            local locked = false
+
+            for i, text in ipairs(toolboxModule:ScanToolTip("SetBagItem", bag, slot)) do
+              if text == LOCKED then
+                locked = true
+                break
+              end
+            end
+
+            if not locked then
+              table.insert(itemListCache, --[[---@type GetContainerItemInfoResult]] {
+                Index = 0,
+                ID = itemInfo.itemID,
+                CD = nil,
+                Link = itemInfo.hyperlink,
+                Bag = bag,
+                Slot = slot,
+                Lootable = true,
+                Texture = itemInfo.iconFileID })
+            end -- not locked
+          end -- lootable & sharedState.openLootable
+        end -- if itemInfo
+
       end -- for all bag slots in the current bag
     end -- for all bags
   end
@@ -81,7 +83,7 @@ function itemListCacheModule:GetItemList()
   --Update CD
   for i, items in ipairs(itemListCache) do
     if items.CD then
-      items.CD = { GetContainerItemCooldown(items.Bag, items.Slot) }
+      items.CD = { C_Container.GetContainerItemCooldown(items.Bag, items.Slot) }
     end
   end
 

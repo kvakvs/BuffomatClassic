@@ -112,7 +112,7 @@ function buffomatModule:Color(hex, text)
 end
 
 ---Creates a string which will display a picture in a FontString
----@param texture WowIconId - path to UI texture file (for example can come from GetContainerItemInfo(bag, slot) or spell info etc
+---@param texture WowIconId - path to UI texture file (for example can come from C_Container.GetContainerItemInfo(bag, slot) or spell info etc
 function BOM.FormatTexture(texture)
   return string.format(constModule.ICON_FORMAT, texture)
 end

@@ -1,5 +1,9 @@
 # Changelog
 
+## Buffomat Classic 2023.1.3
+
+- Fix for Ulduar patch: Lua API for containers and tracking changed to Dragonflight API version
+
 ## Buffomat Classic 2023.1.1
 
 - 3.4.1: Version increase for Ulduar patch

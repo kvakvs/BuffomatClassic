@@ -142,8 +142,8 @@ end
 function taskScanModule:SetTracking(spell, value)
   -- From TBC onwards tracking is a setting and not a spell
   if envModule.haveTBC then
-    for i = 1, GetNumTrackingTypes() do
-      local _name, _texture, _active, _category, _nesting, spellId = GetTrackingInfo(i)
+    for i = 1, C_Minimap.GetNumTrackingTypes() do
+      local _name, _texture, _active, _category, _nesting, spellId = C_Minimap.GetTrackingInfo(i)
       if spellId == spell.highestRankSingleId then
         -- found, compare texture with spell icon
         --BOM:Print(_t("ActivateTracking") .. " " .. name)
@@ -594,10 +594,10 @@ end
 
 ---@return string
 function taskScanModule:FormatItemBuffText(bag, slot, count)
-  local texture, _, _, _, _, _, item_link, _, _, _ = GetContainerItemInfo(bag, slot)
+  local itemInfo = C_Container.GetContainerItemInfo(bag, slot)
   return string.format(" %s %s (x%d)",
-          BOM.FormatTexture(--[[---@type string]] texture),
-          item_link,
+          BOM.FormatTexture(--[[---@type string]] itemInfo.iconFileID),
+          itemInfo.hyperlink,
           count)
 end
 
@@ -1132,19 +1132,21 @@ end
 ---@param playerUnit BomUnit
 function taskScanModule:AddConsumableWeaponBuff_HaveItem(buffDef, bag, slot, count, playerUnit)
   -- Have item, display the cast message and setup the cast button
-  local texture, _, _, _, _, _, itemLink, _, _, _ = GetContainerItemInfo(bag, slot)
+  local itemInfo = C_Container.GetContainerItemInfo(bag, slot)
   local profileBuff = buffDefModule:GetProfileBuff(buffDef.buffId, nil)
 
   if profileBuff and (--[[---@not nil]] profileBuff).OffHandEnable
           and playerUnit.offhandEnchantment == nil
   then
-    self:AddConsumableWeaponBuff_HaveItem_Offhand(buffDef, bag, slot, count, playerUnit, texture, itemLink)
+    self:AddConsumableWeaponBuff_HaveItem_Offhand(buffDef, bag, slot, count, playerUnit,
+            itemInfo.iconFileID, itemInfo.hyperlink)
   end
 
   if profileBuff and (--[[---@not nil]] profileBuff).MainHandEnable
           and playerUnit.mainhandEnchantment == nil
   then
-    self:AddConsumableWeaponBuff_HaveItem_Mainhand(buffDef, bag, slot, count, playerUnit, texture, itemLink)
+    self:AddConsumableWeaponBuff_HaveItem_Mainhand(buffDef, bag, slot, count, playerUnit,
+            itemInfo.iconFileID, itemInfo.hyperlink)
   end
   BOM.scanModifierKeyDown = buffomatModule.shared.DontUseConsumables
 end

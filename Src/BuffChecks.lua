@@ -14,8 +14,8 @@ local envModule = KvModuleManager.envModule
 ---@param spell BomBuffDefinition The tracking spell which might have tracking enabled
 function buffChecksModule:IsTrackingActive(spell)
   if envModule.haveTBC then
-    for i = 1, GetNumTrackingTypes() do
-      local _name, _texture, active, _category, _nesting, spellId = GetTrackingInfo(i)
+    for i = 1, C_Minimap.GetNumTrackingTypes() do
+      local _name, _texture, active, _category, _nesting, spellId = C_Minimap.GetTrackingInfo(i)
       if tContains(spell.singleFamily, spellId)  then
         return active
       end
@@ -80,26 +80,26 @@ function buffChecksModule:HasOneItem(itemToCheck, cd)
     cachedItem.d = 0
 
     for bag = BACKPACK_CONTAINER, NUM_BAG_SLOTS do
-      for slot = 1, GetContainerNumSlots(bag) do
-        local icon, itemCount, locked, quality, readable, lootable, itemLink
-        , isFiltered, noValue, itemID = GetContainerItemInfo(bag, slot)
+      for slot = 1, C_Container.GetContainerNumSlots(bag) do
+        local itemInfo = C_Container.GetContainerItemInfo(bag, slot)
+        if itemInfo then
+          if itemToCheck == itemInfo.itemID then
+            if cd then
+              cachedItem.a, cachedItem.b, cachedItem.c = true, bag, slot
+              cachedItem.d = cachedItem.d + itemInfo.stackCount
 
-        if itemToCheck == itemID then
-          if cd then
-            cachedItem.a, cachedItem.b, cachedItem.c = true, bag, slot
-            cachedItem.d = cachedItem.d + itemCount
-
-          else
-            cachedItem.a = true
-            return true, nil, nil, nil
-          end
-        end
-      end
-    end
-  end
+            else
+              cachedItem.a = true
+              return true, nil, nil, nil
+            end
+          end -- if required item
+        end -- if iteminfo
+      end -- for slot
+    end -- for bag
+  end -- if not cacheditem
 
   if cd and cachedItem.b and cachedItem.c then
-    local startTime, _, _ = GetContainerItemCooldown(cachedItem.b, cachedItem.c)
+    local startTime, _, _ = C_Container.GetContainerItemCooldown(cachedItem.b, cachedItem.c)
     if (startTime or 0) == 0 then
       return cachedItem.a, cachedItem.b, cachedItem.c, cachedItem.d
     else
