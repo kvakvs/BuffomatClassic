@@ -86,11 +86,10 @@
 ---@param name string
 function SendChatMessage(s, msg, lang, name)
 end
-function SetTracking(...)
-end
 ---@class C_Minimap
 ---@field GetNumTrackingTypes fun(...): number
 ---@field GetTrackingInfo fun(i: number): string, string, boolean, string, number, WowSpellId
+---@field SetTracking fun(...)
 C_Minimap = {}
 
 ---@param a string

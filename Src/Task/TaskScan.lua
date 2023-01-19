@@ -147,7 +147,7 @@ function taskScanModule:SetTracking(spell, value)
       if spellId == spell.highestRankSingleId then
         -- found, compare texture with spell icon
         --BOM:Print(_t("ActivateTracking") .. " " .. name)
-        SetTracking(i, value)
+        C_Minimap.SetTracking(i, value)
         return
       end
     end

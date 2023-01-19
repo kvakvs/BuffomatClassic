@@ -1,3 +1,5 @@
+---@alias WowIconId string|number
+
 ---Returned from GetContainerItemInfo: string, number, boolean, any, any, any, string, any, any, number, boolean
 ---@shape WowContainerItemInfo
 ---@field hasLoot boolean
@@ -13,10 +15,14 @@
 
 ---@class WowCContainer
 ---@field GetContainerNumSlots fun(bag: number): number
+---@field GetContainerNumFreeSlots fun(bag: number): number, number { freeSlots, bagFamily }
 ---@field GetContainerItemInfo fun(b: number, s: number): WowContainerItemInfo
 ---@field GetContainerItemCooldown fun(b: number, s: number): number, any, any
 ---@field GetContainerItemLink fun(b: number, s: number): string
----@field PickupContainerItem(bag: number, slot: number)
+---@field PickupContainerItem fun(bag: number, slot: number)
+---@field UseContainerItem fun(bag: number, slot: number, target: string|nil, reagentBankAccessible: boolean|nil)
+---@field SplitContainerItem fun(bag: number, slot: number, amount: number)
+---@field UseContainerItem fun(bag: number, slot: number)
 C_Container = {}
 
 ---@return number, boolean
@@ -64,13 +70,4 @@ end
 ---@return string, string, number, number, number, string, string, number, string, number, number, number, number, number, number, number, boolean
 function GetItemInfo(arg)
   return "", "", 0, 0, 0, "", "", 0, "", 0, 0, 0, 0, 0, 0, 0, false
-end
--- ---@param bag number
--- ---@return number, number {freeSlots, bagType}
---function GetContainerNumFreeSlots(bag)
---  return 0, 0
---end
----@param bag number
----@param slot number
-function UseContainerItem(bag, slot)
 end
