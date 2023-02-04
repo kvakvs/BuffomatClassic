@@ -1,5 +1,10 @@
 # Changelog
 
+## Buffomat Classic 2023.1.5
+
+- [Bug] Throwing away/removing consumable from your bag, while a consumable task for that consumable was active, caused
+  an error.
+
 ## Buffomat Classic 2023.1.4
 
 - Fix for Ulduar patch: Lua API for containers and tracking changed to Dragonflight API version
@@ -26,18 +31,18 @@
 
 - Large refactor and type specs for most fields and functions, using Luanalysis
 - Some bugs might have just disappeared
-- Some new bugs possibly added, but should be minor and short lasting while i'm 
+- Some new bugs possibly added, but should be minor and short lasting while i'm
   finding and fixing them.
 - Crusader aura prompt will not pop up on the taxi or in a vehicle.
 - Alchemist-only Flask of the North added
 - Visual fixes to the task list
-- Won't be tagging releases for TBC and classic anymore. They are not tested 
+- Won't be tagging releases for TBC and classic anymore. They are not tested
   for that but might still work.
 
 ## Buffomat Classic 2022.11.0.2
 
 - Ignore Priest Spirit buff and Mage Intellect buff, when Warlock Fel Intelligence is active
-- [Bug] Respect MinBuff option (amount of missing buffs in party or on player 
+- [Bug] Respect MinBuff option (amount of missing buffs in party or on player
   to choose group buff)
 - [Bug] Script error if MinBuff option is not set
 

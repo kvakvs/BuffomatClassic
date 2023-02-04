@@ -595,10 +595,14 @@ end
 ---@return string
 function taskScanModule:FormatItemBuffText(bag, slot, count)
   local itemInfo = C_Container.GetContainerItemInfo(bag, slot)
-  return string.format(" %s %s (x%d)",
-          BOM.FormatTexture(--[[---@type string]] itemInfo.iconFileID),
-          itemInfo.hyperlink,
-          count)
+  local picture = ""
+
+  -- Iteminfo becomes nil when user throws away the consumable while the task is up
+  if itemInfo ~= nil then
+    picture = BOM.FormatTexture(--[[---@type string]] itemInfo.iconFileID)
+  end
+
+  return string.format(" %s %s (x%d)", picture, itemInfo.hyperlink, count)
 end
 
 ---Add a paladin blessing
@@ -1531,10 +1535,10 @@ end
 ---@param party BomParty
 function taskScanModule:UpdateScan_Scan(party)
   local buffCtx = --[[---@type BomBuffScanContext]] {
-    macroCommand    = "",
+    macroCommand = "",
     castButtonTitle = "",
-    inRange         = false,
-    someoneIsDead   = taskScanModule.saveSomeoneIsDead,
+    inRange = false,
+    someoneIsDead = taskScanModule.saveSomeoneIsDead,
   }
 
   if next(buffomatModule.taskRescanRequestedBy) ~= nil then

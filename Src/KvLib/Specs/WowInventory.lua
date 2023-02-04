@@ -23,6 +23,7 @@
 ---@field UseContainerItem fun(bag: number, slot: number, target: string|nil, reagentBankAccessible: boolean|nil)
 ---@field SplitContainerItem fun(bag: number, slot: number, amount: number)
 ---@field UseContainerItem fun(bag: number, slot: number)
+---@field ContainerIDToInventoryID fun(bag: number): number
 C_Container = {}
 
 ---@return number, boolean
@@ -36,9 +37,9 @@ function GetInventoryItemLink(u, slot)
   return ""
 end
 ---@param slot string
----@return number
+---@return number, number, boolean
 function GetInventorySlotInfo(slot)
-  return 0
+  return 0, 0, true
 end
 
 ---@param name number|string Item id or item name or link
