@@ -4,7 +4,9 @@
 ---@alias WowZoneId number Wow Zone ID
 ---@alias WowSpellId number Wow Spell ID
 
-NUM_BAG_SLOTS = 0
+NUM_BAG_SLOTS = 4
+BANK_CONTAINER = -1
+BACKPACK_CONTAINER = 0
 C_Seasons = {
   HasActiveSeason = function()
     return false
