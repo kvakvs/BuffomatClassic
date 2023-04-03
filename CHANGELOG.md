@@ -13,6 +13,11 @@
 - [Bug] Throwing away/removing consumable from your bag, while a consumable task for that consumable was active, caused
   an error.
 
+## Buffomat Classic 2023.1.5
+
+- [Bug] Throwing away/removing consumable from your bag, while a consumable task for that consumable was active, caused
+  an error.
+
 ## Buffomat Classic 2023.1.4
 
 - Fix for Ulduar patch: Lua API for containers and tracking changed to Dragonflight API version
