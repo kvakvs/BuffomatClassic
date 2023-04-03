@@ -55,5 +55,5 @@ function actionUseClass:GetButtonText(task)
   end
 
   local bdef = (--[[---@not nil]] self.buffDef)
-  return _t("task.type.Use") .. " " .. (bdef.singleLink or bdef.singleText)
+  return _t("task.type.Use") .. " " .. bdef:SingleLink()
 end

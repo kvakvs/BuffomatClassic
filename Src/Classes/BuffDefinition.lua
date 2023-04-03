@@ -101,7 +101,7 @@ local allBuffsModule = BomModuleManager.allBuffsModule
 ---@field singleDuration number - buff duration for single buff in seconds
 ---@field providesAuras WowSpellId[]|nil Check these if not nil; For special items which create multiple varied buffs
 ---@field singleFamily WowSpellId[] Family of single buff spell ids which are mutually exclusive
----@field singleLink string Printable link for single buff
+---@field singleLink string Printable link for single buff. Use buffdef:SingleLink() to safely handle missing value
 ---@field singleMana number Mana cost
 ---@field singleText string Name of single buff spell (from GetSpellInfo())
 ---@field skipList string[] If spell cast failed, contains recently failed targets
@@ -753,4 +753,8 @@ function buffDefClass:GetDownRank(spellId)
     downrank = eachSingleId
   end
   return downrank -- unsuccessful but return whatever found
+end
+
+function buffDefClass:SingleLink()
+  return (self.singleLink or self.singleText) or "?"
 end

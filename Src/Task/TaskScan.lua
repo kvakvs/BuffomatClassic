@@ -558,7 +558,7 @@ function taskScanModule:CancelBuffs(playerUnit)
 
       if player_buff then
         BOM:Print(string.format(_t("message.CancelBuff"),
-                spell.singleLink or spell.singleText,
+                spell:SingleLink(),
                 UnitName(player_buff.source or "") or ""))
         self:CancelBuff(spell.singleFamily)
       end
@@ -695,24 +695,24 @@ function taskScanModule:AddBlessing(buffDef, party, buffCtx)
 
       local test_in_range = IsSpellInRange(buffDef.singleText, needsBuff.unitId) == 1
               and not tContains(buffDef.skipList, needsBuff.name)
-      if self:PreventPvpTagging(buffDef.singleLink, buffDef.singleText, needsBuff) then
+      if self:PreventPvpTagging(buffDef:SingleLink(), buffDef.singleText, needsBuff) then
         -- Nothing, prevent poison function has already added the text
       elseif test_in_range then
         -- Single buff on group member
         -- Text: Target [Spell Name]
         tasklist:Add(
-                taskModule:Create(buffDef.singleLink or buffDef.singleText, buffDef.singleText)
+                taskModule:Create(buffDef:SingleLink(), buffDef.singleText)
                           :PrefixText(_t("TASK_BLESS"))
                           :Target(buffTargetModule:FromUnit(needsBuff))
                           :InRange(true)
                           :Action(actionCastModule:New(
-                        buffDef.singleMana, buffDef.highestRankSingleId, buffDef.singleLink,
+                        buffDef.singleMana, buffDef.highestRankSingleId, buffDef:SingleLink(),
                         needsBuff, buffDef, false)))
       else
         -- Single buff on group member (inactive just text)
         -- Text: Target "SpellName"
         tasklist:Add(
-                taskModule:Create(buffDef.singleLink or buffDef.singleText, buffDef.singleText)
+                taskModule:Create(buffDef:SingleLink(), buffDef.singleText)
                           :PrefixText(_t("TASK_BLESS"))
                           :Target(buffTargetModule:FromUnit(needsBuff))
                           :IsInfo())
@@ -814,22 +814,22 @@ function taskScanModule:AddBuff_SingleBuff(buffDef, minBuff, buffCtx)
       local unitIsInRange = (IsSpellInRange(buffDef.singleText, needBuff.unitId) == 1)
               and not tContains(buffDef.skipList, needBuff.name)
 
-      if self:PreventPvpTagging(buffDef.singleLink, buffDef.singleText, needBuff) then
+      if self:PreventPvpTagging(buffDef:SingleLink(), buffDef.singleText, needBuff) then
         -- Nothing, prevent poison function has already added the text
       elseif unitIsInRange then
         -- Text: Target [Spell Name]
         tasklist:Add(
-                taskModule:Create(buffDef.singleLink or buffDef.singleText, buffDef.singleText)
+                taskModule:Create(buffDef:SingleLink(), buffDef.singleText)
                           :PrefixText(_t("task.type.RegularBuff"))
                           :Target(buffTargetModule:FromUnit(needBuff))
                           :InRange(true)
                           :Action(actionCastModule:New(
-                        buffDef.singleMana, buffDef.highestRankSingleId, buffDef.singleLink,
+                        buffDef.singleMana, buffDef.highestRankSingleId, buffDef:SingleLink(),
                         needBuff, buffDef, false)))
       else
         -- Text: Target "SpellName"
         tasklist:Add(
-                taskModule:Create(buffDef.singleLink or buffDef.singleText, buffDef.singleText)
+                taskModule:Create(buffDef:SingleLink(), buffDef.singleText)
                           :PrefixText(buffomatModule:Color(constModule.TASKCOLOR_BLEAK_RED, _t("task.error.range"))
                         .. " " .. _t("task.type.RegularBuff"))
                           :Target(buffTargetModule:FromUnit(needBuff))
@@ -910,7 +910,7 @@ function taskScanModule:AddResurrection(spell, playerUnit, buffCtx)
       -- Is the body in range?
       local targetIsInRange = (IsSpellInRange(spell.singleText, unitNeedsBuff.unitId) == 1)
               and not tContains(spell.skipList, unitNeedsBuff.name)
-      local task = taskModule:Create(spell.singleLink or spell.singleText, spell.singleText)
+      local task = taskModule:Create(spell:SingleLink(), spell.singleText)
                              :PrefixText(_t("task.type.Resurrect"))
                              :Target(buffTargetModule:FromUnit(unitNeedsBuff))
                              :Prio(prio)
@@ -927,7 +927,7 @@ function taskScanModule:AddResurrection(spell, playerUnit, buffCtx)
       if targetIsInRange or (buffomatModule.shared.ResGhost and unitNeedsBuff.isGhost) then
         -- Prevent resurrecting PvP players in the world?
         task:Action(actionCastModule:New(
-                spell.singleMana, spell.highestRankSingleId, spell.singleLink,
+                spell.singleMana, spell.highestRankSingleId, spell:SingleLink(),
                 unitNeedsBuff, spell, false))
       end
     end
@@ -944,7 +944,7 @@ function taskScanModule:AddSelfbuff(spell, playerMember)
     end
   end
 
-  local task = taskModule:Create(spell.singleLink or spell.singleText, spell.singleText)
+  local task = taskModule:Create(spell:SingleLink(), spell.singleText)
                          :PrefixText(_t("TASK_CAST"))
                          :ExtraText(_t("task.target.SelfOnly"))
                          :Target(buffTargetModule:FromSelf(playerMember))
@@ -954,7 +954,7 @@ function taskScanModule:AddSelfbuff(spell, playerMember)
     -- Text: Target [Spell Name]
     tasklist:Add(
             task:Action(actionCastModule:New(
-                    spell.singleMana, spell.highestRankSingleId, spell.singleLink,
+                    spell.singleMana, spell.highestRankSingleId, spell:SingleLink(),
                     playerMember, spell, false)))
   else
     -- Text: Target "SpellName"
@@ -992,11 +992,11 @@ function taskScanModule:AddSummonSpell(spell, playerMember)
   if add then
     -- Text: Summon [Spell Name]
     tasklist:Add(
-            taskModule:Create(spell.singleLink or spell.singleText, spell.singleText)
+            taskModule:Create(spell:SingleLink(), spell.singleText)
                       :PrefixText(_t("TASK_SUMMON"))
                       :Target(buffTargetModule:FromSelf(playerMember))
                       :Action(actionCastModule:New(
-                    spell.singleMana, spell.highestRankSingleId, spell.singleLink,
+                    spell.singleMana, spell.highestRankSingleId, spell:SingleLink(),
                     playerMember, spell, false)))
   end
 end
@@ -1094,7 +1094,7 @@ function taskScanModule:AddConsumableWeaponBuff_HaveItem_Mainhand(buffDef, bag, 
                       :Prio(taskModule.PRIO_ENCHANTMENT)
                       :Action(actionMacroModule:New(
                     "/use " .. bag .. " " .. slot .. "\n/use 16",
-                    buffDef.singleLink .. " " .. _t("tooltip.mainhand")))) -- mainhand
+                    buffDef:SingleLink() .. " " .. _t("tooltip.mainhand")))) -- mainhand
   end
 end
 
@@ -1125,7 +1125,7 @@ function taskScanModule:AddConsumableWeaponBuff_HaveItem_Offhand(buffDef, bag, s
                       :Prio(taskModule.PRIO_ENCHANTMENT)
                       :Action(actionMacroModule:New(
                     "/use " .. bag .. " " .. slot .. "\n/use 17",
-                    buffDef.singleLink .. " " .. _t("tooltip.offhand")))) -- offhand
+                    buffDef:SingleLink() .. " " .. _t("tooltip.offhand")))) -- offhand
   end
 end
 
@@ -1223,12 +1223,12 @@ function taskScanModule:AddWeaponEnchant(buffDef, playerUnit, buffCtx)
           and playerUnit.offhandEnchantment == nil then
     -- Text: [Spell Name] (Off-hand)
     tasklist:Add(
-            taskModule:Create(buffDef.singleLink, buffDef.singleText)
+            taskModule:Create(buffDef:SingleLink(), buffDef.singleText)
                       :ExtraText(_t("tooltip.offhand"))
                       :Target(buffTargetModule:FromSelf(playerUnit))
                       :Prio(taskModule.PRIO_ENCHANTMENT)
                       :Action(actionCastModule:New(
-                    buffDef.singleMana, buffDef.highestRankSingleId, buffDef.singleLink,
+                    buffDef.singleMana, buffDef.highestRankSingleId, buffDef:SingleLink(),
                     playerUnit, buffDef, false)))
     --end
   end
@@ -1246,12 +1246,12 @@ function taskScanModule:AddWeaponEnchant(buffDef, playerUnit, buffCtx)
 
     -- Text: [Spell Name] (Main hand)
     tasklist:Add(
-            taskModule:Create(buffDef.singleLink, buffDef.singleText)
+            taskModule:Create(buffDef:SingleLink(), buffDef.singleText)
                       :ExtraText(taskText)
                       :Target(buffTargetModule:FromSelf(playerUnit))
                       :Prio(taskModule.PRIO_ENCHANTMENT)
                       :Action(actionCastModule:New(
-                    buffDef.singleMana, buffDef.highestRankSingleId, buffDef.singleLink,
+                    buffDef.singleMana, buffDef.highestRankSingleId, buffDef:SingleLink(),
                     playerUnit, buffDef, isDownrank)))
   end
 end
@@ -1414,7 +1414,7 @@ function taskScanModule:CreateOneBuffTask(buffDef, party, buffCtx)
       for _m, unitNeedsBuff in ipairs(buffDef.unitsNeedBuff) do
         -- Text: [Player Link] [Spell Link]
         tasklist:Add(
-                taskModule:Create(buffDef.singleLink or buffDef.singleText, buffDef.singleText)
+                taskModule:Create(buffDef:SingleLink(), buffDef.singleText)
                           :Target(buffTargetModule:FromUnit(unitNeedsBuff))
                           :IsInfo())
       end
@@ -1428,7 +1428,7 @@ function taskScanModule:CreateOneBuffTask(buffDef, party, buffCtx)
       else
         -- Text: "Player" "Spell Name"
         tasklist:Add(
-                taskModule:Create(buffDef.singleLink or buffDef.singleText, buffDef.singleText)
+                taskModule:Create(buffDef:SingleLink(), buffDef.singleText)
                           :PrefixText(_t("TASK_ACTIVATE"))
                           :ExtraText(_t("task.type.Tracking"))
                           :Target(buffTargetModule:FromSelf(party.player)))
@@ -1491,12 +1491,12 @@ function taskScanModule:MountedCrusaderAuraPrompt()
   if playerUnit and self:IsMountedAndCrusaderAuraRequired() then
     local spell = allBuffsModule.CrusaderAuraSpell
     tasklist:Add(
-            taskModule:Create(spell.singleLink or spell.singleText, spell.singleText)
+            taskModule:Create(spell:SingleLink(), spell.singleText)
                       :PrefixText(_t("TASK_CAST"))
                       :ExtraText(_t("task.target.SelfOnly"))
                       :Target(buffTargetModule:FromSelf(--[[---@not nil]] playerUnit))
                       :Action(actionCastModule:New(
-                    spell.singleMana, spell.highestRankSingleId, spell.singleLink,
+                    spell.singleMana, spell.highestRankSingleId, spell:SingleLink(),
                     --[[---@not nil]] playerUnit, spell, false)))
 
     return true -- only show the aura and nothing else
@@ -1739,7 +1739,7 @@ function BOM.DoCancelBuffs()
     if buffomatModule.currentProfile.CancelBuff[spell.buffId].Enable
             and taskScanModule:CancelBuff(spell.singleFamily)
     then
-      BOM:Print(string.format(_t("message.CancelBuff"), spell.singleLink or spell.singleText,
+      BOM:Print(string.format(_t("message.CancelBuff"), spell:SingleLink(),
               UnitName(BOM.cancelBuffSource) or ""))
     end
   end

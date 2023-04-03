@@ -144,7 +144,7 @@ function optionsPopupModule:Setup(control, minimap)
     for i, buffDef in ipairs(allBuffsModule.selectedBuffs) do
       if not buffDef.isConsumable then
         table.insert(menuItems, popupModule:Boolean(
-                buffDef.singleLink or buffDef.singleText,
+                buffDef:SingleLink(),
                 buffDefModule:GetProfileBuff(buffDef.buffId, nil),
                 "Enable"))
       end

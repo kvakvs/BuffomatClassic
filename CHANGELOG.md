@@ -1,5 +1,9 @@
 # Changelog
 
+## Buffomat Classic 2023.4.0
+
+- [Bug] On login with missing offhand weapon buff, an error was popping up
+
 ## Buffomat Classic 2023.2.0
 
 - New bag event added for more consistent bag updates (thanks to jdelvare at Github)
