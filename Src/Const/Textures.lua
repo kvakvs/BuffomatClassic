@@ -1,4 +1,4 @@
----@alias WowIconId string|number
+-- defined in WowInventory.lua ---@alias WowIconId string|number
 
 ---@shape BomTexturesModule
 ---@field CLASS_ICONS_ATLAS string

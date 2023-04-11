@@ -166,6 +166,8 @@ function englishModule:Translations()
     ["reminder.ridingSpeedTrinket"] = "Riding/Flight Speed trinket",
     ["task.hint.DontHaveItem"] = "Not in bags",
     ["task.notifications.no-sound"] = "No sound",
+    ["task.error.missingMainhandWeapon"] = "Can't enchant main hand",
+    ["task.error.missingOffhandWeapon"] = "Can't enchant offhand (no weapon)",
 
     CHAT_MSG_PREFIX = "Buffomat: ",
     Buffomat = "Buffomat", -- addon title in the main window

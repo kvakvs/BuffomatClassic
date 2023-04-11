@@ -4,7 +4,7 @@
 ---@shape WowContainerItemInfo
 ---@field hasLoot boolean
 ---@field hyperlink string
----@field iconFileID number
+---@field iconFileID WowIconId
 ---@field hasNoValue boolean
 ---@field isLocked boolean
 ---@field itemID number
@@ -27,6 +27,8 @@
 C_Container = {}
 
 ---@return number, boolean
+---@param u string
+---@param slot number
 function GetInventoryItemID(u, slot)
   return 0, false
 end

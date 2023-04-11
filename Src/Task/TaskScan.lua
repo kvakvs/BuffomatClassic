@@ -1071,7 +1071,7 @@ end
 ---@param slot number
 ---@param count number
 ---@param playerUnit BomUnit
----@param texture string
+---@param texture WowIconId
 ---@param itemLink string
 function taskScanModule:AddConsumableWeaponBuff_HaveItem_Mainhand(buffDef, bag, slot, count, playerUnit, texture, itemLink)
 
@@ -1103,7 +1103,7 @@ end
 ---@param slot number
 ---@param count number
 ---@param playerUnit BomUnit
----@param texture string
+---@param texture WowIconId
 ---@param itemLink string
 function taskScanModule:AddConsumableWeaponBuff_HaveItem_Offhand(buffDef, bag, slot, count, playerUnit, texture, itemLink)
   local offhandMessage = BOM.FormatTexture(--[[---@type string]] texture) .. itemLink .. "x" .. count
@@ -1129,6 +1129,26 @@ function taskScanModule:AddConsumableWeaponBuff_HaveItem_Offhand(buffDef, bag, s
   end
 end
 
+---@return boolean Whether class has a mainhand weapon and can enchant 1 or 2hand weapon, and is not a rogue in case of 2h
+function taskScanModule:CharacterCanEnchantMainhand()
+  local mainhandId, _ = GetInventoryItemID("player", 16)
+  if mainhandId == nil then
+    return false
+  end
+  local info = BOM.GetItemInfo(mainhandId)
+  if info == nil then
+    return false
+  end
+  local i = (--[[---@not nil]] info)
+  return i.itemType == "Weapon" and i.itemSubType ~= "Fishing Poles"
+end
+
+---@return boolean Whether class has an offhand weapon and can enchant it
+function taskScanModule:CharacterCanEnchantOffhand()
+  local offhandId, _ = GetInventoryItemID("player", 17)
+  return offhandId ~= nil
+end
+
 ---@param buffDef BomBuffDefinition
 ---@param bag number
 ---@param slot number
@@ -1138,16 +1158,25 @@ function taskScanModule:AddConsumableWeaponBuff_HaveItem(buffDef, bag, slot, cou
   -- Have item, display the cast message and setup the cast button
   local itemInfo = C_Container.GetContainerItemInfo(bag, slot)
   local profileBuff = buffDefModule:GetProfileBuff(buffDef.buffId, nil)
+  local needOffhand = (--[[---@not nil]] profileBuff).OffHandEnable and playerUnit.offhandEnchantment == nil
+  local needMainhand = (--[[---@not nil]] profileBuff).MainHandEnable and playerUnit.mainhandEnchantment == nil
 
-  if profileBuff and (--[[---@not nil]] profileBuff).OffHandEnable
-          and playerUnit.offhandEnchantment == nil
+  if not self:CharacterCanEnchantMainhand() and needMainhand then
+    tasklist:Comment(_t("task.error.missingMainhandWeapon"))
+    return
+  end
+  if not self:CharacterCanEnchantOffhand() and needOffhand then
+    tasklist:Comment(_t("task.error.missingOffhandWeapon"))
+    return
+  end
+
+  if profileBuff and needOffhand
   then
     self:AddConsumableWeaponBuff_HaveItem_Offhand(buffDef, bag, slot, count, playerUnit,
             itemInfo.iconFileID, itemInfo.hyperlink)
   end
 
-  if profileBuff and (--[[---@not nil]] profileBuff).MainHandEnable
-          and playerUnit.mainhandEnchantment == nil
+  if profileBuff and needMainhand
   then
     self:AddConsumableWeaponBuff_HaveItem_Mainhand(buffDef, bag, slot, count, playerUnit,
             itemInfo.iconFileID, itemInfo.hyperlink)
@@ -1292,8 +1321,8 @@ end
 function taskScanModule:CheckMissingWeaponEnchantments(playerUnit)
   -- enchantment on weapons
   ---@type boolean, number, number, number, boolean, number, number, number
-  local hasMainHandEnchant, mainHandExpiration, mainHandCharges, mainHandEnchantID
-  , hasOffHandEnchant, offHandExpiration, offHandCharges, offHandEnchantId = GetWeaponEnchantInfo()
+  local hasMainHandEnchant, _mainHandExpiration, _mainHandCharges, _mainHandEnchantID
+  , hasOffHandEnchant, _offHandExpiration, _offHandCharges, _offHandEnchantId = GetWeaponEnchantInfo()
 
   if buffomatModule.shared.MainHand and not hasMainHandEnchant then
     local link = GetInventoryItemLink("player", GetInventorySlotInfo("MainHandSlot"))
@@ -1569,7 +1598,6 @@ function taskScanModule:UpdateScan_Scan(party)
     -- Scan entry point
     -- ================
     self:CreateBuffTasks(party, buffCtx)
-
     self:CheckMissingWeaponEnchantments(party.player) -- if option to warn is enabled
     self:CheckReputationItems(party.player)
 

@@ -130,11 +130,13 @@ end
 function buffChecksModule:PlayerNeedsWeaponBuff(buff, playerUnit)
   local weaponBuff = buffDefModule:GetProfileBuff(buff.buffId, nil)
 
-  if weaponBuff
-          and ((--[[---@not nil]] weaponBuff).MainHandEnable and playerUnit.mainhandEnchantment == nil)
-          or ((--[[---@not nil]] weaponBuff).OffHandEnable and playerUnit.offhandEnchantment == nil)
-  then
-    table.insert(buff.unitsNeedBuff, playerUnit)
+  if weaponBuff then
+    local needMainHand = (--[[---@not nil]] weaponBuff).MainHandEnable and playerUnit.mainhandEnchantment == nil
+    local needOffhand = (--[[---@not nil]] weaponBuff).OffHandEnable and playerUnit.offhandEnchantment == nil
+
+    if needMainHand or needOffhand then
+      table.insert(buff.unitsNeedBuff, playerUnit)
+    end
   end
 end
 

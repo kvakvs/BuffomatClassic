@@ -145,6 +145,8 @@ function russianModule:Translations()
     ["task.type.MissingConsumable"] = "Не хватает", -- deprecated?
     ["task.type.Consumable"] = "Расходник", -- deprecated?
     ["task.hint.HoldShiftConsumable"] = "Удерживайте Shift/Ctrl или Alt",
+    ["task.error.missingMainhandWeapon"] = "Невозможно зачаровать оружие в основной руке",
+    ["task.error.missingOffhandWeapon"] = "Нет оружия во второй руке",
 
     Header_TRACKING = "Отслеживание",
     HeaderCredits = "Авторы",

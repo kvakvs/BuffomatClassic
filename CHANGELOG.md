@@ -1,5 +1,9 @@
 # Changelog
 
+## Buffomat Classic 2023.4.1
+
+- [Bug] Should not suggest enchanting fishing poles or if a weapon is not equipped
+
 ## Buffomat Classic 2023.4.0
 
 - [Bug] On login with missing offhand weapon buff, an error was popping up
