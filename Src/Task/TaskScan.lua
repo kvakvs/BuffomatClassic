@@ -1140,7 +1140,7 @@ function taskScanModule:CharacterCanEnchantMainhand()
     return false
   end
   local i = (--[[---@not nil]] info)
-  return i.itemType == "Weapon" and i.itemSubType ~= "Fishing Poles"
+  return i.itemClassID == (--[[Weapon]] 2) and i.itemSubClassID ~= (--[[Fishing Poles]] 20)
 end
 
 ---@return boolean Whether class has an offhand weapon and can enchant it

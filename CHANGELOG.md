@@ -1,5 +1,9 @@
 # Changelog
 
+## Buffomat Classic 2023.5.0
+
+- [Bug] Mainhand enchantment for rogue failed on non-English clients. Thanks to @jdelvare for the suggested fix.
+
 ## Buffomat Classic 2023.4.1
 
 - [Bug] Should not suggest enchanting fishing poles or if a weapon is not equipped

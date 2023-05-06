@@ -70,7 +70,7 @@ end
 function BuyMerchantItem(i, count)
 end
 ---@param arg number|string
----@return string, string, number, number, number, string, string, number, string, number, number, number, number, number, number, number, boolean
+---@return string, string, number, number, number, string, string, number, string, number, number, number, number, number, number, number, boolean, number, number
 function GetItemInfo(arg)
-  return "", "", 0, 0, 0, "", "", 0, "", 0, 0, 0, 0, 0, 0, 0, false
+  return "", "", 0, 0, 0, "", "", 0, "", 0, 0, 0, 0, 0, 0, 0, false, 0, 0
 end

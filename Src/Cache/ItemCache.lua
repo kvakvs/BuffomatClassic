@@ -26,6 +26,8 @@ local buffomatModule = BomModuleManager.buffomatModule
 ---@field itemEquipLoc string "" or a constant INVTYPE_HEAD for example
 ---@field itemTexture string Texture or icon id
 ---@field itemSellPrice number Copper price for the item
+---@field itemClassID number Numeric ID of itemType
+---@field itemSubClassID number Numeric ID of itemSubType
 
 ---Calls GetItemInfo and saves the results, or not (if nil was returned)
 ---@param arg number|string
@@ -36,23 +38,26 @@ function BOM.GetItemInfo(arg)
   end
 
   local itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType
-  , itemSubType, itemStackCount, itemEquipLoc, itemTexture, itemSellPrice = GetItemInfo(arg)
+  , itemSubType, itemStackCount, itemEquipLoc, itemTexture, itemSellPrice
+  , itemClassID, itemSubClassID = GetItemInfo(arg)
   if itemName == nil then
     return nil
   end
 
   local cacheItem = --[[---@type BomItemCacheElement]] {
-    itemName       = itemName,
-    itemLink       = itemLink,
-    itemRarity     = itemRarity,
-    itemLevel      = itemLevel,
-    itemMinLevel   = itemMinLevel,
-    itemType       = itemType,
-    itemSubType    = itemSubType,
+    itemName = itemName,
+    itemLink = itemLink,
+    itemRarity = itemRarity,
+    itemLevel = itemLevel,
+    itemMinLevel = itemMinLevel,
+    itemType = itemType,
+    itemSubType = itemSubType,
     itemStackCount = itemStackCount,
-    itemEquipLoc   = itemEquipLoc,
-    itemTexture    = itemTexture,
-    itemSellPrice  = itemSellPrice,
+    itemEquipLoc = itemEquipLoc,
+    itemTexture = itemTexture,
+    itemSellPrice = itemSellPrice,
+    itemClassID = itemClassID,
+    itemSubClassID = itemSubClassID
   }
 
   --print("Added to cache item info for ", arg)
@@ -83,17 +88,17 @@ function itemCacheModule:LoadItem(itemId, onLoaded)
     end
 
     local cacheItem = --[[---@type BomItemCacheElement]] {
-      itemName       = itemMixin:GetItemName(),
-      itemLink       = itemMixin:GetItemLink(),
-      itemRarity     = itemMixin:GetItemQuality(),
-      itemLevel      = itemLevel,
-      itemMinLevel   = itemMinLevel,
-      itemType       = itemType,
-      itemSubType    = itemSubType,
+      itemName = itemMixin:GetItemName(),
+      itemLink = itemMixin:GetItemLink(),
+      itemRarity = itemMixin:GetItemQuality(),
+      itemLevel = itemLevel,
+      itemMinLevel = itemMinLevel,
+      itemType = itemType,
+      itemSubType = itemSubType,
       itemStackCount = itemStackCount,
-      itemEquipLoc   = itemEquipLoc,
-      itemTexture    = itemMixin:GetItemIcon(),
-      itemSellPrice  = itemSellPrice,
+      itemEquipLoc = itemEquipLoc,
+      itemTexture = itemMixin:GetItemIcon(),
+      itemSellPrice = itemSellPrice,
     }
 
     itemCacheModule.cache[itemId] = cacheItem
