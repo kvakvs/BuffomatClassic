@@ -29,7 +29,8 @@ local buffomatModule = BomModuleManager.buffomatModule
 ---@field itemClassID number Numeric ID of itemType
 ---@field itemSubClassID number Numeric ID of itemSubType
 
----Calls GetItemInfo and saves the results, or not (if nil was returned)
+---Calls GetItemInfo and saves the results, or not (if nil was returned).
+---Immediate result is returned right away. Caches the data.
 ---@param arg number|string
 ---@return BomItemCacheElement|nil
 function BOM.GetItemInfo(arg)
@@ -70,6 +71,8 @@ function itemCacheModule:HasItemCached(arg)
   return self.cache[arg] ~= nil
 end
 
+---Queries GetItemInfo with delayed result (asynchronous callback). Caches the data.
+---Delayed result, suitable for querying large quantities of items (like on addon startup).
 ---@param itemId number
 ---@param onLoaded function Called with loaded BomItemCacheElement
 function itemCacheModule:LoadItem(itemId, onLoaded)
@@ -82,7 +85,8 @@ function itemCacheModule:LoadItem(itemId, onLoaded)
 
   local itemLoaded = function()
     local itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType
-    , itemSubType, itemStackCount, itemEquipLoc, itemTexture, itemSellPrice = GetItemInfo(itemId)
+    , itemSubType, itemStackCount, itemEquipLoc, itemTexture, itemSellPrice
+    , itemClassID, itemSubClassID = GetItemInfo(itemId)
     if itemName == nil then
       return
     end
@@ -99,6 +103,8 @@ function itemCacheModule:LoadItem(itemId, onLoaded)
       itemEquipLoc = itemEquipLoc,
       itemTexture = itemMixin:GetItemIcon(),
       itemSellPrice = itemSellPrice,
+      itemClassID = itemClassID,
+      itemSubClassID = itemSubClassID
     }
 
     itemCacheModule.cache[itemId] = cacheItem
