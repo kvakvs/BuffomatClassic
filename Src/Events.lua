@@ -26,8 +26,20 @@ eventsModule.GENERIC_UPDATE_EVENTS = {
   "PLAYER_ALIVE", "PLAYER_UNGHOST", "INCOMING_RESURRECT_CHANGED",
   "UNIT_INVENTORY_CHANGED" }
 
+local function bagChangedEvents()
+  local _, _, _, tocversion = GetBuildInfo()
+  local isWotLK = (tocversion >= 30000 and tocversion <= 39999)
+
+  if isWotLK then
+    -- For WotLK classic the BAG_UPDATE event is the same as BAG_UPDATE_DELAYED
+    return { "BAG_UPDATE_DELAYED", "TRADE_CLOSED" }
+  end
+  -- For classic keep both, needs more testing on classic
+  return { "BAG_UPDATE_DELAYED", "BAG_UPDATE", "TRADE_CLOSED" }
+end
+
 -- It seems that WotLK 3.4.1 update dropped event "BAG_UPDATE_DELAYED", so use "BAG_UPDATE" instead
-eventsModule.EVT_BAG_CHANGED = { "BAG_UPDATE_DELAYED", "BAG_UPDATE", "TRADE_CLOSED" }
+eventsModule.EVT_BAG_CHANGED = bagChangedEvents()
 
 eventsModule.EVT_PARTY_CHANGED = { "GROUP_JOINED", "GROUP_ROSTER_UPDATE",
                                    "RAID_ROSTER_UPDATE", "GROUP_LEFT" }
