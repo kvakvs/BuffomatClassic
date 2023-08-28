@@ -65,7 +65,7 @@ function shamanModule:SetupShamanSpells(allBuffs, enchants)
                :Category("classWeaponEnchantment")
 
   -- Note: in TBC all enchantIds for rockbiter have changed
-  enchants[16316] = { 1, 6, 29, 503, 504, 683, 1663, 1664, -- Rockbiter, also 504 some special +80 Rockbiter?
+  enchants[16316] = { 1, 6, 29 , 503, 504, 683, 1663, 1664, -- Rockbiter, also 504 some special +80 Rockbiter?
                       3040, -- rockbiter 7
                       3023, 3026, 3028, 3031, 3034, 3037, 3040, -- TBC: Rockbiter 1-7
                       2632, 2633 } -- TBC: Rockbiter 8-9

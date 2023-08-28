@@ -7,6 +7,7 @@ local _t = BomModuleManager.languagesModule
 local allBuffsModule = BomModuleManager.allBuffsModule
 local buffDefModule = BomModuleManager.buffDefinitionModule
 local constModule = BomModuleManager.constModule
+local envModule = KvModuleManager.envModule
 
 ---SCROLLS
 ---@param allBuffs BomBuffDefinition[] A list of buffs (not dictionary)
@@ -41,9 +42,10 @@ function enchantmentsModule:_SetupCasterEnchantments(allBuffs, enchantments)
   --end
   --Minor, Lesser, Brilliant Mana Oil
   self:RegisterEnchantment(allBuffs, 25123)
-      :CreatesOrProvidedByItem({ 20748, 20747, 20745, -- Minor, Lesser, Brilliant Mana Oil
-                                 22521, -- TBC: Superior Mana Oil
-                                 36899 }) -- WotLK: Exceptional Mana Oil
+      :CreatesOrProvidedByItem(buffDefModule:NumberList(
+          { 20748, 20747, 20745 }, -- Minor, Lesser, Brilliant Mana Oil
+          { 22521 }, -- TBC: Superior Mana Oil
+          { 36899 })) -- WotLK: Exceptional Mana Oil
       :RequirePlayerClass(allBuffsModule.MANA_CLASSES)
   enchantments[25123] = { 2624, 2625, 2629, -- Minor, Lesser, Brilliant Mana Oil (enchantment)
                           2677, -- TBC: Superior Mana Oil (enchantment)
@@ -51,9 +53,10 @@ function enchantmentsModule:_SetupCasterEnchantments(allBuffs, enchantments)
 
   -- Wizard Oil
   self:RegisterEnchantment(allBuffs, 25122)
-      :CreatesOrProvidedByItem({ 20749, 20746, 20744, 20750, --Minor, Lesser, "regular", Brilliant Wizard Oil
-                                 22522, -- TBC: Superior Wizard Oil
-                                 36900 }) -- WotLK: Exceptional Wizard Oil
+      :CreatesOrProvidedByItem(buffDefModule:NumberList(
+          { 20749, 20746, 20744, 20750 }, -- Minor, Lesser, "regular", Brilliant Wizard Oil
+          { 22522 }, -- TBC: Superior Wizard Oil
+          { 36900 })) -- WotLK: Exceptional Wizard Oil
       :RequirePlayerClass(allBuffsModule.SPELL_CLASSES)
   enchantments[25122] = { 2623, 2626, 2627, 2628, --Minor, Lesser, "regular", Brilliant Wizard Oil (enchantment)
                           2678, -- TBC: Superior Wizard Oil (enchantment)
@@ -135,6 +138,7 @@ function enchantmentsModule:_SetupOtherEnchantments(allBuffs, enchantments)
   --
   --TBC: Greater Rune of Warding
   buffDefModule:createAndRegisterBuff(allBuffs, 32282, nil)
+               :RequireTBC()
                :CreatesOrProvidedByItem({ 25521 })
                :IsConsumable(true)
                :IsDefault(false)

@@ -758,3 +758,23 @@ end
 function buffDefClass:SingleLink()
   return (self.singleLink or self.singleText) or "?"
 end
+
+---Construct a joined list of number for classic, tbc and wotlk based on version detected
+---@param classic number[]
+---@param tbc number[]
+---@param wotlk number[]
+---@return number[]
+function buffDefModule:NumberList(classic, tbc, wotlk)
+  local itemIds1 = classic
+  if envModule.haveTBC then
+    for i in ipairs(tbc) do
+      table.insert(itemIds1, tbc[i])
+    end
+  end
+  if envModule.haveWotLK then
+    for i in ipairs(wotlk) do
+      table.insert(itemIds1, wotlk[i])
+    end
+  end
+  return itemIds1
+end

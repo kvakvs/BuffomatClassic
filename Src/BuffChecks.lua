@@ -80,8 +80,8 @@ function buffChecksModule:HasOneItem(itemToCheck, cd)
     cachedItem.d = 0
 
     for bag = BACKPACK_CONTAINER, NUM_BAG_SLOTS do
-      for slot = 1, C_Container.GetContainerNumSlots(bag) do
-        local itemInfo = C_Container.GetContainerItemInfo(bag, slot)
+      for slot = 1, envModule.GetContainerNumSlots(bag) do
+        local itemInfo = envModule.GetContainerItemInfo(bag, slot)
         if itemInfo then
           if itemToCheck == itemInfo.itemID then
             if cd then
@@ -99,7 +99,7 @@ function buffChecksModule:HasOneItem(itemToCheck, cd)
   end -- if not cacheditem
 
   if cd and cachedItem.b and cachedItem.c then
-    local startTime, _, _ = C_Container.GetContainerItemCooldown(cachedItem.b, cachedItem.c)
+    local startTime, _, _ = envModule.GetContainerItemCooldown(cachedItem.b, cachedItem.c)
     if (startTime or 0) == 0 then
       return cachedItem.a, cachedItem.b, cachedItem.c, cachedItem.d
     else

@@ -594,7 +594,7 @@ end
 
 ---@return string
 function taskScanModule:FormatItemBuffText(bag, slot, count)
-  local itemInfo = C_Container.GetContainerItemInfo(bag, slot)
+  local itemInfo = envModule.GetContainerItemInfo(bag, slot)
   local picture = ""
 
   -- Iteminfo becomes nil when user throws away the consumable while the task is up
@@ -1156,7 +1156,7 @@ end
 ---@param playerUnit BomUnit
 function taskScanModule:AddConsumableWeaponBuff_HaveItem(buffDef, bag, slot, count, playerUnit)
   -- Have item, display the cast message and setup the cast button
-  local itemInfo = C_Container.GetContainerItemInfo(bag, slot)
+  local itemInfo = envModule.GetContainerItemInfo(bag, slot)
   local profileBuff = buffDefModule:GetProfileBuff(buffDef.buffId, nil)
   local needOffhand = (--[[---@not nil]] profileBuff).OffHandEnable and playerUnit.offhandEnchantment == nil
   local needMainhand = (--[[---@not nil]] profileBuff).MainHandEnable and playerUnit.mainhandEnchantment == nil

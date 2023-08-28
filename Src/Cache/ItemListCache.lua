@@ -7,6 +7,7 @@ local itemListCacheModule = BomModuleManager.itemListCacheModule ---@type BomIte
 
 local buffomatModule = BomModuleManager.buffomatModule
 local toolboxModule = BomModuleManager.toolboxModule
+local envModule = KvModuleManager.envModule
 
 BOM.wipeCachedItems = true
 
@@ -33,9 +34,9 @@ function itemListCacheModule:GetItemList()
     BOM.wipeCachedItems = false
 
     for bag = BACKPACK_CONTAINER, NUM_BAG_SLOTS do
-      for slot = 1, C_Container.GetContainerNumSlots(bag) do
+      for slot = 1, envModule.GetContainerNumSlots(bag) do
         --local itemID = GetContainerItemID(bag,slot)
-        local itemInfo = C_Container.GetContainerItemInfo(bag, slot)
+        local itemInfo = envModule.GetContainerItemInfo(bag, slot)
 
         if itemInfo then
           for iList, list in ipairs(BOM.itemList) do
@@ -83,7 +84,7 @@ function itemListCacheModule:GetItemList()
   --Update CD
   for i, items in ipairs(itemListCache) do
     if items.CD then
-      items.CD = { C_Container.GetContainerItemCooldown(items.Bag, items.Slot) }
+      items.CD = { envModule.GetContainerItemCooldown(items.Bag, items.Slot) }
     end
   end
 

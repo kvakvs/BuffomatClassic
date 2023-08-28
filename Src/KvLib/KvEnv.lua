@@ -23,4 +23,8 @@ function envModule:DetectVersions()
   self.haveTBC = self.isWotLK or self.isTBC
 
   self.isClassic = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
+
+  self.GetContainerNumSlots = (C_Container and C_Container.GetContainerNumSlots) or GetContainerNumSlots
+  self.GetContainerItemInfo = (C_Container and C_Container.GetContainerItemInfo) or GetContainerItemInfo
+  self.GetContainerItemCooldown = (C_Container and C_Container.GetContainerItemCooldown) or GetContainerItemCooldown
 end
