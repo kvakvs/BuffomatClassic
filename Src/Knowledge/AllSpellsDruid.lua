@@ -24,8 +24,7 @@ function druidModule:SetupDruidSpells(allBuffs, enchantments)
                               48470 }) -- WotLK: Gift of the Wild 4
                :SingleDuration(allBuffsModule.DURATION_30M)
                :GroupDuration(allBuffsModule.DURATION_1H)
-               :ReagentRequired({ 17021, 17026,
-                                  44605 }) -- WotLK: Wild Spineleaf
+               :ReagentRequired(buffDefModule:NumberList({ 17021, 17026 }, {}, { 44605 })) -- WotLK: Wild Spineleaf
                :DefaultTargetClasses(allBuffsModule.ALL_CLASSES)
                :RequirePlayerClass("DRUID")
                :Category("class")

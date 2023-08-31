@@ -1,5 +1,10 @@
 # Changelog
 
+## Buffomat Classic 2023.8.0-1
+
+- Fixing bugs related to Classic Hardcode, item ids from future expansions leaking into classic don't work well.
+- Fixing API incompatibility for bag access, which changed somewhere later in a future expansion, causing errors in Classic.
+
 ## Buffomat Classic 2023.5.0
 
 - [Bug] Mainhand enchantment for rogue failed on non-English clients. Thanks to @jdelvare for the suggested fix.

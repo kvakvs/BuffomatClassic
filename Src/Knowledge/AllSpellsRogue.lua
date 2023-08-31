@@ -16,9 +16,10 @@ function rogueModule:SetupRogueSpells(allBuffs, enchants)
   --Deadly Poison
   -- item         = allBuffsModule.ExpansionChoice(20844, 22054, 43233),
   buffDefModule:createAndRegisterBuff(allBuffs, 25351, nil)
-               :CreatesOrProvidedByItem({ 22054, 22053, -- TBC: Deadly Poison
-                                          20844, 8985, 8984, 2893, 2892,
-                                          43232, 43233 }) -- WotLK: Deadly Poison 8-9
+               :CreatesOrProvidedByItem(buffDefModule:NumberList(
+          { 20844, 8985, 8984, 2893, 2892 },
+          { 22054, 22053 }, -- TBC: Deadly Poison
+          { 43232, 43233 })) -- WotLK: Deadly Poison 8-9
                :IsConsumable(true)
                :BuffType("weapon")
                :SingleDuration(duration)
@@ -45,9 +46,10 @@ function rogueModule:SetupRogueSpells(allBuffs, enchants)
 
   --Instant Poison
   buffDefModule:createAndRegisterBuff(allBuffs, 11340, nil)
-               :CreatesOrProvidedByItem({ 21927, -- TBC: Instant Poison
-                                          8928, 8927, 8926, 6950, 6949, 6947, -- Instant Poison 2-7
-                                          43230, 43231 }) -- WotLK: Instant Poison 8-9
+               :CreatesOrProvidedByItem(buffDefModule:NumberList(
+          { 8928, 8927, 8926, 6950, 6949, 6947 }, -- Instant Poison 2-7
+          { 21927 }, -- TBC: Instant Poison
+          { 43230, 43231 })) -- WotLK: Instant Poison 8-9
                :IsConsumable(true)
                :BuffType("weapon")
                :SingleDuration(duration)
@@ -61,9 +63,10 @@ function rogueModule:SetupRogueSpells(allBuffs, enchants)
 
   --Wound Poison
   buffDefModule:createAndRegisterBuff(allBuffs, 13227, nil)
-               :CreatesOrProvidedByItem({ 22055, -- TBC: Wound Poison
-                                          10922, 10921, 10920, 10918,
-                                          43234, 43235 }) -- WotLK: Wound Poison 6, 7
+               :CreatesOrProvidedByItem(buffDefModule:NumberList(
+          { 10922, 10921, 10920, 10918 },
+          { 22055 }, -- TBC: Wound Poison
+          { 43234, 43235 })) -- WotLK: Wound Poison 6, 7
                :IsConsumable(true)
                :BuffType("weapon")
                :SingleDuration(duration)
