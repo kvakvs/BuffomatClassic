@@ -116,14 +116,14 @@ allBuffsModule.FROST_CLASSES = { "MAGE", "SHAMAN", "DEATHKNIGHT" }
 ---@type BomClassName[]
 allBuffsModule.PHYSICAL_CLASSES = { "HUNTER", "ROGUE", "SHAMAN", "WARRIOR", "DRUID", "PALADIN", "DEATHKNIGHT" }
 
-allBuffsModule.DURATION_1M = 60
-allBuffsModule.DURATION_2M = allBuffsModule.DURATION_1M * 2
-allBuffsModule.DURATION_5M = allBuffsModule.DURATION_1M * 5
-allBuffsModule.DURATION_10M = allBuffsModule.DURATION_5M * 10
-allBuffsModule.DURATION_15M = allBuffsModule.DURATION_1M * 15
-allBuffsModule.DURATION_20M = allBuffsModule.DURATION_1M * 20
-allBuffsModule.DURATION_30M = allBuffsModule.DURATION_1M * 30
-allBuffsModule.DURATION_1H = allBuffsModule.DURATION_1M * 60
+allBuffsModule.MINUTE = 60
+allBuffsModule.TWO_MINUTES = allBuffsModule.MINUTE * 2
+allBuffsModule.FIVE_MINUTES = allBuffsModule.MINUTE * 5
+allBuffsModule.TEN_MINUTES = allBuffsModule.MINUTE * 10
+allBuffsModule.FIFTEEN_MINUTES = allBuffsModule.MINUTE * 15
+allBuffsModule.TWENTY_MINUTES = allBuffsModule.MINUTE * 20
+allBuffsModule.HALF_AN_HOUR = allBuffsModule.MINUTE * 30
+allBuffsModule.HOUR = allBuffsModule.MINUTE * 60
 
 --- From 2 choices return TBC if BOM.IsTBC is true, otherwise return classic
 local function tbcOrClassic(tbc, classic)

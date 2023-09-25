@@ -22,8 +22,8 @@ function druidModule:SetupDruidSpells(allBuffs, enchantments)
                :GroupFamily({ 21849, 21850, -- Gift of the Wild 1-2
                               26991, -- TBC: Gift of the Wild 3
                               48470 }) -- WotLK: Gift of the Wild 4
-               :SingleDuration(allBuffsModule.DURATION_30M)
-               :GroupDuration(allBuffsModule.DURATION_1H)
+               :SingleDuration(allBuffsModule.HALF_AN_HOUR)
+               :GroupDuration(allBuffsModule.HOUR)
                :ReagentRequired(buffDefModule:NumberList({ 17021, 17026 }, {}, { 44605 })) -- WotLK: Wild Spineleaf
                :DefaultTargetClasses(allBuffsModule.ALL_CLASSES)
                :RequirePlayerClass("DRUID")
@@ -36,7 +36,7 @@ function druidModule:SetupDruidSpells(allBuffs, enchantments)
                :SingleFamily({ 467, 782, 1075, 8914, 9756, 9910, -- Thorns 1-6
                                26992, -- TBC: Thorns 7
                                53307 }) -- WotLK: Thorns 8
-               :SingleDuration(allBuffsModule.DURATION_10M)
+               :SingleDuration(allBuffsModule.TEN_MINUTES)
                :DefaultTargetClasses(allBuffsModule.MELEE_CLASSES)
                :RequirePlayerClass("DRUID")
                :Category("class")

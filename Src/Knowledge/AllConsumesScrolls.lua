@@ -22,7 +22,7 @@ end
 function scrollsModule:AddScroll(buffs, buffSpellId, itemId)
   return buffDefModule:genericConsumable(buffs, buffSpellId, itemId)
                       :ConsumableTarget("player")
-                      :SingleDuration(allBuffsModule.DURATION_30M)
+                      :SingleDuration(allBuffsModule.HALF_AN_HOUR)
                       :Category("scroll")
 end
 

@@ -3,6 +3,7 @@ local BOM = BuffomatAddon ---@type BomAddon
 ---@shape BomBuffChecksModule
 local buffChecksModule = BomModuleManager.buffChecksModule ---@type BomBuffChecksModule
 
+local allBuffsModule = BomModuleManager.allBuffsModule
 local buffDefModule = BomModuleManager.buffDefinitionModule
 local buffomatModule = BomModuleManager.buffomatModule
 local partyModule = BomModuleManager.partyModule
@@ -39,13 +40,13 @@ function buffChecksModule:TimeCheck(expirationTime, maxDuration)
 
   local remainingTimeTrigger
 
-  if maxDuration <= 60 then
+  if maxDuration <= allBuffsModule.MINUTE then
     remainingTimeTrigger = buffomatModule.shared.Time60 or 10
-  elseif maxDuration <= 300 then
+  elseif maxDuration <= allBuffsModule.FIVE_MINUTES then
     remainingTimeTrigger = buffomatModule.shared.Time300 or 90
-  elseif maxDuration <= 600 then
+  elseif maxDuration <= allBuffsModule.TEN_MINUTES then
     remainingTimeTrigger = buffomatModule.shared.Time600 or 120
-  elseif maxDuration <= 1800 then
+  elseif maxDuration <= allBuffsModule.HALF_AN_HOUR then
     remainingTimeTrigger = buffomatModule.shared.Time1800 or 180
   else
     remainingTimeTrigger = buffomatModule.shared.Time3600 or 180

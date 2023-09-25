@@ -17,8 +17,8 @@ function mageModule:CreateIntelligenceBuff()
                                      27127, -- TBC: Brillance Rank 2
                                      43002, 61316 }) -- WotLK: Arcane Brilliance Rank 3; Dalaran Brilliance
                       :IsDefault(true)
-                      :SingleDuration(allBuffsModule.DURATION_30M)
-                      :GroupDuration(allBuffsModule.DURATION_1H)
+                      :SingleDuration(allBuffsModule.HALF_AN_HOUR)
+                      :GroupDuration(allBuffsModule.HOUR)
                       :ReagentRequired({ 17020 }) -- Arcane Powder
                       :DefaultTargetClasses(allBuffsModule.MANA_CLASSES)
                       :RequirePlayerClass("MAGE")
@@ -40,7 +40,7 @@ function mageModule:SetupMageSpells(allBuffs, enchantments)
   --Dampen Magic
   buffDefModule:createAndRegisterBuff(allBuffs, 10174, nil)
                :IsDefault(false)
-               :SingleDuration(allBuffsModule.DURATION_10M)
+               :SingleDuration(allBuffsModule.TEN_MINUTES)
                :SingleFamily({ 604, 8450, 8451, 10173, 10174, -- Ranks 1-5
                                33944, -- TBC: Rank 6
                                43015 }) -- WotLK: Dampen Magic 7
@@ -50,7 +50,7 @@ function mageModule:SetupMageSpells(allBuffs, enchantments)
   --Amplify Magic
   buffDefModule:createAndRegisterBuff(allBuffs, 10170, nil)
                :IsDefault(false)
-               :SingleDuration(allBuffsModule.DURATION_10M)
+               :SingleDuration(allBuffsModule.TEN_MINUTES)
                :SingleFamily({ 1008, 8455, 10169, 10170, -- Ranks 1-4
                                27130, 33946, -- TBC: Ranks 5-6
                                43017 }) -- WotLK: Amplify Magic 7
@@ -71,7 +71,7 @@ function mageModule:SetupMageSpells(allBuffs, enchantments)
   buffDefModule:createAndRegisterBuff(allBuffs, 11426, nil)
                :BuffType("seal")
                :IsDefault(false)
-               :SingleDuration(allBuffsModule.DURATION_1M)
+               :SingleDuration(allBuffsModule.MINUTE)
                :SingleFamily({ 11426, 13031, 13032, 13033, -- Ice Barrier 1-4
                                27134, 33405, -- TBC: Ice Barrier 5, 6
                                43038, 43039 }) -- WotLK: Ice Barrier 7
@@ -98,7 +98,7 @@ function mageModule:SetupMageSpells(allBuffs, enchantments)
   buffDefModule:createAndRegisterBuff(allBuffs, 10193, nil)
                :IsOwn(true)
                :IsDefault(false)
-               :SingleDuration(allBuffsModule.DURATION_1M)
+               :SingleDuration(allBuffsModule.MINUTE)
                :SingleFamily({ 1463, 8494, 8495, 10191, 10192, 10193, -- Mana Shield 1-6
                                27131, -- TBC: Mana Shield 7
                                43019, 43020 }) -- WotLK: Mana Shield 8, 9

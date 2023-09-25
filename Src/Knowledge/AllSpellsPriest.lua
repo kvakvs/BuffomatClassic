@@ -15,8 +15,8 @@ function priestModule:CreatePrayerOfSpiritBuff()
    :GroupFamily({ 27681, -- Prayer of Spirit 1
                   32999, --- TBC: Prayer of Spirit 2
                   48074 }) -- WotLK: Prayer of Spirit 3
-   :SingleDuration(allBuffsModule.DURATION_30M)
-   :GroupDuration(allBuffsModule.DURATION_1H)
+   :SingleDuration(allBuffsModule.HALF_AN_HOUR)
+   :GroupDuration(allBuffsModule.HOUR)
    :ReagentRequired({ 17028, 17029,
                       44615 })  -- WotLK: Devout Candle
    :DefaultTargetClasses(allBuffsModule.MANA_CLASSES)
@@ -56,8 +56,8 @@ function priestModule:SetupPriestSpells(allBuffs, enchants)
                :GroupFamily({ 21562, 21564, -- Prayer of Fortitude 1-2
                               25392, -- TBC: Prayer of Fortitude 3
                               48162 }) -- WotLK: Prayer of Fortitude 4
-               :SingleDuration(allBuffsModule.DURATION_30M)
-               :GroupDuration(allBuffsModule.DURATION_1H)
+               :SingleDuration(allBuffsModule.HALF_AN_HOUR)
+               :GroupDuration(allBuffsModule.HOUR)
                :ReagentRequired({ 17028, 17029, -- Candle
                                   44615 })  -- WotLK: Devout Candle
                :DefaultTargetClasses(allBuffsModule.ALL_CLASSES)
@@ -70,8 +70,8 @@ function priestModule:SetupPriestSpells(allBuffs, enchants)
   -- Shadow Protection / Prayer of Shadow / Schattenschutz
   buffDefModule:createAndRegisterBuff(allBuffs, 10958, nil)
                :IsDefault(false)
-               :SingleDuration(allBuffsModule.DURATION_10M)
-               :GroupDuration(allBuffsModule.DURATION_20M)
+               :SingleDuration(allBuffsModule.TEN_MINUTES)
+               :GroupDuration(allBuffsModule.TWENTY_MINUTES)
                :SingleFamily({ 976, 10957, 10958, -- Shadow Protection 1-3
                                25433, -- TBC: Shadow Protection 4
                                48169 }) -- WotLK: Shadow Protection 5
@@ -87,7 +87,7 @@ function priestModule:SetupPriestSpells(allBuffs, enchants)
   -- Fear Ward
   buffDefModule:createAndRegisterBuff(allBuffs, 6346, nil)
                :IsDefault(false)
-               :SingleDuration(allBuffsModule.DURATION_10M)
+               :SingleDuration(allBuffsModule.TEN_MINUTES)
                :HasCooldown(true)
                :DefaultTargetClasses(allBuffsModule.ALL_CLASSES)
                :Category("class")

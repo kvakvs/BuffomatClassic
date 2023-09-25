@@ -19,8 +19,8 @@ function paladinModule:SetupPaladinSpells(allBuffs, enchants)
                :IsDefault(false)
                :Category("class")
 
-  local blessing_duration = allBuffsModule.TbcOrClassic(allBuffsModule.DURATION_10M, allBuffsModule.DURATION_5M)
-  local greaterBlessingDuration = allBuffsModule.TbcOrClassic(allBuffsModule.DURATION_15M, allBuffsModule.DURATION_30M)
+  local blessing_duration = allBuffsModule.TbcOrClassic(allBuffsModule.TEN_MINUTES, allBuffsModule.FIVE_MINUTES)
+  local greaterBlessingDuration = allBuffsModule.TbcOrClassic(allBuffsModule.FIFTEEN_MINUTES, allBuffsModule.HALF_AN_HOUR)
 
   --
   -- LESSER BLESSINGS

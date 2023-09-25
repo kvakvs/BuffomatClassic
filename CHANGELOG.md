@@ -1,5 +1,9 @@
 # Changelog
 
+## Buffomat Classic 2023.9.0
+
+- 10min rebuff time was not working with druid thorns.
+
 ## Buffomat Classic 2023.8.0-1
 
 - Fixing bugs related to Classic Hardcode, item ids from future expansions leaking into classic don't work well.

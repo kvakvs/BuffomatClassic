@@ -11,7 +11,7 @@ local buffDefModule = BomModuleManager.buffDefinitionModule
 ---@param allBuffs BomBuffDefinition[]
 ---@param enchants BomEnchantmentsMapping
 function rogueModule:SetupRogueSpells(allBuffs, enchants)
-  local duration = allBuffsModule.TbcOrClassic(allBuffsModule.DURATION_1H, allBuffsModule.DURATION_30M) -- TBC: Poisons become 1 hour
+  local duration = allBuffsModule.TbcOrClassic(allBuffsModule.HOUR, allBuffsModule.HALF_AN_HOUR) -- TBC: Poisons become 1 hour
 
   --Deadly Poison
   -- item         = allBuffsModule.ExpansionChoice(20844, 22054, 43233),
