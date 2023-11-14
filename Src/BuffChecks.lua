@@ -197,6 +197,7 @@ function buffChecksModule:PartyNeedsInfoBuff(buff, party)
   end
 end
 
+--- Checks if the player needs some buff that is in the buffs knowledge database. Must be a spell/aura that is stored in playerUnit.knownBuffs
 ---@param buff BomBuffDefinition
 ---@param playerUnit BomUnit
 function buffChecksModule:PlayerNeedsSelfBuff(buff, playerUnit)

@@ -94,21 +94,21 @@ function unitModule:UnitAura(unitId, buffIndex, filter)
   end
 
   return {
-    name                  = name,
-    icon                  = icon,
-    count                 = count,
-    debuffType            = debuffType,
-    duration              = duration,
-    expirationTime        = expirationTime,
-    source                = source,
-    isStealable           = isStealable,
+    name = name,
+    icon = icon,
+    count = count,
+    debuffType = debuffType,
+    duration = duration,
+    expirationTime = expirationTime,
+    source = source,
+    isStealable = isStealable,
     nameplateShowPersonal = nameplateShowPersonal,
-    spellId               = spellId,
-    canApplyAura          = canApplyAura,
-    isBossDebuff          = isBossDebuff,
-    castByPlayer          = castByPlayer,
-    nameplateShowAll      = nameplateShowAll,
-    timeMod               = timeMod
+    spellId = spellId,
+    canApplyAura = canApplyAura,
+    isBossDebuff = isBossDebuff,
+    castByPlayer = castByPlayer,
+    nameplateShowAll = nameplateShowAll,
+    timeMod = timeMod
   }
 end
 
@@ -129,52 +129,57 @@ function unitClass:ForceUpdateBuffs(playerUnit)
   if self.isDead then
     -- Clear known buffs for self, as we're very dead atm
     partyModule.unitAurasLastUpdated[self.name] = nil
-  else
-    self.hasReputationTrinket = false
-    self.hasRidingTrinket = false
+    return
+  end
 
-    local buffIndex = 0
+  self.hasReputationTrinket = false
+  self.hasRidingTrinket = false
 
-    repeat
-      buffIndex = buffIndex + 1
+  local buffIndex = 0
 
-      local unitAura = unitModule:UnitAura(self.unitId, buffIndex, "HELPFUL")
+  repeat
+    buffIndex = buffIndex + 1
 
-      if unitAura.spellId then
-        self.allBuffs[unitAura.spellId] = true -- save all buffids even those not supported
-        if tContains(BOM.AllDrink, unitAura.spellId) then
-          BOM.drinkingPersonCount = BOM.drinkingPersonCount + 1
-        end
+    local unitAura = unitModule:UnitAura(self.unitId, buffIndex, "HELPFUL")
+
+    if unitAura.spellId then
+      self.allBuffs[unitAura.spellId] = true -- save all buffids even those not supported
+      if tContains(BOM.AllDrink, unitAura.spellId) then
+        BOM.drinkingPersonCount = BOM.drinkingPersonCount + 1
       end
+    end
 
-      local lookupBuff = allBuffsModule.selectedBuffsSpellIds[unitAura.spellId]
+    local lookupBuff = allBuffsModule.selectedBuffsSpellIds[unitAura.spellId]
 
-      if lookupBuff then
-        -- Skip members who have a buff on the global ignore list - example phaseshifted imps
-        if tContains(BOM.buffIgnoreAll, unitAura.spellId) then
-          wipe(self.knownBuffs)
-          self.NeedBuff = false
-          break
-        else
-          local buffOnUnit = buffModule:New(
-                  unitAura.spellId,
-                  unitAura.duration,
-                  unitAura.expirationTime,
-                  unitAura.source,
-                  allBuffsModule.spellIdIsSingleLookup[unitAura.spellId] ~= nil)
-          self.knownBuffs[lookupBuff.buffId] = buffOnUnit
-        end
-        --if tContains(BOM.ReputationTrinket.spells, spellId) then
-        --  self.hasReputationTrinket = true
-        --end
-
-        --if tContains(BOM.Carrot.spells, spellId) then
-        --  self.hasCarrot = true
-        --end
+    if lookupBuff then
+      -- Skip members who have a buff on the global ignore list - example phaseshifted imps
+      if tContains(BOM.buffIgnoreAll, unitAura.spellId) then
+        wipe(self.knownBuffs)
+        self.NeedBuff = false
+        break
+      else
+        local buffOnUnit = buffModule:New(
+                unitAura.spellId,
+                unitAura.duration,
+                unitAura.expirationTime,
+                unitAura.source,
+                allBuffsModule.spellIdIsSingleLookup[unitAura.spellId] ~= nil)
+        self.knownBuffs[lookupBuff.buffId] = buffOnUnit
       end
+      --if tContains(BOM.ReputationTrinket.spells, spellId) then
+      --  self.hasReputationTrinket = true
+      --end
 
-    until (not unitAura.name)
-  end -- if is not dead
+      --if tContains(BOM.Carrot.spells, spellId) then
+      --  self.hasCarrot = true
+      --end
+    end
+
+  until (not unitAura.name)
+
+  if self.isPlayer then
+    self:UpdatePlayerWeaponEnchantments()
+  end
 end
 
 ---@param unitId string

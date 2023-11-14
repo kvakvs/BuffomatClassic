@@ -115,7 +115,6 @@ function itemCacheModule:LoadItem(itemId, onLoaded)
     end
   end
 
-  --BOM:Print("Query item id " .. itemId)
   if C_Item.DoesItemExistByID(itemId) then
     itemMixin:ContinueOnItemLoad(itemLoaded)
   else

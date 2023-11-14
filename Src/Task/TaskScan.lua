@@ -475,6 +475,7 @@ function taskScanModule:GetActiveAuraAndSeal(playerUnit)
 
       elseif buffDef.type == "seal" then
         if UnitIsUnit(knownBuffOnPlayer.source, "player") then
+          --BOM:Print("seal check for " .. buffDef.buffId .. " expiration " .. knownBuffOnPlayer.expirationTime)
           if buffChecksModule:TimeCheck(knownBuffOnPlayer.expirationTime, knownBuffOnPlayer.duration) then
             BOM.activePaladinSeal = buffDef.buffId
           end

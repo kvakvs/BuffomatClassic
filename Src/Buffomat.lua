@@ -448,23 +448,6 @@ function BuffomatAddon:Init()
     BOM.SaveWindowPosition()
   end)
 
-  -- slash command
-  -- Unused?
-  --local function slash_command_db_set(DB, var, value)
-  --  if value == nil then
-  --    DB[var] = not DB[var]
-  --
-  --  elseif tContains({ "true", "1", "enable" }, value) then
-  --    DB[var] = true
-  --
-  --  elseif tContains({ "false", "0", "disable" }, value) then
-  --    DB[var] = false
-  --  end
-  --
-  --  BOM:Print("Set " .. var .. " to " .. tostring(DB[var]))
-  --  buffomatModule:OptionsUpdate()
-  --end
-
   slashModule:RegisterSlashCommandHandler({ "/bom", "/buffomat" },
           self:MakeSlashCommand())
 

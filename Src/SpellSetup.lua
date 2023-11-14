@@ -117,9 +117,6 @@ function spellSetupModule:Setup_EachSpell_Consumable(add, buffDef)
 
         buffomatModule.shared.Cache.Item2[eachItem] = itemInfo
       else
-        --BOM:Print("Item not found! Spell=" .. tostring(spell.singleId)
-        --      .. " Item=" .. tostring(spell.item))
-
         -- Go delayed fetch
         local item = Item:CreateFromItemID(eachItem)
         item:ContinueOnItemLoad(function()
