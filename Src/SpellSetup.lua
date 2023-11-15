@@ -333,6 +333,15 @@ function spellSetupModule:Setup_EachBuff(buff)
   end
 
   if buff.isConsumable then
+    buff:EnsureDynamicMinLevelSet()
+  end
+
+  if not buffDefinitionModule:CheckDynamicLimitations(buff.limitations) then
+    return
+    -- Skip the buff entirely, even consumable!
+  end
+
+  if buff.isConsumable then
     add = self:Setup_EachSpell_Consumable(add, buff)
   end
 

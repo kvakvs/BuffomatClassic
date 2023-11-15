@@ -1,8 +1,14 @@
 # Changelog
 
+## Buffomat Classic 2023.11.1
+
+- Hide consumables which have required level above player. If multiple items provide the buff, choose the lowest level
+  requirement.
+
 ## Buffomat Classic 2023.11.0
 
-- Updated the copy of KvLib for classic compatibility. Was using Windows directory Junctions before and that didn't go well.
+- Updated the copy of KvLib for classic compatibility. Was using Windows directory Junctions before and that didn't go
+  well.
 - [Bug] Now updating player weapon enchantments on unit buff rescan. This helped solve the long standing Rockbiter bug.
 
 ## Buffomat Classic 2023.9.0
@@ -12,7 +18,8 @@
 ## Buffomat Classic 2023.8.0-1
 
 - Fixing bugs related to Classic Hardcode, item ids from future expansions leaking into classic don't work well.
-- Fixing API incompatibility for bag access, which changed somewhere later in a future expansion, causing errors in Classic.
+- Fixing API incompatibility for bag access, which changed somewhere later in a future expansion, causing errors in
+  Classic.
 
 ## Buffomat Classic 2023.5.0
 

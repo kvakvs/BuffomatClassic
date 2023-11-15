@@ -228,7 +228,7 @@ function allBuffsModule:ApplyPostLimitations(allBuffs)
 
   for _i, buff in ipairs(allBuffs) do
     if buff.limitations ~= nil then
-      if buffDefModule:CheckLimitations(buff, --[[---@not nil]] buff.limitations) then
+      if buffDefModule:CheckStaticLimitations(buff, --[[---@not nil]] buff.limitations) then
         table.insert(result, buff)
       end
     end

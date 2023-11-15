@@ -38,6 +38,11 @@ local allBuffsModule = BomModuleManager.allBuffsModule
 ---@field minLevel number Hide the spell if player is below this level
 ---@field hideIfSpellKnown number Hide the spell if spellId is in their spellbook
 
+---@return BomSpellLimitations
+function allBuffsModule:NewSpellLimitations()
+  return {}
+end
+
 ---
 --- A class describing a spell in available spells collection
 ---
@@ -165,8 +170,9 @@ end
 local _, playerClass, _ = UnitClass("player")
 
 --TODO: Belongs to `BomBuffDefinition`
+---Check the static limitations, which cannot change after the player logs in
 ---@param limitations BomSpellLimitations
-function buffDefModule:CheckLimitations(_spell, limitations)
+function buffDefModule:CheckStaticLimitations(_spell, limitations)
   -- empty limitations return true
   if next(limitations) == nil then
     return true
@@ -206,18 +212,29 @@ function buffDefModule:CheckLimitations(_spell, limitations)
     return false
   end
 
-  if type(limitations.maxLevel) == "number"
-          and UnitLevel("player") > limitations.maxLevel then
+  return true
+end
+
+---Checks dynamic buff limitations, which can change in the game
+---@param limitations BomSpellLimitations|nil
+function buffDefModule:CheckDynamicLimitations(limitations)
+  -- empty limitations return true
+  if not limitations or next(--[[---@not nil]] limitations) == nil then
+    return true
+  end
+
+  if type((--[[---@not nil]] limitations).maxLevel) == "number"
+          and UnitLevel("player") > (--[[---@not nil]] limitations).maxLevel then
     return false -- too old
   end
 
-  if type(limitations.minLevel) == "number"
-          and UnitLevel("player") < limitations.minLevel then
+  if type((--[[---@not nil]] limitations).minLevel) == "number"
+          and UnitLevel("player") < (--[[---@not nil]] limitations).minLevel then
     return false -- too young
   end
 
-  if type(limitations.hideIfSpellKnown) == "number"
-          and IsSpellKnown(limitations.hideIfSpellKnown) then
+  if type((--[[---@not nil]] limitations).hideIfSpellKnown) == "number"
+          and IsSpellKnown((--[[---@not nil]] limitations).hideIfSpellKnown) then
     return false -- know a blocker spell, a better version like ice armor/frost armor pair
   end
 
@@ -233,7 +250,7 @@ end
 function buffDefModule:createAndRegisterBuff(allBuffs, buffSpellId, limitations)
   local spell = self:New(buffSpellId)
 
-  if self:CheckLimitations(spell, limitations or --[[---@type BomSpellLimitations]] {}) then
+  if self:CheckStaticLimitations(spell, limitations or --[[---@type BomSpellLimitations]] {}) then
     return self:registerBuff(allBuffs, spell)
   end
 
@@ -287,7 +304,42 @@ function buffDefClass:CreatesOrProvidedByItem(itemId)
   else
     self.items = --[[---@type WowItemId[] ]] itemId
   end
+
   return self
+end
+
+function buffDefClass:EnsureDynamicMinLevelSet()
+  -- No need to update
+  if self.limitations and type(self.limitations.minLevel) == "number" then return end
+
+  -- Set minLevel if item has minLevel, for multiple items in the array - pick lowest requirement
+  -- If any of the requirements are nil, means the item cannot have the level requirement at all, reset and break loop
+  for _, eachItemId in ipairs(--[[---@not nil]] self.items) do
+    if eachItemId == nil then
+      self:MinLevel(0)
+      break
+    end
+
+    local onItemLoaded = function(itemInfo)
+      local minLvl = 999
+
+      if itemInfo and (itemInfo.itemMinLevel == nil or itemInfo.itemMinLevel <= 1) then
+        minLvl = 0
+      end
+
+      if itemInfo and itemInfo.itemMinLevel > 1 then
+        --local lim = (--[[---@not nil]] self.limitations)
+        -- Pick lowest itemlevel of the item ids to show the buff
+        if itemInfo.itemMinLevel < minLvl then
+          minLvl = itemInfo.itemMinLevel
+        end
+      end
+
+      self:MinLevel(minLvl)
+    end
+
+    itemCacheModule:LoadItem(eachItemId, onItemLoaded)
+  end
 end
 
 ---@param auraIds WowSpellId[]
@@ -438,6 +490,9 @@ end
 ---@return BomBuffDefinition
 ---@param level number
 function buffDefClass:MinLevel(level)
+  if not self.limitations then
+    self.limitations = allBuffsModule:NewSpellLimitations()
+  end
   (--[[---@not nil]] self.limitations).minLevel = level
   return self
 end
