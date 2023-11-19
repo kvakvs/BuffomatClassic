@@ -1008,8 +1008,10 @@ end
 function taskScanModule:AddConsumableSelfbuff_NoItem(buffDef, count, playerUnit)
   -- Text: "ConsumableName" x Count
   tasklist:Add(
-          taskModule:Create(self:FormatItemBuffInactiveText(buffDef.singleText, --[[---@not nil]] count), nil)
-                    :PrefixText(_t("task.type.Use"))
+          taskModule:Create(
+                  self:FormatItemBuffInactiveText(buffDef.consumeGroupTitle or buffDef.singleText, --[[---@not nil]] count),
+                  nil)
+                    :PrefixText(_t("task.type.Consume"))
                     :Target(buffTargetModule:FromSelf(playerUnit))
                     :Prio(taskModule.PRIO_CONSUMABLE)
                     :IsInfo())
@@ -1023,14 +1025,14 @@ end
 ---@param playerUnit BomUnit the player
 ---@param target string
 function taskScanModule:AddConsumableSelfbuff_HaveItemReady(buffDef, bestItemIdAvailable, bag, slot, count, playerUnit, target)
-  local taskText = _t("task.type.Use")
+  local taskText = _t("task.type.Consume")
   if buffDef.tbcHunterPetBuff then
     taskText = _t("task.type.tbcHunterPetBuff")
   end
 
   local task = taskModule:Create(self:FormatItemBuffText(bag, slot, count or 0), nil)
                          :PrefixText(taskText)
-                         :Target(buffTargetModule:FromSelf(playerUnit))
+                         --:Target(buffTargetModule:FromSelf(playerUnit))
 
   if buffomatModule.shared.DontUseConsumables
           and not IsModifierKeyDown() then

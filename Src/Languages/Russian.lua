@@ -97,6 +97,8 @@ function russianModule:Translations()
     ["options.short.SameZone"] = "Только если находится в одной зоне со мной",
     ["options.short.ScanInRestArea"] = "Сканировать бафы в городах и тавернах",
     ["options.short.ScanInStealth"] = "Сканировать бафы в режиме незаметности",
+    ["options.short.ScanWhileMounted"] = "Сканировать, сидя на ездовом животном",
+    ["options.short.BestAvailableConsume"] = "Выбирать лучшее из имеющегося",
     ["options.short.ShowClassicConsumables"] = "Показывать бафы из классической версии",
     ["options.short.ShowMinimapButton"] = "Показать кнопку у миникарты",
     ["options.short.ShowTBCConsumables"] = "Показывать бафы из TBC",
@@ -107,6 +109,8 @@ function russianModule:Translations()
 
     ["options.long.FadeWhenNothingToDo"] = "Установить прозрачность окна Бафомёта, если нечего делать",
     ["options.long.ActivateBomOnSpiritTap"] = "Запретить Бафомёт, если 'Захват духа' жреца активен и мана меньше указанного процента",
+    ["options.long.ScanWhileMounted"] = "Разрешить сканирование бафов, когда игрок сидит на ездовом животном",
+    ["options.long.BestAvailableConsume"] = "Если галочка установлена, то при наличии множества вариантов, будет предпочитатся лучший. Иначе - худший - пока игрок качается, чтобы доедать старую еду и эликсиры",
 
     InfoSomeoneIsDrinking = "Один игрок пьёт",
     InfoMultipleDrinking = "Несколько игроков пьют (%d)",
@@ -147,6 +151,10 @@ function russianModule:Translations()
     ["task.hint.HoldShiftConsumable"] = "Удерживайте Shift/Ctrl или Alt",
     ["task.error.missingMainhandWeapon"] = "Невозможно зачаровать оружие в основной руке",
     ["task.error.missingOffhandWeapon"] = "Нет оружия во второй руке",
+
+    ["task.type.Use"] = "Использовать",
+    ["task.type.Consume"] = "Употребить",
+    ["task.type.tbcHunterPetBuff"] = "Для питомца",
 
     Header_TRACKING = "Отслеживание",
     HeaderCredits = "Авторы",
@@ -227,8 +235,15 @@ function russianModule:Translations()
     ["tooltip.buff.stamina"] = "+Выносл.",
     ["tooltip.buff.strength"] = "+Сила",
     ["tooltip.buff.comboMealWotlk"] = "+Атака/+Заклинания",
-    ["tooltip.food.multipleFoodItems"] = " (различная еда с таким бафом)",
     ["tooltip.buff.armorPenetration"] = "+Пробивание брони",
+
+    ["tooltip.consumable.bestInBag"] = " (лучшее, что есть в сумке)",
+    ["tooltip.elixir.bestInBag"] = " (лучший эликсир в сумке)",
+    ["tooltip.food.bestInBag"] = " (лучшая еда в сумке)",
+    ["tooltip.scroll.bestInBag"] = " (лучший свиток в сумке)",
+    ["consumeType.food"] = "Еда",
+    ["consumeType.elixir"] = "Эликсир",
+    ["consumeType.scroll"] = "Свиток",
 
     ["tooltip.alcohol.stamina"] = "Алкоголь +Выносл",
     ["tooltip.alcohol.spirit"] = "Алкоголь +Дух",

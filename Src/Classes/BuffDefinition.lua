@@ -6,6 +6,7 @@ local BOM = BuffomatAddon ---@type BomAddon
 ---@shape BomBuffDefinitionModule
 local buffDefModule = BomModuleManager.buffDefinitionModule ---@type BomBuffDefinitionModule
 
+local _t = BomModuleManager.languagesModule
 local envModule = KvModuleManager.envModule
 local buffomatModule = BomModuleManager.buffomatModule
 local spellCacheModule = BomModuleManager.spellCacheModule
@@ -340,7 +341,9 @@ end
 
 function buffDefClass:EnsureDynamicMinLevelSet()
   -- No need to update
-  if self.limitations and type(self.limitations.minLevel) == "number" then return end
+  if self.limitations and type(self.limitations.minLevel) == "number" then
+    return
+  end
 
   -- Set minLevel if item has minLevel, for multiple items in the array - pick lowest requirement
   -- If any of the requirements are nil, means the item cannot have the level requirement at all, reset and break loop
@@ -488,11 +491,24 @@ function buffDefClass:GroupDuration(duration)
   return self
 end
 
+---@param consumeType "food"|"elixir"|"scroll"
 ---@param title string
 ---@param icon WowIconId
 ---@return BomBuffDefinition
-function buffDefClass:BuffTitle(title, icon)
-  self.consumeGroupTitle = title
+function buffDefClass:ConsumeGroupTitle(consumeType, title, icon)
+  local prefix
+
+  if consumeType == "elixir" then
+    prefix = buffomatModule:Color("1eff00", _t("consumeType.elixir"))
+  elseif consumeType == "scroll" then
+    prefix = buffomatModule:Color("1eff00", _t("consumeType.scroll"))
+  elseif consumeType == "food" then
+    prefix = buffomatModule:Color("1eff00", _t("consumeType.food"))
+  elseif consumeType ~= "food" then
+    prefix = "Unknown consume type: " .. consumeType
+  end
+
+  self.consumeGroupTitle = prefix .. " (" .. title .. ")"
   self.consumeGroupIcon = icon
   return self
 end

@@ -246,9 +246,13 @@ function spellButtonsTabModule:AddSpellRow(rowBuilder, playerIsHorde, buff)
   buffLabel:SetPoint("TOPLEFT", rowBuilder.prevControl, "TOPRIGHT", 7, -1)
   managedUiModule:ManageControl(tostring(buff.buffId) .. ".buffLabel", buffLabel)
 
-  -- Having 'buffTitle' set will override buff single text from the iteminfo
+  -- Having 'consumeGroupTitle' set will override buff single text from the iteminfo
   if buff.consumeGroupTitle then
-    buffLabel:SetText(buff.consumeGroupTitle)
+    local text = buff.consumeGroupTitle
+    if buff.extraText then
+      text = text .. ": " .. buffomatModule:Color("bbbbee", buff.extraText)
+    end
+    buffLabel:SetText(text)
   else
     buff:GetSingleText(
             function(buffLabelText)

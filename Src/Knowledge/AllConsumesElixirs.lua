@@ -73,17 +73,21 @@ end
 ---@param allBuffs BomBuffDefinition[] A list of buffs (not dictionary)
 ---@param enchantments table<number, number[]> Key is spell id, value is list of enchantment ids
 function elixirsModule:_SetupBattleCasterElixirsClassic(allBuffs, enchantments)
-  --Greater Arcane Elixir
-  buffDefModule:genericConsumable(allBuffs, 17539, 13454)
+  --All Spell Power elixirs
+  local spellPowerItemIds = {
+    9155, -- Arcane Elixir +20
+    13454, -- Greater Arcane Elixir +35
+  }
+  local spellPowerAuras = {
+    11390, -- +20 SPELL
+    17539, -- +35 SPELL
+  }
+  buffDefModule:consumableGroup(allBuffs, "elixirSpell", spellPowerAuras, spellPowerItemIds)
                :RequirePlayerClass(allBuffsModule.SPELL_CLASSES)
-               :Category("classicSpellElixir")
                :ElixirType("battle")
-
-  -- Arcane Elixir
-  buffDefModule:genericConsumable(allBuffs, 11390, 9155)
-               :RequirePlayerClass(allBuffsModule.SPELL_CLASSES)
                :Category("classicSpellElixir")
-               :ElixirType("battle")
+               :ConsumeGroupTitle("elixir", ITEM_MOD_SPELL_POWER_SHORT, 132379) -- "inv_alchemy_imbuedvial"
+               :ExtraText(_t("tooltip.consumable.bestInBag"))
 
   -- Elixir of Shadow Power
   buffDefModule:genericConsumable(allBuffs, 11474, 9264)
@@ -113,17 +117,45 @@ function elixirsModule:_SetupBattlePhysicalElixirsClassic(allBuffs, enchantments
                :Category("classicPhysElixir")
                :ElixirType("battle")
 
-  --Elixir of Greater Agility
-  buffDefModule:genericConsumable(allBuffs, 11334, 9187)
+  -- All Agility Elixirs
+  local agilityItemIds = {
+    2457, -- Elixir of Minor Agility
+    3390, -- Elixir of Lesser Agility
+    8949, -- Elixir of Agility
+    9187, -- Elixir of Greater Agility
+  }
+  local agilityAuras = {
+    2374, -- +4 AGI
+    3160, -- +8 AGI
+    11328, -- +15 AGI
+    11334, -- +25 AGI
+  }
+  buffDefModule:consumableGroup(allBuffs, "elixirAgi", agilityAuras, agilityItemIds)
                :RequirePlayerClass(allBuffsModule.PHYSICAL_CLASSES)
                :Category("classicPhysElixir")
                :ElixirType("battle")
+               :ConsumeGroupTitle("elixir", ITEM_MOD_AGILITY_SHORT, 132379) -- "inv_alchemy_imbuedvial"
+               :ExtraText(_t("tooltip.consumable.bestInBag"))
 
-  --Elixir of Giants
-  buffDefModule:genericConsumable(allBuffs, 11405, 9206)
+  --All Strength Elixirs
+  local strItemIds = {
+    2454, -- Elixir of Lion's Strength +4
+    3391, -- Elixir of Ogre's Strength +8
+    6662, -- Elixir of Giant Growth +8 +size
+    9206, -- Elixir of Giants +25
+  }
+  local strAuras = {
+    2367, -- +4 STR
+    3164, -- +8 STR
+    8212, -- +8 STR +SIZE
+    11405, -- +25 STR
+  }
+  buffDefModule:consumableGroup(allBuffs, "elixirStr", strAuras, strItemIds)
                :RequirePlayerClass(allBuffsModule.MELEE_CLASSES)
                :Category("classicPhysElixir")
                :ElixirType("battle")
+               :ConsumeGroupTitle("elixir", ITEM_MOD_STRENGTH_SHORT, 132379) -- "inv_alchemy_imbuedvial"
+               :ExtraText(_t("tooltip.consumable.bestInBag"))
 end
 
 ---@param allBuffs BomBuffDefinition[] A list of buffs (not dictionary)
@@ -279,7 +311,15 @@ function elixirsModule:_SetupGuardianElixirsClassic(allBuffs, enchantments)
                :Category("classicSpellElixir")
                :ElixirType("guardian")
 
-  --Elixir of Greater Intellect +25
+  --All Intellect elixirs
+  local intItemIds = {
+    3383, -- Elixir of Wisdom +6
+    9179, -- Elixir of Greater Intellect +25
+  }
+  local intAuras = {
+    3166, -- +6 INT
+    11396, -- +25 INT
+  }
   buffDefModule:genericConsumable(allBuffs, 11396, 9179)
                :RequirePlayerClass(allBuffsModule.MANA_CLASSES)
                :Category("tbcSpellElixir")
@@ -295,10 +335,22 @@ function elixirsModule:_SetupGuardianElixirsClassic(allBuffs, enchantments)
                :Category("classicElixir")
                :ElixirType("guardian")
 
-  --Major Troll's Blood Potion
-  buffDefModule:genericConsumable(allBuffs, 24361, 20004)
+  --All health regen elixirs
+  local healthRegenItemIds = {
+    3382, -- Weak Troll's Blood Potion +2 hp/5
+    3388, -- Strong Troll's Blood Potion +6 hp/5
+    20004, -- Major Troll's Blood Potion +20 hp/5
+  }
+  local healthRegenAuras = {
+    3219, -- +2 hp/5
+    3222, -- +6 hp/5
+    24361, -- +20 hp/5
+  }
+  buffDefModule:consumableGroup(allBuffs, "elixirHp5", healthRegenAuras, healthRegenItemIds)
                :Category("classicElixir")
                :ElixirType("guardian")
+               :ConsumeGroupTitle("elixir", ITEM_MOD_HEALTH_REGEN_SHORT, 132379) -- "inv_alchemy_imbuedvial"
+               :ExtraText(_t("tooltip.elixir.bestInBag"))
 
   --Gift of Arthas
   buffDefModule:genericConsumable(allBuffs, 11371, 9088)

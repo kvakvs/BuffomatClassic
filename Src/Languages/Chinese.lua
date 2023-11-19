@@ -101,6 +101,7 @@ function chineseModule:Translations()
     TASK_SUMMON = "召唤",
     TASK_CAST = "施放",
     ["task.type.Use"] = "使用",
+    ["task.type.Consume"] = "消费",
     ["task.type.tbcHunterPetBuff"] = "对宠物使用",
     TASK_ACTIVATE = "启用",
     ["task.type.Unequip"] = "取下装备",

@@ -160,6 +160,7 @@ function englishModule:Translations()
     TASK_SUMMON = "Summon",
     TASK_CAST = "Cast",
     ["task.type.Use"] = "Use",
+    ["task.type.Consume"] = "Consume",
     ["task.type.tbcHunterPetBuff"] = "Use on pet",
     TASK_ACTIVATE = "Activate",
     ["task.type.Unequip"] = "Unequip",
@@ -299,11 +300,17 @@ function englishModule:Translations()
     ["tooltip.buff.petStamina"] = "Pet +Stam",
     ["tooltip.buff.alchemistOnly"] = "Alchemist-only",
 
-    ["tooltip.food.multipleFoodItems"] = " (best food in your bag)",
-    --["tooltip.food.staminaSpirit"] = "Food +Stam +Spi",
+    ["tooltip.consumable.bestInBag"] = " (best in your bag)",
+    ["tooltip.elixir.bestInBag"] = " (best elixir in your bag)",
+    ["tooltip.food.bestInBag"] = " (best food in your bag)",
+    ["tooltip.scroll.bestInBag"] = " (best scroll in your bag)",
+    ["consumeType.food"] = "Food",
+    ["consumeType.elixir"] = "Elixir",
+    ["consumeType.scroll"] = "Scroll",
 
     ["tooltip.alcohol.stamina"] = "Alcohol +Stamina",
     ["tooltip.alcohol.spirit"] = "Alcohol +Spirit",
+    ["Healing Power"] = "Healing Power",
 
     TabBuff = "Buff",
     TabDoNotBuff = "Do not buff",

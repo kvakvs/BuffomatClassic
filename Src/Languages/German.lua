@@ -68,6 +68,7 @@ function germanModule:Translations()
     TASK_SUMMON = "Beschwörung",
     TASK_CAST = "Zauber wirken",
     ["task.type.Use"] = "Verwenden",
+    ["task.type.Consume"] = "Konsumieren",
     ["task.type.tbcHunterPetBuff"] = "Gebrauch auf Begleiter",
     TASK_ACTIVATE = "Aktivieren",
     ["task.type.Unequip"] = "Ausrüsten",
