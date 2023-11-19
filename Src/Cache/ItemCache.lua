@@ -31,7 +31,7 @@ local buffomatModule = BomModuleManager.buffomatModule
 
 ---Calls GetItemInfo and saves the results, or not (if nil was returned).
 ---Immediate result is returned right away. Caches the data.
----@param arg number|string
+---@param arg number|string|WowItemId
 ---@return BomItemCacheElement|nil
 function BOM.GetItemInfo(arg)
   if itemCacheModule.cache[arg] ~= nil then

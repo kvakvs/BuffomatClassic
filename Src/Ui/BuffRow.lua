@@ -125,8 +125,8 @@ function buffRowClass:CreateStatusCheckboxImage(buffDef)
   return self.checkboxEnable -- checkboxSet
 end
 
----@param spell BomBuffDefinition
-function buffRowClass:CreateInfoIcon(spell)
+---@param buffDef BomBuffDefinition
+function buffRowClass:CreateInfoIcon(buffDef)
   if self.iconInfo == nil then
     self.iconInfo = managedUiModule:CreateManagedButton(
             BomC_SpellTab_Scroll_Child,
@@ -134,18 +134,24 @@ function buffRowClass:CreateInfoIcon(spell)
             nil,
             nil,
             texturesModule.ICON_COORD_09,
-            nil, nil, tostring(spell.buffId) .. ".infoIcon")
+            nil, nil, tostring(buffDef.buffId) .. ".infoIcon")
 
-    if spell.isConsumable then
-      toolboxModule:TooltipLink(self.iconInfo, "item:" .. spell:GetFirstItem())
+    if buffDef.consumeGroupIcon then
+      self.iconInfo:SetTextures(buffDef.consumeGroupIcon, nil, nil, texturesModule.ICON_COORD_09, nil, nil)
+      --self.iconInfo:SetTexture(buffDef.consumeGroupIcon)
+
     else
-      toolboxModule:TooltipLink(self.iconInfo, "spell:" .. spell.highestRankSingleId)
-    end
+      if buffDef.isConsumable then
+        toolboxModule:TooltipLink(self.iconInfo, "item:" .. buffDef:GetFirstItem())
+      else
+        toolboxModule:TooltipLink(self.iconInfo, "spell:" .. buffDef.highestRankSingleId)
+      end
 
-    -- Set texture when ready, might load with a delay
-    spell:GetIcon(function(texture)
-      self.iconInfo:SetTextures(texture, nil, nil, texturesModule.ICON_COORD_09, nil, nil)
-    end)
+      -- Set texture when ready, might load with a delay
+      buffDef:GetIcon(function(texture)
+        self.iconInfo:SetTextures(texture, nil, nil, texturesModule.ICON_COORD_09, nil, nil)
+      end)
+    end
   end
 
   self.iconInfo:Show()

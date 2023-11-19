@@ -172,15 +172,6 @@ function spellButtonsTabModule:AddGroupScanSelector(rowBuilder)
   end
 
   self.spellSettingsFrames.Settings:Show()
-
-  --for i, setting in ipairs(optionsPopupModule.behaviourSettings) do
-  --  if self.spellSettingsFrames[setting.name] then
-  --    self.spellSettingsFrames[setting.name]:Show()
-  --  end
-  --  if self.spellSettingsFrames[setting.name .. "txt"] then
-  --    self.spellSettingsFrames[setting.name .. "txt"]:Show()
-  --  end
-  --end
 end
 
 ---TODO: Move this to spelldef
@@ -255,63 +246,23 @@ function spellButtonsTabModule:AddSpellRow(rowBuilder, playerIsHorde, buff)
   buffLabel:SetPoint("TOPLEFT", rowBuilder.prevControl, "TOPRIGHT", 7, -1)
   managedUiModule:ManageControl(tostring(buff.buffId) .. ".buffLabel", buffLabel)
 
-  buff:GetSingleText(
-          function(buffLabelText)
-            if buff.type == "weapon" then
-              buffLabelText = buffLabelText .. ": " .. buffomatModule:Color("bbbbee", _t("TooltipIncludesAllRanks"))
-            elseif buff.extraText then
-              buffLabelText = buffLabelText .. ": " .. buffomatModule:Color("bbbbee", buff.extraText)
+  -- Having 'buffTitle' set will override buff single text from the iteminfo
+  if buff.consumeGroupTitle then
+    buffLabel:SetText(buff.consumeGroupTitle)
+  else
+    buff:GetSingleText(
+            function(buffLabelText)
+              if buff.type == "weapon" then
+                buffLabelText = buffLabelText .. ": " .. buffomatModule:Color("bbbbee", _t("TooltipIncludesAllRanks"))
+              elseif buff.extraText then
+                buffLabelText = buffLabelText .. ": " .. buffomatModule:Color("bbbbee", buff.extraText)
+              end
+              buffLabel:SetText(buffLabelText)
             end
-            buffLabel:SetText(buffLabelText)
-          end
-  ) -- update when spell loaded
+    ) -- update when spell loaded
+  end
 
   rowBuilder:SpaceToTheRight(buffLabel, 7)
-  --<<---------------------------
-
-  --infoIcon:Show()
-  --enableCheckbox:Show()
-  --
-  --if spell:HasClasses() then
-  --  spell.frames.toggleSelfCast:Show()
-  --  spell.frames.toggleForceCast:Show()
-  --  spell.frames.toggleExclude:Show()
-  --
-  --  for ci, class in ipairs(constModule.CLASSES) do
-  --    if not BOM.IsTBC and -- if not TBC, hide paladin for horde, hide shaman for alliance
-  --            ((playerIsHorde and class == "PALADIN") or (not playerIsHorde and class == "SHAMAN")) then
-  --      spell.frames[class]:Hide()
-  --    else
-  --      spell.frames[class]:Show()
-  --    end
-  --  end
-  --
-  --  spell.frames.tank:Show()
-  --  spell.frames.pet:Show()
-  --end
-  --
-  --if spell.frames.checkboxSet then
-  --  spell.frames.checkboxSet:Show()
-  --end
-  --
-  --if buffLabel then
-  --  buffLabel:Show()
-  --end
-  --
-  --if spell.frames.toggleWhisper then
-  --  spell.frames.toggleWhisper:Show()
-  --end
-  --
-  --if spell.frames.toggleMainHand then
-  --  spell.frames.toggleMainHand:Show()
-  --end
-  --
-  --if spell.frames.toggleOffHand then
-  --  spell.frames.toggleOffHand:Show()
-  --end
-
-  -- Finished building a row, set the icon frame for this row to be the anchor
-  -- point for the next
   rowBuilder.prevControl = infoIcon
 end
 

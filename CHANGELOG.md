@@ -1,5 +1,11 @@
 # Changelog
 
+## Buffomat Classic 2023.11.2
+
+- Single rows for food buff are now removed and the food buffs are grouped per 
+  stat they provide, including all levels (helps while leveling). Highest 
+  available in your bag will be eaten first.
+
 ## Buffomat Classic 2023.11.1
 
 - Hide consumables which have required level above player. If multiple items provide the buff, choose the lowest level

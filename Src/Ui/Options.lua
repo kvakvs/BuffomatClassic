@@ -120,6 +120,7 @@ function optionsModule:CreateScanOptionsTable()
       inPVP = self:TemplateCheckbox("InPVP", nil, nil, nil),
       inInstance = self:TemplateCheckbox("InInstance", nil, nil, nil),
       sameZone = self:TemplateCheckbox("SameZone", nil, nil, nil),
+      bestAvailableConsume = self:TemplateCheckbox("BestAvailableConsume", nil, nil, nil),
     }
   }
 end

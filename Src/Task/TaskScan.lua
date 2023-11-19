@@ -1016,12 +1016,13 @@ function taskScanModule:AddConsumableSelfbuff_NoItem(buffDef, count, playerUnit)
 end
 
 ---@param buffDef BomBuffDefinition - the spell to cast
+---@param bestItemIdAvailable WowItemId From the list of compatible consumables, return best available item
 ---@param bag number
 ---@param slot number
 ---@param count number
 ---@param playerUnit BomUnit the player
 ---@param target string
-function taskScanModule:AddConsumableSelfbuff_HaveItemReady(buffDef, bag, slot, count, playerUnit, target)
+function taskScanModule:AddConsumableSelfbuff_HaveItemReady(buffDef, bestItemIdAvailable, bag, slot, count, playerUnit, target)
   local taskText = _t("task.type.Use")
   if buffDef.tbcHunterPetBuff then
     taskText = _t("task.type.tbcHunterPetBuff")
@@ -1038,12 +1039,10 @@ function taskScanModule:AddConsumableSelfbuff_HaveItemReady(buffDef, bag, slot, 
                      :IsInfo())
   else
     if bag ~= nil and slot ~= nil then
-      local action = actionUseModule:New(buffDef, target, bag, slot, nil)
+      local action = actionUseModule:New(buffDef, target, bag, slot, nil, bestItemIdAvailable)
 
       -- Text: [Icon] [Consumable Name] x Count
-      tasklist:Add(task
-              :Action(action)
-              :InRange(true))
+      tasklist:Add(task:Action(action):InRange(true))
     else
       BOM:Debug(string.format("Taskscan: bag %s slot %s", tostring(bag), tostring(slot)))
     end
@@ -1058,10 +1057,19 @@ end
 ---@param target string Insert this text into macro where [@player] target text would go
 ---@param buffCtx BomBuffScanContext
 function taskScanModule:AddConsumableSelfbuff(buffDef, playerUnit, target, buffCtx)
-  local haveItemOffCD, bag, slot, count = buffChecksModule:HasItem(buffDef.items or {}, true)
+  -- Setting to choose best or worst. Worst useful for leveling to eat old stuff first.
+  local itemsProvidingBuff = buffDef.itemsReverse
+  if not buffomatModule.shared.BestAvailableConsume then
+    itemsProvidingBuff = buffDef.items
+  end
+
+  local haveItemOffCD, bag, slot, count, bestItemIdAvailable = buffChecksModule:HasItem(itemsProvidingBuff or {}, true)
 
   if haveItemOffCD then
-    self:AddConsumableSelfbuff_HaveItemReady(buffDef, bag, slot, count, playerUnit, target)
+    self:AddConsumableSelfbuff_HaveItemReady(
+            buffDef, --[[---@not nil]] bestItemIdAvailable,
+            --[[---@not nil]] bag, --[[---@not nil]]  slot, --[[---@not nil]] count,
+            playerUnit, target)
   else
     self:AddConsumableSelfbuff_NoItem(buffDef, count or 0, playerUnit)
   end

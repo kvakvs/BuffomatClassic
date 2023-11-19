@@ -112,15 +112,47 @@ end
 ---@param allBuffs BomBuffDefinition[]
 ---@param enchantments BomEnchantmentsMapping
 function foodModule:_SetupCasterFoodClassic(allBuffs, enchantments)
+  -- STAM/SPIRIT
+  local stamSpiritFoodIds = {
+    -- Level 1: 2 STA/2 SPI - Trainer: Herb Baked Egg, Spiced Wolf Meat,
+    --          Recipe: Beer Basted Boar Ribs, Crispy Bat Wing, Kaldorei Spider Kabob, Roasted Kodo Meat
+    6888, 2680,
+    2888, 12224, 5472, 5474,
+    -- Level 5: 4 STA/4 SPI - Trainer: Boiled Clams, Coyote Steak, Crab Cake, Dry Pork Ribs
+    --          Recipe: Blood Sausage, Crocolisk Steak, Fillet of Frenzy, Goretusk Liver Pie, Strider Stew
+    5525, 2684, 2683, 2687,
+    3220, 3662, 5476, 724, 5477,
+    -- Level 15: 6 STA/6 SPI - Trainer:  Goblin Deviled Clams, Recipe: Big Bear Steak, Crispy Lizard Tail (level 12),
+    --          Crocolisk Gumbo, Curiously Tasty Omelet, Gooey Spider Cake, Hot Lion Chops, Lean Venison,
+    --          Lean Wolf Steak, Murloc Fin Soup, Redridge Goulash (level 10), Seasoned Wolf Kabob
+    5527,
+    3276, 5479, 3664, 3665, 3666, 3727, 5480, 12209, 3663, 1082, 1017,
+    -- Level 25: 8 STA/8 SPI - Recipe: Carrion Surprise, Giant Clam Scorcho, Heavy Crocolisk Stew (level 20),
+    --          Hot Wolf Ribs, Jungle Stew, Mystery Stew, Roast Raptor, Soothing Turtle Bisque, Tasty Lion Steak (level 20)
+    12213, 6038, 20074, 13851, 12212, 12214, 12210, 3729, 3728,
+    -- Level 35: 12 STA/12 SPI - Trainer: Spider Sausage, Recipe:  Heavy Kodo Stew
+    17222, 12215,
+    -- Level 40: 12 STA/12 SPI - Recipe:  Monster Omelet, Spiced Chili Crab, Tender Wolf Steak; Quest: Clamlette Surprise
+    12218, 12216, 18045,
+    16971,
+  }
+  local stamSpiritAuras = {
+    19705, -- 2 STA/2 SPI
+    19706, -- 4 STA/4 SPI
+    19708, -- 6 STA/6 SPI
+    19709, -- 8 STA/8 SPI
+    19710, -- 12 STA/12 SPI
+  }
+  buffDefModule:consumableGroup(allBuffs, "foodStamSpirit", stamSpiritAuras, stamSpiritFoodIds)
+               :ExtraText(_t("tooltip.buff.spirit"))
+               :Category("classicFood")
+               :BuffTitle(ITEM_MOD_STAMINA_SHORT .. " " .. ITEM_MOD_SPIRIT_SHORT, 134062) -- inv_misc_fork-knife
+               :ExtraText(_t("tooltip.food.multipleFoodItems"))
+  --:BuffTitle(_t("tooltip.food.staminaSpirit"), 134062) -- inv_misc_fork-knife
+
   -- Nightfin Soup +8Mana/5
   buffDefModule:genericConsumable(allBuffs, 18194, 13931)
                :ExtraText(_t("tooltip.buff.mp5"))
-               :RequirePlayerClass(allBuffsModule.MANA_CLASSES)
-               :Category("classicSpellFood")
-
-  -- Monster Omelette
-  buffDefModule:genericConsumable(allBuffs, 19710, 12218)
-               :ExtraText(_t("tooltip.buff.spirit"))
                :RequirePlayerClass(allBuffsModule.MANA_CLASSES)
                :Category("classicSpellFood")
 

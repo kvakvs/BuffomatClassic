@@ -35,6 +35,7 @@ sharedSettingsModule.defaults = {
 ---@field ScanInRestArea boolean
 ---@field ScanInStealth boolean
 ---@field ScanWhileMounted boolean
+---@field BestAvailableConsume boolean
 ---@field InWorld boolean
 ---@field InPVP boolean
 ---@field InInstance boolean

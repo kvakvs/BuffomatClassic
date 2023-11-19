@@ -53,19 +53,6 @@ local spellIdsModule = BomModuleManager.spellIdsModule
 local warlockModule = BomModuleManager.allSpellsWarlockModule
 local warriorModule = BomModuleManager.allSpellsWarriorModule
 
------@deprecated
---local L = setmetatable(
---        {},
---        {
---          __index = function(_t, k)
---            if BOM.L and BOM.L[k] then
---              return BOM.L[k]
---            else
---              return "[" .. k .. "]"
---            end
---          end
---        })
-
 ---@alias BomClassName WowClassName|"tank"|"pet"
 
 allBuffsModule.ALL_CLASSES = { "WARRIOR", "MAGE", "ROGUE", "DRUID", "HUNTER", "PRIEST", "WARLOCK",
@@ -238,6 +225,8 @@ function allBuffsModule:ApplyPostLimitations(allBuffs)
   return result
 end
 
+-- TODO: Change BomBuffId to string and get rid of spell ids as keys
+---@alias NewBuffId string
 ---@alias BomBuffId number
 ---@alias BomEnchantmentId number #Wow Enchantment ID https://wowwiki-archive.fandom.com/wiki/EnchantId/Enchant_IDs
 
@@ -279,10 +268,9 @@ function allBuffsModule:SetupSpells()
   --Preload items!
   for x, spell in ipairs(allBuffs) do
     if spell.isConsumable and spell.items then
-      for _, item in ipairs(spell.items) do
+      for _, item in ipairs(spell.items or {}) do
         BOM.GetItemInfo(item)
       end
-
     end
   end
 

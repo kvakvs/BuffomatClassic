@@ -111,19 +111,31 @@ function buffChecksModule:HasOneItem(itemToCheck, cd)
   return cachedItem.a, cachedItem.b, cachedItem.c, cachedItem.d
 end
 
+--- Check item min level
+function buffChecksModule:IsUsableItem(itemId)
+  local itemInfo = BOM.GetItemInfo(itemId)
+  if itemInfo then
+    return (--[[---@not nil]] itemInfo).itemMinLevel <= UnitLevel("player")
+  end
+  return true
+end
+
 ---Check whether the player has item
--- TODO: Can move into Buffomat main operation class together with item cache?
+-- TODO: Can move in with item cache?
 ---@param itemsToCheck WowItemId[]
 ---@param cd boolean respect the cooldown?
----@return boolean, number|nil, number|nil, number|nil {HasItem, Bag, Slot, Count}
+---@return boolean, number|nil, number|nil, number|nil, WowItemId|nil {HasItem, Bag, Slot, Count, ItemIdAvailable}
 function buffChecksModule:HasItem(itemsToCheck, cd)
-  for i, itemId in pairs(itemsToCheck) do
-    local okEach, bagEach, slotEach, countEach = self:HasOneItem(itemId, cd)
-    if okEach then -- save last successful result
-      return okEach, bagEach, slotEach, countEach
+  for _, itemId in pairs(itemsToCheck) do
+    if self:IsUsableItem(itemId) then
+      local okEach, bagEach, slotEach, countEach = self:HasOneItem(itemId, cd)
+      if okEach then
+        -- save last successful result
+        return okEach, bagEach, slotEach, countEach, itemId
+      end
     end
   end
-  return false, nil, nil, nil
+  return false, nil, nil, nil, nil
 end
 
 ---@param buff BomBuffDefinition the spell to update

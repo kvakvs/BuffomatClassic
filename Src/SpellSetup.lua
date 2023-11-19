@@ -336,7 +336,9 @@ function spellSetupModule:Setup_EachBuff(buff)
     buff:EnsureDynamicMinLevelSet()
   end
 
-  if not buffDefinitionModule:CheckDynamicLimitations(buff.limitations) then
+  -- Only do this check if not a consumable group. Keep groups always visible to player
+  if not buff.consumeGroupTitle and
+    not buffDefinitionModule:CheckDynamicLimitations(buff.limitations) then
     return
     -- Skip the buff entirely, even consumable!
   end

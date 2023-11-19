@@ -11,6 +11,7 @@ local _t = BomModuleManager.languagesModule
 ---@field target string
 ---@field bag number|nil Nil bag means use equipment slot
 ---@field slot number
+---@field bestItemIdAvailable WowItemId|nil If set, will give a hint, which of the items providing the same buff, will be used
 ---@field extraText string|nil
 local actionUseClass = {}
 actionUseClass.__index = actionUseClass
@@ -21,15 +22,17 @@ actionUseClass.__index = actionUseClass
 ---@param slot number
 ---@return BomTaskActionUse
 ---@param extraText string|nil
-function actionUseModule:New(buffDef, target, bag, slot, extraText)
-  local a = --[[---@type BomTaskActionUse]] {}
-  setmetatable(a, actionUseClass)
-  a.buffDef = buffDef
-  a.target = target
-  a.bag = bag
-  a.slot = slot
-  a.extraText = extraText
-  return a
+---@param bestItemIdAvailable WowItemId|nil
+function actionUseModule:New(buffDef, target, bag, slot, extraText, bestItemIdAvailable)
+  local newAction = --[[---@type BomTaskActionUse]] {}
+  setmetatable(newAction, actionUseClass)
+  newAction.buffDef = buffDef
+  newAction.target = target
+  newAction.bag = bag
+  newAction.slot = slot
+  newAction.extraText = extraText
+  newAction.bestItemIdAvailable = bestItemIdAvailable
+  return newAction
 end
 
 function actionUseClass:CanCast()
@@ -55,5 +58,5 @@ function actionUseClass:GetButtonText(task)
   end
 
   local bdef = (--[[---@not nil]] self.buffDef)
-  return _t("task.type.Use") .. " " .. bdef:SingleLink()
+  return _t("task.type.Use") .. " " .. bdef:SingleLink(self.bestItemIdAvailable)
 end
