@@ -244,6 +244,8 @@ function russianModule:Translations()
     ["consumeType.food"] = "Еда",
     ["consumeType.elixir"] = "Эликсир",
     ["consumeType.scroll"] = "Свиток",
+    ["Items, which provide buff for %s:"] = "Товары народного потребления, дающие %s:",
+    ["Click to print all items which provide this buff"] = "Это группа товаров потребления, дающих один и тот же баф\nНажмите здесь, чтобы вывести список предметов",
 
     ["tooltip.alcohol.stamina"] = "Алкоголь +Выносл",
     ["tooltip.alcohol.spirit"] = "Алкоголь +Дух",

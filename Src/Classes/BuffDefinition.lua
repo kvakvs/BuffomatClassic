@@ -889,3 +889,18 @@ function buffDefModule:NumberList(classic, tbc, wotlk)
   end
   return itemIds1
 end
+
+function buffDefClass:ShowItemsProvidingBuff()
+  BOM:Print(buffomatModule:Color("0070dd", string.format(_t("Items, which provide buff for %s:"), self.consumeGroupTitle)))
+
+  local output = ""
+
+  for _, itemId in ipairs(self.items or {}) do
+    local info = BOM.GetItemInfo(itemId)
+    if info then
+      output = output .. (--[[---@not nil]] info).itemLink .. " "
+    end
+  end
+
+  BOM:Print(output)
+end

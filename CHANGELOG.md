@@ -2,12 +2,12 @@
 
 ## Buffomat Classic 2023.11.2
 
-- Single rows for food buff are now removed and the food buffs are grouped per 
-  stat they provide, including all levels (helps while leveling). Highest 
-  available in your bag will be eaten first.
+- Single rows for each food buff are now grouped per stat they provide, including all levels (helps while leveling). Highest 
+  available in your bag will be eaten first (and a setting to choose lowest first).
   - New grouped buffs are marked with green text
   - New option (last in the "Scan Options") to prefer either highest available 
     item, or lowest. Lowest is useful when leveling, to consume your lowest level consumables first.
+  - Click icon in the buff list to print all items, which can provide this buff, from lowest to highest.
 
 ## Buffomat Classic 2023.11.1
 

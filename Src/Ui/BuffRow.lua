@@ -4,6 +4,7 @@ local BOM = BuffomatAddon ---@type BomAddon
 ---@shape BomBuffRowModule
 local buffRowModule = BomModuleManager.buffRowModule ---@type BomBuffRowModule
 
+local _t = BomModuleManager.languagesModule
 local managedUiModule = BomModuleManager.myButtonModule
 local uiButtonModule = BomModuleManager.uiButtonModule
 local toolboxModule = BomModuleManager.toolboxModule
@@ -138,7 +139,12 @@ function buffRowClass:CreateInfoIcon(buffDef)
 
     if buffDef.consumeGroupIcon then
       self.iconInfo:SetTextures(buffDef.consumeGroupIcon, nil, nil, texturesModule.ICON_COORD_09, nil, nil)
-      --self.iconInfo:SetTexture(buffDef.consumeGroupIcon)
+      self.iconInfo:SetScript("OnMouseDown", function (self, button)
+        if button=='LeftButton' then
+          buffDef:ShowItemsProvidingBuff()
+        end
+      end)
+      toolboxModule:Tooltip(self.iconInfo, _t("Click to print all items which provide this buff"))
 
     else
       if buffDef.isConsumable then

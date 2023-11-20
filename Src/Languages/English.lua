@@ -307,6 +307,8 @@ function englishModule:Translations()
     ["consumeType.food"] = "Food",
     ["consumeType.elixir"] = "Elixir",
     ["consumeType.scroll"] = "Scroll",
+    ["Items, which provide buff for %s:"] = "Items, which provide buff for %s:",
+    ["Click to print all items which provide this buff"] = "This is a group of items providing same type of buff\nClick to print all items which provide this buff",
 
     ["tooltip.alcohol.stamina"] = "Alcohol +Stamina",
     ["tooltip.alcohol.spirit"] = "Alcohol +Spirit",
