@@ -392,27 +392,47 @@ function elixirsModule:_SetupGuardianElixirsClassic(allBuffs, enchantments)
     -- 2min potion buff not real elixirs
     --
     --Major Arcane Protection Potion (crafted and cauldron)
-    buffDefModule:tbcConsumable(allBuffs, 28536, { 22845, 32840 })
+    buffDefModule:consumableGroup(allBuffs, "tbcArcaneProt", { 28536 }, { 22845, 32840 })
+                 :RequireTBC()
                  :Category("tbcElixir")
                  :ElixirType("guardian")
+                 :ConsumeGroupTitle("elixir", RESISTANCE6_NAME, 132379) -- "inv_alchemy_imbuedvial"
+                 :ExtraText(_t("tooltip.elixir.bestInBag"))
+
     --Major Fire Protection Potion (crafted and cauldron)
-    buffDefModule:tbcConsumable(allBuffs, 28511, { 22841, 32846 })
+    buffDefModule:consumableGroup(allBuffs, "tbcFireProt", { 28511 }, { 22841, 32846 })
+                 :RequireTBC()
                  :Category("tbcElixir")
                  :ElixirType("guardian")
+                 :ConsumeGroupTitle("elixir", RESISTANCE2_NAME, 132379) -- "inv_alchemy_imbuedvial"
+                 :ExtraText(_t("tooltip.elixir.bestInBag"))
+
     --Major Frost Protection Potion (crafted and cauldron)
-    buffDefModule:tbcConsumable(allBuffs, 28512, { 22842, 32847 })
+    buffDefModule:consumableGroup(allBuffs, "tbcFrostProt", { 28512 }, { 22842, 32847 })
+                 :RequireTBC()
                  :Category("tbcElixir")
                  :ElixirType("guardian")
+                 :ConsumeGroupTitle("elixir", RESISTANCE4_NAME, 132379) -- "inv_alchemy_imbuedvial"
+                 :ExtraText(_t("tooltip.elixir.bestInBag"))
+
     --Major Nature Protection Potion (crafted and cauldron)
-    buffDefModule:tbcConsumable(allBuffs, 28513, { 22844, 32844 })
+    buffDefModule:consumableGroup(allBuffs, "tbcNatureProt", { 28513 }, { 22844, 32844 })
+                 :RequireTBC()
                  :Category("tbcElixir")
                  :ElixirType("guardian")
+                 :ConsumeGroupTitle("elixir", RESISTANCE3_NAME, 132379) -- "inv_alchemy_imbuedvial"
+                 :ExtraText(_t("tooltip.elixir.bestInBag"))
+
     --Major Shadow Protection Potion (crafted and cauldron)
-    buffDefModule:tbcConsumable(allBuffs, 28537, { 22846, 32845 })
+    buffDefModule:consumableGroup(allBuffs, "tbcShadowProt", { 28537 }, { 22846, 32845 })
+                 :RequireTBC()
                  :Category("tbcElixir")
                  :ElixirType("guardian")
+                 :ConsumeGroupTitle("elixir", RESISTANCE5_NAME, 132379) -- "inv_alchemy_imbuedvial"
+                 :ExtraText(_t("tooltip.elixir.bestInBag"))
+
     --Major Holy Protection Potion (crafted)
-    buffDefModule:tbcConsumable(allBuffs, 28538, { 22847 })
+    buffDefModule:tbcConsumable(allBuffs, 28538, { 22847 }) -- RESISTANCE1_NAME
                  :Category("tbcElixir")
                  :ElixirType("guardian")
   end
