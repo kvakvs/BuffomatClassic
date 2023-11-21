@@ -58,5 +58,8 @@ function actionUseClass:GetButtonText(task)
   end
 
   local bdef = (--[[---@not nil]] self.buffDef)
+  if bdef.isConsumable then
+    return _t("task.type.Consume") .. " " .. bdef:SingleLink(self.bestItemIdAvailable)
+  end
   return _t("task.type.Use") .. " " .. bdef:SingleLink(self.bestItemIdAvailable)
 end

@@ -1032,7 +1032,7 @@ function taskScanModule:AddConsumableSelfbuff_HaveItemReady(buffDef, bestItemIdA
 
   local task = taskModule:Create(self:FormatItemBuffText(bag, slot, count or 0), nil)
                          :PrefixText(taskText)
-                         --:Target(buffTargetModule:FromSelf(playerUnit))
+  --:Target(buffTargetModule:FromSelf(playerUnit))
 
   if buffomatModule.shared.DontUseConsumables
           and not IsModifierKeyDown() then
@@ -1649,18 +1649,27 @@ end
 ---Reloads party members and refreshes their buffs as necessary.
 ---@return BomParty
 function taskScanModule:RotateInvalidatedGroup_GetGroup()
+  partyModule:InvalidatePartyGroup(self.roundRobinGroup)
+  local party = partyModule:GetParty()
+
+  -- Step to the next nonempty group
+  local repeatCounter = 9 -- to prevent endless loop if due to a bug all emptyGroups are empty
   if IsInRaid() then
     -- In raid we rotate groups 1 till 8 every refresh
-    self.roundRobinGroup = self.roundRobinGroup + 1
-    if self.roundRobinGroup > 8 then
-      self.roundRobinGroup = 1
-    end
+    repeat
+      self.roundRobinGroup = self.roundRobinGroup + 1
+
+      if self.roundRobinGroup > 8 then
+        self.roundRobinGroup = 1
+      end
+
+      repeatCounter = repeatCounter - 1
+    until not party.emptyGroups[self.roundRobinGroup] or repeatCounter <= 0
   else
     self.roundRobinGroup = 1 -- always reload group 1 (also this is ignored in solo or 5man)
   end
 
-  partyModule:InvalidatePartyGroup(self.roundRobinGroup)
-  return partyModule:GetParty()
+  return party
 end
 
 function taskScanModule:UpdateScan_PreCheck(from)

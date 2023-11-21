@@ -1,6 +1,6 @@
 # Changelog
 
-## Buffomat Classic 2023.11.2
+## Buffomat Classic 2023.11.3
 
 - Single rows for each food buff are now grouped per stat they provide, including all levels (helps while leveling). Highest 
   available in your bag will be eaten first (and a setting to choose lowest first).
@@ -10,6 +10,7 @@
   - Clicking the icon in the buff list to print all items, which can provide this buff, from lowest to highest.
   - Added food eating auras to ignore list to hide the food buff task while eating, so it doesn't get eaten multiple times.
 - [Known Bug] Soon after resurrecting under the flask effect, Buffomat can show a task for reflasking. It disappears a second or two later.
+- In raid, staggered per-group updates now will skip empty 5man groups, which will result in faster updates overall.
 
 ## Buffomat Classic 2023.11.1
 

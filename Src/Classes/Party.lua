@@ -38,6 +38,7 @@ local taskScanModule = BomModuleManager.taskScanModule
 ---@field byName BomUnitDictByName Party members by name
 ---@field player BomUnit
 ---@field playerPet BomUnit|nil
+---@field emptyGroups table<number, boolean> Groups without members
 local partyClass = {}
 partyClass.__index = partyClass
 
@@ -47,6 +48,7 @@ function partyModule:New()
   p.byGroup = --[[---@type BomUnitDictByGroup]] {}
   p.byUnitId = --[[---@type BomUnitDictByUnitId]] {}
   p.byName = --[[---@type BomUnitDictByName]] {}
+  p.emptyGroups = {}
   setmetatable(p, partyClass)
   return p
 end
@@ -149,9 +151,9 @@ end
 ---@param invalidGroups BomPartyCacheInvalidation
 function partyModule:RefreshParty(party, invalidGroups)
   if IsInRaid() then
-    party:Get40manMembers(invalidGroups)
+    party:GetRaidMembers(invalidGroups)
   else
-    party:Get5manMembers()
+    party:Get5manPartyMembers()
   end
 
   if buffomatModule.shared.BuffTarget
@@ -208,7 +210,7 @@ function partyClass:GetPlayerAndPetUnit()
 end
 
 ---@return BomParty
-function partyClass:Get5manMembers()
+function partyClass:Get5manPartyMembers()
   if IsInGroup() then
     for groupIndex = 1, 4 do
       local partyMember = unitCacheModule:GetUnit("party" .. groupIndex, nil, nil, nil)
@@ -234,14 +236,17 @@ end
 ---InvalidGroups parameter allows reloading partially 5 members at a time
 ---@param invalidGroups BomPartyCacheInvalidation Groups to reload
 ---@return BomParty
-function partyClass:Get40manMembers(invalidGroups)
+function partyClass:GetRaidMembers(invalidGroups)
   local nameGroupMap = --[[---@type BomNameGroupMap]] {}
   local nameRoleMap = --[[---@type BomNameRoleMap]] {}
 
   for groupIndex, _true in pairs(invalidGroups) do
     local raidBegin = (groupIndex - 1) * 5
     local raidEnd = raidBegin + 5
+    self.emptyGroups[groupIndex] = true
+
     for raidIndex = raidBegin, raidEnd do
+
       ---@type string, string, number, number, BomClassName, string, number, boolean, boolean, BomRaidRole, boolean, string
       local name, rank, subgroup, level, class, fileName, zone, online, isDead
       , role, isML, combatRole = GetRaidRosterInfo(raidIndex)
@@ -254,6 +259,7 @@ function partyClass:Get40manMembers(invalidGroups)
 
       local partyMember = unitCacheModule:GetUnit("raid" .. raidIndex, nameGroupMap, nameRoleMap, nil)
       if partyMember then
+        self.emptyGroups[groupIndex] = false
         self:Add(--[[---@not nil]] partyMember)
       end
     end -- each member of invalidated group
