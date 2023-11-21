@@ -652,10 +652,13 @@ function buffDefClass:IgnoreIfHaveBuff(spellId)
   self.ignoreIfBetterBuffs = self.ignoreIfBetterBuffs or {}
   if type(spellId) == "number" then
     tinsert(self.ignoreIfBetterBuffs, spellId)
-  else
+  elseif type(spellId) == "table" then
     for _i, spell in ipairs(--[[---@type WowSpellId[] ]] spellId) do
       tinsert(self.ignoreIfBetterBuffs, spell)
     end
+  else
+    BOM:Print(string.format("Spell %s was given invalid value for 'ignoreifhavebuff' %s",
+            tostring(self.buffId), tostring(spellId)))
   end
   return self
 end

@@ -3,7 +3,8 @@
 
 # Source files for WoW Classic UI
 /BlizzardInterfaceCode
-_TBC_BlizzardInterfaceCode/*
+/_TBC_BlizzardInterfaceCode/*
+/Interface*
 
 # Generated files, do not add
 BuffomatClassic*.toc

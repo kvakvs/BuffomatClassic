@@ -7,7 +7,9 @@
   - New grouped buffs are marked with green text
   - New option (last in the "Scan Options") to prefer either highest available 
     item, or lowest. Lowest is useful when leveling, to consume your lowest level consumables first.
-  - Click icon in the buff list to print all items, which can provide this buff, from lowest to highest.
+  - Clicking the icon in the buff list to print all items, which can provide this buff, from lowest to highest.
+  - Added food eating auras to ignore list to hide the food buff task while eating, so it doesn't get eaten multiple times.
+- [Known Bug] Soon after resurrecting under the flask effect, Buffomat can show a task for reflasking. It disappears a second or two later.
 
 ## Buffomat Classic 2023.11.1
 

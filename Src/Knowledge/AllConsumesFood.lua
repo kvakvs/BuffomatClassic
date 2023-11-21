@@ -31,17 +31,20 @@ function foodModule:_SetupMiscFoodTBC(allBuffs, enchantments)
   buffDefModule:tbcConsumable(allBuffs, 33257, { 33052, 27667 })
                :ExtraText(_t("tooltip.buff.stamina"))
                :Category("tbcFood")
+               :IgnoreIfHaveBuff(spellIdsModule.TBCFood)
 
   --Well Fed +20 STA +20 SPI
   buffDefModule:tbcConsumable(allBuffs, 35254, { 27651, 30155, 27662, 33025 })
                :ExtraText(_t("tooltip.buff.stamina"))
                :Category("tbcFood")
+               :IgnoreIfHaveBuff(spellIdsModule.TBCFood)
 
   --Skyguard Rations: Well Fed +15 STA +15 SPI
   buffDefModule:tbcConsumable(allBuffs, 41030, 32721)
                :ExtraText(_t("tooltip.buff.stamina"))
                :RequirePlayerClass(allBuffsModule.MANA_CLASSES)
                :Category("tbcFood")
+               :IgnoreIfHaveBuff(spellIdsModule.TBCFood)
 end
 
 ---@param allBuffs BomBuffDefinition[]
@@ -60,6 +63,7 @@ function foodModule:_SetupPhysicalFoodTBC(allBuffs, enchantments)
                :RequireTBC()
                :RequirePlayerClass(allBuffsModule.PHYSICAL_CLASSES)
                :Category("tbcPhysFood")
+               :IgnoreIfHaveBuff(spellIdsModule.TBCFood)
                :ConsumeGroupTitle("food", ITEM_MOD_AGILITY_SHORT .. ", " .. ITEM_MOD_SPIRIT_SHORT, 134062) -- "inv_misc_fork-knife"
                :ExtraText(_t("tooltip.food.bestInBag"))
 
@@ -68,6 +72,7 @@ function foodModule:_SetupPhysicalFoodTBC(allBuffs, enchantments)
                :RequirePlayerClass(allBuffsModule.PHYSICAL_CLASSES)
                :ExtraText(_t("tooltip.buff.hit"))
                :Category("tbcPhysFood")
+               :IgnoreIfHaveBuff(spellIdsModule.TBCFood)
 
   -- Well Fed +20 STR +20 SPI
   local strFoodItemIds = {
@@ -81,6 +86,7 @@ function foodModule:_SetupPhysicalFoodTBC(allBuffs, enchantments)
                :RequireTBC()
                :RequirePlayerClass(allBuffsModule.MELEE_CLASSES)
                :Category("tbcPhysFood")
+               :IgnoreIfHaveBuff(spellIdsModule.TBCFood)
                :ConsumeGroupTitle("food", ITEM_MOD_STRENGTH_SHORT .. ", " .. ITEM_MOD_SPIRIT_SHORT, 134062) -- "inv_misc_fork-knife"
                :ExtraText(_t("tooltip.food.bestInBag"))
 
@@ -89,12 +95,14 @@ function foodModule:_SetupPhysicalFoodTBC(allBuffs, enchantments)
                :RequirePlayerClass(allBuffsModule.PHYSICAL_CLASSES)
                :ExtraText(_t("tooltip.buff.attackPower"))
                :Category("tbcPhysFood")
+               :IgnoreIfHaveBuff(spellIdsModule.TBCFood)
 
   -- Charred Bear Kabobs +24 AP
   buffDefModule:tbcConsumable(allBuffs, 46899, 35563)
                :RequirePlayerClass(allBuffsModule.PHYSICAL_CLASSES)
                :ExtraText(_t("tooltip.buff.attackPower"))
                :Category("tbcPhysFood")
+               :IgnoreIfHaveBuff(spellIdsModule.TBCFood)
 end
 
 ---@param allBuffs BomBuffDefinition[]
@@ -113,7 +121,7 @@ function foodModule:_SetupCasterFoodTBC(allBuffs, enchantments)
   buffDefModule:consumableGroup(allBuffs, "tbcSpellFood", spellFoodAuras, spellFoodItemIds)
                :RequireTBC()
                :RequirePlayerClass(allBuffsModule.SPELL_CLASSES)
-               :IgnoreIfHaveBuff(33264)
+               :IgnoreIfHaveBuff(spellIdsModule.TBCFood)
                :Category("tbcSpellFood")
                :ConsumeGroupTitle("food", ITEM_MOD_SPELL_POWER_SHORT .. ", " .. ITEM_MOD_SPIRIT_SHORT, 134062) -- "inv_misc_fork-knife"
                :ExtraText(_t("tooltip.food.bestInBag"))
@@ -121,6 +129,7 @@ function foodModule:_SetupCasterFoodTBC(allBuffs, enchantments)
   -- Blackened Sporefish: Well Fed +8 MP5 +20 STA
   buffDefModule:tbcConsumable(allBuffs, 33265, 27663)
                :RequirePlayerClass(allBuffsModule.MANA_CLASSES)
+               :IgnoreIfHaveBuff(spellIdsModule.TBCFood)
                :ExtraText(_t("tooltip.buff.mp5"))
                :Category("tbcSpellFood")
 
@@ -135,12 +144,14 @@ function foodModule:_SetupCasterFoodTBC(allBuffs, enchantments)
   buffDefModule:consumableGroup(allBuffs, "tbcHealFood", healFoodAuras, healFoodItemIds)
                :RequireTBC()
                :RequirePlayerClass(allBuffsModule.MANA_CLASSES)
+               :IgnoreIfHaveBuff(spellIdsModule.TBCFood)
                :Category("tbcSpellFood")
                :ConsumeGroupTitle("food", _t("Healing Power") .. ", " .. ITEM_MOD_SPIRIT_SHORT, 134062) -- "inv_misc_fork-knife"
                :ExtraText(_t("tooltip.food.bestInBag"))
 
   -- Skullfish Soup +20 Spell Crit/20 Spirit
   buffDefModule:tbcConsumable(allBuffs, 43722, 33825)
+               :IgnoreIfHaveBuff(spellIdsModule.TBCFood)
                :IgnoreIfHaveBuff(43706) -- Drinking 240 mana/second
                :ExtraText(_t("tooltip.buff.spellCrit"))
                :RequirePlayerClass(allBuffsModule.SPELL_CLASSES)
@@ -183,6 +194,7 @@ function foodModule:_SetupCasterFoodClassic(allBuffs, enchantments)
   }
   buffDefModule:consumableGroup(allBuffs, "foodStamSpirit", stamSpiritAuras, stamSpiritFoodIds)
                :Category("classicFood")
+               :IgnoreIfHaveBuff(spellIdsModule.ClassicFood)
                :ConsumeGroupTitle("food", ITEM_MOD_STAMINA_SHORT .. " " .. ITEM_MOD_SPIRIT_SHORT, 134062) -- "inv_misc_fork-knife"
                :ExtraText(_t("tooltip.food.bestInBag"))
 
@@ -203,6 +215,7 @@ function foodModule:_SetupCasterFoodClassic(allBuffs, enchantments)
   buffDefModule:consumableGroup(allBuffs, "foodMp5", mp5FoodAuras, mp5FoodIds)
                :RequirePlayerClass(allBuffsModule.MANA_CLASSES)
                :Category("classicSpellFood")
+               :IgnoreIfHaveBuff(spellIdsModule.ClassicFood)
                :ConsumeGroupTitle("food", ITEM_MOD_MANA_REGENERATION_SHORT, 134062) -- "inv_misc_fork-knife"
                :ExtraText(_t("tooltip.food.bestInBag"))
 
@@ -210,10 +223,12 @@ function foodModule:_SetupCasterFoodClassic(allBuffs, enchantments)
   buffDefModule:genericConsumable(allBuffs, 18141, 13813)
                :ExtraText(_t("tooltip.buff.spirit"))
                :RequirePlayerClass(allBuffsModule.MANA_CLASSES)
+               :IgnoreIfHaveBuff(spellIdsModule.ClassicFood)
                :Category("classicSpellFood")
 
   --Runn Tum Tuber Surprise
   buffDefModule:genericConsumable(allBuffs, 22730, 18254)
+               :IgnoreIfHaveBuff(spellIdsModule.ClassicFood)
                :Category("classicSpellFood")
 end
 
@@ -221,6 +236,7 @@ end
 ---@param enchantments BomEnchantmentsMapping
 function foodModule:_SetupMiscFoodClassic(allBuffs, enchantments)
   buffDefModule:genericConsumable(allBuffs, 25661, 21023) -- Dirge's Kickin' Chimaerok Chops x
+               :IgnoreIfHaveBuff(spellIdsModule.ClassicFood)
                :Category("classicFood")
 end
 
@@ -229,16 +245,19 @@ end
 function foodModule:_SetupPhysicalFoodClassic(allBuffs, enchantments)
   --Grilled Squid +10 Agility
   buffDefModule:genericConsumable(allBuffs, 18192, 13928)
+               :IgnoreIfHaveBuff(spellIdsModule.ClassicFood)
                :RequirePlayerClass(allBuffsModule.PHYSICAL_CLASSES)
                :Category("classicPhysFood")
 
   --Smoked Desert Dumplings +Strength
   buffDefModule:genericConsumable(allBuffs, 24799, 20452)
+               :IgnoreIfHaveBuff(spellIdsModule.ClassicFood)
                :RequirePlayerClass(allBuffsModule.PHYSICAL_CLASSES)
                :Category("classicPhysFood")
 
   --Blessed Sunfruit +STR
   buffDefModule:genericConsumable(allBuffs, 18125, 13810)
+               :IgnoreIfHaveBuff(spellIdsModule.ClassicFood)
                :RequirePlayerClass(allBuffsModule.MELEE_CLASSES)
                :Category("classicPhysFood")
 end
@@ -258,7 +277,7 @@ function foodModule:_SetupCasterFoodWotLK(allBuffs, enchantments)
   buffDefModule:consumableGroup(allBuffs, "wotlkSpiritFood", spiFoodAuras, spiFoodItemIds)
                :RequireWotLK()
                :RequirePlayerClass(allBuffsModule.SPELL_CLASSES)
-               :IgnoreIfHaveBuff(spellIdsModule.WotlkFood80) -- [Food] While eating Cuttlesteak
+               :IgnoreIfHaveBuff(spellIdsModule.WotLKFood) -- [Food] While eating Cuttlesteak
                :Category("wotlkSpellFood")
                :ConsumeGroupTitle("food", ITEM_MOD_SPIRIT_SHORT .. ", " .. ITEM_MOD_STAMINA_SHORT, 134062) -- "inv_misc_fork-knife"
                :ExtraText(_t("tooltip.food.bestInBag"))
@@ -277,7 +296,7 @@ function foodModule:_SetupCasterFoodWotLK(allBuffs, enchantments)
   buffDefModule:consumableGroup(allBuffs, "wotlkSpellFood", spellFoodAuras, spellFoodItemIds)
                :RequireWotLK()
                :RequirePlayerClass(allBuffsModule.SPELL_CLASSES)
-               :IgnoreIfHaveBuff(spellIdsModule.WotlkFood80) -- [Food] While eating Shoveltusk Steak
+               :IgnoreIfHaveBuff(spellIdsModule.WotLKFood) -- [Food] While eating Shoveltusk Steak
                :Category("wotlkSpellFood")
                :ConsumeGroupTitle("food", ITEM_MOD_SPELL_POWER_SHORT .. ", " .. ITEM_MOD_STAMINA_SHORT, 134062) -- "inv_misc_fork-knife"
                :ExtraText(_t("tooltip.food.bestInBag"))
@@ -295,7 +314,7 @@ function foodModule:_SetupCasterFoodWotLK(allBuffs, enchantments)
   buffDefModule:consumableGroup(allBuffs, "wotlkMp5Food", mp5FoodAuras, mp5FoodItemIds)
                :RequireWotLK()
                :RequirePlayerClass(allBuffsModule.SPELL_CLASSES)
-               :IgnoreIfHaveBuff(spellIdsModule.WotlkFood80) -- [Food] While eating Pickled Fangtooth/Rhino Dogs
+               :IgnoreIfHaveBuff(spellIdsModule.WotLKFood) -- [Food] While eating Pickled Fangtooth/Rhino Dogs
                :Category("wotlkSpellFood")
                :ConsumeGroupTitle("food", ITEM_MOD_MANA_REGENERATION_SHORT .. ", " .. ITEM_MOD_STAMINA_SHORT, 134062) -- "inv_misc_fork-knife"
                :ExtraText(_t("tooltip.food.bestInBag"))
@@ -311,7 +330,7 @@ function foodModule:_SetupPhysicalFoodWotLK(allBuffs, enchantments)
   buffDefModule:wotlkConsumable(allBuffs, 57371, 43000)
                :ExtraText(_t("tooltip.buff.strength"))
                :RequirePlayerClass(allBuffsModule.MELEE_CLASSES)
-               :IgnoreIfHaveBuff(spellIdsModule.WotlkFood80) -- [Food] While eating Dragonfin Filet
+               :IgnoreIfHaveBuff(spellIdsModule.WotLKFood) -- [Food] While eating Dragonfin Filet
                :Category("wotlkPhysFood")
   --
   -- Agility Food
@@ -320,7 +339,7 @@ function foodModule:_SetupPhysicalFoodWotLK(allBuffs, enchantments)
   buffDefModule:wotlkConsumable(allBuffs, 57367, 42999)
                :ExtraText(_t("tooltip.buff.agility"))
                :RequirePlayerClass(allBuffsModule.PHYSICAL_CLASSES)
-               :IgnoreIfHaveBuff(spellIdsModule.WotlkFood80) -- [Food] While eating Blackened Dragonfin
+               :IgnoreIfHaveBuff(spellIdsModule.WotLKFood) -- [Food] While eating Blackened Dragonfin
                :Category("wotlkPhysFood")
 
   -- All Attack Power Food buff providers
@@ -338,7 +357,7 @@ function foodModule:_SetupPhysicalFoodWotLK(allBuffs, enchantments)
   buffDefModule:consumableGroup(allBuffs, "wotlkApFood", apFoodAuras, apFoodItemIds)
                :RequireWotLK()
                :RequirePlayerClass(allBuffsModule.PHYSICAL_CLASSES)
-               :IgnoreIfHaveBuff(spellIdsModule.WotlkFood80) -- [Food] While eating Mega Mammoth Meal/Poached Northern Sculpin
+               :IgnoreIfHaveBuff(spellIdsModule.WotLKFood) -- [Food] While eating Mega Mammoth Meal/Poached Northern Sculpin
                :Category("wotlkPhysFood")
                :ConsumeGroupTitle("food", ITEM_MOD_ATTACK_POWER_SHORT .. ", " .. ITEM_MOD_STAMINA_SHORT, 134062) -- "inv_misc_fork-knife"
                :ExtraText(_t("tooltip.food.bestInBag"))
@@ -349,7 +368,7 @@ function foodModule:_SetupPhysicalFoodWotLK(allBuffs, enchantments)
   buffDefModule:wotlkConsumable(allBuffs, 57356, 42994)
                :ExtraText(_t("tooltip.buff.attackPower"))
                :RequirePlayerClass(allBuffsModule.PHYSICAL_CLASSES)
-               :IgnoreIfHaveBuff(spellIdsModule.WotlkFood80) -- [Food] While eating Rhinolicious Wormsteak
+               :IgnoreIfHaveBuff(spellIdsModule.WotLKFood) -- [Food] While eating Rhinolicious Wormsteak
                :Category("wotlkPhysFood")
   --
   -- Armor Pen Food
@@ -358,7 +377,7 @@ function foodModule:_SetupPhysicalFoodWotLK(allBuffs, enchantments)
   buffDefModule:wotlkConsumable(allBuffs, 57358, 42995)
                :ExtraText(_t("tooltip.buff.armorPenetration"))
                :RequirePlayerClass(allBuffsModule.PHYSICAL_CLASSES)
-               :IgnoreIfHaveBuff(spellIdsModule.WotlkFood80) -- [Food] While eating Hearty Rhino
+               :IgnoreIfHaveBuff(spellIdsModule.WotLKFood) -- [Food] While eating Hearty Rhino
                :Category("wotlkPhysFood")
 end
 
@@ -380,7 +399,7 @@ function foodModule:_SetupMiscFoodWotLK(allBuffs, enchantments)
 
   buffDefModule:consumableGroup(allBuffs, "wotlkHasteFood", hasteFoodAuras, hasteFoodItemIds)
                :RequireWotLK()
-               :IgnoreIfHaveBuff(spellIdsModule.WotlkFood80) -- [Food] While eating Very Burnt Worg/Imperial Manta Steak
+               :IgnoreIfHaveBuff(spellIdsModule.WotLKFood) -- [Food] While eating Very Burnt Worg/Imperial Manta Steak
                :Category("wotlkFood")
                :ConsumeGroupTitle("food", (ITEM_MOD_HASTE_RATING_SHORT or "Haste") .. ", " .. ITEM_MOD_STAMINA_SHORT, 134062) -- "inv_misc_fork-knife"
                :ExtraText(_t("tooltip.food.bestInBag"))
@@ -392,7 +411,7 @@ function foodModule:_SetupMiscFoodWotLK(allBuffs, enchantments)
   local hasteFoodAuras = { 57360 } -- Well Fed, +40 Hit, +40 Stamina
   buffDefModule:consumableGroup(allBuffs, "wotlkHitFood", hasteFoodAuras, hasteFoodItemIds)
                :RequireWotLK()
-               :IgnoreIfHaveBuff(spellIdsModule.WotlkFood80) -- [Food] While eating Worg Tartare/Snapper Extreme
+               :IgnoreIfHaveBuff(spellIdsModule.WotLKFood) -- [Food] While eating Worg Tartare/Snapper Extreme
                :Category("wotlkFood")
                :ConsumeGroupTitle("food", (ITEM_MOD_HIT_RATING_SHORT or "Hit") .. ", " .. ITEM_MOD_STAMINA_SHORT, 134062) -- "inv_misc_fork-knife"
                :ExtraText(_t("tooltip.food.bestInBag"))
@@ -411,7 +430,7 @@ function foodModule:_SetupMiscFoodWotLK(allBuffs, enchantments)
 
   buffDefModule:consumableGroup(allBuffs, "wotlkCritFood", critFoodAuras, critFoodItemIds)
                :RequireWotLK()
-               :IgnoreIfHaveBuff(spellIdsModule.WotlkFood80) -- [Food] While eating Spicy Blue Nettlefish/Spiced Worm Burger
+               :IgnoreIfHaveBuff(spellIdsModule.WotLKFood) -- [Food] While eating Spicy Blue Nettlefish/Spiced Worm Burger
                :Category("wotlkFood")
                :ConsumeGroupTitle("food", (ITEM_MOD_CRIT_RATING_SHORT or "Crit") .. ", " .. ITEM_MOD_STAMINA_SHORT, 134062) -- "inv_misc_fork-knife"
                :ExtraText(_t("tooltip.food.bestInBag"))  --
@@ -427,7 +446,7 @@ function foodModule:_SetupMiscFoodWotLK(allBuffs, enchantments)
   }
   buffDefModule:consumableGroup(allBuffs, "wotlkComboMeal", comboFoodAuras, comboFoodItemIds)
                :RequireWotLK()
-               :IgnoreIfHaveBuff(spellIdsModule.WotlkFood80) -- [Food] While eating Fish Feast
+               :IgnoreIfHaveBuff(spellIdsModule.WotLKFood) -- [Food] While eating Fish Feast
                :Category("wotlkFood")
                :ConsumeGroupTitle("food", ITEM_MOD_SPELL_POWER_SHORT .. ", " .. ITEM_MOD_ATTACK_POWER_SHORT .. ", " .. ITEM_MOD_STAMINA_SHORT, 134062) -- "inv_misc_fork-knife"
                :ExtraText(_t("tooltip.food.bestInBag"))
