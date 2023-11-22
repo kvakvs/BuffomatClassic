@@ -306,7 +306,7 @@ function foodModule:_SetupMiscFoodWotLK(allBuffs, enchantments)
   --
   -- HIT Food
   --
-  buffDefModule:wotlkConsumable(allBuffs, 57360, { 34751, 42996 }) -- Worg Tartare/Snapper Extreme +40 Hit/40 Stam
+  buffDefModule:wotlkConsumable(allBuffs, 57360, { 44953, 42996 }) -- Worg Tartare/Snapper Extreme +40 Hit/40 Stam
                :ExtraText(_t("tooltip.buff.hit") .. " " .. _t("tooltip.food.multipleFoodItems"))
                :IgnoreIfHaveBuff(spellIdsModule.WotlkFood80) -- [Food] While eating Worg Tartare/Snapper Extreme
                :Category("wotlkFood")
