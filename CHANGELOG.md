@@ -1,6 +1,6 @@
 # Changelog
 
-## Buffomat Classic 2023.11.3
+## Buffomat Classic 2023.11.4
 
 - Single rows for each food buff are now grouped per stat they provide, including all levels (helps while leveling). Highest 
   available in your bag will be eaten first (and a setting to choose lowest first).
