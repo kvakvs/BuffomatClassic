@@ -163,9 +163,9 @@ end
 function foodModule:_SetupCasterFoodClassic(allBuffs, enchantments)
   -- STAM/SPIRIT
   local stamSpiritFoodIds = {
-    -- Level 1: 2 STA/2 SPI - Trainer: Herb Baked Egg, Spiced Wolf Meat,
+    -- Level 1: 2 STA/2 SPI - Trainer: Herb Baked Egg, Spiced Wolf Meat, Cactus Apple Surprise (Quest)
     --          Recipe: Beer Basted Boar Ribs, Crispy Bat Wing, Kaldorei Spider Kabob, Roasted Kodo Meat
-    6888, 2680,
+    6888, 2680, 11584,
     2888, 12224, 5472, 5474,
     -- Level 5: 4 STA/4 SPI - Trainer: Boiled Clams, Coyote Steak, Crab Cake, Dry Pork Ribs
     --          Recipe: Blood Sausage, Crocolisk Steak, Fillet of Frenzy, Goretusk Liver Pie, Strider Stew
