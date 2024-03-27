@@ -80,6 +80,14 @@ function hunterModule:_SetupHunterSpellsTBC(allBuffs, enchantments)
                :IsDefault(false)
                :RequirePlayerClass("HUNTER")
                :Category("class")
+  -- Season of Discovery: Heart of the Lion (+10% stats)
+  buffDefModule:createAndRegisterBuff(allBuffs, 409580, nil) -- Chest Rune spell id 399954
+               :BuffType("aura")
+               :IgnoreIfHaveBuff({ 409580, -- the buff on hunter
+                                   409583 }) -- the buff from aura
+               :IsDefault(true)
+               :RequirePlayerClass("HUNTER")
+               :Category("class")
 
   -- Track Beast
   buffDefModule:createAndRegisterBuff(allBuffs, 1494, nil)

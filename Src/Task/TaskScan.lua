@@ -551,7 +551,7 @@ end
 
 ---@param playerUnit BomUnit
 function taskScanModule:CancelBuffs(playerUnit)
-  for i, spell in ipairs(BOM.cancelBuffs) do
+  for i, spell in ipairs(BOM.cancelBuffs or {}) do
     if buffomatModule.currentProfile.CancelBuff[spell.buffId].Enable
             and not spell.onlyCombat
     then
@@ -1245,7 +1245,10 @@ end
 ---@param buffCtx BomBuffScanContext
 function taskScanModule:AddWeaponEnchant(buffDef, playerUnit, buffCtx)
   local _, selfClass, _ = UnitClass("player")
-  if not envModule.haveTBC or selfClass ~= "SHAMAN" then
+
+  local isTBCShaman = envModule.haveTBC and selfClass == "SHAMAN"
+  local isDualwieldShaman = IsSpellKnown(674) and selfClass == "SHAMAN"
+  if not isTBCShaman and not isDualwieldShaman then
     return
   end
 

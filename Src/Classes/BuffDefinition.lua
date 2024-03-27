@@ -513,9 +513,9 @@ function buffDefClass:ConsumeGroupTitle(consumeType, title, icon)
   return self
 end
 
-function buffDefClass:ClassicBuffTypeIsSeal()
+function buffDefClass:RewriteSealBuffType()
   -- for before TBC make this a seal spell, for TBC do not modify
-  if not envModule.haveTBC then
+  if not envModule.haveTBC and not IsSpellKnown(674) then
     self.type = "seal"
   end
   return self

@@ -1,5 +1,14 @@
 # Changelog
 
+## Buffomat Classic 2024.3.0
+
+- [SoD] [Shaman] Dual wield enchantments work again. Known problem: You can't 
+leave mainhand unenchanted, it always does mainhand first.
+
+## Buffomat Classic 2023.12.1
+
+- [SoD] [Hunter] Heart of the Lion 10% stats aura
+
 ## Buffomat Classic 2023.11.4
 
 - Single rows for each food buff are now grouped per stat they provide, including all levels (helps while leveling). Highest 
