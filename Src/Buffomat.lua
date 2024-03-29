@@ -295,6 +295,9 @@ function BOM.CreateSingleBuffButton(parent_frame)
   end
 end
 
+local libDB = LibStub("LibDataBroker-1.1")
+local libIcon = LibStub("LibDBIcon-1.0")
+
 function buffomatModule:InitUI()
   BomC_ListTab_MessageFrame:SetFading(false);
   BomC_ListTab_MessageFrame:SetFontObject(GameFontNormalSmall);
@@ -314,14 +317,17 @@ function buffomatModule:InitUI()
     if button == "LeftButton" then
       buffomatModule:ToggleWindow()
     else
-      optionsPopupModule:Setup(self1.button, true)
+      optionsPopupModule:Setup(Minimap, true)
     end
   end
-  BOM.minimapButton:Init(
-          self.shared.Minimap,
-          constModule.BOM_BEAR_ICON_FULLPATH,
-          onMinimapClick,
-          constModule.SHORT_TITLE)
+
+  local buffomatLDB = libDB:NewDataObject("BuffomatIcon", {
+    type = "data source",
+    text = "Buffomat",
+    icon = constModule.BOM_BEAR_ICON_FULLPATH,
+    OnClick = onMinimapClick,
+  })
+  libIcon:Register("BuffomatIcon", buffomatLDB, self.shared.Minimap)
 
   buffomatModule:OptionsInit()
   partyModule:InvalidatePartyCache()

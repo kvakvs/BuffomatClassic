@@ -67,7 +67,6 @@ Src/Cache/UnitCache.lua
 Src/Ui/BuffRow.lua
 Src/Ui/ControlManager.lua
 Src/Ui/ManagedUi.lua
-Src/Ui/MinimapButton.lua
 Src/Ui/Options.lua
 Src/Ui/OptionsPopup.lua
 Src/Ui/SpellButtonsTab.lua

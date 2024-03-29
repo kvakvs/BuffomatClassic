@@ -12,6 +12,8 @@ local eventsModule = BomModuleManager.eventsModule
 local taskScanModule = BomModuleManager.taskScanModule
 local kvOptionsModule = KvModuleManager.optionsModule
 
+local libIcon = LibStub("LibDBIcon-1.0")
+
 ---@param dict table|nil
 ---@param key string|nil
 ---@param notify function|nil Call this with (key, value) on option change
@@ -80,15 +82,15 @@ function optionsModule:CreateGeneralOptionsTable()
               "ShowMinimapButton", buffomatModule.shared.Minimap, "visible",
               function(key, value)
                 if value then
-                  BOM.minimapButton:Show()
+                  libIcon:Show("BuffomatIcon")
                 else
-                  BOM.minimapButton:Hide()
+                  libIcon:Hide("BuffomatIcon")
                 end
               end),
-      minimapButtonLock = self:TemplateCheckbox(
-              "LockMinimapButton", buffomatModule.shared.Minimap, "lock", nil),
-      minimapButtonLockDist = self:TemplateCheckbox(
-              "LockMinimapButtonDistance", buffomatModule.shared.Minimap, "lockDistance", nil),
+      --minimapButtonLock = self:TemplateCheckbox(
+      --        "LockMinimapButton", buffomatModule.shared.Minimap, "lock", nil),
+      --minimapButtonLockDist = self:TemplateCheckbox(
+      --        "LockMinimapButtonDistance", buffomatModule.shared.Minimap, "lockDistance", nil),
       --uiWindowScale         = self:TemplateInput("float", "UIWindowScale"),
       uiWindowScale = self:TemplateRange(
               "UIWindowScale", 0.35, 2.0, 0.05,

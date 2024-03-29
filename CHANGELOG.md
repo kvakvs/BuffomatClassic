@@ -3,6 +3,9 @@
 ## Buffomat Classic 2024.3.1
 
 - [Druid] Do not /cancelform in moonkin form by adding `[noform:5]` to it.
+- Minimap button is now using LibAce's standard library. Removed options for 
+button rotation and distance, as they're now handled by the external library.
+Clicking the button toggles the window, right clicking shows quick menu.
 
 ## Buffomat Classic 2024.3.0
 

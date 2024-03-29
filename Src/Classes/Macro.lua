@@ -50,7 +50,7 @@ end
 function macroClass:UpdateMacro()
   local icon = self.icon or constModule.MACRO_ICON
   EditMacro(constModule.MACRO_NAME, nil, icon, self:GetText())
-  BOM.minimapButton:SetTexture("Interface\\ICONS\\" .. icon)
+  --BOM.minimapButton:SetTexture("Interface\\ICONS\\" .. icon)
 end
 
 function macroClass:EnsureExists()
