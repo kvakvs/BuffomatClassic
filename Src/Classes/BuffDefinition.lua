@@ -143,6 +143,7 @@ function buffDefModule:New(singleId)
   buff.groupsNeedBuff = {}
   buff.groupsHaveDead = --[[---@type BomDeadMap]] {}
   buff.skipList = {}
+  buff.targetClasses = {}
 
   setmetatable(buff, buffDefClass)
   return buff
