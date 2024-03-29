@@ -68,6 +68,16 @@ function actionCastClass:GetButtonText(task)
   return (self.spellLink or "?") .. " " .. task.extraText
 end
 
+function actionCastClass:GetCancelFormMacroLine()
+  local _, playerClass, _ = UnitClass("player")
+
+  if playerClass == "DRUID" then
+    return "/cancelform [nocombat, noform:5]"
+  end
+
+  return "/cancelform [nocombat]"
+end
+
 ---@param m BomMacro
 function actionCastClass:UpdateMacro(m)
   --Downgrade-Check
@@ -132,7 +142,7 @@ function actionCastClass:UpdateMacro(m)
   end
 
   if tContains(allBuffsModule.cancelForm, self.spellId) then
-    table.insert(m.lines, "/cancelform [nocombat]")
+    table.insert(m.lines, self:GetCancelFormMacroLine())
   end
   table.insert(m.lines, "/bom _checkforerror")
 

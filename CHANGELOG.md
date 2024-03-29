@@ -1,5 +1,9 @@
 # Changelog
 
+## Buffomat Classic 2024.3.1
+
+- [Druid] Do not /cancelform in moonkin form by adding `[noform:5]` to it.
+
 ## Buffomat Classic 2024.3.0
 
 - [SoD] [Shaman] Dual wield enchantments work again. Known problem: You can't 

@@ -265,7 +265,7 @@ function spellSetupModule:Setup_EachBuff_AddKnown(buffDef)
         profileSpell.SelfCast = false
 
         for ci, class in ipairs(constModule.CLASSES) do
-          profileSpell.Class[class] = tContains(buffDef.targetClasses, class)
+          profileSpell.Class[class] = tContains(buffDef.targetClasses or {}, class)
           SelfCast = profileSpell.Class[class] and false or SelfCast
         end
 
