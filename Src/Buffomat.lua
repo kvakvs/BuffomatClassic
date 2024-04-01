@@ -66,7 +66,6 @@ local toolboxModule = BomModuleManager.toolboxModule
 ---@field loadingScreenTimeOut number|nil
 ---@field theMacro BomMacro
 ---@field MANA_CLASSES BomClassName[] Classes with mana resource
----@field minimapButton BomMinimapButtonPlaceholder Minimap button control
 ---@field nextCooldownDue number Set this to next spell cooldown to force update
 ---@field isPartyUpdateNeeded boolean Requests player party update
 ---@field popupMenuDynamic BomPopupDynamic
@@ -83,6 +82,7 @@ local toolboxModule = BomModuleManager.toolboxModule
 ---@field Print fun(self: BomAddon, msg: string): void
 ---@field RegisterEvent fun(self: BomAddon, event: string, handler: function): void
 ---@field setupAvailableSpellsFn function
+-- -@field minimapButton BomMinimapButtonPlaceholder Minimap button control
 
 BuffomatAddon = LibStub("AceAddon-3.0"):NewAddon(
         "Buffomat", "AceConsole-3.0", "AceEvent-3.0") ---@type BomAddon
@@ -159,7 +159,7 @@ function buffomatModule.OptionsUpdate()
 
   spellButtonsTabModule:UpdateSpellsTab("OptionsUpdate")
   managedUiModule:UpdateAll()
-  BOM.minimapButton:UpdatePosition()
+  --BOM.minimapButton:UpdatePosition()
   --BOM.legacyOptions.DoCancel()
 end
 
