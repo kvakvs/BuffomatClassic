@@ -15,14 +15,19 @@ VERSION = '2024.4.1'  # year.month.build_num
 ADDON_NAME_CLASSIC = 'BuffomatClassic'  # Directory and zip name
 ADDON_TITLE_CLASSIC = "Buffomat Classic"  # Title field in TOC
 
-UI_VERSION_CLASSIC = '11502'  # patch 1.15 Hardcore Classic + Season of Disc
-UI_VERSION_CLASSIC_TBC = '20504'  # patch 2.5.4 Phase 4 and 5 TBC
-UI_VERSION_CLASSIC_WOTLK = '30402'  # patch 3.4.2 WotLK (TotGC)
+UI_VERSION_CLASSIC = '11502'  # Classic + Season of Discovery
+UI_VERSION_CLASSIC_TBC = '20504'  # The Burning Crusade
+UI_VERSION_CLASSIC_WOTLK = '30402'  # WotLK
+UI_VERSION_CLASSIC_CATA = '40405'  # Cataclysm
 
 COPY_DIRS = ['Src', 'Ace3', 'Sounds']
 COPY_FILES = ['Bindings.xml', 'CHANGELOG.md', 'embeds.xml',
               'LICENSE.txt', 'README.md', 'README.Deutsch.txt']
 
+SUFFIX_CLASSIC = "-Classic" # "_Vanilla"
+SUFFIX_TBC = "-BCC" # "_TBC"
+SUFFIX_WRATH = "-WOTLKC" # "_Wrath"
+SUFFIX_CATA = "-Cata" # "_Cata???"
 
 class BuildTool:
     def __init__(self, args: argparse.Namespace):
@@ -33,21 +38,26 @@ class BuildTool:
         self.create_toc(dst=f'{ADDON_NAME_CLASSIC}.toc',
                         ui_version=UI_VERSION_CLASSIC,
                         title=ADDON_TITLE_CLASSIC)
-        self.create_toc(dst=f'{ADDON_NAME_CLASSIC}-Classic.toc',
+        self.create_toc(dst=f'{ADDON_NAME_CLASSIC}{SUFFIX_CLASSIC}.toc',
                         ui_version=UI_VERSION_CLASSIC,
                         title=ADDON_TITLE_CLASSIC)
-        self.create_toc(dst=f'{ADDON_NAME_CLASSIC}-BCC.toc',
+        self.create_toc(dst=f'{ADDON_NAME_CLASSIC}{SUFFIX_TBC}.toc',
                         ui_version=UI_VERSION_CLASSIC_TBC,
                         title=ADDON_TITLE_CLASSIC)
-        self.create_toc(dst=f'{ADDON_NAME_CLASSIC}-WOTLKC.toc',
+        self.create_toc(dst=f'{ADDON_NAME_CLASSIC}{SUFFIX_WRATH}.toc',
                         ui_version=UI_VERSION_CLASSIC_WOTLK,
+                        title=ADDON_TITLE_CLASSIC)
+        self.create_toc(dst=f'{ADDON_NAME_CLASSIC}{SUFFIX_CATA}.toc',
+                        ui_version=UI_VERSION_CLASSIC_CATA,
                         title=ADDON_TITLE_CLASSIC)
 
     def do_install(self, toc_name: str):
         self.copy_files.append(f'{toc_name}.toc')
-        self.copy_files.append(f'{toc_name}-Classic.toc')
-        self.copy_files.append(f'{toc_name}-BCC.toc')
-        self.copy_files.append(f'{toc_name}-WOTLKC.toc')
+        self.copy_files.append(f'{toc_name}{SUFFIX_CLASSIC}.toc')
+        self.copy_files.append(f'{toc_name}{SUFFIX_TBC}.toc')
+        self.copy_files.append(f'{toc_name}{SUFFIX_WRATH}.toc')
+        self.copy_files.append(f'{toc_name}{SUFFIX_CATA}.toc')
+
         dst_path = f'{self.args.dst}/{toc_name}'
 
         if os.path.isdir(dst_path):
@@ -90,9 +100,11 @@ class BuildTool:
 
     def do_zip(self, toc_name: str):
         self.copy_files.append(f'{toc_name}.toc')
-        self.copy_files.append(f'{toc_name}-Classic.toc')
-        self.copy_files.append(f'{toc_name}-BCC.toc')
-        self.copy_files.append(f'{toc_name}-WOTLKC.toc')
+        self.copy_files.append(f'{toc_name}{SUFFIX_CLASSIC}.toc')
+        self.copy_files.append(f'{toc_name}{SUFFIX_TBC}.toc')
+        self.copy_files.append(f'{toc_name}{SUFFIX_WRATH}.toc')
+        self.copy_files.append(f'{toc_name}{SUFFIX_CATA}.toc')
+
         zip_name = f'{self.args.dst}/{toc_name}-{VERSION}.zip'
 
         with zipfile.ZipFile(zip_name, "w", zipfile.ZIP_DEFLATED,
