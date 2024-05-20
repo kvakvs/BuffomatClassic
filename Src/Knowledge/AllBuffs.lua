@@ -1,7 +1,7 @@
 local TOCNAME, _ = ...
 local BOM = BuffomatAddon ---@type BomAddon
 
----@alias BomBuffCategoryName ""|"tracking"|"pet"|"aura"|"seal"|"blessing"|"class"|"classicPhysFood"|"classicSpellFood"|"classicFood"|"classicPhysElixir"|"classicPhysBuff"|"classicBuff"|"classicSpellElixir"|"classicElixir"|"classicFlask"|"tbcPhysFood"|"tbcSpellFood"|"tbcFood"|"tbcPhysElixir"|"tbcSpellElixir"|"tbcElixir"|"tbcFlask"|"wotlkPhysFood"|"wotlkSpellFood"|"wotlkFood"|"wotlkPhysElixir"|"wotlkSpellElixir"|"wotlkElixir"|"wotlkFlask"|"scroll"|"weaponEnchantment"|"classWeaponEnchantment"
+---@alias BomBuffCategoryName ""|"tracking"|"pet"|"aura"|"seal"|"blessing"|"class"|"classicPhysFood"|"classicSpellFood"|"classicFood"|"classicPhysElixir"|"classicPhysBuff"|"classicBuff"|"classicSpellElixir"|"classicElixir"|"classicFlask"|"tbcPhysFood"|"tbcSpellFood"|"tbcFood"|"tbcPhysElixir"|"tbcSpellElixir"|"tbcElixir"|"tbcFlask"|"wotlkPhysFood"|"wotlkSpellFood"|"wotlkFood"|"wotlkPhysElixir"|"wotlkSpellElixir"|"wotlkElixir"|"wotlkFlask"|"scroll"|"weaponEnchantment"|"classWeaponEnchantment"|"cataElixir"|"cataFood"|"cataFlask"
 
 ---@alias BomBuffidBuffdefLookup {[BomBuffId]: BomBuffDefinition}
 ---@alias BomEnchantToSpellLookup {[BomEnchantmentId]: WowSpellId}
@@ -181,6 +181,7 @@ function allBuffsModule:SetupConstantsCategories()
   -- Categories ordered for display
   self.buffCategories = {
     "class", "classWeaponEnchantment", "blessing", "seal", "aura", "pet", "tracking",
+    "cataFood", "cataElixir", "cataFlask",
     "wotlkPhysElixir", "wotlkSpellElixir", "wotlkElixir", "wotlkFlask", "wotlkFood", "wotlkPhysFood", "wotlkSpellFood",
     "tbcPhysElixir", "tbcSpellElixir", "tbcElixir", "tbcFlask", "tbcFood", "tbcPhysFood", "tbcSpellFood",
     "classicPhysElixir", "classicPhysBuff", "classicSpellElixir", "classicElixir", "classicFlask",

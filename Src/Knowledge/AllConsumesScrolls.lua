@@ -42,6 +42,9 @@ function scrollsModule:_SetupScrollsAgility(allBuffs, enchantments)
     table.insert(scrollItemIds, 43463) -- WotLK: Scroll of Agility 7
     table.insert(scrollItemIds, 43464) -- WotLK: Scroll of Agility 8
   end
+  if envModule.haveCata then
+    table.insert(scrollItemIds, 63303) -- Cata: Scroll of Agility 9
+  end
 
   local scrollAuras = {
     8117, -- Aura for Scroll of Agility 3
@@ -54,6 +57,9 @@ function scrollsModule:_SetupScrollsAgility(allBuffs, enchantments)
     table.insert(scrollAuras, 43194) -- Aura for Scroll of Agility 6 (WotLK)
     table.insert(scrollAuras, 58450) -- Aura for Scroll of Agility 7 (WotLK)
     table.insert(scrollAuras, 58451) -- Aura for Scroll of Agility 8 (WotLK)
+  end
+  if envModule.haveCata then
+    table.insert(scrollAuras, 89343) -- Aura for Scroll of Agility 9 (Cata)
   end
 
   buffDefModule:consumableGroup(allBuffs, "scrollAgi", scrollAuras, scrollItemIds)
@@ -78,6 +84,9 @@ function scrollsModule:_SetupScrollsStrength(allBuffs, enchantments)
     table.insert(scrollItemIds, 43465) -- WotLK: Scroll of Strength 7
     table.insert(scrollItemIds, 43466) -- WotLK: Scroll of Strength 8
   end
+  if envModule.haveCata then
+    table.insert(scrollItemIds, 63304) -- Cata: Scroll of Strength 9
+  end
 
   local scrollAuras = {
     8120, -- Aura for Scroll of Strength 3
@@ -90,6 +99,9 @@ function scrollsModule:_SetupScrollsStrength(allBuffs, enchantments)
     table.insert(scrollAuras, 43199) -- Aura for Scroll of Strength 6 (WotLK)
     table.insert(scrollAuras, 58448) -- Aura for Scroll of Strength 7 (WotLK)
     table.insert(scrollAuras, 58449) -- Aura for Scroll of Strength 8 (WotLK)
+  end
+  if envModule.haveCata then
+    table.insert(scrollAuras, 89346) -- Aura for Scroll of Strength 9 (Cata)
   end
 
   buffDefModule:consumableGroup(allBuffs, "scrollStr", scrollAuras, scrollItemIds)
@@ -116,6 +128,9 @@ function scrollsModule:_SetupScrollsProtection(allBuffs, enchantments)
     table.insert(scrollItemIds, 43467) -- WotLK: Scroll of Protection 7
     table.insert(scrollItemIds, 43466) -- WotLK: Scroll of Protection 8
   end
+  if envModule.haveCata then
+    table.insert(scrollItemIds, 63308) -- Cata: Scroll of Protection 9
+  end
 
   local scrollAuras = {
     8091, -- Aura for Scroll of Protection 1
@@ -130,6 +145,9 @@ function scrollsModule:_SetupScrollsProtection(allBuffs, enchantments)
     table.insert(scrollAuras, 43196) -- Aura for Scroll of Protection 6 (WotLK)
     table.insert(scrollAuras, 58452) -- Aura for Scroll of Protection 7 (WotLK)
     table.insert(scrollAuras, 58453) -- Aura for Scroll of Protection 8 (WotLK)
+  end
+  if envModule.haveCata then
+    table.insert(scrollAuras, 89344) -- Aura for Scroll of Protection 9 (Cata)
   end
 
   buffDefModule:consumableGroup(allBuffs, "scrollArmor", scrollAuras, scrollItemIds)
@@ -156,6 +174,9 @@ function scrollsModule:_SetupScrollsSpirit(allBuffs, enchantments)
     table.insert(scrollItemIds, 37097) -- WotLK: Scroll of Spirit 7
     table.insert(scrollItemIds, 37098) -- WotLK: Scroll of Spirit 8
   end
+  if envModule.haveCata then
+    table.insert(scrollItemIds, 63307) -- Cata: Scroll of Spirit 9
+  end
 
   local scrollAuras = {
     8112, -- Aura for Scroll of Spirit 1
@@ -170,6 +191,9 @@ function scrollsModule:_SetupScrollsSpirit(allBuffs, enchantments)
     table.insert(scrollAuras, 43197) -- Aura for Scroll of Spirit 6 (WotLK)
     table.insert(scrollAuras, 48103) -- Aura for Scroll of Spirit 7 (WotLK)
     table.insert(scrollAuras, 48104) -- Aura for Scroll of Spirit 8 (WotLK)
+  end
+  if envModule.haveCata then
+    table.insert(scrollAuras, 89342) -- Aura for Scroll of Spirit 9 (Cata)
   end
 
   buffDefModule:consumableGroup(allBuffs, "scrollSpi", scrollAuras, scrollItemIds)
@@ -196,6 +220,9 @@ function scrollsModule:_SetupScrollsIntellect(allBuffs, enchantments)
     table.insert(scrollItemIds, 37091) -- WotLK: Scroll of Intellect 7
     table.insert(scrollItemIds, 37092) -- WotLK: Scroll of Intellect 8
   end
+  if envModule.haveCata then
+    table.insert(scrollItemIds, 63305) -- Cata: Scroll of Intellect 9
+  end
 
   local scrollAuras = {
     8096, -- Aura for Scroll of Intellect 1
@@ -211,6 +238,11 @@ function scrollsModule:_SetupScrollsIntellect(allBuffs, enchantments)
     table.insert(scrollAuras, 48099) -- Aura for Scroll of Intellect 7 (WotLK)
     table.insert(scrollAuras, 48100) -- Aura for Scroll of Intellect 8 (WotLK)
   end
+  if envModule.haveCata then
+    table.insert(scrollAuras, 43195) -- Aura for Scroll of Intellect 6 (WotLK)
+    table.insert(scrollAuras, 48099) -- Aura for Scroll of Intellect 7 (WotLK)
+    table.insert(scrollAuras, 89347) -- Aura for Scroll of Intellect 9 (Cata)
+  end
 
   buffDefModule:consumableGroup(allBuffs, "scrollInt", scrollAuras, scrollItemIds)
                :ConsumeGroupTitle("scroll", ITEM_MOD_INTELLECT_SHORT, 237162) -- "inv_inscription_scroll"
@@ -224,4 +256,5 @@ end
 function scrollsModule:_SetupInscriptionScrolls(allBuffs, enchantments)
   -- TODO: Brilliance scroll
   -- TODO: Fortitude scroll
+  -- TODO: Cataclysm - Runescroll of Fort & Might
 end

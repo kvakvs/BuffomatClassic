@@ -22,6 +22,8 @@ function foodModule:SetupFood(allBuffs, enchantments)
   self:_SetupCasterFoodWotLK(allBuffs, enchantments)
   self:_SetupPhysicalFoodWotLK(allBuffs, enchantments)
   self:_SetupMiscFoodWotLK(allBuffs, enchantments)
+
+  self:_SetupMiscFoodCata(allBuffs, enchantments)
 end
 
 ---@param allBuffs BomBuffDefinition[]
@@ -450,4 +452,219 @@ function foodModule:_SetupMiscFoodWotLK(allBuffs, enchantments)
                :Category("wotlkFood")
                :ConsumeGroupTitle("food", ITEM_MOD_SPELL_POWER_SHORT .. ", " .. ITEM_MOD_ATTACK_POWER_SHORT .. ", " .. ITEM_MOD_STAMINA_SHORT, 134062) -- "inv_misc_fork-knife"
                :ExtraText(_t("tooltip.food.bestInBag"))
+end
+
+---@param allBuffs BomBuffDefinition[]
+---@param enchantments BomEnchantmentsMapping
+function foodModule:_SetupMiscFoodCata(allBuffs, enchantments)
+  -- All Food buff providers
+  local intFoodItemIds = {
+    62671, -- Severed Sagefish Head +90 Int & Stam
+    62660, -- Pickled Guppy +60 Int & Stam
+  }
+  local intFoodAuras = {
+    100368, -- +90 Stamina & Intellect
+    87558, -- +60 Stamina & Intellect
+  }
+  buffDefModule:consumableGroup(allBuffs, "cataIntFood", intFoodAuras, intFoodItemIds)
+               :RequireCata()
+               :IgnoreIfHaveBuff(spellIdsModule.CataFood) -- [Food] While eating
+               :Category("cataFood")
+               :ConsumeGroupTitle("food", ITEM_MOD_INTELLECT_SHORT .. ", " .. ITEM_MOD_STAMINA_SHORT, 134062) -- "inv_misc_fork-knife"
+               :ExtraText(_t("tooltip.food.bestInBag"))
+
+  local spiritFoodItemIds = {
+    62656, -- Delicious Sagefish Tail +90 Spirit & Stam
+    62666, -- Whitecrest Gumbo +60 Spirit & Stam
+  }
+  local spiritFoodAuras = {
+    87547, 87548, 100375, -- +90 Stamina & Spirit
+    87559, -- +60 Stamina & Spirit
+  }
+  buffDefModule:consumableGroup(allBuffs, "cataSpiFood", spiritFoodAuras, spiritFoodItemIds)
+               :RequireCata()
+               :IgnoreIfHaveBuff(spellIdsModule.CataFood) -- [Food] While eating
+               :Category("cataFood")
+               :ConsumeGroupTitle("food", ITEM_MOD_SPIRIT_SHORT .. ", " .. ITEM_MOD_STAMINA_SHORT, 134062) -- "inv_misc_fork-knife"
+               :ExtraText(_t("tooltip.food.bestInBag"))
+
+  local agiFoodItemIds = {
+    62669, -- Skewered Eel +90 Agility & Stam
+    62658, -- Tender Baked Turtle +60 Agility & Stam
+  }
+  local agiFoodAuras = {
+    87546, 100373, -- +90 Stamina & Agility
+    87557, -- +60 Stamina & Agility
+  }
+  buffDefModule:consumableGroup(allBuffs, "cataAgiFood", agiFoodAuras, agiFoodItemIds)
+               :RequireCata()
+               :IgnoreIfHaveBuff(spellIdsModule.CataFood) -- [Food] While eating
+               :Category("cataFood")
+               :ConsumeGroupTitle("food", ITEM_MOD_AGILITY_SHORT .. ", " .. ITEM_MOD_STAMINA_SHORT, 134062) -- "inv_misc_fork-knife"
+               :ExtraText(_t("tooltip.food.bestInBag"))
+
+  local strFoodItemIds = {
+    62670, -- Beer-Basted Crocolisk +90 Strength & Stam
+    62659, -- Hearty Seafood Soup +60 Strength & Stam
+  }
+  local strFoodAuras = {
+    87545, 100377, -- +90 Stamina & Strength
+    87556, -- +60 Stamina & Strength
+  }
+  buffDefModule:consumableGroup(allBuffs, "cataStrFood", strFoodAuras, strFoodItemIds)
+               :RequireCata()
+               :IgnoreIfHaveBuff(spellIdsModule.CataFood) -- [Food] While eating
+               :Category("cataFood")
+               :ConsumeGroupTitle("food", ITEM_MOD_STRENGTH_SHORT .. ", " .. ITEM_MOD_STAMINA_SHORT, 134062) -- "inv_misc_fork-knife"
+               :ExtraText(_t("tooltip.food.bestInBag"))
+
+  local masteryFoodItemIds = {
+    62663, -- Lavascale Minestrone +90 Mastery & Stam
+    62653, -- Salted Eye +60 Mastery & Stam
+  }
+  local masteryFoodAuras = {
+    87549, -- +90 Stamina & Mastery
+    87560, -- +60 Stamina & Mastery
+  }
+  buffDefModule:consumableGroup(allBuffs, "cataMasteryFood", masteryFoodAuras, masteryFoodItemIds)
+               :RequireCata()
+               :IgnoreIfHaveBuff(spellIdsModule.CataFood) -- [Food] While eating
+               :Category("cataFood")
+               :ConsumeGroupTitle("food", (ITEM_MOD_MASTERY_RATING_SHORT or "Mastery") .. ", " .. ITEM_MOD_STAMINA_SHORT, 134062) -- "inv_misc_fork-knife"
+               :ExtraText(_t("tooltip.food.bestInBag"))
+
+  local expertiseFoodItemIds = {
+    62664, -- Crocolisk Au Gratin +90 Expertise & Stam
+    62654, -- Lavascale Fillet +60 Expertise & Stam
+  }
+  local expertiseFoodAuras = {
+    87635, -- +90 Stamina & Expertise
+    87634, -- +60 Stamina & Expertise
+  }
+  buffDefModule:consumableGroup(allBuffs, "cataExpFood", expertiseFoodAuras, expertiseFoodItemIds)
+               :RequireCata()
+               :IgnoreIfHaveBuff(spellIdsModule.CataFood) -- [Food] While eating
+               :Category("cataFood")
+               :ConsumeGroupTitle("food", (ITEM_MOD_EXPERTISE_RATING_SHORT or "Expertise") .. ", " .. ITEM_MOD_STAMINA_SHORT, 134062) -- "inv_misc_fork-knife"
+               :ExtraText(_t("tooltip.food.bestInBag"))
+
+  local hitFoodItemIds = {
+    62662, -- Grilled Dragon +90 Hit & Stam
+    62652, -- Seasoned Crab +60 Hit & Stam
+  }
+  local hitFoodAuras = {
+    87550, -- +90 Stamina & Hit
+    87561, -- +60 Stamina & Hit
+  }
+  buffDefModule:consumableGroup(allBuffs, "cataHitFood", hitFoodAuras, hitFoodItemIds)
+               :RequireCata()
+               :IgnoreIfHaveBuff(spellIdsModule.CataFood) -- [Food] While eating
+               :Category("cataFood")
+               :ConsumeGroupTitle("food", (ITEM_MOD_HIT_RATING_SHORT or "Hit") .. ", " .. ITEM_MOD_STAMINA_SHORT, 134062) -- "inv_misc_fork-knife"
+               :ExtraText(_t("tooltip.food.bestInBag"))
+
+  local hasteFoodItemIds = {
+    62665, -- Basilisk Liverdog +90 Haste & Stam
+    62655, -- Broiled Mountain Trout +60 Haste & Stam
+  }
+  local hasteFoodAuras = {
+    87552, -- +90 Stamina & Haste
+    87563, -- +60 Stamina & Haste
+  }
+  buffDefModule:consumableGroup(allBuffs, "cataHasteFood", hasteFoodAuras, hasteFoodItemIds)
+               :RequireCata()
+               :IgnoreIfHaveBuff(spellIdsModule.CataFood) -- [Food] While eating
+               :Category("cataFood")
+               :ConsumeGroupTitle("food", (ITEM_MOD_HASTE_RATING_SHORT or "Haste") .. ", " .. ITEM_MOD_STAMINA_SHORT, 134062) -- "inv_misc_fork-knife"
+               :ExtraText(_t("tooltip.food.bestInBag"))
+
+  local critFoodItemIds = {
+    62661, -- Baked Rockfish +90 Crit & Stam
+    62651, -- Lightly Fried Lurker +60 Crit & Stam
+  }
+  local critFoodAuras = {
+    87551, 87562, -- +60 Stamina & Crit
+  }
+  buffDefModule:consumableGroup(allBuffs, "cataCritFood", critFoodAuras, critFoodItemIds)
+               :RequireCata()
+               :IgnoreIfHaveBuff(spellIdsModule.CataFood) -- [Food] While eating
+               :Category("cataFood")
+               :ConsumeGroupTitle("food", (ITEM_MOD_CRIT_RATING_SHORT or "Crit") .. ", " .. ITEM_MOD_STAMINA_SHORT, 134062) -- "inv_misc_fork-knife"
+               :ExtraText(_t("tooltip.food.bestInBag"))
+
+  local dodgeFoodItemIds = {
+    62667, -- Mushroom Sauce Mudfish +90 Dodge & Stam
+    62657, -- Lurker Lunch +60 Dodge & Stam
+  }
+  local dodgeFoodAuras = {
+    87554, -- +90 Stamina & Dodge
+    87564, -- +60 Stamina & Dodge
+  }
+  buffDefModule:consumableGroup(allBuffs, "cataDodgeFood", dodgeFoodAuras, dodgeFoodItemIds)
+               :RequireCata()
+               :IgnoreIfHaveBuff(spellIdsModule.CataFood) -- [Food] While eating
+               :Category("cataFood")
+               :ConsumeGroupTitle("food", (ITEM_MOD_DODGE_RATING_SHORT or "Dodge") .. ", " .. ITEM_MOD_STAMINA_SHORT, 134062) -- "inv_misc_fork-knife"
+               :ExtraText(_t("tooltip.food.bestInBag"))
+
+  local parryFoodItemIds = {
+    62668, -- Blackbelly Sushi +90 Parry & Stam
+    --, --  +60 Parry & Stam
+  }
+  local parryFoodAuras = {
+    87555, -- +90 Stamina & Parry
+    87565, -- +60 Stamina & Parry
+  }
+  buffDefModule:consumableGroup(allBuffs, "cataParryFood", parryFoodAuras, parryFoodItemIds)
+               :RequireCata()
+               :IgnoreIfHaveBuff(spellIdsModule.CataFood) -- [Food] While eating
+               :Category("cataFood")
+               :ConsumeGroupTitle("food", (ITEM_MOD_PARRY_RATING_SHORT or "Parry") .. ", " .. ITEM_MOD_STAMINA_SHORT, 134062) -- "inv_misc_fork-knife"
+               :ExtraText(_t("tooltip.food.bestInBag"))
+
+  ---- All HIT Food buff providers
+  --local hitFoodItemIds = {
+  --  34751, 42996, -- Worg Tartare/Snapper Extreme +40 Hit/40 Stam
+  --}
+  --local hasteFoodAuras = { 57360 } -- Well Fed, +40 Hit, +40 Stamina
+  --buffDefModule:consumableGroup(allBuffs, "wotlkHitFood", hasteFoodAuras, hasteFoodItemIds)
+  --             :RequireWotLK()
+  --             :IgnoreIfHaveBuff(spellIdsModule.WotLKFood) -- [Food] While eating Worg Tartare/Snapper Extreme
+  --             :Category("wotlkFood")
+  --             :ConsumeGroupTitle("food", (ITEM_MOD_HIT_RATING_SHORT or "Hit") .. ", " .. ITEM_MOD_STAMINA_SHORT, 134062) -- "inv_misc_fork-knife"
+  --             :ExtraText(_t("tooltip.food.bestInBag"))
+  --
+  ---- All Crit Food buff providers
+  --local critFoodItemIds = {
+  --  34750, -- Worm Delight 30 Crit/30 Stam
+  --  34764, -- Poached Nettlefish 30 Crit/40 Stam
+  --  34768, 34756, -- Spicy Blue Nettlefish/Spiced Worm Burger +40 Crit/40 Stam
+  --}
+  --local critFoodAuras = {
+  --  57286, -- Well Fed, +30 Critical Strike, +30 Stamina
+  --  57100, -- Well Fed, +30 Critical Strike, +40 Stamina
+  --  57329, -- Well Fed, +40 Critical Strike, +40 Stamina
+  --}
+  --
+  --buffDefModule:consumableGroup(allBuffs, "wotlkCritFood", critFoodAuras, critFoodItemIds)
+  --             :RequireWotLK()
+  --             :IgnoreIfHaveBuff(spellIdsModule.WotLKFood) -- [Food] While eating Spicy Blue Nettlefish/Spiced Worm Burger
+  --             :Category("wotlkFood")
+  --             :ConsumeGroupTitle("food", (ITEM_MOD_CRIT_RATING_SHORT or "Crit") .. ", " .. ITEM_MOD_STAMINA_SHORT, 134062) -- "inv_misc_fork-knife"
+  --             :ExtraText(_t("tooltip.food.bestInBag"))  --
+
+  -- All Combo Food Buff providers
+  local comboFoodItemIds = {
+    62290, -- Seafood Magnifique Feast; +90 Stam/90 other stat
+    62649, -- Fortune Cookie; +90 Stam/90 other stat
+    60858, -- Goblin Barbecue; +60 Stam/60 other stat
+    62289, -- Broiled Dragon Feast; +60 Stam/60 other stat
+  }
+  -- TODO: Figure out auras provided by combo meals
+  --buffDefModule:consumableGroup(allBuffs, "cataComboMeal", cataFoodAuras, comboFoodItemIds)
+  --             :RequireCata()
+  --             :IgnoreIfHaveBuff(spellIdsModule.CataFood) -- [Food] While eating Feast
+  --             :Category("cataFood")
+  --             :ConsumeGroupTitle("food", ITEM_MOD_SPELL_POWER_SHORT .. ", " .. ITEM_MOD_ATTACK_POWER_SHORT .. ", " .. ITEM_MOD_STAMINA_SHORT, 134062) -- "inv_misc_fork-knife"
+  --             :ExtraText(_t("tooltip.food.bestInBag"))
 end

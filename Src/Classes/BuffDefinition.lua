@@ -117,7 +117,7 @@ end
 ---@field skipList string[] If spell cast failed, contains recently failed targets
 ---@field spellIcon WowIconId
 ---@field targetClasses BomClassName[] List of target classes which are shown as toggle boxes to enable cast per class
----@field tbcHunterPetBuff boolean True for TBC hunter pet consumable which places aura on the hunter pet
+---@field petBuff boolean True for hunter/warlock pet consumable which places aura on the pet
 ---@field trackingIconId WowIconId Numeric id for the tracking texture icon
 ---@field trackingSpellName string For tracking spells, contains string name for the spell
 ---@field type BomBuffType Defines type: "aura", "consumable", "weapon" for Enchant Consumables, "seal", "tracking", "resurrection"
@@ -159,6 +159,11 @@ end
 function buffDefModule:wotlkConsumable(dst, singleId, itemId)
   return self:genericConsumable(dst, singleId, itemId)
              :RequireWotLK()
+end
+
+function buffDefModule:cataConsumable(dst, singleId, itemId)
+  return self:genericConsumable(dst, singleId, itemId)
+             :RequireCata()
 end
 
 ---@param allBuffs BomBuffDefinition[]
@@ -615,8 +620,8 @@ function buffDefClass:RequireCata()
 end
 
 ---@return BomBuffDefinition
-function buffDefClass:HunterPetFood()
-  self.tbcHunterPetBuff = true
+function buffDefClass:PetFood()
+  self.petBuff = true
   return self
 end
 

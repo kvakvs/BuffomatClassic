@@ -39,6 +39,10 @@ function englishModule:Translations()
     ["Category_wotlkElixir"] = "Other Elixirs (WotLK)",
     ["Category_wotlkFlask"] = "Flasks (WotLK)",
 
+    ["Category_cataFood"] = "Food (Cataclysm)",
+    ["Category_cataElixir"] = "Elixirs (Cataclysm)",
+    ["Category_cataFlask"] = "Flasks (Cataclysm)",
+
     ["Category_scroll"] = "Scrolls",
     ["Category_weaponEnchantment"] = "Weapon Enchantments",
     ["Category_classWeaponEnchantment"] = "Class Enchantments",

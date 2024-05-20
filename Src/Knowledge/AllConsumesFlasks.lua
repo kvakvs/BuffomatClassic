@@ -14,6 +14,7 @@ function flasksModule:SetupFlasks(allBuffs, enchantments)
   self:_SetupFlasksClassic(allBuffs, enchantments)
   self:_SetupFlasksTBC(allBuffs, enchantments)
   self:_SetupFlasksWotLK(allBuffs, enchantments)
+  self:_SetupFlasksCata(allBuffs, enchantments)
 end
 
 ---@param allBuffs BomBuffDefinition[] A list of buffs (not dictionary)
@@ -176,4 +177,54 @@ function flasksModule:_SetupFlasksWotLK(allBuffs, enchantments)
                :RequireWotLK()
                :Category("wotlkFlask")
                :ElixirType("both")
+end
+
+---@param allBuffs BomBuffDefinition[] A list of buffs (not dictionary)
+---@param enchantments table<number, number[]> Key is spell id, value is list of enchantment ids
+function flasksModule:_SetupFlasksCata(allBuffs, enchantments)
+  -- TODO: Cata Flask of Battle
+  --Cata: Flask of Steelskin; +Stamina
+  buffDefModule:genericConsumable(allBuffs, 79469, 58085)
+               :ExtraText(_t("tooltip.buff.stamina"))
+               :RequireCata()
+               :Category("cataFlask")
+               :ElixirType("both")
+  --Cata: Flask of the Draconic Mind; +300 INT
+  buffDefModule:genericConsumable(allBuffs, 79470, 58086)
+               :ExtraText(_t("tooltip.buff.intellect"))
+               :RequireCata()
+               :Category("cataFlask")
+               :ElixirType("both")
+               :RequirePlayerClass(allBuffsModule.MANA_CLASSES)
+  --Cata: Flask of the Flowing Water; +300 SPI
+  buffDefModule:genericConsumable(allBuffs, 94160, 67438)
+               :ExtraText(_t("tooltip.buff.spirit"))
+               :RequireCata()
+               :Category("cataFlask")
+               :ElixirType("both")
+               :RequirePlayerClass(allBuffsModule.MANA_CLASSES)
+  --Cata: Flask of the Draconic Winds; +300 AGI
+  buffDefModule:genericConsumable(allBuffs, 79471, 58087)
+               :ExtraText(_t("tooltip.buff.agility"))
+               :RequireCata()
+               :Category("cataFlask")
+               :ElixirType("both")
+               :RequirePlayerClass(allBuffsModule.PHYSICAL_CLASSES)
+  --Cata: Flask of Titanic Strength; +300 STR
+  buffDefModule:genericConsumable(allBuffs, 79469, 58088)
+               :ExtraText(_t("tooltip.buff.strength"))
+               :RequireCata()
+               :Category("cataFlask")
+               :ElixirType("both")
+               :RequirePlayerClass(allBuffsModule.PHYSICAL_CLASSES)
+
+
+  -- Alchemist self-flask: Flask of Enhancement
+  -- TODO
+  --buffDefModule:genericConsumable(allBuffs, 67016, 58149) --Cata: Flask of Enhancement
+  --             :ProvidesAuras({ })
+  --             :ExtraText(_t("tooltip.buff.alchemistOnly"))
+  --             :RequireCata()
+  --             :Category("cataFlask")
+  --             :ElixirType("both")
 end

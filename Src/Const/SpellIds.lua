@@ -23,6 +23,23 @@ spellIdsModule.WotLKFood = --[[---@type WowSpellId[] ]] {
   61829, -- Level 75 eating
   45548, -- Level 80 eating
 }
+-- Skip food buffing while eating some food buff
+spellIdsModule.CataFood = --[[---@type WowSpellId[] ]] {
+  80168, -- Level 80 eating
+  80169, -- Level 85 eating
+  87644, 87604, 87915, 87643, -- Feast (eating)
+  87544, 87584, -- Str food (eating)
+  87566, 87586, -- Agi food (eating)
+  87587, 87567, -- Int food (eating)
+  87568, 87588, -- Spirit food (eating)
+  87570, 87594, -- Mastery food (eating)
+  87571, 87595, -- Hit food (eating)
+  87572, 87597, -- Crit food (eating)
+  87636, 87637, -- Exp food (eating)
+  87573, 87599, -- Haste food (eating)
+  87577, 87601, -- Dodge food (eating)
+  87602, -- Parry food (eating)
+}
 
 spellIdsModule.Mage_ConjureManaSapphire = 42985
 spellIdsModule.Mage_ConjureManaEmerald = 27101

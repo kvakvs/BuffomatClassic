@@ -23,6 +23,8 @@ function elixirsModule:SetupElixirs(allBuffs, enchantments)
   self:_SetupBattleCasterElixirsWotLK(allBuffs, enchantments)
   self:_SetupBattlePhysicalElixirsWotLK(allBuffs, enchantments)
   self:_SetupGuardianElixirsWotLK(allBuffs, enchantments)
+
+  self:_SetupElixirsCata(allBuffs, enchantments)
 end
 
 ---@param allBuffs BomBuffDefinition[] A list of buffs (not dictionary)
@@ -490,5 +492,54 @@ function elixirsModule:_SetupBattleElixirsWotLK(allBuffs, enchantments)
   --WotLK: Elixir of Accuracy +45 HIT
   buffDefModule:wotlkConsumable(allBuffs, 60340, 44325)
                :Category("wotlkElixir")
+               :ElixirType("battle")
+end
+
+---@param allBuffs BomBuffDefinition[] A list of buffs (not dictionary)
+---@param enchantments table<number, number[]> Key is spell id, value is list of enchantment ids
+function elixirsModule:_SetupElixirsCata(allBuffs, enchantments)
+  -- Cata: Elixir of the Naga; +225 Expertise
+  buffDefModule:cataConsumable(allBuffs, 79474, 58089)
+               :Category("cataElixir")
+               :ElixirType("battle")
+
+  -- Cata: Elixir of the Mighty Speed; +225 Haste
+  buffDefModule:cataConsumable(allBuffs, 79632, 58144)
+               :Category("cataElixir")
+               :ElixirType("battle")
+
+  -- Cata: Elixir of the Cobra; +225 Crit
+  buffDefModule:cataConsumable(allBuffs, 79477, 58092)
+               :Category("cataElixir")
+               :ElixirType("battle")
+
+  -- Cata: Elixir of the Impossible Accuracy; +225 Hit
+  buffDefModule:cataConsumable(allBuffs, 79481, 58094)
+               :Category("cataElixir")
+               :ElixirType("battle")
+
+  -- Cata: Elixir of the Master; +225 Mastery
+  buffDefModule:cataConsumable(allBuffs, 79635, 58148)
+               :Category("cataElixir")
+               :ElixirType("battle")
+
+  -- Cata: Ghost Elixir; +225 Spirit
+  buffDefModule:cataConsumable(allBuffs, 79468, 58084)
+               :Category("cataElixir")
+               :ElixirType("battle")
+
+  -- Cata: Elixir of Deep Earth; +900 Armor
+  buffDefModule:cataConsumable(allBuffs, 79480, 58093)
+               :Category("cataElixir")
+               :ElixirType("guardian")
+
+  -- Cata: Prismatic Elixir; +90 All Resist
+  buffDefModule:cataConsumable(allBuffs, 79631, 58143)
+               :Category("cataElixir")
+               :ElixirType("guardian")
+
+  -- Cata: Darkmoon Firewater +450 Attack +Size
+  buffDefModule:cataConsumable(allBuffs, 109933, 78883)
+               :Category("cataElixir")
                :ElixirType("battle")
 end

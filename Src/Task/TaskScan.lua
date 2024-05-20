@@ -184,7 +184,7 @@ function taskScanModule:UpdateMissingBuffs_EachBuff(party, buffDef, buffCtx)
     -- For TBC hunter pet buffs we check if the pet is missing the buff
     -- but then the hunter must consume it
 
-  elseif buffDef.tbcHunterPetBuff then
+  elseif buffDef.petBuff then
     buffChecksModule:HunterPetNeedsBuff(buffDef, party.player)
 
   elseif buffDef.isConsumable then
@@ -1026,7 +1026,7 @@ end
 ---@param target string
 function taskScanModule:AddConsumableSelfbuff_HaveItemReady(buffDef, bestItemIdAvailable, bag, slot, count, playerUnit, target)
   local taskText = _t("task.type.Consume")
-  if buffDef.tbcHunterPetBuff then
+  if buffDef.petBuff then
     taskText = _t("task.type.tbcHunterPetBuff")
   end
 
