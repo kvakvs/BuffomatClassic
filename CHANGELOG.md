@@ -1,5 +1,9 @@
 # Changelog
 
+## Buffomat Classic 2024.5.0
+
+- [Cataclysm] Prepatch fix. Stay tuned for actual Cataclysm update.
+
 ## Buffomat Classic 2024.4.0
 
 - [Druid] Do not /cancelform in moonkin form by adding `[noform:5]` to it.

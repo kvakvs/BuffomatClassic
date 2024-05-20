@@ -64,6 +64,19 @@ function priestModule:SetupPriestSpells(allBuffs, enchants)
                :Category("class")
                --:IgnoreIfHaveBuff(46302) -- Kiru's Song of Victory (Sunwell)
                :RequirePlayerClass("PRIEST")
+               :HideInCata()
+
+  -- [Cataclysm] Fortitude / Seelenstärke
+  buffDefModule:createAndRegisterBuff(allBuffs, 10938, nil)
+               :IsDefault(true)
+               :SingleFamily({ 21562 }) -- Cata: Power Word: Fortitude
+               :GroupFamily({ 21562 }) -- Cata: Power Word: Fortitude
+               :SingleDuration(allBuffsModule.HOUR)
+               :GroupDuration(allBuffsModule.HOUR)
+               :DefaultTargetClasses(allBuffsModule.ALL_CLASSES)
+               :Category("class")
+               :RequirePlayerClass("PRIEST")
+               :RequireCata()
 
   table.insert(allBuffs, priestModule:CreatePrayerOfSpiritBuff())
 
@@ -83,6 +96,19 @@ function priestModule:SetupPriestSpells(allBuffs, enchants)
                :DefaultTargetClasses(allBuffsModule.ALL_CLASSES)
                :Category("class")
                :RequirePlayerClass("PRIEST")
+              :HideInCata()
+
+  -- [Cataclysm] Shadow Protection / Prayer of Shadow / Schattenschutz
+  buffDefModule:createAndRegisterBuff(allBuffs, 10958, nil)
+               :IsDefault(true)
+               :SingleDuration(allBuffsModule.HOUR)
+               :GroupDuration(allBuffsModule.HOUR)
+               :SingleFamily({ 27683 }) -- Cata: Shadow Protection
+               :GroupFamily({ 27683 }) -- Cata: Shadow Protection
+               :DefaultTargetClasses(allBuffsModule.ALL_CLASSES)
+               :Category("class")
+               :RequirePlayerClass("PRIEST")
+               :RequireCata()
 
   -- Fear Ward
   buffDefModule:createAndRegisterBuff(allBuffs, 6346, nil)

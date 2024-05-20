@@ -33,6 +33,8 @@ local allBuffsModule = BomModuleManager.allBuffsModule
 ---@field hideInTBC boolean
 ---@field requireWotLK boolean
 ---@field hideInWotLK boolean
+---@field requireCata boolean
+---@field hideInCata boolean
 ---@field playerRace BomPlayerRace
 ---@field playerClass BomClassName|BomClassName[] Collection of classes for this spell, or classname
 ---@field maxLevel number Hide the spell if player is above this level (to deprecate old spells)
@@ -207,6 +209,12 @@ function buffDefModule:CheckStaticLimitations(_spell, limitations)
     return false
   end
   if limitations.hideInWotLK == true and envModule.haveWotLK then
+    return false
+  end
+  if limitations.requireCata == true and not envModule.haveCata then
+    return false
+  end
+  if limitations.hideInCata == true and envModule.haveCata then
     return false
   end
 
@@ -577,6 +585,7 @@ end
 function buffDefClass:HideInTBC()
   (--[[---@not nil]] self.limitations).hideInTBC = true
   (--[[---@not nil]] self.limitations).hideInWotLK = true
+  (--[[---@not nil]] self.limitations).hideInCata = true
   return self
 end
 
@@ -589,6 +598,19 @@ end
 ---@return BomBuffDefinition
 function buffDefClass:HideInWotLK()
   (--[[---@not nil]] self.limitations).hideInWotLK = true
+  (--[[---@not nil]] self.limitations).hideInCata = true
+  return self
+end
+
+---@return BomBuffDefinition
+function buffDefClass:HideInCata()
+  (--[[---@not nil]] self.limitations).hideInCata = true
+  return self
+end
+
+---@return BomBuffDefinition
+function buffDefClass:RequireCata()
+  (--[[---@not nil]] self.limitations).requireCata = true
   return self
 end
 

@@ -18,10 +18,12 @@ function druidModule:SetupDruidSpells(allBuffs, enchantments)
                :IsDefault(true)
                :SingleFamily({ 1126, 5232, 6756, 5234, 8907, 9884, 9885, -- Mark of the Wild 1-7
                                26990, -- TBC: Mark of the Wild 8
-                               48469 }) -- WotLK: Mark of the Wild 9
+                               48469, -- WotLK: Mark of the Wild 9
+                               79061 }) -- Cataclysm: Mark of the Wild
                :GroupFamily({ 21849, 21850, -- Gift of the Wild 1-2
                               26991, -- TBC: Gift of the Wild 3
-                              48470 }) -- WotLK: Gift of the Wild 4
+                              48470, -- WotLK: Gift of the Wild 4
+                              79061 }) -- Cataclysm: Mark of the Wild
                :SingleDuration(allBuffsModule.HALF_AN_HOUR)
                :GroupDuration(allBuffsModule.HOUR)
                :ReagentRequired(buffDefModule:NumberList({ 17021, 17026 }, {}, { 44605 })) -- WotLK: Wild Spineleaf

@@ -12,22 +12,18 @@ function mageModule:CreateIntelligenceBuff()
   return buffDefModule:New(10157) --Arcane Intellect | Brilliance
                       :SingleFamily({ 1459, 1460, 1461, 10156, 10157, -- Ranks 1-5
                                       27126, -- TBC: Rank 6
-                                      42995, 61024 }) -- WotLK: Arcane Intellect 7; Dalaran Intellect
+                                      42995, 61024, -- WotLK: Arcane Intellect 7; Dalaran Intellect
+                                      79058 }) -- Cataclysm: Arcane Brilliance
                       :GroupFamily({ 23028, -- Brilliance Rank 1
                                      27127, -- TBC: Brillance Rank 2
-                                     43002, 61316 }) -- WotLK: Arcane Brilliance Rank 3; Dalaran Brilliance
+                                     43002, 61316, -- WotLK: Arcane Brilliance Rank 3; Dalaran Brilliance
+                                     79058 }) -- Cataclysm: Arcane Brilliance
                       :IsDefault(true)
                       :SingleDuration(allBuffsModule.HALF_AN_HOUR)
                       :GroupDuration(allBuffsModule.HOUR)
                       :ReagentRequired({ 17020 }) -- Arcane Powder
                       :DefaultTargetClasses(allBuffsModule.MANA_CLASSES)
                       :RequirePlayerClass("MAGE")
-                      --:IgnoreIfHaveBuff({ 46302, -- Kiru's Song of Victory (Sunwell)
-                      --                    54424, -- Fel Intelligence 1 (Wotlk Warlock)
-                      --                    57564, -- Fel Intelligence 2 (Wotlk Warlock)
-                      --                    57565, -- Fel Intelligence 3 (Wotlk Warlock)
-                      --                    57566, -- Fel Intelligence 4 (Wotlk Warlock)
-                      --                    57567 }) -- Fel Intelligence 5 (Wotlk Warlock)
                       :Category("class")
 end
 
