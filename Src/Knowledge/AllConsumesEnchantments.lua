@@ -42,10 +42,12 @@ function enchantmentsModule:_SetupCasterEnchantments(allBuffs, enchantments)
   --end
   --Minor, Lesser, Brilliant Mana Oil
   self:RegisterEnchantment(allBuffs, 25123)
-      :CreatesOrProvidedByItem(buffDefModule:NumberList(
-          { 20748, 20747, 20745 }, -- Minor, Lesser, Brilliant Mana Oil
-          { 22521 }, -- TBC: Superior Mana Oil
-          { 36899 })) -- WotLK: Exceptional Mana Oil
+      :CreatesOrProvidedByItem(
+          buffDefModule:PerExpansionChoice({
+            classic = { 20748, 20747, 20745 }, -- Minor, Lesser, Brilliant Mana Oil
+            tbc = { 22521 }, -- TBC: Superior Mana Oil
+            wotlk = { 36899 }
+          })) -- WotLK: Exceptional Mana Oil
       :RequirePlayerClass(allBuffsModule.MANA_CLASSES)
   enchantments[25123] = { 2624, 2625, 2629, -- Minor, Lesser, Brilliant Mana Oil (enchantment)
                           2677, -- TBC: Superior Mana Oil (enchantment)
@@ -53,10 +55,12 @@ function enchantmentsModule:_SetupCasterEnchantments(allBuffs, enchantments)
 
   -- Wizard Oil
   self:RegisterEnchantment(allBuffs, 25122)
-      :CreatesOrProvidedByItem(buffDefModule:NumberList(
-          { 20749, 20746, 20744, 20750 }, -- Minor, Lesser, "regular", Brilliant Wizard Oil
-          { 22522 }, -- TBC: Superior Wizard Oil
-          { 36900 })) -- WotLK: Exceptional Wizard Oil
+      :CreatesOrProvidedByItem(
+          buffDefModule:PerExpansionChoice({
+            classic = { 20749, 20746, 20744, 20750 }, -- Minor, Lesser, "regular", Brilliant Wizard Oil
+            tbc = { 22522 }, -- TBC: Superior Wizard Oil
+            wotlk = { 36900 }
+          })) -- WotLK: Exceptional Wizard Oil
       :RequirePlayerClass(allBuffsModule.SPELL_CLASSES)
   enchantments[25122] = { 2623, 2626, 2627, 2628, --Minor, Lesser, "regular", Brilliant Wizard Oil (enchantment)
                           2678, -- TBC: Superior Wizard Oil (enchantment)

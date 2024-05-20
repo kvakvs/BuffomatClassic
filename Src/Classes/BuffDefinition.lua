@@ -901,24 +901,55 @@ function buffDefClass:SingleLink(bestItemIdAvailable)
   return (self.singleLink or self.singleText) or "?"
 end
 
----Construct a joined list of number for classic, tbc and wotlk based on version detected
----@param classic number[]
----@param tbc number[]
----@param wotlk number[]
+---@shape BomNumbersPerExpansion
+---@field classic number[]|nil
+---@field onlyClassic number[]|nil
+---@field tbc number[]|nil
+---@field onlyTbc number[]|nil
+---@field wotlk number[]|nil
+---@field onlyWotlk number[]|nil
+---@field cataclysm number[]|nil
+---@field onlyCataclysm number[]|nil
+
+---Construct a joined list of number for Classic, TBC, WotLK and Cataclysm based on version detected
+---If any of the "onlyXXX" keys are present, those will be returned without any extra merging of other expansion data
+---@param conditions BomNumbersPerExpansion
 ---@return number[]
-function buffDefModule:NumberList(classic, tbc, wotlk)
-  local itemIds1 = classic
+function buffDefModule:PerExpansionChoice(conditions)
+  if envModule.isClassic and conditions.onlyClassic then
+    return --[[---@not nil]]  conditions.onlyClassic
+  elseif envModule.isTBC and conditions.onlyTbc then
+    return --[[---@not nil]]  conditions.onlyTbc
+  elseif envModule.isWotLK and conditions.onlyWotlk then
+    return --[[---@not nil]]  conditions.onlyWotlk
+  elseif envModule.isCata and conditions.onlyCataclysm then
+    return --[[---@not nil]]  conditions.onlyCataclysm
+  end
+
+  local result = {}
+  for _, val in ipairs(conditions.classic or {}) do
+    table.insert(result, val)
+  end
+
   if envModule.haveTBC then
-    for i in ipairs(tbc) do
-      table.insert(itemIds1, tbc[i])
+    for _, val in ipairs(conditions.tbc or {}) do
+      table.insert(result, val)
     end
   end
+
   if envModule.haveWotLK then
-    for i in ipairs(wotlk) do
-      table.insert(itemIds1, wotlk[i])
+    for _, val in ipairs(conditions.wotlk or {}) do
+      table.insert(result, val)
     end
   end
-  return itemIds1
+
+  if envModule.haveCata then
+    for _, val in ipairs(conditions.cataclysm or {}) do
+      table.insert(result, val)
+    end
+  end
+
+  return result
 end
 
 function buffDefClass:ShowItemsProvidingBuff()

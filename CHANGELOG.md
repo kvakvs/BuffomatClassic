@@ -1,10 +1,11 @@
 # Changelog
 
-## Buffomat Classic 2024.5.1
+## Buffomat Classic 2024.5.2
 
 - [Cataclysm] Prepatch fix. Stay tuned for actual Cataclysm update.
 - [Cataclysm] Elixirs, flasks, food buffs.
-- Missing: Combo meals, alchemist flask, rogue poison item ids have changed too.
+- [Cataclysm] Rogue poisons. Also see: Restocker Classic addon to auto-buy.
+- Missing: Combo meals, alchemist flask.
 
 ## Buffomat Classic 2024.4.0
 

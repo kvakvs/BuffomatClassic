@@ -26,7 +26,11 @@ function druidModule:SetupDruidSpells(allBuffs, enchantments)
                               79061 }) -- Cataclysm: Mark of the Wild
                :SingleDuration(allBuffsModule.HALF_AN_HOUR)
                :GroupDuration(allBuffsModule.HOUR)
-               :ReagentRequired(buffDefModule:NumberList({ 17021, 17026 }, {}, { 44605 })) -- WotLK: Wild Spineleaf
+               :ReagentRequired(buffDefModule:PerExpansionChoice(
+          {
+            classic = { 17021, 17026 },
+            wotlk = { 44605 } -- WotLK: Wild Spineleaf
+          }))
                :DefaultTargetClasses(allBuffsModule.ALL_CLASSES)
                :RequirePlayerClass("DRUID")
                :Category("class")

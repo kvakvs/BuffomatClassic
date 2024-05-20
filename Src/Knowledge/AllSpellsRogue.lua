@@ -14,12 +14,14 @@ function rogueModule:SetupRogueSpells(allBuffs, enchants)
   local duration = allBuffsModule.TbcOrClassic(allBuffsModule.HOUR, allBuffsModule.HALF_AN_HOUR) -- TBC: Poisons become 1 hour
 
   --Deadly Poison
-  -- item         = allBuffsModule.ExpansionChoice(20844, 22054, 43233),
+  -- Cataclysm: Only 2892 is available
   buffDefModule:createAndRegisterBuff(allBuffs, 25351, nil)
-               :CreatesOrProvidedByItem(buffDefModule:NumberList(
-          { 20844, 8985, 8984, 2893, 2892 },
-          { 22054, 22053 }, -- TBC: Deadly Poison
-          { 43232, 43233 })) -- WotLK: Deadly Poison 8-9
+               :CreatesOrProvidedByItem(buffDefModule:PerExpansionChoice({
+    classic = { 20844, 8985, 8984, 2893, 2892 },
+    tbc = { 22054, 22053 }, -- TBC: Deadly Poison
+    wotlk = { 43232, 43233 },
+    onlyCataclysm = { 2892 }, -- All poison ranks are merged into one in Cataclysm
+  })) -- WotLK: Deadly Poison 8-9
                :IsConsumable(true)
                :BuffType("weapon")
                :SingleDuration(duration)
@@ -32,24 +34,31 @@ function rogueModule:SetupRogueSpells(allBuffs, enchants)
                       3770, 3771 } -- WotLK: Deadly Poison 8, 9
 
   --Mind-numbing Poison
+  -- Cataclysm: Only 5237 is available
   buffDefModule:createAndRegisterBuff(allBuffs, 11399, nil)
-               :CreatesOrProvidedByItem({ 9186, 6951, 5237 })
+               :CreatesOrProvidedByItem(buffDefModule:PerExpansionChoice({
+    classic = { 9186, 6951, 5237 },
+    onlyCataclysm = { 5237 } -- All poison ranks are merged into one in Cataclysm
+  }))
                :IsConsumable(true)
                :BuffType("weapon")
                :SingleDuration(duration)
                :IsDefault(false)
                :MinLevel(24)
-               :HideInWotLK()
                :RequirePlayerClass("ROGUE")
                :Category("classWeaponEnchantment")
+  --:HideInWotLK()
   enchants[11399] = { 643, 23, 35 } -- Mind-numbing Poison (also WotLK: enchantment 35)
 
   --Instant Poison
+  -- Cataclysm: Only 6947 is available
   buffDefModule:createAndRegisterBuff(allBuffs, 11340, nil)
-               :CreatesOrProvidedByItem(buffDefModule:NumberList(
-          { 8928, 8927, 8926, 6950, 6949, 6947 }, -- Instant Poison 2-7
-          { 21927 }, -- TBC: Instant Poison
-          { 43230, 43231 })) -- WotLK: Instant Poison 8-9
+               :CreatesOrProvidedByItem(buffDefModule:PerExpansionChoice({
+    classic = { 8928, 8927, 8926, 6950, 6949, 6947 }, -- Instant Poison 2-7
+    tbc = { 21927 }, -- TBC: Instant Poison
+    wotlk = { 43230, 43231 },
+    onlyCataclysm = { 6947 } -- All poison ranks are merged into one in Cataclysm
+  })) -- WotLK: Instant Poison 8-9
                :IsConsumable(true)
                :BuffType("weapon")
                :SingleDuration(duration)
@@ -62,11 +71,14 @@ function rogueModule:SetupRogueSpells(allBuffs, enchants)
                       3768, 3769 } -- WotLK: Instant Poison 8, 9
 
   --Wound Poison
+  -- Cataclysm: Only 10918 is available
   buffDefModule:createAndRegisterBuff(allBuffs, 13227, nil)
-               :CreatesOrProvidedByItem(buffDefModule:NumberList(
-          { 10922, 10921, 10920, 10918 },
-          { 22055 }, -- TBC: Wound Poison
-          { 43234, 43235 })) -- WotLK: Wound Poison 6, 7
+               :CreatesOrProvidedByItem(buffDefModule:PerExpansionChoice({
+    classic = { 10922, 10921, 10920, 10918 },
+    tbc = { 22055 }, -- TBC: Wound Poison
+    wotlk = { 43234, 43235 },
+    onlyCataclysm = { 10918 } -- All poison ranks are merged into one in Cataclysm
+  })) -- WotLK: Wound Poison 6, 7
                :IsConsumable(true)
                :BuffType("weapon")
                :SingleDuration(duration)
@@ -79,8 +91,12 @@ function rogueModule:SetupRogueSpells(allBuffs, enchants)
                       3772, 3773 } -- WotLK: Wound Poison 6, 7
 
   --Crippling Poison
+  -- Cataclysm: Only 3775 is available
   buffDefModule:createAndRegisterBuff(allBuffs, 11202, nil)
-               :CreatesOrProvidedByItem({ 3776, 3775 })
+               :CreatesOrProvidedByItem(buffDefModule:PerExpansionChoice({
+    classic = { 3776, 3775 },
+    onlyCataclysm = { 3775 } -- All poison ranks are merged into one in Cataclysm
+  }))
                :IsConsumable(true)
                :BuffType("weapon")
                :SingleDuration(duration)

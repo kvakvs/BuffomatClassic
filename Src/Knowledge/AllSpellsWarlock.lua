@@ -106,7 +106,10 @@ function warlockModule:SetupWarlockSpells(allBuffs, enchantments)
     buffDefModule:createAndRegisterBuff(allBuffs, 17953, nil)
                  :IsOwn(true)
                  :IsDefault(false)
-                 :LockIfHaveItem(buffDefModule:NumberList({ 1254, 13699, 13700, 13701 }, { 22128 }, {})) -- TBC: Master Firestone
+                 :LockIfHaveItem(buffDefModule:PerExpansionChoice({
+      classic = { 1254, 13699, 13700, 13701 },
+      tbc = { 22128 } -- TBC: Master Firestone
+    }))
                  :SingleFamily({ 6366, 17951, 17952, 17953, -- Rank 1-4
                                  27250 }) -- TBC: Rank 5
                  :RequirePlayerClass("WARLOCK")
