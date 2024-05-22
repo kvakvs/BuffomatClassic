@@ -43,6 +43,7 @@ function mageModule:SetupMageSpells(allBuffs, enchantments)
                :DefaultTargetClasses(allBuffsModule.BOM_NO_CLASSES)
                :RequirePlayerClass("MAGE")
                :Category("class")
+               :HideInCata()
   --Amplify Magic
   buffDefModule:createAndRegisterBuff(allBuffs, 10170, nil)
                :IsDefault(false)
@@ -53,6 +54,7 @@ function mageModule:SetupMageSpells(allBuffs, enchantments)
                :DefaultTargetClasses(allBuffsModule.BOM_NO_CLASSES)
                :RequirePlayerClass("MAGE")
                :Category("class")
+               :HideInCata()
   -- Ice Armor / eisrüstung
   buffDefModule:createAndRegisterBuff(allBuffs, 10220, nil)
                :BuffType("seal")
@@ -81,6 +83,7 @@ function mageModule:SetupMageSpells(allBuffs, enchantments)
                                43045, 43046 }) -- WotLK: Molten Armor 2, 3
                :RequirePlayerClass("MAGE")
                :Category("class")
+               :RequireTBC()
   -- Mage Armor / magische rüstung
   buffDefModule:createAndRegisterBuff(allBuffs, 22783, nil)
                :BuffType("seal")

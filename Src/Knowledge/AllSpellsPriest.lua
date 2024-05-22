@@ -20,12 +20,12 @@ function priestModule:CreatePrayerOfSpiritBuff()
    :ReagentRequired({ 17028, 17029,
                       44615 })  -- WotLK: Devout Candle
    :DefaultTargetClasses(allBuffsModule.MANA_CLASSES)
-   --:IgnoreIfHaveBuff({ 46302, -- Kiru's Song of Victory (Sunwell)
-   --                    54424, -- Fel Intelligence 1 (Wotlk Warlock)
-   --                    57564, -- Fel Intelligence 2 (Wotlk Warlock)
-   --                    57565, -- Fel Intelligence 3 (Wotlk Warlock)
-   --                    57566, -- Fel Intelligence 4 (Wotlk Warlock)
-   --                    57567 }) -- Fel Intelligence 5 (Wotlk Warlock)
+  --:IgnoreIfHaveBuff({ 46302, -- Kiru's Song of Victory (Sunwell)
+  --                    54424, -- Fel Intelligence 1 (Wotlk Warlock)
+  --                    57564, -- Fel Intelligence 2 (Wotlk Warlock)
+  --                    57565, -- Fel Intelligence 3 (Wotlk Warlock)
+  --                    57566, -- Fel Intelligence 4 (Wotlk Warlock)
+  --                    57567 }) -- Fel Intelligence 5 (Wotlk Warlock)
    :Category("class")
   return b
 end
@@ -62,7 +62,7 @@ function priestModule:SetupPriestSpells(allBuffs, enchants)
                                   44615 })  -- WotLK: Devout Candle
                :DefaultTargetClasses(allBuffsModule.ALL_CLASSES)
                :Category("class")
-               --:IgnoreIfHaveBuff(46302) -- Kiru's Song of Victory (Sunwell)
+  --:IgnoreIfHaveBuff(46302) -- Kiru's Song of Victory (Sunwell)
                :RequirePlayerClass("PRIEST")
                :HideInCata()
 
@@ -71,6 +71,7 @@ function priestModule:SetupPriestSpells(allBuffs, enchants)
                :IsDefault(true)
                :SingleFamily({ 21562 }) -- Cata: Power Word: Fortitude
                :GroupFamily({ 21562 }) -- Cata: Power Word: Fortitude
+               :ProvidesAuras({ 79104, 79105 })
                :SingleDuration(allBuffsModule.HOUR)
                :GroupDuration(allBuffsModule.HOUR)
                :DefaultTargetClasses(allBuffsModule.ALL_CLASSES)
@@ -96,15 +97,16 @@ function priestModule:SetupPriestSpells(allBuffs, enchants)
                :DefaultTargetClasses(allBuffsModule.ALL_CLASSES)
                :Category("class")
                :RequirePlayerClass("PRIEST")
-              :HideInCata()
+               :HideInCata()
 
   -- [Cataclysm] Shadow Protection / Prayer of Shadow / Schattenschutz
   buffDefModule:createAndRegisterBuff(allBuffs, 10958, nil)
                :IsDefault(true)
-               :SingleDuration(allBuffsModule.HOUR)
-               :GroupDuration(allBuffsModule.HOUR)
                :SingleFamily({ 27683 }) -- Cata: Shadow Protection
                :GroupFamily({ 27683 }) -- Cata: Shadow Protection
+               :ProvidesAuras({ 79106, 79107 })
+               :SingleDuration(allBuffsModule.HOUR)
+               :GroupDuration(allBuffsModule.HOUR)
                :DefaultTargetClasses(allBuffsModule.ALL_CLASSES)
                :Category("class")
                :RequirePlayerClass("PRIEST")
