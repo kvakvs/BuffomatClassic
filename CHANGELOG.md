@@ -1,25 +1,27 @@
 # Changelog
 
-## Buffomat Classic 2024.5.3
+## Buffomat Classic 2024.5.4
 
 - [Cataclysm] Prepatch fix. Stay tuned for actual Cataclysm update.
 - [Cataclysm] Elixirs, flasks, food buffs.
 - [Cataclysm] Rogue poisons. Also see: Restocker Classic addon to auto-buy.
 - [Cataclysm] Priest buffs fix
+- [Bug] 'providesAuras' was working for consumables only, now also for buffs. Allows to account for fortitude and shadow
+  protection being already on priest.
 - Missing: Combo meals, alchemist flask.
 
 ## Buffomat Classic 2024.4.0
 
 - [Druid] Do not /cancelform in moonkin form by adding `[noform:5]` to it.
-- Minimap button is now using LibAce's standard library. Removed options for 
-button rotation and distance, as they're now handled by the external library.
-Clicking the button toggles the window, right clicking shows quick menu.
+- Minimap button is now using LibAce's standard library. Removed options for
+  button rotation and distance, as they're now handled by the external library.
+  Clicking the button toggles the window, right clicking shows quick menu.
 - [Bug] Remaining reference in code to minimapButton is removed
 
 ## Buffomat Classic 2024.3.0
 
-- [SoD] [Shaman] Dual wield enchantments work again. Known problem: You can't 
-leave mainhand unenchanted, it always does mainhand first.
+- [SoD] [Shaman] Dual wield enchantments work again. Known problem: You can't
+  leave mainhand unenchanted, it always does mainhand first.
 
 ## Buffomat Classic 2023.12.1
 
@@ -27,14 +29,17 @@ leave mainhand unenchanted, it always does mainhand first.
 
 ## Buffomat Classic 2023.11.4
 
-- Single rows for each food buff are now grouped per stat they provide, including all levels (helps while leveling). Highest 
+- Single rows for each food buff are now grouped per stat they provide, including all levels (helps while leveling).
+  Highest
   available in your bag will be eaten first (and a setting to choose lowest first).
-  - New grouped buffs are marked with green text
-  - New option (last in the "Scan Options") to prefer either highest available 
-    item, or lowest. Lowest is useful when leveling, to consume your lowest level consumables first.
-  - Clicking the icon in the buff list to print all items, which can provide this buff, from lowest to highest.
-  - Added food eating auras to ignore list to hide the food buff task while eating, so it doesn't get eaten multiple times.
-- [Known Bug] Soon after resurrecting under the flask effect, Buffomat can show a task for reflasking. It disappears a second or two later.
+    - New grouped buffs are marked with green text
+    - New option (last in the "Scan Options") to prefer either highest available
+      item, or lowest. Lowest is useful when leveling, to consume your lowest level consumables first.
+    - Clicking the icon in the buff list to print all items, which can provide this buff, from lowest to highest.
+    - Added food eating auras to ignore list to hide the food buff task while eating, so it doesn't get eaten multiple
+      times.
+- [Known Bug] Soon after resurrecting under the flask effect, Buffomat can show a task for reflasking. It disappears a
+  second or two later.
 - In raid, staggered per-group updates now will skip empty 5man groups, which will result in faster updates overall.
 
 ## Buffomat Classic 2023.11.1

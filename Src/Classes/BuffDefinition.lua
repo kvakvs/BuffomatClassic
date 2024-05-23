@@ -803,6 +803,15 @@ function buffDefClass:DoesUnitHaveBetterBuffs(unit)
       end
     end
   end
+
+  if self.providesAuras then
+    for i, aura in pairs(--[[---@not nil]] self.providesAuras) do
+      if unit.allBuffs[aura] then
+        return true -- have one of known provided auras, means we don't need that buff
+      end
+    end
+  end
+
   return false
 end
 
