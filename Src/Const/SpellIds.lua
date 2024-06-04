@@ -47,6 +47,7 @@ spellIdsModule.Mage_ConjureManaRuby = 10054
 spellIdsModule.Mage_ConjureManaCitrine = 10053
 spellIdsModule.Mage_ConjureManaJade = 3552
 spellIdsModule.Mage_ConjureManaAgate = 759
+spellIdsModule.Mage_Cataclysm_ManaGem = 759
 
 spellIdsModule.Warlock_DemonicSacrifice = 18788
 spellIdsModule.Warlock_CreateSpellstone6 = 47888 -- WotLK

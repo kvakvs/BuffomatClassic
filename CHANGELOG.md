@@ -1,5 +1,9 @@
 # Changelog
 
+## Buffomat Classic 2024.6.0
+
+- [Mage] Mana gem fixed.
+
 ## Buffomat Classic 2024.5.4
 
 - [Cataclysm] Prepatch fix. Stay tuned for actual Cataclysm update.

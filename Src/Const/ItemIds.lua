@@ -13,6 +13,7 @@ itemIdsModule.Mage_ManaRuby = 8008
 itemIdsModule.Mage_ManaCitrine = 8007
 itemIdsModule.Mage_ManaJade = 5513
 itemIdsModule.Mage_ManaAgate = 5514
+itemIdsModule.Mage_Cataclysm_ManaGem = 36799
 
 itemIdsModule.Warlock_SoulShard = 6265
 itemIdsModule.Warlock_Spellstone1 = 41191
