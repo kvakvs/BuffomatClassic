@@ -1,8 +1,9 @@
 # Changelog
 
-## Buffomat Classic 2024.6.0
+## Buffomat Classic 2024.6.1
 
 - [Mage] Mana gem fixed.
+- [Cataclysm] Added Abyssal Clam to the openable containers list.
 
 ## Buffomat Classic 2024.5.4
 

@@ -31,3 +31,8 @@ itemIdsModule.Warlock_Firestone6 = 41173
 itemIdsModule.Warlock_Firestone7 = 41174
 
 itemIdsModule.Paladin_SymbolOfKings = 21177
+
+itemIdsModule.Classic_BigmouthClam = 7973
+itemIdsModule.TBC_JaggalClam = 24476
+itemIdsModule.WotLK_DarkwaterClam = 36781
+itemIdsModule.Cataclysm_AbyssalClam = 52340

@@ -5,6 +5,7 @@ local BOM = BuffomatAddon ---@type BomAddon
 ---@shape BomItemListCacheModule
 local itemListCacheModule = BomModuleManager.itemListCacheModule ---@type BomItemListCacheModule
 
+local itemIdsModule = BomModuleManager.itemIdsModule
 local buffomatModule = BomModuleManager.buffomatModule
 local toolboxModule = BomModuleManager.toolboxModule
 local envModule = KvModuleManager.envModule
@@ -26,6 +27,17 @@ BOM.wipeCachedItems = true
 
 -- Stores copies of GetContainerItemInfo parse results
 local itemListCache = --[[---@type BomInventory]] {}
+
+function itemListCacheModule:IsOpenable(itemInfo)
+  return itemInfo and (
+          itemInfo.hasLoot
+          -- Since Cataclysm, clams seem to not be "lootable" but they have an "open" spell attached.
+                  or itemInfo.itemID == itemIdsModule.Classic_BigmouthClam
+                  or itemInfo.itemID == itemIdsModule.TBC_JaggalClam
+                  or itemInfo.itemID == itemIdsModule.WotLK_DarkwaterClam
+                  or itemInfo.itemID == itemIdsModule.Cataclysm_AbyssalClam
+  )
+end
 
 ---@return BomInventory
 function itemListCacheModule:GetItemList()
@@ -53,7 +65,7 @@ function itemListCacheModule:GetItemList()
             end
           end -- for itemList
 
-          if itemInfo.hasLoot and buffomatModule.shared.OpenLootable then
+          if self:IsOpenable(itemInfo) and buffomatModule.shared.OpenLootable then
             local locked = false
 
             for i, text in ipairs(toolboxModule:ScanToolTip("SetBagItem", bag, slot)) do
