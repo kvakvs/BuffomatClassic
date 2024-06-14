@@ -1,9 +1,9 @@
 # Changelog
 
-## Buffomat Classic 2024.6.1
-
+## Buffomat Classic 2024.6.2
 - [Mage] Mana gem fixed.
-- [Cataclysm] Added Abyssal Clam to the openable containers list.
+- [Cataclysm] Added Abyssal Clam and older clams to the openable containers list.
+- [Cataclysm] Alchemist only Flask of Enhancement added.
 
 ## Buffomat Classic 2024.5.4
 

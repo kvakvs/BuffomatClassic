@@ -220,11 +220,14 @@ function flasksModule:_SetupFlasksCata(allBuffs, enchantments)
 
 
   -- Alchemist self-flask: Flask of Enhancement
-  -- TODO
-  --buffDefModule:genericConsumable(allBuffs, 67016, 58149) --Cata: Flask of Enhancement
-  --             :ProvidesAuras({ })
-  --             :ExtraText(_t("tooltip.buff.alchemistOnly"))
-  --             :RequireCata()
-  --             :Category("cataFlask")
-  --             :ElixirType("both")
+  buffDefModule:genericConsumable(allBuffs, 79637, 58149) --Cata: Flask of Enhancement
+               :ProvidesAuras({
+    79638, -- enhanced strength +80
+    79639, -- enhanced agility +80
+    79640, -- enhanced intellect +80
+  })
+               :ExtraText(_t("tooltip.buff.alchemistOnly"))
+               :RequireCata()
+               :Category("cataFlask")
+               :ElixirType("both")
 end
