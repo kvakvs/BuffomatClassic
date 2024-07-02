@@ -1,5 +1,9 @@
 # Changelog
 
+## Buffomat Classic 2024.7.0
+- [Paladin] In Cataclysm Crusader aura has changed its shapeshift-id from 7 to 
+5. This update will fix the crusader aura autobuff behaviour in Cataclysm.
+
 ## Buffomat Classic 2024.6.2
 - [Mage] Mana gem fixed.
 - [Cataclysm] Added Abyssal Clam and older clams to the openable containers list.

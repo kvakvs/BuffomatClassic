@@ -87,10 +87,11 @@ function taskScanModule:IsMountedAndCrusaderAuraRequired()
   then
     return false
   end
+  local crusaderAuraShapeshiftForm = (envModule.isCata and 5) or 7
   return buffomatModule.shared.AutoCrusaderAura -- if setting enabled
           and IsSpellKnown(spellIdsModule.Paladin_CrusaderAura) -- and has the spell
           and (IsMounted() or self:IsFlying()) -- and flying
-          and GetShapeshiftForm() ~= 7 -- and not crusader aura
+          and GetShapeshiftForm() ~= crusaderAuraShapeshiftForm -- and not crusader aura
 end
 
 function taskScanModule:CancelBuff(list)
