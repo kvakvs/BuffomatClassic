@@ -357,6 +357,10 @@ function taskScanModule:IsActive(playerUnit)
     return false, _t("castButton.inactive.InCombat")
   end
 
+  if MacroFrame and MacroFrame:IsShown() then
+    return false, _t("castButton.inactive.MacroFrameShown")
+  end
+
   if UnitIsDeadOrGhost("player") then
     return false, _t("castButton.inactive.IsDead")
   end

@@ -265,7 +265,7 @@ function taskListClass:CastButton(task)
 end
 
 function taskListClass:CastButton_SomeoneIsDead()
-  self:CastButtonText(_t("InactiveReason_DeadMember"), false)
+  self:CastButtonText(_t("castButton.inactive.DeadMember"), false)
 end
 
 --function taskListClass:CastButton_CantCast()

@@ -13,7 +13,7 @@ function frenchModule:Translations()
     ["castButton.Busy"] = "Occupé",
     ["castButton.inactive.InCombat"] = "En combat",
     ["castButton.NothingToDo"] = "Rien à faire",
-    InactiveReason_DeadMember = "Quelqu'un est mort",
+    ["castButton.inactive.DeadMember"] = "Quelqu'un est mort",
     ["castButton.NoMacroSlots"] = "Besoin d'un emplacement macro!",
 
     ["options.short.ShowMinimapButton"] = "Montrer bouton minimap",

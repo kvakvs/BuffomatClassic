@@ -135,7 +135,7 @@ function chineseModule:Translations()
     InfoSomeoneIsDrinking = "1 在喝酒",
     InfoMultipleDrinking = "%d 在喝酒",
 
-    InactiveReason_DeadMember = "队友死亡",
+    ["castButton.inactive.DeadMember"] = "队友死亡",
     ["castButton.inactive.IsDead"] = "你已死亡",
     ["castButton.inactive.InCombat"] = "你在战斗中",
     ["castButton.inactive.RestArea"] = "休息区禁用检查",
