@@ -11,6 +11,7 @@ local envModule = { }
 ---@class KvModuleManager
 ---@field envModule KvLibEnvModule
 ---@field optionsModule KvOptionsModule
+---
 KvModuleManager = {
   envModule = envModule,
   optionsModule = --[[---@type KvOptionsModule]] {},

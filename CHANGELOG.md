@@ -1,5 +1,9 @@
 # Changelog
 
+## Buffomat Classic 2024.7.1
+- When Macro edit frame is open, Buffomat will sleep
+- Sorting the buffs inside each group alphabetically
+
 ## Buffomat Classic 2024.7.0
 - [Paladin] In Cataclysm Crusader aura has changed its shapeshift-id from 7 to 
 5. This update will fix the crusader aura autobuff behaviour in Cataclysm.

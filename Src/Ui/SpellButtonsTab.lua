@@ -18,12 +18,13 @@ local buffDefModule = BomModuleManager.buffDefinitionModule
 local buffRowModule = BomModuleManager.buffRowModule
 local buffomatModule = BomModuleManager.buffomatModule
 local constModule = BomModuleManager.constModule
-local envModule = KvModuleManager.envModule
 local managedUiModule = BomModuleManager.myButtonModule
 local profileModule = BomModuleManager.profileModule
 local rowBuilderModule = BomModuleManager.rowBuilderModule
 local texturesModule = BomModuleManager.texturesModule
 local toolboxModule = BomModuleManager.toolboxModule
+
+local envModule = KvModuleManager.envModule
 
 local function bomDoBlessingOnClick(self)
   local saved = self.gpiDict[self.gpiVariableName]
@@ -278,9 +279,27 @@ function spellButtonsTabModule:CreateTab(playerIsHorde)
 
   buffomatModule.character.BuffCategoriesHidden = buffomatModule.character.BuffCategoriesHidden or {}
 
-  for j, cat in ipairs(allBuffsModule.buffCategories) do
+  for _key1, cat in ipairs(allBuffsModule.buffCategories) do
+
     if not self:CategoryIsHidden(cat) then
-      for i, spell in ipairs(allBuffsModule.selectedBuffs) do
+
+      -- A table in Lua is a set of key-value mappings with unique keys. The pairs are stored in arbitrary order and
+      -- therefore the table is not sorted in any way. What you can do is iterate over the table in some order. The basic
+      -- pairs gives you no guarantee of the order in which the keys are visited. Here is a customized version of pairs,
+      -- which I called spairs because it iterates over the table in a sorted order:
+      local buffKeys = {}
+      for k in pairs(allBuffsModule.selectedBuffs) do
+        buffKeys[#buffKeys + 1] = k
+      end
+      table.sort(buffKeys, function(aKey, bKey)
+        local a = allBuffsModule.selectedBuffs[aKey]
+        local b = allBuffsModule.selectedBuffs[bKey]
+        return (a.name or a.singleText or "") < (b.name or b.singleText or "")
+      end)
+
+      for _key2, spellKey in pairs(buffKeys) do
+        local spell = allBuffsModule.selectedBuffs[spellKey]
+
         -- for all spells known by Buffomat and the player
         if spell.category ~= cat -- category has changed from the previous row
                 or (type(spell.onlyUsableFor) == "table"
