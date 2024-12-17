@@ -3,6 +3,7 @@ local BOM = BuffomatAddon ---@type BomAddon
 
 ---@shape BomMacroModule
 local macroModule = BomModuleManager.macroModule
+macroModule.lastMacroSet = ''
 
 local constModule = BomModuleManager.constModule
 local _t = BomModuleManager.languagesModule
@@ -43,7 +44,12 @@ function macroClass:Clear()
   self:EnsureExists()
   self.lines = {}
   self.icon = constModule.MACRO_ICON_DISABLED
-  EditMacro(self.name, nil, self.icon, self:GetText())
+
+  -- Prevent resetting to empty multiple times
+  if macroModule.lastMacroSet ~= "" then
+    EditMacro(constModule.MACRO_NAME, nil, self.icon, "")
+    macroModule.lastMacroSet = ""
+  end
 end
 
 ---@return string
@@ -57,8 +63,14 @@ end
 
 function macroClass:UpdateMacro()
   local icon = self.icon or constModule.MACRO_ICON
-  EditMacro(constModule.MACRO_NAME, nil, icon, self:GetText())
-  --BOM.minimapButton:SetTexture("Interface\\ICONS\\" .. icon)
+  local newText = self:GetText()
+
+  -- Prevent multiple times setting macro to the same value
+  if macroModule.lastMacroSet ~= newText then
+    EditMacro(constModule.MACRO_NAME, nil, icon, newText)
+    --BOM.minimapButton:SetTexture("Interface\\ICONS\\" .. icon)
+    macroModule.lastMacroSet = newText
+  end
 end
 
 function macroClass:EnsureExists()
