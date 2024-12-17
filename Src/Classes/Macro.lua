@@ -27,8 +27,16 @@ function macroModule:NewMacro(name, lines)
   return fields
 end
 
+function macroModule:IsMacroFrameOpen()
+  return MacroFrame and MacroFrame:IsShown()
+end
+
 function macroClass:Clear()
   if InCombatLockdown() then
+    return
+  end
+  if macroModule:IsMacroFrameOpen() then
+    -- Fixes the bug when macro editor was constantly reset by Buffomat
     return
   end
 

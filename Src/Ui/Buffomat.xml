@@ -167,12 +167,12 @@
     <Scripts>
       <OnLoad inherit="prepend">
         if BackdropTemplateMixin then
-          Mixin(self, BackdropTemplateMixin);
+        Mixin(self, BackdropTemplateMixin);
         end
       </OnLoad>
       <OnSizeChanged inherit="prepend">
         if self.OnBackdropSizeChanged then
-          self:OnBackdropSizeChanged();
+        self:OnBackdropSizeChanged();
         end
       </OnSizeChanged>
     </Scripts>
@@ -186,9 +186,9 @@
     </Size>
     <Anchors>
       <Anchor point="CENTER"/>
-      <Offset>
-        <AbsDimension x="300" y="0"/>
-      </Offset>
+      <!--      <Offset>-->
+      <!--        <AbsDimension x="300" y="0"/>-->
+      <!--      </Offset>-->
     </Anchors>
 
     <Layers>
@@ -311,10 +311,11 @@
             </Anchors>
           </Button>
 
-          <ScrollingMessageFrame enableMouseWheel="true"
-                                 name="$parent_MessageFrame"
-                                 parentKey="MessageFrame"
-                                 enableMouseClicks="true">
+          <!--  enableMouseWheel="true"        -->
+          <ScrollingMessageFrame
+                  name="$parent_MessageFrame"
+                  parentKey="MessageFrame"
+                  enableMouseClicks="true">
             <Anchors>
               <Anchor point="TOP"/>
               <Anchor point="LEFT" relativePoint="LEFT"
@@ -399,11 +400,11 @@
     <Scripts>
       <OnLoad inherit="prepend">
         self:SetBackdrop({
-          bgFile="Interface\\DialogFrame\\UI-DialogBox-Background-Dark",
-          edgeFile="Interface\\DialogFrame\\UI-DialogBox-Border",
-          tile=true,
-          edgeSize=16, tileSize=64,
-          insets={left=5, right=5, top=5, bottom=5}
+        bgFile="Interface\\DialogFrame\\UI-DialogBox-Background-Dark",
+        edgeFile="Interface\\DialogFrame\\UI-DialogBox-Border",
+        tile=true,
+        edgeSize=16, tileSize=64,
+        insets={left=5, right=5, top=5, bottom=5}
         });
       </OnLoad>
     </Scripts>

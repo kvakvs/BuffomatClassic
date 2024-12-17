@@ -231,6 +231,7 @@ function taskListClass:CastButtonText(t, enable)
   if enable then
     BomC_ListTab_Button:Enable()
   else
+    -- taskListModule:WipeMacro(nil)
     BomC_ListTab_Button:Disable()
   end
 

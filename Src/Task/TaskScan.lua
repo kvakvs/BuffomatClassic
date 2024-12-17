@@ -12,6 +12,7 @@ taskScanModule.saveSomeoneIsDead = false
 local _t = BomModuleManager.languagesModule
 local actionCastModule = BomModuleManager.actionCastModule
 local actionMacroModule = BomModuleManager.actionMacroModule
+local macroModule = BomModuleManager.macroModule
 local actionUseModule = BomModuleManager.actionUseModule
 local allBuffsModule = BomModuleManager.allBuffsModule
 local buffChecksModule = BomModuleManager.buffChecksModule
@@ -357,7 +358,7 @@ function taskScanModule:IsActive(playerUnit)
     return false, _t("castButton.inactive.InCombat")
   end
 
-  if MacroFrame and MacroFrame:IsShown() then
+  if macroModule:IsMacroFrameOpen() then
     return false, _t("castButton.inactive.MacroFrameShown")
   end
 
