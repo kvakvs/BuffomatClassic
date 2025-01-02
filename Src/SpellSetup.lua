@@ -321,12 +321,15 @@ function spellSetupModule:Setup_EachBuff(buff)
   if buff.groupText and IsSpellKnown(buff.highestRankGroupId) then
     add = true
     buff.groupMana = 0
-    local cost = GetSpellPowerCost(buff.groupText)
+    -- This returns a table with possibly multiple costs
+    -- {  { cost = 970, name = "MANA", type = 0, minCost = 970, requiredAuraID = 0, costPercent = 0, costPerSec = 0 },
+    --    { cost = 0, name = "RAGE" }, ... }
+    local costsPerEnergyType = GetSpellPowerCost(buff.highestRankGroupId)
 
-    if type(cost) == "table" then
-      for j = 1, #cost do
-        if cost[j] and cost[j].name == "MANA" then
-          buff.groupMana = cost[j].cost or 0
+    if type(costsPerEnergyType) == "table" then
+      for _i, energyType in ipairs(costsPerEnergyType) do
+        if energyType and energyType.name == "MANA" then
+          buff.groupMana = energyType.cost or 0
         end
       end
     end

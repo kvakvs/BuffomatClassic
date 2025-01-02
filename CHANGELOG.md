@@ -1,5 +1,8 @@
 # Changelog
 
+## Buffomat Classic 2025.1.0
+- Found possible reason for group buffs not working. Releasing a beta fix.
+
 ## Buffomat Classic 2024.7.1
 - When Macro edit frame is open, Buffomat will sleep
 - Sorting the buffs inside each group alphabetically
