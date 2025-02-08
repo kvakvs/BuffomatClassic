@@ -1,8 +1,8 @@
 --TODO: Rename to Unit.lua
 local TOCNAME, _ = ...
-local BOM = BuffomatAddon ---@type BomAddon
+local BOM = BuffomatAddon
 
----@shape BomUnitModule
+---@class BomUnitModule
 local unitModule = BomModuleManager.unitModule ---@type BomUnitModule
 
 local allBuffsModule = BomModuleManager.allBuffsModule
@@ -58,9 +58,8 @@ function unitModule:UnitAura(unitId, buffIndex, filter)
   , nameplateShowAll, timeMod = UnitAura(unitId, buffIndex, filter)
 
   if spellId
-          and allBuffsModule.allSpellIds
-          and tContains(allBuffsModule.allSpellIds, spellId) then
-
+      and allBuffsModule.allSpellIds
+      and tContains(allBuffsModule.allSpellIds, spellId) then
     if source ~= nil and source ~= "" and UnitIsUnit(source, "player") then
       if UnitIsUnit(unitId, "player") and duration ~= nil and duration > 0 then
         buffomatModule.shared.Duration[name] = duration
@@ -74,7 +73,7 @@ function unitModule:UnitAura(unitId, buffIndex, filter)
         local destName = UnitFullName(unitId) ---@type string
         local buffOnPlayer = partyModule.unitAurasLastUpdated[destName]
 
-        if buffOnPlayer and buffOnPlayer[name] then
+        if type(buffOnPlayer) == "table" and buffOnPlayer[name] then
           expirationTime = (buffOnPlayer[name] or 0) + duration
 
           local now = GetTime()
@@ -90,7 +89,6 @@ function unitModule:UnitAura(unitId, buffIndex, filter)
         duration = 0
       end
     end
-
   end
 
   return {
@@ -159,11 +157,11 @@ function unitClass:ForceUpdateBuffs(playerUnit)
         break
       else
         local buffOnUnit = buffModule:New(
-                unitAura.spellId,
-                unitAura.duration,
-                unitAura.expirationTime,
-                unitAura.source,
-                allBuffsModule.spellIdIsSingleLookup[unitAura.spellId] ~= nil)
+          unitAura.spellId,
+          unitAura.duration,
+          unitAura.expirationTime,
+          unitAura.source,
+          allBuffsModule.spellIdIsSingleLookup[unitAura.spellId] ~= nil)
         self.knownBuffs[lookupBuff.buffId] = buffOnUnit
       end
       --if tContains(BOM.ReputationTrinket.spells, spellId) then
@@ -174,7 +172,6 @@ function unitClass:ForceUpdateBuffs(playerUnit)
       --  self.hasCarrot = true
       --end
     end
-
   until (not unitAura.name)
 
   if self.isPlayer then
@@ -225,7 +222,7 @@ function unitClass:SetMainhandBuff(enchantmentId, expiration)
   local duration
 
   if allBuffsModule.buffFromSpellIdLookup[enchantBuffId]
-          and allBuffsModule.buffFromSpellIdLookup[enchantBuffId].singleDuration
+      and allBuffsModule.buffFromSpellIdLookup[enchantBuffId].singleDuration
   then
     duration = allBuffsModule.buffFromSpellIdLookup[enchantBuffId].singleDuration
   else
@@ -233,11 +230,11 @@ function unitClass:SetMainhandBuff(enchantmentId, expiration)
   end
 
   self.knownBuffs[enchantBuffId] = buffModule:New(
-          enchantBuffId,
-          duration,
-          GetTime() + expiration / 1000,
-          "player",
-          true)
+    enchantBuffId,
+    duration,
+    GetTime() + expiration / 1000,
+    "player",
+    true)
   self.mainhandEnchantment = enchantBuffId
 end
 
@@ -252,7 +249,7 @@ function unitClass:SetOffhandBuff(enchantmentId, expiration)
   local duration
 
   if allBuffsModule.buffFromSpellIdLookup[enchantBuffId]
-          and allBuffsModule.buffFromSpellIdLookup[enchantBuffId].singleDuration
+      and allBuffsModule.buffFromSpellIdLookup[enchantBuffId].singleDuration
   then
     duration = allBuffsModule.buffFromSpellIdLookup[enchantBuffId].singleDuration
   else
@@ -260,11 +257,11 @@ function unitClass:SetOffhandBuff(enchantmentId, expiration)
   end
 
   self.knownBuffs[-enchantBuffId] = buffModule:New(
-          -enchantBuffId,
-          duration,
-          GetTime() + expiration / 1000,
-          "player",
-          true)
+    -enchantBuffId,
+    duration,
+    GetTime() + expiration / 1000,
+    "player",
+    true)
 
   self.offhandEnchantment = enchantBuffId
 end
@@ -274,17 +271,17 @@ end
 ---@return BomUnit
 function unitClass:UpdateBuffs(party, playerZone)
   self.isSameZone = (C_Map.GetBestMapForUnit(self.unitId) == playerZone)
-          or self.isGhost
-          or self.unitId == "target"
+      or self.isGhost
+      or self.unitId == "target"
 
   if not self.isDead
-          or BOM.declineHasResurrection
+      or BOM.declineHasResurrection
   then
     self.hasResurrection = false
     self.distance = toolboxModule:UnitDistanceSquared(self.unitId)
   else
     self.hasResurrection = UnitHasIncomingResurrection(self.unitId)
-            or self.hasResurrection
+        or self.hasResurrection
   end
 
   self:ForceUpdateBuffs(party.player)
@@ -298,15 +295,15 @@ function unitClass:UpdatePlayerWeaponEnchantments()
   , hasOffHandEnchant, offHandExpiration, offHandCharges, offHandEnchantId = GetWeaponEnchantInfo()
 
   if hasMainHandEnchant and mainHandEnchantID
-          and allBuffsModule.enchantToSpellLookup[mainHandEnchantID] then
+      and allBuffsModule.enchantToSpellLookup[mainHandEnchantID] then
     self:SetMainhandBuff(mainHandEnchantID, mainHandExpiration)
   else
     self:ClearMainhandBuff()
   end
 
   if hasOffHandEnchant
-          and offHandEnchantId
-          and allBuffsModule.enchantToSpellLookup[offHandEnchantId] then
+      and offHandEnchantId
+      and allBuffsModule.enchantToSpellLookup[offHandEnchantId] then
     self:SetOffhandBuff(offHandEnchantId, offHandExpiration)
   else
     self:ClearOffhandBuff()

@@ -1,6 +1,6 @@
 local TOCNAME, _ = ...
 
----@shape BomConstModule
+---@class BomConstModule
 local constModule = BomModuleManager.constModule ---@type BomConstModule
 
 constModule.TASKCOLOR_GRAY = "777777"
@@ -8,11 +8,12 @@ constModule.TASKCOLOR_RED = "cc4444"
 constModule.TASKCOLOR_BLEAK_RED = "bb5555"
 
 constModule.TOC_VERSION = GetAddOnMetadata(TOCNAME, "Version") --used for display in options
-constModule.TOC_TITLE = GetAddOnMetadata(TOCNAME, "Title") -- Longer title like "Buffomat Classic TBC"
+constModule.TOC_TITLE = GetAddOnMetadata(TOCNAME, "Title")     -- Longer title like "Buffomat Classic TBC"
 constModule.SHORT_TITLE = "Buffomat"
 constModule.MACRO_ICON = "INV_MISC_QUESTIONMARK"
 constModule.MACRO_ICON_DISABLED = "INV_MISC_QUESTIONMARK"
-constModule.BOM_BEAR_ICON_FULLPATH = "Interface\\ICONS\\Ability_Druid_ChallangingRoar" -- Icon picture used in window title, in the minimap icon, etc
+constModule.BOM_BEAR_ICON_FULLPATH =
+"Interface\\ICONS\\Ability_Druid_ChallangingRoar"                                      -- Icon picture used in window title, in the minimap icon, etc
 
 constModule.ICON_FORMAT = "|T%s:0:0:0:0:64:64:4:60:4:60|t"
 constModule.PICTURE_FORMAT = "|T%s:0|t"
@@ -94,9 +95,9 @@ constModule.CLASS_COLOR = RAID_CLASS_COLORS ---@type table<BomClassName, BomColo
 constModule.NAME_TO_CLASS = --[[---@type {[string]: string}]] {}
 
 for eng, name in pairs(LOCALIZED_CLASS_NAMES_MALE) do
-  constModule.NAME_TO_CLASS[--[[---@type string]] name] = --[[---@type string]] eng
-  constModule.NAME_TO_CLASS[--[[---@type string]] eng] = --[[---@type string]] eng
+  constModule.NAME_TO_CLASS[ --[[---@type string]] name ] = --[[---@type string]] eng
+  constModule.NAME_TO_CLASS[ --[[---@type string]] eng ] = --[[---@type string]] eng
 end
 for eng, name in pairs(LOCALIZED_CLASS_NAMES_FEMALE) do
-  constModule.NAME_TO_CLASS[--[[---@type string]] name] = --[[---@type string]] eng
+  constModule.NAME_TO_CLASS[ --[[---@type string]] name ] = --[[---@type string]] eng
 end

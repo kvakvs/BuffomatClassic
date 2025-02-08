@@ -1,7 +1,7 @@
 local TOCNAME, _ = ...
-local BOM = BuffomatAddon ---@type BomAddon
+local BOM = BuffomatAddon
 
----@shape BomSharedSettingsModule
+---@class BomSharedSettingsModule
 local sharedSettingsModule = BomModuleManager.sharedSettingsModule ---@type BomSharedSettingsModule
 
 --- Values to use when the saved data is evolving with an update, and the key doesn't exist
@@ -9,14 +9,14 @@ sharedSettingsModule.defaults = {
   SomeoneIsDrinking = "low-prio",
 }
 
----@shape BomMinimapSettings
+---@class BomMinimapSettings
 ---@field visible boolean
 ---@field lock boolean
 ---@field lockDistance boolean
 ---@field position number
 ---@field distance number
 
----@shape BomSharedSettings Current character state snapshots per profile
+---@class BomSharedSettings Current character state snapshots per profile
 ---@field Cache BomItemCache Caches responses from GetItemInfo() and GetSpellInfo()
 ---@field X number Window horizontal position
 ---@field Y number Window vertical position
@@ -71,6 +71,7 @@ sharedSettingsModule.defaults = {
 ---@field Time3600 number
 ---@field Duration BomSpellDurationsTable Copy from character settings
 ---@field ShamanFlametongueRanked boolean Try and use rank 9 on mainhand for shaman when buffing double Flametongue
+---@field CustomBuffSorting boolean Each buff row will also have a text field with sorting order
 
 local sharedStateClass = {}
 sharedStateClass.__index = sharedStateClass
@@ -131,6 +132,7 @@ function sharedSettingsModule:Defaults()
     SomeoneIsDrinking = self.defaults.SomeoneIsDrinking,
     ActivateBomOnSpiritTap = 90,
     ShamanFlametongueRanked = true,
+    CustomBuffSorting = false,
     ----------------------
     MinBuff = 3,
     MinBlessing = 3,

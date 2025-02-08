@@ -1,5 +1,5 @@
 local TOCNAME, _ = ...
-local BOM = BuffomatAddon ---@type BomAddon
+local BOM = BuffomatAddon
 
 ---@alias BomBuffCategoryName ""|"tracking"|"pet"|"aura"|"seal"|"blessing"|"class"|"classicPhysFood"|"classicSpellFood"|"classicFood"|"classicPhysElixir"|"classicPhysBuff"|"classicBuff"|"classicSpellElixir"|"classicElixir"|"classicFlask"|"tbcPhysFood"|"tbcSpellFood"|"tbcFood"|"tbcPhysElixir"|"tbcSpellElixir"|"tbcElixir"|"tbcFlask"|"wotlkPhysFood"|"wotlkSpellFood"|"wotlkFood"|"wotlkPhysElixir"|"wotlkSpellElixir"|"wotlkElixir"|"wotlkFlask"|"scroll"|"weaponEnchantment"|"classWeaponEnchantment"|"cataElixir"|"cataFood"|"cataFlask"
 
@@ -7,7 +7,7 @@ local BOM = BuffomatAddon ---@type BomAddon
 ---@alias BomEnchantToSpellLookup {[BomEnchantmentId]: WowSpellId}
 ---@alias BomBuffBySpellId {[WowSpellId]: BomBuffDefinition}
 
----@shape BomAllBuffsModule
+---@class BomAllBuffsModule
 ---@field allBuffs BomBuffidBuffdefLookup All buffs, same as BOM.AllBuffomatSpells for convenience
 ---@field allSpellIds number[]
 ---@field buffCategories BomBuffCategoryName[] Category names for buffs
@@ -56,14 +56,14 @@ local warriorModule = BomModuleManager.allSpellsWarriorModule
 ---@alias BomClassName WowClassName|"tank"|"pet"
 
 allBuffsModule.ALL_CLASSES = { "WARRIOR", "MAGE", "ROGUE", "DRUID", "HUNTER", "PRIEST", "WARLOCK",
-                               "SHAMAN", "PALADIN", "DEATHKNIGHT" } ---@type BomClassName[]
-allBuffsModule.BOM_NO_CLASSES = { } ---@type BomClassName[]
+  "SHAMAN", "PALADIN", "DEATHKNIGHT" } ---@type BomClassName[]
+allBuffsModule.BOM_NO_CLASSES = {} ---@type BomClassName[]
 
 ---TODO: Move to constModule
 ---Classes which have a resurrection ability
 ---@type BomClassName[]
 local RESURRECT_CLASSES = { "SHAMAN", "PRIEST", "PALADIN", "DRUID" } -- Druid in WotLK
-BOM.RESURRECT_CLASS = RESURRECT_CLASSES --used in TaskScan.lua
+BOM.RESURRECT_CLASS = RESURRECT_CLASSES                              --used in TaskScan.lua
 allBuffsModule.RESURRECT_CLASSES = RESURRECT_CLASSES
 
 ---TODO: Move to constModule
@@ -138,27 +138,27 @@ end
 function allBuffsModule:SetupTrackingSpells(allBuffs, enchantments)
   -- Find Herbs / kräuter
   buffDefModule:createAndRegisterBuff(allBuffs, spellIdsModule.FindHerbs, nil)
-               :BuffType("tracking")
-               :IsDefault(true)
-               :Category("tracking")
+      :BuffType("tracking")
+      :IsDefault(true)
+      :Category("tracking")
 
   -- Find Minerals / erz
   buffDefModule:createAndRegisterBuff(allBuffs, spellIdsModule.FindMinerals, nil)
-               :BuffType("tracking")
-               :IsDefault(true)
-               :Category("tracking")
+      :BuffType("tracking")
+      :IsDefault(true)
+      :Category("tracking")
 
   -- Find Treasure / Schatzsuche / Zwerge
   buffDefModule:createAndRegisterBuff(allBuffs, spellIdsModule.FindTreasure, nil)
-               :BuffType("tracking")
-               :IsDefault(true)
-               :Category("tracking")
+      :BuffType("tracking")
+      :IsDefault(true)
+      :Category("tracking")
 
   -- Find Fish (TBC daily quest reward)
   buffDefModule:createAndRegisterBuff(allBuffs, spellIdsModule.FindFish, nil)
-               :BuffType("tracking")
-               :IsDefault(false)
-               :Category("tracking")
+      :BuffType("tracking")
+      :IsDefault(false)
+      :Category("tracking")
 
   return allBuffs
 end
@@ -201,7 +201,7 @@ function allBuffsModule:GetBuffCategories()
   local result = {}
   for _i, cat in ipairs(self.buffCategories) do
     if type(cat) == "string" and cat ~= "" then
-      result[--[[---@type string]]cat] = _t("Category_" .. cat)
+      result[ --[[---@type string]] cat ] = _t("Category_" .. cat)
     end
   end
   return result
@@ -231,7 +231,7 @@ end
 ---@alias BomBuffId number
 ---@alias BomEnchantmentId number #Wow Enchantment ID https://wowwiki-archive.fandom.com/wiki/EnchantId/Enchant_IDs
 
----@shape BomAllBuffsTable
+---@class BomAllBuffsTable
 ---@field [BomBuffId] BomBuffDefinition
 
 ---@alias BomEnchantmentsMapping {[WowSpellId]: BomEnchantmentId[]}
@@ -291,7 +291,7 @@ function allBuffsModule:SetupSpells()
   BOM.enchantList = enchantments
 end
 
----@shape BomReputationTrinketZones
+---@class BomReputationTrinketZones
 ---@field itemIds WowItemId[]
 ---@field zoneId WowZoneId[]
 ---@field Link string
@@ -306,12 +306,12 @@ BOM.reputationTrinketZones = {
   },
   zoneId  = {
     329, 289, 533, 535, --Stratholme/scholomance; Naxxramas LK 10/25
-    558, -- TBC: Auchenai
-    532, -- TBC: Karazhan
+    558,                -- TBC: Auchenai
+    532,                -- TBC: Karazhan
   },
 }
 
----@shape BomRidingSpeedZones
+---@class BomRidingSpeedZones
 ---@field itemIds WowItemId[]
 ---@field zoneId WowZoneId[]
 ---@field Link string
@@ -325,15 +325,15 @@ BOM.ridingSpeedZones = {
   --Allow Riding Speed trinkets in:
   zoneId  = {
     0, 1, 530, -- Eastern Kingdoms, Kalimdor, Outland
-    30, -- Alterac Valley
-    529, -- Arathi Basin,
-    489, -- Warsong Gulch
-    566, 968, -- TBC: Eye of the Storm
+    30,        -- Alterac Valley
+    529,       -- Arathi Basin,
+    489,       -- Warsong Gulch
+    566, 968,  -- TBC: Eye of the Storm
     --1672, 1505, 572, -- TBC: Blade's Edge Arena, Nagrand Arena, Ruins of Lordaeron
   },
 }
 
-BOM.buffExchangeId = { -- combine-spell-ids to new one
+BOM.buffExchangeId = {                      -- combine-spell-ids to new one
   [18788] = { 18791, 18790, 18789, 18792 }, -- Demonic Sacrifice-Buffs to Demonic Sacrifice
   [16591] = { 16591, 16589, 16595, 16593 }, -- noggenfoger
 }
@@ -351,7 +351,7 @@ BOM.itemList = {
   --{4604}, -- Forest Mushroom | Waldpilz
   --{8079},-- Water | wasser
   { 5232, 16892, 16893, 16895, -- Soulstone | Seelenstein
-    16896 }, -- TBC: Major Soulstone
+    16896 },                   -- TBC: Major Soulstone
 }
 allBuffsModule.itemListSpellLookup = {
   [8079]  = 432, -- Water | Wasser
@@ -381,17 +381,17 @@ function allBuffsModule:SetupCancelBuffs()
   do
     local _, class, _ = UnitClass("unit")
     if class == "HUNTER" then
-      local buff = buffDefModule:New(5118)--Aspect of the Cheetah/of the pack
-                                :OnlyCombat(true)
-                                :IsDefault(true)
-                                :SingleFamily({ 5118, 13159 })
+      local buff = buffDefModule:New(5118) --Aspect of the Cheetah/of the pack
+          :OnlyCombat(true)
+          :IsDefault(true)
+          :SingleFamily({ 5118, 13159 })
       table.insert(s, buff)
     end
 
     if (UnitFactionGroup("player")) ~= "Horde" or envModule.haveTBC then
       local buff = buffDefModule:New(1038) --Blessing of Salvation
-                                :IsDefault(false)
-                                :SingleFamily({ 1038, 25895 })
+          :IsDefault(false)
+          :SingleFamily({ 1038, 25895 })
       table.insert(s, buff)
     end
   end
@@ -411,16 +411,16 @@ local ShapeShiftTravel = {
 
 BOM.drinkingPersonCount = 0
 BOM.AllDrink = {
-  30024, -- Restores 20% mana
-  430, -- level 5 drink
-  431, -- level 15 drink
-  432, -- level 25 drink
-  1133, -- level 35 drink
-  1135, -- level 45 drink
+  30024,                                          -- Restores 20% mana
+  430,                                            -- level 5 drink
+  431,                                            -- level 15 drink
+  432,                                            -- level 25 drink
+  1133,                                           -- level 35 drink
+  1135,                                           -- level 45 drink
   1137, 29007, 43154, 24355, 25696, 43155, 26261, -- level 55 drink
-  10250, 22734, -- TBC: level 65 drink
-  34291, -- TBC: level 70 drink
-  27089, 43706, 46755, -- TBC? level 75 drink
+  10250, 22734,                                   -- TBC: level 65 drink
+  34291,                                          -- TBC: level 70 drink
+  27089, 43706, 46755,                            -- TBC? level 75 drink
 }
 
 ---For all spells database load data for spellids and items

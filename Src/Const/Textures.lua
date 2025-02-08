@@ -1,6 +1,6 @@
 -- defined in WowInventory.lua ---@alias WowIconId string|number
 
----@shape BomTexturesModule
+---@class BomTexturesModule
 ---@field CLASS_ICONS_ATLAS string
 ---@field CLASS_ICONS_ATLAS_TEX_COORD {[BomClassName]: WowTexCoord}
 ---@field ICON_BUFF_OFF string

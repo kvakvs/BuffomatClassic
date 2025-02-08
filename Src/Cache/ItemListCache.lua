@@ -1,8 +1,8 @@
-local TOCNAME, _ = ...
-local BOM = BuffomatAddon ---@type BomAddon
+-- local TOCNAME, _ = ...
+local BOM = BuffomatAddon
 
 ---@deprecated Not connected properly to any imports
----@shape BomItemListCacheModule
+---@class BomItemListCacheModule
 local itemListCacheModule = BomModuleManager.itemListCacheModule ---@type BomItemListCacheModule
 
 local itemIdsModule = BomModuleManager.itemIdsModule
@@ -28,18 +28,21 @@ BOM.wipeCachedItems = true
 -- Stores copies of GetContainerItemInfo parse results
 local itemListCache = --[[---@type BomInventory]] {}
 
+---@return boolean
+---@nodiscard
 function itemListCacheModule:IsOpenable(itemInfo)
   return itemInfo and (
-          itemInfo.hasLoot
-          -- Since Cataclysm, clams seem to not be "lootable" but they have an "open" spell attached.
-                  or itemInfo.itemID == itemIdsModule.Classic_BigmouthClam
-                  or itemInfo.itemID == itemIdsModule.TBC_JaggalClam
-                  or itemInfo.itemID == itemIdsModule.WotLK_DarkwaterClam
-                  or itemInfo.itemID == itemIdsModule.Cataclysm_AbyssalClam
+    itemInfo.hasLoot
+    -- Since Cataclysm, clams seem to not be "lootable" but they have an "open" spell attached.
+    or itemInfo.itemID == itemIdsModule.Classic_BigmouthClam
+    or itemInfo.itemID == itemIdsModule.TBC_JaggalClam
+    or itemInfo.itemID == itemIdsModule.WotLK_DarkwaterClam
+    or itemInfo.itemID == itemIdsModule.Cataclysm_AbyssalClam
   )
 end
 
 ---@return BomInventory
+---@nodiscard
 function itemListCacheModule:GetItemList()
   if BOM.wipeCachedItems then
     wipe(itemListCache)
@@ -56,7 +59,7 @@ function itemListCacheModule:GetItemList()
               table.insert(itemListCache, --[[---@type GetContainerItemInfoResult]] {
                 Index = iList,
                 ID = itemInfo.itemID,
-                CD = { },
+                CD = {},
                 Link = itemInfo.hyperlink,
                 Bag = bag,
                 Slot = slot,
@@ -84,13 +87,13 @@ function itemListCacheModule:GetItemList()
                 Bag = bag,
                 Slot = slot,
                 Lootable = true,
-                Texture = itemInfo.iconFileID })
+                Texture = itemInfo.iconFileID
+              })
             end -- not locked
-          end -- lootable & sharedState.openLootable
-        end -- if itemInfo
-
-      end -- for all bag slots in the current bag
-    end -- for all bags
+          end   -- lootable & sharedState.openLootable
+        end     -- if itemInfo
+      end       -- for all bag slots in the current bag
+    end         -- for all bags
   end
 
   --Update CD

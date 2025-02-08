@@ -1,10 +1,10 @@
---local BOM = BuffomatAddon ---@type BomAddon
+--local BOM = BuffomatAddon
 
----@shape BomBuffModule
+---@class BomBuffModule
 local buffModule = BomModuleManager.buffModule ---@type BomBuffModule
 
 ---@class BomUnitBuff
----@field singleId number Spell id also serving as key
+---@field singleId WowSpellId Spell id also serving as key
 ---@field duration number
 ---@field expirationTime number
 ---@field source string Unit/player who gave this buff
@@ -14,7 +14,7 @@ local buffClass = {}
 buffClass.__index = buffClass
 
 ---Creates a new Buff
----@param singleId number Spell id also serving as key
+---@param singleId WowSpellId Spell id also serving as key
 ---@param duration number
 ---@param expirationTime number
 ---@param source string

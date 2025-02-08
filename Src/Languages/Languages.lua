@@ -1,6 +1,6 @@
---local BOM = BuffomatAddon ---@type BomAddon
+--local BOM = BuffomatAddon
 
----@shape BomLanguagesModule
+---@class BomLanguagesModule
 ---@overload fun(key: string): string
 ---@field currentLocale BomLocaleDict
 ---@field english BomLocaleDict
@@ -15,19 +15,19 @@ local chineseModule = BomModuleManager.languageChineseModule
 
 setmetatable(languagesModule, {
   __call = ---@param k string
-  function(_, k)
-    if languagesModule.currentLocale and languagesModule.currentLocale[k] then
-      return languagesModule.currentLocale[k] or ("¶" .. k)
-    else
-      return "¶" .. k
-    end
-  end
+      function(_, k)
+        if languagesModule.currentLocale and languagesModule.currentLocale[k] then
+          return languagesModule.currentLocale[k] or ("¶" .. k)
+        else
+          return "¶" .. k
+        end
+      end
 })
 
 ---@alias BomLanguageId "enUS" | "deDE" | "frFR" | "ruRU" | "zhCN"
 ---@alias BomLocaleDict table<string, string>
 
----@shape BomAllLocalesCollection
+---@class BomAllLocalesCollection
 ---@field [BomLanguageId] BomLocaleDict
 ---@field enUS BomLocaleDict
 ---@field deDE BomLocaleDict
@@ -62,8 +62,8 @@ function languagesModule:SetupTranslations()
   end
 
   self.currentLocale["AboutCredits"] = "nanjuekaien1 & wellcat for the Chinese translation|n" ..
-          "OlivBEL for the french translation|n" ..
-          "Arrogant_Dreamer & kvakvs for the russian translation|n"
+      "OlivBEL for the french translation|n" ..
+      "Arrogant_Dreamer & kvakvs for the russian translation|n"
 end
 
 function languagesModule:LocalizationInit()

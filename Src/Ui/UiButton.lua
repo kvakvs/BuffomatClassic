@@ -1,4 +1,4 @@
----@shape BomUiButtonModule
+---@class BomUiButtonModule
 local uiButtonModule = BomModuleManager.uiButtonModule ---@type BomUiButtonModule
 local texturesModule = BomModuleManager.texturesModule
 

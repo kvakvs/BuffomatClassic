@@ -1,14 +1,14 @@
 --local TOCNAME, _ = ...
-local BOM = BuffomatAddon ---@type BomAddon
+local BOM = BuffomatAddon
 
----@shape BomMacroModule
+---@class BomMacroModule
 local macroModule = BomModuleManager.macroModule
 macroModule.lastMacroSet = ''
 
 local constModule = BomModuleManager.constModule
 local _t = BomModuleManager.languagesModule
 
----@shape BomMacro
+---@class BomMacro
 ---@field name string Macro name, default Buff'o'mat
 ---@field icon string Texture path to macro icon
 ---@field lines string[] Lines of the macro
@@ -53,6 +53,7 @@ function macroClass:Clear()
 end
 
 ---@return string
+---@nodiscard
 function macroClass:GetText()
   local t = "#showtooltip\n/bom update"
   for i, line in ipairs(self.lines) do

@@ -1,4 +1,4 @@
----@shape BomModuleManagerModule
+---@class BomModuleManagerModule
 ---@field actionCastModule BomActionCastModule
 ---@field actionUseModule BomActionUseModule
 ---@field actionMacroModule BomActionMacroModule
@@ -76,7 +76,7 @@ BomModuleManager.allConsumesFoodModule = --[[---@type BomAllConsumesFoodModule]]
 BomModuleManager.allConsumesOtherModule = --[[---@type BomAllConsumesOtherModule]] {}
 BomModuleManager.allConsumesScrollsModule = --[[---@type BomAllConsumesScrollsModule]] {}
 BomModuleManager.allSpellsDeathknightModule = --[[---@type BomAllSpellsDeathknightModule]] {}
-BomModuleManager.allSpellsDruidModule = --[[---@type BomAllSpellsDruidModule]]{}
+BomModuleManager.allSpellsDruidModule = --[[---@type BomAllSpellsDruidModule]] {}
 BomModuleManager.allSpellsHunterModule = --[[---@type BomAllSpellsHunterModule]] {}
 BomModuleManager.allSpellsMageModule = --[[---@type BomAllSpellsMageModule]] {}
 BomModuleManager.allSpellsPaladinModule = --[[---@type BomAllSpellsPaladinModule]] {}
@@ -135,7 +135,7 @@ BomModuleManager.unitModule = --[[---@type BomUnitModule]] {}
 ---module:EarlyModuleInit (called early on startup)
 ---module:LateModuleInit (called late on startup, after entered world)
 function BomModuleManager:CallInEachModule(fnName, context)
-  for _, module in pairs(--[[---@type table]] self) do
+  for _, module in pairs( --[[---@type table]] self) do
     local fn = module[fnName]
     if fn then
       fn(context)

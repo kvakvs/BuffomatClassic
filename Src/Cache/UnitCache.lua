@@ -1,7 +1,7 @@
-local TOCNAME, _ = ...
-local BOM = BuffomatAddon ---@type BomAddon
+-- local TOCNAME, _ = ...
+local BOM = BuffomatAddon
 
----@shape BomUnitCacheModule
+---@class BomUnitCacheModule
 ---@field unitCache table<string, BomUnit>
 local unitCacheModule = BomModuleManager.unitCacheModule ---@type BomUnitCacheModule
 unitCacheModule.unitCache = {}
@@ -20,8 +20,9 @@ local unitModule = BomModuleManager.unitModule
 ---@param nameRoleMap BomNameRoleMap|nil Maps name to role in raid
 ---@param specialName boolean|nil
 ---@return BomUnit|nil
+---@nodiscard
 function unitCacheModule:GetUnit(unitid, nameGroupMap, nameRoleMap, specialName)
-  local name, _unitRealm = UnitFullName(unitid) ---@type string, string
+  local name, _unitRealm = UnitFullName(unitid) ---@type string, string?
   if name == nil then
     return nil
   end
@@ -30,11 +31,11 @@ function unitCacheModule:GetUnit(unitid, nameGroupMap, nameRoleMap, specialName)
   if type(nameGroupMap) == "number" then
     group = --[[---@type number]] nameGroupMap
   else
-    group = nameGroupMap and (--[[---@type BomNameGroupMap]] nameGroupMap)[name] or 1
+    group = nameGroupMap and ( --[[---@type BomNameGroupMap]] nameGroupMap)[name] or 1
   end
 
   nameRoleMap = nameRoleMap or --[[---@type BomNameRoleMap]] {}
-  local isTank = nameRoleMap and ((--[[---@not nil]] nameRoleMap)[name] == "MAINTANK") or false
+  local isTank = nameRoleMap and (( --[[---@not nil]] nameRoleMap)[name] == "MAINTANK") or false
 
   local guid = UnitGUID(unitid)
   local _, class, link ---@type any, BomClassName, string|nil
@@ -42,8 +43,8 @@ function unitCacheModule:GetUnit(unitid, nameGroupMap, nameRoleMap, specialName)
   if guid then
     _, class = GetPlayerInfoByGUID(guid)
     if class then
-      link = constModule.CLASS_ICONS[--[[---@not ""]] class] .. "|Hunit:" .. guid .. ":" .. name
-              .. "|h|c" .. RAID_CLASS_COLORS[class].colorStr .. name .. "|r|h"
+      link = constModule.CLASS_ICONS[ --[[---@not ""]] class ] .. "|Hunit:" .. guid .. ":" .. name
+          .. "|h|c" .. RAID_CLASS_COLORS[class].colorStr .. name .. "|r|h"
     else
       class = "pet"
       link = BOM.FormatTexture(texturesModule.ICON_PET) .. name

@@ -1,7 +1,7 @@
 --local TOCNAME, _ = ...
-local BOM = BuffomatAddon ---@type BomAddon
+local BOM = BuffomatAddon
 
----@shape BomTaskListModule
+---@class BomTaskListModule
 local taskListModule = BomModuleManager.taskListModule ---@type BomTaskListModule
 
 local constModule = BomModuleManager.constModule
@@ -10,7 +10,7 @@ local buffomatModule = BomModuleManager.buffomatModule
 local _t = BomModuleManager.languagesModule
 local allBuffsModule = BomModuleManager.allBuffsModule
 
----@shape BomTaskList
+---@class BomTaskList
 ---@field tasks BomTask[]
 ---@field comments string[]
 ---@field lowPrioComments string[]
@@ -126,13 +126,34 @@ function taskListModule.OrderTasksByPriority(a, b)
   return a.priority < b.priority -- or
 end
 
+---@param a BomTask
+---@param b BomTask
+function taskListModule.OrderTasksByCustomOrderThenPriority(a, b)
+  if not b then
+    return false
+  end
+  if not a then
+    return true
+  end
+  local aCustomSort = a.customSort or '5'
+  local bCustomSort = b.customSort or '5'
+  if aCustomSort == bCustomSort then
+    return a.priority < b.priority
+  end
+  return aCustomSort < bCustomSort
+end
+
 function taskListClass:Sort()
   --table.sort(self.tasks, taskListModule.OrderTasksByDistance)
-  table.sort(self.tasks, taskListModule.OrderTasksByPriority)
+  if buffomatModule.shared.CustomBuffSorting then
+    table.sort(self.tasks, taskListModule.OrderTasksByCustomOrderThenPriority)
+  else
+    table.sort(self.tasks, taskListModule.OrderTasksByPriority)
+  end
 end
 
 ---Unload the contents of DisplayInfo cache into BomC_ListTab_MessageFrame
-  ---The messages (tasks) are sorted
+---The messages (tasks) are sorted
 function taskListClass:Display()
   local taskFrame = BomC_ListTab_MessageFrame
   taskFrame:Clear()
@@ -142,32 +163,30 @@ function taskListClass:Display()
   --end)
 
   -- update distances if the players have moved
-  for i, task in ipairs(self.tasks) do
+  for _i, task in pairs(self.tasks) do
     -- Refresh the copy of distance value
-    --if task.t == "memberBuffTarget" or task.t == "groupBuffTarget" then
     if not task.target then
       task.distance = 0
     else
-      task.distance = (--[[---@not nil]] task.target):GetDistance()
+      task.distance = ( --[[---@not nil]] task.target):GetDistance()
     end
-    --end
   end
 
-  for i, text in ipairs(self.lowPrioComments) do
+  for _i, text in pairs(self.lowPrioComments) do
     taskFrame:AddMessage(buffomatModule:Color("aaaaaa", text))
   end
 
-  for i, text in ipairs(self.comments) do
+  for _i, text in pairs(self.comments) do
     taskFrame:AddMessage(text)
   end
 
-  for i, task in ipairs(self.tasks) do
+  for _i, task in pairs(self.tasks) do
     if task.distance > 43 * 43 then
       taskFrame:AddMessage(task:FormatDisabledRed(_t("task.error.range")))
     end
   end
 
-  for i, task in ipairs(self.tasks) do
+  for _i, task in pairs(self.tasks) do
     if task.distance <= 43 * 43 then
       taskFrame:AddMessage(task:Format())
     end
@@ -221,8 +240,8 @@ end
 function taskListClass:CastButtonText(t, enable)
   -- not really a necessary check but for safety
   if InCombatLockdown()
-          or BomC_ListTab_Button == nil
-          or BomC_ListTab_Button.SetText == nil then
+      or BomC_ListTab_Button == nil
+      or BomC_ListTab_Button.SetText == nil then
     return
   end
 
@@ -290,6 +309,7 @@ function taskListClass:CastButton_OutOfRange()
     buffomatModule:RequestTaskRescan("skipReset")
   end
 end -- if inrange
+
 --- Clears the Buffomat macro
 ---@param command string|nil
 function taskListModule:WipeMacro(command)

@@ -1,6 +1,6 @@
 ---@alias BomManagedControlsTable {[string]: BomGPIControl|WowControl}
 
----@shape BomUiMyButtonModule
+---@class BomUiMyButtonModule
 ---@field managed BomManagedControlsTable Contains all MyButtons with uniqueId
 ---@field managedWithoutUniqueId WowControl[] Contains all MyButtons without uniqueId
 local managedUiModule = BomModuleManager.myButtonModule ---@type BomUiMyButtonModule
@@ -28,11 +28,19 @@ function managedUiModule:CreateManagedButton(parent, sel, unsel, dis, selCoord, 
   return newButtonFrame
 end
 
+function managedUiModule:CreateManagedInput(parent, uniqueId)
+  local newInput = CreateFrame("EditBox", nil, parent, "InputBoxTemplate");
+  controlModule.ManagedInput_OnLoad(newInput)
+
+  self:ManageControl(uniqueId, newInput)
+  return newInput
+end
+
 ---@param uniqueId string|nil Pass a nil to not add button to bom_managed_mybuttons, or provide an unique id
 ---@param control WowControl
 function managedUiModule:ManageControl(uniqueId, control)
   if uniqueId ~= nil then
-    self.managed[--[[---@not nil]]uniqueId] = control
+    self.managed[ --[[---@not nil]] uniqueId ] = control
   else
     table.insert(self.managedWithoutUniqueId, control)
   end

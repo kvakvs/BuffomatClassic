@@ -1,7 +1,7 @@
 --local TOCNAME, _ = ...
---local BOM = BuffomatAddon ---@type BomAddon
+--local BOM = BuffomatAddon
 
----@shape BomControlModule
+---@class BomControlModule
 local controlModule = BomModuleManager.controlModule ---@type BomControlModule
 
 ---@class GPIMinimapButtonConfigData
@@ -21,6 +21,7 @@ controlModule.GPIMinimapButtonConfigData.__index = controlModule.GPIMinimapButto
 
 ---@alias BomMenuItemDefList BomMenuItemDef[]
 
+---@class BomMinimapButtonPlaceholder: WowControl
 ---@class BomGPIControl: WowControl A blizzard UI frame but may contain private fields used by internal library by GPI
 ---@field gpiCombatLock boolean
 ---@field Texture WowTexture
@@ -38,18 +39,17 @@ controlModule.GPIMinimapButtonConfigData.__index = controlModule.GPIMinimapButto
 ---@field _privat_ToolTipText string Mouseover will show the text
 ---@field _GPIPRIVAT_events table<string, function> Events
 ---@field _GPIPRIVAT_updates table<function> private field
----@field _GPIPRIVAT_MovingStopCallback any private field
+---@field _GPIPRIVAT_MovingStopCallback function
+---@field GPI_SIZETYPE string
+---@field GPI_DoStop fun(control: WowControl) Note: no self
+---@field GPI_DoStart fun(control: WowControl) Note: no self
 ---@field bomPopupMenuCallback function
 ---@field bomMenuItems BomMenuItemDefList Popup menu items
----@field _GPIPRIVAT_MovingStopCallback function
 ---@field gpiCursor any
 ---@field gpiRotation number Rotation in degrees
----@field GPI_SIZETYPE string
 ---@field gpiMinimapButton BomMinimapButtonPlaceholder Stores extra values for minimap button control
 ---@field SetSpell fun(self: BomGPIControl, spell: WowSpellId)
 ---@field SetOnClick fun(self: BomGPIControl, func: function)
----@field GPI_DoStop fun(control: WowControl) Note: no self
----@field GPI_DoStart fun(control: WowControl) Note: no self
 local gpiControlClass = {}
 gpiControlClass.__index = gpiControlClass
 controlModule.gpiControlClass = gpiControlClass
@@ -81,6 +81,17 @@ function controlModule.MyButton_OnLoad(self, isSecure)
 end
 
 ---@param self BomGPIControl
+function controlModule.ManagedInput_OnLoad(self)
+  self._privat_state = true
+  self._privat_disabled = false
+  self.SetState = controlModule.MyButton_SetState
+  self.SetTooltipLink = controlModule.MyButton_SetTooltipLink
+  self.SetTooltip = controlModule.MyButton_SetTooltip
+  self.SetVariable = controlModule.MyButton_SetVariable
+  self.SetText = controlModule.MyButton_SetText
+end
+
+---@param self BomGPIControl
 function controlModule.MyButton_OnEnter(self)
   if self._privat_ToolTipLink or self._privat_ToolTipText then
     GameTooltip_SetDefaultAnchor(BomC_Tooltip, UIParent)
@@ -94,7 +105,6 @@ function controlModule.MyButton_OnEnter(self)
         add = " " .. (self._privat_state and ONIcon or OFFIcon)
       end
       BomC_Tooltip:AddLine(self._privat_ToolTipText .. add)
-
     end
     BomC_Tooltip:Show()
   end
@@ -152,14 +162,12 @@ function controlModule.MyButton_Update(self)
     self._icon:SetTexture(self._IconDisabled, nil, nil, "LINEAR")
     self._icon:SetTexCoord(unpack(self._IconDisabledCoord))
     self._text:SetText("")
-
   elseif self._privat_state and self._IconSelected then
     self._icon:SetTexture(self._IconSelected, nil, nil, "LINEAR")
     self._icon:SetTexCoord(unpack(self._IconSelectedCoord))
     if self._privat_Text then
       self._text:SetText(self._privat_Text)
     end
-
   elseif self._IconUnSelected then
     self._icon:SetTexture(self._IconUnSelected, nil, nil, "LINEAR")
     self._icon:SetTexCoord(unpack(self._IconUnSelectedCoord))

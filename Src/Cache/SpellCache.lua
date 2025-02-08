@@ -1,19 +1,19 @@
-local TOCNAME, _ = ...
-local BOM = BuffomatAddon ---@type BomAddon
+-- local TOCNAME, _ = ...
+local BOM = BuffomatAddon
 
 ---@alias BomSpellCacheKey number|string
 
----@shape BomSpellCache
+---@class BomSpellCache
 ---@field [BomSpellCacheKey] BomSpellCacheElement
 
----@shape BomSpellCacheModule
+---@class BomSpellCacheModule
 ---@field cache BomSpellCache Stores arg to results mapping for GetItemInfo
 local spellCacheModule = BomModuleManager.spellCacheModule ---@type BomSpellCacheModule
 spellCacheModule.cache = --[[---@type BomSpellCache]] {}
 
 local buffomatModule = BomModuleManager.buffomatModule
-local buffDefModule = BomModuleManager.buffDefinitionModule
-local allBuffsModule = BomModuleManager.allBuffsModule
+-- local buffDefModule = BomModuleManager.buffDefinitionModule
+-- local allBuffsModule = BomModuleManager.allBuffsModule
 
 ---@class BomSpellCacheElement
 ---@field name string
@@ -26,7 +26,8 @@ local allBuffsModule = BomModuleManager.allBuffsModule
 
 ---Calls GetSpellInfo and saves the results, or not (if nil was returned)
 ---@param arg number|string
----@return BomSpellCacheElement|nil
+---@return BomSpellCacheElement?
+---@nodiscard
 function BOM.GetSpellInfo(arg)
   if spellCacheModule.cache[arg] ~= nil then
     return spellCacheModule.cache[arg]
@@ -55,6 +56,7 @@ function BOM.GetSpellInfo(arg)
 end
 
 ---@param arg BomSpellCacheKey
+---@nodiscard
 function spellCacheModule:HasSpellCached(arg)
   return self.cache[arg] ~= nil
 end

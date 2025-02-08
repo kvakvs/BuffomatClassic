@@ -14,7 +14,7 @@
 ---@field SetSize fun(self: WowTexture, width: number, height: number)
 ---@field SetVertexColor fun(self: WowTexture, r: number, g: number, b: number, a: number)
 
----@shape WowControl A blizzard UI frame but may contain private fields used by internal library by Buffomat
+---@class WowControl A blizzard UI frame but may contain private fields used by internal library by Buffomat
 ---@field bomReadVariable function Returns value which the button can modify, boolean for toggle buttons
 ---@field bomToolTipLink string Mouseover will show the link
 ---@field bomToolTipText string Mouseover will show the text
@@ -86,6 +86,7 @@
 ---@param name string
 function SendChatMessage(s, msg, lang, name)
 end
+
 ---@class C_Minimap
 ---@field GetNumTrackingTypes fun(...): number
 ---@field GetTrackingInfo fun(i: number): string, string, boolean, string, number, WowSpellId
@@ -96,6 +97,7 @@ C_Minimap = {}
 ---@param b string
 function GetAddOnMetadata(a, b)
 end
+
 ---@param name string
 ---@param x WowControl|string|nil
 ---@param parent WowControl
@@ -104,13 +106,16 @@ end
 function CreateFrame(name, x, parent, template)
   return --[[---@type WowControl]] {}
 end
+
 ---@param t WowControl
 ---@param n number
 function PanelTemplates_TabResize(t, n)
 end
+
 ---@param name string
 function PickupMacro(name)
 end
+
 ---@return boolean
 function CursorHasItem()
   return false

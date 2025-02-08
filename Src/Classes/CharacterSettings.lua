@@ -1,7 +1,7 @@
-local TOCNAME, _ = ...
-local BOM = BuffomatAddon ---@type BomAddon
+-- local TOCNAME, _ = ...
+-- local BOM = BuffomatAddon
 
----@shape BomCharacterSettingsModule
+---@class BomCharacterSettingsModule
 local characterSettingsModule = BomModuleManager.characterSettingsModule ---@type BomCharacterSettingsModule
 
 local profileModule = BomModuleManager.profileModule
@@ -9,13 +9,13 @@ local envModule = KvModuleManager.envModule
 
 ---@alias BomProfileName "solo"|"group"|"raid"|"battleground"|"solo_spec2"|"group_spec2"|"raid_spec2"|"battleground_spec2"
 
----@shape BomSpellDurationsTable
+---@class BomSpellDurationsTable
 ---@field [string] number
 
----@shape BomHiddenCategoryTable
+---@class BomHiddenCategoryTable
 ---@field [string] boolean
 
----@shape BomCharacterSettings Current character state snapshots per profile
+---@class BomCharacterSettings Current character state snapshots per profile
 ---@field [BomProfileName] BomProfile Access to subprofiles [solo, group, raid, battleground, ...]
 ---@field UseProfiles boolean [⚠DO NOT RENAME] Checkbox to use profiles / automatic profiles
 ---@field remainingDurations BomSpellDurationsTable Remaining aura duration on SELF, keyed with buff names

@@ -1,8 +1,8 @@
 --- Item IDS given reasonable names
 --local TOCNAME, _ = ...
---local BOM = BuffomatAddon ---@type BomAddon
+--local BOM = BuffomatAddon
 
----@shape BomItemIdsModule
+---@class BomItemIdsModule
 local itemIdsModule = BomModuleManager.itemIdsModule ---@type BomItemIdsModule
 
 itemIdsModule.Deathknight_CorpseDust = 37201

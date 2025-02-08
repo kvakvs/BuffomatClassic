@@ -1,7 +1,7 @@
-local TOCNAME, _ = ...
-local BOM = BuffomatAddon ---@type BomAddon
+-- local TOCNAME, _ = ...
+-- local BOM = BuffomatAddon
 
----@shape BomGroupBuffTargetModule
+---@class BomGroupBuffTargetModule
 local groupBuffTargetModule = BomModuleManager.groupBuffTargetModule ---@type BomGroupBuffTargetModule
 
 local toolboxModule = BomModuleManager.toolboxModule

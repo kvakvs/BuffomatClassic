@@ -1,13 +1,13 @@
 --local TOCNAME, _ = ...
-local BOM = BuffomatAddon ---@type BomAddon
+local BOM = BuffomatAddon
 
 ---@alias BomItemCacheKey number|string
 
----@shape BomItemCache
+---@class BomItemCache
 ---@field [BomItemCacheKey] BomItemCacheElement
 ---@field Item2 table
 
----@shape BomItemCacheModule
+---@class BomItemCacheModule
 ---@field cache BomItemCache Stores arg to results mapping for GetItemInfo
 local itemCacheModule = BomModuleManager.itemCacheModule ---@type BomItemCacheModule
 itemCacheModule.cache = {}
@@ -84,8 +84,8 @@ function itemCacheModule:LoadItem(itemId, onLoaded)
   local itemMixin = Item:CreateFromItemID(itemId)
 
   local itemLoaded = function()
-    local itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType
-    , itemSubType, itemStackCount, itemEquipLoc, itemTexture, itemSellPrice
+    local itemName, _itemLink, _itemRarity, itemLevel, itemMinLevel, itemType
+    , itemSubType, itemStackCount, itemEquipLoc, _itemTexture, itemSellPrice
     , itemClassID, itemSubClassID = GetItemInfo(itemId)
     if itemName == nil then
       return

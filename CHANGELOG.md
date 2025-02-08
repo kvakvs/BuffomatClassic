@@ -1,7 +1,8 @@
 # Changelog
 
-## Buffomat Classic 2025.1.0
+## Buffomat Classic 2025.1.0, 2025.2.0
 - Found possible reason for group buffs not working. Releasing a beta fix.
+- Version bump with WoW classic updated to 1.15.6
 
 ## Buffomat Classic 2024.7.1
 - When Macro edit frame is open, Buffomat will sleep

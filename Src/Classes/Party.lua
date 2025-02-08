@@ -1,11 +1,11 @@
 --local TOCNAME, _ = ...
-local BOM = BuffomatAddon ---@type BomAddon
+local BOM = BuffomatAddon
 
 ---Collection of tables of buffs, indexed per unit name
 ---@alias BomBuffUpdatesPerUnit {[string]: number} Time when buffs updated on that unit
 ---@alias BomPartyCacheInvalidation {[number]: boolean}
 
----@shape BomPartyModule
+---@class BomPartyModule
 ---@field theParty BomParty|nil Synchronized party cache, invalidated on party change events
 ---@field unitAurasLastUpdated BomBuffUpdatesPerUnit When each unit got their aura last updated, indexed by spellid
 ---@field partyCacheInvalidation BomPartyCacheInvalidation
@@ -14,14 +14,26 @@ local BOM = BuffomatAddon ---@type BomAddon
 ---@field playerMana number Player current mana
 local partyModule = BomModuleManager.partyModule ---@type BomPartyModule
 
-partyModule.unitAurasLastUpdated = --[[---@type BomBuffUpdatesPerUnit]] {}
-partyModule.partyCacheInvalidation = --[[---@type {[number]: boolean}]] {}
+---@type BomBuffUpdatesPerUnit
+partyModule.unitAurasLastUpdated = {}
+
+---@type {[number]: boolean}
+partyModule.partyCacheInvalidation = {}
 partyModule.itemListTarget = {}
 partyModule.playerMana = 0
 partyModule.playerManaLimit = 0
-partyModule.ALL_INVALID_GROUPS = --[[---@type BomPartyCacheInvalidation]] {
-  [1] = true, [2] = true, [3] = true, [4] = true,
-  [5] = true, [6] = true, [7] = true, [8] = true }
+
+---@type BomPartyCacheInvalidation
+partyModule.ALL_INVALID_GROUPS = {
+  [1] = true,
+  [2] = true,
+  [3] = true,
+  [4] = true,
+  [5] = true,
+  [6] = true,
+  [7] = true,
+  [8] = true
+}
 
 local buffomatModule = BomModuleManager.buffomatModule
 local toolboxModule = BomModuleManager.toolboxModule
@@ -44,11 +56,12 @@ partyClass.__index = partyClass
 
 ---@return BomParty
 function partyModule:New()
-  local p = --[[---@type BomParty]] {}
-  p.byGroup = --[[---@type BomUnitDictByGroup]] {}
-  p.byUnitId = --[[---@type BomUnitDictByUnitId]] {}
-  p.byName = --[[---@type BomUnitDictByName]] {}
-  p.emptyGroups = {}
+  local p = {
+    byGroup = {},
+    byUnitId = {},
+    byName = {},
+    emptyGroups = {}
+  }
   setmetatable(p, partyClass)
   return p
 end
@@ -57,7 +70,7 @@ end
 ---@param evType string
 function partyModule:OnBuffsChangedEvent(unitName, spellId, evType)
   if self.theParty
-          and not (--[[---@not nil]] self.theParty):IsNameInParty(unitName) then
+      and not ( --[[---@not nil]] self.theParty):IsNameInParty(unitName) then
     return
   end
   self.unitAurasLastUpdated[unitName] = self.unitAurasLastUpdated[unitName] or {}
@@ -85,15 +98,14 @@ end
 function partyModule:CleanUpBuffs(party)
   -- Clean partyModule.buffs up
   for name, val in pairs(self.unitAurasLastUpdated) do
-    local ok = false
-
     if not party:IsNameInParty(name) then
       self.unitAurasLastUpdated[name] = nil
     end
   end
 end
 
----@return number Party size including pets
+---@return number count Party size including pets
+---@nodiscard
 function partyModule:GetPartySize()
   local countTo
   local prefix
@@ -157,16 +169,16 @@ function partyModule:RefreshParty(party, invalidGroups)
   end
 
   if buffomatModule.shared.BuffTarget
-          and UnitExists("target")
-          and UnitCanCooperate("player", "target") --is friendly
-          and UnitIsPlayer("target") --is friendly player
-          and not UnitPlayerOrPetInParty("target") --out of party or raid
-          and not UnitPlayerOrPetInRaid("target")
+      and UnitExists("target")
+      and UnitCanCooperate("player", "target") --is friendly
+      and UnitIsPlayer("target")               --is friendly player
+      and not UnitPlayerOrPetInParty("target") --out of party or raid
+      and not UnitPlayerOrPetInRaid("target")
   then
     local targetedUnit = unitCacheModule:GetUnit("target", nil, nil, nil)
     if targetedUnit then
-      (--[[---@not nil]] targetedUnit).group = 9 --move them outside of 8 buff groups
-      party:Add(--[[---@not nil]] targetedUnit)
+      ( --[[---@not nil]] targetedUnit).group = 9 --move them outside of 8 buff groups
+      party:Add( --[[---@not nil]] targetedUnit)
     end
   end
 
@@ -180,7 +192,7 @@ function partyClass:GetPlayerAndPetUnit()
   -- Get player and get pet
   local playerUnit = unitCacheModule:GetUnit("player", nil, nil, nil)
   self.player = --[[---@not nil]] playerUnit
-  self:Add(--[[---@not nil]] playerUnit)
+  self:Add( --[[---@not nil]] playerUnit)
 
   local playerPet = unitCacheModule:GetUnit("pet", nil, nil, true)
   if playerPet then
@@ -215,7 +227,7 @@ function partyClass:Get5manPartyMembers()
     for groupIndex = 1, 4 do
       local partyMember = unitCacheModule:GetUnit("party" .. groupIndex, nil, nil, nil)
       if partyMember then
-        self:Add(--[[---@not nil]] partyMember)
+        self:Add( --[[---@not nil]] partyMember)
       end
 
       local partyPet = unitCacheModule:GetUnit("partypet" .. groupIndex, nil, nil, true)
@@ -246,7 +258,6 @@ function partyClass:GetRaidMembers(invalidGroups)
     self.emptyGroups[groupIndex] = true
 
     for raidIndex = raidBegin, raidEnd do
-
       ---@type string, string, number, number, BomClassName, string, number, boolean, boolean, BomRaidRole, boolean, string
       local name, rank, subgroup, level, class, fileName, zone, online, isDead
       , role, isML, combatRole = GetRaidRosterInfo(raidIndex)
@@ -260,10 +271,10 @@ function partyClass:GetRaidMembers(invalidGroups)
       local partyMember = unitCacheModule:GetUnit("raid" .. raidIndex, nameGroupMap, nameRoleMap, nil)
       if partyMember then
         self.emptyGroups[groupIndex] = false
-        self:Add(--[[---@not nil]] partyMember)
+        self:Add( --[[---@not nil]] partyMember)
       end
     end -- each member of invalidated group
-  end -- invalidated groups
+  end   -- invalidated groups
 
   self:GetPlayerAndPetUnit()
   return self
@@ -301,7 +312,7 @@ function partyModule:GetParty()
 
   -- check if stored party is correct!
   if self.theParty then
-    if validatePartyMembers(--[[---@not nil]] self.theParty) then
+    if validatePartyMembers( --[[---@not nil]] self.theParty) then
       -- Cache is valid, take that as a start value
       party = --[[---@not nil]] self.theParty
     end
@@ -338,7 +349,7 @@ function partyModule:GetParty()
     party.player:UpdateBuffs(party, playerZone)
 
     if party.playerPet ~= nil then
-      (--[[---@not nil]] party.playerPet):UpdateBuffs(party, playerZone)
+      ( --[[---@not nil]] party.playerPet):UpdateBuffs(party, playerZone)
     end
   end
 

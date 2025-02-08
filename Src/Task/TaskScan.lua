@@ -1,6 +1,6 @@
-local BOM = BuffomatAddon ---@type BomAddon
+local BOM = BuffomatAddon
 
----@shape BomTaskScanModule
+---@class BomTaskScanModule
 ---@field taskListSizeBeforeScan number Saved size before scan
 ---@field roundRobinGroup number Group number to refresh, rotates from 1 to 8 in raid, or stays always 1 otherwise
 ---@field saveSomeoneIsDead boolean
@@ -32,13 +32,13 @@ local taskModule = BomModuleManager.taskModule
 local texturesModule = BomModuleManager.texturesModule
 local unitCacheModule = BomModuleManager.unitCacheModule
 
----@shape BomBuffScanContext
+---@class BomBuffScanContext
 ---@field someoneIsDead boolean
 -- -@field inRange boolean Buff can reach the target
 -- -@field macroCommand string The command to be placed in the macro
 -- -@field castButtonTitle string The button in buffomat window
 
----@shape BomScan_NextCastSpell
+---@class BomScan_NextCastSpell
 ---@field buffDef BomBuffDefinition|nil
 ---@field spellLink string|nil
 ---@field targetUnit BomUnit|nil
@@ -89,10 +89,10 @@ function taskScanModule:IsMountedAndCrusaderAuraRequired()
     return false
   end
   local crusaderAuraShapeshiftForm = (envModule.isCata and 5) or 7
-  return buffomatModule.shared.AutoCrusaderAura -- if setting enabled
-          and IsSpellKnown(spellIdsModule.Paladin_CrusaderAura) -- and has the spell
-          and (IsMounted() or self:IsFlying()) -- and flying
-          and GetShapeshiftForm() ~= crusaderAuraShapeshiftForm -- and not crusader aura
+  return buffomatModule.shared.AutoCrusaderAura             -- if setting enabled
+      and IsSpellKnown(spellIdsModule.Paladin_CrusaderAura) -- and has the spell
+      and (IsMounted() or self:IsFlying())                  -- and flying
+      and GetShapeshiftForm() ~= crusaderAuraShapeshiftForm -- and not crusader aura
 end
 
 function taskScanModule:CancelBuff(list)
@@ -173,46 +173,33 @@ function taskScanModule:UpdateMissingBuffs_EachBuff(party, buffDef, buffCtx)
   -- Save skipped unit and do nothing
   if buffDef:DoesUnitHaveBetterBuffs(party.player) then
     table.insert(buffDef.unitsHaveBetterBuff, party.player)
-
   elseif not buffDefModule:IsBuffEnabled(buffDef.buffId, nil) then
     --nothing, the spell is not enabled!
-
   elseif spellButtonsTabModule:CategoryIsHidden(buffDef.category) then
     --nothing, the category is not showing!
-
   elseif buffDef.type == "weapon" then
     buffChecksModule:PlayerNeedsWeaponBuff(buffDef, party.player)
     -- NOTE: This must go before spell.IsConsumable clause
     -- For TBC hunter pet buffs we check if the pet is missing the buff
     -- but then the hunter must consume it
-
   elseif buffDef.petBuff then
     buffChecksModule:HunterPetNeedsBuff(buffDef, party.player)
-
   elseif buffDef.isConsumable then
     buffChecksModule:PlayerNeedsConsumable(buffDef, party.player)
-
   elseif buffDef.isInfo then
     buffChecksModule:PartyNeedsInfoBuff(buffDef, party)
-
   elseif buffDef.isOwn then
     buffChecksModule:PlayerNeedsSelfBuff(buffDef, party.player)
-
   elseif buffDef.type == "resurrection" then
     buffChecksModule:DeadNeedsResurrection(buffDef, party)
-
   elseif buffDef.type == "tracking" then
     buffChecksModule:PlayerNeedsTracking(buffDef, party.player)
-
   elseif buffDef.type == "aura" then
     buffChecksModule:PaladinNeedsAura(buffDef, party.player)
-
   elseif buffDef.type == "seal" then
     buffChecksModule:PaladinNeedsSeal(buffDef, party.player)
-
   elseif buffDef.isBlessing then
     buffChecksModule:PartyNeedsPaladinBlessing(buffDef, party, buffCtx)
-
   else
     buffChecksModule:PartyNeedsBuff(buffDef, party, buffCtx)
   end
@@ -249,7 +236,7 @@ function taskScanModule:GetGroupInRange(spellName, units, groupIndex, spell)
           return nil
         end
       elseif (minDist == nil or member.distance < minDist)
-              and not tContains(spell.skipList, member.name) then
+          and not tContains(spell.skipList, member.name) then
         minDist = member.distance
         ret = member
       end
@@ -273,9 +260,9 @@ function taskScanModule:GetAnyPartyMemberInRange(spellName, buffDef, party, play
 
   for i, member in ipairs(buffDef.unitsNeedBuff) do
     if IsSpellInRange(spellName, member.unitId) == 1
-            and not member.isDead
-            and (minDist == nil or member.distance < minDist)
-            and not tContains(buffDef.skipList, member.name) then
+        and not member.isDead
+        and (minDist == nil or member.distance < minDist)
+        and not tContains(buffDef.skipList, member.name) then
       minDist = member.distance
       ret = member
     end
@@ -307,14 +294,12 @@ function taskScanModule:GetClassInRange(spellName, party, class, spell)
     if member.class == class then
       if member.isDead then
         return nil
-
       elseif not (IsSpellInRange(spellName, member.unitId) == 1) then
         if member.distance > 2000 then
           return nil
         end
-
       elseif (minDist == nil or member.distance < minDist)
-              and not tContains(spell.skipList, member.name) then
+          and not tContains(spell.skipList, member.name) then
         minDist = member.distance
         ret = member
       end
@@ -333,14 +318,14 @@ function taskScanModule:PreventPvpTagging(link, inactiveText, targetUnit)
     -- TODO: Move Player PVP check and instance check outside
     local _inInstance, instance_type = IsInInstance()
     if instance_type == "none"
-            and not UnitIsPVP("player")
-            and UnitIsPVP(targetUnit.name) then
+        and not UnitIsPVP("player")
+        and UnitIsPVP(targetUnit.name) then
       -- Text: [Spell Name] Player is PvP
       tasklist:Add(
-              taskModule:Create(link, inactiveText)
-                        :PrefixText(_t("PreventPVPTagBlocked"))
-                        :Target(buffTargetModule:FromUnit(targetUnit))
-                        :IsInfo())
+        taskModule:Create(link, inactiveText)
+        :PrefixText(_t("PreventPVPTagBlocked"))
+        :Target(buffTargetModule:FromUnit(targetUnit))
+        :IsInfo())
       return true
     end
   end
@@ -370,10 +355,9 @@ function taskScanModule:IsActive(playerUnit)
     if not buffomatModule.shared.InPVP then
       return false, _t("castButton.inactive.PvpZone")
     end
-
   elseif instanceType == "party"
-          or instanceType == "raid"
-          or instanceType == "scenario"
+      or instanceType == "raid"
+      or instanceType == "scenario"
   then
     if not buffomatModule.shared.InInstance then
       return false, _t("castButton.inactive.Instance")
@@ -410,7 +394,7 @@ function taskScanModule:IsActive(playerUnit)
   local spiritTapManaPercent = (buffomatModule.shared.ActivateBomOnSpiritTap or 0) * 0.01
   local currentMana = partyModule.playerMana or UnitPower("player", 0)
   if playerUnit.allBuffs[spellIdsModule.Priest_SpiritTap]
-          and currentMana < UnitPowerMax("player", 0) * spiritTapManaPercent then
+      and currentMana < UnitPowerMax("player", 0) * spiritTapManaPercent then
     return false, _t("castButton.inactive.PriestSpiritTap")
   end
 
@@ -419,7 +403,6 @@ function taskScanModule:IsActive(playerUnit)
   if self:IsFlying() and not self:IsMountedAndCrusaderAuraRequired() then
     -- prevent dismount in flight, OUCH!
     return false, _t("castButton.inactive.Flying")
-
   end
 
   return true, ""
@@ -435,24 +418,24 @@ function taskScanModule:ActivateSelectedTracking()
       if buffDefModule:IsBuffEnabled(buffDef.buffId, nil) then
         if buffDef.requiresForm ~= nil then
           if GetShapeshiftFormID() == buffDef.requiresForm
-                  and BOM.forceTracking ~= buffDef.trackingIconId then
+              and BOM.forceTracking ~= buffDef.trackingIconId then
             BOM.forceTracking = buffDef.trackingIconId
             spellButtonsTabModule:UpdateSpellsTab("ForceUp1")
           end
         elseif buffChecksModule:IsTrackingActive(buffDef)
-                and buffomatModule.character.lastTrackingIconId ~= buffDef.trackingIconId then
+            and buffomatModule.character.lastTrackingIconId ~= buffDef.trackingIconId then
           buffomatModule.character.lastTrackingIconId = buffDef.trackingIconId
           spellButtonsTabModule:UpdateSpellsTab("ForceUp2")
         end
       else
         if buffomatModule.character.lastTrackingIconId == buffDef.trackingIconId
-                and buffomatModule.character.lastTrackingIconId ~= nil then
+            and buffomatModule.character.lastTrackingIconId ~= nil then
           buffomatModule.character.lastTrackingIconId = nil
           spellButtonsTabModule:UpdateSpellsTab("ForceUp3")
         end
       end -- if spell.enable
-    end -- if tracking
-  end -- for all spells
+    end   -- if tracking
+  end     -- for all spells
 
   if BOM.forceTracking == nil then
     BOM.forceTracking = buffomatModule.character.lastTrackingIconId
@@ -472,13 +455,12 @@ function taskScanModule:GetActiveAuraAndSeal(playerUnit)
     if knownBuffOnPlayer then
       if buffDef.type == "aura" then
         if (BOM.activePaladinAura == nil and BOM.lastAura == buffDef.buffId)
-                or UnitIsUnit(knownBuffOnPlayer.source, "player")
+            or UnitIsUnit(knownBuffOnPlayer.source, "player")
         then
           if buffChecksModule:TimeCheck(knownBuffOnPlayer.expirationTime, knownBuffOnPlayer.duration) then
             BOM.activePaladinAura = buffDef.buffId
           end
         end
-
       elseif buffDef.type == "seal" then
         if UnitIsUnit(knownBuffOnPlayer.source, "player") then
           --BOM:Print("seal check for " .. buffDef.buffId .. " expiration " .. knownBuffOnPlayer.expirationTime)
@@ -487,8 +469,8 @@ function taskScanModule:GetActiveAuraAndSeal(playerUnit)
           end
         end
       end -- if is aura
-    end -- if player.buffs[config.id]
-  end -- for all spells
+    end   -- if player.buffs[config.id]
+  end     -- for all spells
 end
 
 function taskScanModule:CheckChangesAndUpdateSpelltab()
@@ -498,33 +480,32 @@ function taskScanModule:CheckChangesAndUpdateSpelltab()
     if buffDef.type == "aura" then
       if buffDefModule:IsBuffEnabled(buffDef.buffId, nil) then
         if BOM.activePaladinAura == buffDef.buffId
-                and buffomatModule.currentProfile.LastAura ~= buffDef.buffId then
+            and buffomatModule.currentProfile.LastAura ~= buffDef.buffId then
           buffomatModule.currentProfile.LastAura = buffDef.buffId
           spellButtonsTabModule:UpdateSpellsTab("ForceUp4")
         end
       else
         if buffomatModule.currentProfile.LastAura == buffDef.buffId
-                and buffomatModule.currentProfile.LastAura ~= nil then
+            and buffomatModule.currentProfile.LastAura ~= nil then
           buffomatModule.currentProfile.LastAura = nil
           spellButtonsTabModule:UpdateSpellsTab("ForceUp5")
         end
       end -- if currentprofile.spell.enable
-
     elseif buffDef.type == "seal" then
       if buffDefModule:IsBuffEnabled(buffDef.buffId, nil) then
         if BOM.activePaladinSeal == buffDef.buffId
-                and buffomatModule.currentProfile.LastSeal ~= buffDef.buffId then
+            and buffomatModule.currentProfile.LastSeal ~= buffDef.buffId then
           buffomatModule.currentProfile.LastSeal = buffDef.buffId
           spellButtonsTabModule:UpdateSpellsTab("ForceUp6")
         end
       else
         if buffomatModule.currentProfile.LastSeal == buffDef.buffId
-                and buffomatModule.currentProfile.LastSeal ~= nil then
+            and buffomatModule.currentProfile.LastSeal ~= nil then
           buffomatModule.currentProfile.LastSeal = nil
           spellButtonsTabModule:UpdateSpellsTab("ForceUp7")
         end
       end -- if currentprofile.spell.enable
-    end -- if is aura
+    end   -- if is aura
   end
 end
 
@@ -559,14 +540,14 @@ end
 function taskScanModule:CancelBuffs(playerUnit)
   for i, spell in ipairs(BOM.cancelBuffs or {}) do
     if buffomatModule.currentProfile.CancelBuff[spell.buffId].Enable
-            and not spell.onlyCombat
+        and not spell.onlyCombat
     then
       local player_buff = playerUnit.knownBuffs[spell.buffId]
 
       if player_buff then
         BOM:Print(string.format(_t("message.CancelBuff"),
-                spell:SingleLink(),
-                UnitName(player_buff.source or "") or ""))
+          spell:SingleLink(),
+          UnitName(player_buff.source or "") or ""))
         self:CancelBuff(spell.singleFamily)
       end
     end
@@ -606,7 +587,7 @@ function taskScanModule:FormatItemBuffText(bag, slot, count)
 
   -- Iteminfo becomes nil when user throws away the consumable while the task is up
   if itemInfo ~= nil then
-    picture = BOM.FormatTexture(--[[---@type string]] itemInfo.iconFileID)
+    picture = BOM.FormatTexture( --[[---@type string]] itemInfo.iconFileID)
   end
 
   return string.format(" %s %s (x%d)", picture, itemInfo.hyperlink, count)
@@ -631,65 +612,68 @@ function taskScanModule:AddBlessing(buffDef, party, buffCtx)
   end
 
   if buffDef.groupMana ~= nil
-          and not buffomatModule.shared.NoGroupBuff
+      and not buffomatModule.shared.NoGroupBuff
   then
     -- For each class name WARRIOR, PALADIN, PRIEST, SHAMAN... etc
     for i, eachClassName in ipairs(constModule.CLASSES) do
       if buffDef.groupsNeedBuff[eachClassName]
-              and buffDef.groupsNeedBuff[eachClassName] >= buffomatModule.shared.MinBlessing
+          and buffDef.groupsNeedBuff[eachClassName] >= buffomatModule.shared.MinBlessing
       then
         BOM.repeatUpdate = true
         local classInRange = self:GetClassInRange(
-                buffDef.groupText, --[[---@type BomParty]] buffDef.unitsNeedBuff, eachClassName, buffDef)
+          buffDef.groupText, --[[---@type BomParty]] buffDef.unitsNeedBuff, eachClassName, buffDef)
 
         if classInRange == nil then
           classInRange = self:GetClassInRange(buffDef.groupText, party, eachClassName, buffDef)
         end
 
         if classInRange ~= nil
-                and (not buffDef.groupsHaveDead[eachClassName]
-                or not buffomatModule.shared.DeathBlock)
+            and (not buffDef.groupsHaveDead[eachClassName]
+              or not buffomatModule.shared.DeathBlock)
         then
           -- Group buff (Blessing)
           -- Text: Group 5 [Spell Name] x Reagents
           tasklist:Add(
-                  taskModule:Create(buffDef.groupLink or buffDef.groupText, buffDef.singleText)
-                            :PrefixText(_t("TASK_BLESS_GROUP"))
-                            :Target(groupBuffTargetModule:New(eachClassName))
-                            :InRange(true)
-                            :Action(actionCastModule:New(
-                          buffDef.groupMana, buffDef.highestRankGroupId, buffDef.groupLink,
-                          classInRange, buffDef, false)))
+            taskModule:Create(buffDef.groupLink or buffDef.groupText, buffDef.singleText)
+            :PrefixText(_t("TASK_BLESS_GROUP"))
+            :Target(groupBuffTargetModule:New(eachClassName))
+            :InRange(true)
+            :Action(actionCastModule:New(
+              buffDef.groupMana, buffDef.highestRankGroupId, buffDef.groupLink,
+              classInRange, buffDef, false))
+            :CustomSort(buffDef.CustomSort)
+          )
         else
           -- Group buff (Blessing) just info text
           -- Text: Group 5 [Spell Name] x Reagents
           tasklist:Add(
-                  taskModule:Create(buffDef.groupLink or buffDef.groupText, buffDef.singleText)
-                            :PrefixText(_t("TASK_BLESS_GROUP"))
-                            :Target(groupBuffTargetModule:New(eachClassName))
-                            :IsInfo())
+            taskModule:Create(buffDef.groupLink or buffDef.groupText, buffDef.singleText)
+            :PrefixText(_t("TASK_BLESS_GROUP"))
+            :Target(groupBuffTargetModule:New(eachClassName))
+            :IsInfo()
+            :CustomSort(buffDef.CustomSort)
+          )
         end
       end -- if needgroup >= minblessing
-    end -- for all classes
+    end   -- for all classes
   end
 
   -- SINGLE BUFF (Ignored because better buff is found)
   for _k, unitHasBetter in ipairs(buffDef.unitsHaveBetterBuff) do
     tasklist:LowPrioComment(string.format(_t("tasklist.IgnoredBuffOn"),
-            unitHasBetter.name, buffDef.singleText))
+      unitHasBetter.name, buffDef.singleText))
     -- Leave message that the target has a better or ignored buff
   end
 
   -- SINGLE BUFF
   for _j, needsBuff in ipairs(buffDef.unitsNeedBuff) do
     if not needsBuff.isDead
-            and buffDef.singleMana ~= nil
-            and (buffomatModule.shared.NoGroupBuff
-            or buffDef.groupMana == nil
-            or needsBuff.class == "pet"
-            or buffDef.groupsNeedBuff[needsBuff.class] == nil
-            or buffDef.groupsNeedBuff[needsBuff.class] < buffomatModule.shared.MinBlessing) then
-
+        and buffDef.singleMana ~= nil
+        and (buffomatModule.shared.NoGroupBuff
+          or buffDef.groupMana == nil
+          or needsBuff.class == "pet"
+          or buffDef.groupsNeedBuff[needsBuff.class] == nil
+          or buffDef.groupsNeedBuff[needsBuff.class] < buffomatModule.shared.MinBlessing) then
       if not needsBuff.isPlayer then
         BOM.repeatUpdate = true
       end
@@ -701,31 +685,35 @@ function taskScanModule:AddBlessing(buffDef, party, buffCtx)
       end
 
       local test_in_range = IsSpellInRange(buffDef.singleText, needsBuff.unitId) == 1
-              and not tContains(buffDef.skipList, needsBuff.name)
+          and not tContains(buffDef.skipList, needsBuff.name)
       if self:PreventPvpTagging(buffDef:SingleLink(), buffDef.singleText, needsBuff) then
         -- Nothing, prevent poison function has already added the text
       elseif test_in_range then
         -- Single buff on group member
         -- Text: Target [Spell Name]
         tasklist:Add(
-                taskModule:Create(buffDef:SingleLink(), buffDef.singleText)
-                          :PrefixText(_t("TASK_BLESS"))
-                          :Target(buffTargetModule:FromUnit(needsBuff))
-                          :InRange(true)
-                          :Action(actionCastModule:New(
-                        buffDef.singleMana, buffDef.highestRankSingleId, buffDef:SingleLink(),
-                        needsBuff, buffDef, false)))
+          taskModule:Create(buffDef:SingleLink(), buffDef.singleText)
+          :PrefixText(_t("TASK_BLESS"))
+          :Target(buffTargetModule:FromUnit(needsBuff))
+          :InRange(true)
+          :Action(actionCastModule:New(
+            buffDef.singleMana, buffDef.highestRankSingleId, buffDef:SingleLink(),
+            needsBuff, buffDef, false))
+          :CustomSort(buffDef.CustomSort)
+        )
       else
         -- Single buff on group member (inactive just text)
         -- Text: Target "SpellName"
         tasklist:Add(
-                taskModule:Create(buffDef:SingleLink(), buffDef.singleText)
-                          :PrefixText(_t("TASK_BLESS"))
-                          :Target(buffTargetModule:FromUnit(needsBuff))
-                          :IsInfo())
+          taskModule:Create(buffDef:SingleLink(), buffDef.singleText)
+          :PrefixText(_t("TASK_BLESS"))
+          :Target(buffTargetModule:FromUnit(needsBuff))
+          :IsInfo()
+          :CustomSort(buffDef.CustomSort)
+        )
       end -- if in range
-    end -- if not dead
-  end -- for all unitsNeedBuff
+    end   -- if not dead
+  end     -- for all unitsNeedBuff
 end
 
 ---Search for a 5man party in the current raid or party, which is in range and needs the group buff.
@@ -737,7 +725,7 @@ end
 ---@param buffCtx BomBuffScanContext
 function taskScanModule:FindTargetForGroupBuff(groupIndex, buffDef, party, minBuff, buffCtx)
   if buffDef.groupsNeedBuff[groupIndex]
-          and buffDef.groupsNeedBuff[groupIndex] >= minBuff
+      and buffDef.groupsNeedBuff[groupIndex] >= minBuff
   then
     BOM.repeatUpdate = true
     local groupInRange = self:GetGroupInRange(buffDef.groupText, buffDef.unitsNeedBuff, groupIndex, buffDef)
@@ -747,17 +735,19 @@ function taskScanModule:FindTargetForGroupBuff(groupIndex, buffDef, party, minBu
     --end
 
     --if groupInRange ~= nil and (not spell.GroupsHaveDead[groupIndex] or not buffomatModule.shared.DeathBlock) then
-    if (groupIndex and not buffDef.groupsHaveDead[--[[---@not nil]] groupIndex])
-            or not buffomatModule.shared.DeathBlock then
+    if (groupIndex and not buffDef.groupsHaveDead[ --[[---@not nil]] groupIndex ])
+        or not buffomatModule.shared.DeathBlock then
       -- Text: Group 5 [Spell Name]
       tasklist:Add(
-              taskModule:Create(buffDef.groupLink or buffDef.groupText, buffDef.singleText)
-                        :PrefixText(_t("task.type.GroupBuff"))
-                        :Target(groupBuffTargetModule:New(groupIndex))
-                        :InRange(true)
-                        :Action(actionCastModule:New(
-                      buffDef.groupMana, buffDef.highestRankGroupId, buffDef.groupLink,
-                      groupInRange or party.player, buffDef, false)))
+        taskModule:Create(buffDef.groupLink or buffDef.groupText, buffDef.singleText)
+        :PrefixText(_t("task.type.GroupBuff"))
+        :Target(groupBuffTargetModule:New(groupIndex))
+        :InRange(true)
+        :Action(actionCastModule:New(
+          buffDef.groupMana, buffDef.highestRankGroupId, buffDef.groupLink,
+          groupInRange or party.player, buffDef, false))
+        :CustomSort(buffDef.CustomSort)
+      )
     end -- if group not nil
   end
 end
@@ -772,16 +762,16 @@ function taskScanModule:AddBuff_GroupBuff(buffDef, party, minBuff, buffCtx)
     --inRange = self:FindAnyPartyTargetForGroupBuff(buffDef, party, minBuff, inRange)
     -- Text: Group 5 [Spell Name]
     tasklist:Add(
-            taskModule:Create(buffDef.groupLink or buffDef.groupText, buffDef.singleText)
-                      :PrefixText(_t("task.type.GroupBuff"))
-                      :Target(groupBuffTargetModule:New(0))
-                      :InRange(true)
-            -- WotLK buff self for group buffs
-                      :Action(actionCastModule:New(
-                    buffDef.groupMana, buffDef.highestRankGroupId, buffDef.groupLink,
-                    party.player, buffDef, false)))
-
-
+      taskModule:Create(buffDef.groupLink or buffDef.groupText, buffDef.singleText)
+      :PrefixText(_t("task.type.GroupBuff"))
+      :Target(groupBuffTargetModule:New(0))
+      :InRange(true)
+      -- WotLK buff self for group buffs
+      :Action(actionCastModule:New(
+        buffDef.groupMana, buffDef.highestRankGroupId, buffDef.groupLink,
+        party.player, buffDef, false))
+      :CustomSort(buffDef.CustomSort)
+    )
   else
     -- For non-WotLK: Scan 5man groups in current party
     for groupIndex = 1, 8 do
@@ -796,12 +786,12 @@ end
 function taskScanModule:AddBuff_SingleBuff(buffDef, minBuff, buffCtx)
   for _i, needBuff in pairs(buffDef.unitsNeedBuff) do
     if not needBuff.isDead
-            and buffDef.singleMana ~= nil
-            and (buffomatModule.shared.NoGroupBuff
-            or buffDef.groupMana == nil
-            or needBuff.group == 9
-            or buffDef.groupsNeedBuff[needBuff.group] == nil
-            or buffDef.groupsNeedBuff[needBuff.group] < minBuff)
+        and buffDef.singleMana ~= nil
+        and (buffomatModule.shared.NoGroupBuff
+          or buffDef.groupMana == nil
+          or needBuff.group == 9
+          or buffDef.groupsNeedBuff[needBuff.group] == nil
+          or buffDef.groupsNeedBuff[needBuff.group] < minBuff)
     then
       if not needBuff.isPlayer then
         BOM.repeatUpdate = true
@@ -814,33 +804,37 @@ function taskScanModule:AddBuff_SingleBuff(buffDef, minBuff, buffCtx)
         return
       end
 
-      if (--[[---@not nil]] profileBuff).ForcedTarget[needBuff.name] then
+      if ( --[[---@not nil]] profileBuff).ForcedTarget[needBuff.name] then
         add = string.format(constModule.PICTURE_FORMAT, texturesModule.ICON_TARGET_ON)
       end
 
       local unitIsInRange = (IsSpellInRange(buffDef.singleText, needBuff.unitId) == 1)
-              and not tContains(buffDef.skipList, needBuff.name)
+          and not tContains(buffDef.skipList, needBuff.name)
 
       if self:PreventPvpTagging(buffDef:SingleLink(), buffDef.singleText, needBuff) then
         -- Nothing, prevent poison function has already added the text
       elseif unitIsInRange then
         -- Text: Target [Spell Name]
         tasklist:Add(
-                taskModule:Create(buffDef:SingleLink(), buffDef.singleText)
-                          :PrefixText(_t("task.type.RegularBuff"))
-                          :Target(buffTargetModule:FromUnit(needBuff))
-                          :InRange(true)
-                          :Action(actionCastModule:New(
-                        buffDef.singleMana, buffDef.highestRankSingleId, buffDef:SingleLink(),
-                        needBuff, buffDef, false)))
+          taskModule:Create(buffDef:SingleLink(), buffDef.singleText)
+          :PrefixText(_t("task.type.RegularBuff"))
+          :Target(buffTargetModule:FromUnit(needBuff))
+          :InRange(true)
+          :Action(actionCastModule:New(
+            buffDef.singleMana, buffDef.highestRankSingleId, buffDef:SingleLink(),
+            needBuff, buffDef, false))
+          :CustomSort(buffDef.CustomSort)
+        )
       else
         -- Text: Target "SpellName"
         tasklist:Add(
-                taskModule:Create(buffDef:SingleLink(), buffDef.singleText)
-                          :PrefixText(buffomatModule:Color(constModule.TASKCOLOR_BLEAK_RED, _t("task.error.range"))
-                        .. " " .. _t("task.type.RegularBuff"))
-                          :Target(buffTargetModule:FromUnit(needBuff))
-                          :IsInfo())
+          taskModule:Create(buffDef:SingleLink(), buffDef.singleText)
+          :PrefixText(buffomatModule:Color(constModule.TASKCOLOR_BLEAK_RED, _t("task.error.range"))
+            .. " " .. _t("task.type.RegularBuff"))
+          :Target(buffTargetModule:FromUnit(needBuff))
+          :IsInfo()
+          :CustomSort(buffDef.CustomSort)
+        )
       end
     end
   end -- for all spell.needmember
@@ -865,8 +859,8 @@ function taskScanModule:AddBuff(buffDef, party, buffCtx)
   local minBuff = buffomatModule.shared.MinBuff or 3
 
   if buffDef.groupMana ~= nil
-          and not buffomatModule.shared.NoGroupBuff
-          and #buffDef.unitsNeedBuff >= minBuff then
+      and not buffomatModule.shared.NoGroupBuff
+      and #buffDef.unitsNeedBuff >= minBuff then
     -- Add GROUP BUFF
     -- if group buff spell costs mana
     self:AddBuff_GroupBuff(buffDef, party, minBuff, buffCtx)
@@ -916,11 +910,12 @@ function taskScanModule:AddResurrection(spell, playerUnit, buffCtx)
 
       -- Is the body in range?
       local targetIsInRange = (IsSpellInRange(spell.singleText, unitNeedsBuff.unitId) == 1)
-              and not tContains(spell.skipList, unitNeedsBuff.name)
+          and not tContains(spell.skipList, unitNeedsBuff.name)
       local task = taskModule:Create(spell:SingleLink(), spell.singleText)
-                             :PrefixText(_t("task.type.Resurrect"))
-                             :Target(buffTargetModule:FromUnit(unitNeedsBuff))
-                             :Prio(prio)
+          :PrefixText(_t("task.type.Resurrect"))
+          :Target(buffTargetModule:FromUnit(unitNeedsBuff))
+          :Prio(prio)
+          :CustomSort(buffDef.CustomSort)
       if targetIsInRange then
         -- Text: Target [Spell Name]
         tasklist:Add(task:InRange(true))
@@ -934,35 +929,36 @@ function taskScanModule:AddResurrection(spell, playerUnit, buffCtx)
       if targetIsInRange or (buffomatModule.shared.ResGhost and unitNeedsBuff.isGhost) then
         -- Prevent resurrecting PvP players in the world?
         task:Action(actionCastModule:New(
-                spell.singleMana, spell.highestRankSingleId, spell:SingleLink(),
-                unitNeedsBuff, spell, false))
+          spell.singleMana, spell.highestRankSingleId, spell:SingleLink(),
+          unitNeedsBuff, spell, false))
       end
     end
   end
 end
 
 ---Adds a display text for a self buff or tracking or seal/weapon self-enchant
----@param spell BomBuffDefinition - the spell to cast
+---@param buffDef BomBuffDefinition - the spell to cast
 ---@param playerMember BomUnit - the player
-function taskScanModule:AddSelfbuff(spell, playerMember)
-  if spell.requireWarlockPet then
+function taskScanModule:AddSelfbuff(buffDef, playerMember)
+  if buffDef.requireWarlockPet then
     if not UnitExists("pet") or UnitCreatureType("pet") ~= "Demon" then
       return -- No demon pet - buff can not be casted
     end
   end
 
-  local task = taskModule:Create(spell:SingleLink(), spell.singleText)
-                         :PrefixText(_t("TASK_CAST"))
-                         :ExtraText(_t("task.target.SelfOnly"))
-                         :Target(buffTargetModule:FromSelf(playerMember))
+  local task = taskModule:Create(buffDef:SingleLink(), buffDef.singleText)
+      :PrefixText(_t("TASK_CAST"))
+      :ExtraText(_t("task.target.SelfOnly"))
+      :Target(buffTargetModule:FromSelf(playerMember))
+      :CustomSort(buffDef.CustomSort)
 
-  if (not spell.requiresOutdoors or IsOutdoors())
-          and not tContains(spell.skipList, playerMember.name) then
+  if (not buffDef.requiresOutdoors or IsOutdoors())
+      and not tContains(buffDef.skipList, playerMember.name) then
     -- Text: Target [Spell Name]
     tasklist:Add(
-            task:Action(actionCastModule:New(
-                    spell.singleMana, spell.highestRankSingleId, spell:SingleLink(),
-                    playerMember, spell, false)))
+      task:Action(actionCastModule:New(
+        buffDef.singleMana, buffDef.highestRankSingleId, buffDef:SingleLink(),
+        playerMember, buffDef, false)))
   else
     -- Text: Target "SpellName"
     tasklist:Add(task:IsInfo())
@@ -970,11 +966,11 @@ function taskScanModule:AddSelfbuff(spell, playerMember)
 end
 
 ---Adds a summon spell to the tasks
----@param spell BomBuffDefinition - the spell to cast
+---@param buffDef BomBuffDefinition - the spell to cast
 ---@param playerMember BomUnit
-function taskScanModule:AddSummonSpell(spell, playerMember)
-  if spell.sacrificeAuraIds then
-    for i, id in ipairs(--[[---@not nil]] spell.sacrificeAuraIds) do
+function taskScanModule:AddSummonSpell(buffDef, playerMember)
+  if buffDef.sacrificeAuraIds then
+    for i, id in ipairs( --[[---@not nil]] buffDef.sacrificeAuraIds) do
       if playerMember.allBuffs[id] then
         return
       end
@@ -991,20 +987,21 @@ function taskScanModule:AddSummonSpell(spell, playerMember)
     local ucType = UnitCreatureType("pet")
     local ucFamily = UnitCreatureFamily("pet")
 
-    if ucType ~= spell.creatureType or ucFamily ~= spell.creatureFamily then
+    if ucType ~= buffDef.creatureType or ucFamily ~= buffDef.creatureFamily then
       add = true
     end
   end
 
   if add then
     -- Text: Summon [Spell Name]
-    tasklist:Add(
-            taskModule:Create(spell:SingleLink(), spell.singleText)
-                      :PrefixText(_t("TASK_SUMMON"))
-                      :Target(buffTargetModule:FromSelf(playerMember))
-                      :Action(actionCastModule:New(
-                    spell.singleMana, spell.highestRankSingleId, spell:SingleLink(),
-                    playerMember, spell, false)))
+    local task = taskModule:Create(buffDef:SingleLink(), buffDef.singleText)
+        :PrefixText(_t("TASK_SUMMON"))
+        :Target(buffTargetModule:FromSelf(playerMember))
+        :Action(actionCastModule:New(
+          buffDef.singleMana, buffDef.highestRankSingleId, buffDef:SingleLink(),
+          playerMember, buffDef, false))
+        :CustomSort(buffDef.CustomSort)
+    tasklist:Add(task)
   end
 end
 
@@ -1013,14 +1010,15 @@ end
 ---@param playerUnit BomUnit the player
 function taskScanModule:AddConsumableSelfbuff_NoItem(buffDef, count, playerUnit)
   -- Text: "ConsumableName" x Count
-  tasklist:Add(
-          taskModule:Create(
-                  self:FormatItemBuffInactiveText(buffDef.consumeGroupTitle or buffDef.singleText, --[[---@not nil]] count),
-                  nil)
-                    :PrefixText(_t("task.type.Consume"))
-                    :Target(buffTargetModule:FromSelf(playerUnit))
-                    :Prio(taskModule.PRIO_CONSUMABLE)
-                    :IsInfo())
+  local task = taskModule:Create(
+        self:FormatItemBuffInactiveText(buffDef.consumeGroupTitle or buffDef.singleText, --[[---@not nil]] count),
+        nil)
+      :PrefixText(_t("task.type.Consume"))
+      :Target(buffTargetModule:FromSelf(playerUnit))
+      :Prio(taskModule.PRIO_CONSUMABLE)
+      :IsInfo()
+      :CustomSort(buffDef.CustomSort)
+  tasklist:Add(task)
 end
 
 ---@param buffDef BomBuffDefinition - the spell to cast
@@ -1030,21 +1028,23 @@ end
 ---@param count number
 ---@param playerUnit BomUnit the player
 ---@param target string
-function taskScanModule:AddConsumableSelfbuff_HaveItemReady(buffDef, bestItemIdAvailable, bag, slot, count, playerUnit, target)
+function taskScanModule:AddConsumableSelfbuff_HaveItemReady(buffDef, bestItemIdAvailable, bag, slot, count, playerUnit,
+                                                            target)
   local taskText = _t("task.type.Consume")
   if buffDef.petBuff then
     taskText = _t("task.type.tbcHunterPetBuff")
   end
 
   local task = taskModule:Create(self:FormatItemBuffText(bag, slot, count or 0), nil)
-                         :PrefixText(taskText)
+      :PrefixText(taskText)
+      :CustomSort(buffDef.CustomSort)
   --:Target(buffTargetModule:FromSelf(playerUnit))
 
   if buffomatModule.shared.DontUseConsumables
-          and not IsModifierKeyDown() then
+      and not IsModifierKeyDown() then
     -- Text: [Icon] [Consumable Name] x Count
     tasklist:Add(task:ExtraText(_t("task.hint.HoldShiftConsumable"))
-                     :IsInfo())
+      :IsInfo())
   else
     if bag ~= nil and slot ~= nil then
       local action = actionUseModule:New(buffDef, target, bag, slot, nil, bestItemIdAvailable)
@@ -1075,9 +1075,9 @@ function taskScanModule:AddConsumableSelfbuff(buffDef, playerUnit, target, buffC
 
   if haveItemOffCD then
     self:AddConsumableSelfbuff_HaveItemReady(
-            buffDef, --[[---@not nil]] bestItemIdAvailable,
-            --[[---@not nil]] bag, --[[---@not nil]]  slot, --[[---@not nil]] count,
-            playerUnit, target)
+      buffDef, --[[---@not nil]] bestItemIdAvailable,
+      --[[---@not nil]] bag, --[[---@not nil]] slot, --[[---@not nil]] count,
+      playerUnit, target)
   else
     self:AddConsumableSelfbuff_NoItem(buffDef, count or 0, playerUnit)
   end
@@ -1090,28 +1090,32 @@ end
 ---@param playerUnit BomUnit
 ---@param texture WowIconId
 ---@param itemLink string
-function taskScanModule:AddConsumableWeaponBuff_HaveItem_Mainhand(buffDef, bag, slot, count, playerUnit, texture, itemLink)
-
-  local mainhandMessage = BOM.FormatTexture(--[[---@type string]] texture) .. itemLink .. "x" .. count
+function taskScanModule:AddConsumableWeaponBuff_HaveItem_Mainhand(buffDef, bag, slot, count, playerUnit, texture,
+                                                                  itemLink)
+  local mainhandMessage = BOM.FormatTexture( --[[---@type string]] texture) .. itemLink .. "x" .. count
 
   if buffomatModule.shared.DontUseConsumables
-          and not IsModifierKeyDown() then
+      and not IsModifierKeyDown() then
     -- Text: [Icon] [Consumable Name] x Count (Main hand)
     tasklist:Add(
-            taskModule:Create(mainhandMessage, nil)
-                      :ExtraText("(" .. _t("tooltip.mainhand") .. ") " .. _t("task.hint.HoldShiftConsumable"))
-                      :Target(buffTargetModule:FromSelf(playerUnit))
-                      :IsInfo())
+      taskModule:Create(mainhandMessage, nil)
+      :ExtraText("(" .. _t("tooltip.mainhand") .. ") " .. _t("task.hint.HoldShiftConsumable"))
+      :Target(buffTargetModule:FromSelf(playerUnit))
+      :IsInfo()
+      :CustomSort(buffDef.CustomSort)
+    )
   else
     -- Text: [Icon] [Consumable Name] x Count (Main hand)
     tasklist:Add(
-            taskModule:Create(mainhandMessage, nil)
-                      :ExtraText("(" .. _t("tooltip.mainhand") .. ")")
-                      :Target(buffTargetModule:FromSelf(playerUnit))
-                      :Prio(taskModule.PRIO_ENCHANTMENT)
-                      :Action(actionMacroModule:New(
-                    "/use " .. bag .. " " .. slot .. "\n/use 16",
-                    buffDef:SingleLink() .. " " .. _t("tooltip.mainhand")))) -- mainhand
+      taskModule:Create(mainhandMessage, nil)
+      :ExtraText("(" .. _t("tooltip.mainhand") .. ")")
+      :Target(buffTargetModule:FromSelf(playerUnit))
+      :Prio(taskModule.PRIO_ENCHANTMENT)
+      :Action(actionMacroModule:New(
+        "/use " .. bag .. " " .. slot .. "\n/use 16",
+        buffDef:SingleLink() .. " " .. _t("tooltip.mainhand"))) -- mainhand
+      :CustomSort(buffDef.CustomSort)
+    )
   end
 end
 
@@ -1123,26 +1127,28 @@ end
 ---@param texture WowIconId
 ---@param itemLink string
 function taskScanModule:AddConsumableWeaponBuff_HaveItem_Offhand(buffDef, bag, slot, count, playerUnit, texture, itemLink)
-  local offhandMessage = BOM.FormatTexture(--[[---@type string]] texture) .. itemLink .. "x" .. count
+  local offhandMessage = BOM.FormatTexture( --[[---@type string]] texture) .. itemLink .. "x" .. count
 
   if buffomatModule.shared.DontUseConsumables
-          and not IsModifierKeyDown() then
+      and not IsModifierKeyDown() then
     -- Text: [Icon] [Consumable Name] x Count (Off-hand)
-    tasklist:Add(
-            taskModule:Create(offhandMessage, nil)
-                      :ExtraText("(" .. _t("tooltip.offhand") .. ") " .. _t("task.hint.HoldShiftConsumable"))
-                      :Target(buffTargetModule:FromSelf(playerUnit))
-                      :IsInfo())
+    local task = taskModule:Create(offhandMessage, nil)
+        :ExtraText("(" .. _t("tooltip.offhand") .. ") " .. _t("task.hint.HoldShiftConsumable"))
+        :Target(buffTargetModule:FromSelf(playerUnit))
+        :IsInfo()
+        :CustomSort(buffDef.CustomSort)
+    tasklist:Add(task)
   else
     -- Text: [Icon] [Consumable Name] x Count (Off-hand)
-    tasklist:Add(
-            taskModule:Create(offhandMessage, nil)
-                      :ExtraText("(" .. _t("tooltip.offhand") .. ") ")
-                      :Target(buffTargetModule:FromSelf(playerUnit))
-                      :Prio(taskModule.PRIO_ENCHANTMENT)
-                      :Action(actionMacroModule:New(
-                    "/use " .. bag .. " " .. slot .. "\n/use 17",
-                    buffDef:SingleLink() .. " " .. _t("tooltip.offhand")))) -- offhand
+    local task = taskModule:Create(offhandMessage, nil)
+        :ExtraText("(" .. _t("tooltip.offhand") .. ") ")
+        :Target(buffTargetModule:FromSelf(playerUnit))
+        :Prio(taskModule.PRIO_ENCHANTMENT)
+        :Action(actionMacroModule:New(
+          "/use " .. bag .. " " .. slot .. "\n/use 17",
+          buffDef:SingleLink() .. " " .. _t("tooltip.offhand"))) -- offhand
+        :CustomSort(buffDef.CustomSort)
+    tasklist:Add(task)
   end
 end
 
@@ -1156,8 +1162,8 @@ function taskScanModule:CharacterCanEnchantMainhand()
   if info == nil then
     return false
   end
-  local i = (--[[---@not nil]] info)
-  return i.itemClassID == (--[[Weapon]] 2) and i.itemSubClassID ~= (--[[Fishing Poles]] 20)
+  local i = ( --[[---@not nil]] info)
+  return i.itemClassID == ( --[[Weapon]] 2) and i.itemSubClassID ~= ( --[[Fishing Poles]] 20)
 end
 
 ---@return boolean Whether class has an offhand weapon and can enchant it
@@ -1175,8 +1181,8 @@ function taskScanModule:AddConsumableWeaponBuff_HaveItem(buffDef, bag, slot, cou
   -- Have item, display the cast message and setup the cast button
   local itemInfo = envModule.GetContainerItemInfo(bag, slot)
   local profileBuff = buffDefModule:GetProfileBuff(buffDef.buffId, nil)
-  local needOffhand = (--[[---@not nil]] profileBuff).OffHandEnable and playerUnit.offhandEnchantment == nil
-  local needMainhand = (--[[---@not nil]] profileBuff).MainHandEnable and playerUnit.mainhandEnchantment == nil
+  local needOffhand = ( --[[---@not nil]] profileBuff).OffHandEnable and playerUnit.offhandEnchantment == nil
+  local needMainhand = ( --[[---@not nil]] profileBuff).MainHandEnable and playerUnit.mainhandEnchantment == nil
 
   if not self:CharacterCanEnchantMainhand() and needMainhand then
     tasklist:Comment(_t("task.error.missingMainhandWeapon"))
@@ -1190,13 +1196,13 @@ function taskScanModule:AddConsumableWeaponBuff_HaveItem(buffDef, bag, slot, cou
   if profileBuff and needOffhand
   then
     self:AddConsumableWeaponBuff_HaveItem_Offhand(buffDef, bag, slot, count, playerUnit,
-            itemInfo.iconFileID, itemInfo.hyperlink)
+      itemInfo.iconFileID, itemInfo.hyperlink)
   end
 
   if profileBuff and needMainhand
   then
     self:AddConsumableWeaponBuff_HaveItem_Mainhand(buffDef, bag, slot, count, playerUnit,
-            itemInfo.iconFileID, itemInfo.hyperlink)
+      itemInfo.iconFileID, itemInfo.hyperlink)
   end
   BOM.scanModifierKeyDown = buffomatModule.shared.DontUseConsumables
 end
@@ -1209,12 +1215,13 @@ function taskScanModule:AddConsumableWeaponBuff_DontHaveItem(buffDef, count, pla
   -- Text: [Icon] [Consumable Name] x Count
   if buffDef.singleText then
     -- spell.single can be nil on addon load
-    tasklist:Add(
-            taskModule:Create(buffDef.singleText .. " x" .. count, nil)
-                      :PrefixText(_t("task.type.Enchantment"))
-                      :ExtraText(_t("task.type.MissingConsumable"))
-                      :Target(buffTargetModule:FromSelf(playerUnit))
-                      :IsInfo())
+    local task = taskModule:Create(buffDef.singleText .. " x" .. count, nil)
+        :PrefixText(_t("task.type.Enchantment"))
+        :ExtraText(_t("task.type.MissingConsumable"))
+        :Target(buffTargetModule:FromSelf(playerUnit))
+        :IsInfo()
+        :CustomSort(buffDef.CustomSort)
+    tasklist:Add(task)
   else
     buffomatModule:RequestTaskRescan("weaponConsumableBuff") -- try rescan?
   end
@@ -1231,8 +1238,8 @@ function taskScanModule:AddConsumableWeaponBuff(buffDef, playerUnit, buffCtx)
 
   if haveItem then
     self:AddConsumableWeaponBuff_HaveItem(buffDef,
-            --[[---@not nil]] bag, --[[---@not nil]] slot, --[[---@not nil]] count,
-            playerUnit)
+      --[[---@not nil]] bag, --[[---@not nil]] slot, --[[---@not nil]] count,
+      playerUnit)
   else
     self:AddConsumableWeaponBuff_DontHaveItem(buffDef, --[[---@not nil]] count, playerUnit)
   end
@@ -1267,41 +1274,43 @@ function taskScanModule:AddWeaponEnchant(buffDef, playerUnit, buffCtx)
 
   -- OFFHAND FIRST
   if profileBuff
-          and hasMainhand
-          and (--[[---@not nil]] profileBuff).OffHandEnable
-          and playerUnit.offhandEnchantment == nil then
+      and hasMainhand
+      and ( --[[---@not nil]] profileBuff).OffHandEnable
+      and playerUnit.offhandEnchantment == nil then
     -- Text: [Spell Name] (Off-hand)
-    tasklist:Add(
-            taskModule:Create(buffDef:SingleLink(), buffDef.singleText)
-                      :ExtraText(_t("tooltip.offhand"))
-                      :Target(buffTargetModule:FromSelf(playerUnit))
-                      :Prio(taskModule.PRIO_ENCHANTMENT)
-                      :Action(actionCastModule:New(
-                    buffDef.singleMana, buffDef.highestRankSingleId, buffDef:SingleLink(),
-                    playerUnit, buffDef, false)))
+    local task = taskModule:Create(buffDef:SingleLink(), buffDef.singleText)
+        :ExtraText(_t("tooltip.offhand"))
+        :Target(buffTargetModule:FromSelf(playerUnit))
+        :Prio(taskModule.PRIO_ENCHANTMENT)
+        :Action(actionCastModule:New(
+          buffDef.singleMana, buffDef.highestRankSingleId, buffDef:SingleLink(),
+          playerUnit, buffDef, false))
+        :CustomSort(buffDef.CustomSort)
+    tasklist:Add(task)
     --end
   end
 
   -- MAINHAND AFTER OFFHAND
   if profileBuff
-          and (--[[---@not nil]] profileBuff).MainHandEnable
-          and playerUnit.mainhandEnchantment == nil then
+      and ( --[[---@not nil]] profileBuff).MainHandEnable
+      and playerUnit.mainhandEnchantment == nil then
     -- Special case is ruled by the option `ShamanFlametongueRanked`
     -- Flametongue enchant for spellhancement shamans only!
     local isDownrank = buffDef.buffId == spellIdsModule.Shaman_Flametongue6
-            and buffomatModule.shared.ShamanFlametongueRanked
+        and buffomatModule.shared.ShamanFlametongueRanked
 
     local taskText = getMainhandEnchantTaskText(isDownrank)
 
     -- Text: [Spell Name] (Main hand)
-    tasklist:Add(
-            taskModule:Create(buffDef:SingleLink(), buffDef.singleText)
-                      :ExtraText(taskText)
-                      :Target(buffTargetModule:FromSelf(playerUnit))
-                      :Prio(taskModule.PRIO_ENCHANTMENT)
-                      :Action(actionCastModule:New(
-                    buffDef.singleMana, buffDef.highestRankSingleId, buffDef:SingleLink(),
-                    playerUnit, buffDef, isDownrank)))
+    local task = taskModule:Create(buffDef:SingleLink(), buffDef.singleText)
+        :ExtraText(taskText)
+        :Target(buffTargetModule:FromSelf(playerUnit))
+        :Prio(taskModule.PRIO_ENCHANTMENT)
+        :Action(actionCastModule:New(
+          buffDef.singleMana, buffDef.highestRankSingleId, buffDef:SingleLink(),
+          playerUnit, buffDef, isDownrank))
+        :CustomSort(buffDef.CustomSort)
+    tasklist:Add(task)
   end
 end
 
@@ -1319,7 +1328,7 @@ function taskScanModule:CheckReputationItems(playerMember)
     -- settings to remind to remove AD trinket != instance compatible with AD Commission
     --if playerMember.hasReputationTrinket ~= tContains(BOM.ReputationTrinket.zoneId, instanceID) then
     local hasReputationTrinket = tContains(BOM.reputationTrinketZones.itemIds, itemTrinket1) or
-            tContains(BOM.reputationTrinketZones.itemIds, itemTrinket2)
+        tContains(BOM.reputationTrinketZones.itemIds, itemTrinket2)
     if hasReputationTrinket and not tContains(BOM.reputationTrinketZones.zoneId, instanceID) then
       -- Text: Unequip [Argent Dawn Commission]
       tasklist:Comment(_t("task.type.Unequip") .. " " .. _t("reminder.reputationTrinket"))
@@ -1328,7 +1337,7 @@ function taskScanModule:CheckReputationItems(playerMember)
 
   if buffomatModule.shared.Carrot then
     local hasCarrot = tContains(BOM.ridingSpeedZones.itemIds, itemTrinket1) or
-            tContains(BOM.ridingSpeedZones.itemIds, itemTrinket2)
+        tContains(BOM.ridingSpeedZones.itemIds, itemTrinket2)
     if hasCarrot and not tContains(BOM.ridingSpeedZones.zoneId, instanceID) then
       -- Text: Unequip [Carrot on a Stick]
       tasklist:Comment(_t("task.type.Unequip") .. " " .. _t("reminder.ridingSpeedTrinket"))
@@ -1386,7 +1395,6 @@ function taskScanModule:CheckItemsAndContainers(playerUnit, buffCtx)
             target = partyModule.itemListTarget[allBuffsModule.itemListSpellLookup[item.ID]]
           end
         end
-
       end
     elseif item.Lootable then
       ok = true
@@ -1399,13 +1407,14 @@ function taskScanModule:CheckItemsAndContainers(playerUnit, buffCtx)
       end
 
       local actionText = BOM.FormatTexture(item.Texture)
-              .. item.Link
-              .. (target and (" @" .. target) or "")
+          .. item.Link
+          .. (target and (" @" .. target) or "")
       -- Text: [Icon] [Item Link] @Target
       local task = taskModule:Create(actionText, nil)
-                             :ExtraText("(" .. _t("task.UseOrOpen") .. ") " .. extraMsg)
-                             :Prio(taskModule.PRIO_OPEN_CONTAINER)
-                             :Target(buffTargetModule:FromSelf(playerUnit))
+          :ExtraText("(" .. _t("task.UseOrOpen") .. ") " .. extraMsg)
+          :Prio(taskModule.PRIO_OPEN_CONTAINER)
+          :Target(buffTargetModule:FromSelf(playerUnit))
+          :CustomSort('~') -- sort lastest
 
       if buffomatModule.shared.DontUseConsumables and not IsModifierKeyDown() then
         -- Can't use or cast
@@ -1413,8 +1422,8 @@ function taskScanModule:CheckItemsAndContainers(playerUnit, buffCtx)
       else
         -- Will use/cast
         tasklist:Add(task
-                :Action(actionUseModule:New(nil, target, item.Bag, item.Slot, item.Link))
-                :InRange(true))
+          :Action(actionUseModule:New(nil, target, item.Bag, item.Slot, item.Link))
+          :InRange(true))
       end
       BOM.scanModifierKeyDown = buffomatModule.shared.DontUseConsumables
     end
@@ -1426,24 +1435,23 @@ end
 ---@param buffCtx BomBuffScanContext
 function taskScanModule:CreateOneBuffTask(buffDef, party, buffCtx)
   if #buffDef.unitsNeedBuff > 0
-          and not buffDef.isInfo
-          and not buffDef.isConsumable
+      and not buffDef.isInfo
+      and not buffDef.isConsumable
   then
     if buffDef.singleMana < partyModule.playerManaLimit
-            and buffDef.singleMana > partyModule.playerMana then
+        and buffDef.singleMana > partyModule.playerMana then
       partyModule.playerManaLimit = buffDef.singleMana
     end
 
     if buffDef.groupMana
-            and buffDef.groupMana < partyModule.playerManaLimit
-            and buffDef.groupMana > partyModule.playerMana then
+        and buffDef.groupMana < partyModule.playerManaLimit
+        and buffDef.groupMana > partyModule.playerMana then
       partyModule.playerManaLimit = buffDef.groupMana
     end
   end
 
   if buffDef.type == "summon" then
     self:AddSummonSpell(buffDef, party.player)
-
   elseif buffDef.type == "weapon" then
     if #buffDef.unitsNeedBuff > 0 then
       if buffDef.isConsumable then
@@ -1452,23 +1460,21 @@ function taskScanModule:CreateOneBuffTask(buffDef, party, buffCtx)
         self:AddWeaponEnchant(buffDef, party.player, buffCtx)
       end
     end
-
   elseif buffDef.isConsumable then
     if #buffDef.unitsNeedBuff > 0 then
       self:AddConsumableSelfbuff(buffDef, party.player, buffDef.consumableTarget, buffCtx)
     end
-
   elseif buffDef.isInfo then
     if #buffDef.unitsNeedBuff then
       for _m, unitNeedsBuff in ipairs(buffDef.unitsNeedBuff) do
         -- Text: [Player Link] [Spell Link]
-        tasklist:Add(
-                taskModule:Create(buffDef:SingleLink(), buffDef.singleText)
-                          :Target(buffTargetModule:FromUnit(unitNeedsBuff))
-                          :IsInfo())
+        local task = taskModule:Create(buffDef:SingleLink(), buffDef.singleText)
+            :Target(buffTargetModule:FromUnit(unitNeedsBuff))
+            :IsInfo()
+            :CustomSort(buffDef.CustomSort)
+        tasklist:Add(task)
       end
     end
-
   elseif buffDef.type == "tracking" then
     -- TODO: Move this to its own periodic timer
     if #buffDef.unitsNeedBuff > 0 then
@@ -1476,18 +1482,18 @@ function taskScanModule:CreateOneBuffTask(buffDef, party, buffCtx)
         self:SetTracking(buffDef, true)
       else
         -- Text: "Player" "Spell Name"
-        tasklist:Add(
-                taskModule:Create(buffDef:SingleLink(), buffDef.singleText)
-                          :PrefixText(_t("TASK_ACTIVATE"))
-                          :ExtraText(_t("task.type.Tracking"))
-                          :Target(buffTargetModule:FromSelf(party.player)))
+        local task = taskModule:Create(buffDef:SingleLink(), buffDef.singleText)
+            :PrefixText(_t("TASK_ACTIVATE"))
+            :ExtraText(_t("task.type.Tracking"))
+            :Target(buffTargetModule:FromSelf(party.player))
+            :CustomSort(buffDef.CustomSort)
+        tasklist:Add(task)
       end
     end
-
   elseif (buffDef.isOwn
-          or buffDef.type == "tracking"
-          or buffDef.type == "aura"
-          or buffDef.type == "seal")
+        or buffDef.type == "tracking"
+        or buffDef.type == "aura"
+        or buffDef.type == "seal")
   then
     if buffDef.shapeshiftFormId and GetShapeshiftFormID() == buffDef.shapeshiftFormId then
       -- if spell is shapeshift, and is already active, skip it
@@ -1495,13 +1501,10 @@ function taskScanModule:CreateOneBuffTask(buffDef, party, buffCtx)
       -- self buffs are not pvp-guarded
       self:AddSelfbuff(buffDef, party.player)
     end
-
   elseif buffDef.type == "resurrection" then
     self:AddResurrection(buffDef, party.player, buffCtx)
-
   elseif buffDef.isBlessing then
     self:AddBlessing(buffDef, party, buffCtx)
-
   else
     self:AddBuff(buffDef, party, buffCtx)
   end
@@ -1515,13 +1518,13 @@ function taskScanModule:CreateBuffTasks(party, buffCtx)
     local profileBuff = buffDefModule:GetProfileBuff(buffDef.buffId, nil)
 
     if buffDef.isInfo and profileBuff
-            and (--[[---@not nil]] profileBuff).AllowWhisper then
+        and ( --[[---@not nil]] profileBuff).AllowWhisper then
       self:WhisperExpired(buffDef)
     end
 
     -- if spell is enabled and we're in the correct shapeshift form
     if buffDefModule:IsBuffEnabled(buffDef.buffId, nil)
-            and (buffDef.requiresForm == nil or GetShapeshiftFormID() == buffDef.requiresForm)
+        and (buffDef.requiresForm == nil or GetShapeshiftFormID() == buffDef.requiresForm)
     then
       -- ================
       -- Scan entry point
@@ -1539,14 +1542,15 @@ function taskScanModule:MountedCrusaderAuraPrompt()
 
   if playerUnit and self:IsMountedAndCrusaderAuraRequired() then
     local spell = allBuffsModule.CrusaderAuraSpell
-    tasklist:Add(
-            taskModule:Create(spell:SingleLink(), spell.singleText)
-                      :PrefixText(_t("TASK_CAST"))
-                      :ExtraText(_t("task.target.SelfOnly"))
-                      :Target(buffTargetModule:FromSelf(--[[---@not nil]] playerUnit))
-                      :Action(actionCastModule:New(
-                    spell.singleMana, spell.highestRankSingleId, spell:SingleLink(),
-                    --[[---@not nil]] playerUnit, spell, false)))
+    local task = taskModule:Create(spell:SingleLink(), spell.singleText)
+        :PrefixText(_t("TASK_CAST"))
+        :ExtraText(_t("task.target.SelfOnly"))
+        :Target(buffTargetModule:FromSelf( --[[---@not nil]] playerUnit))
+        :Action(actionCastModule:New(
+          spell.singleMana, spell.highestRankSingleId, spell:SingleLink(),
+          --[[---@not nil]] playerUnit, spell, false))
+        :CustomSort("~") -- sort lastest
+    tasklist:Add(task)
 
     return true -- only show the aura and nothing else
   end
@@ -1606,10 +1610,11 @@ function taskScanModule:UpdateScan_Scan(party)
 
   -- Cast crusader aura when mounted, without condition. Ignore all other buffs
   if self:MountedCrusaderAuraPrompt() and not UnitOnTaxi("player") then
-    tasklist:Add(
-            taskModule:Create("Crusader", nil)
-                      :Action(actionMacroModule:New("/cast Crusader Aura", "Crusader Aura"))
-                      :InRange(true))
+    local task = taskModule:Create("Crusader", nil)
+        :Action(actionMacroModule:New("/cast Crusader Aura", "Crusader Aura"))
+        :InRange(true)
+        :CustomSort("~") -- sort lastest
+    tasklist:Add(task)
   else
     -- Otherwise scan all enabled spells
     BOM.scanModifierKeyDown = false
@@ -1647,7 +1652,7 @@ function taskScanModule:UpdateScan_Finalize()
 
   local firstToCast = tasklist:SelectTask()
   if firstToCast then
-    tasklist:CastButton(--[[---@not nil]] firstToCast)
+    tasklist:CastButton( --[[---@not nil]] firstToCast)
   else
     -- Nothing to do
     return tasklist:CastButton_Nothing() -- this is basically equal to if #tasklist.tasks == 0 below
@@ -1770,7 +1775,7 @@ function BOM.AddMemberToSkipList()
     local castFailedTarget = --[[---@not nil]] BOM.castFailedBuffTarget
 
     if (castFailedBuffVal).skipList
-            and BOM.castFailedBuffTarget then
+        and BOM.castFailedBuffTarget then
       table.insert(castFailedBuffVal.skipList, castFailedTarget.name)
       buffomatModule:FastUpdateTimer()
       buffomatModule:RequestTaskRescan("skipListMemberAdded")
@@ -1794,10 +1799,10 @@ function BOM.DoCancelBuffs()
 
   for i, spell in ipairs(BOM.cancelBuffs) do
     if buffomatModule.currentProfile.CancelBuff[spell.buffId].Enable
-            and taskScanModule:CancelBuff(spell.singleFamily)
+        and taskScanModule:CancelBuff(spell.singleFamily)
     then
       BOM:Print(string.format(_t("message.CancelBuff"), spell:SingleLink(),
-              UnitName(BOM.cancelBuffSource) or ""))
+        UnitName(BOM.cancelBuffSource) or ""))
     end
   end
 end

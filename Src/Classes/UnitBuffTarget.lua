@@ -1,4 +1,4 @@
----@shape BomUnitBuffTargetModule
+---@class BomUnitBuffTargetModule
 local buffTargetModule = BomModuleManager.unitBuffTargetModule ---@type BomUnitBuffTargetModule
 
 local toolboxModule = BomModuleManager.toolboxModule

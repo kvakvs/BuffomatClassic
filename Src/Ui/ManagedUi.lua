@@ -1,7 +1,7 @@
 --local TOCNAME, _ = ...
---local BOM = BuffomatAddon ---@type BomAddon
+--local BOM = BuffomatAddon
 
----@shape BomManagedUiModule
+---@class BomManagedUiModule
 ---@field ICON_OFF string
 ---@field ICON_ON string
 
@@ -52,8 +52,8 @@ function managedUiModule.ButtonOnEnter(self)
       if self.bomReadVariable then
         -- add a checkbox to the tooltip
         add = " " .. (self.bomReadVariable()
-                and managedUiModule.ICON_ON
-                or managedUiModule.ICON_OFF)
+          and managedUiModule.ICON_ON
+          or managedUiModule.ICON_OFF)
       end
 
       BomC_Tooltip:AddLine(self.bomToolTipText .. add)

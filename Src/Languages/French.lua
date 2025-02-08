@@ -1,4 +1,4 @@
----@shape BomLanguageFrenchModule
+---@class BomLanguageFrenchModule
 local frenchModule = BomModuleManager.languageFrenchModule ---@type BomLanguageFrenchModule
 
 ---@return BomLocaleDict
@@ -64,7 +64,8 @@ function frenchModule:Translations()
 
     --AboutInfo="<dummy info>",
     --AboutUsage="<dummy usage>",
-    AboutSlashCommand = "<valeur> peut être true, 1, enable, false, 0, disable. Si <valeur> est omis, la valeur actuelle s'inverse.",
+    AboutSlashCommand =
+    "<valeur> peut être true, 1, enable, false, 0, disable. Si <valeur> est omis, la valeur actuelle s'inverse.",
     --AboutCredits="wellcat pour la traduction Chinoise",
   }
 end

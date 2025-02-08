@@ -1,7 +1,7 @@
 local TOCNAME, _ = ...
-local BOM = BuffomatAddon ---@type BomAddon
+local BOM = BuffomatAddon
 
----@shape BomToolboxModule
+---@class BomToolboxModule
 ---@field IconClass table<string, string> Class icon strings indexed by class name
 ---@field IconClassBig table<string, string> Class icon strings indexed by class name
 ---@field RaidIconNames table<string, number>
@@ -21,17 +21,69 @@ local constModule = BomModuleManager.constModule
 
 ---Converts accented letters to ASCII equivalent for sorting
 local bom_special_letter_to_ascii = {
-  ["�"] = "A", ["�"] = "A", ["�"] = "A", ["�"] = "A", ["�"] = "Ae", ["�"] = "A",
-  ["�"] = "AE", ["�"] = "C", ["�"] = "E", ["�"] = "E", ["�"] = "E", ["�"] = "E",
-  ["�"] = "I", ["�"] = "I", ["�"] = "I", ["�"] = "I", ["�"] = "D", ["�"] = "N",
-  ["�"] = "O", ["�"] = "O", ["�"] = "O", ["�"] = "O", ["�"] = "Oe", ["�"] = "O",
-  ["�"] = "U", ["�"] = "U", ["�"] = "U", ["�"] = "Ue", ["�"] = "Y", ["�"] = "P",
-  ["�"] = "s", ["�"] = "a", ["�"] = "a", ["�"] = "a", ["�"] = "a", ["�"] = "ae",
-  ["�"] = "a", ["�"] = "ae", ["�"] = "c", ["�"] = "e", ["�"] = "e", ["�"] = "e",
-  ["�"] = "e", ["�"] = "i", ["�"] = "i", ["�"] = "i", ["�"] = "i", ["�"] = "eth",
-  ["�"] = "n", ["�"] = "o", ["�"] = "o", ["�"] = "o", ["�"] = "o", ["�"] = "oe",
-  ["�"] = "o", ["�"] = "u", ["�"] = "u", ["�"] = "u", ["�"] = "ue", ["�"] = "y",
-  ["�"] = "p", ["�"] = "y", ["�"] = "ss",
+  ["�"] = "A",
+  ["�"] = "A",
+  ["�"] = "A",
+  ["�"] = "A",
+  ["�"] = "Ae",
+  ["�"] = "A",
+  ["�"] = "AE",
+  ["�"] = "C",
+  ["�"] = "E",
+  ["�"] = "E",
+  ["�"] = "E",
+  ["�"] = "E",
+  ["�"] = "I",
+  ["�"] = "I",
+  ["�"] = "I",
+  ["�"] = "I",
+  ["�"] = "D",
+  ["�"] = "N",
+  ["�"] = "O",
+  ["�"] = "O",
+  ["�"] = "O",
+  ["�"] = "O",
+  ["�"] = "Oe",
+  ["�"] = "O",
+  ["�"] = "U",
+  ["�"] = "U",
+  ["�"] = "U",
+  ["�"] = "Ue",
+  ["�"] = "Y",
+  ["�"] = "P",
+  ["�"] = "s",
+  ["�"] = "a",
+  ["�"] = "a",
+  ["�"] = "a",
+  ["�"] = "a",
+  ["�"] = "ae",
+  ["�"] = "a",
+  ["�"] = "ae",
+  ["�"] = "c",
+  ["�"] = "e",
+  ["�"] = "e",
+  ["�"] = "e",
+  ["�"] = "e",
+  ["�"] = "i",
+  ["�"] = "i",
+  ["�"] = "i",
+  ["�"] = "i",
+  ["�"] = "eth",
+  ["�"] = "n",
+  ["�"] = "o",
+  ["�"] = "o",
+  ["�"] = "o",
+  ["�"] = "o",
+  ["�"] = "oe",
+  ["�"] = "o",
+  ["�"] = "u",
+  ["�"] = "u",
+  ["�"] = "u",
+  ["�"] = "ue",
+  ["�"] = "y",
+  ["�"] = "p",
+  ["�"] = "y",
+  ["�"] = "ss",
 }
 
 -- Hyperlink
@@ -40,12 +92,12 @@ local function bom_on_enter_hyperlink(self, link, text)
   --print(link,text)
   local part = toolboxModule:Split(link, ":")
   if part[1] == "spell"
-          or part[1] == "unit"
-          or part[1] == "item"
-          or part[1] == "enchant"
-          or part[1] == "player"
-          or part[1] == "quest"
-          or part[1] == "trade" then
+      or part[1] == "unit"
+      or part[1] == "item"
+      or part[1] == "enchant"
+      or part[1] == "player"
+      or part[1] == "quest"
+      or part[1] == "trade" then
     GameTooltip_SetDefaultAnchor(GameTooltip, UIParent)
     GameTooltip:SetOwner(UIParent, "ANCHOR_PRESERVE")
     GameTooltip:ClearLines()
@@ -140,8 +192,8 @@ function toolboxModule:ScanToolTip(what, ...)
     myScanningTooltip:SetOwner(WorldFrame, "ANCHOR_NONE")
     -- Allow tooltip SetX() methods to dynamically add new lines based on these
     myScanningTooltip:AddFontStrings(
-            myScanningTooltip:CreateFontString("$parentTextLeft1", nil, "GameTooltipText"),
-            myScanningTooltip:CreateFontString("$parentTextRight1", nil, "GameTooltipText")
+      myScanningTooltip:CreateFontString("$parentTextLeft1", nil, "GameTooltipText"),
+      myScanningTooltip:CreateFontString("$parentTextRight1", nil, "GameTooltipText")
     )
   end
   myScanningTooltip:ClearLines()
@@ -236,19 +288,19 @@ function toolboxModule:UnitDistanceSquared(uId)
     elseif C_Map.GetBestMapForUnit(uId) ~= C_Map.GetBestMapForUnit("player") then
       range = TOO_FAR
     elseif IsItemInRange(8149, uId) then
-      range = 64 -- 8 --Voodoo Charm
+      range = 64   -- 8 --Voodoo Charm
     elseif CheckInteractDistance(uId, 3) then
-      range = 100 --10
+      range = 100  --10
     elseif CheckInteractDistance(uId, 2) then
-      range = 121 --11
+      range = 121  --11
     elseif IsItemInRange(14530, uId) then
-      range = 324 --18--Heavy Runecloth Bandage. (despite popular sites saying it's 15 yards, it's actually 18 yards verified by UnitDistanceSquared
+      range = 324  --18--Heavy Runecloth Bandage. (despite popular sites saying it's 15 yards, it's actually 18 yards verified by UnitDistanceSquared
     elseif IsItemInRange(21519, uId) then
-      range = 529 --23--Item says 20, returns true until 23.
+      range = 529  --23--Item says 20, returns true until 23.
     elseif IsItemInRange(1180, uId) then
       range = 1089 --33--Scroll of Stamina
     elseif UnitInRange(uId) then
-      range = 1849--43 item scheck of 34471 also good for 43
+      range = 1849 --43 item scheck of 34471 also good for 43
     else
       range = 10000
     end
@@ -370,7 +422,7 @@ function toolboxModule:Split(inputstr, sep)
   return t
 end
 
--- Size 
+-- Size
 
 local ResizeCursor ---@type BomGPIControl
 
@@ -449,15 +501,23 @@ function toolboxModule:EnableSize(frame, border, OnStart, OnStop)
 
   --path = "Interface\\AddOns\\" .. TOCNAME .. "\\Resize\\"
 
-  CreateSizeBorder(frame, "BOTTOM", "BOTTOMLEFT", border, border, "BOTTOMRIGHT", -border, 0, "Interface\\CURSOR\\UI-Cursor-SizeLeft", 45, OnStart, OnStop)
-  CreateSizeBorder(frame, "TOP", "TOPLEFT", border, 0, "TOPRIGHT", -border, -border, "Interface\\CURSOR\\UI-Cursor-SizeLeft", 45, OnStart, OnStop)
-  CreateSizeBorder(frame, "LEFT", "TOPLEFT", 0, -border, "BOTTOMLEFT", border, border, "Interface\\CURSOR\\UI-Cursor-SizeRight", 45, OnStart, OnStop)
-  CreateSizeBorder(frame, "RIGHT", "TOPRIGHT", -border, -border, "BOTTOMRIGHT", 0, border, "Interface\\CURSOR\\UI-Cursor-SizeRight", 45, OnStart, OnStop)
+  CreateSizeBorder(frame, "BOTTOM", "BOTTOMLEFT", border, border, "BOTTOMRIGHT", -border, 0,
+    "Interface\\CURSOR\\UI-Cursor-SizeLeft", 45, OnStart, OnStop)
+  CreateSizeBorder(frame, "TOP", "TOPLEFT", border, 0, "TOPRIGHT", -border, -border,
+    "Interface\\CURSOR\\UI-Cursor-SizeLeft", 45, OnStart, OnStop)
+  CreateSizeBorder(frame, "LEFT", "TOPLEFT", 0, -border, "BOTTOMLEFT", border, border,
+    "Interface\\CURSOR\\UI-Cursor-SizeRight", 45, OnStart, OnStop)
+  CreateSizeBorder(frame, "RIGHT", "TOPRIGHT", -border, -border, "BOTTOMRIGHT", 0, border,
+    "Interface\\CURSOR\\UI-Cursor-SizeRight", 45, OnStart, OnStop)
 
-  CreateSizeBorder(frame, "TOPLEFT", "TOPLEFT", 0, 0, "TOPLEFT", border, -border, "Interface\\CURSOR\\UI-Cursor-SizeRight", 0, OnStart, OnStop)
-  CreateSizeBorder(frame, "BOTTOMLEFT", "BOTTOMLEFT", 0, 0, "BOTTOMLEFT", border, border, "Interface\\CURSOR\\UI-Cursor-SizeLeft", 0, OnStart, OnStop)
-  CreateSizeBorder(frame, "TOPRIGHT", "TOPRIGHT", 0, 0, "TOPRIGHT", -border, -border, "Interface\\CURSOR\\UI-Cursor-SizeLeft", 0, OnStart, OnStop)
-  CreateSizeBorder(frame, "BOTTOMRIGHT", "BOTTOMRIGHT", 0, 0, "BOTTOMRIGHT", -border, border, "Interface\\CURSOR\\UI-Cursor-SizeRight", 0, OnStart, OnStop)
+  CreateSizeBorder(frame, "TOPLEFT", "TOPLEFT", 0, 0, "TOPLEFT", border, -border,
+    "Interface\\CURSOR\\UI-Cursor-SizeRight", 0, OnStart, OnStop)
+  CreateSizeBorder(frame, "BOTTOMLEFT", "BOTTOMLEFT", 0, 0, "BOTTOMLEFT", border, border,
+    "Interface\\CURSOR\\UI-Cursor-SizeLeft", 0, OnStart, OnStop)
+  CreateSizeBorder(frame, "TOPRIGHT", "TOPRIGHT", 0, 0, "TOPRIGHT", -border, -border,
+    "Interface\\CURSOR\\UI-Cursor-SizeLeft", 0, OnStart, OnStop)
+  CreateSizeBorder(frame, "BOTTOMRIGHT", "BOTTOMRIGHT", 0, 0, "BOTTOMRIGHT", -border, border,
+    "Interface\\CURSOR\\UI-Cursor-SizeRight", 0, OnStart, OnStop)
 end
 
 -- TAB
@@ -561,8 +621,8 @@ function toolboxModule:AddTab(frame, name, tabFrame, combatlockdown)
   end
 
   frameControl.Tabs[frameControl.numTabs] = CreateFrame(
-          "Button", frameName .. "Tab" .. frameControl.numTabs, frame,
-          "CharacterFrameTabButtonTemplate")
+    "Button", frameName .. "Tab" .. frameControl.numTabs, frame,
+    "CharacterFrameTabButtonTemplate")
   frameControl.Tabs[frameControl.numTabs]:SetID(frameControl.numTabs)
   frameControl.Tabs[frameControl.numTabs]:SetText(name)
   frameControl.Tabs[frameControl.numTabs]:SetScript("OnClick", bomSelectTab)
@@ -572,19 +632,18 @@ function toolboxModule:AddTab(frame, name, tabFrame, combatlockdown)
 
   if frameControl.numTabs == 1 then
     frameControl.Tabs[frameControl.numTabs]:SetPoint(
-            "TOPLEFT", frameControl, "BOTTOMLEFT",
-            5, 4)
+      "TOPLEFT", frameControl, "BOTTOMLEFT",
+      5, 4)
   else
     frameControl.Tabs[frameControl.numTabs]:SetPoint(
-            "TOPLEFT", frameControl.Tabs[frameControl.numTabs - 1], "TOPRIGHT",
-            -14, 0)
+      "TOPLEFT", frameControl.Tabs[frameControl.numTabs - 1], "TOPRIGHT",
+      -14, 0)
   end
 
   bomSelectTab(frameControl.Tabs[frameControl.numTabs])
   bomSelectTab(frameControl.Tabs[1])
   return frameControl.numTabs
 end
-
 
 -- DataBroker
 local bomDataBroker = false

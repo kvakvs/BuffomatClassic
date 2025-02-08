@@ -1,7 +1,7 @@
 --local TOCNAME, _ = ...
-local BOM = BuffomatAddon ---@type BomAddon
+local BOM = BuffomatAddon
 
----@shape BomPopupModule
+---@class BomPopupModule
 local popupModule = BomModuleManager.popupModule ---@type BomPopupModule
 popupModule.libDD = LibStub:GetLibrary("LibUIDropDownMenu-4.0")
 
@@ -179,13 +179,13 @@ function popupModule.GenerateMenuItems(frame, level, menuList)
   for _index, menuItemDef in ipairs(menuList or frame.bomMenuItems) do
     --if val.menuDepth == menuList then
     if menuItemDef.type == "submenu" then
-      generateSubmenu(level, menuItemDef) -- Submenu entry
+      generateSubmenu(level, menuItemDef)                  -- Submenu entry
     elseif menuItemDef.type == "click" then
       generateClickableMenuItem(level, frame, menuItemDef) -- Normal menu item, with click handler
     elseif menuItemDef.type == "boolean" then
-      generateBooleanMenuItem(level, menuItemDef) -- Menu item which toggles a boolean value
+      generateBooleanMenuItem(level, menuItemDef)          -- Menu item which toggles a boolean value
     elseif menuItemDef.type == "separator" then
-      generateMenuSeparator(level) -- Just a narrow empty row
+      generateMenuSeparator(level)                         -- Just a narrow empty row
     end
     --end
   end
@@ -195,7 +195,7 @@ function popupDynamicClass:Show(where, x, y)
   where = where or "cursor"
   if UIDROPDOWNMENU_OPEN_MENU ~= self._Frame then
     popupModule.libDD:UIDropDownMenu_Initialize(self._Frame, popupModule.GenerateMenuItems, "MENU",
-            nil, self._Frame.bomMenuItems)
+      nil, self._Frame.bomMenuItems)
   end
   popupModule.libDD:ToggleDropDownMenu(nil, nil, self._Frame, where, x, y)
   self._where = where
@@ -216,6 +216,6 @@ function popupModule:CreatePopup(callbackFn)
   --popup._Frame = CreateFrame("Frame", nil, UIParent, "UIDropDownMenuTemplate") ---@type BomGPIControl
   popup._Frame = self.libDD:Create_UIDropDownMenu("BuffomatDropDownMenu", UIParent)
   popup._Frame.bomPopupMenuCallback = callbackFn
-  popup._Frame.bomMenuItems = --[[---@type BomMenuItemDefList]] { }
+  popup._Frame.bomMenuItems = --[[---@type BomMenuItemDefList]] {}
   return popup
 end

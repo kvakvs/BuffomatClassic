@@ -1,6 +1,6 @@
-local BOM = BuffomatAddon ---@type BomAddon
+local BOM = BuffomatAddon
 
----@shape BomActionMacroModule
+---@class BomActionMacroModule
 local actionMacroModule = BomModuleManager.actionMacroModule
 
 local taskModule = BomModuleManager.taskModule

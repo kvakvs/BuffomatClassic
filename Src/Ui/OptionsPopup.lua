@@ -1,11 +1,11 @@
 local TOCNAME, _ = ...
-local BOM = BuffomatAddon ---@type BomAddon
+local BOM = BuffomatAddon
 
----@shape BomBehaviourSetting
+---@class BomBehaviourSetting
 ---@field name string
 ---@field value boolean
 
----@shape BomOptionsPopupModule
+---@class BomOptionsPopupModule
 -- -@field behaviourSettings BomBehaviourSetting[]
 local optionsPopupModule = BomModuleManager.optionsPopupModule ---@type BomOptionsPopupModule
 
@@ -99,11 +99,11 @@ function optionsPopupModule:Setup(control, minimap)
     table.insert(menuItems, popupModule:Clickable(_t("popup.OpenBuffomat"), BOM.ShowWindow, nil, nil))
     table.insert(menuItems, popupModule:Separator())
     table.insert(menuItems, popupModule:Boolean(_t("options.short.ShowMinimapButton"),
-            buffomatModule.shared.Minimap, "visible"))
+      buffomatModule.shared.Minimap, "visible"))
     table.insert(menuItems, popupModule:Boolean(_t("options.short.LockMinimapButton"),
-            buffomatModule.shared.Minimap, "lock"))
+      buffomatModule.shared.Minimap, "lock"))
     table.insert(menuItems, popupModule:Boolean(_t("options.short.LockMinimapButtonDistance"),
-            buffomatModule.shared.Minimap, "lockDistance"))
+      buffomatModule.shared.Minimap, "lockDistance"))
     table.insert(menuItems, popupModule:Separator())
   end
 
@@ -111,12 +111,12 @@ function optionsPopupModule:Setup(control, minimap)
   -- Use Profiles checkbox and submenu
   -- --------------------------------------------
   table.insert(menuItems, popupModule:Boolean(_t("options.short.UseProfiles"),
-          buffomatModule.character, "UseProfiles"))
+    buffomatModule.character, "UseProfiles"))
 
   if buffomatModule.character.UseProfiles then
     local subprofilesMenu = --[[---@type BomMenuItemDef[] ]] {}
     table.insert(subprofilesMenu, popupModule:Clickable(_t("profile_auto"),
-            buffomatModule.ChooseProfile, "auto", nil))
+      buffomatModule.ChooseProfile, "auto", nil))
 
     local currentProfileName = profileModule:ChooseProfile()
 
@@ -124,10 +124,10 @@ function optionsPopupModule:Setup(control, minimap)
       if currentProfileName == eachProfileName then
         local activeName = _t("profile.activeProfileMenuTag") .. " " .. _t("profile_" .. eachProfileName)
         table.insert(subprofilesMenu, popupModule:Clickable(buffomatModule:Color("00ff00", activeName),
-                buffomatModule.ChooseProfile, eachProfileName, nil))
+          buffomatModule.ChooseProfile, eachProfileName, nil))
       else
         table.insert(subprofilesMenu, popupModule:Clickable(_t("profile_" .. eachProfileName),
-                buffomatModule.ChooseProfile, eachProfileName, nil))
+          buffomatModule.ChooseProfile, eachProfileName, nil))
       end
     end
 
@@ -144,9 +144,9 @@ function optionsPopupModule:Setup(control, minimap)
     for i, buffDef in ipairs(allBuffsModule.selectedBuffs) do
       if not buffDef.isConsumable then
         table.insert(menuItems, popupModule:Boolean(
-                buffDef:SingleLink(),
-                buffDefModule:GetProfileBuff(buffDef.buffId, nil),
-                "Enable"))
+          buffDef:SingleLink(),
+          buffDefModule:GetProfileBuff(buffDef.buffId, nil),
+          "Enable"))
       end
     end
   end
@@ -161,7 +161,7 @@ function optionsPopupModule:Setup(control, minimap)
   --self:PopupQuickOptions()
 
   table.insert(menuItems, popupModule:Clickable(_t("optionsMenu.Settings"),
-          optionsPopupModule.OpenOptions, 1, nil))
+    optionsPopupModule.OpenOptions, 1, nil))
 
   dyn:SetMenuItems(menuItems)
   dyn:Show(control or "cursor", 0, 0)

@@ -1,6 +1,6 @@
-local BOM = BuffomatAddon ---@type BomAddon
+local BOM = BuffomatAddon
 
----@shape BomActionUseModule
+---@class BomActionUseModule
 local actionUseModule = BomModuleManager.actionUseModule
 
 local taskModule = BomModuleManager.taskModule
@@ -57,7 +57,7 @@ function actionUseClass:GetButtonText(task)
     return _t("task.UseOrOpen") .. " " .. (self.extraText or "")
   end
 
-  local bdef = (--[[---@not nil]] self.buffDef)
+  local bdef = ( --[[---@not nil]] self.buffDef)
   if bdef.isConsumable then
     return _t("task.type.Consume") .. " " .. bdef:SingleLink(self.bestItemIdAvailable)
   end

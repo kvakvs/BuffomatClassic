@@ -1,7 +1,7 @@
 --local TOCNAME, _ = ...
-local BOM = BuffomatAddon ---@type BomAddon
+local BOM = BuffomatAddon
 
----@shape BomOptionsModule
+---@class BomOptionsModule
 local optionsModule = BomModuleManager.optionsModule ---@type BomOptionsModule
 
 local _t = BomModuleManager.languagesModule
@@ -54,7 +54,8 @@ end
 ---@param key string|nil
 ---@param notify function|nil Call this with (key, value) on option change
 function optionsModule:TemplateRange(name, rangeFrom, rangeTo, step, dict, key, notify)
-  return kvOptionsModule:TemplateRange(name, rangeFrom, rangeTo, step, dict or buffomatModule.shared, key or name, notify, _t)
+  return kvOptionsModule:TemplateRange(name, rangeFrom, rangeTo, step, dict or buffomatModule.shared, key or name, notify,
+    _t)
 end
 
 function optionsModule:CreateGeneralOptionsTable()
@@ -70,38 +71,38 @@ function optionsModule:CreateGeneralOptionsTable()
     args = {
       autoOpen = self:TemplateCheckbox("AutoOpen", nil, nil, nil),
       fadeWhenNothingToDo = self:TemplateRange(
-              "FadeWhenNothingToDo", 0.25, 1.0, 0.05,
-              buffomatModule.shared, "FadeWhenNothingToDo",
-              function(_key, val)
-                BomC_MainWindow:SetAlpha(val)
-              end
+        "FadeWhenNothingToDo", 0.25, 1.0, 0.05,
+        buffomatModule.shared, "FadeWhenNothingToDo",
+        function(_key, val)
+          BomC_MainWindow:SetAlpha(val)
+        end
       ),
       useProfiles = self:TemplateCheckbox("UseProfiles", buffomatModule.character, nil, nil),
       slowerHardware = self:TemplateCheckbox("SlowerHardware", nil, nil, nil),
       minimapButtonShow = self:TemplateCheckbox(
-              "ShowMinimapButton", buffomatModule.shared.Minimap, "visible",
-              function(key, value)
-                if value then
-                  libIcon:Show("BuffomatIcon")
-                else
-                  libIcon:Hide("BuffomatIcon")
-                end
-              end),
+        "ShowMinimapButton", buffomatModule.shared.Minimap, "visible",
+        function(key, value)
+          if value then
+            libIcon:Show("BuffomatIcon")
+          else
+            libIcon:Hide("BuffomatIcon")
+          end
+        end),
       --minimapButtonLock = self:TemplateCheckbox(
       --        "LockMinimapButton", buffomatModule.shared.Minimap, "lock", nil),
       --minimapButtonLockDist = self:TemplateCheckbox(
       --        "LockMinimapButtonDistance", buffomatModule.shared.Minimap, "lockDistance", nil),
       --uiWindowScale         = self:TemplateInput("float", "UIWindowScale"),
       uiWindowScale = self:TemplateRange(
-              "UIWindowScale", 0.35, 2.0, 0.05,
-              buffomatModule.shared, "UIWindowScale",
-              function(_key, val)
-                buffomatModule:SetWindowScale(val)
-              end
+        "UIWindowScale", 0.35, 2.0, 0.05,
+        buffomatModule.shared, "UIWindowScale",
+        function(_key, val)
+          buffomatModule:SetWindowScale(val)
+        end
       ),
       -- Play from Interface/Addons/Buffomat/Sounds/...
       playSoundWhenTask = self:TemplateSelect("PlaySoundWhenTask", sounds, "dropdown",
-              nil, nil, nil, nil),
+        nil, nil, nil, nil),
       soundTest = self:TemplateButton("PlaySoundWhenTask.test", function()
         taskScanModule:PlayTaskSound()
       end),
@@ -160,6 +161,10 @@ function optionsModule:CreateConvenienceOptionsTable()
       openLootable = self:TemplateCheckbox("OpenLootable", nil, nil, nil),
       selfFirst = self:TemplateCheckbox("SelfFirst", nil, nil, nil),
       dontUseConsumables = self:TemplateCheckbox("DontUseConsumables", nil, nil, nil),
+      showCustomBuffSorting = self:TemplateCheckbox("CustomBuffSorting", nil, nil,
+        function()
+          eventsModule.Event_SpellsChanged()
+        end),
       someoneIsDrinking = self:TemplateSelect("SomeoneIsDrinking", {
         ["hide"] = _t("options.convenience.SomeoneIsDrinking.Hide"),
         ["low-prio"] = _t("options.convenience.SomeoneIsDrinking.LowPrio"),
@@ -192,17 +197,17 @@ function optionsModule:CreateVisibilityOptionsTable()
     name = "6. " .. _t("options.general.group.Visibility"),
     args = {
       categories = self:TemplateMultiselect(
-              "VisibleCategories",
-              allBuffsModule:GetBuffCategories(), -- all categories ordered
-              buffomatModule.character.BuffCategoriesHidden, -- settings table
-              nil,
-              function(state, key, value)
-                buffomatModule.character.BuffCategoriesHidden[--[[---@type string]] key] = not value -- invert
-                eventsModule.Event_SpellsChanged()
-              end,
-              function(state, key)
-                return buffomatModule.character.BuffCategoriesHidden[--[[---@type string]] key] ~= true -- invert
-              end
+        "VisibleCategories",
+        allBuffsModule:GetBuffCategories(),            -- all categories ordered
+        buffomatModule.character.BuffCategoriesHidden, -- settings table
+        nil,
+        function(state, key, value)
+          buffomatModule.character.BuffCategoriesHidden[ --[[---@type string]] key ] = not value -- invert
+          eventsModule.Event_SpellsChanged()
+        end,
+        function(state, key)
+          return buffomatModule.character.BuffCategoriesHidden[ --[[---@type string]] key ] ~= true -- invert
+        end
       ),
     } -- end args
   }
@@ -232,7 +237,7 @@ function optionsModule:CreateOptionsTable()
       visibilityOptions = self:CreateVisibilityOptionsTable(),
       classOptions = self:CreateClassOptionsTable(),
     } -- end args
-  } -- end
+  }   -- end
 end
 
 ---Called from options' Default button

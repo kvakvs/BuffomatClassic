@@ -1,7 +1,7 @@
 --local TOCNAME, _ = ...
-local BOM = BuffomatAddon ---@type BomAddon
+local BOM = BuffomatAddon
 
----@shape BomEventsModule
+---@class BomEventsModule
 local eventsModule = BomModuleManager.eventsModule
 
 local taskListModule = BomModuleManager.taskListModule
@@ -42,7 +42,7 @@ end
 eventsModule.EVT_BAG_CHANGED = bagChangedEvents()
 
 eventsModule.EVT_PARTY_CHANGED = { "GROUP_JOINED", "GROUP_ROSTER_UPDATE",
-                                   "RAID_ROSTER_UPDATE", "GROUP_LEFT" }
+  "RAID_ROSTER_UPDATE", "GROUP_LEFT" }
 
 eventsModule.EVT_SPELLBOOK_CHANGED = { "SPELLS_CHANGED", "LEARNED_SPELL_IN_TAB" }
 
@@ -146,7 +146,6 @@ local function Event_PLAYER_TARGET_CHANGED()
     if UnitInParty("target") or UnitInRaid("target") or UnitIsUnit("target", "player") then
       BOM.lastTarget = UnitFullName("target")
       spellButtonsTabModule:UpdateSpellsTab("PL_TAR_CHANGED1")
-
     elseif BOM.lastTarget then
       BOM.lastTarget = nil
       spellButtonsTabModule:UpdateSpellsTab("PL_TAR_CHANGED2")
@@ -161,10 +160,10 @@ local function Event_PLAYER_TARGET_CHANGED()
 
   local newName
   if UnitExists("target")
-          and UnitCanCooperate("player", "target")
-          and UnitIsPlayer("target")
-          and not UnitPlayerOrPetInParty("target")
-          and not UnitPlayerOrPetInRaid("target")
+      and UnitCanCooperate("player", "target")
+      and UnitIsPlayer("target")
+      and not UnitPlayerOrPetInParty("target")
+      and not UnitPlayerOrPetInRaid("target")
   then
     newName = UnitName("target")
   end
@@ -177,8 +176,8 @@ local function Event_PLAYER_TARGET_CHANGED()
 end
 
 local partyCheckMask = COMBATLOG_OBJECT_AFFILIATION_RAID
-        + COMBATLOG_OBJECT_AFFILIATION_PARTY
-        + COMBATLOG_OBJECT_AFFILIATION_MINE
+    + COMBATLOG_OBJECT_AFFILIATION_PARTY
+    + COMBATLOG_OBJECT_AFFILIATION_MINE
 --  partyModule.buffs cleanup in scan bom_get_party_members
 
 local function Event_COMBAT_LOG_EVENT_UNFILTERED()
@@ -194,20 +193,16 @@ local function Event_COMBAT_LOG_EVENT_UNFILTERED()
       --additional check in bom_get_party_members
       --print("dead",destName)
       buffomatModule:RequestTaskRescan("unitDied")
-
     elseif allBuffsModule.selectedBuffsSpellIds
-            and allBuffsModule.selectedBuffsSpellIds[spellId] ~= nil then
+        and allBuffsModule.selectedBuffsSpellIds[spellId] ~= nil then
       -- a known buff
       --if bit.band(sourceFlags, COMBATLOG_OBJECT_AFFILIATION_MINE) > 0 then
       if event == "SPELL_CAST_SUCCESS" then
         -- nothing
-
       elseif event == "SPELL_AURA_REFRESH" then
         partyModule:OnBuffsChangedEvent(unitName, spellId, "refreshed")
-
       elseif event == "SPELL_AURA_APPLIED" then
         partyModule:OnBuffsChangedEvent(unitName, spellId, "applied")
-
       elseif event == "SPELL_AURA_REMOVED" then
         partyModule:OnBuffsChangedEvent(unitName, spellId, "removed")
       end
@@ -227,7 +222,6 @@ local function Event_UI_ERROR_MESSAGE(errorType, message)
       UIErrorsFrame:Clear()
       DoEmote("STAND")
     end
-
   elseif tContains(eventsModule.ERR_IS_MOUNTED, message) then
     local flying = false -- prevent dismount in flight, OUCH!
     if envModule.haveTBC then
@@ -239,12 +233,10 @@ local function Event_UI_ERROR_MESSAGE(errorType, message)
         Dismount()
       end
     end
-
   elseif buffomatModule.shared.AutoDisTravel
-          and tContains(eventsModule.ERR_IS_SHAPESHIFT, message)
-          and BOM.CancelShapeShift() then
+      and tContains(eventsModule.ERR_IS_SHAPESHIFT, message)
+      and BOM.CancelShapeShift() then
     UIErrorsFrame:Clear()
-
   elseif not InCombatLockdown() then
     if BOM.checkForError then
       if message == SPELL_FAILED_LOWLEVEL then

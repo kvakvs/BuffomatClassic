@@ -1,7 +1,7 @@
 local TOCNAME, _ = ...
-local BOM = BuffomatAddon ---@type BomAddon
+local BOM = BuffomatAddon
 
----@shape BomRowBuilderModule
+---@class BomRowBuilderModule
 local rowBuilderModule = BomModuleManager.rowBuilderModule ---@type BomRowBuilderModule
 
 ---@class BomRowBuilder

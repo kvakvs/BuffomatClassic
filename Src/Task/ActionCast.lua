@@ -1,6 +1,6 @@
-local BOM = BuffomatAddon ---@type BomAddon
+local BOM = BuffomatAddon
 
----@shape BomActionCastModule
+---@class BomActionCastModule
 local actionCastModule = BomModuleManager.actionCastModule
 
 local buffomatModule = BomModuleManager.buffomatModule
@@ -50,8 +50,8 @@ function actionCastClass:CanCast()
   BOM.castFailedBuffTarget = self.target
 
   if self.buffDef
-          and (--[[---@not nil]] self.buffDef).type ~= "resurrection"
-          and self.target.isDead then
+      and ( --[[---@not nil]] self.buffDef).type ~= "resurrection"
+      and self.target.isDead then
     -- Cannot cast buffs on deads, only resurrections
     return taskModule.CAN_CAST_IS_DEAD
   end
@@ -81,7 +81,7 @@ end
 ---@param m BomMacro
 function actionCastClass:UpdateMacro(m)
   --Downgrade-Check
-  local buffDef = allBuffsModule.buffFromSpellIdLookup[--[[---@not nil]] self.spellId]
+  local buffDef = allBuffsModule.buffFromSpellIdLookup[ --[[---@not nil]] self.spellId ]
   local rank = ""
 
   if buffDef == nil then
@@ -90,18 +90,18 @@ function actionCastClass:UpdateMacro(m)
   end
 
   if buffomatModule.shared.UseRank
-          or (self.target and (--[[---@not nil]] self.target).unitId == "target")
+      or (self.target and ( --[[---@not nil]] self.target).unitId == "target")
   then
-    local level = UnitLevel((--[[---@not nil]] self.target).unitId)
+    local level = UnitLevel(( --[[---@not nil]] self.target).unitId)
 
     if buffDef and level ~= nil and level > 0 then
       local spellChoices
 
       if buffDef.singleFamily
-              and tContains(buffDef.singleFamily, self.spellId) then
+          and tContains(buffDef.singleFamily, self.spellId) then
         spellChoices = buffDef.singleFamily
       elseif buffDef.groupFamily
-              and tContains(--[[---@not nil]] buffDef.groupFamily, self.spellId) then
+          and tContains( --[[---@not nil]] buffDef.groupFamily, self.spellId) then
         spellChoices = buffDef.groupFamily
       end
 
@@ -110,7 +110,7 @@ function actionCastClass:UpdateMacro(m)
 
         for i, id in ipairs(spellChoices) do
           if buffomatModule.shared.SpellGreaterEqualThan[id] == nil
-                  or buffomatModule.shared.SpellGreaterEqualThan[id] < level then
+              or buffomatModule.shared.SpellGreaterEqualThan[id] < level then
             newSpellId = id
           else
             break
@@ -126,7 +126,7 @@ function actionCastClass:UpdateMacro(m)
 
   if self.temporaryDownrank then
     self.spellId = self.buffDef:GetDownRank(self.spellId)
-    rank = GetSpellSubtext(--[[---@not nil]] self.spellId) or ""
+    rank = GetSpellSubtext( --[[---@not nil]] self.spellId) or ""
 
     if rank ~= "" then
       rank = "(" .. rank .. ")"
@@ -135,7 +135,7 @@ function actionCastClass:UpdateMacro(m)
   end
 
   BOM.castFailedSpellId = self.spellId
-  local name = GetSpellInfo(--[[---@not nil]] self.spellId)
+  local name = GetSpellInfo( --[[---@not nil]] self.spellId)
   if name == nil then
     BOM:Debug("Update macro: Bad spellid=" .. tostring(self.spellId))
     return
@@ -147,6 +147,6 @@ function actionCastClass:UpdateMacro(m)
   table.insert(m.lines, "/bom _checkforerror")
 
   table.insert(m.lines, "/cast [@"
-          .. (--[[---@not nil]] self.target).unitId
-          .. ",nocombat]" .. name .. rank)
+    .. ( --[[---@not nil]] self.target).unitId
+    .. ",nocombat]" .. name .. rank)
 end
