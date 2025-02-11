@@ -113,20 +113,26 @@ end
 
 ---@return BomGPIControl Created or pre-existing text input
 ---@param tooltip string
-function buffRowClass:CreateSortingInput(tooltip)
-  if self.sortingInput == nil then
-    self.sortingInput = managedUiModule:CreateManagedInput(BomC_SpellTab_Scroll_Child, self.uniqueId .. ".sortingInput");
-    self.sortingInput:SetAutoFocus(false);
-    self.sortingInput:SetSize(20, 22);
-    self.sortingInput:SetScript("OnEnterPressed",
-      function(self)
-        local text = self:GetText()
-        self.gpiDict[self.gpiVariableName] = text
-        self:ClearFocus()
-      end)
-    -- self.checkboxEnable:SetOnClick(BOM.MyButtonOnClick)
-    toolboxModule:Tooltip(self.sortingInput, tooltip)
+---@param buffDef BomBuffDefinition
+function buffRowClass:CreateSortingInput(tooltip, buffDef)
+  local field = self.sortingInput
+
+  if field == nil then
+    field = managedUiModule:CreateManagedInput(BomC_SpellTab_Scroll_Child, self.uniqueId .. ".sortingInput");
+    field:SetAutoFocus(false);
+    field:SetSize(20, 22);
+    toolboxModule:Tooltip(field, tooltip)
+
+    self.sortingInput = field
   end
+  field:SetText(profileBuff.customSort or '5')
+  field:SetScript("OnEnterPressed",
+    function(control)
+      buffDef.customSort = field:GetText()
+      BOM:Print("edited customsort=" .. buffDef.customSort .. " for " .. (buffDef.singleLink or buffDef.buffId))
+      control:ClearFocus()
+    end
+  )
 
   self.sortingInput:Show()
   return self.sortingInput

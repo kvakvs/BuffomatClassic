@@ -137,6 +137,7 @@ function taskListModule.OrderTasksByCustomOrderThenPriority(a, b)
   end
   local aCustomSort = a.customSort or '5'
   local bCustomSort = b.customSort or '5'
+  BOM:Print("a=" .. aCustomSort .. " b=" .. bCustomSort)
   if aCustomSort == bCustomSort then
     return a.priority < b.priority
   end
@@ -146,6 +147,13 @@ end
 function taskListClass:Sort()
   --table.sort(self.tasks, taskListModule.OrderTasksByDistance)
   if buffomatModule.shared.CustomBuffSorting then
+    for _, task in pairs(self.tasks) do
+      if task.linkedBuffDef then
+        task.customSort = task.linkedBuffDef.customSort or '5'
+      else
+        task.customSort = nil
+      end
+    end
     table.sort(self.tasks, taskListModule.OrderTasksByCustomOrderThenPriority)
   else
     table.sort(self.tasks, taskListModule.OrderTasksByPriority)
@@ -188,6 +196,7 @@ function taskListClass:Display()
 
   for _i, task in pairs(self.tasks) do
     if task.distance <= 43 * 43 then
+      BOM:Print("add task=" .. task.actionLink .. " csort=" .. (task.customSort or '?'))
       taskFrame:AddMessage(task:Format())
     end
   end

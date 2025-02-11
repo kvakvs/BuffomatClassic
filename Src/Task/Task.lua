@@ -16,6 +16,7 @@ local constModule = BomModuleManager.constModule
 
 -- TODO: Range check and power check and spellId can be stored here and postponed till we're ready to cast
 ---@class BomTask
+---@field linkedBuffDef BomBuffDefinition|nil If this task is linked to a buff definition, this is it
 ---@field customSort string Copy of sort value from the BuffDefinition
 ---@field target BomUnitBuffTarget|BomGroupBuffTarget|nil Unit name
 ---@field distance number Distance to the target or nearest unit in the group target
@@ -123,10 +124,11 @@ function taskClass:PrefixText(t)
 end
 
 ---Set custom sorting value, copied from BuffDefinition
----@param customSort string
+---@param buffDef BomBuffDefinition
 ---@return BomTask
-function taskClass:CustomSort(customSort)
-  self.customSort = customSort
+function taskClass:LinkToBuffDef(buffDef)
+  self.linkedBuffDef = buffDef
+  self.customSort = buffDef.customSort
   return self
 end
 

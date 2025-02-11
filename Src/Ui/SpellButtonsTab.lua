@@ -50,7 +50,7 @@ function spellButtonsTabModule:AddSpellRow_ClassSelector(rowBuilder, playerIsHor
       " - " .. _t("TooltipSelfCastCheckbox_Self") .. "|n"
       .. BOM.FormatTexture(texturesModule.ICON_SELF_CAST_OFF) .. " - " .. _t("TooltipSelfCastCheckbox_Party")
   local selfcastToggle = spell.frames:CreateSelfCastToggle(tooltip1)
-  rowBuilder:ChainToTheRight(nil, selfcastToggle, 5)
+  rowBuilder:AppendRight(nil, selfcastToggle, 5)
   selfcastToggle:SetVariable(profileSpell, "SelfCast", nil)
 
   --------------------------------------
@@ -66,7 +66,7 @@ function spellButtonsTabModule:AddSpellRow_ClassSelector(rowBuilder, playerIsHor
 
     local classToggle = spell.frames:CreateClassToggle(class, tooltip2, bomDoBlessingOnClick)
     classToggle:SetVariable(profileSpell.Class, class, nil)
-    rowBuilder:ChainToTheRight(nil, classToggle, 0)
+    rowBuilder:AppendRight(nil, classToggle, 0)
 
     if not envModule.haveTBC and ( -- if not TBC hide paladin for horde, hide shaman for alliance
           (playerIsHorde and class == "PALADIN") or (not playerIsHorde and class == "SHAMAN")) then
@@ -80,22 +80,22 @@ function spellButtonsTabModule:AddSpellRow_ClassSelector(rowBuilder, playerIsHor
   local tooltip3 = BOM.FormatTexture(texturesModule.ICON_TANK) .. " - " .. _t("TooltipCastOnTank")
   local tankToggle = spell.frames:CreateTankToggle(tooltip3, bomDoBlessingOnClick)
   tankToggle:SetVariable(profileSpell.Class, "tank", nil)
-  rowBuilder:ChainToTheRight(nil, tankToggle, 0)
+  rowBuilder:AppendRight(nil, tankToggle, 0)
   rowBuilder.prevControl = tankToggle
 
   --========================================
   local tooltip4 = BOM.FormatTexture(texturesModule.ICON_PET) .. " - " .. _t("TooltipCastOnPet")
   local petToggle = spell.frames:CreatePetToggle(tooltip4, bomDoBlessingOnClick)
   petToggle:SetVariable(profileSpell.Class, "pet", nil)
-  rowBuilder:ChainToTheRight(nil, petToggle, 5)
+  rowBuilder:AppendRight(nil, petToggle, 5)
 
   -- Force Cast Button -(+)-
   local forceToggle = spell.frames:CreateForceCastToggle(_t("TooltipForceCastOnTarget"), spell)
-  rowBuilder:ChainToTheRight(nil, forceToggle, 0)
+  rowBuilder:AppendRight(nil, forceToggle, 0)
 
   -- Exclude/Ignore Buff Target Button (X)
   local excludeToggle = spell.frames:CreateExcludeToggle(_t("TooltipExcludeTarget"), spell)
-  rowBuilder:ChainToTheRight(nil, excludeToggle, 2)
+  rowBuilder:AppendRight(nil, excludeToggle, 2)
 end
 
 ---Add a row with spell cancel buttons
@@ -103,11 +103,11 @@ end
 ---@param rowBuilder BomRowBuilder The structure used for building button rows
 function spellButtonsTabModule:AddSpellCancelRow(buffDef, rowBuilder)
   local infoIcon = buffDef.frames:CreateInfoIcon(buffDef)
-  rowBuilder:PositionAtNewRow(infoIcon, 0, 7)
+  rowBuilder:NewRow(infoIcon, 0, 7)
   infoIcon:Show()
 
   local enableCheckbox = buffDef.frames:CreateEnableCheckbox(_t("TooltipEnableBuffCancel"))
-  rowBuilder:ChainToTheRight(infoIcon, enableCheckbox, 7)
+  rowBuilder:AppendRight(infoIcon, enableCheckbox, 7)
   enableCheckbox:SetVariable(buffomatModule.currentProfile.CancelBuff[buffDef.buffId], "Enable", nil)
   enableCheckbox:Show()
 
@@ -120,7 +120,7 @@ function spellButtonsTabModule:AddSpellCancelRow(buffDef, rowBuilder)
     end
 
     rowBuilder.dy = 3
-    rowBuilder:ChainToTheRight(nil, ctrl, nil)
+    rowBuilder:AppendRight(nil, ctrl, nil)
   end
   buffDef.frames.cancelBuffLabel = toolboxModule:CreateSmalltextLabel(
     buffDef.frames.cancelBuffLabel,
@@ -145,7 +145,7 @@ function spellButtonsTabModule:AddGroupScanSelector(rowBuilder)
   end
 
   toolboxModule:Tooltip(self.spellSettingsFrames.Settings, _t("TooltipRaidGroupsSettings"))
-  rowBuilder:PositionAtNewRow(self.spellSettingsFrames.Settings, 0, 7)
+  rowBuilder:NewRow(self.spellSettingsFrames.Settings, 0, 7)
   rowBuilder.dx = 7
 
   ------------------------------
@@ -160,7 +160,7 @@ function spellButtonsTabModule:AddGroupScanSelector(rowBuilder)
         nil, nil, nil, nil, "groupScanSelector." .. tostring(i))
     end
 
-    rowBuilder:ChainToTheRight(nil, self.spellSettingsFrames[i], 2)
+    rowBuilder:AppendRight(nil, self.spellSettingsFrames[i], 2)
     self.spellSettingsFrames[i]:SetVariable(buffomatModule.character.WatchGroup, i)
     self.spellSettingsFrames[i]:SetText(i)
     toolboxModule:TooltipText(self.spellSettingsFrames[i], string.format(_t("TooltipGroup"), i))
@@ -195,19 +195,17 @@ function spellButtonsTabModule:AddSpellRow(rowBuilder, playerIsHorde, buff)
 
   -- Create buff icon with tooltip
   local infoIcon = buff.frames:CreateInfoIcon(buff)
-  rowBuilder:PositionAtNewRow(infoIcon, 0, 7)
+  rowBuilder:NewRow(infoIcon, 0, 7)
 
   -- Add a checkbox [x]
   local enableCheckbox = buff.frames:CreateEnableCheckbox(_t("TooltipEnableSpell"))
   enableCheckbox:SetVariable( --[[---@not nil]] profileBuff, "Enable", nil)
-  rowBuilder:ChainToTheRight(nil, enableCheckbox, 7)
+  rowBuilder:AppendRight(nil, enableCheckbox, 7)
 
-  -- Add a sorting text field (if enabled)
-  if buffomatModule.shared.CustomBuffSorting then
-    local sortingTextField = buff.frames:CreateSortingInput(_t("TooltipCustomSorting"), enableCheckbox)
-    sortingTextField:SetVariable( --[[---@not nil]] profileBuff, "CustomSort", nil)
-    sortingTextField:SetText(profileBuff.CustomSort or '5')
-    rowBuilder:ChainToTheRight(nil, sortingTextField, 7)
+  -- Add a sorting text field (if 'CustomBuffSorting' is enabled)
+  if buffomatModule.shared.CustomBuffSorting and profileBuff then
+    local sortingTextField = buff.frames:CreateSortingInput(_t("TooltipCustomSorting"), profileBuff)
+    rowBuilder:AppendRight(nil, sortingTextField, 7)
   end
 
   if buff:HasClasses() then
@@ -223,7 +221,7 @@ function spellButtonsTabModule:AddSpellRow(rowBuilder, playerIsHorde, buff)
       and buff.requiresForm == nil then
     local statusImage = buff.frames:CreateStatusCheckboxImage(buff)
     statusImage:SetPoint("TOPLEFT", infoIcon, "TOPRIGHT", rowBuilder.dx, 0)
-    rowBuilder:SpaceToTheRight(statusImage, 7)
+    rowBuilder:ContinueRightOf(statusImage, 7)
   end
   --<<------------------------------
 
@@ -232,7 +230,7 @@ function spellButtonsTabModule:AddSpellRow(rowBuilder, playerIsHorde, buff)
     local whisperToggle = buff.frames:CreateWhisperToggle(_t("TooltipWhisperWhenExpired"))
     whisperToggle:SetPoint("TOPLEFT", rowBuilder.prevControl, "TOPRIGHT", rowBuilder.dx, 0)
     whisperToggle:SetVariable( --[[---@not nil]] profileBuff, "Whisper", nil)
-    rowBuilder:SpaceToTheRight(whisperToggle, 2)
+    rowBuilder:ContinueRightOf(whisperToggle, 2)
   end
 
   ----------------------------------
@@ -241,12 +239,12 @@ function spellButtonsTabModule:AddSpellRow(rowBuilder, playerIsHorde, buff)
     local mainhandToggle = buff.frames:CreateMainhandToggle(_t("tooltip.mainhand"))
     mainhandToggle:SetPoint("TOPLEFT", rowBuilder.prevControl, "TOPRIGHT", rowBuilder.dx, 0)
     mainhandToggle:SetVariable( --[[---@not nil]] profileBuff, "MainHandEnable", nil)
-    rowBuilder:SpaceToTheRight(mainhandToggle, 2)
+    rowBuilder:ContinueRightOf(mainhandToggle, 2)
 
     local offhandToggle = buff.frames:CreateOffhandToggle(_t("tooltip.offhand"))
     offhandToggle:SetPoint("TOPLEFT", rowBuilder.prevControl, "TOPRIGHT", rowBuilder.dx, 0)
     offhandToggle:SetVariable( --[[---@not nil]] profileBuff, "OffHandEnable", nil)
-    rowBuilder:SpaceToTheRight(offhandToggle, 2)
+    rowBuilder:ContinueRightOf(offhandToggle, 2)
   end
 
   -- Calculate label to the right of the spell config buttons,
@@ -255,7 +253,7 @@ function spellButtonsTabModule:AddSpellRow(rowBuilder, playerIsHorde, buff)
   local buffLabel = buff.frames:CreateBuffLabel("-")
   -- buffLabel:SetPoint("TOPLEFT", rowBuilder.prevControl, "TOPRIGHT", 7, -1)
   managedUiModule:ManageControl(tostring(buff.buffId) .. ".buffLabel", buffLabel)
-  rowBuilder:ChainToTheRight(nil, buffLabel, 2)
+  rowBuilder:AppendRight(nil, buffLabel, 2)
 
   -- Having 'consumeGroupTitle' set will override buff single text from the iteminfo
   if buff.consumeGroupTitle then
@@ -277,7 +275,7 @@ function spellButtonsTabModule:AddSpellRow(rowBuilder, playerIsHorde, buff)
     ) -- update when spell loaded
   end
 
-  rowBuilder:SpaceToTheRight(buffLabel, 7)
+  rowBuilder:ContinueRightOf(buffLabel, 7)
   rowBuilder.prevControl = infoIcon
 end
 
@@ -429,7 +427,7 @@ function spellButtonsTabModule:AddCategoryRow(catId, rowBuilder)
   managedUiModule:ManageControl(catId .. "categoryTitleLabel", label)
   self.categoryLabels[catId] = label
 
-  rowBuilder:PositionAtNewRow(label, 6, nil)
+  rowBuilder:NewRow(label, 6, nil)
   --rowBuilder:ChainToTheRight(buffCatCheckbox, label)
   rowBuilder.dy = 4 -- step down a little
 end

@@ -68,7 +68,7 @@ end
 ---@field default boolean Whether the spell auto-cast is enabled by default
 ---@field elixirType string|nil Use this for elixir mutual exclusions on elixirs
 ---@field Enable boolean [⚠DO NOT RENAME]  Whether buff is to be watched
----@field CustomSort boolean [⚠DO NOT RENAME]  Custom sorting value (default 5)
+---@field customSort string [⚠DO NOT RENAME]  Custom sorting value (default 5)
 ---@field ExcludedTarget BomForcedTargets [⚠DO NOT RENAME] List of target names to never buff
 ---@field extraText string Added to the right of spell name in the spells config
 ---@field ForcedTarget BomForcedTargets [⚠DO NOT RENAME] List of extra targets to buff

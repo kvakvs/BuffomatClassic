@@ -641,7 +641,7 @@ function taskScanModule:AddBlessing(buffDef, party, buffCtx)
             :Action(actionCastModule:New(
               buffDef.groupMana, buffDef.highestRankGroupId, buffDef.groupLink,
               classInRange, buffDef, false))
-            :CustomSort(buffDef.CustomSort)
+            :LinkToBuffDef(buffDef)
           )
         else
           -- Group buff (Blessing) just info text
@@ -651,7 +651,7 @@ function taskScanModule:AddBlessing(buffDef, party, buffCtx)
             :PrefixText(_t("TASK_BLESS_GROUP"))
             :Target(groupBuffTargetModule:New(eachClassName))
             :IsInfo()
-            :CustomSort(buffDef.CustomSort)
+            :LinkToBuffDef(buffDef)
           )
         end
       end -- if needgroup >= minblessing
@@ -699,7 +699,7 @@ function taskScanModule:AddBlessing(buffDef, party, buffCtx)
           :Action(actionCastModule:New(
             buffDef.singleMana, buffDef.highestRankSingleId, buffDef:SingleLink(),
             needsBuff, buffDef, false))
-          :CustomSort(buffDef.CustomSort)
+          :LinkToBuffDef(buffDef)
         )
       else
         -- Single buff on group member (inactive just text)
@@ -709,7 +709,7 @@ function taskScanModule:AddBlessing(buffDef, party, buffCtx)
           :PrefixText(_t("TASK_BLESS"))
           :Target(buffTargetModule:FromUnit(needsBuff))
           :IsInfo()
-          :CustomSort(buffDef.CustomSort)
+          :LinkToBuffDef(buffDef)
         )
       end -- if in range
     end   -- if not dead
@@ -746,7 +746,7 @@ function taskScanModule:FindTargetForGroupBuff(groupIndex, buffDef, party, minBu
         :Action(actionCastModule:New(
           buffDef.groupMana, buffDef.highestRankGroupId, buffDef.groupLink,
           groupInRange or party.player, buffDef, false))
-        :CustomSort(buffDef.CustomSort)
+        :LinkToBuffDef(buffDef)
       )
     end -- if group not nil
   end
@@ -770,7 +770,7 @@ function taskScanModule:AddBuff_GroupBuff(buffDef, party, minBuff, buffCtx)
       :Action(actionCastModule:New(
         buffDef.groupMana, buffDef.highestRankGroupId, buffDef.groupLink,
         party.player, buffDef, false))
-      :CustomSort(buffDef.CustomSort)
+      :LinkToBuffDef(buffDef)
     )
   else
     -- For non-WotLK: Scan 5man groups in current party
@@ -823,7 +823,7 @@ function taskScanModule:AddBuff_SingleBuff(buffDef, minBuff, buffCtx)
           :Action(actionCastModule:New(
             buffDef.singleMana, buffDef.highestRankSingleId, buffDef:SingleLink(),
             needBuff, buffDef, false))
-          :CustomSort(buffDef.CustomSort)
+          :LinkToBuffDef(buffDef)
         )
       else
         -- Text: Target "SpellName"
@@ -833,7 +833,7 @@ function taskScanModule:AddBuff_SingleBuff(buffDef, minBuff, buffCtx)
             .. " " .. _t("task.type.RegularBuff"))
           :Target(buffTargetModule:FromUnit(needBuff))
           :IsInfo()
-          :CustomSort(buffDef.CustomSort)
+          :LinkToBuffDef(buffDef)
         )
       end
     end
@@ -915,7 +915,7 @@ function taskScanModule:AddResurrection(spell, playerUnit, buffCtx)
           :PrefixText(_t("task.type.Resurrect"))
           :Target(buffTargetModule:FromUnit(unitNeedsBuff))
           :Prio(prio)
-          :CustomSort(buffDef.CustomSort)
+          :LinkToBuffDef(buffDef)
       if targetIsInRange then
         -- Text: Target [Spell Name]
         tasklist:Add(task:InRange(true))
@@ -950,7 +950,7 @@ function taskScanModule:AddSelfbuff(buffDef, playerMember)
       :PrefixText(_t("TASK_CAST"))
       :ExtraText(_t("task.target.SelfOnly"))
       :Target(buffTargetModule:FromSelf(playerMember))
-      :CustomSort(buffDef.CustomSort)
+      :LinkToBuffDef(buffDef)
 
   if (not buffDef.requiresOutdoors or IsOutdoors())
       and not tContains(buffDef.skipList, playerMember.name) then
@@ -1000,7 +1000,7 @@ function taskScanModule:AddSummonSpell(buffDef, playerMember)
         :Action(actionCastModule:New(
           buffDef.singleMana, buffDef.highestRankSingleId, buffDef:SingleLink(),
           playerMember, buffDef, false))
-        :CustomSort(buffDef.CustomSort)
+        :LinkToBuffDef(buffDef)
     tasklist:Add(task)
   end
 end
@@ -1017,7 +1017,7 @@ function taskScanModule:AddConsumableSelfbuff_NoItem(buffDef, count, playerUnit)
       :Target(buffTargetModule:FromSelf(playerUnit))
       :Prio(taskModule.PRIO_CONSUMABLE)
       :IsInfo()
-      :CustomSort(buffDef.CustomSort)
+      :LinkToBuffDef(buffDef)
   tasklist:Add(task)
 end
 
@@ -1037,7 +1037,7 @@ function taskScanModule:AddConsumableSelfbuff_HaveItemReady(buffDef, bestItemIdA
 
   local task = taskModule:Create(self:FormatItemBuffText(bag, slot, count or 0), nil)
       :PrefixText(taskText)
-      :CustomSort(buffDef.CustomSort)
+      :LinkToBuffDef(buffDef)
   --:Target(buffTargetModule:FromSelf(playerUnit))
 
   if buffomatModule.shared.DontUseConsumables
@@ -1102,7 +1102,7 @@ function taskScanModule:AddConsumableWeaponBuff_HaveItem_Mainhand(buffDef, bag, 
       :ExtraText("(" .. _t("tooltip.mainhand") .. ") " .. _t("task.hint.HoldShiftConsumable"))
       :Target(buffTargetModule:FromSelf(playerUnit))
       :IsInfo()
-      :CustomSort(buffDef.CustomSort)
+      :LinkToBuffDef(buffDef)
     )
   else
     -- Text: [Icon] [Consumable Name] x Count (Main hand)
@@ -1114,7 +1114,7 @@ function taskScanModule:AddConsumableWeaponBuff_HaveItem_Mainhand(buffDef, bag, 
       :Action(actionMacroModule:New(
         "/use " .. bag .. " " .. slot .. "\n/use 16",
         buffDef:SingleLink() .. " " .. _t("tooltip.mainhand"))) -- mainhand
-      :CustomSort(buffDef.CustomSort)
+      :LinkToBuffDef(buffDef)
     )
   end
 end
@@ -1136,7 +1136,7 @@ function taskScanModule:AddConsumableWeaponBuff_HaveItem_Offhand(buffDef, bag, s
         :ExtraText("(" .. _t("tooltip.offhand") .. ") " .. _t("task.hint.HoldShiftConsumable"))
         :Target(buffTargetModule:FromSelf(playerUnit))
         :IsInfo()
-        :CustomSort(buffDef.CustomSort)
+        :LinkToBuffDef(buffDef)
     tasklist:Add(task)
   else
     -- Text: [Icon] [Consumable Name] x Count (Off-hand)
@@ -1147,7 +1147,7 @@ function taskScanModule:AddConsumableWeaponBuff_HaveItem_Offhand(buffDef, bag, s
         :Action(actionMacroModule:New(
           "/use " .. bag .. " " .. slot .. "\n/use 17",
           buffDef:SingleLink() .. " " .. _t("tooltip.offhand"))) -- offhand
-        :CustomSort(buffDef.CustomSort)
+        :LinkToBuffDef(buffDef)
     tasklist:Add(task)
   end
 end
@@ -1220,7 +1220,7 @@ function taskScanModule:AddConsumableWeaponBuff_DontHaveItem(buffDef, count, pla
         :ExtraText(_t("task.type.MissingConsumable"))
         :Target(buffTargetModule:FromSelf(playerUnit))
         :IsInfo()
-        :CustomSort(buffDef.CustomSort)
+        :LinkToBuffDef(buffDef)
     tasklist:Add(task)
   else
     buffomatModule:RequestTaskRescan("weaponConsumableBuff") -- try rescan?
@@ -1285,7 +1285,7 @@ function taskScanModule:AddWeaponEnchant(buffDef, playerUnit, buffCtx)
         :Action(actionCastModule:New(
           buffDef.singleMana, buffDef.highestRankSingleId, buffDef:SingleLink(),
           playerUnit, buffDef, false))
-        :CustomSort(buffDef.CustomSort)
+        :LinkToBuffDef(buffDef)
     tasklist:Add(task)
     --end
   end
@@ -1309,7 +1309,7 @@ function taskScanModule:AddWeaponEnchant(buffDef, playerUnit, buffCtx)
         :Action(actionCastModule:New(
           buffDef.singleMana, buffDef.highestRankSingleId, buffDef:SingleLink(),
           playerUnit, buffDef, isDownrank))
-        :CustomSort(buffDef.CustomSort)
+        :LinkToBuffDef(buffDef)
     tasklist:Add(task)
   end
 end
@@ -1414,7 +1414,6 @@ function taskScanModule:CheckItemsAndContainers(playerUnit, buffCtx)
           :ExtraText("(" .. _t("task.UseOrOpen") .. ") " .. extraMsg)
           :Prio(taskModule.PRIO_OPEN_CONTAINER)
           :Target(buffTargetModule:FromSelf(playerUnit))
-          :CustomSort('~') -- sort lastest
 
       if buffomatModule.shared.DontUseConsumables and not IsModifierKeyDown() then
         -- Can't use or cast
@@ -1471,7 +1470,7 @@ function taskScanModule:CreateOneBuffTask(buffDef, party, buffCtx)
         local task = taskModule:Create(buffDef:SingleLink(), buffDef.singleText)
             :Target(buffTargetModule:FromUnit(unitNeedsBuff))
             :IsInfo()
-            :CustomSort(buffDef.CustomSort)
+            :LinkToBuffDef(buffDef)
         tasklist:Add(task)
       end
     end
@@ -1486,7 +1485,7 @@ function taskScanModule:CreateOneBuffTask(buffDef, party, buffCtx)
             :PrefixText(_t("TASK_ACTIVATE"))
             :ExtraText(_t("task.type.Tracking"))
             :Target(buffTargetModule:FromSelf(party.player))
-            :CustomSort(buffDef.CustomSort)
+            :LinkToBuffDef(buffDef)
         tasklist:Add(task)
       end
     end
@@ -1549,7 +1548,6 @@ function taskScanModule:MountedCrusaderAuraPrompt()
         :Action(actionCastModule:New(
           spell.singleMana, spell.highestRankSingleId, spell:SingleLink(),
           --[[---@not nil]] playerUnit, spell, false))
-        :CustomSort("~") -- sort lastest
     tasklist:Add(task)
 
     return true -- only show the aura and nothing else
@@ -1613,7 +1611,6 @@ function taskScanModule:UpdateScan_Scan(party)
     local task = taskModule:Create("Crusader", nil)
         :Action(actionMacroModule:New("/cast Crusader Aura", "Crusader Aura"))
         :InRange(true)
-        :CustomSort("~") -- sort lastest
     tasklist:Add(task)
   else
     -- Otherwise scan all enabled spells

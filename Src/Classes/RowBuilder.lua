@@ -28,7 +28,7 @@ end
 ---@param control WowControl
 ---@param betweenLinesOffset number|nil If defined, will step down extra before new line except the first line
 ---@param afterOffset number|nil
-function rowBuilderClass:PositionAtNewRow(control, betweenLinesOffset, afterOffset)
+function rowBuilderClass:NewRow(control, betweenLinesOffset, afterOffset)
   if self.rowStartControl ~= nil then
     if betweenLinesOffset then
       self.dy = self.dy + betweenLinesOffset
@@ -48,7 +48,7 @@ end
 ---@param anchor WowControl|nil
 ---@param control WowControl
 ---@param spaceAfter number|nil
-function rowBuilderClass:ChainToTheRight(anchor, control, spaceAfter)
+function rowBuilderClass:AppendRight(anchor, control, spaceAfter)
   if anchor == nil then
     anchor = self.prevControl
   end
@@ -59,7 +59,7 @@ function rowBuilderClass:ChainToTheRight(anchor, control, spaceAfter)
   self.prevControl = control
 end
 
-function rowBuilderClass:SpaceToTheRight(control, dx)
+function rowBuilderClass:ContinueRightOf(control, dx)
   self.prevControl = control
   self.dx = dx
 end
