@@ -39,3 +39,19 @@ function actionMacroClass:UpdateMacro(m)
   m.icon = constModule.MACRO_ICON
   m:UpdateMacro()
 end
+
+--- Clears the Buffomat macro
+---@param command string|nil
+function actionMacroModule:WipeMacro(command)
+  local macro = BOM.theMacro
+
+  macro:EnsureExists()
+  wipe(macro.lines)
+
+  if command then
+    table.insert(macro.lines, --[[---@not nil]] command)
+  end
+
+  macro.icon = constModule.MACRO_ICON_DISABLED
+  macro:UpdateMacro()
+end

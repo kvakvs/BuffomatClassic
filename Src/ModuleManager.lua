@@ -1,7 +1,8 @@
 ---@class BomModuleManagerModule
+---@field ngToolboxModule NgToolboxModule
 ---@field actionCastModule BomActionCastModule
----@field actionUseModule BomActionUseModule
 ---@field actionMacroModule BomActionMacroModule
+---@field actionUseModule BomActionUseModule
 ---@field allBuffsModule BomAllBuffsModule
 ---@field allConsumesElixirsModule BomAllConsumesElixirsModule
 ---@field allConsumesEnchantmentsModule BomAllConsumesEnchantmentsModule
@@ -54,81 +55,83 @@
 ---@field spellIdsModule BomSpellIdsModule
 ---@field spellSetupModule BomSpellSetupModule
 ---@field taskListModule BomTaskListModule
+---@field taskListPanelModule TaskListPanelModule
 ---@field taskModule BomTaskModule
 ---@field taskScanModule BomTaskScanModule
 ---@field texturesModule BomTexturesModule
 ---@field toolboxModule BomToolboxModule
 ---@field uiButtonModule BomUiButtonModule
----@field uiMinimapButtonModule BomUiMinimapButtonModule
 ---@field unitBuffTargetModule BomUnitBuffTargetModule
 ---@field unitCacheModule BomUnitCacheModule
 ---@field unitModule BomUnitModule
-BomModuleManager = {}
 
-BomModuleManager.actionCastModule = --[[---@type BomActionCastModule]] {}
-BomModuleManager.actionUseModule = --[[---@type BomActionUseModule]] {}
-BomModuleManager.actionMacroModule = --[[---@type BomActionMacroModule]] {}
-BomModuleManager.allBuffsModule = --[[---@type BomAllBuffsModule]] {}
-BomModuleManager.allConsumesElixirsModule = --[[---@type BomAllConsumesElixirsModule]] {}
-BomModuleManager.allConsumesEnchantmentsModule = --[[---@type BomAllConsumesEnchantmentsModule]] {}
-BomModuleManager.allConsumesFlasksModule = --[[---@type BomAllConsumesFlasksModule]] {}
-BomModuleManager.allConsumesFoodModule = --[[---@type BomAllConsumesFoodModule]] {}
-BomModuleManager.allConsumesOtherModule = --[[---@type BomAllConsumesOtherModule]] {}
-BomModuleManager.allConsumesScrollsModule = --[[---@type BomAllConsumesScrollsModule]] {}
-BomModuleManager.allSpellsDeathknightModule = --[[---@type BomAllSpellsDeathknightModule]] {}
-BomModuleManager.allSpellsDruidModule = --[[---@type BomAllSpellsDruidModule]] {}
-BomModuleManager.allSpellsHunterModule = --[[---@type BomAllSpellsHunterModule]] {}
-BomModuleManager.allSpellsMageModule = --[[---@type BomAllSpellsMageModule]] {}
-BomModuleManager.allSpellsPaladinModule = --[[---@type BomAllSpellsPaladinModule]] {}
-BomModuleManager.allSpellsPriestModule = --[[---@type BomAllSpellsPriestModule]] {}
-BomModuleManager.allSpellsRogueModule = --[[---@type BomAllSpellsRogueModule]] {}
-BomModuleManager.allSpellsShamanModule = --[[---@type BomAllSpellsShamanModule]] {}
-BomModuleManager.allSpellsWarlockModule = --[[---@type BomAllSpellsWarlockModule]] {}
-BomModuleManager.allSpellsWarriorModule = --[[---@type BomAllSpellsWarriorModule]] {}
-BomModuleManager.buffChecksModule = --[[---@type BomBuffChecksModule]] {}
-BomModuleManager.buffDefinitionModule = --[[---@type BomBuffDefinitionModule]] {}
-BomModuleManager.buffModule = --[[---@type BomBuffModule]] {}
-BomModuleManager.buffomatModule = --[[---@type BomBuffomatModule]] {}
-BomModuleManager.buffRowModule = --[[---@type BomBuffRowModule]] {}
-BomModuleManager.characterSettingsModule = --[[---@type BomCharacterSettingsModule]] {}
-BomModuleManager.constModule = --[[---@type BomConstModule]] {}
-BomModuleManager.controlModule = --[[---@type BomControlModule]] {}
-BomModuleManager.eventsModule = --[[---@type BomEventsModule]] {}
-BomModuleManager.groupBuffTargetModule = --[[---@type BomGroupBuffTargetModule]] {}
-BomModuleManager.itemCacheModule = --[[---@type BomItemCacheModule]] {}
-BomModuleManager.itemIdsModule = --[[---@type BomItemIdsModule]] {}
-BomModuleManager.itemListCacheModule = --[[---@type BomItemListCacheModule]] {}
-BomModuleManager.languageChineseModule = --[[---@type BomLanguageChineseModule]] {}
-BomModuleManager.languageEnglishModule = --[[---@type BomLanguageEnglishModule]] {}
-BomModuleManager.languageFrenchModule = --[[---@type BomLanguageFrenchModule]] {}
-BomModuleManager.languageGermanModule = --[[---@type BomLanguageGermanModule]] {}
-BomModuleManager.languageRussianModule = --[[---@type BomLanguageRussianModule]] {}
-BomModuleManager.languagesModule = --[[---@type BomLanguagesModule]] {}
-BomModuleManager.macroModule = --[[---@type BomMacroModule]] {}
-BomModuleManager.managedUiModule = --[[---@type BomManagedUiModule]] {}
-BomModuleManager.myButtonModule = --[[---@type BomUiMyButtonModule]] {}
-BomModuleManager.optionsModule = --[[---@type BomOptionsModule]] {}
-BomModuleManager.optionsPopupModule = --[[---@type BomOptionsPopupModule]] {}
-BomModuleManager.partyModule = --[[---@type BomPartyModule]] {}
-BomModuleManager.popupModule = --[[---@type BomPopupModule]] {}
-BomModuleManager.profileModule = --[[---@type BomProfileModule]] {}
-BomModuleManager.rowBuilderModule = --[[---@type BomRowBuilderModule]] {}
-BomModuleManager.sharedSettingsModule = --[[---@type BomSharedSettingsModule]] {}
-BomModuleManager.slashCommandsModule = --[[---@type BomSlashCommandsModule]] {}
-BomModuleManager.spellButtonsTabModule = --[[---@type BomSpellButtonsTabModule]] {}
-BomModuleManager.spellCacheModule = --[[---@type BomSpellCacheModule]] {}
-BomModuleManager.spellIdsModule = --[[---@type BomSpellIdsModule]] {}
-BomModuleManager.spellSetupModule = --[[---@type BomSpellSetupModule]] {}
-BomModuleManager.taskListModule = --[[---@type BomTaskListModule]] {}
-BomModuleManager.taskModule = --[[---@type BomTaskModule]] {}
-BomModuleManager.taskScanModule = --[[---@type BomTaskScanModule]] {}
-BomModuleManager.texturesModule = --[[---@type BomTexturesModule]] {}
-BomModuleManager.toolboxModule = --[[---@type BomToolboxModule]] {}
-BomModuleManager.uiButtonModule = --[[---@type BomUiButtonModule]] {}
-BomModuleManager.uiMinimapButtonModule = --[[---@type BomUiMinimapButtonModule]] {}
-BomModuleManager.unitBuffTargetModule = --[[---@type BomUnitBuffTargetModule]] {}
-BomModuleManager.unitCacheModule = --[[---@type BomUnitCacheModule]] {}
-BomModuleManager.unitModule = --[[---@type BomUnitModule]] {}
+BomModuleManager = {
+  ngToolboxModule = --[[---@type NgToolboxModule]] {},
+  actionCastModule = --[[---@type BomActionCastModule]] {},
+  actionMacroModule = --[[---@type BomActionMacroModule]] {},
+  actionUseModule = --[[---@type BomActionUseModule]] {},
+  allBuffsModule = --[[---@type BomAllBuffsModule]] {},
+  allConsumesElixirsModule = --[[---@type BomAllConsumesElixirsModule]] {},
+  allConsumesEnchantmentsModule = --[[---@type BomAllConsumesEnchantmentsModule]] {},
+  allConsumesFlasksModule = --[[---@type BomAllConsumesFlasksModule]] {},
+  allConsumesFoodModule = --[[---@type BomAllConsumesFoodModule]] {},
+  allConsumesOtherModule = --[[---@type BomAllConsumesOtherModule]] {},
+  allConsumesScrollsModule = --[[---@type BomAllConsumesScrollsModule]] {},
+  allSpellsDeathknightModule = --[[---@type BomAllSpellsDeathknightModule]] {},
+  allSpellsDruidModule = --[[---@type BomAllSpellsDruidModule]] {},
+  allSpellsHunterModule = --[[---@type BomAllSpellsHunterModule]] {},
+  allSpellsMageModule = --[[---@type BomAllSpellsMageModule]] {},
+  allSpellsPaladinModule = --[[---@type BomAllSpellsPaladinModule]] {},
+  allSpellsPriestModule = --[[---@type BomAllSpellsPriestModule]] {},
+  allSpellsRogueModule = --[[---@type BomAllSpellsRogueModule]] {},
+  allSpellsShamanModule = --[[---@type BomAllSpellsShamanModule]] {},
+  allSpellsWarlockModule = --[[---@type BomAllSpellsWarlockModule]] {},
+  allSpellsWarriorModule = --[[---@type BomAllSpellsWarriorModule]] {},
+  buffChecksModule = --[[---@type BomBuffChecksModule]] {},
+  buffDefinitionModule = --[[---@type BomBuffDefinitionModule]] {},
+  buffModule = --[[---@type BomBuffModule]] {},
+  buffomatModule = --[[---@type BomBuffomatModule]] {},
+  buffRowModule = --[[---@type BomBuffRowModule]] {},
+  characterSettingsModule = --[[---@type BomCharacterSettingsModule]] {},
+  constModule = --[[---@type BomConstModule]] {},
+  controlModule = --[[---@type BomControlModule]] {},
+  eventsModule = --[[---@type BomEventsModule]] {},
+  groupBuffTargetModule = --[[---@type BomGroupBuffTargetModule]] {},
+  itemCacheModule = --[[---@type BomItemCacheModule]] {},
+  itemIdsModule = --[[---@type BomItemIdsModule]] {},
+  itemListCacheModule = --[[---@type BomItemListCacheModule]] {},
+  languageChineseModule = --[[---@type BomLanguageChineseModule]] {},
+  languageEnglishModule = --[[---@type BomLanguageEnglishModule]] {},
+  languageFrenchModule = --[[---@type BomLanguageFrenchModule]] {},
+  languageGermanModule = --[[---@type BomLanguageGermanModule]] {},
+  languageRussianModule = --[[---@type BomLanguageRussianModule]] {},
+  languagesModule = --[[---@type BomLanguagesModule]] {},
+  macroModule = --[[---@type BomMacroModule]] {},
+  managedUiModule = --[[---@type BomManagedUiModule]] {},
+  myButtonModule = --[[---@type BomUiMyButtonModule]] {},
+  optionsModule = --[[---@type BomOptionsModule]] {},
+  optionsPopupModule = --[[---@type BomOptionsPopupModule]] {},
+  partyModule = --[[---@type BomPartyModule]] {},
+  popupModule = --[[---@type BomPopupModule]] {},
+  profileModule = --[[---@type BomProfileModule]] {},
+  rowBuilderModule = --[[---@type BomRowBuilderModule]] {},
+  sharedSettingsModule = --[[---@type BomSharedSettingsModule]] {},
+  slashCommandsModule = --[[---@type BomSlashCommandsModule]] {},
+  spellButtonsTabModule = --[[---@type BomSpellButtonsTabModule]] {},
+  spellCacheModule = --[[---@type BomSpellCacheModule]] {},
+  spellIdsModule = --[[---@type BomSpellIdsModule]] {},
+  spellSetupModule = --[[---@type BomSpellSetupModule]] {},
+  taskListModule = --[[---@type BomTaskListModule]] {},
+  taskListPanelModule = --[[---@type TaskListPanelModule]] {},
+  taskModule = --[[---@type BomTaskModule]] {},
+  taskScanModule = --[[---@type BomTaskScanModule]] {},
+  texturesModule = --[[---@type BomTexturesModule]] {},
+  toolboxModule = --[[---@type BomToolboxModule]] {},
+  uiButtonModule = --[[---@type BomUiButtonModule]] {},
+  unitBuffTargetModule = --[[---@type BomUnitBuffTargetModule]] {},
+  unitCacheModule = --[[---@type BomUnitCacheModule]] {},
+  unitModule = {},
+}
 
 ---For each known module call function by fnName and optional context will be
 ---passed as 1st argument, can be ignored (defaults to nil)

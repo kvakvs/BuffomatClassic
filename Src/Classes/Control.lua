@@ -22,6 +22,8 @@ controlModule.GPIMinimapButtonConfigData.__index = controlModule.GPIMinimapButto
 ---@alias BomMenuItemDefList BomMenuItemDef[]
 
 ---@class BomMinimapButtonPlaceholder: WowControl
+
+---@deprecated Use libAceGUI instead
 ---@class BomGPIControl: WowControl A blizzard UI frame but may contain private fields used by internal library by GPI
 ---@field gpiCombatLock boolean
 ---@field Texture WowTexture

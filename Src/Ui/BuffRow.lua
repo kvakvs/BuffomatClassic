@@ -125,7 +125,7 @@ function buffRowClass:CreateSortingInput(tooltip, buffDef)
 
     self.sortingInput = field
   end
-  field:SetText(profileBuff.customSort or '5')
+  field:SetText(buffDef.customSort or '5')
   field:SetScript("OnEnterPressed",
     function(control)
       buffDef.customSort = field:GetText()

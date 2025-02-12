@@ -11,6 +11,7 @@
 ## SavedVariablesPerCharacter: BuffomatCharacter
 
 embeds.xml
+
 Src/ModuleManager.lua
 Src/KvLib/KvEnv.lua
 Src/Buffomat.lua
@@ -71,6 +72,10 @@ Src/Ui/Options.lua
 Src/Ui/OptionsPopup.lua
 Src/Ui/SpellButtonsTab.lua
 Src/Ui/UiButton.lua
+# new stuff 2025
+Src/Ui/TaskListPanel.lua
+Src/Ui/NgToolbox.lua
+Src/Ui/NgSecureActionButton.lua
 
 Src/Events.lua
 Src/Languages/Languages.lua

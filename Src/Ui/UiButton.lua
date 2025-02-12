@@ -2,6 +2,7 @@
 local uiButtonModule = BomModuleManager.uiButtonModule ---@type BomUiButtonModule
 local texturesModule = BomModuleManager.texturesModule
 
+---@deprecated Use AceGUI-3.0 instead
 ---@param id string Button ID
 ---@param parent BomGPIControl parent UI frame for the button
 ---@param normalTexture string

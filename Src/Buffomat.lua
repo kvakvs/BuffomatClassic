@@ -31,6 +31,7 @@ local spellButtonsTabModule = BomModuleManager.spellButtonsTabModule
 local taskScanModule = BomModuleManager.taskScanModule
 local texturesModule = BomModuleManager.texturesModule
 local toolboxModule = BomModuleManager.toolboxModule
+local taskListPanelModule = BomModuleManager.taskListPanelModule
 
 ---@alias BomCastingState "cast"|"channel"|nil
 
@@ -82,11 +83,15 @@ local toolboxModule = BomModuleManager.toolboxModule
 ---@field Print fun(self: BomAddon, msg: string): void
 ---@field RegisterEvent fun(self: BomAddon, event: string, handler: function): void
 ---@field setupAvailableSpellsFn function
--- -@field minimapButton BomMinimapButtonPlaceholder Minimap button control
+-- Globally accessibleUI group for the buffs dialog and task list
+---@field buffsDialog AceGUIWidget Contains all buffs grouped for selection/priority etc. Shows on demand.
 
 BuffomatAddon = LibStub("AceAddon-3.0"):NewAddon(
   "Buffomat", "AceConsole-3.0", "AceEvent-3.0") ---@type BomAddon
 local BOM = BuffomatAddon
+local libDB = LibStub("LibDataBroker-1.1")
+local libIcon = LibStub("LibDBIcon-1.0")
+local libGUI = LibStub("AceGUI-3.0")
 
 ---@class BomCachedBagItem
 ---@field a boolean Player has item
@@ -208,8 +213,8 @@ function buffomatModule:UseProfile(profileName)
   local selectedProfile = self.character[profileName] or characterSettingsModule:New(nil)
   buffomatModule.currentProfile = selectedProfile
 
-  BomC_MainWindow_Title:SetText(BOM.FormatTexture(constModule.BOM_BEAR_ICON_FULLPATH) .. _t("profile_" .. profileName))
-  -- .. " - " .. constModule.SHORT_TITLE
+  local title = BOM.FormatTexture(constModule.BOM_BEAR_ICON_FULLPATH) .. " " .. _t("profile_" .. profileName)
+  taskListPanelModule.taskFrame:SetTitle(title)
 
   BOM:Print("Using profile " .. _t("profile_" .. profileName))
 end
@@ -295,8 +300,11 @@ function BOM.CreateSingleBuffButton(parent_frame)
   end
 end
 
-local libDB = LibStub("LibDataBroker-1.1")
-local libIcon = LibStub("LibDBIcon-1.0")
+function buffomatModule:CreateBuffsDialog()
+  BOM.buffsDialog = libGUI:Create("Window")
+  BOM.buffsDialog:SetLayout("Flow")
+  BOM.buffsDialog:SetTitle("Buff Selection")
+end
 
 function buffomatModule:InitUI()
   BomC_ListTab_MessageFrame:SetFading(false);
@@ -309,12 +317,16 @@ function buffomatModule:InitUI()
   BomC_ListTab_Button:SetAttribute("type", "macro")
   BomC_ListTab_Button:SetAttribute("macro", constModule.MACRO_NAME)
 
+  taskListPanelModule:CreateTaskFrame()
+
   toolboxModule:OnUpdate(self.UpdateTimer)
 
   BOM.popupMenuDynamic = popupModule:CreatePopup(buffomatModule.OptionsUpdate)
 
   local function onMinimapClick(self1, button)
     if button == "LeftButton" then
+      taskListPanelModule:ToggleWindow()
+      ---removeme
       buffomatModule:ToggleWindow()
     else
       optionsPopupModule:Setup(Minimap, true)
@@ -421,8 +433,14 @@ function BuffomatAddon:MakeSlashCommand()
       end
     },
     { command = "updatespellstab", description = "",                   handler = spellButtonsTabModule.UpdateSpellsTab },
-    { command = "close",           description = _t("SlashClose"),     handler = BOM.HideWindow },
-    { command = "reset",           description = _t("SlashReset"),     handler = BOM.ResetWindow },
+    { command = "close",           description = _t("SlashClose"),     handler = function()
+      BOM.HideWindow() ---removeme
+      taskListPanelModule:HideWindow()
+    end},
+    { command = "reset",           description = _t("SlashReset"),     handler = function()
+      BOM.ResetWindow() ---removeme
+      taskListPanelModule:ResetWindow()
+    end },
     {
       command = "_checkforerror",
       description = "",
@@ -432,7 +450,10 @@ function BuffomatAddon:MakeSlashCommand()
         end
       end
     },
-    { command = "", description = _t("SlashOpen"), handler = BOM.ShowWindow },
+    { command = "", description = _t("SlashOpen"), handler = function()
+      BOM.ShowWindow() ---removeme
+      taskListPanelModule:ShowWindow()
+    end},
   }
 end
 
@@ -509,6 +530,8 @@ function BuffomatAddon:OnEnable()
 
   local onClick = function(control, button)
     if button == "LeftButton" then
+      taskListPanelModule:ToggleWindow()
+      ---removeme
       buffomatModule:ToggleWindow()
     else
       optionsPopupModule:Setup(control, true)
@@ -690,6 +713,7 @@ end
 
 buffomatModule.autoHelper = "open"
 
+---removeme
 function BOM.HideWindow()
   if not InCombatLockdown() then
     if BOM.WindowVisible() then
@@ -705,6 +729,7 @@ function buffomatModule:SetWindowScale(s)
   BomC_MainWindow:SetScale(s)
 end
 
+---removeme
 function BOM.ShowWindow(tab)
   if not InCombatLockdown() then
     if not BOM.WindowVisible() then
@@ -720,10 +745,12 @@ function BOM.ShowWindow(tab)
   end
 end
 
+---removeme
 function BOM.WindowVisible()
   return BomC_MainWindow:IsVisible()
 end
 
+---removeme
 function buffomatModule:ToggleWindow()
   if BomC_MainWindow:IsVisible() then
     BOM.HideWindow()
@@ -731,6 +758,7 @@ function buffomatModule:ToggleWindow()
     buffomatModule:RequestTaskRescan("toggleWindow")
     taskScanModule:ScanTasks("toggleWindow")
     BOM.ShowWindow(nil)
+    BomModuleManager.taskListPanelModule:ShowWindow()
   end
 end
 
@@ -774,12 +802,15 @@ function BOM.SaveWindowPosition()
 end
 
 function BOM.ResetWindow()
+  taskListPanelModule:ResetWindow()
+  ---removeme
   BomC_MainWindow:ClearAllPoints()
   BomC_MainWindow:SetPoint("Center", UIParent, "Center", 0, 0)
   BomC_MainWindow:SetWidth(200)
   BomC_MainWindow:SetHeight(200)
   BOM.SaveWindowPosition()
   BOM.ShowWindow(1)
+  BomModuleManager.taskListPanelModule:ResetWindow()
   BOM:Print("Window position is reset.")
 end
 
@@ -862,6 +893,7 @@ function BOM.ShowSpellSettings()
   InterfaceOptionsFrame:Hide()
   GameMenuFrame:Hide()
   BOM.ShowWindow(2)
+  BomModuleManager.taskListPanelModule:ShowWindow()
 end
 
 function BOM.MyButtonOnClick(self)

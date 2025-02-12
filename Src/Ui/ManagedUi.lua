@@ -5,6 +5,7 @@
 ---@field ICON_OFF string
 ---@field ICON_ON string
 
+---@deprecated Use libAceGUI instead
 local managedUiModule = BomModuleManager.managedUiModule ---@type BomManagedUiModule
 
 managedUiModule.ICON_ON = "|TInterface\\RAIDFRAME\\ReadyCheck-Ready:0:0:0:0:64:64:4:60:4:60|t"
@@ -17,6 +18,7 @@ managedUiModule.ICON_OFF = "|TInterface\\RAIDFRAME\\ReadyCheck-NotReady:0:0:0:0:
 local managedUiClass = {}
 managedUiClass.__index = managedUiClass
 
+---@deprecated Use libAceGUI instead
 ---@return BomManagedUi
 function managedUiModule:new(parent)
   local fields = --[[---@type BomManagedUi]] {
@@ -26,6 +28,7 @@ function managedUiModule:new(parent)
   return fields
 end
 
+---@deprecated Use libAceGUI instead
 ---@param sel string Texture for selected
 ---@param unsel string|nil Texture for unselected
 ---@param selCoord table Texcoords for selected icon
@@ -38,6 +41,7 @@ function managedUiClass:NewButton(sel, unsel, selCoord, unselCoord)
   return newButton
 end
 
+---@deprecated Use libAceGUI instead
 ---@param self WowControl
 function managedUiModule.ButtonOnEnter(self)
   if self.bomToolTipLink or self.bomToolTipText then
@@ -63,11 +67,13 @@ function managedUiModule.ButtonOnEnter(self)
   end
 end
 
+---@deprecated Use libAceGUI instead
 ---@param self WowControl
 function managedUiModule.ButtonOnLeave(self)
 
 end
 
+---@deprecated Use libAceGUI instead
 ---@param button BomGPIControl
 function managedUiModule:SetupButton(button, isSecure)
   button:SetScript("OnEnter", managedUiModule.ButtonOnEnter)
