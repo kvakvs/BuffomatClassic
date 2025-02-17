@@ -13,23 +13,6 @@ local _G = _G
 local PlaySound, CreateFrame, UIParent = PlaySound, CreateFrame, UIParent
 
 --[[-----------------------------------------------------------------------------
-Scripts
--------------------------------------------------------------------------------]]
-local function Button_OnClick(frame, ...)
-	AceGUI:ClearFocus()
-	PlaySound(852) -- SOUNDKIT.IG_MAINMENU_OPTION
-	frame.obj:Fire("OnClick", ...)
-end
-
-local function Control_OnEnter(frame)
-	frame.obj:Fire("OnEnter")
-end
-
-local function Control_OnLeave(frame)
-	frame.obj:Fire("OnLeave")
-end
-
---[[-----------------------------------------------------------------------------
 Methods
 -------------------------------------------------------------------------------]]
 local methods = {
@@ -77,19 +60,17 @@ local methods = {
 Constructor
 -------------------------------------------------------------------------------]]
 ---@class NgSecureActionButton
----@field frame Frame
+---@field frame Button
 ---@field label SimpleFontString
 ---@field text string
 ---@field type string
 
 local function Constructor()
 	local name = "NgSecureActionButton" .. AceGUI:GetNextWidgetNum(Type)
-	local buttonFrame = CreateFrame("Button", name, UIParent, "SecureActionButtonTemplate")
+	-- local buttonFrame = CreateFrame("Button", name, UIParent, "SecureActionButtonTemplate")
+	local buttonFrame = CreateFrame("Button", name, UIParent, "BomC_SecureButton")
 	buttonFrame:Hide()
 	buttonFrame:EnableMouse(true)
-	-- frame:SetScript("OnClick", Button_OnClick)
-	-- frame:SetScript("OnEnter", Control_OnEnter)
-	-- frame:SetScript("OnLeave", Control_OnLeave)
 
 	local buttonLabel = buttonFrame:CreateFontString(nil, "OVERLAY", "GameTooltipText")
   if buttonLabel then

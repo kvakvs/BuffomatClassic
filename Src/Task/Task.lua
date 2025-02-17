@@ -128,7 +128,7 @@ end
 ---@return BomTask
 function taskClass:LinkToBuffDef(buffDef)
   self.linkedBuffDef = buffDef
-  self.customSort = buffDef.customSort
+  if buffDef then self.customSort = buffDef.customSort end
   return self
 end
 
