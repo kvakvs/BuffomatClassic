@@ -31,6 +31,7 @@ local taskListModule = BomModuleManager.taskListModule
 local taskModule = BomModuleManager.taskModule
 local texturesModule = BomModuleManager.texturesModule
 local unitCacheModule = BomModuleManager.unitCacheModule
+local throttleModule = BomModuleManager.throttleModule ---@type BomThrottleModule
 
 ---@class BomBuffScanContext
 ---@field someoneIsDead boolean
@@ -1774,7 +1775,7 @@ function BOM.AddMemberToSkipList()
     if (castFailedBuffVal).skipList
         and BOM.castFailedBuffTarget then
       table.insert(castFailedBuffVal.skipList, castFailedTarget.name)
-      buffomatModule:FastUpdateTimer()
+      throttleModule:FastUpdateTimer()
       buffomatModule:RequestTaskRescan("skipListMemberAdded")
     end
   end

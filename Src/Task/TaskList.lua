@@ -10,6 +10,7 @@ local taskListPanelModule = BomModuleManager.taskListPanelModule
 local buffomatModule = BomModuleManager.buffomatModule
 local _t = BomModuleManager.languagesModule
 local allBuffsModule = BomModuleManager.allBuffsModule
+local throttleModule = BomModuleManager.throttleModule ---@type BomThrottleModule
 
 ---@class BomTaskList
 ---@field tasks BomTask[]
@@ -282,7 +283,7 @@ function taskListClass:CastButton_OutOfRange()
   end
 
   if skipreset then
-    buffomatModule:FastUpdateTimer()
+    throttleModule:FastUpdateTimer()
     buffomatModule:RequestTaskRescan("skipReset")
   end
 end -- if inrange

@@ -64,8 +64,10 @@
 ---@field unitBuffTargetModule BomUnitBuffTargetModule
 ---@field unitCacheModule BomUnitCacheModule
 ---@field unitModule BomUnitModule
+---@field throttleModule BomThrottleModule
 
 BomModuleManager = {
+  throttleModule = --[[---@type BomThrottleModule]] {},
   ngToolboxModule = --[[---@type NgToolboxModule]] {},
   actionCastModule = --[[---@type BomActionCastModule]] {},
   actionMacroModule = --[[---@type BomActionMacroModule]] {},

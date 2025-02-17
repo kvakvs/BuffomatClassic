@@ -15,6 +15,7 @@ embeds.xml
 Src/ModuleManager.lua
 Src/KvLib/KvEnv.lua
 Src/Buffomat.lua
+Src/Throttle.lua
 
 Src/KvLib/KvOptions.lua
 
