@@ -1,7 +1,6 @@
 <Bindings>
   <Binding name="MACRO Buff'o'mat" header="BUFFOMATHEADER"/>
   <Binding name="BUFFOMAT_WINDOW">
-    BuffomatAddon.ShowWindow()
     BomModuleManager.taskListPanelModule:ShowWindow()
   </Binding>
 </Bindings>

@@ -412,18 +412,35 @@ function BuffomatAddon:MakeSlashCommand()
       command = "debug",
       description = "",
       handler = {
-        { command = "buff",   description = "", handler = buffomatModule.Slash_DebugBuffList },
-        { command = "target", description = "", handler = buffomatModule.Slash_DebugBuffs,   target = "target" },
+        {
+          command = "buff",
+          description = "",
+          handler = buffomatModule.Slash_DebugBuffList
+        },
+        {
+          command = "target",
+          description = "",
+          handler = buffomatModule.Slash_DebugBuffs,
+          target = "target"
+        },
       },
     },
     {
       command = "profile",
       description = "",
       handler = {
-        { command = "%", description = _t("SlashProfile"), handler = buffomatModule.ChooseProfile }
+        {
+          command = "%",
+          description = _t("SlashProfile"),
+          handler = buffomatModule.ChooseProfile
+        }
       },
     },
-    { command = "spellbook",       description = _t("SlashSpellBook"), handler = BOM.setupAvailableSpellsFn },
+    {
+      command = "spellbook",
+      description = _t("SlashSpellBook"),
+      handler = BOM.setupAvailableSpellsFn
+    },
     {
       command = "update",
       description = _t("SlashUpdate"),
@@ -432,15 +449,24 @@ function BuffomatAddon:MakeSlashCommand()
         taskScanModule:ScanTasks("macro-/update")
       end
     },
-    { command = "updatespellstab", description = "",                   handler = spellButtonsTabModule.UpdateSpellsTab },
-    { command = "close",           description = _t("SlashClose"),     handler = function()
-      BOM.HideWindow() ---removeme
-      taskListPanelModule:HideWindow()
-    end},
-    { command = "reset",           description = _t("SlashReset"),     handler = function()
-      BOM.ResetWindow() ---removeme
-      taskListPanelModule:ResetWindow()
-    end },
+    {
+      command = "updatespellstab",
+      description = "",
+      handler = spellButtonsTabModule.UpdateSpellsTab
+    },
+    {
+      command = "close",
+      description = _t("SlashClose"),
+      handler = function()
+        BOM.HideWindow() ---removeme
+        taskListPanelModule:HideWindow()
+      end
+    },
+    {
+      command = "reset",
+      description = _t("SlashReset"),
+      handler = function() taskListPanelModule:ResetWindow() end
+    },
     {
       command = "_checkforerror",
       description = "",
@@ -450,10 +476,11 @@ function BuffomatAddon:MakeSlashCommand()
         end
       end
     },
-    { command = "", description = _t("SlashOpen"), handler = function()
-      BOM.ShowWindow() ---removeme
-      taskListPanelModule:ShowWindow()
-    end},
+    {
+      command = "",
+      description = _t("SlashOpen"),
+      handler = function() taskListPanelModule:ShowWindow() end
+    },
   }
 end
 
@@ -573,23 +600,34 @@ function buffomatModule:DownGrade()
   end
 end
 
--- Update timers for Buffomat checking spells and buffs
--- See option: BOM.SharedState.SlowerHardware
-buffomatModule.lastUpdateTimestamp = 0
-buffomatModule.lastModifierKeyState = false
-buffomatModule.fpsCheck = 0
-buffomatModule.slowCount = 0
-buffomatModule.SPELLS_TAB_UPDATE_DELAY = 2.0
-
+---@class BomThrottleState
+---@field lastUpdateTimestamp number
+---@field lastModifierKeyState boolean
+---@field fpsCheck number
+---@field slowCount number
+---@field SPELLS_TAB_UPDATE_DELAY number
 ---bumped from 0.1 which potentially causes Naxxramas lag?
 ---Checking BOM.SharedState.SlowerHardware will use bom_slowerhardware_update_timer_limit
-buffomatModule.updateTimerLimit = 0.500
-buffomatModule.slowerhardwareUpdateTimerLimit = 1.500
+---@field updateTimerLimit number
+---@field slowerHardwareUpdateTimerLimit number
 -- This is written to updateTimerLimit if overload is detected in a large raid or slow hardware
-buffomatModule.BOM_THROTTLE_TIMER_LIMIT = 1.000
-buffomatModule.BOM_THROTTLE_SLOWER_HARDWARE_TIMER_LIMIT = 2.000
+---@field BOM_THROTTLE_TIMER_LIMIT number
+---@field BOM_THROTTLE_SLOWER_HARDWARE_TIMER_LIMIT number
+---@field lastSpellsTabUpdate number
 
-buffomatModule.lastSpellsTabUpdate = 0
+---@type BomThrottleState
+local throttleState = {
+  lastUpdateTimestamp = 0,
+  lastModifierKeyState = false,
+  fpsCheck = 0,
+  slowCount = 0,
+  SPELLS_TAB_UPDATE_DELAY = 2.0,
+  updateTimerLimit = 0.500,
+  slowerHardwareUpdateTimerLimit = 1.500,
+  BOM_THROTTLE_TIMER_LIMIT = 1.000,
+  BOM_THROTTLE_SLOWER_HARDWARE_TIMER_LIMIT = 2.000,
+  lastSpellsTabUpdate = 0,
+}
 
 ---This runs every frame, do not do any excessive work here
 function buffomatModule.UpdateTimer(elapsed)
@@ -609,9 +647,9 @@ function buffomatModule.UpdateTimer(elapsed)
   end
 
   -- Update spells tab if necessary and update last update time if successful
-  if now - buffomatModule.lastSpellsTabUpdate > buffomatModule.SPELLS_TAB_UPDATE_DELAY then
+  if now - throttleState.lastSpellsTabUpdate > throttleState.SPELLS_TAB_UPDATE_DELAY then
     if spellButtonsTabModule:UpdateSpellsTab_Throttled() then
-      buffomatModule.lastSpellsTabUpdate = now
+      throttleState.lastSpellsTabUpdate = now
     end
   end
 
@@ -627,8 +665,8 @@ function buffomatModule.UpdateTimer(elapsed)
     end
   end
 
-  if BOM.scanModifierKeyDown and buffomatModule.lastModifierKeyState ~= IsModifierKeyDown() then
-    buffomatModule.lastModifierKeyState = IsModifierKeyDown()
+  if BOM.scanModifierKeyDown and throttleState.lastModifierKeyState ~= IsModifierKeyDown() then
+    throttleState.lastModifierKeyState = IsModifierKeyDown()
     buffomatModule:RequestTaskRescan("ModifierKeyDown")
   end
 
@@ -636,21 +674,21 @@ function buffomatModule.UpdateTimer(elapsed)
   -- Update timers, slow hardware and auto-throttling
   -- This will trigger update on timer, regardless of other conditions
   --
-  --buffomatModule.fpsCheck = buffomatModule.fpsCheck + 1
+  --throttleState.fpsCheck = throttleState.fpsCheck + 1
 
-  local updateTimerLimit = buffomatModule.updateTimerLimit
+  local updateTimerLimit = throttleState.updateTimerLimit
   if buffomatModule.shared.SlowerHardware then
-    updateTimerLimit = buffomatModule.slowerhardwareUpdateTimerLimit
+    updateTimerLimit = throttleState.slowerHardwareUpdateTimerLimit
   end
 
   local needForceUpdate = next(buffomatModule.taskRescanRequestedBy) ~= nil
 
   if (needForceUpdate or BOM.repeatUpdate)
-      and now - (buffomatModule.lastUpdateTimestamp or 0) > updateTimerLimit
+      and now - (throttleState.lastUpdateTimestamp or 0) > updateTimerLimit
       and InCombatLockdown() == false
   then
-    buffomatModule.lastUpdateTimestamp = now
-    buffomatModule.fpsCheck = debugprofilestop()
+    throttleState.lastUpdateTimestamp = now
+    throttleState.fpsCheck = debugprofilestop()
 
     -- Debug: Print the callers as reasons to force update
     -- buffomatModule:PrintCallers("Update: ", buffomatModule.forceUpdateRequestedBy)
@@ -660,22 +698,22 @@ function buffomatModule.UpdateTimer(elapsed)
     -- If updatescan call above took longer than 32 ms, and repeated update, then
     -- bump the slow alarm counter, once it reaches 32 we consider throttling.
     -- 1000 ms / 32 ms = 31.25 fps
-    if (debugprofilestop() - buffomatModule.fpsCheck) > 32 and BOM.repeatUpdate then
-      buffomatModule.slowCount = buffomatModule.slowCount + 1
+    if (debugprofilestop() - throttleState.fpsCheck) > 32 and BOM.repeatUpdate then
+      throttleState.slowCount = throttleState.slowCount + 1
 
-      if buffomatModule.slowCount >= 20 and updateTimerLimit < 1 then
-        buffomatModule.updateTimerLimit = buffomatModule.BOM_THROTTLE_TIMER_LIMIT
-        buffomatModule.slowerhardwareUpdateTimerLimit = buffomatModule.BOM_THROTTLE_SLOWER_HARDWARE_TIMER_LIMIT
+      if throttleState.slowCount >= 20 and updateTimerLimit < 1 then
+        throttleState.updateTimerLimit = throttleState.BOM_THROTTLE_TIMER_LIMIT
+        throttleState.slowerHardwareUpdateTimerLimit = throttleState.BOM_THROTTLE_SLOWER_HARDWARE_TIMER_LIMIT
         BOM:Print("Overwhelmed - slowing down the scans!")
       end
     else
-      buffomatModule.slowCount = 0
+      throttleState.slowCount = 0
     end
   end
 end
 
 function buffomatModule:FastUpdateTimer()
-  buffomatModule.lastUpdateTimestamp = 0
+  throttleState.lastUpdateTimestamp = 0
 end
 
 partyModule.unitAurasLastUpdated = --[[---@type BomBuffUpdatesPerUnit]] {}
@@ -730,22 +768,6 @@ function buffomatModule:SetWindowScale(s)
 end
 
 ---removeme
-function BOM.ShowWindow(tab)
-  if not InCombatLockdown() then
-    if not BOM.WindowVisible() then
-      BomC_MainWindow:Show()
-      buffomatModule:SetWindowScale(tonumber(buffomatModule.shared.UIWindowScale) or 1.0)
-      buffomatModule.autoHelper = "KeepOpen"
-    else
-      BOM.BtnClose()
-    end
-    toolboxModule:SelectTab(BomC_MainWindow, tab or 1)
-  else
-    BOM:Print(_t("message.ShowHideInCombat"))
-  end
-end
-
----removeme
 function BOM.WindowVisible()
   return BomC_MainWindow:IsVisible()
 end
@@ -757,7 +779,6 @@ function buffomatModule:ToggleWindow()
   else
     buffomatModule:RequestTaskRescan("toggleWindow")
     taskScanModule:ScanTasks("toggleWindow")
-    BOM.ShowWindow(nil)
     BomModuleManager.taskListPanelModule:ShowWindow()
   end
 end
@@ -799,19 +820,6 @@ function BOM.SaveWindowPosition()
   buffomatModule.shared.Y = BomC_MainWindow:GetTop()
   buffomatModule.shared.Width = BomC_MainWindow:GetWidth()
   buffomatModule.shared.Height = BomC_MainWindow:GetHeight()
-end
-
-function BOM.ResetWindow()
-  taskListPanelModule:ResetWindow()
-  ---removeme
-  BomC_MainWindow:ClearAllPoints()
-  BomC_MainWindow:SetPoint("Center", UIParent, "Center", 0, 0)
-  BomC_MainWindow:SetWidth(200)
-  BomC_MainWindow:SetHeight(200)
-  BOM.SaveWindowPosition()
-  BOM.ShowWindow(1)
-  BomModuleManager.taskListPanelModule:ResetWindow()
-  BOM:Print("Window position is reset.")
 end
 
 local function perform_who_request(name)
@@ -892,7 +900,7 @@ end
 function BOM.ShowSpellSettings()
   InterfaceOptionsFrame:Hide()
   GameMenuFrame:Hide()
-  BOM.ShowWindow(2)
+  BOM:Print("TODO: Show Spell Settings")
   BomModuleManager.taskListPanelModule:ShowWindow()
 end
 
