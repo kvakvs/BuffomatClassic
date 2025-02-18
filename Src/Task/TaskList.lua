@@ -127,11 +127,6 @@ end
 ---Unload the contents of DisplayInfo cache into BomC_ListTab_MessageFrame
 ---The messages (tasks) are sorted
 function taskListClass:Display()
-  self:LegacyDisplay()
-  self:NewDisplay()
-end
-
-function taskListClass:NewDisplay()
   taskListPanelModule:Clear()
 
   for _i, text in pairs(self.lowPrioComments) do
@@ -147,41 +142,6 @@ function taskListClass:NewDisplay()
   end
   for _, task in pairs(self.tasks) do
     taskListPanelModule:AddMessage(task:Format())
-  end
-end
-
-function taskListClass:LegacyDisplay()
-  local taskFrame = BomC_ListTab_MessageFrame
-  taskFrame:Clear()
-
-  -- update distances if the players have moved
-  for _i, task in pairs(self.tasks) do
-    -- Refresh the copy of distance value
-    if not task.target then
-      task.distance = 0
-    else
-      task.distance = ( --[[---@not nil]] task.target):GetDistance()
-    end
-  end
-
-  for _i, text in pairs(self.lowPrioComments) do
-    taskFrame:AddMessage(buffomatModule:Color("aaaaaa", text))
-  end
-
-  for _i, text in pairs(self.comments) do
-    taskFrame:AddMessage(text)
-  end
-
-  for _i, task in pairs(self.tasks) do
-    if task.distance > 43 * 43 then
-      taskFrame:AddMessage(task:FormatDisabledRed(_t("task.error.range")))
-    end
-  end
-
-  for _i, task in pairs(self.tasks) do
-    if task.distance <= 43 * 43 then
-      taskFrame:AddMessage(task:Format())
-    end
   end
 end
 

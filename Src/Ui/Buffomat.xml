@@ -178,6 +178,7 @@
     </Scripts>
   </Frame>
 
+  <!-- Deprecated, delete this -->
   <Frame name="BomC_MainWindow" parent="UIParent" hidden="true"
          enableMouse="true" frameStrata="MEDIUM" clampedToScreen="true"
          inherits="BomC_BackdropTemplate">
@@ -185,10 +186,11 @@
       <AbsDimension x="256" y="170"/>
     </Size>
     <Anchors>
-      <Anchor point="CENTER"/>
-      <!--      <Offset>-->
-      <!--        <AbsDimension x="300" y="0"/>-->
-      <!--      </Offset>-->
+      <Anchor point="TOPLEFT">
+        <Offset>
+          <AbsDimension x="0" y="0"/>
+        </Offset>
+      </Anchor>
     </Anchors>
 
     <Layers>
@@ -228,7 +230,7 @@
           </Anchor>
         </Anchors>
         <Scripts>
-          <OnClick>BuffomatAddon.BtnClose()</OnClick>
+          <OnClick>BomModuleManager.taskListPanelModule:HideWindow()</OnClick>
           <OnLoad>BomModuleManager.toolboxModule:TooltipWithTranslationKey(self, "TooltipCloseButton")
           </OnLoad>
         </Scripts>

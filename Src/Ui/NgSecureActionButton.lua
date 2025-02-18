@@ -75,7 +75,7 @@ local function Constructor()
 	local buttonLabel = buttonFrame:CreateFontString(nil, "OVERLAY", "GameTooltipText")
   if buttonLabel then
     buttonLabel:ClearAllPoints()
-    buttonLabel:SetPoint("TOPLEFT", 4, -1)
+    buttonLabel:SetPoint("TOPLEFT", 8, -4)
     buttonLabel:SetPoint("BOTTOMRIGHT", -4, 1)
     buttonLabel:SetJustifyV("MIDDLE")
   end

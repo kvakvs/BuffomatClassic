@@ -3,33 +3,35 @@ local BOM = BuffomatAddon
 ---@class TaskListPanelModule
 ---@field taskFrame AceGUIWidget Floating frame for task list
 ---@field buffButton AceGUIWidget Button for casting a buff or reporting status
----@field windowExists boolean
 ---@field scrollPanel AceGUIWidget Scroll panel for list of tasks/messages
 ---@field topUiPanel AceGUIWidget Top panel for buff button and menu
 ---@field messages AceGUIWidget[]
+---@field titleProfile string The profile name which goes into the title of the window
+---@field titleBuffGroups string The buff groups which go into the title of the window
 
 local taskListPanelModule = BomModuleManager.taskListPanelModule ---@type TaskListPanelModule
+taskListPanelModule.titleProfile = ""
+taskListPanelModule.titleBuffGroups = ""
+
 local buffomatModule = BomModuleManager.buffomatModule ---@type BomBuffomatModule
 local taskScanModule = BomModuleManager.taskScanModule
 local ngToolboxModule = BomModuleManager.ngToolboxModule
 local actionMacroModule = BomModuleManager.actionMacroModule
 local constModule = BomModuleManager.constModule
-local messages = {}
+local _t = BomModuleManager.languagesModule
 
 local libGUI = LibStub("AceGUI-3.0")
 
 function taskListPanelModule:CreateTaskFrame()
   local taskFrame = libGUI:Create("Window")
   self.taskFrame = taskFrame
-  taskFrame:SetTitle("Tasks")
   taskFrame:SetLayout("Fill")
   taskFrame:ClearAllPoints()
   taskFrame:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", buffomatModule.shared.X, buffomatModule.shared.Y)
   taskFrame:SetWidth(buffomatModule.shared.Width)
   taskFrame:SetHeight(buffomatModule.shared.Height)
   taskFrame:SetCallback("OnClose", function()
-    BOM.BtnClose()
-    taskListPanelModule.windowExists = false
+    taskListPanelModule:HideWindow()
   end)
   self:SetWindowScale(tonumber(buffomatModule.shared.UIWindowScale) or 1.0)
 
@@ -39,16 +41,17 @@ function taskListPanelModule:CreateTaskFrame()
   taskFrame:AddChild(scrollPanel)
 
   self:CreateUIRow()
-
-  self.windowExists = true
+  self:SetTitle()
 end
 
-function taskListPanelModule:SetWindowScale(scale)
-  self.taskFrame.frame:SetScale(scale)
+function taskListPanelModule:SetTitle()
+  if self.taskFrame ~= nil then
+    self.taskFrame:SetTitle(self.titleProfile .. ' ' .. self.titleBuffGroups)
+  end
 end
 
 function taskListPanelModule:ToggleWindow()
-  if self.windowExists then
+  if self.taskFrame then
     self:HideWindow()
   else
     buffomatModule:RequestTaskRescan("toggleWindow")
@@ -58,34 +61,30 @@ function taskListPanelModule:ToggleWindow()
 end
 
 function taskListPanelModule:IsWindowVisible()
-  return self.windowExists and self.taskFrame:IsVisible()
+  return self.taskFrame ~= nil and self.taskFrame:IsVisible()
 end
 
 function taskListPanelModule:HideWindow()
   if not InCombatLockdown() then
-    if self.windowExists then
+    if self.taskFrame ~= nil then
       self.taskFrame:Hide()
-      -- self.taskFrame:Release()
       buffomatModule.autoHelper = "KeepClose"
       buffomatModule:RequestTaskRescan("hideWindow")
       taskScanModule:ScanTasks("hideWindow")
-      self.windowExists = false
     end
   end
 end
 
 function taskListPanelModule:ShowWindow()
   if not InCombatLockdown() then
-    if not self.windowExists then
+    if self.taskFrame ~= nil then
       -- self.taskFrame:Show()
       self:CreateTaskFrame()
       self:SetWindowScale(tonumber(buffomatModule.shared.UIWindowScale) or 1.0)
       buffomatModule:RequestTaskRescan("showWindow")
       buffomatModule.autoHelper = "KeepOpen"
-      self.windowExists = true
     else
       self:HideWindow()
-      self.windowExists = false
     end
   else
     BOM:Print(_t("message.ShowHideInCombat"))
@@ -174,4 +173,20 @@ function taskListPanelModule:CastButtonText(text, enable)
   end
 
   buffomatModule:FadeBuffomatWindow()
+end
+
+function taskListPanelModule:SetAlpha(alpha)
+  if self.taskFrame ~= nil then
+    self.taskFrame.frame:SetAlpha(alpha)
+  end
+end
+
+function taskListPanelModule:SetWindowScale(scale)
+  if self.taskFrame ~= nil then
+    self.taskFrame.frame:SetScale(scale)
+  end
+end
+
+function taskListPanelModule:IsBuffButtonEnabled()
+  return self.buffButton ~= nil and not self.buffButton.disabled
 end

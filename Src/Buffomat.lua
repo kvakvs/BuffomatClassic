@@ -7,6 +7,7 @@
 ---@field currentProfileName string
 ---@field currentProfile BomProfile
 ---@field taskRescanRequestedBy {[string]: number} Reasons for force update, with count
+
 local buffomatModule = BomModuleManager.buffomatModule ---@type BomBuffomatModule
 buffomatModule.taskRescanRequestedBy = --[[---@type {[string]: number}]] {}
 
@@ -123,10 +124,6 @@ function BOM.FormatTexture(texture)
   return string.format(constModule.ICON_FORMAT, texture)
 end
 
-function BOM.BtnClose()
-  BOM.HideWindow()
-end
-
 function BOM.BtnSettings(settingsButton)
   optionsPopupModule:Setup(settingsButton, false)
 end
@@ -214,8 +211,8 @@ function buffomatModule:UseProfile(profileName)
   local selectedProfile = self.character[profileName] or characterSettingsModule:New(nil)
   buffomatModule.currentProfile = selectedProfile
 
-  local title = BOM.FormatTexture(constModule.BOM_BEAR_ICON_FULLPATH) .. " " .. _t("profile_" .. profileName)
-  taskListPanelModule.taskFrame:SetTitle(title)
+  taskListPanelModule.titleProfile = BOM.FormatTexture(constModule.BOM_BEAR_ICON_FULLPATH) .. " " .. _t("profile_" .. profileName)
+  taskListPanelModule:SetTitle()
 
   BOM:Print("Using profile " .. _t("profile_" .. profileName))
 end
@@ -224,7 +221,6 @@ end
 ---being buffed. Example: "Buff All", "Buff G3,5-7"...
 function buffomatModule:UpdateBuffTabText()
   local selectedGroups = 0
-  local t = BomC_MainWindow.Tabs[1]
 
   for i = 1, 8 do
     if self.character.WatchGroup[i] then
@@ -233,14 +229,18 @@ function buffomatModule:UpdateBuffTabText()
   end
 
   if selectedGroups == 8 then
-    t:SetText(_t("TabBuff"))
-    PanelTemplates_TabResize(t, 0)
+    taskListPanelModule.titleBuffGroups = _t("TabBuff")
+    taskListPanelModule:SetTitle()
+    --removeme
+    -- PanelTemplates_TabResize(t, 0)
     return
   end
 
   if selectedGroups == 0 then
-    t:SetText(_t("TabBuffOnlySelf"))
-    PanelTemplates_TabResize(t, 0)
+    taskListPanelModule.titleBuffGroups = _t("TabBuffOnlySelf")
+    taskListPanelModule:SetTitle()
+    --removeme
+    -- PanelTemplates_TabResize(t, 0)
     return
   end
 
@@ -275,8 +275,10 @@ function buffomatModule:UpdateBuffTabText()
   end
 
   -- Set tab name to display groups too: "Buff G1-5" for example
-  t:SetText(_t("TabBuff") .. " G" .. groups)
-  PanelTemplates_TabResize(t, 0)
+  taskListPanelModule.titleBuffGroups = _t("TabBuff") .. " G" .. groups
+  taskListPanelModule:SetTitle()
+  --removeme
+  -- PanelTemplates_TabResize(t, 0)
 end
 
 ---Creates small mybutton which toggles group buff setting, next to CAST button
@@ -327,8 +329,6 @@ function buffomatModule:InitUI()
   local function onMinimapClick(self1, button)
     if button == "LeftButton" then
       taskListPanelModule:ToggleWindow()
-      ---removeme
-      buffomatModule:ToggleWindow()
     else
       optionsPopupModule:Setup(Minimap, true)
     end
@@ -345,14 +345,6 @@ function buffomatModule:InitUI()
   buffomatModule:OptionsInit()
   partyModule:InvalidatePartyCache()
   BOM.repeatUpdate = false
-
-  -- Make main frame draggable
-  toolboxModule:EnableMoving(BomC_MainWindow, BOM.SaveWindowPosition)
-  if BomC_MainWindow.SetMinResize ~= nil then BomC_MainWindow:SetMinResize(180, 90) end
-
-  toolboxModule:AddTab( --[[---@type WowControl]] BomC_MainWindow, _t("TabBuff"), BomC_ListTab, true)
-  toolboxModule:AddTab( --[[---@type WowControl]] BomC_MainWindow, _t("TabSpells"), BomC_SpellTab, true)
-  toolboxModule:SelectTab(BomC_MainWindow, 1)
 end
 
 function buffomatModule:InitGlobalStates()
@@ -459,7 +451,6 @@ function BuffomatAddon:MakeSlashCommand()
       command = "close",
       description = _t("SlashClose"),
       handler = function()
-        BOM.HideWindow() ---removeme
         taskListPanelModule:HideWindow()
       end
     },
@@ -501,19 +492,8 @@ function BuffomatAddon:Init()
     local x, y = buffomatModule.shared.X, buffomatModule.shared.Y
     local w, h = buffomatModule.shared.Width, buffomatModule.shared.Height
 
-    if not x or not y or not w or not h then
-      BOM.SaveWindowPosition()
-    else
-      BomC_MainWindow:ClearAllPoints()
-      BomC_MainWindow:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", x, y)
-      BomC_MainWindow:SetWidth(w)
-      BomC_MainWindow:SetHeight(h)
-    end
+    taskListPanelModule:ShowWindow()
   end
-
-  toolboxModule:EnableSize(BomC_MainWindow, 8, nil, function()
-    BOM.SaveWindowPosition()
-  end)
 
   slashModule:RegisterSlashCommandHandler({ "/bom", "/buffomat" },
     self:MakeSlashCommand())
@@ -559,8 +539,6 @@ function BuffomatAddon:OnEnable()
   local onClick = function(control, button)
     if button == "LeftButton" then
       taskListPanelModule:ToggleWindow()
-      ---removeme
-      buffomatModule:ToggleWindow()
     else
       optionsPopupModule:Setup(control, true)
     end
@@ -618,7 +596,6 @@ partyModule.unitAurasLastUpdated = --[[---@type BomBuffUpdatesPerUnit]] {}
 ---@field isBossDebuff boolean
 ---@field castByPlayer boolean
 ---@field nameplateShowAll boolean
----@field timeMod
 
 function buffomatModule:PrintCallers(prefix, callersCollection)
   if next(callersCollection) then
@@ -636,54 +613,21 @@ end
 
 buffomatModule.autoHelper = "open"
 
----removeme
-function BOM.HideWindow()
-  if not InCombatLockdown() then
-    if BOM.WindowVisible() then
-      BomC_MainWindow:Hide()
-      buffomatModule.autoHelper = "KeepClose"
-      buffomatModule:RequestTaskRescan("hideWindow")
-      taskScanModule:ScanTasks("hideWindow")
-    end
-  end
-end
-
-function buffomatModule:SetWindowScale(s)
-  BomC_MainWindow:SetScale(s)
-end
-
----removeme
-function BOM.WindowVisible()
-  return BomC_MainWindow:IsVisible()
-end
-
----removeme
-function buffomatModule:ToggleWindow()
-  if BomC_MainWindow:IsVisible() then
-    BOM.HideWindow()
-  else
-    buffomatModule:RequestTaskRescan("toggleWindow")
-    taskScanModule:ScanTasks("toggleWindow")
-    BomModuleManager.taskListPanelModule:ShowWindow()
-  end
-end
-
 function buffomatModule:AutoOpen()
   if not InCombatLockdown() and buffomatModule.shared.AutoOpen then
-    if not BOM.WindowVisible() and buffomatModule.autoHelper == "open" then
+    if not taskListPanelModule:IsWindowVisible() and buffomatModule.autoHelper == "open" then
       buffomatModule.autoHelper = "close"
-      BomC_MainWindow:Show()
-      BomC_MainWindow:SetScale(tonumber(buffomatModule.shared.UIWindowScale) or 1.0)
-      toolboxModule:SelectTab(BomC_MainWindow, 1)
+      taskListPanelModule:ShowWindow()
+      taskListPanelModule:SetWindowScale(tonumber(buffomatModule.shared.UIWindowScale) or 1.0)
     end
   end
 end
 
 function buffomatModule:AutoClose()
   if not InCombatLockdown() and buffomatModule.shared.AutoOpen then
-    if BOM.WindowVisible() then
+    if taskListPanelModule:IsWindowVisible() then
       if buffomatModule.autoHelper == "close" then
-        BomC_MainWindow:Hide()
+        taskListPanelModule:HideWindow()
         buffomatModule.autoHelper = "open"
       end
     elseif buffomatModule.autoHelper == "KeepClose" then
@@ -701,10 +645,10 @@ function BOM.AllowAutOpen()
 end
 
 function BOM.SaveWindowPosition()
-  buffomatModule.shared.X = BomC_MainWindow:GetLeft()
-  buffomatModule.shared.Y = BomC_MainWindow:GetTop()
-  buffomatModule.shared.Width = BomC_MainWindow:GetWidth()
-  buffomatModule.shared.Height = BomC_MainWindow:GetHeight()
+  buffomatModule.shared.X = taskListPanelModule.taskFrame:GetLeft()
+  buffomatModule.shared.Y = taskListPanelModule.taskFrame:GetTop()
+  buffomatModule.shared.Width = taskListPanelModule.taskFrame:GetWidth()
+  buffomatModule.shared.Height = taskListPanelModule.taskFrame:GetHeight()
 end
 
 local function perform_who_request(name)
@@ -794,13 +738,10 @@ function BOM.MyButtonOnClick(self)
 end
 
 function buffomatModule:FadeBuffomatWindow()
-  if BomC_ListTab_Button:IsEnabled() then
-    BomC_MainWindow:SetAlpha(1.0)
+  if taskListPanelModule:IsBuffButtonEnabled() then
+    taskListPanelModule:SetAlpha(1.0)
   else
-    local fade = self.shared.FadeWhenNothingToDo
-    if type(fade) ~= "number" then
-      fade = 0.65
-    end
-    BomC_MainWindow:SetAlpha(fade) -- fade the window, default 65%
+    local fade = self.shared.FadeWhenNothingToDo or 0.65
+    taskListPanelModule:SetAlpha(fade) -- fade the window, default 65%
   end
 end

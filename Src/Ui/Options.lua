@@ -11,6 +11,7 @@ local constModule = BomModuleManager.constModule
 local eventsModule = BomModuleManager.eventsModule
 local taskScanModule = BomModuleManager.taskScanModule
 local kvOptionsModule = KvModuleManager.optionsModule
+local taskListPanelModule = BomModuleManager.taskListPanelModule
 
 local libIcon = LibStub("LibDBIcon-1.0")
 
@@ -74,7 +75,7 @@ function optionsModule:CreateGeneralOptionsTable()
         "FadeWhenNothingToDo", 0.25, 1.0, 0.05,
         buffomatModule.shared, "FadeWhenNothingToDo",
         function(_key, val)
-          BomC_MainWindow:SetAlpha(val)
+          taskListPanelModule:SetAlpha(val)
         end
       ),
       useProfiles = self:TemplateCheckbox("UseProfiles", buffomatModule.character, nil, nil),
@@ -97,7 +98,7 @@ function optionsModule:CreateGeneralOptionsTable()
         "UIWindowScale", 0.35, 2.0, 0.05,
         buffomatModule.shared, "UIWindowScale",
         function(_key, val)
-          buffomatModule:SetWindowScale(val)
+          taskListPanelModule:SetWindowScale(val)
         end
       ),
       -- Play from Interface/Addons/Buffomat/Sounds/...

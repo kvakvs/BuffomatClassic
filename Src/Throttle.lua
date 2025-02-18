@@ -6,6 +6,7 @@ local spellButtonsTabModule = BomModuleManager.spellButtonsTabModule
 local buffomatModule = BomModuleManager.buffomatModule
 local eventsModule = BomModuleManager.eventsModule
 local taskScanModule = BomModuleManager.taskScanModule
+local _t = BomModuleManager.languagesModule
 
 ---@class BomThrottleState
 ---@field lastUpdateTimestamp number
@@ -42,7 +43,10 @@ end
 
 ---This runs every frame, do not do any excessive work here
 function throttleModule:UpdateTimer(elapsed)
-  if InCombatLockdown() then
+  local inCombat = InCombatLockdown()
+
+  if inCombat then
+    -- taskScanModule.tasklist:CastButtonText(_t("castButton.InCombat"), false)
     return
   end
 
@@ -96,7 +100,7 @@ function throttleModule:UpdateTimer(elapsed)
 
   if (needForceUpdate or BOM.repeatUpdate)
       and now - (throttleState.lastUpdateTimestamp or 0) > updateTimerLimit
-      and InCombatLockdown() == false
+      and not inCombat
   then
     throttleState.lastUpdateTimestamp = now
     throttleState.fpsCheck = debugprofilestop()
