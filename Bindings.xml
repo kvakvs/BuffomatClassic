@@ -1,6 +1,6 @@
 <Bindings>
   <Binding name="MACRO Buff'o'mat" header="BUFFOMATHEADER"/>
   <Binding name="BUFFOMAT_WINDOW">
-    BomModuleManager.taskListPanelModule:ShowWindow()
+    BomModuleManager.taskListPanelModule:ToggleWindow()
   </Binding>
 </Bindings>

@@ -238,6 +238,7 @@
 
       <!--
         Settings button, opens BOM settings
+        Delete this button
         -->
       <Button name="$parent_SettingsButton" inherits="BomC_MiniButton"
               text="|TInterface\Buttons\UI-OptionsButton:0|t">
@@ -249,7 +250,7 @@
                   relativePoint="LEFT"/>
         </Anchors>
         <Scripts>
-          <OnMouseDown>BuffomatAddon.BtnSettings(self)</OnMouseDown>
+          <!-- <OnMouseDown>BuffomatAddon.BtnSettings(self)</OnMouseDown> -->
           <OnLoad>BomModuleManager.toolboxModule:TooltipWithTranslationKey(self, "TooltipSettingsButton")
           </OnLoad>
         </Scripts>
@@ -257,6 +258,7 @@
 
       <!--
         Macro button, draggable becomes a macro link
+        Delete this button
         -->
       <Button name="$parent_MacroButton" inherits="BomC_MiniButton"
               text="Macro">
@@ -268,7 +270,7 @@
                   relativePoint="LEFT"/>
         </Anchors>
         <Scripts>
-          <OnMouseDown>BuffomatAddon.BtnMacro()</OnMouseDown>
+          <!-- <OnMouseDown>BuffomatAddon.BtnMacro()</OnMouseDown> -->
           <OnLoad>BomModuleManager.toolboxModule:TooltipWithTranslationKey(self, "TooltipMacroButton")
           </OnLoad>
         </Scripts>

@@ -71,7 +71,7 @@ local throttleModule = BomModuleManager.throttleModule ---@type BomThrottleModul
 ---@field MANA_CLASSES BomClassName[] Classes with mana resource
 ---@field nextCooldownDue number Set this to next spell cooldown to force update
 ---@field isPartyUpdateNeeded boolean Requests player party update
----@field popupMenuDynamic BomPopupDynamic
+---@field popupMenuDynamic GPIPopupDynamic
 ---@field quickSingleBuffToggleButton BomGPIControl Button for single/group buff toggling next to cast button
 ---@field repeatUpdate boolean Requests some sort of spells update similar to ForceUpdate
 ---@field reputationTrinketZones BomReputationTrinketZones Equipped AD trinket: Spell to and zone ids to check
@@ -122,15 +122,6 @@ end
 ---@param texture WowIconId - path to UI texture file (for example can come from C_Container.GetContainerItemInfo(bag, slot) or spell info etc
 function BOM.FormatTexture(texture)
   return string.format(constModule.ICON_FORMAT, texture)
-end
-
-function BOM.BtnSettings(settingsButton)
-  optionsPopupModule:Setup(settingsButton, false)
-end
-
----Bound the the macro cast button in the buff tab
-function BOM.BtnMacro()
-  PickupMacro(constModule.MACRO_NAME)
 end
 
 function BOM.ScrollMessage(self, delta)
@@ -310,17 +301,7 @@ function buffomatModule:CreateBuffsDialog()
 end
 
 function buffomatModule:InitUI()
-  BomC_ListTab_MessageFrame:SetFading(false);
-  BomC_ListTab_MessageFrame:SetFontObject(GameFontNormalSmall);
-  BomC_ListTab_MessageFrame:SetJustifyH("LEFT");
-  BomC_ListTab_MessageFrame:SetHyperlinksEnabled(true);
-  BomC_ListTab_MessageFrame:Clear()
-  BomC_ListTab_MessageFrame:SetMaxLines(100)
-
-  BomC_ListTab_Button:SetAttribute("type", "macro")
-  BomC_ListTab_Button:SetAttribute("macro", constModule.MACRO_NAME)
-
-  taskListPanelModule:CreateTaskFrame()
+  taskListPanelModule:ShowWindow()
 
   toolboxModule:OnUpdate(function(elapsed) throttleModule:UpdateTimer(elapsed) end)
 
@@ -688,42 +669,8 @@ function BOM.ClickHyperlink(self, link)
   end
 end
 
---function buffomatModule.Slash_DebugBuffs(dest)
---  dest = dest or "player"
---
---  print("LastTracking:", buffomatModule.character.lastTrackingIconId, " ")
---  print("ForceTracking:", BOM.forceTracking, " ")
---  print("ActivAura:", BOM.activePaladinAura, " ")
---  print("LastAura:", BOM.currentProfile.LastAura, " ")
---  print("ActivSeal:", BOM.activePaladinSeal, " ")
---  print("LastSeal:", BOM.currentProfile.LastSeal, " ")
---  print("Shapeshift:", GetShapeshiftFormID(), " ")
---  print("Weaponenchantment:", GetWeaponEnchantInfo())
---
---  --local name, icon, count, debuffType, duration, expirationTime, source,
---  --isStealable, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff,
---  --castByPlayer, nameplateShowAll, timeMod
---  for buffIndex = 1, 40 do
---    local unitAura = buffomatModule:UnitAura(dest, buffIndex, "HELPFUL")
---
---    if unitAura.name or unitAura.icon or unitAura.count or unitAura.debuffType then
---      print("Help:", unitAura.name, unitAura.spellId, unitAura.duration,
---              unitAura.expirationTime, unitAura.source,
---              (unitAura.expirationTime or 0) - GetTime())
---    end
---  end -- for 40 buffs
---end
 
 function buffomatModule.Slash_DebugBuffList()
-  --  print("PlayerBuffs stored ", #partyModule.unitAurasLastUpdated)
-  --
-  --  for name, spellist in pairs(partyModule.unitAurasLastUpdated) do
-  --    print(name)
-  --
-  --    for spellname, ti in pairs(spellist) do
-  --      print(name, spellname, ti, GetTime() - ti)
-  --    end
-  --  end
 end
 
 function BOM.ShowSpellSettings()

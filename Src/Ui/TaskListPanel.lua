@@ -23,7 +23,7 @@ local _t = BomModuleManager.languagesModule
 local libGUI = LibStub("AceGUI-3.0")
 
 function taskListPanelModule:CreateTaskFrame()
-  local taskFrame = libGUI:Create("Window")
+  local taskFrame = libGUI:Create("NgTaskListWindow")
   self.taskFrame = taskFrame
   taskFrame:SetLayout("Fill")
   taskFrame:ClearAllPoints()
@@ -51,12 +51,12 @@ function taskListPanelModule:SetTitle()
 end
 
 function taskListPanelModule:ToggleWindow()
-  if self.taskFrame then
+  if self:IsWindowVisible() then
     self:HideWindow()
   else
     buffomatModule:RequestTaskRescan("toggleWindow")
     taskScanModule:ScanTasks("toggleWindow")
-    self:ShowWindow(nil)
+    self:ShowWindow()
   end
 end
 
@@ -65,26 +65,25 @@ function taskListPanelModule:IsWindowVisible()
 end
 
 function taskListPanelModule:HideWindow()
-  if not InCombatLockdown() then
-    if self.taskFrame ~= nil then
-      self.taskFrame:Hide()
-      buffomatModule.autoHelper = "KeepClose"
-      buffomatModule:RequestTaskRescan("hideWindow")
-      taskScanModule:ScanTasks("hideWindow")
-    end
+  if not InCombatLockdown() and self.taskFrame ~= nil then
+    self.taskFrame:Release()
+    self.taskFrame = nil
+    buffomatModule.autoHelper = "KeepClose"
+    buffomatModule:RequestTaskRescan("hideWindow")
+    taskScanModule:ScanTasks("hideWindow")
   end
 end
 
 function taskListPanelModule:ShowWindow()
   if not InCombatLockdown() then
-    if self.taskFrame ~= nil then
+    if self.taskFrame == nil then
       -- self.taskFrame:Show()
       self:CreateTaskFrame()
       self:SetWindowScale(tonumber(buffomatModule.shared.UIWindowScale) or 1.0)
       buffomatModule:RequestTaskRescan("showWindow")
       buffomatModule.autoHelper = "KeepOpen"
     else
-      self:HideWindow()
+      self.taskFrame:Show()
     end
   else
     BOM:Print(_t("message.ShowHideInCombat"))
@@ -141,7 +140,7 @@ function taskListPanelModule:CreateUIRow()
   buffButton.frame:SetAttribute("type", "macro")
   buffButton.frame:SetAttribute("macro", constModule.MACRO_NAME)
   buffButton:SetFullWidth(true)
-  buffButton:SetHeight(32)
+  buffButton:SetHeight(24)
   -- buffButton.frame:SetNormalTexture("Interface\\Buttons\\UI-MicroButton-Talents-Up")
   -- buffButton.frame:SetPushedTexture("Interface\\Buttons\\UI-MicroButton-Talents-Down")
   -- buffButton.frame:SetDisabledTexture("Interface\\Buttons\\UI-MicroButton-Talents-Disabled")

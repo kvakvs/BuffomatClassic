@@ -12,8 +12,9 @@ constModule.TOC_TITLE = GetAddOnMetadata(TOCNAME, "Title")     -- Longer title l
 constModule.SHORT_TITLE = "Buffomat"
 constModule.MACRO_ICON = "INV_MISC_QUESTIONMARK"
 constModule.MACRO_ICON_DISABLED = "INV_MISC_QUESTIONMARK"
-constModule.BOM_BEAR_ICON_FULLPATH =
-"Interface\\ICONS\\Ability_Druid_ChallangingRoar"                                      -- Icon picture used in window title, in the minimap icon, etc
+constModule.BOM_BEAR_ICON_FULLPATH = "Interface\\ICONS\\Ability_Druid_ChallangingRoar"
+constModule.BOM_OPTIONS_ICON_FULLPATH = "Interface\\ICONS\\spell_magic_polymorphchicken"
+constModule.BOM_SPELL_SETTINGS_ICON_FULLPATH = "Interface\\ICONS\\Spell_Magic_PolymorphRabbit"
 
 constModule.ICON_FORMAT = "|T%s:0:0:0:0:64:64:4:60:4:60|t"
 constModule.PICTURE_FORMAT = "|T%s:0|t"

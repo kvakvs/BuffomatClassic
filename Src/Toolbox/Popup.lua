@@ -5,7 +5,7 @@ local BOM = BuffomatAddon
 local popupModule = BomModuleManager.popupModule ---@type BomPopupModule
 popupModule.libDD = LibStub:GetLibrary("LibUIDropDownMenu-4.0")
 
----@class BomPopupDynamic
+---@class GPIPopupDynamic
 ---@field _Frame BomGPIControl Popup currently open in the game (to see if its our popup or not)
 ---@field _where string Where the popup was displayed (cursor, mouse, center)
 ---@field _x number X offset where it was displayed
@@ -207,7 +207,7 @@ function popupDynamicClass:SetMenuItems(items)
   self._Frame.bomMenuItems = items
 end
 
----@return BomPopupDynamic
+---@return GPIPopupDynamic
 ---@param callbackFn function
 function popupModule:CreatePopup(callbackFn)
   local popup = --[[---@type BomPopupDynamic]] {}

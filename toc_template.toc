@@ -70,13 +70,10 @@ Src/Ui/BuffRow.lua
 Src/Ui/ControlManager.lua
 Src/Ui/ManagedUi.lua
 Src/Ui/Options.lua
-Src/Ui/OptionsPopup.lua
+Src/Ui/OptionsPopupMenu.lua
+Src/Ui/SpellsDialog.lua
 Src/Ui/SpellButtonsTab.lua
 Src/Ui/UiButton.lua
-# new stuff 2025
-Src/Ui/TaskListPanel.lua
-Src/Ui/NgToolbox.lua
-Src/Ui/NgSecureActionButton.lua
 
 Src/Events.lua
 Src/Languages/Languages.lua
@@ -92,6 +89,11 @@ Src/Toolbox/SlashCommands.lua
 Src/Toolbox/Popup.lua
 
 Src/Ui/Buffomat.xml
+
+Src/Ui/TaskListPanel.lua
+Src/Ui/NgToolbox.lua
+Src/Ui/NgSecureActionButton.lua
+Src/Ui/NgTaskListWindow.lua
 
 #
 # Do not edit - this file is generated from TOC_TEMPLATE.TOC

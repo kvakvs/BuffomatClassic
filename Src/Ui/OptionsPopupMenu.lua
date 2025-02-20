@@ -17,39 +17,6 @@ local profileModule = BomModuleManager.profileModule
 local popupModule = BomModuleManager.popupModule
 local allBuffsModule = BomModuleManager.allBuffsModule
 
------@deprecated See options.lua, and defaults in sharedState.lua and characterState.lua
---optionsPopupModule.behaviourSettings = --[[---@type BomBehaviourSetting[] ]] {
---  { name = "AutoOpen", value = true },
---  { name = "ScanInRestArea", value = false },
---  { name = "ScanInStealth", value = false },
---  { name = "ScanWhileMounted", value = true },
---  { name = "InWorld", value = true },
---  { name = "InPVP", value = true },
---  { name = "InInstance", value = true },
---  { name = "PreventPVPTag", value = true },
---
---  { name = "DeathBlock", value = true },
---  { name = "NoGroupBuff", value = false },
---  { name = "SameZone", value = false },
---  { name = "ResGhost", value = false },
---  { name = "ReplaceSingle", value = true },
---  { name = "ReputationTrinket", value = false },
---  { name = "Carrot", value = false },
---  { name = "MainHand", value = false },
---  { name = "SecondaryHand", value = false },
---  { name = "UseRank", value = true },
---  { name = "AutoCrusaderAura", value = true },
---  { name = "AutoDismount", value = true },
---  { name = "AutoDismountFlying", value = false },
---  { name = "AutoStand", value = true },
---  { name = "AutoDisTravel", value = true },
---  { name = "BuffTarget", value = false },
---  { name = "OpenLootable", value = true },
---  { name = "SelfFirst", value = false },
---  { name = "DontUseConsumables", value = false },
---  { name = "SlowerHardware", value = false },
---  { name = "SomeoneIsDrinking", value = false },
---}
 
 ---Makes a tuple to pass to the menubuilder to display a settings checkbox in popup menu
 ---@param db table - BuffomatShared reference to read settings from it
@@ -62,38 +29,32 @@ function optionsPopupModule.OpenOptions()
   LibStub("AceConfigDialog-3.0"):Open(constModule.SHORT_TITLE)
 end
 
------Populate the [⚙] popup menu: Submenu "Quick Options"
------@deprecated
---function optionsPopupModule:PopupQuickOptions()
---  BOM.popupMenuDynamic:SubMenu(_t("popup.QuickSettings"), "subSettings")
---
---  for i, setting in ipairs(self.behaviourSettings) do
---    BOM.popupMenuDynamic:AddItem(self:MakeSettingsRow(buffomatModule.shared, setting.name), nil, nil, nil, nil)
---  end
---
---  -- -------------------------------------------
---  -- Watch in Raid group -> 1 2 3 4 5 6 7 8
---  -- -------------------------------------------
---  BOM.popupMenuDynamic:AddItem(nil, nil, nil, nil, nil)
---  BOM.popupMenuDynamic:SubMenu(_t("HeaderWatchGroup"), "subGroup", nil)
---
---  for i = 1, 8 do
---    BOM.popupMenuDynamic:AddItem(i, "keep", buffomatModule.character.WatchGroup, i, nil)
---  end
---
---  BOM.popupMenuDynamic:SubMenu(nil, nil)
---end
-
 ---Populate the [⚙] popup menu
 ---@param minimap boolean
 function optionsPopupModule:Setup(control, minimap)
   local name = (control:GetName() or "nil") .. (minimap and "Minimap" or "Normal")
-  local dyn = BOM.popupMenuDynamic
+  local dyn = BOM.popupMenuDynamic ---@type GPIPopupDynamic
   local menuItems = --[[---@type BomMenuItemDef[] ]] {}
 
   if not dyn:Wipe(name) then
     return
   end
+
+  -- Add auto-hide functionality
+  dyn._Frame:SetClampedToScreen(true)
+  dyn._Frame:SetFrameStrata("DIALOG")
+  dyn._Frame:EnableMouse(true)
+
+  -- Make the frame close when clicking outside
+  dyn._Frame:SetAttribute("clickOnClose", true)
+  dyn._Frame:HookScript("OnLeave", function(menu)
+    -- Add slight delay to allow clicking menu items
+    C_Timer.After(0.5, function()
+      if not MouseIsOver(menu) then
+        menu:Hide()
+      end
+    end)
+  end)
 
   if minimap then
     table.insert(menuItems, popupModule:Clickable(_t("popup.OpenBuffomat"), BOM.ShowWindow, nil, nil))
@@ -136,7 +97,6 @@ function optionsPopupModule:Setup(control, minimap)
 
   table.insert(menuItems, popupModule:Separator())
 
-
   -- --------------------------------------------
   -- Selected spells check on/off
   -- --------------------------------------------
@@ -150,11 +110,6 @@ function optionsPopupModule:Setup(control, minimap)
       end
     end
   end
-
-  --local inBuffGroup -- unused? nil?
-  --if inBuffGroup then
-  --  dyn:SubMenu(nil, nil)
-  --end
 
   table.insert(menuItems, popupModule:Separator())
 
