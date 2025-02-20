@@ -54,6 +54,7 @@
 ---@field spellCacheModule BomSpellCacheModule
 ---@field spellIdsModule BomSpellIdsModule
 ---@field spellSetupModule BomSpellSetupModule
+---@field spellsDialogModule BomSpellsDialogModule
 ---@field taskListModule BomTaskListModule
 ---@field taskListPanelModule TaskListPanelModule
 ---@field taskModule BomTaskModule
@@ -123,6 +124,7 @@ BomModuleManager = {
   spellCacheModule = --[[---@type BomSpellCacheModule]] {},
   spellIdsModule = --[[---@type BomSpellIdsModule]] {},
   spellSetupModule = --[[---@type BomSpellSetupModule]] {},
+  spellsDialogModule = --[[---@type BomSpellsDialogModule]] {},
   taskListModule = --[[---@type BomTaskListModule]] {},
   taskListPanelModule = --[[---@type TaskListPanelModule]] {},
   taskModule = --[[---@type BomTaskModule]] {},

@@ -327,7 +327,7 @@ end
 function eventsModule.Event_SpellsChanged()
   spellSetupModule:SetupAvailableSpells()
   buffomatModule:RequestTaskRescan("spellsChanged")
-  spellButtonsTabModule:UpdateSpellsTab("spellsChanged")
+  --spellButtonsTabModule:UpdateSpellsTab("spellsChanged")
 end
 
 local function Event_Bag()

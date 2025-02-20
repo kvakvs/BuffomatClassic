@@ -6,7 +6,7 @@ local optionsPopupModule = BomModuleManager.optionsPopupModule ---@type BomOptio
 local constModule = BomModuleManager.constModule ---@type BomConstModule
 local toolboxModule = BomModuleManager.toolboxModule ---@type BomToolboxModule
 local _t = BomModuleManager.languagesModule ---@type BomLanguagesModule
-
+local spellsDialogModule = BomModuleManager.spellsDialogModule ---@type BomSpellsDialogModule
 -- Lua APIs
 local pairs, assert, type = pairs, assert, type
 
@@ -185,9 +185,7 @@ do
     local spellsButton = CreateFrame("Button", nil, window.frame, "UIPanelCloseButton")
     spellsButton:SetPoint("TOPRIGHT", 2 - buttonWidthExtra * 3, 1)
     SetButtonTexture(spellsButton, constModule.BOM_SPELL_SETTINGS_ICON_FULLPATH)
-    spellsButton:SetScript("OnClick", function()
-      spellsPopupModule:Setup(spellsButton, false)
-    end)
+    spellsButton:SetScript("OnClick", function() spellsDialogModule:Show() end)
     toolboxModule:Tooltip(spellsButton, _t("TooltipSpellsBuffsButton"))
     window.spellsButton = spellsButton
     spellsButton.obj = window

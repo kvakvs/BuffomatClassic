@@ -2,6 +2,10 @@
 local BOM = BuffomatAddon
 
 ---@alias BomElixirType "battle"|"guardian"|"both"
+---@alias WowSpellId number
+---@alias WowItemId number
+---@alias WowShapeshiftFormId number
+---@alias WowIconId number|string
 
 ---@class BomBuffDefinitionModule
 local buffDefModule = BomModuleManager.buffDefinitionModule ---@type BomBuffDefinitionModule
@@ -72,7 +76,7 @@ end
 ---@field ExcludedTarget BomForcedTargets [⚠DO NOT RENAME] List of target names to never buff
 ---@field extraText string Added to the right of spell name in the spells config
 ---@field ForcedTarget BomForcedTargets [⚠DO NOT RENAME] List of extra targets to buff
----@field frames BomBuffRowFrames Dynamic list of controls associated with this spell in the UI
+---@field frames BomBuffRowFrames [deprecated] Dynamic list of controls associated with this spell in the UI
 ---@field groupDuration number Buff duration for group buff in seconds
 ---@field groupFamily number[]|nil Family of group buff spell ids which are mutually exclusive
 ---@field groupLink string Printable link for group buff

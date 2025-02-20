@@ -2,11 +2,11 @@ local BOM = BuffomatAddon
 
 ---@class BomThrottleModule
 local throttleModule = BomModuleManager.throttleModule ---@type BomThrottleModule
-local spellButtonsTabModule = BomModuleManager.spellButtonsTabModule
 local buffomatModule = BomModuleManager.buffomatModule
 local eventsModule = BomModuleManager.eventsModule
 local taskScanModule = BomModuleManager.taskScanModule
 local _t = BomModuleManager.languagesModule
+local profileModule = BomModuleManager.profileModule
 
 ---@class BomThrottleState
 ---@field lastUpdateTimestamp number
@@ -61,11 +61,12 @@ function throttleModule:UpdateTimer(elapsed)
     end
   end
 
-  -- Update spells tab if necessary and update last update time if successful
   if now - throttleState.lastSpellsTabUpdate > throttleState.SPELLS_TAB_UPDATE_DELAY then
-    if spellButtonsTabModule:UpdateSpellsTab_Throttled() then
-      throttleState.lastSpellsTabUpdate = now
-    end
+    -- if spellButtonsTabModule:UpdateSpellsTab_Throttled() then
+    -- throttleState.lastSpellsTabUpdate = now
+    -- end
+    buffomatModule:UseProfile(profileModule:ChooseProfile())
+    throttleState.lastSpellsTabUpdate = now
   end
 
   if BOM.nextCooldownDue and BOM.nextCooldownDue <= now then

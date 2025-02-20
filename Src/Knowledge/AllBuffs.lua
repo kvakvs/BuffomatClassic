@@ -181,11 +181,16 @@ function allBuffsModule:SetupConstantsCategories()
   -- Categories ordered for display
   self.buffCategories = {
     "class", "classWeaponEnchantment", "blessing", "seal", "aura", "pet", "tracking",
-    "cataFood", "cataElixir", "cataFlask",
-    "wotlkPhysElixir", "wotlkSpellElixir", "wotlkElixir", "wotlkFlask", "wotlkFood", "wotlkPhysFood", "wotlkSpellFood",
-    "tbcPhysElixir", "tbcSpellElixir", "tbcElixir", "tbcFlask", "tbcFood", "tbcPhysFood", "tbcSpellFood",
+
     "classicPhysElixir", "classicPhysBuff", "classicSpellElixir", "classicElixir", "classicFlask",
     "classicFood", "classicPhysFood", "classicSpellFood",
+
+    "wotlkPhysElixir", "wotlkSpellElixir", "wotlkElixir", "wotlkFlask", "wotlkFood", "wotlkPhysFood", "wotlkSpellFood",
+
+    "tbcPhysElixir", "tbcSpellElixir", "tbcElixir", "tbcFlask", "tbcFood", "tbcPhysFood", "tbcSpellFood",
+
+    "cataFood", "cataElixir", "cataFlask",
+
     "scroll", "weaponEnchantment",
     "", -- special value no category
   }

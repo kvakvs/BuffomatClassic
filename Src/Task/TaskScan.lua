@@ -176,8 +176,8 @@ function taskScanModule:UpdateMissingBuffs_EachBuff(party, buffDef, buffCtx)
     table.insert(buffDef.unitsHaveBetterBuff, party.player)
   elseif not buffDefModule:IsBuffEnabled(buffDef.buffId, nil) then
     --nothing, the spell is not enabled!
-  elseif spellButtonsTabModule:CategoryIsHidden(buffDef.category) then
-    --nothing, the category is not showing!
+  -- elseif spellButtonsTabModule:CategoryIsHidden(buffDef.category) then
+  --   --nothing, the category is not showing!
   elseif buffDef.type == "weapon" then
     buffChecksModule:PlayerNeedsWeaponBuff(buffDef, party.player)
     -- NOTE: This must go before spell.IsConsumable clause

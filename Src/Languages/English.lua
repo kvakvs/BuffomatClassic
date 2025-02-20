@@ -420,5 +420,7 @@ function englishModule:Translations()
         "Cast the spell from the list.|nNot available in combat.|nCan also be activated via the macro (in the top row)|nor bind a shortcut key in Key Bindings => Other",
 
         SpellLabel_TrackHumanoids = "Cat only - Overrides track herbs and ore",
+        SpellsWindow_Title = "Select Spells and Buffs",
+        SpellsWindow_ShowCategory = "Check to show this category",
     }
 end
