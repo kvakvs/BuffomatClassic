@@ -145,10 +145,10 @@ local function Event_PLAYER_TARGET_CHANGED()
   if not InCombatLockdown() then
     if UnitInParty("target") or UnitInRaid("target") or UnitIsUnit("target", "player") then
       BOM.lastTarget = UnitFullName("target")
-      spellButtonsTabModule:UpdateSpellsTab("PL_TAR_CHANGED1")
+      --spellButtonsTabModule:UpdateSpellsTab("PL_TAR_CHANGED1")
     elseif BOM.lastTarget then
       BOM.lastTarget = nil
-      spellButtonsTabModule:UpdateSpellsTab("PL_TAR_CHANGED2")
+      --spellButtonsTabModule:UpdateSpellsTab("PL_TAR_CHANGED2")
     end
   else
     BOM.lastTarget = nil

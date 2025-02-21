@@ -421,18 +421,18 @@ function taskScanModule:ActivateSelectedTracking()
           if GetShapeshiftFormID() == buffDef.requiresForm
               and BOM.forceTracking ~= buffDef.trackingIconId then
             BOM.forceTracking = buffDef.trackingIconId
-            spellButtonsTabModule:UpdateSpellsTab("ForceUp1")
+            --spellButtonsTabModule:UpdateSpellsTab("ForceUp1")
           end
         elseif buffChecksModule:IsTrackingActive(buffDef)
             and buffomatModule.character.lastTrackingIconId ~= buffDef.trackingIconId then
           buffomatModule.character.lastTrackingIconId = buffDef.trackingIconId
-          spellButtonsTabModule:UpdateSpellsTab("ForceUp2")
+          --spellButtonsTabModule:UpdateSpellsTab("ForceUp2")
         end
       else
         if buffomatModule.character.lastTrackingIconId == buffDef.trackingIconId
             and buffomatModule.character.lastTrackingIconId ~= nil then
           buffomatModule.character.lastTrackingIconId = nil
-          spellButtonsTabModule:UpdateSpellsTab("ForceUp3")
+          --spellButtonsTabModule:UpdateSpellsTab("ForceUp3")
         end
       end -- if spell.enable
     end   -- if tracking
@@ -483,13 +483,13 @@ function taskScanModule:CheckChangesAndUpdateSpelltab()
         if BOM.activePaladinAura == buffDef.buffId
             and buffomatModule.currentProfile.LastAura ~= buffDef.buffId then
           buffomatModule.currentProfile.LastAura = buffDef.buffId
-          spellButtonsTabModule:UpdateSpellsTab("ForceUp4")
+          --spellButtonsTabModule:UpdateSpellsTab("ForceUp4")
         end
       else
         if buffomatModule.currentProfile.LastAura == buffDef.buffId
             and buffomatModule.currentProfile.LastAura ~= nil then
           buffomatModule.currentProfile.LastAura = nil
-          spellButtonsTabModule:UpdateSpellsTab("ForceUp5")
+          --spellButtonsTabModule:UpdateSpellsTab("ForceUp5")
         end
       end -- if currentprofile.spell.enable
     elseif buffDef.type == "seal" then
@@ -497,13 +497,13 @@ function taskScanModule:CheckChangesAndUpdateSpelltab()
         if BOM.activePaladinSeal == buffDef.buffId
             and buffomatModule.currentProfile.LastSeal ~= buffDef.buffId then
           buffomatModule.currentProfile.LastSeal = buffDef.buffId
-          spellButtonsTabModule:UpdateSpellsTab("ForceUp6")
+          --spellButtonsTabModule:UpdateSpellsTab("ForceUp6")
         end
       else
         if buffomatModule.currentProfile.LastSeal == buffDef.buffId
             and buffomatModule.currentProfile.LastSeal ~= nil then
           buffomatModule.currentProfile.LastSeal = nil
-          spellButtonsTabModule:UpdateSpellsTab("ForceUp7")
+          --spellButtonsTabModule:UpdateSpellsTab("ForceUp7")
         end
       end -- if currentprofile.spell.enable
     end   -- if is aura
@@ -1701,7 +1701,7 @@ function taskScanModule:UpdateScan_PreCheck(from)
 
   if buffomatModule.currentProfileName ~= selectedProfileName then
     buffomatModule:UseProfile(selectedProfileName)
-    spellButtonsTabModule:UpdateSpellsTab("profileChanged")
+    --spellButtonsTabModule:UpdateSpellsTab("profileChanged")
     buffomatModule:RequestTaskRescan("profileChanged")
   end
 

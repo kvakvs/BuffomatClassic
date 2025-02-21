@@ -151,7 +151,7 @@ function buffomatModule.OptionsUpdate()
   buffomatModule:RequestTaskRescan("optionsUpdate")
   taskScanModule:ScanTasks("OptionsUpdate")
 
-  spellButtonsTabModule:UpdateSpellsTab("OptionsUpdate")
+  --spellButtonsTabModule:UpdateSpellsTab("OptionsUpdate")
   managedUiModule:UpdateAll()
   --BOM.minimapButton:UpdatePosition()
   --BOM.legacyOptions.DoCancel()

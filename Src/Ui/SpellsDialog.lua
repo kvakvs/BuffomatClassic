@@ -131,7 +131,6 @@ function spellsDialogModule:CreateCategoryFrames(context)
     showCategoryCheckbox:SetValue(isVisible)
     showCategoryCheckbox:SetLabel("")
     showCategoryCheckbox:SetCallback("OnValueChanged", function(_control, _callbackName, value)
-      BOM:Print("OnValueChanged " .. tostring(value))
       buffomatModule.character.BuffCategoriesHidden[cat] = not value
       -- SetVisible(self.context.categoryContentFrames[cat], value)
       -- categoryFrame:DoLayout()
@@ -162,7 +161,9 @@ function spellsDialogModule:CreateBuffRow(buffDef, profileBuff, context)
 
   local checkEnabled = libGUI:Create("CheckBox")
   checkEnabled:SetValue(profileBuff.Enable)
-  checkEnabled:SetCallback("OnValueChanged", function(value) profileBuff.Enable = value end)
+  checkEnabled:SetCallback("OnValueChanged", function(_control, _callbackName, value)
+    profileBuff.Enable = value
+  end)
   checkEnabled:SetLabel(buffDef.singleLink)
   checkEnabled:SetWidth(250)
   row:AddChild(checkEnabled)
