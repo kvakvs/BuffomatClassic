@@ -1,15 +1,15 @@
 local BOM = BuffomatAddon
 
----@class BomOptionsModule
+---@class OptionsModule
 
-local optionsModule = --[[@as BomOptionsModule]] LibStub("Buffomat-Options")
+local optionsModule = --[[@as OptionsModule]] LibStub("Buffomat-Options")
 
-local _t = --[[@as BomLanguagesModule]] LibStub("Buffomat-Languages")
-local allBuffsModule = --[[@as BomAllBuffsModule]] LibStub("Buffomat-AllBuffs")
-local buffomatModule = --[[@as BomBuffomatModule]] LibStub("Buffomat-Buffomat")
-local constModule = --[[@as BomConstModule]] LibStub("Buffomat-Const")
-local eventsModule = --[[@as BomEventsModule]] LibStub("Buffomat-Events")
-local taskScanModule = --[[@as BomTaskScanModule]] LibStub("Buffomat-TaskScan")
+local _t = --[[@as LanguagesModule]] LibStub("Buffomat-Languages")
+local allBuffsModule = --[[@as AllBuffsModule]] LibStub("Buffomat-AllBuffs")
+local buffomatModule = --[[@as BuffomatModule]] LibStub("Buffomat-Buffomat")
+local constModule = --[[@as ConstModule]] LibStub("Buffomat-Const")
+local eventsModule = --[[@as EventsModule]] LibStub("Buffomat-Events")
+local taskScanModule = --[[@as TaskScanModule]] LibStub("Buffomat-TaskScan")
 local kvOptionsModule = --[[@as KvOptionsModule]] LibStub("KvLibShared-Options")
 local taskListPanelModule = --[[@as TaskListPanelModule]] LibStub("Buffomat-TaskListPanel")
 

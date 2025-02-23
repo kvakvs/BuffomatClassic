@@ -12,10 +12,10 @@ local BOM = BuffomatAddon
 
 local spellsDialogModule = --[[@as BomSpellsDialogModule]] LibStub:NewLibrary("Buffomat-SpellsDialog", 1)
 
-local _t = --[[@as BomLanguagesModule]] LibStub("Buffomat-Languages")
-local allBuffsModule = --[[@as BomAllBuffsModule]] LibStub("Buffomat-AllBuffs")
-local buffomatModule = --[[@as BomBuffomatModule]] LibStub("Buffomat-Buffomat")
-local buffDefModule = --[[@as BomBuffDefinitionModule]] LibStub("Buffomat-BuffDefinition")
+local _t = --[[@as LanguagesModule]] LibStub("Buffomat-Languages")
+local allBuffsModule = --[[@as AllBuffsModule]] LibStub("Buffomat-AllBuffs")
+local buffomatModule = --[[@as BuffomatModule]] LibStub("Buffomat-Buffomat")
+local buffDefModule = --[[@as BuffDefinitionModule]] LibStub("Buffomat-BuffDefinition")
 local ngToolboxModule = --[[@as NgToolboxModule]] LibStub("Buffomat-NgToolbox")
 local texturesModule = --[[@as BomTexturesModule]] LibStub("Buffomat-Textures")
 

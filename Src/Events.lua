@@ -1,18 +1,18 @@
---local TOCNAME, _ = ...
 local BOM = BuffomatAddon
 
----@class BomEventsModule
+---@class EventsModule
 
-local eventsModule = --[[@as BomEventsModule]] LibStub("Buffomat-Events")
-local taskListModule = --[[@as BomTaskListModule]] LibStub("Buffomat-TaskList")
-local allBuffsModule = --[[@as BomAllBuffsModule]] LibStub("Buffomat-AllBuffs")
-local buffomatModule = --[[@as BomBuffomatModule]] LibStub("Buffomat-Buffomat")
-local constModule = --[[@as BomConstModule]] LibStub("Buffomat-Const")
-local partyModule = --[[@as BomPartyModule]] LibStub("Buffomat-Party")
-local profileModule = --[[@as BomProfileModule]] LibStub("Buffomat-Profile")
+local allBuffsModule = --[[@as AllBuffsModule]] LibStub("Buffomat-AllBuffs")
+local buffomatModule = --[[@as BuffomatModule]] LibStub("Buffomat-Buffomat")
+local constModule = --[[@as ConstModule]] LibStub("Buffomat-Const")
+local envModule = --[[@as KvSharedEnvModule]] LibStub("KvLibShared-Env")
+local eventsModule = --[[@as EventsModule]] LibStub("Buffomat-Events")
+local partyModule = --[[@as PartyModule]] LibStub("Buffomat-Party")
+local profileModule = --[[@as ProfileModule]] LibStub("Buffomat-Profile")
 local spellSetupModule = --[[@as BomSpellSetupModule]] LibStub("Buffomat-SpellSetup")
-local taskScanModule = --[[@as BomTaskScanModule]] LibStub("Buffomat-TaskScan")
-local envModule = --[[@as KvLibEnvModule]] LibStub("KvLibShared-Env")
+local taskListModule = --[[@as TaskListModule]] LibStub("Buffomat-TaskList")
+local taskListPanelModule = --[[@as TaskListPanelModule]] LibStub("Buffomat-TaskListPanel")
+local taskScanModule = --[[@as TaskScanModule]] LibStub("Buffomat-TaskScan")
 
 --"UNIT_POWER_UPDATE","UNIT_SPELLCAST_START","UNIT_SPELLCAST_STOP","PLAYER_STARTED_MOVING","PLAYER_STOPPED_MOVING"
 eventsModule.EVT_COMBAT_STOP = { "PLAYER_REGEN_ENABLED" }
@@ -20,6 +20,7 @@ eventsModule.EVT_COMBAT_START = { "PLAYER_REGEN_DISABLED" }
 eventsModule.EVT_LOADING_SCREEN_START = { "LOADING_SCREEN_ENABLED", "PLAYER_LEAVING_WORLD" }
 eventsModule.EVT_LOADING_SCREEN_END = { "PLAYER_ENTERING_WORLD", "LOADING_SCREEN_DISABLED" }
 
+---@enum GenericUpdateEvent
 eventsModule.GENERIC_UPDATE_EVENTS = {
   "UPDATE_SHAPESHIFT_FORM", "UNIT_AURA", "READY_CHECK",
   "PLAYER_ALIVE", "PLAYER_UNGHOST", "INCOMING_RESURRECT_CHANGED",
@@ -46,16 +47,19 @@ eventsModule.EVT_PARTY_CHANGED = { "GROUP_JOINED", "GROUP_ROSTER_UPDATE",
 eventsModule.EVT_SPELLBOOK_CHANGED = { "SPELLS_CHANGED", "LEARNED_SPELL_IN_TAB" }
 
 --- Error messages which will make player stand if sitting.
+---@enum ErrorNotStanding
 eventsModule.ERR_NOT_STANDING = {
   ERR_CANTATTACK_NOTSTANDING, SPELL_FAILED_NOT_STANDING,
   ERR_LOOT_NOTSTANDING, ERR_TAXINOTSTANDING }
 
 --- Error messages which will make player dismount if mounted.
+---@enum ErrorIsMounted
 eventsModule.ERR_IS_MOUNTED = {
   ERR_NOT_WHILE_MOUNTED, ERR_ATTACK_MOUNTED,
   ERR_TAXIPLAYERALREADYMOUNTED, SPELL_FAILED_NOT_MOUNTED }
 
 --- Error messages which will make player cancel shapeshift.
+---@enum ErrorIsShapeshift
 eventsModule.ERR_IS_SHAPESHIFT = {
   ERR_EMBLEMERROR_NOTABARDGEOSET, ERR_CANT_INTERACT_SHAPESHIFTED,
   ERR_MOUNT_SHAPESHIFTED, ERR_NO_ITEMS_WHILE_SHAPESHIFTED,
@@ -101,10 +105,7 @@ local function Event_CombatStart()
   buffomatModule:RequestTaskRescan("combatStart")
   BOM.declineHasResurrection = true
   buffomatModule:AutoClose()
-  if not InCombatLockdown() then
-    BomC_ListTab_Button:Disable()
-  end
-
+  taskListPanelModule:OnCombatStart()
   BOM.DoCancelBuffs()
 end
 
@@ -113,6 +114,7 @@ local function Event_CombatStop()
   buffomatModule:RequestTaskRescan("combatStop")
   BOM.declineHasResurrection = true
   BOM.AllowAutOpen()
+  taskListPanelModule:OnCombatStop()
 end
 
 function eventsModule:OnCombatStop()

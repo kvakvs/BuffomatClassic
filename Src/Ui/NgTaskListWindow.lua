@@ -2,17 +2,29 @@
 -- Creates a window with a title, a close button, a macro button, and a settings button
 -- This is used for the Task List Panel
 local AceGUI = LibStub("AceGUI-3.0")
-local optionsPopupModule = --[[@as BomOptionsPopupModule]] LibStub("Buffomat-OptionsPopup")
-local constModule = --[[@as BomConstModule]] LibStub("Buffomat-Const")
+local optionsPopupModule = --[[@as OptionsPopupModule]] LibStub("Buffomat-OptionsPopup")
+local constModule = --[[@as ConstModule]] LibStub("Buffomat-Const")
 local toolboxModule = --[[@as LegacyToolboxModule]] LibStub("Buffomat-LegacyToolbox")
-local _t = --[[@as BomLanguagesModule]] LibStub("Buffomat-Languages")
+local _t = --[[@as LanguagesModule]] LibStub("Buffomat-Languages")
 local spellsDialogModule = --[[@as BomSpellsDialogModule]] LibStub("Buffomat-SpellsDialog")
+local taskListPanelModule = --[[@as TaskListPanelModule]] LibStub("Buffomat-TaskListPanel")
+
 -- Lua APIs
 local pairs, assert, type = pairs, assert, type
 
 -- WoW APIs
 local PlaySound = PlaySound
 local CreateFrame, UIParent = CreateFrame, UIParent
+
+---@class NgTaskListWindow: AceGUIWidget
+---@field Type "Window"
+---@field frame AceGUIFrame
+---@field sizer_se AceGUIFrame
+---@field sizer_s AceGUIFrame
+---@field sizer_e AceGUIFrame
+---@field content AceGUIFrame
+---@field titletext AceGUIFrame
+---@field title AceGUIFrame
 
 ----------------
 -- Main Frame --
@@ -57,25 +69,27 @@ do
     status.height = frame:GetHeight()
     status.top = frame:GetTop()
     status.left = frame:GetLeft()
+    taskListPanelModule:SavePosition()
   end
 
-  local function sizerseOnMouseDown(this)
+  local function sizerSEOnMouseDown(this)
     this:GetParent():StartSizing("BOTTOMRIGHT")
     AceGUI:ClearFocus()
   end
 
-  local function sizersOnMouseDown(this)
+  local function sizerSOnMouseDown(this)
     this:GetParent():StartSizing("BOTTOM")
     AceGUI:ClearFocus()
   end
 
-  local function sizereOnMouseDown(this)
+  local function sizerEOnMouseDown(this)
     this:GetParent():StartSizing("RIGHT")
     AceGUI:ClearFocus()
   end
 
   local function sizerOnMouseUp(this)
     this:GetParent():StopMovingOrSizing()
+    taskListPanelModule:SavePosition()
   end
 
   local function SetTitle(self, title)
@@ -110,12 +124,14 @@ do
   end
 
   -- called to set an external table to store status in
+  ---@param self NgTaskListWindow
   local function SetStatusTable(self, status)
     assert(type(status) == "table")
     self.status = status
     self:ApplyStatus()
   end
 
+  ---@param self NgTaskListWindow
   local function ApplyStatus(self)
     local status = self.status or self.localstatus
     local frame = self.frame
@@ -129,6 +145,7 @@ do
     end
   end
 
+  ---@param self NgTaskListWindow
   local function OnWidthSet(self, width)
     local content = self.content
     local contentwidth = width - 34
@@ -139,7 +156,7 @@ do
     content.width = contentwidth
   end
 
-
+  ---@param self NgTaskListWindow
   local function OnHeightSet(self, height)
     local content = self.content
     local contentheight = height - 57
@@ -150,6 +167,7 @@ do
     content.height = contentheight
   end
 
+  ---@param self NgTaskListWindow
   local function EnableResize(self, state)
     local func = state and "Show" or "Hide"
     self.sizer_se[func](self.sizer_se)
@@ -157,6 +175,7 @@ do
     self.sizer_e[func](self.sizer_e)
   end
 
+  ---@param button Button
   local function SetButtonTexture(button, texture)
     -- button:SetNormalTexture(texture)
     local normalTex = button:GetNormalTexture()
@@ -178,6 +197,7 @@ do
     disabledTex:SetTexture(texture)
   end
 
+  ---@param window NgTaskListWindow
   local function ConstructTopButtons(window)
     --local extraButtonCount = 3
     local buttonWidthExtra = 20 -- `extraButtonCount` extra buttons 20px each left from the X button
@@ -222,9 +242,10 @@ do
     close.obj = window
   end
 
+  ---@return NgTaskListWindow
   local function Constructor()
     local frame = CreateFrame("Frame", nil, UIParent)
-    local window = {}
+    local window = --[[@as NgTaskListWindow]] {}
     window.type = "Window"
 
     window.Hide = Hide
@@ -243,8 +264,13 @@ do
 
     window.frame = frame
     frame.obj = window
-    frame:SetWidth(700)
-    frame:SetHeight(500)
+    frame:SetWidth(250)
+    frame:SetHeight(150)
+    if frame.SetResizeBounds then
+      frame:SetResizeBounds(200, 150)
+    else
+      frame:SetMinResize(200, 150)
+    end
     frame:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
     frame:EnableMouse()
     frame:SetMovable(true)
@@ -254,11 +280,6 @@ do
 
     frame:SetScript("OnShow", frameOnShow)
     frame:SetScript("OnHide", frameOnClose)
-    if frame.SetResizeBounds then -- WoW 10.0
-      frame:SetResizeBounds(240, 240)
-    else
-      frame:SetMinResize(240, 240)
-    end
     frame:SetToplevel(true)
 
     local titlebg = frame:CreateTexture(nil, "BACKGROUND")
@@ -349,7 +370,7 @@ do
     sizer_se:SetWidth(25)
     sizer_se:SetHeight(25)
     sizer_se:EnableMouse()
-    sizer_se:SetScript("OnMouseDown", sizerseOnMouseDown)
+    sizer_se:SetScript("OnMouseDown", sizerSEOnMouseDown)
     sizer_se:SetScript("OnMouseUp", sizerOnMouseUp)
     window.sizer_se = sizer_se
 
@@ -376,7 +397,7 @@ do
     sizer_s:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 0, 0)
     sizer_s:SetHeight(25)
     sizer_s:EnableMouse()
-    sizer_s:SetScript("OnMouseDown", sizersOnMouseDown)
+    sizer_s:SetScript("OnMouseDown", sizerSOnMouseDown)
     sizer_s:SetScript("OnMouseUp", sizerOnMouseUp)
     window.sizer_s = sizer_s
 
@@ -385,7 +406,7 @@ do
     sizer_e:SetPoint("TOPRIGHT", frame, "TOPRIGHT", 0, 0)
     sizer_e:SetWidth(25)
     sizer_e:EnableMouse()
-    sizer_e:SetScript("OnMouseDown", sizereOnMouseDown)
+    sizer_e:SetScript("OnMouseDown", sizerEOnMouseDown)
     sizer_e:SetScript("OnMouseUp", sizerOnMouseUp)
     window.sizer_e = sizer_e
 

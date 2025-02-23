@@ -1,10 +1,10 @@
----@class BomLanguagesModule
+---@class LanguagesModule
 ---@overload fun(key: string): string
 ---@field currentLocale BomLocaleDict
 ---@field english BomLocaleDict
 
-local languagesModule = --[[@as BomLanguagesModule]] LibStub("Buffomat-Languages")
-local buffomatModule = --[[@as BomBuffomatModule]] LibStub("Buffomat-Buffomat")
+local languagesModule = --[[@as LanguagesModule]] LibStub("Buffomat-Languages")
+local buffomatModule = --[[@as BuffomatModule]] LibStub("Buffomat-Buffomat")
 local englishModule = --[[@as BomLanguageEnglishModule]] LibStub("Buffomat-LanguageEnglish")
 local germanModule = --[[@as BomLanguageGermanModule]] LibStub("Buffomat-LanguageGerman")
 local frenchModule = --[[@as BomLanguageFrenchModule]] LibStub("Buffomat-LanguageFrench")

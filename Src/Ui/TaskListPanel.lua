@@ -1,23 +1,22 @@
 local BOM = BuffomatAddon
 
 ---@class TaskListPanelModule
----@field taskFrame AceGUIWidget Floating frame for task list
----@field buffButton AceGUIWidget Button for casting a buff or reporting status
----@field scrollPanel AceGUIWidget Scroll panel for list of tasks/messages
----@field topUiPanel AceGUIWidget Top panel for buff button and menu
----@field messages AceGUIWidget[]
+---@field taskFrame? AceGUIWidget Floating frame for task list
+---@field buffButton? AceGUIWidget Button for casting a buff or reporting status
+---@field scrollPanel? AceGUIWidget Scroll panel for list of tasks/messages
+---@field topUiPanel? AceGUIWidget Top panel for buff button and menu
 ---@field titleProfile string The profile name which goes into the title of the window
 ---@field titleBuffGroups string The buff groups which go into the title of the window
 
 local taskListPanelModule = --[[@as TaskListPanelModule]] LibStub("Buffomat-TaskListPanel")
 taskListPanelModule.titleProfile = ""
 taskListPanelModule.titleBuffGroups = ""
-local buffomatModule = --[[@as BomBuffomatModule]] LibStub("Buffomat-Buffomat")
-local taskScanModule = --[[@as BomTaskScanModule]] LibStub("Buffomat-TaskScan")
+local buffomatModule = --[[@as BuffomatModule]] LibStub("Buffomat-Buffomat")
+local taskScanModule = --[[@as TaskScanModule]] LibStub("Buffomat-TaskScan")
 local ngToolboxModule = --[[@as NgToolboxModule]] LibStub("Buffomat-NgToolbox")
 local actionMacroModule = --[[@as BomActionMacroModule]] LibStub("Buffomat-ActionMacro")
-local constModule = --[[@as BomConstModule]] LibStub("Buffomat-Const")
-local _t = --[[@as BomLanguagesModule]] LibStub("Buffomat-Languages")
+local constModule = --[[@as ConstModule]] LibStub("Buffomat-Const")
+local _t = --[[@as LanguagesModule]] LibStub("Buffomat-Languages")
 
 local libGUI = LibStub("AceGUI-3.0")
 
@@ -187,4 +186,19 @@ end
 
 function taskListPanelModule:IsBuffButtonEnabled()
   return self.buffButton ~= nil and not self.buffButton.disabled
+end
+
+function taskListPanelModule:SavePosition()
+  if self.taskFrame ~= nil then
+    buffomatModule.shared.X = self.taskFrame.frame:GetLeft()
+    buffomatModule.shared.Y = self.taskFrame.frame:GetTop()
+    buffomatModule.shared.Width = self.taskFrame.frame:GetWidth()
+    buffomatModule.shared.Height = self.taskFrame.frame:GetHeight()
+  end
+end
+
+function taskListPanelModule:OnCombatStart()
+end
+
+function taskListPanelModule:OnCombatStop()
 end

@@ -5,7 +5,7 @@ local BOM = BuffomatAddon
 ---@alias BomBuffUpdatesPerUnit {[string]: number} Time when buffs updated on that unit
 ---@alias BomPartyCacheInvalidation {[number]: boolean}
 
----@class BomPartyModule
+---@class PartyModule
 ---@field theParty BomParty|nil Synchronized party cache, invalidated on party change events
 ---@field unitAurasLastUpdated BomBuffUpdatesPerUnit When each unit got their aura last updated, indexed by spellid
 ---@field partyCacheInvalidation BomPartyCacheInvalidation
@@ -13,7 +13,7 @@ local BOM = BuffomatAddon
 ---@field playerManaLimit number Player max mana
 ---@field playerMana number Player current mana
 
-local partyModule = --[[@as BomPartyModule]] LibStub("Buffomat-Party")
+local partyModule = --[[@as PartyModule]] LibStub("Buffomat-Party")
 
 ---@type BomBuffUpdatesPerUnit
 partyModule.unitAurasLastUpdated = {}
@@ -36,10 +36,10 @@ partyModule.ALL_INVALID_GROUPS = {
   [8] = true
 }
 
-local buffomatModule = --[[@as BomBuffomatModule]] LibStub("Buffomat-Buffomat")
+local buffomatModule = --[[@as BuffomatModule]] LibStub("Buffomat-Buffomat")
 local toolboxModule = --[[@as LegacyToolboxModule]] LibStub("Buffomat-LegacyToolbox")
 local unitCacheModule = --[[@as BomUnitCacheModule]] LibStub("Buffomat-UnitCache")
-local taskScanModule = --[[@as BomTaskScanModule]] LibStub("Buffomat-TaskScan")
+local taskScanModule = --[[@as TaskScanModule]] LibStub("Buffomat-TaskScan")
 
 ---@alias BomUnitDictByUnitId {[string]: BomUnit}
 ---@alias BomUnitDictByName {[string]: BomUnit}

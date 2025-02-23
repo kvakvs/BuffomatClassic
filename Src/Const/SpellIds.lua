@@ -1,8 +1,8 @@
 --- Spell IDS given reasonable names
 
----@class BomSpellIdsModule
+---@class SpellIdsModule
 
-local spellIdsModule = --[[@as BomSpellIdsModule]] LibStub("Buffomat-SpellIds")
+local spellIdsModule = --[[@as SpellIdsModule]] LibStub("Buffomat-SpellIds")
 
 spellIdsModule.ClassicFood = --[[@as WowSpellId[] ]] {
   6410, 433, 5004, 7737,                                                             -- Level 0-5 food

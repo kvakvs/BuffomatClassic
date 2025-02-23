@@ -1,11 +1,11 @@
 local BOM = BuffomatAddon
 
----@class BomAllConsumesOtherModule
+---@class AllConsumesOtherModule
 
-local otherModule = --[[@as BomAllConsumesOtherModule]] LibStub("Buffomat-AllConsumesOther")
-local _t = --[[@as BomLanguagesModule]] LibStub("Buffomat-Languages")
-local allBuffsModule = --[[@as BomAllBuffsModule]] LibStub("Buffomat-AllBuffs")
-local buffDefModule = --[[@as BomBuffDefinitionModule]] LibStub("Buffomat-BuffDefinition")
+local otherModule = --[[@as AllConsumesOtherModule]] LibStub("Buffomat-AllConsumesOther")
+local _t = --[[@as LanguagesModule]] LibStub("Buffomat-Languages")
+local allBuffsModule = --[[@as AllBuffsModule]] LibStub("Buffomat-AllBuffs")
+local buffDefModule = --[[@as BuffDefinitionModule]] LibStub("Buffomat-BuffDefinition")
 
 ---@param allBuffs BomBuffDefinition[]
 ---@param enchantments BomEnchantmentsMapping

@@ -1,8 +1,8 @@
 local TOCNAME, _ = ...
 
----@class BomConstModule
+---@class ConstModule
 
-local constModule = --[[@as BomConstModule]] LibStub("Buffomat-Const")
+local constModule = --[[@as ConstModule]] LibStub("Buffomat-Const")
 
 constModule.TASKCOLOR_GRAY = "777777"
 constModule.TASKCOLOR_RED = "cc4444"

@@ -1,13 +1,13 @@
 local BOM = BuffomatAddon
 
----@class BomMacroModule
+---@class MacroModule
 ---@field lastMacroSet string A cached value of the last macro set
 
-local macroModule = --[[@as BomMacroModule]] LibStub("Buffomat-Macro")
+local macroModule = --[[@as MacroModule]] LibStub("Buffomat-Macro")
 macroModule.lastMacroSet = ''
 
-local constModule = --[[@as BomConstModule]] LibStub("Buffomat-Const")
-local _t = --[[@as BomLanguagesModule]] LibStub("Buffomat-Languages")
+local constModule = --[[@as ConstModule]] LibStub("Buffomat-Const")
+local _t = --[[@as LanguagesModule]] LibStub("Buffomat-Languages")
 
 ---@class BomMacro
 ---@field name string Macro name, default Buff'o'mat

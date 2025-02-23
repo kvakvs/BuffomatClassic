@@ -5,13 +5,13 @@ local BOM = BuffomatAddon
 ---@class BomSpellSetupModule
 
 local spellSetupModule = --[[@as BomSpellSetupModule]] LibStub("Buffomat-SpellSetup")
-local buffomatModule = --[[@as BomBuffomatModule]] LibStub("Buffomat-Buffomat")
-local constModule = --[[@as BomConstModule]] LibStub("Buffomat-Const")
+local buffomatModule = --[[@as BuffomatModule]] LibStub("Buffomat-Buffomat")
+local constModule = --[[@as ConstModule]] LibStub("Buffomat-Const")
 local itemCacheModule = --[[@as BomItemCacheModule]] LibStub("Buffomat-ItemCache")
-local allBuffsModule = --[[@as BomAllBuffsModule]] LibStub("Buffomat-AllBuffs")
-local buffDefinitionModule = --[[@as BomBuffDefinitionModule]] LibStub("Buffomat-BuffDefinition")
+local allBuffsModule = --[[@as AllBuffsModule]] LibStub("Buffomat-AllBuffs")
+local buffDefinitionModule = --[[@as BuffDefinitionModule]] LibStub("Buffomat-BuffDefinition")
 local toolboxModule = --[[@as LegacyToolboxModule]] LibStub("Buffomat-LegacyToolbox")
-local profileModule = --[[@as BomProfileModule]] LibStub("Buffomat-Profile")
+local profileModule = --[[@as ProfileModule]] LibStub("Buffomat-Profile")
 local ngStringsModule = --[[@as NgStringsModule]] LibStub("Buffomat-NgStrings")
 
 ---Formats a spell icon + spell name as a link

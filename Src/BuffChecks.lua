@@ -3,13 +3,13 @@ local BOM = BuffomatAddon
 ---@class BomBuffChecksModule
 
 local buffChecksModule = --[[@as BomBuffChecksModule]] LibStub("Buffomat-BuffChecks")
-local allBuffsModule = --[[@as BomAllBuffsModule]] LibStub("Buffomat-AllBuffs")
-local buffDefModule = --[[@as BomBuffDefinitionModule]] LibStub("Buffomat-BuffDefinition")
-local buffomatModule = --[[@as BomBuffomatModule]] LibStub("Buffomat-Buffomat")
-local partyModule = --[[@as BomPartyModule]] LibStub("Buffomat-Party")
-local spellIdsModule = --[[@as BomSpellIdsModule]] LibStub("Buffomat-SpellIds")
+local allBuffsModule = --[[@as AllBuffsModule]] LibStub("Buffomat-AllBuffs")
+local buffDefModule = --[[@as BuffDefinitionModule]] LibStub("Buffomat-BuffDefinition")
+local buffomatModule = --[[@as BuffomatModule]] LibStub("Buffomat-Buffomat")
+local partyModule = --[[@as PartyModule]] LibStub("Buffomat-Party")
+local spellIdsModule = --[[@as SpellIdsModule]] LibStub("Buffomat-SpellIds")
 local unitCacheModule = --[[@as BomUnitCacheModule]] LibStub("Buffomat-UnitCache")
-local envModule = --[[@as KvLibEnvModule]] LibStub("KvLibShared-Env")
+local envModule = --[[@as KvSharedEnvModule]] LibStub("KvLibShared-Env")
 
 ---Checks whether a tracking spell is now active
 ---@param spell BomBuffDefinition The tracking spell which might have tracking enabled

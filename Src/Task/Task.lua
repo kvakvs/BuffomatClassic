@@ -3,8 +3,8 @@ local BOM = BuffomatAddon
 ---@class BomTaskModule
 
 local taskModule = --[[@as BomTaskModule]] LibStub("Buffomat-Task")
-local buffomatModule = --[[@as BomBuffomatModule]] LibStub("Buffomat-Buffomat")
-local constModule = --[[@as BomConstModule]] LibStub("Buffomat-Const")
+local buffomatModule = --[[@as BuffomatModule]] LibStub("Buffomat-Buffomat")
+local constModule = --[[@as ConstModule]] LibStub("Buffomat-Const")
 
 ---BomTaskActionUse|BomTaskActionCast|BomTaskActionMacro
 ---@class BomTaskAction

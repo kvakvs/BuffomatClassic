@@ -13,8 +13,8 @@ local BOM = BuffomatAddon
 ---@field _EditBox BomGPIControlEditBox
 
 local legacyToolboxModule = --[[@as BomToolboxModule]] LibStub("Buffomat-LegacyToolbox")
-local _t = --[[@as BomLanguagesModule]] LibStub("Buffomat-Languages")
-local constModule = --[[@as BomConstModule]] LibStub("Buffomat-Const")
+local _t = --[[@as LanguagesModule]] LibStub("Buffomat-Languages")
+local constModule = --[[@as ConstModule]] LibStub("Buffomat-Const")
 
 ---@class BomGPIControlEditBox: Frame
 ---@field chatFrame Frame

@@ -6,7 +6,7 @@ local BOM = BuffomatAddon
 ---@alias BomEnchantToSpellLookup {[BomEnchantmentId]: WowSpellId}
 ---@alias BomBuffBySpellId {[WowSpellId]: BomBuffDefinition}
 
----@class BomAllBuffsModule
+---@class AllBuffsModule
 ---@field allBuffs BomBuffidBuffdefLookup All buffs, same as BOM.AllBuffomatSpells for convenience
 ---@field allSpellIds number[]
 ---@field buffCategories BomBuffCategoryName[] Category names for buffs
@@ -21,7 +21,7 @@ local BOM = BuffomatAddon
 ---@field spellToSpellLookup {[WowSpellId]: WowSpellId} Maps spells ids to other spell ids
 ---@field cancelForm WowSpellId[] Spell ids which cancel shapeshift form
 
-local allBuffsModule = --[[@as BomAllBuffsModule]] LibStub("Buffomat-AllBuffs")
+local allBuffsModule = --[[@as AllBuffsModule]] LibStub("Buffomat-AllBuffs")
 
 allBuffsModule.cancelForm = {}
 allBuffsModule.spellIdtoBuffId = {}
@@ -31,33 +31,36 @@ allBuffsModule.spellIdIsSingleLookup = {}
 allBuffsModule.buffFromSpellIdLookup = --[[@as {[WowSpellId]: BomBuffDefinition}]] {}
 allBuffsModule.enchantToSpellLookup = --[[@as BomEnchantToSpellLookup]] {}
 
-local _t = --[[@as BomLanguagesModule]] LibStub("Buffomat-Languages")
-local buffDefModule = --[[@as BomBuffDefinitionModule]] LibStub("Buffomat-BuffDefinition")
-local elixirsModule = --[[@as BomAllConsumesElixirsModule]] LibStub("Buffomat-AllConsumesElixirs")
-local enchantmentsModule = --[[@as BomAllConsumesEnchantmentsModule]] LibStub("Buffomat-AllConsumesEnchantments")
-local envModule = --[[@as KvLibEnvModule]] LibStub("KvLibShared-Env")
-local flasksModule = --[[@as BomAllConsumesFlasksModule]] LibStub("Buffomat-AllConsumesFlasks")
-local foodModule = --[[@as BomAllConsumesFoodModule]] LibStub("Buffomat-AllConsumesFood")
-local otherModule = --[[@as BomAllConsumesOtherModule]] LibStub("Buffomat-AllConsumesOther")
-local scrollsModule = --[[@as BomAllConsumesScrollsModule]] LibStub("Buffomat-AllConsumesScrolls")
-local spellIdsModule = --[[@as BomSpellIdsModule]] LibStub("Buffomat-SpellIds")
+local _t = --[[@as LanguagesModule]] LibStub("Buffomat-Languages")
+local buffDefModule = --[[@as BuffDefinitionModule]] LibStub("Buffomat-BuffDefinition")
+local elixirsModule = --[[@as AllConsumesElixirsModule]] LibStub("Buffomat-AllConsumesElixirs")
+local enchantmentsModule = --[[@as AllConsumesEnchantmentsModule]] LibStub("Buffomat-AllConsumesEnchantments")
+local envModule = --[[@as KvSharedEnvModule]] LibStub("KvLibShared-Env")
+local flasksModule = --[[@as AllConsumesFlasksModule]] LibStub("Buffomat-AllConsumesFlasks")
+local foodModule = --[[@as AllConsumesFoodModule]] LibStub("Buffomat-AllConsumesFood")
+local otherModule = --[[@as AllConsumesOtherModule]] LibStub("Buffomat-AllConsumesOther")
+local scrollsModule = --[[@as AllConsumesScrollsModule]] LibStub("Buffomat-AllConsumesScrolls")
+local spellIdsModule = --[[@as SpellIdsModule]] LibStub("Buffomat-SpellIds")
 
-local deathknightModule = --[[@as BomAllSpellsDeathknightModule]] LibStub("Buffomat-AllSpellsDeathknight")
-local druidModule = --[[@as BomAllSpellsDruidModule]] LibStub("Buffomat-AllSpellsDruid")
-local hunterModule = --[[@as BomAllSpellsHunterModule]] LibStub("Buffomat-AllSpellsHunter")
-local mageModule = --[[@as BomAllSpellsMageModule]] LibStub("Buffomat-AllSpellsMage")
-local paladinModule = --[[@as BomAllSpellsPaladinModule]] LibStub("Buffomat-AllSpellsPaladin")
-local priestModule = --[[@as BomAllSpellsPriestModule]] LibStub("Buffomat-AllSpellsPriest")
-local rogueModule = --[[@as BomAllSpellsRogueModule]] LibStub("Buffomat-AllSpellsRogue")
-local shamanModule = --[[@as BomAllSpellsShamanModule]] LibStub("Buffomat-AllSpellsShaman")
-local warlockModule = --[[@as BomAllSpellsWarlockModule]] LibStub("Buffomat-AllSpellsWarlock")
-local warriorModule = --[[@as BomAllSpellsWarriorModule]] LibStub("Buffomat-AllSpellsWarrior")
+local deathknightModule = --[[@as DeathknightModule]] LibStub("Buffomat-AllSpellsDeathknight")
+local druidModule = --[[@as DruidModule]] LibStub("Buffomat-AllSpellsDruid")
+local hunterModule = --[[@as HunterModule]] LibStub("Buffomat-AllSpellsHunter")
+local mageModule = --[[@as MageModule]] LibStub("Buffomat-AllSpellsMage")
+local paladinModule = --[[@as PaladinModule]] LibStub("Buffomat-AllSpellsPaladin")
+local priestModule = --[[@as PriestModule]] LibStub("Buffomat-AllSpellsPriest")
+local rogueModule = --[[@as RogueModule]] LibStub("Buffomat-AllSpellsRogue")
+local shamanModule = --[[@as ShamanModule]] LibStub("Buffomat-AllSpellsShaman")
+local warlockModule = --[[@as WarlockModule]] LibStub("Buffomat-AllSpellsWarlock")
+local warriorModule = --[[@as WarriorModule]] LibStub("Buffomat-AllSpellsWarrior")
 
----@alias BomClassName WowClassName|"tank"|"pet"
+---@alias BomClassName ClassName|"tank"|"pet"
 
-allBuffsModule.ALL_CLASSES = { "WARRIOR", "MAGE", "ROGUE", "DRUID", "HUNTER", "PRIEST", "WARLOCK",
-  "SHAMAN", "PALADIN", "DEATHKNIGHT" } ---@type BomClassName[]
-allBuffsModule.BOM_NO_CLASSES = {} ---@type BomClassName[]
+---@enum ClassName
+allBuffsModule.ALL_CLASSES = {
+  "WARRIOR", "MAGE", "ROGUE", "DRUID", "HUNTER", "PRIEST", "WARLOCK",
+  "SHAMAN", "PALADIN", "DEATHKNIGHT"
+}
+allBuffsModule.BOM_NO_CLASSES = {} ---@type ClassName[]
 
 ---TODO: Move to constModule
 ---Classes which have a resurrection ability

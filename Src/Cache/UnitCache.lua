@@ -5,8 +5,8 @@
 
 local unitCacheModule = --[[@as BomUnitCacheModule]] LibStub("Buffomat-UnitCache")
 unitCacheModule.unitCache = {}
-local constModule = --[[@as BomConstModule]] LibStub("Buffomat-Const")
-local partyModule = --[[@as BomPartyModule]] LibStub("Buffomat-Party")
+local constModule = --[[@as ConstModule]] LibStub("Buffomat-Const")
+local partyModule = --[[@as PartyModule]] LibStub("Buffomat-Party")
 local texturesModule = --[[@as BomTexturesModule]] LibStub("Buffomat-Textures")
 local unitModule = --[[@as BomUnitModule]] LibStub("Buffomat-Unit")
 local ngStringsModule = --[[@as NgStringsModule]] LibStub("Buffomat-NgStrings")

@@ -1,9 +1,9 @@
 local TOCNAME, _ = ...
 local BOM = BuffomatAddon
 
----@class BomSlashCommandsModule
+---@class SlashCommandsModule
 
-local slashModule = --[[@as BomSlashCommandsModule]] LibStub("Buffomat-SlashCommands")
+local slashModule = --[[@as SlashCommandsModule]] LibStub("Buffomat-SlashCommands")
 local toolboxModule = --[[@as LegacyToolboxModule]] LibStub("Buffomat-LegacyToolbox")
 
 ---@class BomSlashCommand

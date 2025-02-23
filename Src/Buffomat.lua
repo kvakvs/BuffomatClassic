@@ -1,6 +1,4 @@
---local TOCNAME, _ = ...
-
----@class BomBuffomatModule
+---@class BuffomatModule
 ---@field [string] any
 ---@field shared BomSharedSettings Refers to BuffomatShared global
 ---@field character BomCharacterSettings Refers to BuffomatCharacter global
@@ -8,27 +6,27 @@
 ---@field currentProfile BomProfile
 ---@field taskRescanRequestedBy {[string]: number} Reasons for force update, with count
 
-local buffomatModule = --[[@as BomBuffomatModule]] LibStub("Buffomat-Buffomat")
-buffomatModule.taskRescanRequestedBy = --[[@as {[string]: umber}]] {}
-local kvEnvModule = --[[@as KvLibEnvModule]] LibStub("KvLibShared-Env")
-local _t = --[[@as BomLanguagesModule]] LibStub("Buffomat-Languages")
+local buffomatModule = --[[@as BuffomatModule]] LibStub("Buffomat-Buffomat")
+buffomatModule.taskRescanRequestedBy = --[[@as {[string]: number}]] {}
+local kvEnvModule = --[[@as KvSharedEnvModule]] LibStub("KvLibShared-Env")
+local _t = --[[@as LanguagesModule]] LibStub("Buffomat-Languages")
 local languagesModule = _t
-local allBuffsModule = --[[@as BomAllBuffsModule]] LibStub("Buffomat-AllBuffs")
-local characterSettingsModule = --[[@as BomCharacterSettingsModule]] LibStub("Buffomat-CharacterSettings")
-local constModule = --[[@as BomConstModule]] LibStub("Buffomat-Const")
-local eventsModule = --[[@as BomEventsModule]] LibStub("Buffomat-Events")
-local macroModule = --[[@as BomMacroModule]] LibStub("Buffomat-Macro")
-local optionsModule = --[[@as BomOptionsModule]] LibStub("Buffomat-Options")
-local optionsPopupModule = --[[@as BomOptionsPopupModule]] LibStub("Buffomat-OptionsPopup")
-local partyModule = --[[@as BomPartyModule]] LibStub("Buffomat-Party")
-local popupModule = --[[@as BomPopupModule]] LibStub("Buffomat-Popup")
-local profileModule = --[[@as BomProfileModule]] LibStub("Buffomat-Profile")
-local sharedStateModule = --[[@as BomSharedSettingsModule]] LibStub("Buffomat-SharedSettings")
-local slashModule = --[[@as BomSlashCommandsModule]] LibStub("Buffomat-SlashCommands")
-local taskScanModule = --[[@as BomTaskScanModule]] LibStub("Buffomat-TaskScan")
+local allBuffsModule = --[[@as AllBuffsModule]] LibStub("Buffomat-AllBuffs")
+local characterSettingsModule = --[[@as CharacterSettingsModule]] LibStub("Buffomat-CharacterSettings")
+local constModule = --[[@as ConstModule]] LibStub("Buffomat-Const")
+local eventsModule = --[[@as EventsModule]] LibStub("Buffomat-Events")
+local macroModule = --[[@as MacroModule]] LibStub("Buffomat-Macro")
+local optionsModule = --[[@as OptionsModule]] LibStub("Buffomat-Options")
+local optionsPopupModule = --[[@as OptionsPopupModule]] LibStub("Buffomat-OptionsPopup")
+local partyModule = --[[@as PartyModule]] LibStub("Buffomat-Party")
+local popupModule = --[[@as PopupModule]] LibStub("Buffomat-Popup")
+local profileModule = --[[@as ProfileModule]] LibStub("Buffomat-Profile")
+local sharedStateModule = --[[@as SharedSettingsModule]] LibStub("Buffomat-SharedSettings")
+local slashModule = --[[@as SlashCommandsModule]] LibStub("Buffomat-SlashCommands")
+local taskScanModule = --[[@as TaskScanModule]] LibStub("Buffomat-TaskScan")
 local toolboxModule = --[[@as LegacyToolboxModule]] LibStub("Buffomat-LegacyToolbox")
 local taskListPanelModule = --[[@as TaskListPanelModule]] LibStub("Buffomat-TaskListPanel")
-local throttleModule = --[[@as BomThrottleModule]] LibStub("Buffomat-Throttle")
+local throttleModule = --[[@as ThrottleModule]] LibStub("Buffomat-Throttle")
 local ngStringsModule = --[[@as NgStringsModule]] LibStub("Buffomat-NgStrings")
 
 ---@alias BomCastingState "cast"|"channel"|nil
@@ -591,13 +589,6 @@ function BOM.AllowAutOpen()
       buffomatModule.autoHelper = "open"
     end
   end
-end
-
-function BOM.SaveWindowPosition()
-  buffomatModule.shared.X = taskListPanelModule.taskFrame:GetLeft()
-  buffomatModule.shared.Y = taskListPanelModule.taskFrame:GetTop()
-  buffomatModule.shared.Width = taskListPanelModule.taskFrame:GetWidth()
-  buffomatModule.shared.Height = taskListPanelModule.taskFrame:GetHeight()
 end
 
 local function perform_who_request(name)

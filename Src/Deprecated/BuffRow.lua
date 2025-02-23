@@ -6,7 +6,7 @@ if false then
 
   local buffRowModule = --[[@as BomBuffRowModule]] LibStub:NewLibrary("Buffomat-BuffRow", 1)
 
-  local _t = --[[@as BomLanguagesModule]] LibStub("Buffomat-Languages")
+  local _t = --[[@as LanguagesModule]] LibStub("Buffomat-Languages")
   local toolboxModule = --[[@as LegacyToolboxModule]] LibStub("Buffomat-LegacyToolbox")
   local texturesModule = --[[@as BomTexturesModule]] LibStub:NewLibrary("Buffomat-Textures", 1)
 

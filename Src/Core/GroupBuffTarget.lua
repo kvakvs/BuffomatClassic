@@ -3,8 +3,8 @@
 local groupBuffTargetModule = --[[@as BomGroupBuffTargetModule]] LibStub:NewLibrary("Buffomat-GroupBuffTarget", 1)
 
 local toolboxModule = --[[@as LegacyToolboxModule]] LibStub("Buffomat-LegacyToolbox")
-local _t = --[[@as BomLanguagesModule]] LibStub("Buffomat-Languages")
-local envModule = --[[@as KvLibEnvModule]] LibStub("KvLibShared-Env")
+local _t = --[[@as LanguagesModule]] LibStub("Buffomat-Languages")
+local envModule = --[[@as KvSharedEnvModule]] LibStub("KvLibShared-Env")
 
 ---@class BomGroupBuffTarget
 ---@field groupIndex number

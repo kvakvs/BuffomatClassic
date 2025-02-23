@@ -1,11 +1,11 @@
 -- local TOCNAME, _ = ...
 -- local BOM = BuffomatAddon
 
----@class BomCharacterSettingsModule
+---@class CharacterSettingsModule
 
-local characterSettingsModule = --[[@as BomCharacterSettingsModule]] LibStub("Buffomat-CharacterSettings")
-local profileModule = --[[@as BomProfileModule]] LibStub("Buffomat-Profile")
-local envModule = --[[@as KvLibEnvModule]] LibStub("KvLibShared-Env")
+local characterSettingsModule = --[[@as CharacterSettingsModule]] LibStub("Buffomat-CharacterSettings")
+local profileModule = --[[@as ProfileModule]] LibStub("Buffomat-Profile")
+local envModule = --[[@as KvSharedEnvModule]] LibStub("KvLibShared-Env")
 
 ---@alias BomProfileName "solo"|"group"|"raid"|"battleground"|"solo_spec2"|"group_spec2"|"raid_spec2"|"battleground_spec2"
 

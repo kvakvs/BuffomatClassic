@@ -1,11 +1,11 @@
 local BOM = BuffomatAddon
 
----@class BomProfileModule
+---@class ProfileModule
 ---@field ALL_PROFILES BomProfileName[]
 
-local profileModule = --[[@as BomProfileModule]] LibStub("Buffomat-Profile")
-local buffomatModule = --[[@as BomBuffomatModule]] LibStub("Buffomat-Buffomat")
-local envModule = --[[@as KvLibEnvModule]] LibStub("KvLibShared-Env")
+local profileModule = --[[@as ProfileModule]] LibStub("Buffomat-Profile")
+local buffomatModule = --[[@as BuffomatModule]] LibStub("Buffomat-Buffomat")
+local envModule = --[[@as KvSharedEnvModule]] LibStub("KvLibShared-Env")
 
 ---A single blessing per unit name is possible
 ---@alias BomBlessingState {[string]: BomBuffId}

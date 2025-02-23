@@ -1,38 +1,38 @@
 local BOM = BuffomatAddon
 
----@class BomTaskScanModule
+---@class TaskScanModule
 ---@field taskListSizeBeforeScan number Saved size before scan
 ---@field roundRobinGroup number Group number to refresh, rotates from 1 to 8 in raid, or stays always 1 otherwise
 ---@field saveSomeoneIsDead boolean
 
-local taskScanModule = --[[@as BomTaskScanModule]] LibStub("Buffomat-TaskScan")
+local taskScanModule = --[[@as TaskScanModule]] LibStub("Buffomat-TaskScan")
 taskScanModule.taskListSizeBeforeScan = 0
 taskScanModule.roundRobinGroup = 0
 taskScanModule.saveSomeoneIsDead = false
 taskScanModule.tasklist = nil
 
-local _t = --[[@as BomLanguagesModule]] LibStub("Buffomat-Languages")
+local _t = --[[@as LanguagesModule]] LibStub("Buffomat-Languages")
 local actionCastModule = --[[@as BomActionCastModule]] LibStub("Buffomat-ActionCast")
 local actionMacroModule = --[[@as BomActionMacroModule]] LibStub("Buffomat-ActionMacro")
 local actionUseModule = --[[@as BomActionUseModule]] LibStub("Buffomat-ActionUse")
-local allBuffsModule = --[[@as BomAllBuffsModule]] LibStub("Buffomat-AllBuffs")
+local allBuffsModule = --[[@as AllBuffsModule]] LibStub("Buffomat-AllBuffs")
 local buffChecksModule = --[[@as BomBuffChecksModule]] LibStub("Buffomat-BuffChecks")
-local buffDefModule = --[[@as BomBuffDefinitionModule]] LibStub("Buffomat-BuffDefinition")
+local buffDefModule = --[[@as BuffDefinitionModule]] LibStub("Buffomat-BuffDefinition")
 local buffTargetModule = --[[@as BomUnitBuffTargetModule]] LibStub("Buffomat-UnitBuffTarget")
-local buffomatModule = --[[@as BomBuffomatModule]] LibStub("Buffomat-Buffomat")
-local constModule = --[[@as BomConstModule]] LibStub("Buffomat-Const")
-local envModule = --[[@as KvLibEnvModule]] LibStub("KvLibShared-Env")
+local buffomatModule = --[[@as BuffomatModule]] LibStub("Buffomat-Buffomat")
+local constModule = --[[@as ConstModule]] LibStub("Buffomat-Const")
+local envModule = --[[@as KvSharedEnvModule]] LibStub("KvLibShared-Env")
 local groupBuffTargetModule = --[[@as BomGroupBuffTargetModule]] LibStub("Buffomat-GroupBuffTarget")
 local itemListCacheModule = --[[@as BomItemListCacheModule]] LibStub("Buffomat-ItemListCache")
-local macroModule = --[[@as BomMacroModule]] LibStub("Buffomat-Macro")
-local partyModule = --[[@as BomPartyModule]] LibStub("Buffomat-Party")
-local profileModule = --[[@as BomProfileModule]] LibStub("Buffomat-Profile")
-local spellIdsModule = --[[@as BomSpellIdsModule]] LibStub("Buffomat-SpellIds")
-local taskListModule = --[[@as BomTaskListModule]] LibStub("Buffomat-TaskList")
+local macroModule = --[[@as MacroModule]] LibStub("Buffomat-Macro")
+local partyModule = --[[@as PartyModule]] LibStub("Buffomat-Party")
+local profileModule = --[[@as ProfileModule]] LibStub("Buffomat-Profile")
+local spellIdsModule = --[[@as SpellIdsModule]] LibStub("Buffomat-SpellIds")
+local taskListModule = --[[@as TaskListModule]] LibStub("Buffomat-TaskList")
 local taskModule = --[[@as BomTaskModule]] LibStub("Buffomat-Task")
 local texturesModule = --[[@as BomTexturesModule]] LibStub("Buffomat-Textures")
 local unitCacheModule = --[[@as BomUnitCacheModule]] LibStub("Buffomat-UnitCache")
-local throttleModule = --[[@as BomThrottleModule]] LibStub("Buffomat-Throttle")
+local throttleModule = --[[@as ThrottleModule]] LibStub("Buffomat-Throttle")
 local ngStringsModule = --[[@as NgStringsModule]] LibStub("Buffomat-NgStrings")
 
 ---@class BomBuffScanContext

@@ -3,7 +3,7 @@
 ---@class NgToolboxModule
 
 local ngToolboxModule = --[[@as NgToolboxModule]] LibStub("Buffomat-NgToolbox")
-local _t = --[[@as BomLanguagesModule]] LibStub("Buffomat-Languages")
+local _t = --[[@as LanguagesModule]] LibStub("Buffomat-Languages")
 
 ---@param widget AceGUIWidget
 ---@param translationKey string The key to translation

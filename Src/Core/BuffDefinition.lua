@@ -7,15 +7,15 @@ local BOM = BuffomatAddon
 ---@alias WowShapeshiftFormId number
 ---@alias WowIconId number|string
 
----@class BomBuffDefinitionModule
+---@class BuffDefinitionModule
 
-local buffDefModule = --[[@as BomBuffDefinitionModule]] LibStub("Buffomat-BuffDefinition")
-local _t = --[[@as BomLanguagesModule]] LibStub("Buffomat-Languages")
-local envModule = --[[@as KvLibEnvModule]] LibStub("KvLibShared-Env")
-local buffomatModule = --[[@as BomBuffomatModule]] LibStub("Buffomat-Buffomat")
+local buffDefModule = --[[@as BuffDefinitionModule]] LibStub("Buffomat-BuffDefinition")
+local _t = --[[@as LanguagesModule]] LibStub("Buffomat-Languages")
+local envModule = --[[@as KvSharedEnvModule]] LibStub("KvLibShared-Env")
+local buffomatModule = --[[@as BuffomatModule]] LibStub("Buffomat-Buffomat")
 local spellCacheModule = --[[@as BomSpellCacheModule]] LibStub("Buffomat-SpellCache")
 local itemCacheModule = --[[@as BomItemCacheModule]] LibStub("Buffomat-ItemCache")
-local allBuffsModule = --[[@as BomAllBuffsModule]] LibStub("Buffomat-AllBuffs")
+local allBuffsModule = --[[@as AllBuffsModule]] LibStub("Buffomat-AllBuffs")
 
 ---type="aura" Auras are no target buff check. True if the buff affects others in radius, and not a target buff
 ---type="seal" Seals are 1hand enchants which are unique for equipped weapon. Paladins use seals. Shamans also use seals but in TBC shamans have 2 independent seals.

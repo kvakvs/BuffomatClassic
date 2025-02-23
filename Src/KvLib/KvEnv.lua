@@ -1,4 +1,4 @@
----@class KvLibEnvModule
+---@class KvSharedEnvModule
 ---@field isClassic boolean
 ---@field isTBC boolean
 ---@field haveTBC boolean
@@ -7,7 +7,7 @@
 ---@field isCata boolean
 ---@field haveCata boolean
 
-local envModule = --[[@as KvLibEnvModule]] LibStub:NewLibrary("KvLibShared-Env", 1)
+local envModule = --[[@as KvSharedEnvModule]] LibStub:NewLibrary("KvLibShared-Env", 1)
 
 function envModule:DetectVersions()
   local _, _, _, tocversion = GetBuildInfo()

@@ -2,8 +2,8 @@
 
 local buffTargetModule = --[[@as BomUnitBuffTargetModule]] LibStub("Buffomat-UnitBuffTarget")
 local toolboxModule = --[[@as LegacyToolboxModule]] LibStub("Buffomat-LegacyToolbox")
-local buffomatModule = --[[@as BomBuffomatModule]] LibStub("Buffomat-Buffomat")
-local _t = --[[@as BomLanguagesModule]] LibStub("Buffomat-Languages")
+local buffomatModule = --[[@as BuffomatModule]] LibStub("Buffomat-Buffomat")
+local _t = --[[@as LanguagesModule]] LibStub("Buffomat-Languages")
 
 ---@class BomUnitBuffTarget
 ---@field unitName string Just the name

@@ -12,7 +12,7 @@ local BOM = BuffomatAddon
 
 local itemCacheModule = --[[@as BomItemCacheModule]] LibStub("Buffomat-ItemCache")
 itemCacheModule.cache = {}
-local buffomatModule = --[[@as BomBuffomatModule]] LibStub("Buffomat-Buffomat")
+local buffomatModule = --[[@as BuffomatModule]] LibStub("Buffomat-Buffomat")
 
 ---@class BomItemCacheElement
 ---@field itemName string

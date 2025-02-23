@@ -1,8 +1,8 @@
 --- Item IDS given reasonable names
 
----@class BomItemIdsModule
+---@class ItemIdsModule
 
-local itemIdsModule = --[[@as BomItemIdsModule]] LibStub("Buffomat-ItemIds")
+local itemIdsModule = --[[@as ItemIdsModule]] LibStub("Buffomat-ItemIds")
 
 itemIdsModule.Deathknight_CorpseDust = 37201
 

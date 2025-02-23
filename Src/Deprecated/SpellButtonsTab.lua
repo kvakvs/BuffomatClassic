@@ -14,18 +14,18 @@ if false then
   spellButtonsTabModule.spellTabUpdateRequestedBy = {}
   spellButtonsTabModule.spellSettingsFrames = {} -- accessible from TaskScan.MaybeResetWatchGroups
 
-  local _t = --[[@as BomLanguagesModule]] LibStub("Buffomat-Languages")
-  local allBuffsModule = --[[@as BomAllBuffsModule]] LibStub("Buffomat-AllBuffs")
-  local buffDefModule = --[[@as BomBuffDefinitionModule]] LibStub("Buffomat-BuffDefinition")
+  local _t = --[[@as LanguagesModule]] LibStub("Buffomat-Languages")
+  local allBuffsModule = --[[@as AllBuffsModule]] LibStub("Buffomat-AllBuffs")
+  local buffDefModule = --[[@as BuffDefinitionModule]] LibStub("Buffomat-BuffDefinition")
   local buffRowModule = --[[@as BomBuffRowModule]] LibStub("Buffomat-BuffRow")
-  local buffomatModule = --[[@as BomBuffomatModule]] LibStub("Buffomat-Buffomat")
-  local constModule = --[[@as BomConstModule]] LibStub("Buffomat-Const")
+  local buffomatModule = --[[@as BuffomatModule]] LibStub("Buffomat-Buffomat")
+  local constModule = --[[@as ConstModule]] LibStub("Buffomat-Const")
   local managedUiModule = BomModuleManager.myButtonModule
-  local profileModule = --[[@as BomProfileModule]] LibStub("Buffomat-Profile")
+  local profileModule = --[[@as ProfileModule]] LibStub("Buffomat-Profile")
   local rowBuilderModule = BomModuleManager.rowBuilderModule
   local texturesModule = --[[@as BomTexturesModule]] LibStub("Buffomat-Textures")
   local toolboxModule = --[[@as LegacyToolboxModule]] LibStub("Buffomat-LegacyToolbox")
-  local envModule = --[[@as KvLibEnvModule]] LibStub("KvLibShared-Env")
+  local envModule = --[[@as KvSharedEnvModule]] LibStub("KvLibShared-Env")
 
   local function bomDoBlessingOnClick(self)
     local saved = self.gpiDict[self.gpiVariableName]
