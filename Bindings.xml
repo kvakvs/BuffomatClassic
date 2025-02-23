@@ -1,6 +1,7 @@
 <Bindings>
   <Binding name="MACRO Buff'o'mat" header="BUFFOMATHEADER"/>
   <Binding name="BUFFOMAT_WINDOW">
-    BomModuleManager.taskListPanelModule:ToggleWindow()
+    local taskListPanelModule = LibStub("Buffomat-TaskListPanel")
+    taskListPanelModule:ToggleWindow()
   </Binding>
 </Bindings>

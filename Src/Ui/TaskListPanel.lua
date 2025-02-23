@@ -9,16 +9,15 @@ local BOM = BuffomatAddon
 ---@field titleProfile string The profile name which goes into the title of the window
 ---@field titleBuffGroups string The buff groups which go into the title of the window
 
-local taskListPanelModule = BomModuleManager.taskListPanelModule ---@type TaskListPanelModule
+local taskListPanelModule = --[[---@type TaskListPanelModule]] LibStub("Buffomat-TaskListPanel")
 taskListPanelModule.titleProfile = ""
 taskListPanelModule.titleBuffGroups = ""
-
-local buffomatModule = BomModuleManager.buffomatModule ---@type BomBuffomatModule
-local taskScanModule = BomModuleManager.taskScanModule
-local ngToolboxModule = BomModuleManager.ngToolboxModule
-local actionMacroModule = BomModuleManager.actionMacroModule
-local constModule = BomModuleManager.constModule
-local _t = BomModuleManager.languagesModule
+local buffomatModule = --[[---@type BomBuffomatModule]] LibStub("Buffomat-Buffomat")
+local taskScanModule = --[[---@type BomTaskScanModule]] LibStub("Buffomat-TaskScan")
+local ngToolboxModule = --[[---@type NgToolboxModule]] LibStub("Buffomat-NgToolbox")
+local actionMacroModule = --[[---@type BomActionMacroModule]] LibStub("Buffomat-ActionMacro")
+local constModule = --[[---@type BomConstModule]] LibStub("Buffomat-Const")
+local _t = --[[---@type BomLanguagesModule]] LibStub("Buffomat-Languages")
 
 local libGUI = LibStub("AceGUI-3.0")
 

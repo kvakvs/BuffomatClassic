@@ -1,4 +1,4 @@
--- local TOCNAME, _ = ...
+
 local BOM = BuffomatAddon
 
 ---@alias BomElixirType "battle"|"guardian"|"both"
@@ -8,17 +8,14 @@ local BOM = BuffomatAddon
 ---@alias WowIconId number|string
 
 ---@class BomBuffDefinitionModule
-local buffDefModule = BomModuleManager.buffDefinitionModule ---@type BomBuffDefinitionModule
 
-local _t = BomModuleManager.languagesModule
-local envModule = KvModuleManager.envModule
-local buffomatModule = BomModuleManager.buffomatModule
-local spellCacheModule = BomModuleManager.spellCacheModule
-local itemCacheModule = BomModuleManager.itemCacheModule
-local buffRowModule = BomModuleManager.buffRowModule
-local allBuffsModule = BomModuleManager.allBuffsModule
-
---BOM.Class = BOM.Class or {}
+local buffDefModule = --[[---@type BomBuffDefinitionModule]] LibStub("Buffomat-BuffDefinition")
+local _t = --[[---@type BomLanguagesModule]] LibStub("Buffomat-Languages")
+local envModule = --[[---@type KvLibEnvModule]] LibStub("KvLibShared-Env")
+local buffomatModule = --[[---@type BomBuffomatModule]] LibStub("Buffomat-Buffomat")
+local spellCacheModule = --[[---@type BomSpellCacheModule]] LibStub("Buffomat-SpellCache")
+local itemCacheModule = --[[---@type BomItemCacheModule]] LibStub("Buffomat-ItemCache")
+local allBuffsModule = --[[---@type BomAllBuffsModule]] LibStub("Buffomat-AllBuffs")
 
 ---type="aura" Auras are no target buff check. True if the buff affects others in radius, and not a target buff
 ---type="seal" Seals are 1hand enchants which are unique for equipped weapon. Paladins use seals. Shamans also use seals but in TBC shamans have 2 independent seals.
@@ -76,7 +73,6 @@ end
 ---@field ExcludedTarget BomForcedTargets [⚠DO NOT RENAME] List of target names to never buff
 ---@field extraText string Added to the right of spell name in the spells config
 ---@field ForcedTarget BomForcedTargets [⚠DO NOT RENAME] List of extra targets to buff
----@field frames BomBuffRowFrames [deprecated] Dynamic list of controls associated with this spell in the UI
 ---@field groupDuration number Buff duration for group buff in seconds
 ---@field groupFamily number[]|nil Family of group buff spell ids which are mutually exclusive
 ---@field groupLink string Printable link for group buff
@@ -127,7 +123,8 @@ end
 ---@field type BomBuffType Defines type: "aura", "consumable", "weapon" for Enchant Consumables, "seal", "tracking", "resurrection"
 ---@field unitsHaveBetterBuff BomUnit[] List of group members who might need this buff but won't get it because they have better
 ---@field unitsNeedBuff BomUnit[] List of group members who might need this buff
----field GroupsHaveBetterBuff table List of groups who have better version of this buff
+--[deprecated] -@field frames BomBuffRowFrames Dynamic list of controls associated with this spell in the UI
+
 local buffDefClass = {}
 buffDefClass.__index = buffDefClass
 
@@ -137,7 +134,7 @@ buffDefClass.__index = buffDefClass
 function buffDefModule:New(singleId)
   local buff = --[[---@type BomBuffDefinition]] {}
   buff.category = ""                                  -- special value no category
-  buff.frames = buffRowModule:New(tostring(singleId)) -- spell buttons from the UI go here
+  --buff.frames = buffRowModule:New(tostring(singleId)) -- spell buttons from the UI go here
   buff.buffId = singleId
   buff.highestRankSingleId = singleId
   buff.singleFamily = { singleId }

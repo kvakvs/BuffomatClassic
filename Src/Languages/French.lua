@@ -1,5 +1,6 @@
 ---@class BomLanguageFrenchModule
-local frenchModule = BomModuleManager.languageFrenchModule ---@type BomLanguageFrenchModule
+
+local frenchModule = --[[---@type BomLanguageFrenchModule]] LibStub("Buffomat-LanguageFrench")
 
 ---@return BomLocaleDict
 function frenchModule:Translations()

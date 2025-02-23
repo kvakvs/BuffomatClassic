@@ -1,15 +1,15 @@
 -- local TOCNAME, _ = ...
-local BOM = BuffomatAddon
 
 ---@class BomUnitCacheModule
 ---@field unitCache table<string, BomUnit>
-local unitCacheModule = BomModuleManager.unitCacheModule ---@type BomUnitCacheModule
-unitCacheModule.unitCache = {}
 
-local constModule = BomModuleManager.constModule
-local partyModule = BomModuleManager.partyModule
-local texturesModule = BomModuleManager.texturesModule
-local unitModule = BomModuleManager.unitModule
+local unitCacheModule = --[[---@type BomUnitCacheModule]] LibStub("Buffomat-UnitCache")
+unitCacheModule.unitCache = {}
+local constModule = --[[---@type BomConstModule]] LibStub("Buffomat-Const")
+local partyModule = --[[---@type BomPartyModule]] LibStub("Buffomat-Party")
+local texturesModule = --[[---@type BomTexturesModule]] LibStub("Buffomat-Textures")
+local unitModule = --[[---@type BomUnitModule]] LibStub("Buffomat-Unit")
+local ngStringsModule = --[[---@type NgStringsModule]] LibStub("Buffomat-NgStrings")
 
 ---@alias BomRaidRole "MAINTANK"|"MAINASSIST"|"NONE"
 ---@alias BomNameRoleMap {[string]: BomRaidRole}
@@ -47,11 +47,11 @@ function unitCacheModule:GetUnit(unitid, nameGroupMap, nameRoleMap, specialName)
           .. "|h|c" .. RAID_CLASS_COLORS[class].colorStr .. name .. "|r|h"
     else
       class = "pet"
-      link = BOM.FormatTexture(texturesModule.ICON_PET) .. name
+      link = ngStringsModule:FormatTexture(texturesModule.ICON_PET) .. name
     end
   else
     class = "pet"
-    link = BOM.FormatTexture(texturesModule.ICON_PET) .. name
+    link = ngStringsModule:FormatTexture(texturesModule.ICON_PET) .. name
   end
 
   if specialName then

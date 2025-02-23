@@ -146,7 +146,7 @@
     <Scripts>
       <OnLoad>
         UIPanelButton_OnLoad(self)
-        BomModuleManager.toolboxModule:TooltipWithTranslationKey(self, "TooltipCastButton")
+        --BomModuleManager.toolboxModule:TooltipWithTranslationKey(self, "TooltipCastButton")
       </OnLoad>
       <OnMouseDown function="UIPanelButton_OnMouseDown"/>
       <OnMouseUp function="UIPanelButton_OnMouseUp"/>
@@ -230,8 +230,11 @@
           </Anchor>
         </Anchors>
         <Scripts>
-          <OnClick>BomModuleManager.taskListPanelModule:HideWindow()</OnClick>
-          <OnLoad>BomModuleManager.toolboxModule:TooltipWithTranslationKey(self, "TooltipCloseButton")
+          <OnClick>
+          --BomModuleManager.taskListPanelModule:HideWindow()
+          </OnClick>
+          <OnLoad>
+          --BomModuleManager.toolboxModule:TooltipWithTranslationKey(self, "TooltipCloseButton")
           </OnLoad>
         </Scripts>
       </Button>
@@ -251,7 +254,8 @@
         </Anchors>
         <Scripts>
           <!-- <OnMouseDown>BuffomatAddon.BtnSettings(self)</OnMouseDown> -->
-          <OnLoad>BomModuleManager.toolboxModule:TooltipWithTranslationKey(self, "TooltipSettingsButton")
+          <OnLoad>
+          --BomModuleManager.toolboxModule:TooltipWithTranslationKey(self, "TooltipSettingsButton")
           </OnLoad>
         </Scripts>
       </Button>
@@ -271,7 +275,8 @@
         </Anchors>
         <Scripts>
           <!-- <OnMouseDown>BuffomatAddon.BtnMacro()</OnMouseDown> -->
-          <OnLoad>BomModuleManager.toolboxModule:TooltipWithTranslationKey(self, "TooltipMacroButton")
+          <OnLoad>
+          --BomModuleManager.toolboxModule:TooltipWithTranslationKey(self, "TooltipMacroButton")
           </OnLoad>
         </Scripts>
       </Button>

@@ -1,10 +1,10 @@
 local BOM = BuffomatAddon
 
 ---@class BomActionUseModule
-local actionUseModule = BomModuleManager.actionUseModule
 
-local taskModule = BomModuleManager.taskModule
-local _t = BomModuleManager.languagesModule
+local actionUseModule = --[[---@type BomActionUseModule]] LibStub("Buffomat-ActionUse")
+local taskModule = --[[---@type BomTaskModule]] LibStub("Buffomat-Task")
+local _t = --[[---@type BomLanguagesModule]] LibStub("Buffomat-Languages")
 
 ---@class BomTaskActionUse: BomTaskAction Uses an equipment slot or a bag item
 ---@field buffDef BomBuffDefinition|nil

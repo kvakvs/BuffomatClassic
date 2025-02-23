@@ -8,32 +8,30 @@
 ---@field currentProfile BomProfile
 ---@field taskRescanRequestedBy {[string]: number} Reasons for force update, with count
 
-local buffomatModule = BomModuleManager.buffomatModule ---@type BomBuffomatModule
+local buffomatModule = --[[---@type BomBuffomatModule]] LibStub:NewLibrary("Buffomat-Buffomat", 1)
 buffomatModule.taskRescanRequestedBy = --[[---@type {[string]: number}]] {}
 
-local kvEnvModule = KvModuleManager.envModule
-local _t = BomModuleManager.languagesModule
-local allBuffsModule = BomModuleManager.allBuffsModule
-local characterSettingsModule = BomModuleManager.characterSettingsModule
-local characterStateModule = BomModuleManager.characterSettingsModule
-local constModule = BomModuleManager.constModule
-local eventsModule = BomModuleManager.eventsModule
-local languagesModule = BomModuleManager.languagesModule
-local macroModule = BomModuleManager.macroModule
-local managedUiModule = BomModuleManager.myButtonModule
-local optionsModule = BomModuleManager.optionsModule
-local optionsPopupModule = BomModuleManager.optionsPopupModule
-local partyModule = BomModuleManager.partyModule
-local popupModule = BomModuleManager.popupModule
-local profileModule = BomModuleManager.profileModule
-local sharedStateModule = BomModuleManager.sharedSettingsModule
-local slashModule = BomModuleManager.slashCommandsModule
-local spellButtonsTabModule = BomModuleManager.spellButtonsTabModule
-local taskScanModule = BomModuleManager.taskScanModule
-local texturesModule = BomModuleManager.texturesModule
-local toolboxModule = BomModuleManager.toolboxModule
-local taskListPanelModule = BomModuleManager.taskListPanelModule
-local throttleModule = BomModuleManager.throttleModule ---@type BomThrottleModule
+local kvEnvModule = --[[---@type KvLibEnvModule]] LibStub("KvLibShared-Env")
+local _t = --[[---@type BomLanguagesModule]] LibStub("Buffomat-Languages")
+local languagesModule = _t
+local allBuffsModule = --[[---@type BomAllBuffsModule]] LibStub("Buffomat-AllBuffs")
+local characterSettingsModule = --[[---@type BomCharacterSettingsModule]] LibStub("Buffomat-CharacterSettings")
+local constModule = --[[---@type BomConstModule]] LibStub("Buffomat-Const")
+local eventsModule = --[[---@type BomEventsModule]] LibStub("Buffomat-Events")
+local macroModule = --[[---@type BomMacroModule]] LibStub("Buffomat-Macro")
+local optionsModule = --[[---@type BomOptionsModule]] LibStub("Buffomat-Options")
+local optionsPopupModule = --[[---@type BomOptionsPopupModule]] LibStub("Buffomat-OptionsPopup")
+local partyModule = --[[---@type BomPartyModule]] LibStub("Buffomat-Party")
+local popupModule = --[[---@type BomPopupModule]] LibStub("Buffomat-Popup")
+local profileModule = --[[---@type BomProfileModule]] LibStub("Buffomat-Profile")
+local sharedStateModule = --[[---@type BomSharedSettingsModule]] LibStub("Buffomat-SharedSettings")
+local slashModule = --[[---@type BomSlashCommandsModule]] LibStub("Buffomat-SlashCommands")
+local taskScanModule = --[[---@type BomTaskScanModule]] LibStub("Buffomat-TaskScan")
+local toolboxModule = --[[---@type LegacyToolboxModule]] LibStub("Buffomat-LegacyToolbox")
+local taskListPanelModule = --[[---@type TaskListPanelModule]] LibStub("Buffomat-TaskListPanel")
+local throttleModule = --[[---@type BomThrottleModule]] LibStub("Buffomat-Throttle")
+
+local ngStringsModule = LibStub("Buffomat-NgStrings")
 
 ---@alias BomCastingState "cast"|"channel"|nil
 
@@ -118,12 +116,6 @@ function buffomatModule:Color(hex, text)
   return "|cff" .. hex .. text .. "|r"
 end
 
----Creates a string which will display a picture in a FontString
----@param texture WowIconId - path to UI texture file (for example can come from C_Container.GetContainerItemInfo(bag, slot) or spell info etc
-function BOM.FormatTexture(texture)
-  return string.format(constModule.ICON_FORMAT, texture)
-end
-
 function BOM.ScrollMessage(self, delta)
   self:SetScrollOffset(self:GetScrollOffset() + delta * 5);
   self:ResetAllFadeTimes()
@@ -202,7 +194,7 @@ function buffomatModule:UseProfile(profileName)
   local selectedProfile = self.character[profileName] or characterSettingsModule:New(nil)
   buffomatModule.currentProfile = selectedProfile
 
-  taskListPanelModule.titleProfile = BOM.FormatTexture(constModule.BOM_BEAR_ICON_FULLPATH) .. " " .. _t("profile_" .. profileName)
+  taskListPanelModule.titleProfile = ngStringsModule:FormatTexture(constModule.BOM_BEAR_ICON_FULLPATH) .. " " .. _t("profile_" .. profileName)
   taskListPanelModule:SetTitle()
 
   BOM:Print("Using profile " .. _t("profile_" .. profileName))
@@ -272,28 +264,6 @@ function buffomatModule:UpdateBuffTabText()
   -- PanelTemplates_TabResize(t, 0)
 end
 
----Creates small mybutton which toggles group buff setting, next to CAST button
-function BOM.CreateSingleBuffButton(parent_frame)
-  if BOM.quickSingleBuffToggleButton == nil then
-    BOM.quickSingleBuffToggleButton = managedUiModule:CreateManagedButton(
-      parent_frame,
-      texturesModule.ICON_SELF_CAST_ON,
-      texturesModule.ICON_SELF_CAST_OFF,
-      nil, nil, nil, nil, nil)
-    BOM.quickSingleBuffToggleButton:SetPoint("BOTTOMLEFT", parent_frame, "BOTTOMRIGHT", -18, 0);
-    BOM.quickSingleBuffToggleButton:SetPoint("BOTTOMRIGHT", parent_frame, "BOTTOMRIGHT", -2, 12);
-    BOM.quickSingleBuffToggleButton:SetVariable(buffomatModule.shared, "NoGroupBuff", nil)
-    BOM.quickSingleBuffToggleButton:SetOnClick(BOM.MyButtonOnClick)
-    toolboxModule:TooltipText(
-      BOM.quickSingleBuffToggleButton,
-      BOM.FormatTexture(texturesModule.ICON_SELF_CAST_ON) .. " - " .. _t("options.long.NoGroupBuff")
-      .. "|n"
-      .. BOM.FormatTexture(texturesModule.ICON_SELF_CAST_OFF) .. " - " .. _t("options.long.GroupBuff"))
-
-    BOM.quickSingleBuffToggleButton:Show()
-  end
-end
-
 function buffomatModule:CreateBuffsDialog()
   BOM.buffsDialog = libGUI:Create("Window")
   BOM.buffsDialog:SetLayout("Flow")
@@ -343,7 +313,7 @@ function buffomatModule:InitGlobalStates()
   if BomCharacterState then
     BomCharacterState = nil -- reset after reimport
   end
-  buffomatModule.character = characterStateModule:New(loadedChar)
+  buffomatModule.character = characterSettingsModule:New(loadedChar)
   BuffomatCharacter = buffomatModule.character
 
   if self.character.remainingDurations then
@@ -423,11 +393,11 @@ function BuffomatAddon:MakeSlashCommand()
         taskScanModule:ScanTasks("macro-/update")
       end
     },
-    {
-      command = "updatespellstab",
-      description = "",
-      handler = spellButtonsTabModule.UpdateSpellsTab
-    },
+    -- {
+    --   command = "updatespellstab",
+    --   description = "",
+    --   handler = spellButtonsTabModule.UpdateSpellsTab
+    -- },
     {
       command = "close",
       description = _t("SlashClose"),
@@ -677,7 +647,7 @@ function BOM.ShowSpellSettings()
   InterfaceOptionsFrame:Hide()
   GameMenuFrame:Hide()
   BOM:Print("TODO: Show Spell Settings")
-  BomModuleManager.taskListPanelModule:ShowWindow()
+  taskListPanelModule:ShowWindow()
 end
 
 function BOM.MyButtonOnClick(self)

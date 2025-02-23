@@ -7,15 +7,15 @@ local BOM = BuffomatAddon
 
 ---@class BomOptionsPopupModule
 -- -@field behaviourSettings BomBehaviourSetting[]
-local optionsPopupModule = BomModuleManager.optionsPopupModule ---@type BomOptionsPopupModule
 
-local _t = BomModuleManager.languagesModule
-local buffomatModule = BomModuleManager.buffomatModule
-local constModule = BomModuleManager.constModule
-local buffDefModule = BomModuleManager.buffDefinitionModule
-local profileModule = BomModuleManager.profileModule
-local popupModule = BomModuleManager.popupModule
-local allBuffsModule = BomModuleManager.allBuffsModule
+local optionsPopupModule = --[[---@type BomOptionsPopupModule]] LibStub("Buffomat-OptionsPopup")
+local _t = --[[---@type BomLanguagesModule]] LibStub("Buffomat-Languages")
+local buffomatModule = --[[---@type BomBuffomatModule]] LibStub("Buffomat-Buffomat")
+local constModule = --[[---@type BomConstModule]] LibStub("Buffomat-Const")
+local buffDefModule = --[[---@type BomBuffDefinitionModule]] LibStub("Buffomat-BuffDefinition")
+local profileModule = --[[---@type BomProfileModule]] LibStub("Buffomat-Profile")
+local popupModule = --[[---@type BomPopupModule]] LibStub("Buffomat-Popup")
+local allBuffsModule = --[[---@type BomAllBuffsModule]] LibStub("Buffomat-AllBuffs")
 
 
 ---Makes a tuple to pass to the menubuilder to display a settings checkbox in popup menu

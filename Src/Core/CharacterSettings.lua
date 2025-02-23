@@ -2,10 +2,10 @@
 -- local BOM = BuffomatAddon
 
 ---@class BomCharacterSettingsModule
-local characterSettingsModule = BomModuleManager.characterSettingsModule ---@type BomCharacterSettingsModule
 
-local profileModule = BomModuleManager.profileModule
-local envModule = KvModuleManager.envModule
+local characterSettingsModule = --[[---@type BomCharacterSettingsModule]] LibStub("Buffomat-CharacterSettings")
+local profileModule = --[[---@type BomProfileModule]] LibStub("Buffomat-Profile")
+local envModule = --[[---@type KvLibEnvModule]] LibStub("KvLibShared-Env")
 
 ---@alias BomProfileName "solo"|"group"|"raid"|"battleground"|"solo_spec2"|"group_spec2"|"raid_spec2"|"battleground_spec2"
 

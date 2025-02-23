@@ -1,7 +1,7 @@
 local TOCNAME, _ = ...
 local BOM = BuffomatAddon
 
----@class BomToolboxModule
+---@class LegacyToolboxModule
 ---@field IconClass table<string, string> Class icon strings indexed by class name
 ---@field IconClassBig table<string, string> Class icon strings indexed by class name
 ---@field RaidIconNames table<string, number>
@@ -11,13 +11,13 @@ local BOM = BuffomatAddon
 ---@field ClassColor table<string, table> Localized class colors
 ---@field NameToClass table<string, string> Reverse class name lookup
 ---@field _EditBox BomGPIControlEditBox
-local toolboxModule = BomModuleManager.toolboxModule ---@type BomToolboxModule
 
-local _t = BomModuleManager.languagesModule
-local constModule = BomModuleManager.constModule
+local legacyToolboxModule = --[[---@type BomToolboxModule]] LibStub("Buffomat-LegacyToolbox")
+local _t = --[[---@type BomLanguagesModule]] LibStub("Buffomat-Languages")
+local constModule = --[[---@type BomConstModule]] LibStub("Buffomat-Const")
 
----@class BomGPIControlEditBox: BomGPIControl
----@field chatFrame WowControl
+---@class BomGPIControlEditBox: Frame
+---@field chatFrame Frame
 
 ---Converts accented letters to ASCII equivalent for sorting
 local bom_special_letter_to_ascii = {
@@ -90,7 +90,7 @@ local bom_special_letter_to_ascii = {
 
 local function bom_on_enter_hyperlink(self, link, text)
   --print(link,text)
-  local part = toolboxModule:Split(link, ":")
+  local part = legacyToolboxModule:Split(link, ":")
   if part[1] == "spell"
       or part[1] == "unit"
       or part[1] == "item"
@@ -110,7 +110,7 @@ local function bom_on_leave_hyperlink(self)
   GameTooltip:Hide()
 end
 
-function toolboxModule:EnableHyperlink(frame)
+function legacyToolboxModule:EnableHyperlink(frame)
   frame:SetHyperlinksEnabled(true);
   frame:SetScript("OnHyperlinkEnter", bom_on_enter_hyperlink)
   frame:SetScript("OnHyperlinkLeave", bom_on_leave_hyperlink)
@@ -130,7 +130,7 @@ local function bom_gpiprivat_event_handler(self, event, ...)
 end
 
 ---@param self BomGPIControl
-function toolboxModule.gpiprivat_update_handler(self, ...)
+function legacyToolboxModule.gpiprivat_update_handler(self, ...)
   for i, Entry in pairs(self._GPIPRIVAT_updates) do
     Entry(...)
   end
@@ -150,7 +150,7 @@ end
 --  eventFrame:RegisterEvent(event)
 --end
 
-function toolboxModule:OnUpdate(func)
+function legacyToolboxModule:OnUpdate(func)
   if eventFrame == nil then
     eventFrame = CreateFrame("Frame")
   end
@@ -173,7 +173,7 @@ local function bom_frame_drag_stop(self)
   end
 end
 
-function toolboxModule:EnableMoving(frame, callback)
+function legacyToolboxModule:EnableMoving(frame, callback)
   frame:SetMovable(true)
   frame:EnableMouse(true)
   frame:RegisterForDrag("LeftButton")
@@ -185,7 +185,7 @@ end
 -- misc tools
 local myScanningTooltip ---@type BomTooltipControl
 
-function toolboxModule:ScanToolTip(what, ...)
+function legacyToolboxModule:ScanToolTip(what, ...)
   local TextList = {}
   if myScanningTooltip == nil then
     myScanningTooltip = CreateFrame("GameTooltip", TOCNAME .. "_MyScanningTooltip", nil, "GameTooltipTemplate") -- Tooltip name cannot be nil
@@ -211,7 +211,7 @@ function toolboxModule:ScanToolTip(what, ...)
   return TextList
 end
 
-function toolboxModule:CopyTable(from, to)
+function legacyToolboxModule:CopyTable(from, to)
   -- "to" must be a table (possibly empty)
   to = to or {}
   for k, v in pairs(from) do
@@ -225,7 +225,7 @@ function toolboxModule:CopyTable(from, to)
 end
 
 ---@deprecated
-function toolboxModule:GuildNameToIndex(name, searchOffline)
+function legacyToolboxModule:GuildNameToIndex(name, searchOffline)
   name = string.lower(name)
   for i = 1, GetNumGuildMembers(searchOffline) do
     if string.lower(string.match((GetGuildRosterInfo(i)), "(.-)-")) == name then
@@ -235,7 +235,7 @@ function toolboxModule:GuildNameToIndex(name, searchOffline)
 end
 
 ---@deprecated
-function toolboxModule:RunSlashCmd(cmd)
+function legacyToolboxModule:RunSlashCmd(cmd)
   if self._EditBox == nil then
     self._EditBox = CreateFrame("EditBox", "GPILIB_myEditBox_" .. TOCNAME, UIParent)
     self._EditBox.chatFrame = self._EditBox:GetParent()
@@ -243,11 +243,11 @@ function toolboxModule:RunSlashCmd(cmd)
     self._EditBox:Hide()
   end
   self._EditBox:SetText(cmd)
-  ChatEdit_SendText(toolboxModule._EditBox)
+  ChatEdit_SendText(legacyToolboxModule._EditBox)
 end
 
 ---@deprecated
-function toolboxModule:RGBtoEscape(r, g, b, a)
+function legacyToolboxModule:RGBtoEscape(r, g, b, a)
   if type(r) == "table" then
     a = r.a
     g = r.g
@@ -263,7 +263,7 @@ function toolboxModule:RGBtoEscape(r, g, b, a)
 end
 
 ---@deprecated
-function toolboxModule:GetRaidIcon(name)
+function legacyToolboxModule:GetRaidIcon(name)
   local x = string.gsub(string.lower(name), "[%{%}]", "")
   return ICON_TAG_LIST[x] and constModule.RAID_ICON[ICON_TAG_LIST[x]] or name
 end
@@ -271,7 +271,7 @@ end
 local TOO_FAR = 1000011 -- special value to find out that the range error originates from this module
 
 ---@param uId string Unit to check distance from the player
-function toolboxModule:UnitDistanceSquared(uId)
+function legacyToolboxModule:UnitDistanceSquared(uId)
   --partly copied from DBM
   --    * Paul Emmerich (Tandanu @ EU-Aegwynn) (DBM-Core)
   --    * Martin Verges (Nitram @ EU-Azshara) (DBM-GUI)
@@ -309,7 +309,7 @@ function toolboxModule:UnitDistanceSquared(uId)
 end
 
 ---@deprecated
-function toolboxModule:Merge(t1, ...)
+function legacyToolboxModule:Merge(t1, ...)
   for index = 1, select("#", ...) do
     for i, v in pairs(select(index, ...)) do
       t1[i] = v
@@ -319,7 +319,7 @@ function toolboxModule:Merge(t1, ...)
 end
 
 ---@deprecated
-function toolboxModule:iMerge(t1, ...)
+function legacyToolboxModule:iMerge(t1, ...)
   for index = 1, select("#", ...) do
     local var = select(index, ...)
 
@@ -339,14 +339,14 @@ end
 ---@deprecated
 ---@param str string
 ---@return string
-function toolboxModule:stripChars(str)
+function legacyToolboxModule:stripChars(str)
   return string.gsub(str, "[%z\1-\127\194-\244][\128-\191]*", bom_special_letter_to_ascii)
 end
 
 ---@deprecated
 ---@param pattern string
 ---@param maximize boolean
-function toolboxModule:CreatePattern(pattern, maximize)
+function legacyToolboxModule:CreatePattern(pattern, maximize)
   pattern = string.gsub(pattern, "[%(%)%-%+%[%]]", "%%%1")
 
   if not maximize then
@@ -374,7 +374,7 @@ end
 ---@param sep string
 ---@param first number
 ---@param last number
-function toolboxModule:Combine(t, sep, first, last)
+function legacyToolboxModule:Combine(t, sep, first, last)
   if type(t) ~= "table" then
     return ""
   end
@@ -389,7 +389,7 @@ function toolboxModule:Combine(t, sep, first, last)
   return string.sub(ret, string.len(sep) + 1)
 end
 
-function toolboxModule:iSplit(inputstr, sep)
+function legacyToolboxModule:iSplit(inputstr, sep)
   if sep == nil then
     sep = "%s"
   end
@@ -406,7 +406,7 @@ function toolboxModule:iSplit(inputstr, sep)
 end
 
 ---@return string[]
-function toolboxModule:Split(inputstr, sep)
+function legacyToolboxModule:Split(inputstr, sep)
   if sep == nil then
     sep = "%s"
   end
@@ -483,7 +483,7 @@ local ResizeCursor_Update = function(self)
   self:SetPoint("CENTER", UIParent, "BOTTOMLEFT", X / Scale, Y / Scale)
 end
 
-function toolboxModule:EnableSize(frame, border, OnStart, OnStop)
+function legacyToolboxModule:EnableSize(frame, border, OnStart, OnStop)
   if not ResizeCursor then
     ResizeCursor = CreateFrame("Frame", nil, UIParent)
     ResizeCursor:Hide()
@@ -540,7 +540,7 @@ local function bomSelectTab(self)
   end
 end
 
-function toolboxModule:TabHide(frame, id)
+function legacyToolboxModule:TabHide(frame, id)
   if id and frame.Tabs and frame.Tabs[id] then
     frame.Tabs[id]:Hide()
   elseif not id and frame.Tabs then
@@ -550,7 +550,7 @@ function toolboxModule:TabHide(frame, id)
   end
 end
 
-function toolboxModule:TabShow(frame, id)
+function legacyToolboxModule:TabShow(frame, id)
   if id and frame.Tabs and frame.Tabs[id] then
     frame.Tabs[id]:Show()
   elseif not id and frame.Tabs then
@@ -560,19 +560,19 @@ function toolboxModule:TabShow(frame, id)
   end
 end
 
-function toolboxModule:SelectTab(frame, id)
+function legacyToolboxModule:SelectTab(frame, id)
   if id and frame.Tabs and frame.Tabs[id] then
     bomSelectTab(frame.Tabs[id])
   end
 end
 
-function toolboxModule:TabOnSelect(frame, id, func)
+function legacyToolboxModule:TabOnSelect(frame, id, func)
   if id and frame.Tabs and frame.Tabs[id] then
     frame.Tabs[id].OnSelect = func
   end
 end
 
-function toolboxModule:GetSelectedTab(frame)
+function legacyToolboxModule:GetSelectedTab(frame)
   if frame.Tabs then
     for i = 1, frame.numTabs do
       if frame.Tabs[i].content:IsShown() then
@@ -597,7 +597,7 @@ end
 ---@param name string Tab text
 ---@param tabFrame BomWindowTab
 ---@param combatlockdown boolean accessible in combat or not
-function toolboxModule:AddTab(frame, name, tabFrame, combatlockdown)
+function legacyToolboxModule:AddTab(frame, name, tabFrame, combatlockdown)
   local frameName ---@type string
 
   if type(frame) == "string" then
@@ -647,7 +647,7 @@ end
 
 -- DataBroker
 local bomDataBroker = false
-function toolboxModule:AddDataBroker(icon, onClick, onTooltipShow, text)
+function legacyToolboxModule:AddDataBroker(icon, onClick, onTooltipShow, text)
   if LibStub ~= nil and bomDataBroker ~= true then
     local Launcher = LibStub('LibDataBroker-1.1', true)
     if Launcher ~= nil then
@@ -670,7 +670,7 @@ end
 ---@param parent WowControl parent where the label is created
 ---@param positionFn function applies function after creating the label
 ---@return BomGPIControl
-function toolboxModule:CreateSmalltextLabel(maybeLabel, parent, positionFn)
+function legacyToolboxModule:CreateSmalltextLabel(maybeLabel, parent, positionFn)
   if maybeLabel == nil then
     maybeLabel = --[[---@type BomGPIControl]] parent:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
   end
@@ -682,7 +682,7 @@ end
 ---This works when the tooltip is set too early before translations are loaded.
 ---@param control BomGPIControl
 ---@param translationKey string The key to translation
-function toolboxModule:TooltipWithTranslationKey(control, translationKey)
+function legacyToolboxModule:TooltipWithTranslationKey(control, translationKey)
   control:SetScript("OnEnter", function()
     GameTooltip:SetOwner(control, "ANCHOR_RIGHT")
     GameTooltip:AddLine(_t(translationKey))
@@ -693,10 +693,11 @@ function toolboxModule:TooltipWithTranslationKey(control, translationKey)
   end)
 end
 
+---@deprecated Use the one in ngToolbox instead
 ---Add onenter/onleave scripts to show the tooltip with translation by key
 ---@param control BomGPIControl
 ---@param text string The translated text
-function toolboxModule:Tooltip(control, text)
+function legacyToolboxModule:Tooltip(control, text)
   control:SetScript("OnEnter", function()
     GameTooltip:SetOwner(control, "ANCHOR_RIGHT")
     GameTooltip:AddLine(text)
@@ -707,10 +708,11 @@ function toolboxModule:Tooltip(control, text)
   end)
 end
 
+---@deprecated Use the one in ngToolbox instead
 ---Add onenter/onleave scripts to show the tooltip with TEXT
 ---@param control WowControl
 ---@param text string - the localized text to display
-function toolboxModule:TooltipText(control, text)
+function legacyToolboxModule:TooltipText(control, text)
   control:SetScript("OnEnter", function()
     GameTooltip:SetOwner(control, "ANCHOR_RIGHT")
     GameTooltip:AddLine(text)
@@ -721,10 +723,11 @@ function toolboxModule:TooltipText(control, text)
   end)
 end
 
+---@deprecated Use the one in ngToolbox instead
 ---Add onenter/onleave scripts to show the tooltip with spell
 ---@param control WowControl
 ---@param link string The string in format "spell:<id>" or "item:<id>"
-function toolboxModule:TooltipLink(control, link)
+function legacyToolboxModule:TooltipLink(control, link)
   control:SetScript("OnEnter", function()
     local spellId = GameTooltip:SetOwner(control, "ANCHOR_RIGHT")
     GameTooltip:SetHyperlink(link)
@@ -737,7 +740,7 @@ end
 
 ---@param text string
 ---@param fn function
-function toolboxModule:Profile(text, fn)
+function legacyToolboxModule:Profile(text, fn)
   local t_start = debugprofilestop()
   local result = fn()
   local t_end = debugprofilestop()

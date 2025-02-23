@@ -1,17 +1,15 @@
---local BOM = BuffomatAddon
-
 ---@class BomLanguagesModule
 ---@overload fun(key: string): string
 ---@field currentLocale BomLocaleDict
 ---@field english BomLocaleDict
-local languagesModule = BomModuleManager.languagesModule ---@type BomLanguagesModule
 
-local buffomatModule = BomModuleManager.buffomatModule
-local englishModule = BomModuleManager.languageEnglishModule
-local germanModule = BomModuleManager.languageGermanModule
-local frenchModule = BomModuleManager.languageFrenchModule
-local russianModule = BomModuleManager.languageRussianModule
-local chineseModule = BomModuleManager.languageChineseModule
+local languagesModule = --[[---@type BomLanguagesModule]] LibStub("Buffomat-Languages")
+local buffomatModule = --[[---@type BomBuffomatModule]] LibStub("Buffomat-Buffomat")
+local englishModule = --[[---@type BomLanguageEnglishModule]] LibStub("Buffomat-LanguageEnglish")
+local germanModule = --[[---@type BomLanguageGermanModule]] LibStub("Buffomat-LanguageGerman")
+local frenchModule = --[[---@type BomLanguageFrenchModule]] LibStub("Buffomat-LanguageFrench")
+local russianModule = --[[---@type BomLanguageRussianModule]] LibStub("Buffomat-LanguageRussian")
+local chineseModule = --[[---@type BomLanguageChineseModule]] LibStub("Buffomat-LanguageChinese")
 
 setmetatable(languagesModule, {
   __call = ---@param k string

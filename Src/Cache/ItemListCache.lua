@@ -1,14 +1,13 @@
 -- local TOCNAME, _ = ...
 local BOM = BuffomatAddon
 
----@deprecated Not connected properly to any imports
 ---@class BomItemListCacheModule
-local itemListCacheModule = BomModuleManager.itemListCacheModule ---@type BomItemListCacheModule
 
-local itemIdsModule = BomModuleManager.itemIdsModule
-local buffomatModule = BomModuleManager.buffomatModule
-local toolboxModule = BomModuleManager.toolboxModule
-local envModule = KvModuleManager.envModule
+local itemListCacheModule = --[[---@type BomItemListCacheModule]] LibStub("Buffomat-ItemListCache")
+local itemIdsModule = --[[---@type BomItemIdsModule]] LibStub("Buffomat-ItemIds")
+local buffomatModule = --[[---@type BomBuffomatModule]] LibStub("Buffomat-Buffomat")
+local toolboxModule = --[[---@type LegacyToolboxModule]] LibStub("Buffomat-LegacyToolbox")
+local envModule = --[[---@type KvLibEnvModule]] LibStub("KvLibShared-Env")
 
 BOM.wipeCachedItems = true
 

@@ -2,7 +2,8 @@ local TOCNAME, _ = ...
 local BOM = BuffomatAddon
 
 ---@class BomSharedSettingsModule
-local sharedSettingsModule = BomModuleManager.sharedSettingsModule ---@type BomSharedSettingsModule
+
+local sharedSettingsModule = --[[---@type BomSharedSettingsModule]] LibStub("Buffomat-SharedSettings")
 
 --- Values to use when the saved data is evolving with an update, and the key doesn't exist
 sharedSettingsModule.defaults = {

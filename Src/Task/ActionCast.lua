@@ -1,12 +1,12 @@
 local BOM = BuffomatAddon
 
 ---@class BomActionCastModule
-local actionCastModule = BomModuleManager.actionCastModule
 
-local buffomatModule = BomModuleManager.buffomatModule
-local taskModule = BomModuleManager.taskModule
-local partyModule = BomModuleManager.partyModule
-local allBuffsModule = BomModuleManager.allBuffsModule
+local actionCastModule = --[[---@type BomActionCastModule]] LibStub("Buffomat-ActionCast")
+local buffomatModule = --[[---@type BomBuffomatModule]] LibStub("Buffomat-Buffomat")
+local taskModule = --[[---@type BomTaskModule]] LibStub("Buffomat-Task")
+local partyModule = --[[---@type BomPartyModule]] LibStub("Buffomat-Party")
+local allBuffsModule = --[[---@type BomAllBuffsModule]] LibStub("Buffomat-AllBuffs")
 
 ---@class BomTaskActionCast: BomTaskAction Casts a spell with a power (mana) cost on a target
 ---@field buffDef BomBuffDefinition|nil

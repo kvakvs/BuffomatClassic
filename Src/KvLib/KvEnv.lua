@@ -6,16 +6,8 @@
 ---@field haveWotLK boolean
 ---@field isCata boolean
 ---@field haveCata boolean
-local envModule = { }
 
----@class KvModuleManager
----@field envModule KvLibEnvModule
----@field optionsModule KvOptionsModule
----
-KvModuleManager = {
-  envModule = envModule,
-  optionsModule = --[[---@type KvOptionsModule]] {},
-}
+local envModule = --[[---@type KvLibEnvModule]] LibStub:NewLibrary("KvLibShared-Env", 1)
 
 function envModule:DetectVersions()
   local _, _, _, tocversion = GetBuildInfo()

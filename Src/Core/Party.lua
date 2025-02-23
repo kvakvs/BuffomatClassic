@@ -12,7 +12,8 @@ local BOM = BuffomatAddon
 ---@field itemListTarget table<number, string> Remember who casted item buff on you?
 ---@field playerManaLimit number Player max mana
 ---@field playerMana number Player current mana
-local partyModule = BomModuleManager.partyModule ---@type BomPartyModule
+
+local partyModule = --[[---@type BomPartyModule]] LibStub("Buffomat-Party")
 
 ---@type BomBuffUpdatesPerUnit
 partyModule.unitAurasLastUpdated = {}
@@ -35,10 +36,10 @@ partyModule.ALL_INVALID_GROUPS = {
   [8] = true
 }
 
-local buffomatModule = BomModuleManager.buffomatModule
-local toolboxModule = BomModuleManager.toolboxModule
-local unitCacheModule = BomModuleManager.unitCacheModule
-local taskScanModule = BomModuleManager.taskScanModule
+local buffomatModule = --[[---@type BomBuffomatModule]] LibStub("Buffomat-Buffomat")
+local toolboxModule = --[[---@type LegacyToolboxModule]] LibStub("Buffomat-LegacyToolbox")
+local unitCacheModule = --[[---@type BomUnitCacheModule]] LibStub("Buffomat-UnitCache")
+local taskScanModule = --[[---@type BomTaskScanModule]] LibStub("Buffomat-TaskScan")
 
 ---@alias BomUnitDictByUnitId {[string]: BomUnit}
 ---@alias BomUnitDictByName {[string]: BomUnit}

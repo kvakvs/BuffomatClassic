@@ -1,12 +1,10 @@
 local BOM = BuffomatAddon
 
 ---@class BomTaskModule
-local taskModule = BomModuleManager.taskModule
 
-local buffomatModule = BomModuleManager.buffomatModule
-local partyModule = BomModuleManager.partyModule
-local taskScanModule = BomModuleManager.taskScanModule
-local constModule = BomModuleManager.constModule
+local taskModule = --[[---@type BomTaskModule]] LibStub("Buffomat-Task")
+local buffomatModule = --[[---@type BomBuffomatModule]] LibStub("Buffomat-Buffomat")
+local constModule = --[[---@type BomConstModule]] LibStub("Buffomat-Const")
 
 ---BomTaskActionUse|BomTaskActionCast|BomTaskActionMacro
 ---@class BomTaskAction

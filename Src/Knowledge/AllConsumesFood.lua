@@ -1,12 +1,12 @@
-local BOM = BuffomatAddon
+
 
 ---@class BomAllConsumesFoodModule
-local foodModule = BomModuleManager.allConsumesFoodModule ---@type BomAllConsumesFoodModule
 
-local _t = BomModuleManager.languagesModule
-local allBuffsModule = BomModuleManager.allBuffsModule
-local buffDefModule = BomModuleManager.buffDefinitionModule
-local spellIdsModule = BomModuleManager.spellIdsModule
+local foodModule = --[[---@type BomAllConsumesFoodModule]] LibStub("Buffomat-AllConsumesFood")
+local _t = --[[---@type BomLanguagesModule]] LibStub("Buffomat-Languages")
+local allBuffsModule = --[[---@type BomAllBuffsModule]] LibStub("Buffomat-AllBuffs")
+local buffDefModule = --[[---@type BomBuffDefinitionModule]] LibStub("Buffomat-BuffDefinition")
+local spellIdsModule = --[[---@type BomSpellIdsModule]] LibStub("Buffomat-SpellIds")
 
 ---@param allBuffs BomBuffDefinition[]
 ---@param enchantments BomEnchantmentsMapping

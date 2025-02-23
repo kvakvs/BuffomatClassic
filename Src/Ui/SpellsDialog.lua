@@ -1,6 +1,5 @@
 -- Implements AceGUI dialog for choosing spells and spell settings.
 -- Replaces the classic Buffomat spells tab.
---local TOCNAME, _ = ...
 local BOM = BuffomatAddon
 
 ---@class SpellsDialogContext
@@ -11,18 +10,14 @@ local BOM = BuffomatAddon
 ---@field scrollFrame AceGUIWidget AceGUI scroll frame containing the spells list
 ---@field context SpellsDialogContext
 
-local spellsDialogModule = BomModuleManager.spellsDialogModule ---@type BomSpellsDialogModule
-local _t = BomModuleManager.languagesModule ---@type BomLanguagesModule
-local allBuffsModule = BomModuleManager.allBuffsModule ---@type BomAllBuffsModule
-local buffomatModule = BomModuleManager.buffomatModule ---@type BomBuffomatModule
-local buffDefModule = BomModuleManager.buffDefinitionModule ---@type BomBuffDefinitionModule
-local toolboxModule = BomModuleManager.toolboxModule ---@type BomToolboxModule
+local spellsDialogModule = --[[---@type BomSpellsDialogModule]] LibStub:NewLibrary("Buffomat-SpellsDialog", 1)
 
--- local constModule = BomModuleManager.constModule
--- local eventsModule = BomModuleManager.eventsModule
--- local taskScanModule = BomModuleManager.taskScanModule
--- local kvOptionsModule = KvModuleManager.optionsModule
--- local taskListPanelModule = BomModuleManager.taskListPanelModule
+local _t = --[[---@type BomLanguagesModule]] LibStub("Buffomat-Languages")
+local allBuffsModule = --[[---@type BomAllBuffsModule]] LibStub("Buffomat-AllBuffs")
+local buffomatModule = --[[---@type BomBuffomatModule]] LibStub("Buffomat-Buffomat")
+local buffDefModule = --[[---@type BomBuffDefinitionModule]] LibStub("Buffomat-BuffDefinition")
+local ngToolboxModule = --[[---@type NgToolboxModule]] LibStub("Buffomat-NgToolbox")
+local texturesModule = --[[---@type BomTexturesModule]] LibStub("Buffomat-Textures")
 
 local libGUI = LibStub("AceGUI-3.0")
 
@@ -124,31 +119,57 @@ function spellsDialogModule:CreateCategoryFrames(context)
     local label = libGUI:Create("InteractiveLabel")
     label:SetText(buffomatModule:Color("aaaaaa", self:CategoryLabel(cat)))
     label:SetFont("Fonts\\FRIZQT__.TTF", 16, "OUTLINE")
+    label:SetWidth(300)
     headingPanel:AddChild(label)
 
     local isVisible = not self:CategoryIsHidden(cat)
     local showCategoryCheckbox = libGUI:Create("CheckBox")
+    showCategoryCheckbox:SetWidth(32)
     showCategoryCheckbox:SetValue(isVisible)
     showCategoryCheckbox:SetLabel("")
     showCategoryCheckbox:SetCallback("OnValueChanged", function(_control, _callbackName, value)
       buffomatModule.character.BuffCategoriesHidden[cat] = not value
-      -- SetVisible(self.context.categoryContentFrames[cat], value)
-      -- categoryFrame:DoLayout()
       spellsDialogModule:Hide()
       spellsDialogModule:Show()
     end)
-    --toolboxModule:TooltipText(showCategoryCheckbox.frame, _t("SpellsWindow_ShowCategory"))
     headingPanel:AddChild(showCategoryCheckbox)
-
-    -- -- Contains the rest of the category buffs (can be hidden or shown)
-    -- local contentFrame = libGUI:Create("SimpleGroup")
-    -- context.categoryContentFrames[cat] = contentFrame
-    -- contentFrame:SetLayout("List")
-    -- contentFrame:SetFullWidth(true)
-    -- SetVisible(contentFrame, isVisible)
-    -- categoryFrame:AddChild(contentFrame)
-    -- categoryFrame:DoLayout()
   end
+end
+
+-- From a buff definition, create an icon button. For consumable buffs, the icon is
+-- calculated differently. Clicking the consumable icon will print all items which
+-- provide this buff from the smallest to largest value.
+---@param buffDef BomBuffDefinition
+---@return AceGUIWidget
+function spellsDialogModule:CreateInfoIcon(buffDef)
+  local iconButton = libGUI:Create("Button")
+  -- iconButton:SetImage(buffDef.icon)
+  iconButton:SetWidth(20)
+  iconButton:SetHeight(20)
+
+  if buffDef.consumeGroupIcon then
+    ngToolboxModule:SetButtonTextures(iconButton.frame, buffDef.consumeGroupIcon)
+
+    iconButton:SetCallback("OnClick", function(_control, mouseButton)
+      if mouseButton == 'LeftButton' then
+        buffDef:ShowItemsProvidingBuff()
+      end
+    end)
+    ngToolboxModule:TooltipWithTranslationKey(iconButton, "Click to print all items which provide this buff")
+  else
+    if buffDef.isConsumable then
+      ngToolboxModule:TooltipLink(iconButton, "item:" .. buffDef:GetFirstItem())
+    else
+      ngToolboxModule:TooltipLink(iconButton, "spell:" .. buffDef.highestRankSingleId)
+    end
+
+    -- Set texture when ready, might load with a delay
+    buffDef:GetIcon(function(texture)
+      ngToolboxModule:SetButtonTextures(iconButton.frame, texture)
+    end)
+  end
+
+  return iconButton
 end
 
 -- Player choices are stored separately in their profile
@@ -159,6 +180,11 @@ function spellsDialogModule:CreateBuffRow(buffDef, profileBuff, context)
   row:SetLayout("Flow")
   row:SetFullWidth(true)
 
+  -- Create the icon button
+  local icon = self:CreateInfoIcon(buffDef)
+  row:AddChild(icon)
+
+  -- Create the checkbox to enable/disable the buff
   local checkEnabled = libGUI:Create("CheckBox")
   checkEnabled:SetValue(profileBuff.Enable)
   checkEnabled:SetCallback("OnValueChanged", function(_control, _callbackName, value)
@@ -168,8 +194,77 @@ function spellsDialogModule:CreateBuffRow(buffDef, profileBuff, context)
   checkEnabled:SetWidth(250)
   row:AddChild(checkEnabled)
 
+  -- Create checkboxes one per class
+  if buffDef:HasClasses() then
+    --self:AddClassSelector(buff, profileBuff, context)
+  end
+
   return row
 end
+
+---Add class selector for buff which makes sense to differentiate per class.
+---@param buffDef BomBuffDefinition The spell currently being displayed
+---@param context SpellsDialogContext
+function spellsDialogModule:AddClassSelector(buffDef, profileBuff, context)
+  local tooltip1 = ngStringsModule:FormatTexture(texturesModule.ICON_SELF_CAST_ON)
+    .. " - " .. _t("TooltipSelfCastCheckbox_Self") .. "|n"
+    .. ngStringsModule:FormatTexture(texturesModule.ICON_SELF_CAST_OFF)
+    .. " - " .. _t("TooltipSelfCastCheckbox_Party")
+  local selfcastToggle = buffDef.frames:CreateSelfCastToggle(tooltip1)
+  -- rowBuilder:AppendRight(nil, selfcastToggle, 5)
+  -- selfcastToggle:SetVariable(profileBuff, "SelfCast", nil)
+  local buttonSelf = libGUI:Create("Button")
+  buttonSelf:SetWidth(20)
+  buttonSelf:SetHeight(20)
+  buttonSelf:SetImage(texturesModule.ICON_SELF_CAST_ON)
+  buttonSelf:SetImage(texturesModule.ICON_SELF_CAST_OFF)
+  row:AddChild(buttonSelf)
+
+  --------------------------------------
+  -- Class-Cast checkboxes one per class
+  --------------------------------------
+  for _, class in ipairs(constModule.CLASSES) do
+    local tooltip2 = constModule.CLASS_ICONS[class]
+        .. " - " .. _t("TooltipCastOnClass")
+        .. ": " .. constModule.CLASS_NAME[ --[[---@type BomClassName]] class ] .. "|n"
+        .. ngStringsModule:FormatTexture(texturesModule.ICON_EMPTY) .. " - " .. _t("TabDoNotBuff")
+        .. ": " .. constModule.CLASS_NAME[ --[[---@type BomClassName]] class ] .. "|n"
+        .. ngStringsModule:FormatTexture(texturesModule.ICON_DISABLED) .. " - " .. _t("TabBuffOnlySelf")
+
+    local classToggle = buffDef.frames:CreateClassToggle(class, tooltip2, bomDoBlessingOnClick)
+    classToggle:SetVariable(profileBuff.Class, class, nil)
+    rowBuilder:AppendRight(nil, classToggle, 0)
+
+    if not envModule.haveTBC and ( -- if not TBC hide paladin for horde, hide shaman for alliance
+          (playerIsHorde and class == "PALADIN") or (not playerIsHorde and class == "SHAMAN")) then
+      classToggle:Hide()
+    else
+      rowBuilder.prevControl = classToggle
+    end
+  end -- for each class in class_sort_order
+
+  --========================================
+  local tooltip3 = ngStringsModule:FormatTexture(texturesModule.ICON_TANK) .. " - " .. _t("TooltipCastOnTank")
+  local tankToggle = buffDef.frames:CreateTankToggle(tooltip3, bomDoBlessingOnClick)
+  tankToggle:SetVariable(profileBuff.Class, "tank", nil)
+  rowBuilder:AppendRight(nil, tankToggle, 0)
+  rowBuilder.prevControl = tankToggle
+
+  --========================================
+  local tooltip4 = ngStringsModule:FormatTexture(texturesModule.ICON_PET) .. " - " .. _t("TooltipCastOnPet")
+  local petToggle = buffDef.frames:CreatePetToggle(tooltip4, bomDoBlessingOnClick)
+  petToggle:SetVariable(profileBuff.Class, "pet", nil)
+  rowBuilder:AppendRight(nil, petToggle, 5)
+
+  -- Force Cast Button -(+)-
+  local forceToggle = buffDef.frames:CreateForceCastToggle(_t("TooltipForceCastOnTarget"), buffDef)
+  rowBuilder:AppendRight(nil, forceToggle, 0)
+
+  -- Exclude/Ignore Buff Target Button (X)
+  local excludeToggle = buffDef.frames:CreateExcludeToggle(_t("TooltipExcludeTarget"), buffDef)
+  rowBuilder:AppendRight(nil, excludeToggle, 2)
+end
+
 
 function spellsDialogModule:Hide()
   if self.dialog then

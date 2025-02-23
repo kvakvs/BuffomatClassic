@@ -1,12 +1,12 @@
 local BOM = BuffomatAddon
 
 ---@class BomAllSpellsDruidModule
-local druidModule = BomModuleManager.allSpellsDruidModule ---@type BomAllSpellsDruidModule
 
-local _t = BomModuleManager.languagesModule
-local allBuffsModule = BomModuleManager.allBuffsModule
-local buffDefModule = BomModuleManager.buffDefinitionModule
-local spellIdsModule = BomModuleManager.spellIdsModule
+local druidModule = --[[---@type BomAllSpellsDruidModule]] LibStub("Buffomat-AllSpellsDruid")
+local _t = --[[---@type BomLanguagesModule]] LibStub("Buffomat-Languages")
+local allBuffsModule = --[[---@type BomAllBuffsModule]] LibStub("Buffomat-AllBuffs")
+local buffDefModule = --[[---@type BomBuffDefinitionModule]] LibStub("Buffomat-BuffDefinition")
+local spellIdsModule = --[[---@type BomSpellIdsModule]] LibStub("Buffomat-SpellIds")
 
 ---Add DRUID spells
 ---@param allBuffs BomBuffDefinition[]

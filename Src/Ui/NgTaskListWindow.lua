@@ -2,11 +2,11 @@
 -- Creates a window with a title, a close button, a macro button, and a settings button
 -- This is used for the Task List Panel
 local AceGUI = LibStub("AceGUI-3.0")
-local optionsPopupModule = BomModuleManager.optionsPopupModule ---@type BomOptionsPopupModule
-local constModule = BomModuleManager.constModule ---@type BomConstModule
-local toolboxModule = BomModuleManager.toolboxModule ---@type BomToolboxModule
-local _t = BomModuleManager.languagesModule ---@type BomLanguagesModule
-local spellsDialogModule = BomModuleManager.spellsDialogModule ---@type BomSpellsDialogModule
+local optionsPopupModule = --[[---@type BomOptionsPopupModule]] LibStub("Buffomat-OptionsPopup")
+local constModule = --[[---@type BomConstModule]] LibStub("Buffomat-Const")
+local toolboxModule = --[[---@type LegacyToolboxModule]] LibStub("Buffomat-LegacyToolbox")
+local _t = --[[---@type BomLanguagesModule]] LibStub("Buffomat-Languages")
+local spellsDialogModule = --[[---@type BomSpellsDialogModule]] LibStub("Buffomat-SpellsDialog")
 -- Lua APIs
 local pairs, assert, type = pairs, assert, type
 
@@ -158,11 +158,12 @@ do
   end
 
   local function SetButtonTexture(button, texture)
-    button:SetNormalTexture(texture)
+    -- button:SetNormalTexture(texture)
     local normalTex = button:GetNormalTexture()
     normalTex:SetSize(20, 20)
     normalTex:ClearAllPoints()
     normalTex:SetPoint("CENTER")
+    normalTex:SetTexture(texture)
 
     local pressedTex = button:GetPushedTexture()
     pressedTex:SetSize(20, 20)

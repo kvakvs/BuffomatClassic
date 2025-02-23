@@ -1,4 +1,3 @@
-local TOCNAME, _ = ...
 local BOM = BuffomatAddon
 
 ---@alias BomBuffCategoryName ""|"tracking"|"pet"|"aura"|"seal"|"blessing"|"class"|"classicPhysFood"|"classicSpellFood"|"classicFood"|"classicPhysElixir"|"classicPhysBuff"|"classicBuff"|"classicSpellElixir"|"classicElixir"|"classicFlask"|"tbcPhysFood"|"tbcSpellFood"|"tbcFood"|"tbcPhysElixir"|"tbcSpellElixir"|"tbcElixir"|"tbcFlask"|"wotlkPhysFood"|"wotlkSpellFood"|"wotlkFood"|"wotlkPhysElixir"|"wotlkSpellElixir"|"wotlkElixir"|"wotlkFlask"|"scroll"|"weaponEnchantment"|"classWeaponEnchantment"|"cataElixir"|"cataFood"|"cataFlask"
@@ -21,7 +20,8 @@ local BOM = BuffomatAddon
 ---@field spellIdtoBuffId {[WowSpellId]: BomBuffId} Maps spell ids to the key id of spell in the AllSpells
 ---@field spellToSpellLookup {[WowSpellId]: WowSpellId} Maps spells ids to other spell ids
 ---@field cancelForm WowSpellId[] Spell ids which cancel shapeshift form
-local allBuffsModule = BomModuleManager.allBuffsModule
+
+local allBuffsModule = --[[---@type BomAllBuffsModule]] LibStub("Buffomat-AllBuffs")
 
 allBuffsModule.cancelForm = {}
 allBuffsModule.spellIdtoBuffId = {}
@@ -31,27 +31,27 @@ allBuffsModule.spellIdIsSingleLookup = {}
 allBuffsModule.buffFromSpellIdLookup = --[[---@type {[WowSpellId]: BomBuffDefinition}]] {}
 allBuffsModule.enchantToSpellLookup = --[[---@type BomEnchantToSpellLookup]] {}
 
-local _t = BomModuleManager.languagesModule
-local buffDefModule = BomModuleManager.buffDefinitionModule
-local deathknightModule = BomModuleManager.allSpellsDeathknightModule
-local druidModule = BomModuleManager.allSpellsDruidModule
-local elixirsModule = BomModuleManager.allConsumesElixirsModule
-local enchantmentsModule = BomModuleManager.allConsumesEnchantmentsModule
-local envModule = KvModuleManager.envModule
-local flasksModule = BomModuleManager.allConsumesFlasksModule
-local foodModule = BomModuleManager.allConsumesFoodModule
-local hunterModule = BomModuleManager.allSpellsHunterModule
-local mageModule = BomModuleManager.allSpellsMageModule
-local otherModule = BomModuleManager.allConsumesOtherModule
-local paladinModule = BomModuleManager.allSpellsPaladinModule
-local priestModule = BomModuleManager.allSpellsPriestModule
-local rogueModule = BomModuleManager.allSpellsRogueModule
-local scrollsModule = BomModuleManager.allConsumesScrollsModule
-local shamanModule = BomModuleManager.allSpellsShamanModule
-local spellCacheModule = BomModuleManager.spellCacheModule
-local spellIdsModule = BomModuleManager.spellIdsModule
-local warlockModule = BomModuleManager.allSpellsWarlockModule
-local warriorModule = BomModuleManager.allSpellsWarriorModule
+local _t = --[[---@type BomLanguagesModule]] LibStub("Buffomat-Languages")
+local buffDefModule = --[[---@type BomBuffDefinitionModule]] LibStub("Buffomat-BuffDefinition")
+local elixirsModule = --[[---@type BomAllConsumesElixirsModule]] LibStub("Buffomat-AllConsumesElixirs")
+local enchantmentsModule = --[[---@type BomAllConsumesEnchantmentsModule]] LibStub("Buffomat-AllConsumesEnchantments")
+local envModule = --[[---@type KvLibEnvModule]] LibStub("KvLibShared-Env")
+local flasksModule = --[[---@type BomAllConsumesFlasksModule]] LibStub("Buffomat-AllConsumesFlasks")
+local foodModule = --[[---@type BomAllConsumesFoodModule]] LibStub("Buffomat-AllConsumesFood")
+local otherModule = --[[---@type BomAllConsumesOtherModule]] LibStub("Buffomat-AllConsumesOther")
+local scrollsModule = --[[---@type BomAllConsumesScrollsModule]] LibStub("Buffomat-AllConsumesScrolls")
+local spellIdsModule = --[[---@type BomSpellIdsModule]] LibStub("Buffomat-SpellIds")
+
+local deathknightModule = --[[---@type BomAllSpellsDeathknightModule]] LibStub("Buffomat-AllSpellsDeathknight")
+local druidModule = --[[---@type BomAllSpellsDruidModule]] LibStub("Buffomat-AllSpellsDruid")
+local hunterModule = --[[---@type BomAllSpellsHunterModule]] LibStub("Buffomat-AllSpellsHunter")
+local mageModule = --[[---@type BomAllSpellsMageModule]] LibStub("Buffomat-AllSpellsMage")
+local paladinModule = --[[---@type BomAllSpellsPaladinModule]] LibStub("Buffomat-AllSpellsPaladin")
+local priestModule = --[[---@type BomAllSpellsPriestModule]] LibStub("Buffomat-AllSpellsPriest")
+local rogueModule = --[[---@type BomAllSpellsRogueModule]] LibStub("Buffomat-AllSpellsRogue")
+local shamanModule = --[[---@type BomAllSpellsShamanModule]] LibStub("Buffomat-AllSpellsShaman")
+local warlockModule = --[[---@type BomAllSpellsWarlockModule]] LibStub("Buffomat-AllSpellsWarlock")
+local warriorModule = --[[---@type BomAllSpellsWarriorModule]] LibStub("Buffomat-AllSpellsWarrior")
 
 ---@alias BomClassName WowClassName|"tank"|"pet"
 
@@ -63,7 +63,6 @@ allBuffsModule.BOM_NO_CLASSES = {} ---@type BomClassName[]
 ---Classes which have a resurrection ability
 ---@type BomClassName[]
 local RESURRECT_CLASSES = { "SHAMAN", "PRIEST", "PALADIN", "DRUID" } -- Druid in WotLK
-BOM.RESURRECT_CLASS = RESURRECT_CLASSES                              --used in TaskScan.lua
 allBuffsModule.RESURRECT_CLASSES = RESURRECT_CLASSES
 
 ---TODO: Move to constModule
@@ -163,6 +162,13 @@ function allBuffsModule:SetupTrackingSpells(allBuffs, enchantments)
   return allBuffs
 end
 
+-- Append contents of array B to array A
+local function Append(A, B)
+  for _, v in ipairs(B) do
+    table.insert(A, v)
+  end
+end
+
 function allBuffsModule:SetupConstantsCategories()
   --self.CLASSIC_PHYS_FOOD = "classicPhysFood"
   --self.CLASSIC_SPELL_FOOD = "classicSpellFood"
@@ -184,16 +190,18 @@ function allBuffsModule:SetupConstantsCategories()
 
     "classicPhysElixir", "classicPhysBuff", "classicSpellElixir", "classicElixir", "classicFlask",
     "classicFood", "classicPhysFood", "classicSpellFood",
-
-    "wotlkPhysElixir", "wotlkSpellElixir", "wotlkElixir", "wotlkFlask", "wotlkFood", "wotlkPhysFood", "wotlkSpellFood",
-
-    "tbcPhysElixir", "tbcSpellElixir", "tbcElixir", "tbcFlask", "tbcFood", "tbcPhysFood", "tbcSpellFood",
-
-    "cataFood", "cataElixir", "cataFlask",
-
-    "scroll", "weaponEnchantment",
-    "", -- special value no category
   }
+
+  if envModule.haveWotLK then
+    Append(self.buffCategories, {"wotlkPhysElixir", "wotlkSpellElixir", "wotlkElixir", "wotlkFlask", "wotlkFood", "wotlkPhysFood", "wotlkSpellFood",})
+  end
+  if envModule.haveTBC then
+    Append(self.buffCategories, {"tbcPhysElixir", "tbcSpellElixir", "tbcElixir", "tbcFlask", "tbcFood", "tbcPhysFood", "tbcSpellFood",})
+  end
+  if envModule.haveCata then
+    Append(self.buffCategories, {"cataFood", "cataElixir", "cataFlask",})
+  end
+  Append(self.buffCategories, {"scroll", "weaponEnchantment", ""})
 end
 
 function allBuffsModule:SetupConstants()

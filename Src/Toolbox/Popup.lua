@@ -1,19 +1,19 @@
---local TOCNAME, _ = ...
 local BOM = BuffomatAddon
 
 ---@class BomPopupModule
-local popupModule = BomModuleManager.popupModule ---@type BomPopupModule
+
+local popupModule = --[[---@type BomPopupModule]] LibStub("Buffomat-Popup")
 popupModule.libDD = LibStub:GetLibrary("LibUIDropDownMenu-4.0")
 
 ---@class GPIPopupDynamic
----@field _Frame BomGPIControl Popup currently open in the game (to see if its our popup or not)
+---@field _Frame Frame Popup currently open in the game (to see if its our popup or not)
 ---@field _where string Where the popup was displayed (cursor, mouse, center)
 ---@field _x number X offset where it was displayed
 ---@field _y number Y offset where it was displayed
 local popupDynamicClass = {}
 popupDynamicClass.__index = popupDynamicClass
 
----@class BomGPIControlPopup: BomGPIControl
+---@class BomGPIControlPopup: Frame
 
 --local popupDepth ---@type number|nil
 

@@ -1,15 +1,15 @@
 local BOM = BuffomatAddon
 
 ---@class BomBuffChecksModule
-local buffChecksModule = BomModuleManager.buffChecksModule ---@type BomBuffChecksModule
 
-local allBuffsModule = BomModuleManager.allBuffsModule
-local buffDefModule = BomModuleManager.buffDefinitionModule
-local buffomatModule = BomModuleManager.buffomatModule
-local partyModule = BomModuleManager.partyModule
-local spellIdsModule = BomModuleManager.spellIdsModule
-local unitCacheModule = BomModuleManager.unitCacheModule
-local envModule = KvModuleManager.envModule
+local buffChecksModule = --[[---@type BomBuffChecksModule]] LibStub("Buffomat-BuffChecks")
+local allBuffsModule = --[[---@type BomAllBuffsModule]] LibStub("Buffomat-AllBuffs")
+local buffDefModule = --[[---@type BomBuffDefinitionModule]] LibStub("Buffomat-BuffDefinition")
+local buffomatModule = --[[---@type BomBuffomatModule]] LibStub("Buffomat-Buffomat")
+local partyModule = --[[---@type BomPartyModule]] LibStub("Buffomat-Party")
+local spellIdsModule = --[[---@type BomSpellIdsModule]] LibStub("Buffomat-SpellIds")
+local unitCacheModule = --[[---@type BomUnitCacheModule]] LibStub("Buffomat-UnitCache")
+local envModule = --[[---@type KvLibEnvModule]] LibStub("KvLibShared-Env")
 
 ---Checks whether a tracking spell is now active
 ---@param spell BomBuffDefinition The tracking spell which might have tracking enabled

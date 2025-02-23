@@ -1,13 +1,11 @@
---local TOCNAME, _ = ...
 local BOM = BuffomatAddon
 
 ---@class BomProfileModule
 ---@field ALL_PROFILES BomProfileName[]
-local profileModule = BomModuleManager.profileModule ---@type BomProfileModule
 
-local buffomatModule = BomModuleManager.buffomatModule
-local _t = BomModuleManager.languagesModule
-local envModule = KvModuleManager.envModule
+local profileModule = --[[---@type BomProfileModule]] LibStub("Buffomat-Profile")
+local buffomatModule = --[[---@type BomBuffomatModule]] LibStub("Buffomat-Buffomat")
+local envModule = --[[---@type KvLibEnvModule]] LibStub("KvLibShared-Env")
 
 ---A single blessing per unit name is possible
 ---@alias BomBlessingState {[string]: BomBuffId}

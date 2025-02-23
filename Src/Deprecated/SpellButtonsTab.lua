@@ -8,24 +8,24 @@ if false then
   ---@field categoryLabels table<BomBuffCategoryName, BomGPIControl> Collection of category labels indexed per category name
   ---@field spellTabUpdateRequestedBy table<string, boolean> Contains the callers who last requested spells tab update, or nothing
   ---@field spellSettingsFrames table
+
   local spellButtonsTabModule = BomModuleManager.spellButtonsTabModule ---@type BomSpellButtonsTabModule
   spellButtonsTabModule.categoryLabels = {}
   spellButtonsTabModule.spellTabUpdateRequestedBy = {}
   spellButtonsTabModule.spellSettingsFrames = {} -- accessible from TaskScan.MaybeResetWatchGroups
 
-  local _t = BomModuleManager.languagesModule
-  local allBuffsModule = BomModuleManager.allBuffsModule
-  local buffDefModule = BomModuleManager.buffDefinitionModule
-  local buffRowModule = BomModuleManager.buffRowModule
-  local buffomatModule = BomModuleManager.buffomatModule
-  local constModule = BomModuleManager.constModule
+  local _t = --[[---@type BomLanguagesModule]] LibStub("Buffomat-Languages")
+  local allBuffsModule = --[[---@type BomAllBuffsModule]] LibStub("Buffomat-AllBuffs")
+  local buffDefModule = --[[---@type BomBuffDefinitionModule]] LibStub("Buffomat-BuffDefinition")
+  local buffRowModule = --[[---@type BomBuffRowModule]] LibStub("Buffomat-BuffRow")
+  local buffomatModule = --[[---@type BomBuffomatModule]] LibStub("Buffomat-Buffomat")
+  local constModule = --[[---@type BomConstModule]] LibStub("Buffomat-Const")
   local managedUiModule = BomModuleManager.myButtonModule
-  local profileModule = BomModuleManager.profileModule
+  local profileModule = --[[---@type BomProfileModule]] LibStub("Buffomat-Profile")
   local rowBuilderModule = BomModuleManager.rowBuilderModule
-  local texturesModule = BomModuleManager.texturesModule
-  local toolboxModule = BomModuleManager.toolboxModule
-
-  local envModule = KvModuleManager.envModule
+  local texturesModule = --[[---@type BomTexturesModule]] LibStub("Buffomat-Textures")
+  local toolboxModule = --[[---@type LegacyToolboxModule]] LibStub("Buffomat-LegacyToolbox")
+  local envModule = --[[---@type KvLibEnvModule]] LibStub("KvLibShared-Env")
 
   local function bomDoBlessingOnClick(self)
     local saved = self.gpiDict[self.gpiVariableName]
@@ -406,7 +406,7 @@ if false then
   end
 
   function spellButtonsTabModule:CategoryLabel(catId)
-    if not catId then
+    if not catId or catId == "" then
       return _t("Category_none")
     end
     return _t("Category_" .. catId)

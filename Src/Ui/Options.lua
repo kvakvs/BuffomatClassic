@@ -1,17 +1,17 @@
---local TOCNAME, _ = ...
 local BOM = BuffomatAddon
 
 ---@class BomOptionsModule
-local optionsModule = BomModuleManager.optionsModule ---@type BomOptionsModule
 
-local _t = BomModuleManager.languagesModule
-local allBuffsModule = BomModuleManager.allBuffsModule
-local buffomatModule = BomModuleManager.buffomatModule
-local constModule = BomModuleManager.constModule
-local eventsModule = BomModuleManager.eventsModule
-local taskScanModule = BomModuleManager.taskScanModule
-local kvOptionsModule = KvModuleManager.optionsModule
-local taskListPanelModule = BomModuleManager.taskListPanelModule
+local optionsModule = --[[---@type BomOptionsModule]] LibStub("Buffomat-Options")
+
+local _t = --[[---@type BomLanguagesModule]] LibStub("Buffomat-Languages")
+local allBuffsModule = --[[---@type BomAllBuffsModule]] LibStub("Buffomat-AllBuffs")
+local buffomatModule = --[[---@type BomBuffomatModule]] LibStub("Buffomat-Buffomat")
+local constModule = --[[---@type BomConstModule]] LibStub("Buffomat-Const")
+local eventsModule = --[[---@type BomEventsModule]] LibStub("Buffomat-Events")
+local taskScanModule = --[[---@type BomTaskScanModule]] LibStub("Buffomat-TaskScan")
+local kvOptionsModule = --[[---@type KvOptionsModule]] LibStub("KvLibShared-Options")
+local taskListPanelModule = --[[---@type TaskListPanelModule]] LibStub("Buffomat-TaskListPanel")
 
 local libIcon = LibStub("LibDBIcon-1.0")
 

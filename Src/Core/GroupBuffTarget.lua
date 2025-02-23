@@ -1,12 +1,10 @@
--- local TOCNAME, _ = ...
--- local BOM = BuffomatAddon
-
 ---@class BomGroupBuffTargetModule
-local groupBuffTargetModule = BomModuleManager.groupBuffTargetModule ---@type BomGroupBuffTargetModule
 
-local toolboxModule = BomModuleManager.toolboxModule
-local _t = BomModuleManager.languagesModule
-local envModule = KvModuleManager.envModule
+local groupBuffTargetModule = --[[---@type BomGroupBuffTargetModule]] LibStub:NewLibrary("Buffomat-GroupBuffTarget", 1)
+
+local toolboxModule = --[[---@type LegacyToolboxModule]] LibStub("Buffomat-LegacyToolbox")
+local _t = --[[---@type BomLanguagesModule]] LibStub("Buffomat-Languages")
+local envModule = --[[---@type KvLibEnvModule]] LibStub("KvLibShared-Env")
 
 ---@class BomGroupBuffTarget
 ---@field groupIndex number

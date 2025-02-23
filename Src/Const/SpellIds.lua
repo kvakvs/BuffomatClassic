@@ -1,9 +1,8 @@
 --- Spell IDS given reasonable names
-local TOCNAME, _ = ...
-local BOM = BuffomatAddon
 
 ---@class BomSpellIdsModule
-local spellIdsModule = BomModuleManager.spellIdsModule ---@type BomSpellIdsModule
+
+local spellIdsModule = --[[---@type BomSpellIdsModule]] LibStub("Buffomat-SpellIds")
 
 spellIdsModule.ClassicFood = --[[---@type WowSpellId[] ]] {
   6410, 433, 5004, 7737,                                                             -- Level 0-5 food

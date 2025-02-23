@@ -1,17 +1,18 @@
 --local TOCNAME, _ = ...
 local BOM = BuffomatAddon
 
-local buffomatModule = BomModuleManager.buffomatModule
-local constModule = BomModuleManager.constModule
-local itemCacheModule = BomModuleManager.itemCacheModule
 
 ---@class BomSpellSetupModule
-local spellSetupModule = BomModuleManager.spellSetupModule
 
-local allBuffsModule = BomModuleManager.allBuffsModule
-local buffDefinitionModule = BomModuleManager.buffDefinitionModule
-local toolboxModule = BomModuleManager.toolboxModule
-local profileModule = BomModuleManager.profileModule
+local spellSetupModule = --[[---@type BomSpellSetupModule]] LibStub("Buffomat-SpellSetup")
+local buffomatModule = --[[---@type BomBuffomatModule]] LibStub("Buffomat-Buffomat")
+local constModule = --[[---@type BomConstModule]] LibStub("Buffomat-Const")
+local itemCacheModule = --[[---@type BomItemCacheModule]] LibStub("Buffomat-ItemCache")
+local allBuffsModule = --[[---@type BomAllBuffsModule]] LibStub("Buffomat-AllBuffs")
+local buffDefinitionModule = --[[---@type BomBuffDefinitionModule]] LibStub("Buffomat-BuffDefinition")
+local toolboxModule = --[[---@type LegacyToolboxModule]] LibStub("Buffomat-LegacyToolbox")
+local profileModule = --[[---@type BomProfileModule]] LibStub("Buffomat-Profile")
+local ngStringsModule = --[[---@type NgStringsModule]] LibStub("Buffomat-NgStrings")
 
 ---Formats a spell icon + spell name as a link
 -- TODO: Move to SpellDef class
@@ -26,7 +27,7 @@ function spellSetupModule:FormatSpellLink(spellInfo)
 
   return "|Hspell:" .. spellInfo.spellId
       .. "|h|r |cff71d5ff"
-      .. BOM.FormatTexture( --[[---@type string]] spellInfo.icon)
+      .. ngStringsModule:FormatTexture( --[[---@type string]] spellInfo.icon)
       .. spellInfo.name
       .. "|r|h"
 end
@@ -109,7 +110,7 @@ function spellSetupModule:Setup_EachSpell_Consumable(add, buffDef)
       then
         add = true
         buffDef.singleText = ( --[[---@not nil]] itemInfo).itemName
-        buffDef.singleLink = BOM.FormatTexture(( --[[---@not nil]] itemInfo).itemTexture)
+        buffDef.singleLink = ngStringsModule:FormatTexture(( --[[---@not nil]] itemInfo).itemTexture)
             .. ( --[[---@not nil]] itemInfo).itemLink
         buffDef.itemIcon = ( --[[---@not nil]] itemInfo).itemTexture
         buffDef.isScanned = true

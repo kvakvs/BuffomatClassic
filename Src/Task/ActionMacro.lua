@@ -1,10 +1,10 @@
 local BOM = BuffomatAddon
 
 ---@class BomActionMacroModule
-local actionMacroModule = BomModuleManager.actionMacroModule
 
-local taskModule = BomModuleManager.taskModule
-local constModule = BomModuleManager.constModule
+local actionMacroModule = --[[---@type BomActionMacroModule]] LibStub("Buffomat-ActionMacro")
+local taskModule = --[[---@type BomTaskModule]] LibStub("Buffomat-Task")
+local constModule = --[[---@type BomConstModule]] LibStub("Buffomat-Const")
 
 ---@class BomTaskActionMacro: BomTaskAction Uses an equipment slot or a bag item
 ---@field macro string

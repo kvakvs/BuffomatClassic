@@ -1,15 +1,13 @@
---TODO: Rename to Unit.lua
-local TOCNAME, _ = ...
 local BOM = BuffomatAddon
 
 ---@class BomUnitModule
-local unitModule = BomModuleManager.unitModule ---@type BomUnitModule
 
-local allBuffsModule = BomModuleManager.allBuffsModule
-local buffomatModule = BomModuleManager.buffomatModule
-local buffModule = BomModuleManager.buffModule
-local partyModule = BomModuleManager.partyModule
-local toolboxModule = BomModuleManager.toolboxModule
+local unitModule = --[[---@type BomUnitModule]] LibStub("Buffomat-Unit")
+local allBuffsModule = --[[---@type BomAllBuffsModule]] LibStub("Buffomat-AllBuffs")
+local buffomatModule = --[[---@type BomAllBuffsModule]] LibStub("Buffomat-AllBuffs")
+local buffModule = --[[---@type BomBuffModule]] LibStub("Buffomat-Buff")
+local partyModule = --[[---@type BomPartyModule]] LibStub("Buffomat-Party")
+local toolboxModule = --[[---@type LegacyToolboxModule]] LibStub("Buffomat-LegacyToolbox")
 
 ---@alias BomBuffidBuffLookup {[BomBuffId]: BomUnitBuff}
 

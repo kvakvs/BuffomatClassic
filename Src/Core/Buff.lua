@@ -1,7 +1,6 @@
---local BOM = BuffomatAddon
-
 ---@class BomBuffModule
-local buffModule = BomModuleManager.buffModule ---@type BomBuffModule
+
+local buffModule = --[[---@type BomBuffModule]] LibStub:NewLibrary("Buffomat-Buff", 1)
 
 ---@class BomUnitBuff
 ---@field singleId WowSpellId Spell id also serving as key
@@ -13,7 +12,7 @@ local buffModule = BomModuleManager.buffModule ---@type BomBuffModule
 local buffClass = {}
 buffClass.__index = buffClass
 
----Creates a new Buff
+---Describes a Buff found on an unit (player or pet)
 ---@param singleId WowSpellId Spell id also serving as key
 ---@param duration number
 ---@param expirationTime number

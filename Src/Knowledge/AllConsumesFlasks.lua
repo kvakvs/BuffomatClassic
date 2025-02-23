@@ -1,11 +1,11 @@
 local BOM = BuffomatAddon
 
 ---@class BomAllConsumesFlasksModule
-local flasksModule = BomModuleManager.allConsumesFlasksModule ---@type BomAllConsumesFlasksModule
 
-local _t = BomModuleManager.languagesModule
-local allBuffsModule = BomModuleManager.allBuffsModule
-local buffDefModule = BomModuleManager.buffDefinitionModule
+local flasksModule = --[[---@type BomAllConsumesFlasksModule]] LibStub("Buffomat-AllConsumesFlasks")
+local _t = --[[---@type BomLanguagesModule]] LibStub("Buffomat-Languages")
+local allBuffsModule = --[[---@type BomAllBuffsModule]] LibStub("Buffomat-AllBuffs")
+local buffDefModule = --[[---@type BomBuffDefinitionModule]] LibStub("Buffomat-BuffDefinition")
 
 ---FLASKS
 ---@param allBuffs BomBuffDefinition[] A list of buffs (not dictionary)

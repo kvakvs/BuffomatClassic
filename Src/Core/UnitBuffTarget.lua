@@ -1,9 +1,9 @@
 ---@class BomUnitBuffTargetModule
-local buffTargetModule = BomModuleManager.unitBuffTargetModule ---@type BomUnitBuffTargetModule
 
-local toolboxModule = BomModuleManager.toolboxModule
-local buffomatModule = BomModuleManager.buffomatModule
-local _t = BomModuleManager.languagesModule
+local buffTargetModule = --[[---@type BomUnitBuffTargetModule]] LibStub("Buffomat-UnitBuffTarget")
+local toolboxModule = --[[---@type LegacyToolboxModule]] LibStub("Buffomat-LegacyToolbox")
+local buffomatModule = --[[---@type BomBuffomatModule]] LibStub("Buffomat-Buffomat")
+local _t = --[[---@type BomLanguagesModule]] LibStub("Buffomat-Languages")
 
 ---@class BomUnitBuffTarget
 ---@field unitName string Just the name
