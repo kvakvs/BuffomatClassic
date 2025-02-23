@@ -2,11 +2,11 @@ local BOM = BuffomatAddon
 
 ---@class BomAllConsumesScrollsModule
 
-local scrollsModule = --[[---@type BomAllConsumesScrollsModule]] LibStub("Buffomat-AllConsumesScrolls")
-local _t = --[[---@type BomLanguagesModule]] LibStub("Buffomat-Languages")
-local allBuffsModule = --[[---@type BomAllBuffsModule]] LibStub("Buffomat-AllBuffs")
-local buffDefModule = --[[---@type BomBuffDefinitionModule]] LibStub("Buffomat-BuffDefinition")
-local envModule = --[[---@type KvLibEnvModule]] LibStub("KvLibShared-Env")
+local scrollsModule = --[[@as BomAllConsumesScrollsModule]] LibStub("Buffomat-AllConsumesScrolls")
+local _t = --[[@as BomLanguagesModule]] LibStub("Buffomat-Languages")
+local allBuffsModule = --[[@as BomAllBuffsModule]] LibStub("Buffomat-AllBuffs")
+local buffDefModule = --[[@as BomBuffDefinitionModule]] LibStub("Buffomat-BuffDefinition")
+local envModule = --[[@as KvLibEnvModule]] LibStub("KvLibShared-Env")
 
 ---SCROLLS
 ---@param allBuffs BomBuffDefinition[] A list of buffs (not dictionary)

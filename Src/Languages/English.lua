@@ -1,6 +1,6 @@
 ---@class BomLanguageEnglishModule
 
-local englishModule = --[[---@type BomLanguageEnglishModule]] LibStub("Buffomat-LanguageEnglish")
+local englishModule = --[[@as BomLanguageEnglishModule]] LibStub("Buffomat-LanguageEnglish")
 
 ---@return BomLocaleDict
 function englishModule:Translations()

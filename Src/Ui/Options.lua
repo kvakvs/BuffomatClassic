@@ -2,16 +2,16 @@ local BOM = BuffomatAddon
 
 ---@class BomOptionsModule
 
-local optionsModule = --[[---@type BomOptionsModule]] LibStub("Buffomat-Options")
+local optionsModule = --[[@as BomOptionsModule]] LibStub("Buffomat-Options")
 
-local _t = --[[---@type BomLanguagesModule]] LibStub("Buffomat-Languages")
-local allBuffsModule = --[[---@type BomAllBuffsModule]] LibStub("Buffomat-AllBuffs")
-local buffomatModule = --[[---@type BomBuffomatModule]] LibStub("Buffomat-Buffomat")
-local constModule = --[[---@type BomConstModule]] LibStub("Buffomat-Const")
-local eventsModule = --[[---@type BomEventsModule]] LibStub("Buffomat-Events")
-local taskScanModule = --[[---@type BomTaskScanModule]] LibStub("Buffomat-TaskScan")
-local kvOptionsModule = --[[---@type KvOptionsModule]] LibStub("KvLibShared-Options")
-local taskListPanelModule = --[[---@type TaskListPanelModule]] LibStub("Buffomat-TaskListPanel")
+local _t = --[[@as BomLanguagesModule]] LibStub("Buffomat-Languages")
+local allBuffsModule = --[[@as BomAllBuffsModule]] LibStub("Buffomat-AllBuffs")
+local buffomatModule = --[[@as BomBuffomatModule]] LibStub("Buffomat-Buffomat")
+local constModule = --[[@as BomConstModule]] LibStub("Buffomat-Const")
+local eventsModule = --[[@as BomEventsModule]] LibStub("Buffomat-Events")
+local taskScanModule = --[[@as BomTaskScanModule]] LibStub("Buffomat-TaskScan")
+local kvOptionsModule = --[[@as KvOptionsModule]] LibStub("KvLibShared-Options")
+local taskListPanelModule = --[[@as TaskListPanelModule]] LibStub("Buffomat-TaskListPanel")
 
 local libIcon = LibStub("LibDBIcon-1.0")
 
@@ -60,7 +60,7 @@ function optionsModule:TemplateRange(name, rangeFrom, rangeTo, step, dict, key, 
 end
 
 function optionsModule:CreateGeneralOptionsTable()
-  local sounds = --[[---@type {[string]: string} ]] {}
+  local sounds = --[[@as {[string]: string} ]] {}
   sounds[_t("task.notifications.no-sound")] = "-"
   for i, sound in ipairs(constModule.TASK_NOTIFICATION_SOUNDS) do
     sounds[sound .. ".mp3"] = sound
@@ -203,11 +203,11 @@ function optionsModule:CreateVisibilityOptionsTable()
         buffomatModule.character.BuffCategoriesHidden, -- settings table
         nil,
         function(state, key, value)
-          buffomatModule.character.BuffCategoriesHidden[ --[[---@type string]] key ] = not value -- invert
+          buffomatModule.character.BuffCategoriesHidden[ --[[@as string]] key ] = not value -- invert
           eventsModule.Event_SpellsChanged()
         end,
         function(state, key)
-          return buffomatModule.character.BuffCategoriesHidden[ --[[---@type string]] key ] ~= true -- invert
+          return buffomatModule.character.BuffCategoriesHidden[ --[[@as string]] key ] ~= true -- invert
         end
       ),
     } -- end args

@@ -8,30 +8,28 @@
 ---@field currentProfile BomProfile
 ---@field taskRescanRequestedBy {[string]: number} Reasons for force update, with count
 
-local buffomatModule = --[[---@type BomBuffomatModule]] LibStub:NewLibrary("Buffomat-Buffomat", 1)
-buffomatModule.taskRescanRequestedBy = --[[---@type {[string]: number}]] {}
-
-local kvEnvModule = --[[---@type KvLibEnvModule]] LibStub("KvLibShared-Env")
-local _t = --[[---@type BomLanguagesModule]] LibStub("Buffomat-Languages")
+local buffomatModule = --[[@as BomBuffomatModule]] LibStub("Buffomat-Buffomat")
+buffomatModule.taskRescanRequestedBy = --[[@as {[string]: umber}]] {}
+local kvEnvModule = --[[@as KvLibEnvModule]] LibStub("KvLibShared-Env")
+local _t = --[[@as BomLanguagesModule]] LibStub("Buffomat-Languages")
 local languagesModule = _t
-local allBuffsModule = --[[---@type BomAllBuffsModule]] LibStub("Buffomat-AllBuffs")
-local characterSettingsModule = --[[---@type BomCharacterSettingsModule]] LibStub("Buffomat-CharacterSettings")
-local constModule = --[[---@type BomConstModule]] LibStub("Buffomat-Const")
-local eventsModule = --[[---@type BomEventsModule]] LibStub("Buffomat-Events")
-local macroModule = --[[---@type BomMacroModule]] LibStub("Buffomat-Macro")
-local optionsModule = --[[---@type BomOptionsModule]] LibStub("Buffomat-Options")
-local optionsPopupModule = --[[---@type BomOptionsPopupModule]] LibStub("Buffomat-OptionsPopup")
-local partyModule = --[[---@type BomPartyModule]] LibStub("Buffomat-Party")
-local popupModule = --[[---@type BomPopupModule]] LibStub("Buffomat-Popup")
-local profileModule = --[[---@type BomProfileModule]] LibStub("Buffomat-Profile")
-local sharedStateModule = --[[---@type BomSharedSettingsModule]] LibStub("Buffomat-SharedSettings")
-local slashModule = --[[---@type BomSlashCommandsModule]] LibStub("Buffomat-SlashCommands")
-local taskScanModule = --[[---@type BomTaskScanModule]] LibStub("Buffomat-TaskScan")
-local toolboxModule = --[[---@type LegacyToolboxModule]] LibStub("Buffomat-LegacyToolbox")
-local taskListPanelModule = --[[---@type TaskListPanelModule]] LibStub("Buffomat-TaskListPanel")
-local throttleModule = --[[---@type BomThrottleModule]] LibStub("Buffomat-Throttle")
-
-local ngStringsModule = LibStub("Buffomat-NgStrings")
+local allBuffsModule = --[[@as BomAllBuffsModule]] LibStub("Buffomat-AllBuffs")
+local characterSettingsModule = --[[@as BomCharacterSettingsModule]] LibStub("Buffomat-CharacterSettings")
+local constModule = --[[@as BomConstModule]] LibStub("Buffomat-Const")
+local eventsModule = --[[@as BomEventsModule]] LibStub("Buffomat-Events")
+local macroModule = --[[@as BomMacroModule]] LibStub("Buffomat-Macro")
+local optionsModule = --[[@as BomOptionsModule]] LibStub("Buffomat-Options")
+local optionsPopupModule = --[[@as BomOptionsPopupModule]] LibStub("Buffomat-OptionsPopup")
+local partyModule = --[[@as BomPartyModule]] LibStub("Buffomat-Party")
+local popupModule = --[[@as BomPopupModule]] LibStub("Buffomat-Popup")
+local profileModule = --[[@as BomProfileModule]] LibStub("Buffomat-Profile")
+local sharedStateModule = --[[@as BomSharedSettingsModule]] LibStub("Buffomat-SharedSettings")
+local slashModule = --[[@as BomSlashCommandsModule]] LibStub("Buffomat-SlashCommands")
+local taskScanModule = --[[@as BomTaskScanModule]] LibStub("Buffomat-TaskScan")
+local toolboxModule = --[[@as LegacyToolboxModule]] LibStub("Buffomat-LegacyToolbox")
+local taskListPanelModule = --[[@as TaskListPanelModule]] LibStub("Buffomat-TaskListPanel")
+local throttleModule = --[[@as BomThrottleModule]] LibStub("Buffomat-Throttle")
+local ngStringsModule = --[[@as NgStringsModule]] LibStub("Buffomat-NgStrings")
 
 ---@alias BomCastingState "cast"|"channel"|nil
 
@@ -301,7 +299,7 @@ end
 function buffomatModule:InitGlobalStates()
   -- Upgrade from legacy Buffomat State if found
   ---@type BomSharedSettings
-  local loadedShared = ( --[[---@type BomSharedSettings]] BomSharedState or BuffomatShared) or {}
+  local loadedShared = ( --[[@as BomSharedSettings]] BomSharedState or BuffomatShared) or {}
   if BomSharedState then
     BomSharedState = nil -- reset after reimport
   end
@@ -309,7 +307,7 @@ function buffomatModule:InitGlobalStates()
   buffomatModule.shared = BuffomatShared
 
   -- Upgrade from legacy Buffomat State if found
-  local loadedChar = ( --[[---@type BomCharacterSettings]] BomCharacterState or BuffomatCharacter) or {}
+  local loadedChar = ( --[[@as BomCharacterSettings]] BomCharacterState or BuffomatCharacter) or {}
   if BomCharacterState then
     BomCharacterState = nil -- reset after reimport
   end
@@ -318,9 +316,9 @@ function buffomatModule:InitGlobalStates()
 
   if self.character.remainingDurations then
     self.shared.Duration = self.character.remainingDurations
-    self.character.remainingDurations = --[[---@type BomSpellDurationsTable]] {}
+    self.character.remainingDurations = --[[@as BomSpellDurationsTable]] {}
   elseif not self.shared.Duration then
-    self.shared.Duration = --[[---@type BomSpellDurationsTable]] {}
+    self.shared.Duration = --[[@as BomSpellDurationsTable]] {}
   end
 
   if not self.character[profileModule.ALL_PROFILES[1]] then
@@ -332,7 +330,7 @@ function buffomatModule:InitGlobalStates()
     self.character[profileModule.ALL_PROFILES[1]] = newProfile
 
     self.character.CancelBuff = nil
-    self.character.Spell = --[[---@type BomBuffDefinitionDict]] {}
+    self.character.Spell = --[[@as BomBuffDefinitionDict]] {}
     self.character.LastAura = nil
     self.character.LastSeal = nil
   end
@@ -351,7 +349,7 @@ end
 
 ---@return BomSlashCommand[]
 function BuffomatAddon:MakeSlashCommand()
-  return --[[---@type BomSlashCommand[] ]] {
+  return --[[@as BomSlashCommand[] ]] {
     {
       command = "debug",
       description = "",
@@ -530,7 +528,7 @@ function buffomatModule:DownGrade()
   end
 end
 
-partyModule.unitAurasLastUpdated = --[[---@type BomBuffUpdatesPerUnit]] {}
+partyModule.unitAurasLastUpdated = --[[@as BomBuffUpdatesPerUnit]] {}
 
 ---@class BomUnitAuraResult
 ---@field name string The name of the spell or effect of the debuff. This is the name shown in yellow when you mouse over the icon

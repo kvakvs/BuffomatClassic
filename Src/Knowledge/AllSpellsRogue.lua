@@ -2,9 +2,9 @@ local BOM = BuffomatAddon
 
 ---@class BomAllSpellsRogueModule
 
-local rogueModule = --[[---@type BomAllSpellsRogueModule]] LibStub("Buffomat-AllSpellsRogue")
-local allBuffsModule = --[[---@type BomAllBuffsModule]] LibStub("Buffomat-AllBuffs")
-local buffDefModule = --[[---@type BomBuffDefinitionModule]] LibStub("Buffomat-BuffDefinition")
+local rogueModule = --[[@as BomAllSpellsRogueModule]] LibStub("Buffomat-AllSpellsRogue")
+local allBuffsModule = --[[@as BomAllBuffsModule]] LibStub("Buffomat-AllBuffs")
+local buffDefModule = --[[@as BomBuffDefinitionModule]] LibStub("Buffomat-BuffDefinition")
 
 ---Add ROGUE spells
 ---@param allBuffs BomBuffDefinition[]

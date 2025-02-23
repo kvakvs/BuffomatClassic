@@ -2,7 +2,7 @@ local TOCNAME, _ = ...
 
 ---@class BomConstModule
 
-local constModule = --[[---@type BomConstModule]] LibStub("Buffomat-Const")
+local constModule = --[[@as BomConstModule]] LibStub("Buffomat-Const")
 
 constModule.TASKCOLOR_GRAY = "777777"
 constModule.TASKCOLOR_RED = "cc4444"
@@ -25,7 +25,7 @@ constModule.MACRO_NAME = "Buff'o'mat"
 constModule.LOADING_SCREEN_TIMEOUT = 2
 
 -- Play MP3 from Sounds/ directory when task list is not empty
-constModule.TASK_NOTIFICATION_SOUNDS = --[[---@type string[] ]] {
+constModule.TASK_NOTIFICATION_SOUNDS = --[[@as string[] ]] {
   "bubble-pop-up-alert",
   "computer-processing-short-click",
   "correct-answer-tone",
@@ -94,12 +94,12 @@ constModule.CLASSES = CLASS_SORT_ORDER ---@type BomClassName[]
 constModule.CLASS_NAME = LOCALIZED_CLASS_NAMES_MALE ---@type table<BomClassName, string>
 constModule.CLASS_COLOR = RAID_CLASS_COLORS ---@type table<BomClassName, BomColor>
 
-constModule.NAME_TO_CLASS = --[[---@type {[string]: string}]] {}
+constModule.NAME_TO_CLASS = --[[@as {[string]: string}]] {}
 
 for eng, name in pairs(LOCALIZED_CLASS_NAMES_MALE) do
-  constModule.NAME_TO_CLASS[ --[[---@type string]] name ] = --[[---@type string]] eng
-  constModule.NAME_TO_CLASS[ --[[---@type string]] eng ] = --[[---@type string]] eng
+  constModule.NAME_TO_CLASS[ --[[@as string]] name ] = --[[@as string]] eng
+  constModule.NAME_TO_CLASS[ --[[@as string]] eng ] = --[[@as string]] eng
 end
 for eng, name in pairs(LOCALIZED_CLASS_NAMES_FEMALE) do
-  constModule.NAME_TO_CLASS[ --[[---@type string]] name ] = --[[---@type string]] eng
+  constModule.NAME_TO_CLASS[ --[[@as string]] name ] = --[[@as string]] eng
 end

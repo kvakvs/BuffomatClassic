@@ -10,14 +10,14 @@ local BOM = BuffomatAddon
 ---@field scrollFrame AceGUIWidget AceGUI scroll frame containing the spells list
 ---@field context SpellsDialogContext
 
-local spellsDialogModule = --[[---@type BomSpellsDialogModule]] LibStub:NewLibrary("Buffomat-SpellsDialog", 1)
+local spellsDialogModule = --[[@as BomSpellsDialogModule]] LibStub:NewLibrary("Buffomat-SpellsDialog", 1)
 
-local _t = --[[---@type BomLanguagesModule]] LibStub("Buffomat-Languages")
-local allBuffsModule = --[[---@type BomAllBuffsModule]] LibStub("Buffomat-AllBuffs")
-local buffomatModule = --[[---@type BomBuffomatModule]] LibStub("Buffomat-Buffomat")
-local buffDefModule = --[[---@type BomBuffDefinitionModule]] LibStub("Buffomat-BuffDefinition")
-local ngToolboxModule = --[[---@type NgToolboxModule]] LibStub("Buffomat-NgToolbox")
-local texturesModule = --[[---@type BomTexturesModule]] LibStub("Buffomat-Textures")
+local _t = --[[@as BomLanguagesModule]] LibStub("Buffomat-Languages")
+local allBuffsModule = --[[@as BomAllBuffsModule]] LibStub("Buffomat-AllBuffs")
+local buffomatModule = --[[@as BomBuffomatModule]] LibStub("Buffomat-Buffomat")
+local buffDefModule = --[[@as BomBuffDefinitionModule]] LibStub("Buffomat-BuffDefinition")
+local ngToolboxModule = --[[@as NgToolboxModule]] LibStub("Buffomat-NgToolbox")
+local texturesModule = --[[@as BomTexturesModule]] LibStub("Buffomat-Textures")
 
 local libGUI = LibStub("AceGUI-3.0")
 
@@ -76,6 +76,8 @@ function spellsDialogModule:FillBuffsList()
       end
     end
   end
+
+  self.scrollFrame:DoLayout()
 end
 
 function spellsDialogModule:CategoryLabel(catId)
@@ -226,9 +228,9 @@ function spellsDialogModule:AddClassSelector(buffDef, profileBuff, context)
   for _, class in ipairs(constModule.CLASSES) do
     local tooltip2 = constModule.CLASS_ICONS[class]
         .. " - " .. _t("TooltipCastOnClass")
-        .. ": " .. constModule.CLASS_NAME[ --[[---@type BomClassName]] class ] .. "|n"
+        .. ": " .. constModule.CLASS_NAME[ --[[@as BomClassName]] class ] .. "|n"
         .. ngStringsModule:FormatTexture(texturesModule.ICON_EMPTY) .. " - " .. _t("TabDoNotBuff")
-        .. ": " .. constModule.CLASS_NAME[ --[[---@type BomClassName]] class ] .. "|n"
+        .. ": " .. constModule.CLASS_NAME[ --[[@as BomClassName]] class ] .. "|n"
         .. ngStringsModule:FormatTexture(texturesModule.ICON_DISABLED) .. " - " .. _t("TabBuffOnlySelf")
 
     local classToggle = buffDef.frames:CreateClassToggle(class, tooltip2, bomDoBlessingOnClick)

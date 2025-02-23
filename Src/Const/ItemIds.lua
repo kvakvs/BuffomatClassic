@@ -2,7 +2,7 @@
 
 ---@class BomItemIdsModule
 
-local itemIdsModule = --[[---@type BomItemIdsModule]] LibStub("Buffomat-ItemIds")
+local itemIdsModule = --[[@as BomItemIdsModule]] LibStub("Buffomat-ItemIds")
 
 itemIdsModule.Deathknight_CorpseDust = 37201
 

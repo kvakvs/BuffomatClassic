@@ -2,14 +2,14 @@ local BOM = BuffomatAddon
 
 ---@class BomTaskListModule
 
-local taskListModule = --[[---@type BomTaskListModule]] LibStub("Buffomat-TaskList")
-local constModule = --[[---@type BomConstModule]] LibStub("Buffomat-Const")
-local taskModule = --[[---@type BomTaskModule]] LibStub("Buffomat-Task")
-local taskListPanelModule = --[[---@type TaskListPanelModule]] LibStub("Buffomat-TaskListPanel")
-local buffomatModule = --[[---@type BomBuffomatModule]] LibStub("Buffomat-Buffomat")
-local _t = --[[---@type BomLanguagesModule]] LibStub("Buffomat-Languages")
-local allBuffsModule = --[[---@type BomAllBuffsModule]] LibStub("Buffomat-AllBuffs")
-local throttleModule = --[[---@type BomThrottleModule]] LibStub("Buffomat-Throttle")
+local taskListModule = --[[@as BomTaskListModule]] LibStub("Buffomat-TaskList")
+local constModule = --[[@as BomConstModule]] LibStub("Buffomat-Const")
+local taskModule = --[[@as BomTaskModule]] LibStub("Buffomat-Task")
+local taskListPanelModule = --[[@as TaskListPanelModule]] LibStub("Buffomat-TaskListPanel")
+local buffomatModule = --[[@as BomBuffomatModule]] LibStub("Buffomat-Buffomat")
+local _t = --[[@as BomLanguagesModule]] LibStub("Buffomat-Languages")
+local allBuffsModule = --[[@as BomAllBuffsModule]] LibStub("Buffomat-AllBuffs")
+local throttleModule = --[[@as BomThrottleModule]] LibStub("Buffomat-Throttle")
 
 ---@class BomTaskList
 ---@field tasks BomTask[]
@@ -31,7 +31,7 @@ end
 
 ---@return BomTaskList
 function taskListModule:New()
-  local fields = --[[---@type BomTaskList]] {
+  local fields = --[[@as BomTaskList]] {
     tasks           = {},
     comments        = {},
     lowPrioComments = {},

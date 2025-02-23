@@ -3,16 +3,16 @@ local BOM = BuffomatAddon
 
 ---@class BomEventsModule
 
-local eventsModule = --[[---@type BomEventsModule]] LibStub("Buffomat-Events")
-local taskListModule = --[[---@type BomTaskListModule]] LibStub("Buffomat-TaskList")
-local allBuffsModule = --[[---@type BomAllBuffsModule]] LibStub("Buffomat-AllBuffs")
-local buffomatModule = --[[---@type BomBuffomatModule]] LibStub("Buffomat-Buffomat")
-local constModule = --[[---@type BomConstModule]] LibStub("Buffomat-Const")
-local partyModule = --[[---@type BomPartyModule]] LibStub("Buffomat-Party")
-local profileModule = --[[---@type BomProfileModule]] LibStub("Buffomat-Profile")
-local spellSetupModule = --[[---@type BomSpellSetupModule]] LibStub("Buffomat-SpellSetup")
-local taskScanModule = --[[---@type BomTaskScanModule]] LibStub("Buffomat-TaskScan")
-local envModule = --[[---@type KvLibEnvModule]] LibStub("KvLibShared-Env")
+local eventsModule = --[[@as BomEventsModule]] LibStub("Buffomat-Events")
+local taskListModule = --[[@as BomTaskListModule]] LibStub("Buffomat-TaskList")
+local allBuffsModule = --[[@as BomAllBuffsModule]] LibStub("Buffomat-AllBuffs")
+local buffomatModule = --[[@as BomBuffomatModule]] LibStub("Buffomat-Buffomat")
+local constModule = --[[@as BomConstModule]] LibStub("Buffomat-Const")
+local partyModule = --[[@as BomPartyModule]] LibStub("Buffomat-Party")
+local profileModule = --[[@as BomProfileModule]] LibStub("Buffomat-Profile")
+local spellSetupModule = --[[@as BomSpellSetupModule]] LibStub("Buffomat-SpellSetup")
+local taskScanModule = --[[@as BomTaskScanModule]] LibStub("Buffomat-TaskScan")
+local envModule = --[[@as KvLibEnvModule]] LibStub("KvLibShared-Env")
 
 --"UNIT_POWER_UPDATE","UNIT_SPELLCAST_START","UNIT_SPELLCAST_STOP","PLAYER_STARTED_MOVING","PLAYER_STOPPED_MOVING"
 eventsModule.EVT_COMBAT_STOP = { "PLAYER_REGEN_ENABLED" }

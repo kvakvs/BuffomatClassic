@@ -3,13 +3,13 @@
 ---@field currentLocale BomLocaleDict
 ---@field english BomLocaleDict
 
-local languagesModule = --[[---@type BomLanguagesModule]] LibStub("Buffomat-Languages")
-local buffomatModule = --[[---@type BomBuffomatModule]] LibStub("Buffomat-Buffomat")
-local englishModule = --[[---@type BomLanguageEnglishModule]] LibStub("Buffomat-LanguageEnglish")
-local germanModule = --[[---@type BomLanguageGermanModule]] LibStub("Buffomat-LanguageGerman")
-local frenchModule = --[[---@type BomLanguageFrenchModule]] LibStub("Buffomat-LanguageFrench")
-local russianModule = --[[---@type BomLanguageRussianModule]] LibStub("Buffomat-LanguageRussian")
-local chineseModule = --[[---@type BomLanguageChineseModule]] LibStub("Buffomat-LanguageChinese")
+local languagesModule = --[[@as BomLanguagesModule]] LibStub("Buffomat-Languages")
+local buffomatModule = --[[@as BomBuffomatModule]] LibStub("Buffomat-Buffomat")
+local englishModule = --[[@as BomLanguageEnglishModule]] LibStub("Buffomat-LanguageEnglish")
+local germanModule = --[[@as BomLanguageGermanModule]] LibStub("Buffomat-LanguageGerman")
+local frenchModule = --[[@as BomLanguageFrenchModule]] LibStub("Buffomat-LanguageFrench")
+local russianModule = --[[@as BomLanguageRussianModule]] LibStub("Buffomat-LanguageRussian")
+local chineseModule = --[[@as BomLanguageChineseModule]] LibStub("Buffomat-LanguageChinese")
 
 setmetatable(languagesModule, {
   __call = ---@param k string

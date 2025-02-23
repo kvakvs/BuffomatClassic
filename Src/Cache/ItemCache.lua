@@ -10,9 +10,9 @@ local BOM = BuffomatAddon
 ---@class BomItemCacheModule
 ---@field cache BomItemCache Stores arg to results mapping for GetItemInfo
 
-local itemCacheModule = --[[---@type BomItemCacheModule]] LibStub("Buffomat-ItemCache")
+local itemCacheModule = --[[@as BomItemCacheModule]] LibStub("Buffomat-ItemCache")
 itemCacheModule.cache = {}
-local buffomatModule = --[[---@type BomBuffomatModule]] LibStub("Buffomat-Buffomat")
+local buffomatModule = --[[@as BomBuffomatModule]] LibStub("Buffomat-Buffomat")
 
 ---@class BomItemCacheElement
 ---@field itemName string
@@ -45,7 +45,7 @@ function BOM.GetItemInfo(arg)
     return nil
   end
 
-  local cacheItem = --[[---@type BomItemCacheElement]] {
+  local cacheItem = --[[@as BomItemCacheElement]] {
     itemName = itemName,
     itemLink = itemLink,
     itemRarity = itemRarity,
@@ -91,7 +91,7 @@ function itemCacheModule:LoadItem(itemId, onLoaded)
       return
     end
 
-    local cacheItem = --[[---@type BomItemCacheElement]] {
+    local cacheItem = --[[@as BomItemCacheElement]] {
       itemName = itemMixin:GetItemName(),
       itemLink = itemMixin:GetItemLink(),
       itemRarity = itemMixin:GetItemQuality(),

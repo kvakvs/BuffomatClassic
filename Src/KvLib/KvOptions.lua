@@ -1,7 +1,7 @@
 ---@class KvOptionsModule
 ---@field optionsOrder number
 
-local kvOptionsModule = --[[---@type KvOptionsModule]] LibStub:NewLibrary("KvLibShared-Options", 1)
+local kvOptionsModule = --[[@as KvOptionsModule]] LibStub:NewLibrary("KvLibShared-Options", 1)
 kvOptionsModule.optionsOrder = 0
 
 function kvOptionsModule:ValueToText(type, value)

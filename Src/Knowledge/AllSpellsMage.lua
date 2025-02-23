@@ -2,11 +2,11 @@ local BOM = BuffomatAddon
 
 ---@class BomAllSpellsMageModule
 
-local mageModule = --[[---@type BomAllSpellsMageModule]] LibStub("Buffomat-AllSpellsMage")
-local allBuffsModule = --[[---@type BomAllBuffsModule]] LibStub("Buffomat-AllBuffs")
-local buffDefModule = --[[---@type BomBuffDefinitionModule]] LibStub("Buffomat-BuffDefinition")
-local itemIdsModule = --[[---@type BomItemIdsModule]] LibStub("Buffomat-ItemIds")
-local spellIdsModule = --[[---@type BomSpellIdsModule]] LibStub("Buffomat-SpellIds")
+local mageModule = --[[@as BomAllSpellsMageModule]] LibStub("Buffomat-AllSpellsMage")
+local allBuffsModule = --[[@as BomAllBuffsModule]] LibStub("Buffomat-AllBuffs")
+local buffDefModule = --[[@as BomBuffDefinitionModule]] LibStub("Buffomat-BuffDefinition")
+local itemIdsModule = --[[@as BomItemIdsModule]] LibStub("Buffomat-ItemIds")
+local spellIdsModule = --[[@as BomSpellIdsModule]] LibStub("Buffomat-SpellIds")
 
 function mageModule:CreateIntelligenceBuff()
   return buffDefModule:New(10157)                     --Arcane Intellect | Brilliance

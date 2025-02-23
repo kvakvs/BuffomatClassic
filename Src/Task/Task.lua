@@ -2,9 +2,9 @@ local BOM = BuffomatAddon
 
 ---@class BomTaskModule
 
-local taskModule = --[[---@type BomTaskModule]] LibStub("Buffomat-Task")
-local buffomatModule = --[[---@type BomBuffomatModule]] LibStub("Buffomat-Buffomat")
-local constModule = --[[---@type BomConstModule]] LibStub("Buffomat-Const")
+local taskModule = --[[@as BomTaskModule]] LibStub("Buffomat-Task")
+local buffomatModule = --[[@as BomBuffomatModule]] LibStub("Buffomat-Buffomat")
+local constModule = --[[@as BomConstModule]] LibStub("Buffomat-Const")
 
 ---BomTaskActionUse|BomTaskActionCast|BomTaskActionMacro
 ---@class BomTaskAction
@@ -42,7 +42,7 @@ taskModule.PRIO_OPEN_CONTAINER = 1000
 ---@param actionLink string
 ---@return BomTask
 function taskModule:Create(actionLink, actionText)
-  local fields = --[[---@type BomTask]] {
+  local fields = --[[@as BomTask]] {
     actionLink = actionLink or "",
     actionText = actionText or actionLink,
     prefixText = "",

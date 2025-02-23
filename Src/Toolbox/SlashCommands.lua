@@ -3,8 +3,8 @@ local BOM = BuffomatAddon
 
 ---@class BomSlashCommandsModule
 
-local slashModule = --[[---@type BomSlashCommandsModule]] LibStub("Buffomat-SlashCommands")
-local toolboxModule = --[[---@type LegacyToolboxModule]] LibStub("Buffomat-LegacyToolbox")
+local slashModule = --[[@as BomSlashCommandsModule]] LibStub("Buffomat-SlashCommands")
+local toolboxModule = --[[@as LegacyToolboxModule]] LibStub("Buffomat-LegacyToolbox")
 
 ---@class BomSlashCommand
 ---@field command string
@@ -69,7 +69,7 @@ function slashModule:PrintSlashCommand_1(prefix, conf, printFn)
 
     if type(subcmd.handler) == "table" then
       slashModule:PrintSlashCommand(prefix .. words .. " ",
-      --[[---@type BomSlashCommand[] ]] subcmd.handler, printFn)
+      --[[@as BomSlashCommand[] ]] subcmd.handler, printFn)
     end
   end
 end
@@ -93,16 +93,16 @@ function slashModule:ParseAndExecute(nestingLevel, msg, conf)
     if subcmd.command == "%" then
       local para = toolboxModule:iMerge(
         { self:UnpackCommand(subcmd) }, { unpack(msg, nestingLevel) })
-      return ( --[[---@type function]] subcmd.handler)(unpack(para))
+      return ( --[[@as function]] subcmd.handler)(unpack(para))
     end
 
     if ok then
       if type(subcmd.handler) == "function" then
-        return ( --[[---@type function]] subcmd.handler)(self:UnpackCommand(subcmd))
+        return ( --[[@as function]] subcmd.handler)(self:UnpackCommand(subcmd))
       elseif type(subcmd.handler) == "table" then
         return self:ParseAndExecute(
           nestingLevel + 1,
-          msg, --[[---@type BomSlashCommand[] ]] subcmd.handler) -- we need to go deeper
+          msg, --[[@as BomSlashCommand[] ]] subcmd.handler) -- we need to go deeper
       end
     end
   end

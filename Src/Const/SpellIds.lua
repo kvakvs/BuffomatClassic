@@ -2,9 +2,9 @@
 
 ---@class BomSpellIdsModule
 
-local spellIdsModule = --[[---@type BomSpellIdsModule]] LibStub("Buffomat-SpellIds")
+local spellIdsModule = --[[@as BomSpellIdsModule]] LibStub("Buffomat-SpellIds")
 
-spellIdsModule.ClassicFood = --[[---@type WowSpellId[] ]] {
+spellIdsModule.ClassicFood = --[[@as WowSpellId[] ]] {
   6410, 433, 5004, 7737,                                                             -- Level 0-5 food
   25700, 25702, 25886, 25888,                                                        -- Level 10 food
   434, 2639, 5005,                                                                   -- Level 15 food, better food and buff food
@@ -14,16 +14,16 @@ spellIdsModule.ClassicFood = --[[---@type WowSpellId[] ]] {
   1131, 10257, 18234, 22731, 24005, 24704, 24800, 25695, 26260, 26401, 28616, 29073, -- Level 55 food
   25660,                                                                             -- 55 Dirge's kickin' chimaerok chops
 }
-spellIdsModule.TBCFood = --[[---@type WowSpellId[] ]] {
+spellIdsModule.TBCFood = --[[@as WowSpellId[] ]] {
   28616, 29073, 33253, 33260, 33266, 33269, 43777, 46898,                                    -- Level 65 eating
   33255, 33258, 33262, 33264, 33725, 35270, 35271, 40745, 40768, 41030, 43763, 45618, 46812, -- Level 75 eating
 }
-spellIdsModule.WotLKFood = --[[---@type WowSpellId[] ]] {
+spellIdsModule.WotLKFood = --[[@as WowSpellId[] ]] {
   61829, -- Level 75 eating
   45548, -- Level 80 eating
 }
 -- Skip food buffing while eating some food buff
-spellIdsModule.CataFood = --[[---@type WowSpellId[] ]] {
+spellIdsModule.CataFood = --[[@as WowSpellId[] ]] {
   80168,                      -- Level 80 eating
   80169,                      -- Level 85 eating
   87644, 87604, 87915, 87643, -- Feast (eating)

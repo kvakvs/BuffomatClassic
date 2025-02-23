@@ -9,15 +9,15 @@ local BOM = BuffomatAddon
 ---@field titleProfile string The profile name which goes into the title of the window
 ---@field titleBuffGroups string The buff groups which go into the title of the window
 
-local taskListPanelModule = --[[---@type TaskListPanelModule]] LibStub("Buffomat-TaskListPanel")
+local taskListPanelModule = --[[@as TaskListPanelModule]] LibStub("Buffomat-TaskListPanel")
 taskListPanelModule.titleProfile = ""
 taskListPanelModule.titleBuffGroups = ""
-local buffomatModule = --[[---@type BomBuffomatModule]] LibStub("Buffomat-Buffomat")
-local taskScanModule = --[[---@type BomTaskScanModule]] LibStub("Buffomat-TaskScan")
-local ngToolboxModule = --[[---@type NgToolboxModule]] LibStub("Buffomat-NgToolbox")
-local actionMacroModule = --[[---@type BomActionMacroModule]] LibStub("Buffomat-ActionMacro")
-local constModule = --[[---@type BomConstModule]] LibStub("Buffomat-Const")
-local _t = --[[---@type BomLanguagesModule]] LibStub("Buffomat-Languages")
+local buffomatModule = --[[@as BomBuffomatModule]] LibStub("Buffomat-Buffomat")
+local taskScanModule = --[[@as BomTaskScanModule]] LibStub("Buffomat-TaskScan")
+local ngToolboxModule = --[[@as NgToolboxModule]] LibStub("Buffomat-NgToolbox")
+local actionMacroModule = --[[@as BomActionMacroModule]] LibStub("Buffomat-ActionMacro")
+local constModule = --[[@as BomConstModule]] LibStub("Buffomat-Const")
+local _t = --[[@as BomLanguagesModule]] LibStub("Buffomat-Languages")
 
 local libGUI = LibStub("AceGUI-3.0")
 

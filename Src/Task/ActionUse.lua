@@ -2,9 +2,9 @@ local BOM = BuffomatAddon
 
 ---@class BomActionUseModule
 
-local actionUseModule = --[[---@type BomActionUseModule]] LibStub("Buffomat-ActionUse")
-local taskModule = --[[---@type BomTaskModule]] LibStub("Buffomat-Task")
-local _t = --[[---@type BomLanguagesModule]] LibStub("Buffomat-Languages")
+local actionUseModule = --[[@as BomActionUseModule]] LibStub("Buffomat-ActionUse")
+local taskModule = --[[@as BomTaskModule]] LibStub("Buffomat-Task")
+local _t = --[[@as BomLanguagesModule]] LibStub("Buffomat-Languages")
 
 ---@class BomTaskActionUse: BomTaskAction Uses an equipment slot or a bag item
 ---@field buffDef BomBuffDefinition|nil
@@ -24,7 +24,7 @@ actionUseClass.__index = actionUseClass
 ---@param extraText string|nil
 ---@param bestItemIdAvailable WowItemId|nil
 function actionUseModule:New(buffDef, target, bag, slot, extraText, bestItemIdAvailable)
-  local newAction = --[[---@type BomTaskActionUse]] {}
+  local newAction = --[[@as BomTaskActionUse]] {}
   setmetatable(newAction, actionUseClass)
   newAction.buffDef = buffDef
   newAction.target = target

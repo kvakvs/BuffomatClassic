@@ -3,16 +3,16 @@ local BOM = BuffomatAddon
 ---@class BomProfileModule
 ---@field ALL_PROFILES BomProfileName[]
 
-local profileModule = --[[---@type BomProfileModule]] LibStub("Buffomat-Profile")
-local buffomatModule = --[[---@type BomBuffomatModule]] LibStub("Buffomat-Buffomat")
-local envModule = --[[---@type KvLibEnvModule]] LibStub("KvLibShared-Env")
+local profileModule = --[[@as BomProfileModule]] LibStub("Buffomat-Profile")
+local buffomatModule = --[[@as BomBuffomatModule]] LibStub("Buffomat-Buffomat")
+local envModule = --[[@as KvLibEnvModule]] LibStub("KvLibShared-Env")
 
 ---A single blessing per unit name is possible
 ---@alias BomBlessingState {[string]: BomBuffId}
 
 ---@return BomBlessingState
 function profileModule:NewBlessingState()
-  return --[[---@type BomBlessingState]] {}
+  return --[[@as BomBlessingState]] {}
 end
 
 ---@class BomProfile Snapshot of current options state as selected by the player
@@ -54,7 +54,7 @@ end
 
 ---@return BomProfile
 function profileModule:New()
-  local profile = --[[---@type BomProfile]] {}
+  local profile = --[[@as BomProfile]] {}
   profile.AutoOpen = true
   profile.AutoStand = true
   profile.BuffTarget = true

@@ -4,11 +4,11 @@ if false then
 
   ---@class BomBuffRowModule
 
-  local buffRowModule = --[[---@type BomBuffRowModule]] LibStub:NewLibrary("Buffomat-BuffRow", 1)
+  local buffRowModule = --[[@as BomBuffRowModule]] LibStub:NewLibrary("Buffomat-BuffRow", 1)
 
-  local _t = --[[---@type BomLanguagesModule]] LibStub("Buffomat-Languages")
-  local toolboxModule = --[[---@type LegacyToolboxModule]] LibStub("Buffomat-LegacyToolbox")
-  local texturesModule = --[[---@type BomTexturesModule]] LibStub:NewLibrary("Buffomat-Textures", 1)
+  local _t = --[[@as BomLanguagesModule]] LibStub("Buffomat-Languages")
+  local toolboxModule = --[[@as LegacyToolboxModule]] LibStub("Buffomat-LegacyToolbox")
+  local texturesModule = --[[@as BomTexturesModule]] LibStub:NewLibrary("Buffomat-Textures", 1)
 
   ---@class BomBuffRowFrames
   ---@field [BomClassName] BomGPIControl Used for class toggle buttons
@@ -44,7 +44,7 @@ if false then
   ---@return BomBuffRowFrames
   ---@param uniqueId string Used for ManageControl calls as prefix
   function buffRowModule:New(uniqueId)
-    local newRow = --[[---@type BomBuffRowFrames]] {
+    local newRow = --[[@as BomBuffRowFrames]] {
       uniqueId = uniqueId,
     }
     setmetatable(newRow, buffRowClass)
@@ -343,7 +343,7 @@ if false then
   ---@return BomGPIControl
   function buffRowClass:CreateForceCastToggle(tooltip, buffDef)
     if self.toggleForceCast == nil then
-      self.toggleForceCast = --[[---@type BomGPIControl]] uiButtonModule:CreateSmallButton(
+      self.toggleForceCast = --[[@as BomGPIControl]] uiButtonModule:CreateSmallButton(
         "ForceCast" .. buffDef.buffId,
         BomC_SpellTab_Scroll_Child,
         texturesModule.ICON_TARGET_ON)

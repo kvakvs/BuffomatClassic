@@ -8,14 +8,14 @@ local BOM = BuffomatAddon
 ---@class BomOptionsPopupModule
 -- -@field behaviourSettings BomBehaviourSetting[]
 
-local optionsPopupModule = --[[---@type BomOptionsPopupModule]] LibStub("Buffomat-OptionsPopup")
-local _t = --[[---@type BomLanguagesModule]] LibStub("Buffomat-Languages")
-local buffomatModule = --[[---@type BomBuffomatModule]] LibStub("Buffomat-Buffomat")
-local constModule = --[[---@type BomConstModule]] LibStub("Buffomat-Const")
-local buffDefModule = --[[---@type BomBuffDefinitionModule]] LibStub("Buffomat-BuffDefinition")
-local profileModule = --[[---@type BomProfileModule]] LibStub("Buffomat-Profile")
-local popupModule = --[[---@type BomPopupModule]] LibStub("Buffomat-Popup")
-local allBuffsModule = --[[---@type BomAllBuffsModule]] LibStub("Buffomat-AllBuffs")
+local optionsPopupModule = --[[@as BomOptionsPopupModule]] LibStub("Buffomat-OptionsPopup")
+local _t = --[[@as BomLanguagesModule]] LibStub("Buffomat-Languages")
+local buffomatModule = --[[@as BomBuffomatModule]] LibStub("Buffomat-Buffomat")
+local constModule = --[[@as BomConstModule]] LibStub("Buffomat-Const")
+local buffDefModule = --[[@as BomBuffDefinitionModule]] LibStub("Buffomat-BuffDefinition")
+local profileModule = --[[@as BomProfileModule]] LibStub("Buffomat-Profile")
+local popupModule = --[[@as BomPopupModule]] LibStub("Buffomat-Popup")
+local allBuffsModule = --[[@as BomAllBuffsModule]] LibStub("Buffomat-AllBuffs")
 
 
 ---Makes a tuple to pass to the menubuilder to display a settings checkbox in popup menu
@@ -34,7 +34,7 @@ end
 function optionsPopupModule:Setup(control, minimap)
   local name = (control:GetName() or "nil") .. (minimap and "Minimap" or "Normal")
   local dyn = BOM.popupMenuDynamic ---@type GPIPopupDynamic
-  local menuItems = --[[---@type BomMenuItemDef[] ]] {}
+  local menuItems = --[[@as BomMenuItemDef[] ]] {}
 
   if not dyn:Wipe(name) then
     return
@@ -75,7 +75,7 @@ function optionsPopupModule:Setup(control, minimap)
     buffomatModule.character, "UseProfiles"))
 
   if buffomatModule.character.UseProfiles then
-    local subprofilesMenu = --[[---@type BomMenuItemDef[] ]] {}
+    local subprofilesMenu = --[[@as BomMenuItemDef[] ]] {}
     table.insert(subprofilesMenu, popupModule:Clickable(_t("profile_auto"),
       buffomatModule.ChooseProfile, "auto", nil))
 

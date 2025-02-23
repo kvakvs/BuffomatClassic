@@ -9,9 +9,9 @@ local BOM = BuffomatAddon
 ---@class BomSpellCacheModule
 ---@field cache BomSpellCache Stores arg to results mapping for GetItemInfo
 
-local spellCacheModule = --[[---@type BomSpellCacheModule]] LibStub("Buffomat-SpellCache")
-spellCacheModule.cache = --[[---@type BomSpellCache]] {}
-local buffomatModule = --[[---@type BomBuffomatModule]] LibStub("Buffomat-Buffomat")
+local spellCacheModule = --[[@as BomSpellCacheModule]] LibStub("Buffomat-SpellCache")
+spellCacheModule.cache = --[[@as BomSpellCache]] {}
+local buffomatModule = --[[@as BomBuffomatModule]] LibStub("Buffomat-Buffomat")
 
 ---@class BomSpellCacheElement
 ---@field name string
@@ -39,7 +39,7 @@ function BOM.GetSpellInfo(arg)
   name = name or "MISSING NAME"
   icon = icon or "MISSING ICON"
 
-  local cacheSpell = --[[---@type BomSpellCacheElement]] {
+  local cacheSpell = --[[@as BomSpellCacheElement]] {
     name     = name,
     rank     = rank,
     icon     = icon,
@@ -70,7 +70,7 @@ function spellCacheModule:LoadSpell(spellId, onLoaded)
 
   local spellMixin = Spell:CreateFromSpellID(spellId)
 
-  local cacheSpell = --[[---@type BomSpellCacheElement]] {}
+  local cacheSpell = --[[@as BomSpellCacheElement]] {}
   cacheSpell.spellId = spellId
 
   local spellInfoReady_func = function()

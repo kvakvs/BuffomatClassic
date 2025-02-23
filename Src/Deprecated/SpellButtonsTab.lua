@@ -14,18 +14,18 @@ if false then
   spellButtonsTabModule.spellTabUpdateRequestedBy = {}
   spellButtonsTabModule.spellSettingsFrames = {} -- accessible from TaskScan.MaybeResetWatchGroups
 
-  local _t = --[[---@type BomLanguagesModule]] LibStub("Buffomat-Languages")
-  local allBuffsModule = --[[---@type BomAllBuffsModule]] LibStub("Buffomat-AllBuffs")
-  local buffDefModule = --[[---@type BomBuffDefinitionModule]] LibStub("Buffomat-BuffDefinition")
-  local buffRowModule = --[[---@type BomBuffRowModule]] LibStub("Buffomat-BuffRow")
-  local buffomatModule = --[[---@type BomBuffomatModule]] LibStub("Buffomat-Buffomat")
-  local constModule = --[[---@type BomConstModule]] LibStub("Buffomat-Const")
+  local _t = --[[@as BomLanguagesModule]] LibStub("Buffomat-Languages")
+  local allBuffsModule = --[[@as BomAllBuffsModule]] LibStub("Buffomat-AllBuffs")
+  local buffDefModule = --[[@as BomBuffDefinitionModule]] LibStub("Buffomat-BuffDefinition")
+  local buffRowModule = --[[@as BomBuffRowModule]] LibStub("Buffomat-BuffRow")
+  local buffomatModule = --[[@as BomBuffomatModule]] LibStub("Buffomat-Buffomat")
+  local constModule = --[[@as BomConstModule]] LibStub("Buffomat-Const")
   local managedUiModule = BomModuleManager.myButtonModule
-  local profileModule = --[[---@type BomProfileModule]] LibStub("Buffomat-Profile")
+  local profileModule = --[[@as BomProfileModule]] LibStub("Buffomat-Profile")
   local rowBuilderModule = BomModuleManager.rowBuilderModule
-  local texturesModule = --[[---@type BomTexturesModule]] LibStub("Buffomat-Textures")
-  local toolboxModule = --[[---@type LegacyToolboxModule]] LibStub("Buffomat-LegacyToolbox")
-  local envModule = --[[---@type KvLibEnvModule]] LibStub("KvLibShared-Env")
+  local texturesModule = --[[@as BomTexturesModule]] LibStub("Buffomat-Textures")
+  local toolboxModule = --[[@as LegacyToolboxModule]] LibStub("Buffomat-LegacyToolbox")
+  local envModule = --[[@as KvLibEnvModule]] LibStub("KvLibShared-Env")
 
   local function bomDoBlessingOnClick(self)
     local saved = self.gpiDict[self.gpiVariableName]
@@ -60,9 +60,9 @@ if false then
     for _, class in ipairs(constModule.CLASSES) do
       local tooltip2 = constModule.CLASS_ICONS[class]
           .. " - " .. _t("TooltipCastOnClass")
-          .. ": " .. constModule.CLASS_NAME[ --[[---@type BomClassName]] class ] .. "|n"
+          .. ": " .. constModule.CLASS_NAME[ --[[@as BomClassName]] class ] .. "|n"
           .. BOM.FormatTexture(texturesModule.ICON_EMPTY) .. " - " .. _t("TabDoNotBuff")
-          .. ": " .. constModule.CLASS_NAME[ --[[---@type BomClassName]] class ] .. "|n"
+          .. ": " .. constModule.CLASS_NAME[ --[[@as BomClassName]] class ] .. "|n"
           .. BOM.FormatTexture(texturesModule.ICON_DISABLED) .. " - " .. _t("TabBuffOnlySelf")
 
       local classToggle = spell.frames:CreateClassToggle(class, tooltip2, bomDoBlessingOnClick)

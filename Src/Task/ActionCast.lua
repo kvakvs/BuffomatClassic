@@ -2,11 +2,11 @@ local BOM = BuffomatAddon
 
 ---@class BomActionCastModule
 
-local actionCastModule = --[[---@type BomActionCastModule]] LibStub("Buffomat-ActionCast")
-local buffomatModule = --[[---@type BomBuffomatModule]] LibStub("Buffomat-Buffomat")
-local taskModule = --[[---@type BomTaskModule]] LibStub("Buffomat-Task")
-local partyModule = --[[---@type BomPartyModule]] LibStub("Buffomat-Party")
-local allBuffsModule = --[[---@type BomAllBuffsModule]] LibStub("Buffomat-AllBuffs")
+local actionCastModule = --[[@as BomActionCastModule]] LibStub("Buffomat-ActionCast")
+local buffomatModule = --[[@as BomBuffomatModule]] LibStub("Buffomat-Buffomat")
+local taskModule = --[[@as BomTaskModule]] LibStub("Buffomat-Task")
+local partyModule = --[[@as BomPartyModule]] LibStub("Buffomat-Party")
+local allBuffsModule = --[[@as BomAllBuffsModule]] LibStub("Buffomat-AllBuffs")
 
 ---@class BomTaskActionCast: BomTaskAction Casts a spell with a power (mana) cost on a target
 ---@field buffDef BomBuffDefinition|nil
@@ -26,7 +26,7 @@ actionCastClass.__index = actionCastClass
 ---@param temporaryDownrank boolean Pick previous rank for certain spells, like Flametongue 10
 ---@return BomTaskActionCast
 function actionCastModule:New(cost, spellId, link, targetUnit, buffDef, temporaryDownrank)
-  local a = --[[---@type BomTaskActionCast]] {}
+  local a = --[[@as BomTaskActionCast]] {}
   setmetatable(a, actionCastClass)
   a.temporaryDownrank = temporaryDownrank
   a.manaCost = cost

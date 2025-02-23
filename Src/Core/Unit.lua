@@ -2,12 +2,12 @@ local BOM = BuffomatAddon
 
 ---@class BomUnitModule
 
-local unitModule = --[[---@type BomUnitModule]] LibStub("Buffomat-Unit")
-local allBuffsModule = --[[---@type BomAllBuffsModule]] LibStub("Buffomat-AllBuffs")
-local buffomatModule = --[[---@type BomAllBuffsModule]] LibStub("Buffomat-AllBuffs")
-local buffModule = --[[---@type BomBuffModule]] LibStub("Buffomat-Buff")
-local partyModule = --[[---@type BomPartyModule]] LibStub("Buffomat-Party")
-local toolboxModule = --[[---@type LegacyToolboxModule]] LibStub("Buffomat-LegacyToolbox")
+local unitModule = --[[@as BomUnitModule]] LibStub("Buffomat-Unit")
+local allBuffsModule = --[[@as BomAllBuffsModule]] LibStub("Buffomat-AllBuffs")
+local buffomatModule = --[[@as BomBuffomatModule]] LibStub("Buffomat-Buffomat")
+local buffModule = --[[@as BomBuffModule]] LibStub("Buffomat-Buff")
+local partyModule = --[[@as BomPartyModule]] LibStub("Buffomat-Party")
+local toolboxModule = --[[@as LegacyToolboxModule]] LibStub("Buffomat-LegacyToolbox")
 
 ---@alias BomBuffidBuffLookup {[BomBuffId]: BomUnitBuff}
 

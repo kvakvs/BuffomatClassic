@@ -5,35 +5,35 @@ local BOM = BuffomatAddon
 ---@field roundRobinGroup number Group number to refresh, rotates from 1 to 8 in raid, or stays always 1 otherwise
 ---@field saveSomeoneIsDead boolean
 
-local taskScanModule = --[[---@type BomTaskScanModule]] LibStub("Buffomat-TaskScan")
+local taskScanModule = --[[@as BomTaskScanModule]] LibStub("Buffomat-TaskScan")
 taskScanModule.taskListSizeBeforeScan = 0
 taskScanModule.roundRobinGroup = 0
 taskScanModule.saveSomeoneIsDead = false
 taskScanModule.tasklist = nil
 
-local _t = --[[---@type BomLanguagesModule]] LibStub("Buffomat-Languages")
-local actionCastModule = --[[---@type BomActionCastModule]] LibStub("Buffomat-ActionCast")
-local actionMacroModule = --[[---@type BomActionMacroModule]] LibStub("Buffomat-ActionMacro")
-local actionUseModule = --[[---@type BomActionUseModule]] LibStub("Buffomat-ActionUse")
-local allBuffsModule = --[[---@type BomAllBuffsModule]] LibStub("Buffomat-AllBuffs")
-local buffChecksModule = --[[---@type BomBuffChecksModule]] LibStub("Buffomat-BuffChecks")
-local buffDefModule = --[[---@type BomBuffDefinitionModule]] LibStub("Buffomat-BuffDefinition")
-local buffTargetModule = --[[---@type BomUnitBuffTargetModule]] LibStub("Buffomat-UnitBuffTarget")
-local buffomatModule = --[[---@type BomBuffomatModule]] LibStub("Buffomat-Buffomat")
-local constModule = --[[---@type BomConstModule]] LibStub("Buffomat-Const")
-local envModule = --[[---@type KvLibEnvModule]] LibStub("KvLibShared-Env")
-local groupBuffTargetModule = --[[---@type BomGroupBuffTargetModule]] LibStub("Buffomat-GroupBuffTarget")
-local itemListCacheModule = --[[---@type BomItemListCacheModule]] LibStub("Buffomat-ItemListCache")
-local macroModule = --[[---@type BomMacroModule]] LibStub("Buffomat-Macro")
-local partyModule = --[[---@type BomPartyModule]] LibStub("Buffomat-Party")
-local profileModule = --[[---@type BomProfileModule]] LibStub("Buffomat-Profile")
-local spellIdsModule = --[[---@type BomSpellIdsModule]] LibStub("Buffomat-SpellIds")
-local taskListModule = --[[---@type BomTaskListModule]] LibStub("Buffomat-TaskList")
-local taskModule = --[[---@type BomTaskModule]] LibStub("Buffomat-Task")
-local texturesModule = --[[---@type BomTexturesModule]] LibStub("Buffomat-Textures")
-local unitCacheModule = --[[---@type BomUnitCacheModule]] LibStub("Buffomat-UnitCache")
-local throttleModule = --[[---@type BomThrottleModule]] LibStub("Buffomat-Throttle")
-local ngStringsModule = --[[---@type NgStringsModule]] LibStub("Buffomat-NgStrings")
+local _t = --[[@as BomLanguagesModule]] LibStub("Buffomat-Languages")
+local actionCastModule = --[[@as BomActionCastModule]] LibStub("Buffomat-ActionCast")
+local actionMacroModule = --[[@as BomActionMacroModule]] LibStub("Buffomat-ActionMacro")
+local actionUseModule = --[[@as BomActionUseModule]] LibStub("Buffomat-ActionUse")
+local allBuffsModule = --[[@as BomAllBuffsModule]] LibStub("Buffomat-AllBuffs")
+local buffChecksModule = --[[@as BomBuffChecksModule]] LibStub("Buffomat-BuffChecks")
+local buffDefModule = --[[@as BomBuffDefinitionModule]] LibStub("Buffomat-BuffDefinition")
+local buffTargetModule = --[[@as BomUnitBuffTargetModule]] LibStub("Buffomat-UnitBuffTarget")
+local buffomatModule = --[[@as BomBuffomatModule]] LibStub("Buffomat-Buffomat")
+local constModule = --[[@as BomConstModule]] LibStub("Buffomat-Const")
+local envModule = --[[@as KvLibEnvModule]] LibStub("KvLibShared-Env")
+local groupBuffTargetModule = --[[@as BomGroupBuffTargetModule]] LibStub("Buffomat-GroupBuffTarget")
+local itemListCacheModule = --[[@as BomItemListCacheModule]] LibStub("Buffomat-ItemListCache")
+local macroModule = --[[@as BomMacroModule]] LibStub("Buffomat-Macro")
+local partyModule = --[[@as BomPartyModule]] LibStub("Buffomat-Party")
+local profileModule = --[[@as BomProfileModule]] LibStub("Buffomat-Profile")
+local spellIdsModule = --[[@as BomSpellIdsModule]] LibStub("Buffomat-SpellIds")
+local taskListModule = --[[@as BomTaskListModule]] LibStub("Buffomat-TaskList")
+local taskModule = --[[@as BomTaskModule]] LibStub("Buffomat-Task")
+local texturesModule = --[[@as BomTexturesModule]] LibStub("Buffomat-Textures")
+local unitCacheModule = --[[@as BomUnitCacheModule]] LibStub("Buffomat-UnitCache")
+local throttleModule = --[[@as BomThrottleModule]] LibStub("Buffomat-Throttle")
+local ngStringsModule = --[[@as NgStringsModule]] LibStub("Buffomat-NgStrings")
 
 ---@class BomBuffScanContext
 ---@field someoneIsDead boolean
@@ -589,7 +589,7 @@ function taskScanModule:FormatItemBuffText(bag, slot, count)
 
   -- Iteminfo becomes nil when user throws away the consumable while the task is up
   if itemInfo ~= nil then
-    picture = ngStringsModule:FormatTexture( --[[---@type string]] itemInfo.iconFileID)
+    picture = ngStringsModule:FormatTexture( --[[@as string]] itemInfo.iconFileID)
   end
 
   return string.format(" %s %s (x%d)", picture, itemInfo.hyperlink, count)
@@ -623,7 +623,7 @@ function taskScanModule:AddBlessing(buffDef, party, buffCtx)
       then
         BOM.repeatUpdate = true
         local classInRange = self:GetClassInRange(
-          buffDef.groupText, --[[---@type BomParty]] buffDef.unitsNeedBuff, eachClassName, buffDef)
+          buffDef.groupText, --[[@as BomParty]] buffDef.unitsNeedBuff, eachClassName, buffDef)
 
         if classInRange == nil then
           classInRange = self:GetClassInRange(buffDef.groupText, party, eachClassName, buffDef)
@@ -1094,7 +1094,7 @@ end
 ---@param itemLink string
 function taskScanModule:AddConsumableWeaponBuff_HaveItem_Mainhand(buffDef, bag, slot, count, playerUnit, texture,
                                                                   itemLink)
-  local mainhandMessage = ngStringsModule:FormatTexture( --[[---@type string]] texture) .. itemLink .. "x" .. count
+  local mainhandMessage = ngStringsModule:FormatTexture( --[[@as string]] texture) .. itemLink .. "x" .. count
 
   if buffomatModule.shared.DontUseConsumables
       and not IsModifierKeyDown() then
@@ -1129,7 +1129,7 @@ end
 ---@param texture WowIconId
 ---@param itemLink string
 function taskScanModule:AddConsumableWeaponBuff_HaveItem_Offhand(buffDef, bag, slot, count, playerUnit, texture, itemLink)
-  local offhandMessage = ngStringsModule:FormatTexture( --[[---@type string]] texture) .. itemLink .. "x" .. count
+  local offhandMessage = ngStringsModule:FormatTexture( --[[@as string]] texture) .. itemLink .. "x" .. count
 
   if buffomatModule.shared.DontUseConsumables
       and not IsModifierKeyDown() then
@@ -1586,7 +1586,7 @@ end
 
 ---@param party BomParty
 function taskScanModule:UpdateScan_Scan(party)
-  local buffCtx = --[[---@type BomBuffScanContext]] {
+  local buffCtx = --[[@as BomBuffScanContext]] {
     macroCommand = "",
     castButtonTitle = "",
     inRange = false,

@@ -2,7 +2,7 @@ local BOM = BuffomatAddon
 
 ---@class BomPopupModule
 
-local popupModule = --[[---@type BomPopupModule]] LibStub("Buffomat-Popup")
+local popupModule = --[[@as BomPopupModule]] LibStub("Buffomat-Popup")
 popupModule.libDD = LibStub:GetLibrary("LibUIDropDownMenu-4.0")
 
 ---@class GPIPopupDynamic
@@ -34,14 +34,14 @@ popupDynamicClass.__index = popupDynamicClass
 
 ---@return BomMenuItemDef
 function popupModule:Separator()
-  local newSep = --[[---@type BomMenuItemDef]] {}
+  local newSep = --[[@as BomMenuItemDef]] {}
   newSep.type = "separator"
   return newSep
 end
 
 ---@return BomMenuItemDef
 function popupModule:Clickable(text, onClick, arg1, arg2)
-  local newClickable = --[[---@type BomMenuItemDef]] {}
+  local newClickable = --[[@as BomMenuItemDef]] {}
   newClickable.text = text or ""
   newClickable.type = "click"
   newClickable.onClick = onClick
@@ -52,7 +52,7 @@ end
 
 ---@return BomMenuItemDef
 function popupModule:Boolean(text, dict, key)
-  local newItem = --[[---@type BomMenuItemDef]] {}
+  local newItem = --[[@as BomMenuItemDef]] {}
   newItem.text = text or ""
   newItem.type = "boolean"
   newItem.value = dict
@@ -64,7 +64,7 @@ end
 ---@param level number
 ---@param nested BomMenuItemDefList
 function popupModule:SubMenu(text, level, nested)
-  local subMenu = --[[---@type BomMenuItemDef]] {}
+  local subMenu = --[[@as BomMenuItemDef]] {}
   subMenu.text = text
   subMenu.type = "submenu"
   subMenu.level = level
@@ -117,7 +117,7 @@ end
 
 ---@param menuItemDef BomMenuItemDef
 local function generateSubmenu(level, menuItemDef)
-  local info = --[[---@type WowPopupMenuItem]] {}
+  local info = --[[@as WowPopupMenuItem]] {}
   info.text = menuItemDef.text
   info.notCheckable = true
   info.disabled = false
@@ -128,7 +128,7 @@ end
 
 ---@param level number
 local function generateMenuSeparator(level)
-  local info = --[[---@type WowPopupMenuItem]] {}
+  local info = --[[@as WowPopupMenuItem]] {}
   info.disabled = true
   info.notCheckable = true
   popupModule.libDD:UIDropDownMenu_AddSeparator(level)
@@ -138,7 +138,7 @@ end
 ---@param frame BomGPIControl
 ---@param menuItemDef BomMenuItemDef
 local function generateClickableMenuItem(level, frame, menuItemDef)
-  local info = --[[---@type WowPopupMenuItem]] {}
+  local info = --[[@as WowPopupMenuItem]] {}
   info.text = menuItemDef.text
   info.notCheckable = true
   --info.keepShownOnClick = (val.disabled == "keep")
@@ -155,7 +155,7 @@ end
 ---@param level number
 ---@param menuItemDef BomMenuItemDef
 local function generateBooleanMenuItem(level, menuItemDef)
-  local info = --[[---@type WowPopupMenuItem]] {}
+  local info = --[[@as WowPopupMenuItem]] {}
   info.text = menuItemDef.text
   info.value = menuItemDef.value
   info.arg1 = menuItemDef.arg1
@@ -210,12 +210,12 @@ end
 ---@return GPIPopupDynamic
 ---@param callbackFn function
 function popupModule:CreatePopup(callbackFn)
-  local popup = --[[---@type BomPopupDynamic]] {}
+  local popup = --[[@as BomPopupDynamic]] {}
   setmetatable(popup, popupDynamicClass)
 
   --popup._Frame = CreateFrame("Frame", nil, UIParent, "UIDropDownMenuTemplate") ---@type BomGPIControl
   popup._Frame = self.libDD:Create_UIDropDownMenu("BuffomatDropDownMenu", UIParent)
   popup._Frame.bomPopupMenuCallback = callbackFn
-  popup._Frame.bomMenuItems = --[[---@type BomMenuItemDefList]] {}
+  popup._Frame.bomMenuItems = --[[@as BomMenuItemDefList]] {}
   return popup
 end

@@ -3,7 +3,7 @@ local BOM = BuffomatAddon
 
 ---@class BomSharedSettingsModule
 
-local sharedSettingsModule = --[[---@type BomSharedSettingsModule]] LibStub("Buffomat-SharedSettings")
+local sharedSettingsModule = --[[@as BomSharedSettingsModule]] LibStub("Buffomat-SharedSettings")
 
 --- Values to use when the saved data is evolving with an update, and the key doesn't exist
 sharedSettingsModule.defaults = {
@@ -95,7 +95,7 @@ end
 
 ---@return BomSharedSettings
 function sharedSettingsModule:Defaults()
-  return --[[---@type BomSharedSettings]] {
+  return --[[@as BomSharedSettings]] {
     UIWindowScale = 1,
     AutoOpen = true,
     FadeWhenNothingToDo = 1.0,

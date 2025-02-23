@@ -13,7 +13,7 @@ local BOM = BuffomatAddon
 ---@field playerManaLimit number Player max mana
 ---@field playerMana number Player current mana
 
-local partyModule = --[[---@type BomPartyModule]] LibStub("Buffomat-Party")
+local partyModule = --[[@as BomPartyModule]] LibStub("Buffomat-Party")
 
 ---@type BomBuffUpdatesPerUnit
 partyModule.unitAurasLastUpdated = {}
@@ -36,10 +36,10 @@ partyModule.ALL_INVALID_GROUPS = {
   [8] = true
 }
 
-local buffomatModule = --[[---@type BomBuffomatModule]] LibStub("Buffomat-Buffomat")
-local toolboxModule = --[[---@type LegacyToolboxModule]] LibStub("Buffomat-LegacyToolbox")
-local unitCacheModule = --[[---@type BomUnitCacheModule]] LibStub("Buffomat-UnitCache")
-local taskScanModule = --[[---@type BomTaskScanModule]] LibStub("Buffomat-TaskScan")
+local buffomatModule = --[[@as BomBuffomatModule]] LibStub("Buffomat-Buffomat")
+local toolboxModule = --[[@as LegacyToolboxModule]] LibStub("Buffomat-LegacyToolbox")
+local unitCacheModule = --[[@as BomUnitCacheModule]] LibStub("Buffomat-UnitCache")
+local taskScanModule = --[[@as BomTaskScanModule]] LibStub("Buffomat-TaskScan")
 
 ---@alias BomUnitDictByUnitId {[string]: BomUnit}
 ---@alias BomUnitDictByName {[string]: BomUnit}
@@ -250,8 +250,8 @@ end
 ---@param invalidGroups BomPartyCacheInvalidation Groups to reload
 ---@return BomParty
 function partyClass:GetRaidMembers(invalidGroups)
-  local nameGroupMap = --[[---@type BomNameGroupMap]] {}
-  local nameRoleMap = --[[---@type BomNameRoleMap]] {}
+  local nameGroupMap = --[[@as BomNameGroupMap]] {}
+  local nameRoleMap = --[[@as BomNameRoleMap]] {}
 
   for groupIndex, _true in pairs(invalidGroups) do
     local raidBegin = (groupIndex - 1) * 5

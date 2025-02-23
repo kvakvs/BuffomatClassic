@@ -1,9 +1,9 @@
 ---@class BomUnitBuffTargetModule
 
-local buffTargetModule = --[[---@type BomUnitBuffTargetModule]] LibStub("Buffomat-UnitBuffTarget")
-local toolboxModule = --[[---@type LegacyToolboxModule]] LibStub("Buffomat-LegacyToolbox")
-local buffomatModule = --[[---@type BomBuffomatModule]] LibStub("Buffomat-Buffomat")
-local _t = --[[---@type BomLanguagesModule]] LibStub("Buffomat-Languages")
+local buffTargetModule = --[[@as BomUnitBuffTargetModule]] LibStub("Buffomat-UnitBuffTarget")
+local toolboxModule = --[[@as LegacyToolboxModule]] LibStub("Buffomat-LegacyToolbox")
+local buffomatModule = --[[@as BomBuffomatModule]] LibStub("Buffomat-Buffomat")
+local _t = --[[@as BomLanguagesModule]] LibStub("Buffomat-Languages")
 
 ---@class BomUnitBuffTarget
 ---@field unitName string Just the name
@@ -13,7 +13,7 @@ buffTargetClass.__index = buffTargetClass
 
 ---@return BomUnitBuffTarget
 function buffTargetModule:New(unitName, link)
-  local fields = --[[---@type BomUnitBuffTarget]] {}
+  local fields = --[[@as BomUnitBuffTarget]] {}
   fields.unitName = unitName
   fields.link = link
   setmetatable(fields, buffTargetClass)

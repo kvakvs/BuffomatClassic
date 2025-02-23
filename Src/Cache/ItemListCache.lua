@@ -3,11 +3,11 @@ local BOM = BuffomatAddon
 
 ---@class BomItemListCacheModule
 
-local itemListCacheModule = --[[---@type BomItemListCacheModule]] LibStub("Buffomat-ItemListCache")
-local itemIdsModule = --[[---@type BomItemIdsModule]] LibStub("Buffomat-ItemIds")
-local buffomatModule = --[[---@type BomBuffomatModule]] LibStub("Buffomat-Buffomat")
-local toolboxModule = --[[---@type LegacyToolboxModule]] LibStub("Buffomat-LegacyToolbox")
-local envModule = --[[---@type KvLibEnvModule]] LibStub("KvLibShared-Env")
+local itemListCacheModule = --[[@as BomItemListCacheModule]] LibStub("Buffomat-ItemListCache")
+local itemIdsModule = --[[@as BomItemIdsModule]] LibStub("Buffomat-ItemIds")
+local buffomatModule = --[[@as BomBuffomatModule]] LibStub("Buffomat-Buffomat")
+local toolboxModule = --[[@as LegacyToolboxModule]] LibStub("Buffomat-LegacyToolbox")
+local envModule = --[[@as KvLibEnvModule]] LibStub("KvLibShared-Env")
 
 BOM.wipeCachedItems = true
 
@@ -25,7 +25,7 @@ BOM.wipeCachedItems = true
 -- alternative type? {[number]: GetContainerItemInfoResult}
 
 -- Stores copies of GetContainerItemInfo parse results
-local itemListCache = --[[---@type BomInventory]] {}
+local itemListCache = --[[@as BomInventory]] {}
 
 ---@return boolean
 ---@nodiscard
@@ -55,7 +55,7 @@ function itemListCacheModule:GetItemList()
         if itemInfo then
           for iList, list in ipairs(BOM.itemList) do
             if tContains(list, itemInfo.itemID) then
-              table.insert(itemListCache, --[[---@type GetContainerItemInfoResult]] {
+              table.insert(itemListCache, --[[@as GetContainerItemInfoResult]] {
                 Index = iList,
                 ID = itemInfo.itemID,
                 CD = {},
@@ -78,7 +78,7 @@ function itemListCacheModule:GetItemList()
             end
 
             if not locked then
-              table.insert(itemListCache, --[[---@type GetContainerItemInfoResult]] {
+              table.insert(itemListCache, --[[@as GetContainerItemInfoResult]] {
                 Index = 0,
                 ID = itemInfo.itemID,
                 CD = nil,

@@ -1,6 +1,6 @@
 ---@class BomBuffModule
 
-local buffModule = --[[---@type BomBuffModule]] LibStub:NewLibrary("Buffomat-Buff", 1)
+local buffModule = --[[@as BomBuffModule]] LibStub:NewLibrary("Buffomat-Buff", 1)
 
 ---@class BomUnitBuff
 ---@field singleId WowSpellId Spell id also serving as key
@@ -20,7 +20,7 @@ buffClass.__index = buffClass
 ---@param isSingle boolean
 ---@return BomUnitBuff
 function buffModule:New(singleId, duration, expirationTime, source, isSingle)
-  local fields = --[[---@type BomUnitBuff]] {
+  local fields = --[[@as BomUnitBuff]] {
     singleId       = singleId,
     duration       = duration,
     expirationTime = expirationTime,

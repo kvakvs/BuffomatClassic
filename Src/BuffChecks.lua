@@ -2,14 +2,14 @@ local BOM = BuffomatAddon
 
 ---@class BomBuffChecksModule
 
-local buffChecksModule = --[[---@type BomBuffChecksModule]] LibStub("Buffomat-BuffChecks")
-local allBuffsModule = --[[---@type BomAllBuffsModule]] LibStub("Buffomat-AllBuffs")
-local buffDefModule = --[[---@type BomBuffDefinitionModule]] LibStub("Buffomat-BuffDefinition")
-local buffomatModule = --[[---@type BomBuffomatModule]] LibStub("Buffomat-Buffomat")
-local partyModule = --[[---@type BomPartyModule]] LibStub("Buffomat-Party")
-local spellIdsModule = --[[---@type BomSpellIdsModule]] LibStub("Buffomat-SpellIds")
-local unitCacheModule = --[[---@type BomUnitCacheModule]] LibStub("Buffomat-UnitCache")
-local envModule = --[[---@type KvLibEnvModule]] LibStub("KvLibShared-Env")
+local buffChecksModule = --[[@as BomBuffChecksModule]] LibStub("Buffomat-BuffChecks")
+local allBuffsModule = --[[@as BomAllBuffsModule]] LibStub("Buffomat-AllBuffs")
+local buffDefModule = --[[@as BomBuffDefinitionModule]] LibStub("Buffomat-BuffDefinition")
+local buffomatModule = --[[@as BomBuffomatModule]] LibStub("Buffomat-Buffomat")
+local partyModule = --[[@as BomPartyModule]] LibStub("Buffomat-Party")
+local spellIdsModule = --[[@as BomSpellIdsModule]] LibStub("Buffomat-SpellIds")
+local unitCacheModule = --[[@as BomUnitCacheModule]] LibStub("Buffomat-UnitCache")
+local envModule = --[[@as KvLibEnvModule]] LibStub("KvLibShared-Env")
 
 ---Checks whether a tracking spell is now active
 ---@param spell BomBuffDefinition The tracking spell which might have tracking enabled
@@ -75,7 +75,7 @@ function buffChecksModule:HasOneItem(itemToCheck, cd)
   local cachedItem = BOM.cachedPlayerBag[key]
 
   if not cachedItem then
-    BOM.cachedPlayerBag[key] = --[[---@type BomCachedBagItem]] {}
+    BOM.cachedPlayerBag[key] = --[[@as BomCachedBagItem]] {}
     cachedItem = BOM.cachedPlayerBag[key]
     cachedItem.a = false
     cachedItem.d = 0

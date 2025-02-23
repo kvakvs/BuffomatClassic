@@ -22,7 +22,7 @@ if false then
   ---@deprecated Use libAceGUI instead
   ---@return BomManagedUi
   function managedUiModule:new(parent)
-    local fields = --[[---@type BomManagedUi]] {
+    local fields = --[[@as BomManagedUi]] {
       uiElements = {},
     }
     setmetatable(fields, managedUiClass)

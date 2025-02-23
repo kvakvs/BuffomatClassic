@@ -4,15 +4,15 @@ local BOM = BuffomatAddon
 
 ---@class BomSpellSetupModule
 
-local spellSetupModule = --[[---@type BomSpellSetupModule]] LibStub("Buffomat-SpellSetup")
-local buffomatModule = --[[---@type BomBuffomatModule]] LibStub("Buffomat-Buffomat")
-local constModule = --[[---@type BomConstModule]] LibStub("Buffomat-Const")
-local itemCacheModule = --[[---@type BomItemCacheModule]] LibStub("Buffomat-ItemCache")
-local allBuffsModule = --[[---@type BomAllBuffsModule]] LibStub("Buffomat-AllBuffs")
-local buffDefinitionModule = --[[---@type BomBuffDefinitionModule]] LibStub("Buffomat-BuffDefinition")
-local toolboxModule = --[[---@type LegacyToolboxModule]] LibStub("Buffomat-LegacyToolbox")
-local profileModule = --[[---@type BomProfileModule]] LibStub("Buffomat-Profile")
-local ngStringsModule = --[[---@type NgStringsModule]] LibStub("Buffomat-NgStrings")
+local spellSetupModule = --[[@as BomSpellSetupModule]] LibStub("Buffomat-SpellSetup")
+local buffomatModule = --[[@as BomBuffomatModule]] LibStub("Buffomat-Buffomat")
+local constModule = --[[@as BomConstModule]] LibStub("Buffomat-Const")
+local itemCacheModule = --[[@as BomItemCacheModule]] LibStub("Buffomat-ItemCache")
+local allBuffsModule = --[[@as BomAllBuffsModule]] LibStub("Buffomat-AllBuffs")
+local buffDefinitionModule = --[[@as BomBuffDefinitionModule]] LibStub("Buffomat-BuffDefinition")
+local toolboxModule = --[[@as LegacyToolboxModule]] LibStub("Buffomat-LegacyToolbox")
+local profileModule = --[[@as BomProfileModule]] LibStub("Buffomat-Profile")
+local ngStringsModule = --[[@as NgStringsModule]] LibStub("Buffomat-NgStrings")
 
 ---Formats a spell icon + spell name as a link
 -- TODO: Move to SpellDef class
@@ -27,7 +27,7 @@ function spellSetupModule:FormatSpellLink(spellInfo)
 
   return "|Hspell:" .. spellInfo.spellId
       .. "|h|r |cff71d5ff"
-      .. ngStringsModule:FormatTexture( --[[---@type string]] spellInfo.icon)
+      .. ngStringsModule:FormatTexture( --[[@as string]] spellInfo.icon)
       .. spellInfo.name
       .. "|r|h"
 end
@@ -39,7 +39,7 @@ function spellSetupModule:Setup_ResetCaches()
 
   allBuffsModule.cancelForm = {}
   allBuffsModule.allSpellIds = {}
-  allBuffsModule.buffFromSpellIdLookup = --[[---@type {[WowSpellId]: BomBuffDefinition}]] {}
+  allBuffsModule.buffFromSpellIdLookup = --[[@as {[WowSpellId]: BomBuffDefinition}]] {}
 
   buffomatModule.shared.Cache = buffomatModule.shared.Cache or {}
   buffomatModule.shared.Cache.Item2 = buffomatModule.shared.Cache.Item2 or {}

@@ -2,9 +2,9 @@ local BOM = BuffomatAddon
 
 ---@class BomActionMacroModule
 
-local actionMacroModule = --[[---@type BomActionMacroModule]] LibStub("Buffomat-ActionMacro")
-local taskModule = --[[---@type BomTaskModule]] LibStub("Buffomat-Task")
-local constModule = --[[---@type BomConstModule]] LibStub("Buffomat-Const")
+local actionMacroModule = --[[@as BomActionMacroModule]] LibStub("Buffomat-ActionMacro")
+local taskModule = --[[@as BomTaskModule]] LibStub("Buffomat-Task")
+local constModule = --[[@as BomConstModule]] LibStub("Buffomat-Const")
 
 ---@class BomTaskActionMacro: BomTaskAction Uses an equipment slot or a bag item
 ---@field macro string
@@ -16,7 +16,7 @@ actionMacroClass.__index = actionMacroClass
 ---@param buttonText string
 ---@return BomTaskActionMacro
 function actionMacroModule:New(macro, buttonText)
-  local a = --[[---@type BomTaskActionMacro]] {}
+  local a = --[[@as BomTaskActionMacro]] {}
   setmetatable(a, actionMacroClass)
   a.macro = macro
   a.buttonText = buttonText

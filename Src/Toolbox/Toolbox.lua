@@ -12,9 +12,9 @@ local BOM = BuffomatAddon
 ---@field NameToClass table<string, string> Reverse class name lookup
 ---@field _EditBox BomGPIControlEditBox
 
-local legacyToolboxModule = --[[---@type BomToolboxModule]] LibStub("Buffomat-LegacyToolbox")
-local _t = --[[---@type BomLanguagesModule]] LibStub("Buffomat-Languages")
-local constModule = --[[---@type BomConstModule]] LibStub("Buffomat-Const")
+local legacyToolboxModule = --[[@as BomToolboxModule]] LibStub("Buffomat-LegacyToolbox")
+local _t = --[[@as BomLanguagesModule]] LibStub("Buffomat-Languages")
+local constModule = --[[@as BomConstModule]] LibStub("Buffomat-Const")
 
 ---@class BomGPIControlEditBox: Frame
 ---@field chatFrame Frame
@@ -601,7 +601,7 @@ function legacyToolboxModule:AddTab(frame, name, tabFrame, combatlockdown)
   local frameName ---@type string
 
   if type(frame) == "string" then
-    frameName = --[[---@type string]] frame
+    frameName = --[[@as string]] frame
     frame = _G[frameName]
   else
     frameName = frame:GetName()
@@ -611,8 +611,8 @@ function legacyToolboxModule:AddTab(frame, name, tabFrame, combatlockdown)
     tabFrame = _G[tabFrame]
   end
 
-  local frameControl = --[[---@type BomGPIControlFrame]] frame
-  local tabFrameControl = --[[---@type BomGPIControlTab]] tabFrame
+  local frameControl = --[[@as BomGPIControlFrame]] frame
+  local tabFrameControl = --[[@as BomGPIControlTab]] tabFrame
 
   frameControl.numTabs = frameControl.numTabs and frameControl.numTabs + 1 or 1
 
@@ -672,7 +672,7 @@ end
 ---@return BomGPIControl
 function legacyToolboxModule:CreateSmalltextLabel(maybeLabel, parent, positionFn)
   if maybeLabel == nil then
-    maybeLabel = --[[---@type BomGPIControl]] parent:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    maybeLabel = --[[@as BomGPIControl]] parent:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
   end
   positionFn(maybeLabel)
   return --[[---@not nil]] maybeLabel

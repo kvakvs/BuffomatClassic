@@ -2,9 +2,9 @@ local BOM = BuffomatAddon
 
 ---@class BomAllConsumesEnchantmentsModule
 
-local enchantmentsModule = --[[---@type BomAllConsumesEnchantmentsModule]] LibStub("Buffomat-AllConsumesEnchantments")
-local allBuffsModule = --[[---@type BomAllBuffsModule]] LibStub("Buffomat-AllBuffs")
-local buffDefModule = --[[---@type BomBuffDefinitionModule]] LibStub("Buffomat-BuffDefinition")
+local enchantmentsModule = --[[@as BomAllConsumesEnchantmentsModule]] LibStub("Buffomat-AllConsumesEnchantments")
+local allBuffsModule = --[[@as BomAllBuffsModule]] LibStub("Buffomat-AllBuffs")
+local buffDefModule = --[[@as BomBuffDefinitionModule]] LibStub("Buffomat-BuffDefinition")
 
 ---SCROLLS
 ---@param allBuffs BomBuffDefinition[] A list of buffs (not dictionary)

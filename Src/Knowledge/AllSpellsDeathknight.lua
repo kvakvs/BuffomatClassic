@@ -2,10 +2,10 @@ local BOM = BuffomatAddon
 
 ---@class BomAllSpellsDeathknightModule
 
-local deathknightModule = --[[---@type BomAllSpellsDeathknightModule]] LibStub("Buffomat-AllSpellsDeathknight")
-local allBuffsModule = --[[---@type BomAllBuffsModule]] LibStub("Buffomat-AllBuffs")
-local buffDefModule = --[[---@type BomBuffDefinitionModule]] LibStub("Buffomat-BuffDefinition")
-local itemIdsModule = --[[---@type BomItemIdsModule]] LibStub("Buffomat-ItemIds")
+local deathknightModule = --[[@as BomAllSpellsDeathknightModule]] LibStub("Buffomat-AllSpellsDeathknight")
+local allBuffsModule = --[[@as BomAllBuffsModule]] LibStub("Buffomat-AllBuffs")
+local buffDefModule = --[[@as BomBuffDefinitionModule]] LibStub("Buffomat-BuffDefinition")
+local itemIdsModule = --[[@as BomItemIdsModule]] LibStub("Buffomat-ItemIds")
 
 ---Add DEATH KNIGHT spells
 ---@param allBuffs BomBuffDefinition[]

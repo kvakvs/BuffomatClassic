@@ -1,6 +1,6 @@
 ---@class NgStringsModule
 
-local ngStringsModule = --[[---@type NgStringsModule]] LibStub("Buffomat-NgStrings")
+local ngStringsModule = --[[@as NgStringsModule]] LibStub("Buffomat-NgStrings")
 local constModule = LibStub("Buffomat-Const")
 
 ---Creates a string which will display a picture in a FontString

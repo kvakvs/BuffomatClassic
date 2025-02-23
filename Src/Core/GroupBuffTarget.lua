@@ -1,10 +1,10 @@
 ---@class BomGroupBuffTargetModule
 
-local groupBuffTargetModule = --[[---@type BomGroupBuffTargetModule]] LibStub:NewLibrary("Buffomat-GroupBuffTarget", 1)
+local groupBuffTargetModule = --[[@as BomGroupBuffTargetModule]] LibStub:NewLibrary("Buffomat-GroupBuffTarget", 1)
 
-local toolboxModule = --[[---@type LegacyToolboxModule]] LibStub("Buffomat-LegacyToolbox")
-local _t = --[[---@type BomLanguagesModule]] LibStub("Buffomat-Languages")
-local envModule = --[[---@type KvLibEnvModule]] LibStub("KvLibShared-Env")
+local toolboxModule = --[[@as LegacyToolboxModule]] LibStub("Buffomat-LegacyToolbox")
+local _t = --[[@as BomLanguagesModule]] LibStub("Buffomat-Languages")
+local envModule = --[[@as KvLibEnvModule]] LibStub("KvLibShared-Env")
 
 ---@class BomGroupBuffTarget
 ---@field groupIndex number
@@ -13,7 +13,7 @@ groupBuffTargetClass.__index = groupBuffTargetClass
 
 ---@return BomGroupBuffTarget
 function groupBuffTargetModule:New(groupNum)
-  local fields = --[[---@type BomGroupBuffTarget]] {
+  local fields = --[[@as BomGroupBuffTarget]] {
     groupIndex = groupNum,
   }
   setmetatable(fields, groupBuffTargetClass)

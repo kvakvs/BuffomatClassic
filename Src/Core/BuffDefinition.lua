@@ -9,13 +9,13 @@ local BOM = BuffomatAddon
 
 ---@class BomBuffDefinitionModule
 
-local buffDefModule = --[[---@type BomBuffDefinitionModule]] LibStub("Buffomat-BuffDefinition")
-local _t = --[[---@type BomLanguagesModule]] LibStub("Buffomat-Languages")
-local envModule = --[[---@type KvLibEnvModule]] LibStub("KvLibShared-Env")
-local buffomatModule = --[[---@type BomBuffomatModule]] LibStub("Buffomat-Buffomat")
-local spellCacheModule = --[[---@type BomSpellCacheModule]] LibStub("Buffomat-SpellCache")
-local itemCacheModule = --[[---@type BomItemCacheModule]] LibStub("Buffomat-ItemCache")
-local allBuffsModule = --[[---@type BomAllBuffsModule]] LibStub("Buffomat-AllBuffs")
+local buffDefModule = --[[@as BomBuffDefinitionModule]] LibStub("Buffomat-BuffDefinition")
+local _t = --[[@as BomLanguagesModule]] LibStub("Buffomat-Languages")
+local envModule = --[[@as KvLibEnvModule]] LibStub("KvLibShared-Env")
+local buffomatModule = --[[@as BomBuffomatModule]] LibStub("Buffomat-Buffomat")
+local spellCacheModule = --[[@as BomSpellCacheModule]] LibStub("Buffomat-SpellCache")
+local itemCacheModule = --[[@as BomItemCacheModule]] LibStub("Buffomat-ItemCache")
+local allBuffsModule = --[[@as BomAllBuffsModule]] LibStub("Buffomat-AllBuffs")
 
 ---type="aura" Auras are no target buff check. True if the buff affects others in radius, and not a target buff
 ---type="seal" Seals are 1hand enchants which are unique for equipped weapon. Paladins use seals. Shamans also use seals but in TBC shamans have 2 independent seals.
@@ -132,19 +132,19 @@ buffDefClass.__index = buffDefClass
 ---@param singleId WowSpellId Spell id also serving as buffId key
 ---@return BomBuffDefinition
 function buffDefModule:New(singleId)
-  local buff = --[[---@type BomBuffDefinition]] {}
+  local buff = --[[@as BomBuffDefinition]] {}
   buff.category = ""                                  -- special value no category
   --buff.frames = buffRowModule:New(tostring(singleId)) -- spell buttons from the UI go here
   buff.buffId = singleId
   buff.highestRankSingleId = singleId
   buff.singleFamily = { singleId }
-  buff.limitations = --[[---@type BomSpellLimitations]] {}
-  buff.ForcedTarget = --[[---@type BomForcedTargets]] {}
-  buff.ExcludedTarget = --[[---@type BomForcedTargets]] {}
+  buff.limitations = --[[@as BomSpellLimitations]] {}
+  buff.ForcedTarget = --[[@as BomForcedTargets]] {}
+  buff.ExcludedTarget = --[[@as BomForcedTargets]] {}
   buff.unitsNeedBuff = {}
   buff.unitsHaveBetterBuff = {}
   buff.groupsNeedBuff = {}
-  buff.groupsHaveDead = --[[---@type BomDeadMap]] {}
+  buff.groupsHaveDead = --[[@as BomDeadMap]] {}
   buff.skipList = {}
   buff.targetClasses = {}
 
@@ -233,7 +233,7 @@ function buffDefModule:CheckStaticLimitations(_spell, limitations)
 
   if type(limitations.playerClass) == "table" then
     -- Fail if val is a table and player class is not in it
-    if not tContains( --[[---@type BomClassName[] ]] limitations.playerClass, playerClass) then
+    if not tContains( --[[@as BomClassName[] ]] limitations.playerClass, playerClass) then
       return false
     end
   end
@@ -282,7 +282,7 @@ end
 function buffDefModule:createAndRegisterBuff(allBuffs, buffSpellId, limitations)
   local spell = self:New(buffSpellId)
 
-  if self:CheckStaticLimitations(spell, limitations or --[[---@type BomSpellLimitations]] {}) then
+  if self:CheckStaticLimitations(spell, limitations or --[[@as BomSpellLimitations]] {}) then
     return self:registerBuff(allBuffs, spell)
   end
 
@@ -339,9 +339,9 @@ end
 ---@return BomBuffDefinition
 function buffDefClass:CreatesOrProvidedByItem(itemId)
   if type(itemId) == "number" then
-    self.items = { --[[---@type WowItemId]] itemId }
+    self.items = { --[[@as WowItemId]] itemId }
   else
-    self.items = --[[---@type WowItemId[] ]] itemId
+    self.items = --[[@as WowItemId[] ]] itemId
   end
 
   -- Clone item ids, and reverse
@@ -464,9 +464,9 @@ end
 ---@return BomBuffDefinition
 function buffDefClass:ReagentRequired(itemIds)
   if type(itemIds) == "table" then
-    self.reagentRequired = --[[---@type WowItemId[] ]] itemIds
+    self.reagentRequired = --[[@as WowItemId[] ]] itemIds
   else
-    self.reagentRequired = { --[[---@type WowItemId]] itemIds }
+    self.reagentRequired = { --[[@as WowItemId]] itemIds }
   end
   return self
 end
@@ -682,7 +682,7 @@ function buffDefClass:IgnoreIfHaveBuff(spellId)
   if type(spellId) == "number" then
     tinsert(self.ignoreIfBetterBuffs, spellId)
   elseif type(spellId) == "table" then
-    for _i, spell in ipairs( --[[---@type WowSpellId[] ]] spellId) do
+    for _i, spell in ipairs( --[[@as WowSpellId[] ]] spellId) do
       tinsert(self.ignoreIfBetterBuffs, spell)
     end
   else
@@ -742,7 +742,7 @@ function buffDefModule:GetProfileBlessingState(profileName)
 
   local profile = buffomatModule.character[ --[[---@not nil]] profileName ]
   if profile == nil then
-    return --[[---@type BomBlessingState]] {}
+    return --[[@as BomBlessingState]] {}
   end
 
   return profile.CurrentBlessing
