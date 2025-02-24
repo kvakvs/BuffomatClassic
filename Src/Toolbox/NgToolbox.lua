@@ -4,6 +4,20 @@
 
 local ngToolboxModule = --[[@as NgToolboxModule]] LibStub("Buffomat-NgToolbox")
 local _t = --[[@as LanguagesModule]] LibStub("Buffomat-Languages")
+local libGUI = LibStub("AceGUI-3.0")
+
+---@param widget AceGUIWidget
+---@param text string The key to translation
+function ngToolboxModule:SetTooltip(widget, text)
+  widget:SetCallback("OnEnter", function()
+    GameTooltip:SetOwner(widget.frame, "ANCHOR_RIGHT")
+    GameTooltip:AddLine(text)
+    GameTooltip:Show()
+  end)
+  widget:SetCallback("OnLeave", function()
+    GameTooltip:Hide()
+  end)
+end
 
 ---@param widget AceGUIWidget
 ---@param translationKey string The key to translation
@@ -55,4 +69,34 @@ function ngToolboxModule:SetButtonTextures(frame, normalTexture, selectedTexture
   disabledT:ClearAllPoints()
   disabledT:SetPoint("CENTER")
   -- disabledT:SetTexture(disabledTexture or normalTexture)
+end
+
+---@param tooltip string
+---@param textureOn string
+---@param textureOff string
+---@param getValue fun(): boolean
+---@param setValue fun(value: boolean)
+---@return AceGUIWidget
+function ngToolboxModule:CreateToggle(tooltip, textureOn, textureOff, getValue, setValue)
+  local button = libGUI:Create("Button")
+  button:SetWidth(20)
+  button:SetHeight(20)
+
+  local valueOnCreation = getValue()
+  local setTextureOn = function()
+    ngToolboxModule:SetButtonTextures(button.frame, textureOn)
+  end
+  local setTextureOff = function()
+    ngToolboxModule:SetButtonTextures(button.frame, textureOff)
+  end
+  if valueOnCreation then setTextureOn() else setTextureOff() end
+
+  button:SetCallback("OnClick", function(_control, mouseButton)
+    local newValue = not getValue()
+    setValue(newValue)
+    if newValue then setTextureOn() else setTextureOff() end
+  end)
+
+  self:SetTooltip(button, tooltip)
+  return button
 end

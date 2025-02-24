@@ -18,6 +18,7 @@ local buffomatModule = --[[@as BuffomatModule]] LibStub("Buffomat-Buffomat")
 local buffDefModule = --[[@as BuffDefinitionModule]] LibStub("Buffomat-BuffDefinition")
 local ngToolboxModule = --[[@as NgToolboxModule]] LibStub("Buffomat-NgToolbox")
 local texturesModule = --[[@as BomTexturesModule]] LibStub("Buffomat-Textures")
+local ngStringsModule = --[[@as NgStringsModule]] LibStub("Buffomat-NgStrings")
 
 local libGUI = LibStub("AceGUI-3.0")
 
@@ -40,7 +41,7 @@ function spellsDialogModule:Show()
 
   frame:SetTitle(_t("SpellsWindow_Title"))
   frame:SetLayout("Fill")
-  frame:SetWidth(600)
+  frame:SetWidth(800)
   frame:SetHeight(400)
   frame:SetPoint("CENTER")
   frame:Show()
@@ -158,6 +159,9 @@ function spellsDialogModule:CreateInfoIcon(buffDef)
       end
     end)
     ngToolboxModule:TooltipWithTranslationKey(iconButton, "Click to print all items which provide this buff")
+    iconButton:SetCallback("OnClick", function(_control, mouseButton)
+      buffDef:ShowItemsProvidingBuff()
+    end)
   else
     if buffDef.isConsumable then
       ngToolboxModule:TooltipLink(iconButton, "item:" .. buffDef:GetFirstItem())
@@ -183,8 +187,8 @@ function spellsDialogModule:CreateBuffRow(buffDef, profileBuff, context)
   row:SetFullWidth(true)
 
   -- Create the icon button
-  local icon = self:CreateInfoIcon(buffDef)
-  row:AddChild(icon)
+  local iconButton = self:CreateInfoIcon(buffDef)
+  row:AddChild(iconButton)
 
   -- Create the checkbox to enable/disable the buff
   local checkEnabled = libGUI:Create("CheckBox")
@@ -192,36 +196,43 @@ function spellsDialogModule:CreateBuffRow(buffDef, profileBuff, context)
   checkEnabled:SetCallback("OnValueChanged", function(_control, _callbackName, value)
     profileBuff.Enable = value
   end)
-  checkEnabled:SetLabel(buffDef.singleLink)
-  checkEnabled:SetWidth(250)
+  checkEnabled:SetLabel("-")
+  buffDef:SetSpellListText(function(text)
+    checkEnabled:SetLabel(text)
+    checkEnabled:SetWidth(checkEnabled.text:GetStringWidth() + 32)
+  end)
   row:AddChild(checkEnabled)
 
   -- Create checkboxes one per class
   if buffDef:HasClasses() then
-    --self:AddClassSelector(buff, profileBuff, context)
+    self:AddSelfCastToggle(row, profileBuff)
   end
 
   return row
 end
 
 ---Add class selector for buff which makes sense to differentiate per class.
----@param buffDef BomBuffDefinition The spell currently being displayed
----@param context SpellsDialogContext
-function spellsDialogModule:AddClassSelector(buffDef, profileBuff, context)
-  local tooltip1 = ngStringsModule:FormatTexture(texturesModule.ICON_SELF_CAST_ON)
+---@param row AceGUIWidget The GUI panel where controls are added
+---@param profileBuff BomProfileBuff The profile buff currently being displayed
+function spellsDialogModule:AddSelfCastToggle(row, profileBuff)
+  local selfCastTooltip = ngStringsModule:FormatTexture(texturesModule.ICON_SELF_CAST_ON)
     .. " - " .. _t("TooltipSelfCastCheckbox_Self") .. "|n"
     .. ngStringsModule:FormatTexture(texturesModule.ICON_SELF_CAST_OFF)
     .. " - " .. _t("TooltipSelfCastCheckbox_Party")
-  local selfcastToggle = buffDef.frames:CreateSelfCastToggle(tooltip1)
-  -- rowBuilder:AppendRight(nil, selfcastToggle, 5)
-  -- selfcastToggle:SetVariable(profileBuff, "SelfCast", nil)
-  local buttonSelf = libGUI:Create("Button")
-  buttonSelf:SetWidth(20)
-  buttonSelf:SetHeight(20)
-  buttonSelf:SetImage(texturesModule.ICON_SELF_CAST_ON)
-  buttonSelf:SetImage(texturesModule.ICON_SELF_CAST_OFF)
-  row:AddChild(buttonSelf)
 
+  local selfcastToggle = ngToolboxModule:CreateToggle(
+    selfCastTooltip,
+    texturesModule.ICON_SELF_CAST_ON,
+    texturesModule.ICON_SELF_CAST_OFF,
+    function() return profileBuff.SelfCast end,
+    function(value) profileBuff.SelfCast = value end
+  )
+
+  ngToolboxModule:SetTooltip(selfcastToggle, selfCastTooltip)
+  row:AddChild(selfcastToggle)
+end
+
+function _temp()
   --------------------------------------
   -- Class-Cast checkboxes one per class
   --------------------------------------

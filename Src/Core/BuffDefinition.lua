@@ -976,3 +976,30 @@ function buffDefClass:ShowItemsProvidingBuff()
 
   BOM:Print(output)
 end
+
+---Creates text for spell list dialog for this buff, if the text is not available, queries the server
+---and applies the callback when its available.
+---@param textReadyFn fun(text: string)
+function buffDefClass:SetSpellListText(textReadyFn)
+  -- Having 'consumeGroupTitle' set will override buff single text from the iteminfo
+  if self.consumeGroupTitle then
+    local text = self.consumeGroupTitle
+    if self.extraText then
+      text = text .. ": " .. buffomatModule:Color("bbbbee", self.extraText)
+    end
+    textReadyFn(text)
+  else
+    -- Await for an async request
+    local buff = self
+    self:GetSingleText(
+      function(buffLabelText)
+        if buff.type == "weapon" then
+          buffLabelText = buffLabelText .. ": " .. buffomatModule:Color("bbbbee", _t("TooltipIncludesAllRanks"))
+        elseif buff.extraText then
+          buffLabelText = buffLabelText .. ": " .. buffomatModule:Color("bbbbee", buff.extraText)
+        end
+        textReadyFn(buffLabelText)
+      end
+    ) -- update when spell loaded
+  end
+end
