@@ -1,5 +1,4 @@
 local TOCNAME, _ = ...
-local BOM = BuffomatAddon
 
 ---@class SlashCommandsModule
 
@@ -32,7 +31,7 @@ end
 
 ---@param prefix string|nil
 ---@param conf BomSlashCommand[]|nil
----@param printFn nil|fun(text: string): void
+---@param printFn nil|fun(text: string)
 function slashModule:PrintSlashCommand(prefix, conf, printFn)
   printFn = printFn or print
   prefix = prefix or ""
@@ -45,16 +44,17 @@ end
 
 ---@param prefix string
 ---@param conf BomSlashCommand[]
----@param printFn fun(text: string): void
+---@param printFn fun(text: string)
 function slashModule:PrintSlashCommand_1(prefix, conf, printFn)
   local colCmd = "|cFFFF9C00"
 
+---@diagnostic disable-next-line: unused-local
   for i, subcmd in ipairs(conf) do
-    if false then
-      local maybeFormatTable = (type(subcmd.command) == "table") and "|r(" .. colCmd
-          .. slashModule:SlashUnpack(subcmd.command, "|r/" .. colCmd)
-          .. "|r)" .. colCmd
-    end
+    -- if false then
+    --   local maybeFormatTable = (type(subcmd.command) == "table") and "|r(" .. colCmd
+    --       .. slashModule:SlashUnpack(subcmd.command, "|r/" .. colCmd)
+    --       .. "|r)" .. colCmd
+    -- end
     local maybeFormatTable = false
     local words = maybeFormatTable or subcmd.command
     if words == "%" then
@@ -83,6 +83,7 @@ end
 ---@param msg string[]
 ---@param conf BomSlashCommand[]
 function slashModule:ParseAndExecute(nestingLevel, msg, conf)
+---@diagnostic disable-next-line: unused-local
   for i, subcmd in ipairs(conf) do
     local ok = (
           type(subcmd.command) == "table") and tContains(subcmd.command, msg[nestingLevel])
@@ -115,6 +116,7 @@ end
 ---Here the game will send input text
 ---@param msg string
 ---@param editBox WowControl UI control, the user input box, can :Show, :SetText etc
+---@diagnostic disable-next-line: unused-local
 function slashModule.HandleSlashCommand(msg, editBox)
   if msg == "help" then
     local color = "|cFFFF9C00"

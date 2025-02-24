@@ -1,3 +1,4 @@
+---@diagnostic disable: unused-local
 ---| Module contains code to update the already selected spells in tabs
 if false then
   --local TOCNAME, _ = ...
@@ -43,7 +44,7 @@ if false then
   end
 
   ---Add some clickable elements to Spell Tab row with all classes
-  ---@param rowBuilder BomRowBuilder The structure used for building button rows
+  -- -@param rowBuilder BomRowBuilder The structure used for building button rows
   ---@param playerIsHorde boolean Whether we are the horde
   ---@param spell BomBuffDefinition The spell currently being displayed
   function spellButtonsTabModule:AddSpellRow_ClassSelector(rowBuilder, playerIsHorde, spell, profileSpell)
@@ -101,7 +102,7 @@ if false then
 
   ---Add a row with spell cancel buttons
   ---@param buffDef BomBuffDefinition - The spell to be canceled
-  ---@param rowBuilder BomRowBuilder The structure used for building button rows
+  -- -@param rowBuilder BomRowBuilder The structure used for building button rows
   function spellButtonsTabModule:AddSpellCancelRow(buffDef, rowBuilder)
     local infoIcon = buffDef.frames:CreateInfoIcon(buffDef)
     rowBuilder:NewRow(infoIcon, 0, 7)
@@ -130,7 +131,7 @@ if false then
     buffDef.frames.cancelBuffLabel:Show()
   end
 
-  ---@param rowBuilder BomRowBuilder The structure used for building button rows
+  -- -@param rowBuilder BomRowBuilder The structure used for building button rows
   function spellButtonsTabModule:AddGroupScanSelector(rowBuilder)
     -------------------------
     -- Add settings frame with icon, icon is not clickable
@@ -187,7 +188,7 @@ if false then
   ---Creates a row
   ---@param playerIsHorde boolean Whether we're the horde
   ---@param buff BomBuffDefinition Spell we're adding now
-  ---@param rowBuilder BomRowBuilder The structure used for building button rows
+  -- -@param rowBuilder BomRowBuilder The structure used for building button rows
   function spellButtonsTabModule:AddSpellRow(rowBuilder, playerIsHorde, buff)
     local profileBuff = buffDefModule:GetProfileBuff(buff.buffId, nil)
     if profileBuff == nil then
@@ -415,7 +416,7 @@ if false then
   ---Takes a category id from allBuffsModule constants, and adds a nice text title
   ---with localised category name
   ---@param catId BomBuffCategoryName
-  ---@param rowBuilder BomRowBuilder
+  -- -@param rowBuilder BomRowBuilder
   function spellButtonsTabModule:AddCategoryRow(catId, rowBuilder)
     local label = self.categoryLabels[catId]
 
@@ -479,7 +480,7 @@ if false then
         local spellForcedTarget = profileSpell.ForcedTarget
         local lastTarget = BOM.lastTarget
 
-        forceCastButton:SetScript("OnClick", function(self)
+        forceCastButton:SetScript("OnClick", function(self1)
           if lastTarget then
             if not spellForcedTarget[lastTarget ] then
               BOM:Print(BOM.FormatTexture(texturesModule.ICON_TARGET_ON) .. " "

@@ -1,9 +1,7 @@
-local BOM = BuffomatAddon
-
 ---@class PopupModule
 
 local popupModule = LibStub("Buffomat-Popup") --[[@as PopupModule]]
-popupModule.libDD = LibStub:GetLibrary("LibUIDropDownMenu-4.0")
+local libDD = LibStub("LibUIDropDownMenu-4.0")
 
 ---@class GPIPopupDynamic
 ---@field _Frame Frame Popup currently open in the game (to see if its our popup or not)
@@ -14,23 +12,6 @@ local popupDynamicClass = {}
 popupDynamicClass.__index = popupDynamicClass
 
 ---@class BomGPIControlPopup: Frame
-
---local popupDepth ---@type number|nil
-
--- ---Handler for popup menu clicks
--- ---@param self BomMenuItemDef
---function popupModule.PopupClick(self, arg1, arg2, checked)
---  if type(self.value) == "table" then
---    self.value[arg1] = not self.value[arg1]
---    self.checked = self.value[arg1]
---    if arg2 then
---      arg2(self.value, arg1, checked)
---    end
---
---  elseif type(self.value) == "function" then
---    self.value(arg1, arg2)
---  end
---end
 
 ---@return BomMenuItemDef
 function popupModule:Separator()
@@ -50,6 +31,17 @@ function popupModule:Clickable(text, onClick, arg1, arg2)
   return newClickable
 end
 
+---@type BomMenuItemType "separator"|"submenu"|"click"|"boolean"
+
+---@class BomMenuItemDef
+---@field text string
+---@field type BomMenuItemType
+---@field level number
+---@field nested BomMenuItemDef[]
+---@field value any
+---@field arg1 any
+---@field arg2 any
+
 ---@return BomMenuItemDef
 function popupModule:Boolean(text, dict, key)
   local newItem = --[[@as BomMenuItemDef]] {}
@@ -62,7 +54,7 @@ end
 
 ---@return BomMenuItemDef
 ---@param level number
----@param nested BomMenuItemDefList
+---@param nested BomMenuItemDef[]
 function popupModule:SubMenu(text, level, nested)
   local subMenu = --[[@as BomMenuItemDef]] {}
   subMenu.text = text
@@ -80,7 +72,7 @@ function popupDynamicClass:Wipe(WipeName)
   popupDepth = nil
 
   if UIDROPDOWNMENU_OPEN_MENU == self._Frame then
-    popupModule.libDD:ToggleDropDownMenu(nil, nil, self._Frame, self._where, self._x, self._y)
+    libDD:ToggleDropDownMenu(nil, nil, self._Frame, self._where, self._x, self._y)
     if WipeName == popupLastWipeName then
       return false
     end
@@ -92,17 +84,8 @@ end
 
 ---@alias BomMenuItemType "separator"|"submenu"|"click"|"boolean" Submenu=nested, click=call onClick handler, boolean=toggle self.value[arg1]
 
----@class BomMenuItemDef
----@field text string
----@field type BomMenuItemType
----@field level number
----@field nested BomMenuItemDefList
----@field value any
----@field arg1 any
----@field arg2 any
----@field onClick function
-
 ---@class WowPopupMenuItem
+---@field type BomMenuItemType
 ---@field text string
 ---@field notCheckable boolean
 ---@field checked boolean
@@ -123,7 +106,7 @@ local function generateSubmenu(level, menuItemDef)
   info.disabled = false
   info.hasArrow = true
   info.menuList = menuItemDef.nested
-  popupModule.libDD:UIDropDownMenu_AddButton(info, level)
+  libDD:UIDropDownMenu_AddButton(info, level)
 end
 
 ---@param level number
@@ -131,7 +114,7 @@ local function generateMenuSeparator(level)
   local info = --[[@as WowPopupMenuItem]] {}
   info.disabled = true
   info.notCheckable = true
-  popupModule.libDD:UIDropDownMenu_AddSeparator(level)
+  libDD:UIDropDownMenu_AddSeparator(level)
 end
 
 ---@param level number
@@ -149,7 +132,7 @@ local function generateClickableMenuItem(level, frame, menuItemDef)
     menuItm.value(a1, a2)
   end
   info.hasArrow = false
-  popupModule.libDD:UIDropDownMenu_AddButton(info, level)
+  libDD:UIDropDownMenu_AddButton(info, level)
 end
 
 ---@param level number
@@ -166,11 +149,12 @@ local function generateBooleanMenuItem(level, menuItemDef)
     -- TODO: notification call?
   end
   info.hasArrow = false
-  popupModule.libDD:UIDropDownMenu_AddButton(info, level)
+  libDD:UIDropDownMenu_AddButton(info, level)
 end
 
+---Called implicitly by libDD:UIDropDownMenu_Initialize
 ---@param frame BomGPIControl
----@param menuList nil|BomMenuItemDefList
+---@param menuList nil|BomMenuItemDef[]
 function popupModule.GenerateMenuItems(frame, level, menuList)
   if level == nil then
     return
@@ -194,10 +178,10 @@ end
 function popupDynamicClass:Show(where, x, y)
   where = where or "cursor"
   if UIDROPDOWNMENU_OPEN_MENU ~= self._Frame then
-    popupModule.libDD:UIDropDownMenu_Initialize(self._Frame, popupModule.GenerateMenuItems, "MENU",
+    libDD:UIDropDownMenu_Initialize(self._Frame, popupModule.GenerateMenuItems, "MENU",
       nil, self._Frame.bomMenuItems)
   end
-  popupModule.libDD:ToggleDropDownMenu(nil, nil, self._Frame, where, x, y)
+  libDD:ToggleDropDownMenu(nil, nil, self._Frame, where, x, y)
   self._where = where
   self._x = x
   self._y = y
@@ -210,12 +194,12 @@ end
 ---@return GPIPopupDynamic
 ---@param callbackFn function
 function popupModule:CreatePopup(callbackFn)
-  local popup = --[[@as BomPopupDynamic]] {}
+  local popup = {} --[[@as GPIPopupDynamic]]
   setmetatable(popup, popupDynamicClass)
 
   --popup._Frame = CreateFrame("Frame", nil, UIParent, "UIDropDownMenuTemplate") ---@type BomGPIControl
-  popup._Frame = self.libDD:Create_UIDropDownMenu("BuffomatDropDownMenu", UIParent)
+  popup._Frame = libDD:Create_UIDropDownMenu("BuffomatDropDownMenu", UIParent)
   popup._Frame.bomPopupMenuCallback = callbackFn
-  popup._Frame.bomMenuItems = --[[@as BomMenuItemDefList]] {}
+  popup._Frame.bomMenuItems = {} --[[@as BomMenuItemDef[] ]]
   return popup
 end

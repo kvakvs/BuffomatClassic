@@ -34,7 +34,7 @@ end
 function optionsPopupModule:Setup(control, minimap)
   local name = (control:GetName() or "nil") .. (minimap and "Minimap" or "Normal")
   local dyn = BOM.popupMenuDynamic ---@type GPIPopupDynamic
-  local menuItems = --[[@as BomMenuItemDef[] ]] {}
+  local menuItems = {} --[[@as BomMenuItemDef[] ]]
 
   if not dyn:Wipe(name) then
     return

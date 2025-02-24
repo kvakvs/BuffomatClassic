@@ -7,7 +7,6 @@
 
 local buffomatModule = LibStub("Buffomat-Buffomat") --[[@as BuffomatModule]]
 buffomatModule.taskRescanRequestedBy = --[[@as {[string]: number}]] {}
-local kvEnvModule = LibStub("KvLibShared-Env") --[[@as KvSharedEnvModule]]
 local _t = LibStub("Buffomat-Languages") --[[@as LanguagesModule]]
 local languagesModule = _t
 local allBuffsModule = LibStub("Buffomat-AllBuffs") --[[@as AllBuffsModule]]
@@ -20,7 +19,6 @@ local optionsPopupModule = LibStub("Buffomat-OptionsPopup") --[[@as OptionsPopup
 local partyModule = LibStub("Buffomat-Party") --[[@as PartyModule]]
 local popupModule = LibStub("Buffomat-Popup") --[[@as PopupModule]]
 local profileModule = LibStub("Buffomat-Profile") --[[@as ProfileModule]]
-local sharedStateModule = LibStub("Buffomat-SharedSettings") --[[@as SharedSettingsModule]]
 local slashModule = LibStub("Buffomat-SlashCommands") --[[@as SlashCommandsModule]]
 local taskScanModule = LibStub("Buffomat-TaskScan") --[[@as TaskScanModule]]
 local toolboxModule = LibStub("Buffomat-LegacyToolbox") --[[@as LegacyToolboxModule]]
@@ -296,8 +294,8 @@ function buffomatModule:InitGlobalStates()
       self.character.profiles[profileName] = self.character[profileName]
       self.character[profileName] = nil
     else
-      if not self.character.profiles[each_profile] then
-        self.character.profiles[each_profile] = profileModule:New()
+      if not self.character.profiles[profileName] then
+        self.character.profiles[profileName] = profileModule:New()
       end
     end
   end
@@ -423,7 +421,6 @@ function BuffomatAddon:OnInitialize()
   -- or setting up slash commands.
   profileModule:Setup()
   buffomatModule:InitGlobalStates()
-  kvEnvModule:DetectVersions()
 end
 
 ---AceAddon handler
@@ -442,9 +439,7 @@ function BuffomatAddon:OnEnable()
     end
   end
 
-  toolboxModule:AddDataBroker(
-    constModule.BOM_BEAR_ICON_FULLPATH,
-    onClick, nil, nil)
+  toolboxModule:AddDataBroker(constModule.BOM_BEAR_ICON_FULLPATH, onClick, nil, nil)
   buffomatModule:UseProfile(profileModule:SoloProfile())
 end
 

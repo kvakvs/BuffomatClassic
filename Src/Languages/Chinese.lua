@@ -84,7 +84,7 @@ function chineseModule:Translations()
     ["options.long.SlowerHardware"] = "不太频繁的增益检查 (针对硬件不好/团队)",
     ["options.long.SomeoneIsDrinking"] = "隐藏'有人在喝酒' 的信息",
     ["options.long.UseProfiles"] = "使用配置文档",
-    ["options.long.UseProfiles"] = "根据玩家个人/队伍/团队/战场使用配置文档",
+    --["options.long.UseProfiles"] = "根据玩家个人/队伍/团队/战场使用配置文档",
     ["options.long.UseRank"] = "使用有等级的技能",
 
     ["task.target.Self"] = "自己", -- use instead of name when buffing self

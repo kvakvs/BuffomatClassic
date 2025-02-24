@@ -1,5 +1,4 @@
 local TOCNAME, _ = ...
-local BOM = BuffomatAddon
 
 ---@class LegacyToolboxModule
 ---@field IconClass table<string, string> Class icon strings indexed by class name
@@ -15,12 +14,11 @@ local BOM = BuffomatAddon
 local legacyToolboxModule = LibStub("Buffomat-LegacyToolbox") --[[@as LegacyToolboxModule]]
 local _t = LibStub("Buffomat-Languages") --[[@as LanguagesModule]]
 local constModule = LibStub("Buffomat-Const") --[[@as ConstModule]]
+local eventFrame ---@type Frame
 
 ---@class BomGPIControlEditBox: Frame
 ---@field chatFrame Frame
-
 ---@alias WowControl Frame
-
 ---@class BomGPIControl: Frame
 
 ---Converts accented letters to ASCII equivalent for sorting
@@ -593,19 +591,19 @@ end
 ---@field GetName fun(self: BomGPIControlFrame): string
 
 ---@class BomGPIControlTab: BomGPIControl
----@field SetID fun(self: BomGPIControlTab, id: number): void
+---@field SetID fun(self: BomGPIControlTab, id: number)
 ---@field content BomGPIControlTab
 
 ---Adds a Tab to a frame (main window for example)
 ---@param frame BomGPIControlFrame|WowControl|string Where to add a tab; or a global name of a frame
 ---@param name string Tab text
----@param tabFrame BomWindowTab
+---@param tabFrame Frame
 ---@param combatlockdown boolean accessible in combat or not
 function legacyToolboxModule:AddTab(frame, name, tabFrame, combatlockdown)
   local frameName ---@type string
 
   if type(frame) == "string" then
-    frameName = --[[@as string]] frame
+    frameName = frame
     frame = _G[frameName]
   else
     frameName = frame:GetName()
@@ -615,8 +613,8 @@ function legacyToolboxModule:AddTab(frame, name, tabFrame, combatlockdown)
     tabFrame = _G[tabFrame]
   end
 
-  local frameControl = --[[@as BomGPIControlFrame]] frame
-  local tabFrameControl = --[[@as BomGPIControlTab]] tabFrame
+  local frameControl = frame --[[@as BomGPIControlFrame]]
+  local tabFrameControl = tabFrame --[[@as BomGPIControlTab]]
 
   frameControl.numTabs = frameControl.numTabs and frameControl.numTabs + 1 or 1
 
@@ -676,25 +674,10 @@ end
 ---@return FontString
 function legacyToolboxModule:CreateSmalltextLabel(maybeLabel, parent, positionFn)
   if maybeLabel == nil then
-    maybeLabel = --[[@as BomGPIControl]] parent:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    maybeLabel = parent:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall") --[[@as BomGPIControl]]
   end
   positionFn(maybeLabel)
   return maybeLabel
-end
-
----Add onenter/onleave scripts to show the tooltip with translation by key
----This works when the tooltip is set too early before translations are loaded.
----@param control BomGPIControl
----@param translationKey string The key to translation
-function legacyToolboxModule:TooltipWithTranslationKey(control, translationKey)
-  control:SetScript("OnEnter", function()
-    GameTooltip:SetOwner(control, "ANCHOR_RIGHT")
-    GameTooltip:AddLine(_t(translationKey))
-    GameTooltip:Show()
-  end)
-  control:SetScript("OnLeave", function()
-    GameTooltip:Hide()
-  end)
 end
 
 ---@deprecated Use the one in ngToolbox instead
@@ -710,47 +693,4 @@ function legacyToolboxModule:Tooltip(control, text)
   control:SetScript("OnLeave", function()
     GameTooltip:Hide()
   end)
-end
-
----@deprecated Use the one in ngToolbox instead
----Add onenter/onleave scripts to show the tooltip with TEXT
----@param control WowControl
----@param text string - the localized text to display
-function legacyToolboxModule:TooltipText(control, text)
-  control:SetScript("OnEnter", function()
-    GameTooltip:SetOwner(control, "ANCHOR_RIGHT")
-    GameTooltip:AddLine(text)
-    GameTooltip:Show()
-  end)
-  control:SetScript("OnLeave", function()
-    GameTooltip:Hide()
-  end)
-end
-
----@deprecated Use the one in ngToolbox instead
----Add onenter/onleave scripts to show the tooltip with spell
----@param control WowControl
----@param link string The string in format "spell:<id>" or "item:<id>"
-function legacyToolboxModule:TooltipLink(control, link)
-  control:SetScript("OnEnter", function()
-    local spellId = GameTooltip:SetOwner(control, "ANCHOR_RIGHT")
-    GameTooltip:SetHyperlink(link)
-    GameTooltip:Show()
-  end)
-  control:SetScript("OnLeave", function()
-    GameTooltip:Hide()
-  end)
-end
-
----@param text string
----@param fn function
-function legacyToolboxModule:Profile(text, fn)
-  local t_start = debugprofilestop()
-  local result = fn()
-  local t_end = debugprofilestop()
-
-  local duration = t_end - t_start
-  --BOM.Dbg(text .. ": " .. tostring(duration))
-
-  return result
 end
