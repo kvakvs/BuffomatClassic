@@ -100,7 +100,8 @@ end
 
 ---@param menuItemDef BomMenuItemDef
 local function generateSubmenu(level, menuItemDef)
-  local info = --[[@as WowPopupMenuItem]] {}
+  ---@type WowPopupMenuItem
+  local info = {}
   info.text = menuItemDef.text
   info.notCheckable = true
   info.disabled = false
@@ -111,9 +112,10 @@ end
 
 ---@param level number
 local function generateMenuSeparator(level)
-  local info = --[[@as WowPopupMenuItem]] {}
-  info.disabled = true
-  info.notCheckable = true
+  -- -@type WowPopupMenuItem
+  -- local info = {}
+  -- info.disabled = true
+  -- info.notCheckable = true
   libDD:UIDropDownMenu_AddSeparator(level)
 end
 
@@ -121,7 +123,8 @@ end
 ---@param frame BomGPIControl
 ---@param menuItemDef BomMenuItemDef
 local function generateClickableMenuItem(level, frame, menuItemDef)
-  local info = --[[@as WowPopupMenuItem]] {}
+  ---@type WowPopupMenuItem
+  local info = {}
   info.text = menuItemDef.text
   info.notCheckable = true
   --info.keepShownOnClick = (val.disabled == "keep")
@@ -138,7 +141,8 @@ end
 ---@param level number
 ---@param menuItemDef BomMenuItemDef
 local function generateBooleanMenuItem(level, menuItemDef)
-  local info = --[[@as WowPopupMenuItem]] {}
+  ---@type WowPopupMenuItem
+  local info = {}
   info.text = menuItemDef.text
   info.value = menuItemDef.value
   info.arg1 = menuItemDef.arg1
@@ -160,6 +164,7 @@ function popupModule.GenerateMenuItems(frame, level, menuList)
     return
   end
 
+---@diagnostic disable-next-line: unused-local
   for _index, menuItemDef in ipairs(menuList or frame.bomMenuItems) do
     --if val.menuDepth == menuList then
     if menuItemDef.type == "submenu" then

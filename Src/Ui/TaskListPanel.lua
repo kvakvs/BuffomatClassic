@@ -1,3 +1,4 @@
+---@diagnostic disable: invisible
 local BOM = BuffomatAddon
 
 ---@class TaskListPanelModule

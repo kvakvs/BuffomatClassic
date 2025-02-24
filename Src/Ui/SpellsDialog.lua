@@ -1,3 +1,4 @@
+---@diagnostic disable: invisible
 -- Implements AceGUI dialog for choosing spells and spell settings.
 -- Replaces the classic Buffomat spells tab.
 local BOM = BuffomatAddon
