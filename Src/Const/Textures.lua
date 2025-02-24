@@ -1,5 +1,7 @@
 -- defined in WowInventory.lua ---@alias WowIconId string|number
 
+---@alias WowTexCoord number[]
+
 ---@class BomTexturesModule
 ---@field CLASS_ICONS_ATLAS string
 ---@field CLASS_ICONS_ATLAS_TEX_COORD {[BomClassName]: WowTexCoord}
@@ -31,7 +33,7 @@
 ---@field ICON_COORD_09 WowTexCoord
 ---@field ICON_COORD_08 WowTexCoord
 
-local texturesModule = --[[@as BomTexturesModule]] LibStub("Buffomat-Textures")
+local texturesModule = LibStub("Buffomat-Textures") --[[@as BomTexturesModule]]
 
 texturesModule.ICON_COORD_09 = { 0.1, 0.9, 0.1, 0.9 }
 texturesModule.ICON_COORD_08 = { 0.2, 0.8, 0.2, 0.8 }
@@ -43,7 +45,7 @@ texturesModule.ICON_SELF_CAST_ON = "Interface\\FriendsFrame\\UI-Toast-FriendOnli
 texturesModule.ICON_SELF_CAST_OFF = "Interface\\FriendsFrame\\UI-Toast-ChatInviteIcon"
 
 texturesModule.CLASS_ICONS_ATLAS = "Interface\\WorldStateFrame\\ICONS-CLASSES"
-texturesModule.CLASS_ICONS_ATLAS_TEX_COORD = --[[@as {[BomClassName]: WowTexCoord} ]] CLASS_ICON_TCOORDS
+texturesModule.CLASS_ICONS_ATLAS_TEX_COORD = CLASS_ICON_TCOORDS --[[@as {[BomClassName]: WowTexCoord} ]]
 texturesModule.ICON_EMPTY = "Interface\\Buttons\\UI-MultiCheck-Disabled"
 
 ---@deprecated Unused

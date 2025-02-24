@@ -2,9 +2,9 @@ local BOM = BuffomatAddon
 
 ---@class BomTaskModule
 
-local taskModule = --[[@as BomTaskModule]] LibStub("Buffomat-Task")
-local buffomatModule = --[[@as BuffomatModule]] LibStub("Buffomat-Buffomat")
-local constModule = --[[@as ConstModule]] LibStub("Buffomat-Const")
+local taskModule = LibStub("Buffomat-Task") --[[@as BomTaskModule]]
+local buffomatModule = LibStub("Buffomat-Buffomat") --[[@as BuffomatModule]]
+local constModule = LibStub("Buffomat-Const") --[[@as ConstModule]]
 
 ---BomTaskActionUse|BomTaskActionCast|BomTaskActionMacro
 ---@class BomTaskAction
@@ -75,7 +75,7 @@ function taskClass:CanCast()
     return taskModule.CAN_CAST_IS_INFO
   end
 
-  return ( --[[---@not nil]] self.action):CanCast()
+  return (self.action):CanCast()
 end
 
 ---@param target BomUnitBuffTarget|BomGroupBuffTarget
@@ -140,7 +140,7 @@ end
 function taskClass:Format()
   local targetText
   if self.target then
-    targetText = ( --[[---@not nil]] self.target):GetText() .. " "
+    targetText = (self.target):GetText() .. " "
   else
     targetText = ""
   end
@@ -157,7 +157,7 @@ end
 function taskClass:FormatDisabledRed(reason)
   local targetText
   if self.target then
-    targetText = ( --[[---@not nil]] self.target):GetText() .. " "
+    targetText = (self.target):GetText() .. " "
   else
     targetText = ""
   end
@@ -170,7 +170,7 @@ end
 ---@return string
 function taskClass:GetTarget()
   if self.target then
-    return ( --[[---@not nil]] self.target):GetText() or ""
+    return (self.target):GetText() or ""
   end
   return ""
 end

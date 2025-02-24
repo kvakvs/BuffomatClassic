@@ -2,9 +2,9 @@ local BOM = BuffomatAddon
 
 ---@class BomActionMacroModule
 
-local actionMacroModule = --[[@as BomActionMacroModule]] LibStub("Buffomat-ActionMacro")
-local taskModule = --[[@as BomTaskModule]] LibStub("Buffomat-Task")
-local constModule = --[[@as ConstModule]] LibStub("Buffomat-Const")
+local actionMacroModule = LibStub("Buffomat-ActionMacro") --[[@as BomActionMacroModule]]
+local taskModule = LibStub("Buffomat-Task") --[[@as BomTaskModule]]
+local constModule = LibStub("Buffomat-Const") --[[@as ConstModule]]
 
 ---@class BomTaskActionMacro: BomTaskAction Uses an equipment slot or a bag item
 ---@field macro string
@@ -49,7 +49,7 @@ function actionMacroModule:WipeMacro(command)
   wipe(macro.lines)
 
   if command then
-    table.insert(macro.lines, --[[---@not nil]] command)
+    table.insert(macro.lines,command)
   end
 
   macro.icon = constModule.MACRO_ICON_DISABLED

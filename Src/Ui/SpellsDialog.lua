@@ -10,15 +10,15 @@ local BOM = BuffomatAddon
 ---@field scrollFrame AceGUIWidget AceGUI scroll frame containing the spells list
 ---@field context SpellsDialogContext
 
-local spellsDialogModule = --[[@as BomSpellsDialogModule]] LibStub:NewLibrary("Buffomat-SpellsDialog", 1)
+local spellsDialogModule = --[[@as BomSpellsDialogModule]] LibStub("Buffomat-SpellsDialog")
 
-local _t = --[[@as LanguagesModule]] LibStub("Buffomat-Languages")
-local allBuffsModule = --[[@as AllBuffsModule]] LibStub("Buffomat-AllBuffs")
-local buffomatModule = --[[@as BuffomatModule]] LibStub("Buffomat-Buffomat")
-local buffDefModule = --[[@as BuffDefinitionModule]] LibStub("Buffomat-BuffDefinition")
-local ngToolboxModule = --[[@as NgToolboxModule]] LibStub("Buffomat-NgToolbox")
-local texturesModule = --[[@as BomTexturesModule]] LibStub("Buffomat-Textures")
-local ngStringsModule = --[[@as NgStringsModule]] LibStub("Buffomat-NgStrings")
+local _t = LibStub("Buffomat-Languages") --[[@as LanguagesModule]]
+local allBuffsModule = LibStub("Buffomat-AllBuffs") --[[@as AllBuffsModule]]
+local buffomatModule = LibStub("Buffomat-Buffomat") --[[@as BuffomatModule]]
+local buffDefModule = LibStub("Buffomat-BuffDefinition") --[[@as BuffDefinitionModule]]
+local ngToolboxModule = LibStub("Buffomat-NgToolbox") --[[@as NgToolboxModule]]
+local texturesModule = LibStub("Buffomat-Textures") --[[@as BomTexturesModule]]
+local ngStringsModule = LibStub("Buffomat-NgStrings") --[[@as NgStringsModule]]
 
 local libGUI = LibStub("AceGUI-3.0")
 

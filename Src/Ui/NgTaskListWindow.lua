@@ -2,12 +2,12 @@
 -- Creates a window with a title, a close button, a macro button, and a settings button
 -- This is used for the Task List Panel
 local AceGUI = LibStub("AceGUI-3.0")
-local optionsPopupModule = --[[@as OptionsPopupModule]] LibStub("Buffomat-OptionsPopup")
-local constModule = --[[@as ConstModule]] LibStub("Buffomat-Const")
-local toolboxModule = --[[@as LegacyToolboxModule]] LibStub("Buffomat-LegacyToolbox")
-local _t = --[[@as LanguagesModule]] LibStub("Buffomat-Languages")
-local spellsDialogModule = --[[@as BomSpellsDialogModule]] LibStub("Buffomat-SpellsDialog")
-local taskListPanelModule = --[[@as TaskListPanelModule]] LibStub("Buffomat-TaskListPanel")
+local optionsPopupModule = LibStub("Buffomat-OptionsPopup") --[[@as OptionsPopupModule]]
+local constModule = LibStub("Buffomat-Const") --[[@as ConstModule]]
+local toolboxModule = LibStub("Buffomat-LegacyToolbox") --[[@as LegacyToolboxModule]]
+local _t = LibStub("Buffomat-Languages") --[[@as LanguagesModule]]
+local spellsDialogModule = LibStub("Buffomat-SpellsDialog") --[[@as BomSpellsDialogModule]]
+local taskListPanelModule = LibStub("Buffomat-TaskListPanel") --[[@as TaskListPanelModule]]
 
 -- Lua APIs
 local pairs, assert, type = pairs, assert, type

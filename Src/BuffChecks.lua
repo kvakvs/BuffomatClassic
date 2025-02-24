@@ -2,14 +2,14 @@ local BOM = BuffomatAddon
 
 ---@class BomBuffChecksModule
 
-local buffChecksModule = --[[@as BomBuffChecksModule]] LibStub("Buffomat-BuffChecks")
-local allBuffsModule = --[[@as AllBuffsModule]] LibStub("Buffomat-AllBuffs")
-local buffDefModule = --[[@as BuffDefinitionModule]] LibStub("Buffomat-BuffDefinition")
-local buffomatModule = --[[@as BuffomatModule]] LibStub("Buffomat-Buffomat")
-local partyModule = --[[@as PartyModule]] LibStub("Buffomat-Party")
-local spellIdsModule = --[[@as SpellIdsModule]] LibStub("Buffomat-SpellIds")
-local unitCacheModule = --[[@as BomUnitCacheModule]] LibStub("Buffomat-UnitCache")
-local envModule = --[[@as KvSharedEnvModule]] LibStub("KvLibShared-Env")
+local buffChecksModule = LibStub("Buffomat-BuffChecks") --[[@as BomBuffChecksModule]]
+local allBuffsModule = LibStub("Buffomat-AllBuffs") --[[@as AllBuffsModule]]
+local buffDefModule = LibStub("Buffomat-BuffDefinition") --[[@as BuffDefinitionModule]]
+local buffomatModule = LibStub("Buffomat-Buffomat") --[[@as BuffomatModule]]
+local partyModule = LibStub("Buffomat-Party") --[[@as PartyModule]]
+local spellIdsModule = LibStub("Buffomat-SpellIds") --[[@as SpellIdsModule]]
+local unitCacheModule = LibStub("Buffomat-UnitCache") --[[@as BomUnitCacheModule]]
+local envModule = LibStub("KvLibShared-Env") --[[@as KvSharedEnvModule]]
 
 ---Checks whether a tracking spell is now active
 ---@param spell BomBuffDefinition The tracking spell which might have tracking enabled
@@ -114,7 +114,7 @@ end
 function buffChecksModule:IsUsableItem(itemId)
   local itemInfo = BOM.GetItemInfo(itemId)
   if itemInfo then
-    return ( --[[---@not nil]] itemInfo).itemMinLevel <= UnitLevel("player")
+    return (itemInfo).itemMinLevel <= UnitLevel("player")
   end
   return true
 end
@@ -143,8 +143,8 @@ function buffChecksModule:PlayerNeedsWeaponBuff(buff, playerUnit)
   local weaponBuff = buffDefModule:GetProfileBuff(buff.buffId, nil)
 
   if weaponBuff then
-    local needMainHand = ( --[[---@not nil]] weaponBuff).MainHandEnable and playerUnit.mainhandEnchantment == nil
-    local needOffhand = ( --[[---@not nil]] weaponBuff).OffHandEnable and playerUnit.offhandEnchantment == nil
+    local needMainHand = (weaponBuff).MainHandEnable and playerUnit.mainhandEnchantment == nil
+    local needOffhand = (weaponBuff).OffHandEnable and playerUnit.offhandEnchantment == nil
 
     if needMainHand or needOffhand then
       table.insert(buff.unitsNeedBuff, playerUnit)
@@ -164,8 +164,8 @@ function buffChecksModule:HunterPetNeedsBuff(buff, playerUnit)
     return -- no pet - no problem
   end
 
-  ( --[[---@not nil]] pet):ForceUpdateBuffs(playerUnit)
-  if ( --[[---@not nil]] pet):HaveBuff(buff.highestRankSingleId) then
+  (pet):ForceUpdateBuffs(playerUnit)
+  if (pet):HaveBuff(buff.highestRankSingleId) then
     return -- have pet, have buff
   end
 
@@ -176,7 +176,7 @@ end
 ---@param playerUnit BomUnit
 function buffChecksModule:PlayerNeedsConsumable(buff, playerUnit)
   if buff.providesAuras then
-    for i, aura in pairs( --[[---@not nil]] buff.providesAuras) do
+    for i, aura in pairs(buff.providesAuras) do
       if playerUnit.allBuffs[aura] then
         return -- have one of known provided auras, means we don't need that consumable
       end
@@ -246,7 +246,6 @@ end
 
 ---@param buff BomBuffDefinition
 ---@param playerUnit BomUnit
----@param party BomParty
 function buffChecksModule:PlayerNeedsTracking(buff, playerUnit)
   -- Special handling: Having find herbs and find ore will be ignored if
   -- in cat form and track humanoids is enabled
@@ -264,7 +263,6 @@ end
 
 ---@param buff BomBuffDefinition
 ---@param playerUnit BomUnit
----@param party BomParty
 function buffChecksModule:PaladinNeedsAura(buff, playerUnit)
   if BOM.activePaladinAura ~= buff.buffId
       and (buffomatModule.currentProfile.LastAura == nil
@@ -276,7 +274,6 @@ end
 
 ---@param spell BomBuffDefinition
 ---@param playerUnit BomUnit
----@param party BomParty
 function buffChecksModule:PaladinNeedsSeal(spell, playerUnit)
   if BOM.activePaladinSeal ~= spell.buffId
       and (buffomatModule.currentProfile.LastSeal == nil
@@ -293,7 +290,7 @@ function buffChecksModule:PartyNeedsPaladinBlessing(buffDef, party, buffCtx)
   -- Blessing user settings (regardless of the current buff)
   local currentBlessing = buffDefModule:GetProfileBlessingState(nil)
   -- Current user settings for the selected buff
-  local profileBuff = --[[---@not nil]] buffDefModule:GetProfileBuff(buffDef.buffId, nil)
+  local profileBuff =buffDefModule:GetProfileBuff(buffDef.buffId, nil)
 
   ---@param partyMember BomUnit
   for i, partyMember in pairs(party.byUnitId) do
@@ -363,7 +360,7 @@ function buffChecksModule:PartyNeedsBuff(buffDef, party, buffCtx)
   for i, partyMember in pairs(party.byUnitId) do
     local ok = false
     --local profileBuff = buffomatModule.currentProfile.Spell[buffDef.buffId]
-    local profileBuff = --[[---@not nil]] buffDefModule:GetProfileBuff(buffDef.buffId, nil)
+    local profileBuff =buffDefModule:GetProfileBuff(buffDef.buffId, nil)
 
     if profileBuff.Class[partyMember.class]
         and (not IsInRaid() or buffomatModule.character.WatchGroup[partyMember.group])
@@ -390,7 +387,7 @@ function buffChecksModule:PartyNeedsBuff(buffDef, party, buffCtx)
         and partyMember.isConnected
         and (not buffomatModule.shared.SameZone
           or (partyMember.isSameZone
-            or partyMember.class == "pet" and ( --[[---@not nil]] partyMember.owner).isSameZone))
+            or partyMember.class == "pet" and (partyMember.owner).isSameZone))
     then
       local found = false
       local partyMemberBuff = partyMember.knownBuffs[buffDef.buffId]

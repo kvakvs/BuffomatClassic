@@ -7,7 +7,7 @@
 ---@field isCata boolean
 ---@field haveCata boolean
 
-local envModule = --[[@as KvSharedEnvModule]] LibStub:NewLibrary("KvLibShared-Env", 1)
+local envModule = --[[@as KvSharedEnvModule]] LibStub("KvLibShared-Env")
 
 function envModule:DetectVersions()
   local _, _, _, tocversion = GetBuildInfo()

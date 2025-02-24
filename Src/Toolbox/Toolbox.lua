@@ -12,12 +12,16 @@ local BOM = BuffomatAddon
 ---@field NameToClass table<string, string> Reverse class name lookup
 ---@field _EditBox BomGPIControlEditBox
 
-local legacyToolboxModule = --[[@as BomToolboxModule]] LibStub("Buffomat-LegacyToolbox")
-local _t = --[[@as LanguagesModule]] LibStub("Buffomat-Languages")
-local constModule = --[[@as ConstModule]] LibStub("Buffomat-Const")
+local legacyToolboxModule = LibStub("Buffomat-LegacyToolbox") --[[@as LegacyToolboxModule]]
+local _t = LibStub("Buffomat-Languages") --[[@as LanguagesModule]]
+local constModule = LibStub("Buffomat-Const") --[[@as ConstModule]]
 
 ---@class BomGPIControlEditBox: Frame
 ---@field chatFrame Frame
+
+---@alias WowControl Frame
+
+---@class BomGPIControl: Frame
 
 ---Converts accented letters to ASCII equivalent for sorting
 local bom_special_letter_to_ascii = {
@@ -669,13 +673,13 @@ end
 ---@param maybeLabel BomGPIControl|nil the existing label or nil
 ---@param parent WowControl parent where the label is created
 ---@param positionFn function applies function after creating the label
----@return BomGPIControl
+---@return FontString
 function legacyToolboxModule:CreateSmalltextLabel(maybeLabel, parent, positionFn)
   if maybeLabel == nil then
     maybeLabel = --[[@as BomGPIControl]] parent:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
   end
   positionFn(maybeLabel)
-  return --[[---@not nil]] maybeLabel
+  return maybeLabel
 end
 
 ---Add onenter/onleave scripts to show the tooltip with translation by key

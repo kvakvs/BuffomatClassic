@@ -3,13 +3,13 @@
 ---@class BomUnitCacheModule
 ---@field unitCache table<string, BomUnit>
 
-local unitCacheModule = --[[@as BomUnitCacheModule]] LibStub("Buffomat-UnitCache")
+local unitCacheModule = LibStub("Buffomat-UnitCache") --[[@as BomUnitCacheModule]]
 unitCacheModule.unitCache = {}
-local constModule = --[[@as ConstModule]] LibStub("Buffomat-Const")
-local partyModule = --[[@as PartyModule]] LibStub("Buffomat-Party")
-local texturesModule = --[[@as BomTexturesModule]] LibStub("Buffomat-Textures")
-local unitModule = --[[@as BomUnitModule]] LibStub("Buffomat-Unit")
-local ngStringsModule = --[[@as NgStringsModule]] LibStub("Buffomat-NgStrings")
+local constModule = LibStub("Buffomat-Const") --[[@as ConstModule]]
+local partyModule = LibStub("Buffomat-Party") --[[@as PartyModule]]
+local texturesModule = LibStub("Buffomat-Textures") --[[@as BomTexturesModule]]
+local unitModule = LibStub("Buffomat-Unit") --[[@as BomUnitModule]]
+local ngStringsModule = LibStub("Buffomat-NgStrings") --[[@as NgStringsModule]]
 
 ---@alias BomRaidRole "MAINTANK"|"MAINASSIST"|"NONE"
 ---@alias BomNameRoleMap {[string]: BomRaidRole}
@@ -29,13 +29,13 @@ function unitCacheModule:GetUnit(unitid, nameGroupMap, nameRoleMap, specialName)
 
   local group ---@type number
   if type(nameGroupMap) == "number" then
-    group = --[[@as number]] nameGroupMap
+    group = nameGroupMap
   else
-    group = nameGroupMap and ( --[[@as BomNameGroupMap]] nameGroupMap)[name] or 1
+    group = nameGroupMap and nameGroupMap[name] or 1
   end
 
-  nameRoleMap = nameRoleMap or --[[@as BomNameRoleMap]] {}
-  local isTank = nameRoleMap and (( --[[---@not nil]] nameRoleMap)[name] == "MAINTANK") or false
+  nameRoleMap = nameRoleMap or {} --[[@as BomNameRoleMap]]
+  local isTank = nameRoleMap and ((nameRoleMap)[name] == "MAINTANK") or false
 
   local guid = UnitGUID(unitid)
   local _, class, link ---@type any, BomClassName, string|nil

@@ -8,14 +8,14 @@ local BOM = BuffomatAddon
 ---@class OptionsPopupModule
 -- -@field behaviourSettings BomBehaviourSetting[]
 
-local optionsPopupModule = --[[@as OptionsPopupModule]] LibStub("Buffomat-OptionsPopup")
-local _t = --[[@as LanguagesModule]] LibStub("Buffomat-Languages")
-local buffomatModule = --[[@as BuffomatModule]] LibStub("Buffomat-Buffomat")
-local constModule = --[[@as ConstModule]] LibStub("Buffomat-Const")
-local buffDefModule = --[[@as BuffDefinitionModule]] LibStub("Buffomat-BuffDefinition")
-local profileModule = --[[@as ProfileModule]] LibStub("Buffomat-Profile")
-local popupModule = --[[@as PopupModule]] LibStub("Buffomat-Popup")
-local allBuffsModule = --[[@as AllBuffsModule]] LibStub("Buffomat-AllBuffs")
+local optionsPopupModule = LibStub("Buffomat-OptionsPopup") --[[@as OptionsPopupModule]]
+local _t = LibStub("Buffomat-Languages") --[[@as LanguagesModule]]
+local buffomatModule = LibStub("Buffomat-Buffomat") --[[@as BuffomatModule]]
+local constModule = LibStub("Buffomat-Const") --[[@as ConstModule]]
+local buffDefModule = LibStub("Buffomat-BuffDefinition") --[[@as BuffDefinitionModule]]
+local profileModule = LibStub("Buffomat-Profile") --[[@as ProfileModule]]
+local popupModule = LibStub("Buffomat-Popup") --[[@as PopupModule]]
+local allBuffsModule = LibStub("Buffomat-AllBuffs") --[[@as AllBuffsModule]]
 
 
 ---Makes a tuple to pass to the menubuilder to display a settings checkbox in popup menu

@@ -2,7 +2,7 @@ local TOCNAME, _ = ...
 
 ---@class ConstModule
 
-local constModule = --[[@as ConstModule]] LibStub("Buffomat-Const")
+local constModule = LibStub("Buffomat-Const") --[[@as ConstModule]]
 
 constModule.TASKCOLOR_GRAY = "777777"
 constModule.TASKCOLOR_RED = "cc4444"
@@ -94,12 +94,12 @@ constModule.CLASSES = CLASS_SORT_ORDER ---@type BomClassName[]
 constModule.CLASS_NAME = LOCALIZED_CLASS_NAMES_MALE ---@type table<BomClassName, string>
 constModule.CLASS_COLOR = RAID_CLASS_COLORS ---@type table<BomClassName, BomColor>
 
-constModule.NAME_TO_CLASS = --[[@as {[string]: string}]] {}
+constModule.NAME_TO_CLASS = {} --[[@as {[string]: string}]]
 
 for eng, name in pairs(LOCALIZED_CLASS_NAMES_MALE) do
-  constModule.NAME_TO_CLASS[ --[[@as string]] name ] = --[[@as string]] eng
-  constModule.NAME_TO_CLASS[ --[[@as string]] eng ] = --[[@as string]] eng
+  constModule.NAME_TO_CLASS[name] = eng
+  constModule.NAME_TO_CLASS[eng] = eng
 end
 for eng, name in pairs(LOCALIZED_CLASS_NAMES_FEMALE) do
-  constModule.NAME_TO_CLASS[ --[[@as string]] name ] = --[[@as string]] eng
+  constModule.NAME_TO_CLASS[name] = eng
 end

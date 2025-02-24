@@ -3,21 +3,21 @@ local BOM = BuffomatAddon
 ---@class ProfileModule
 ---@field ALL_PROFILES BomProfileName[]
 
-local profileModule = --[[@as ProfileModule]] LibStub("Buffomat-Profile")
-local buffomatModule = --[[@as BuffomatModule]] LibStub("Buffomat-Buffomat")
-local envModule = --[[@as KvSharedEnvModule]] LibStub("KvLibShared-Env")
+local profileModule = LibStub("Buffomat-Profile") --[[@as ProfileModule]]
+local buffomatModule = LibStub("Buffomat-Buffomat") --[[@as BuffomatModule]]
+local envModule = LibStub("KvLibShared-Env") --[[@as KvSharedEnvModule]]
 
 ---A single blessing per unit name is possible
----@alias BomBlessingState {[string]: BomBuffId}
+---@alias BlessingState {[string]: BomBuffId}
 
----@return BomBlessingState
+---@return BlessingState
 function profileModule:NewBlessingState()
-  return --[[@as BomBlessingState]] {}
+  return {} --[[@as BlessingState]]
 end
 
----@class BomProfile Snapshot of current options state as selected by the player
 ---Named options: Are addressed by their string name in translations, control names, etc
----@field CurrentBlessing BomBlessingState
+---@class ProfileSettings Snapshot of current options state as selected by the player
+---@field CurrentBlessing BlessingState
 ---@field ReputationTrinket boolean Warn if AD trinket is equipped while in an instance
 ---@field AutoDismount boolean Dismount if necessary for buff cast
 ---@field AutoDisTravel boolean Remove travel form if necessary for buff cast
@@ -46,15 +46,15 @@ end
 ---@field UseRank boolean Use ranked spells
 ---@field SlowerHardware boolean Less frequent updates
 ---@field CancelBuff BomAllBuffsTable --table<BomBuffId, BomBuffDefinition>
----@field Spell BomBuffDefinitionDict
+---@field Spell BomBuffDefinitionDict Player choices per buff id
 ---@field LastSeal number|nil
 ---@field LastAura number|nil
 
 ---@alias BomBuffDefinitionDict {[BomBuffId]: BomBuffDefinition}
 
----@return BomProfile
+---@return ProfileSettings
 function profileModule:New()
-  local profile = --[[@as BomProfile]] {}
+  local profile = {} --[[@as ProfileSettings]]
   profile.AutoOpen = true
   profile.AutoStand = true
   profile.BuffTarget = true
@@ -147,7 +147,7 @@ function profileModule:ChooseProfile()
 
   -- TODO: Refactor isDisabled into a function, also return reason why is disabled
   if BOM.forceProfile then
-    selectedProfile = --[[---@not nil]] BOM.forceProfile
+    selectedProfile =BOM.forceProfile
   elseif not buffomatModule.character.UseProfiles then
     selectedProfile = self:SoloProfile()
   elseif instanceType == "pvp" or instanceType == "arena" then

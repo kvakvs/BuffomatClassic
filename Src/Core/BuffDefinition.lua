@@ -4,18 +4,19 @@ local BOM = BuffomatAddon
 ---@alias BomElixirType "battle"|"guardian"|"both"
 ---@alias WowSpellId number
 ---@alias WowItemId number
+---@alias WowZoneId number
 ---@alias WowShapeshiftFormId number
 ---@alias WowIconId number|string
 
 ---@class BuffDefinitionModule
 
-local buffDefModule = --[[@as BuffDefinitionModule]] LibStub("Buffomat-BuffDefinition")
-local _t = --[[@as LanguagesModule]] LibStub("Buffomat-Languages")
-local envModule = --[[@as KvSharedEnvModule]] LibStub("KvLibShared-Env")
-local buffomatModule = --[[@as BuffomatModule]] LibStub("Buffomat-Buffomat")
-local spellCacheModule = --[[@as BomSpellCacheModule]] LibStub("Buffomat-SpellCache")
-local itemCacheModule = --[[@as BomItemCacheModule]] LibStub("Buffomat-ItemCache")
-local allBuffsModule = --[[@as AllBuffsModule]] LibStub("Buffomat-AllBuffs")
+local buffDefModule = LibStub("Buffomat-BuffDefinition") --[[@as BuffDefinitionModule]]
+local _t = LibStub("Buffomat-Languages") --[[@as LanguagesModule]]
+local envModule = LibStub("KvLibShared-Env") --[[@as KvSharedEnvModule]]
+local buffomatModule = LibStub("Buffomat-Buffomat") --[[@as BuffomatModule]]
+local spellCacheModule = LibStub("Buffomat-SpellCache") --[[@as BomSpellCacheModule]]
+local itemCacheModule = LibStub("Buffomat-ItemCache") --[[@as BomItemCacheModule]]
+local allBuffsModule = LibStub("Buffomat-AllBuffs") --[[@as AllBuffsModule]]
 
 ---type="aura" Auras are no target buff check. True if the buff affects others in radius, and not a target buff
 ---type="seal" Seals are 1hand enchants which are unique for equipped weapon. Paladins use seals. Shamans also use seals but in TBC shamans have 2 independent seals.
@@ -132,19 +133,19 @@ buffDefClass.__index = buffDefClass
 ---@param singleId WowSpellId Spell id also serving as buffId key
 ---@return BomBuffDefinition
 function buffDefModule:New(singleId)
-  local buff = --[[@as BomBuffDefinition]] {}
+  local buff = {} --[[@as BomBuffDefinition]]
   buff.category = ""                                  -- special value no category
   --buff.frames = buffRowModule:New(tostring(singleId)) -- spell buttons from the UI go here
   buff.buffId = singleId
   buff.highestRankSingleId = singleId
   buff.singleFamily = { singleId }
-  buff.limitations = --[[@as BomSpellLimitations]] {}
-  buff.ForcedTarget = --[[@as BomForcedTargets]] {}
-  buff.ExcludedTarget = --[[@as BomForcedTargets]] {}
+  buff.limitations = {} --[[@as BomSpellLimitations]]
+  buff.ForcedTarget = {} --[[@as BomForcedTargets]]
+  buff.ExcludedTarget = {} --[[@as BomForcedTargets]]
   buff.unitsNeedBuff = {}
   buff.unitsHaveBetterBuff = {}
   buff.groupsNeedBuff = {}
-  buff.groupsHaveDead = --[[@as BomDeadMap]] {}
+  buff.groupsHaveDead = {} --[[@as BomDeadMap]]
   buff.skipList = {}
   buff.targetClasses = {}
 
@@ -180,7 +181,7 @@ function buffDefModule:genericConsumable(allBuffs, singleId, providedByItem)
 end
 
 ---@param allBuffs BomBuffDefinition[]
----@param buffId NewBuffId
+---@param buffId BomBuffId
 ---@param providesAuras WowSpellId[] Auras from the food
 ---@param providedByItems WowItemId[] Item or multiple items giving this buff
 ---@return BomBuffDefinition
@@ -233,7 +234,7 @@ function buffDefModule:CheckStaticLimitations(_spell, limitations)
 
   if type(limitations.playerClass) == "table" then
     -- Fail if val is a table and player class is not in it
-    if not tContains( --[[@as BomClassName[] ]] limitations.playerClass, playerClass) then
+    if not tContains(limitations.playerClass, playerClass) then
       return false
     end
   end
@@ -251,22 +252,22 @@ end
 ---@param limitations BomSpellLimitations|nil
 function buffDefModule:CheckDynamicLimitations(limitations)
   -- empty limitations return true
-  if not limitations or next( --[[---@not nil]] limitations) == nil then
+  if not limitations or next(limitations) == nil then
     return true
   end
 
-  if type(( --[[---@not nil]] limitations).maxLevel) == "number"
-      and UnitLevel("player") > ( --[[---@not nil]] limitations).maxLevel then
+  if type((limitations).maxLevel) == "number"
+      and UnitLevel("player") > (limitations).maxLevel then
     return false -- too old
   end
 
-  if type(( --[[---@not nil]] limitations).minLevel) == "number"
-      and UnitLevel("player") < ( --[[---@not nil]] limitations).minLevel then
+  if type((limitations).minLevel) == "number"
+      and UnitLevel("player") < (limitations).minLevel then
     return false -- too young
   end
 
-  if type(( --[[---@not nil]] limitations).hideIfSpellKnown) == "number"
-      and IsSpellKnown(( --[[---@not nil]] limitations).hideIfSpellKnown) then
+  if type((limitations).hideIfSpellKnown) == "number"
+      and IsSpellKnown((limitations).hideIfSpellKnown) then
     return false -- know a blocker spell, a better version like ice armor/frost armor pair
   end
 
@@ -282,7 +283,7 @@ end
 function buffDefModule:createAndRegisterBuff(allBuffs, buffSpellId, limitations)
   local spell = self:New(buffSpellId)
 
-  if self:CheckStaticLimitations(spell, limitations or --[[@as BomSpellLimitations]] {}) then
+  if self:CheckStaticLimitations(spell, limitations or {}) then
     return self:registerBuff(allBuffs, spell)
   end
 
@@ -339,14 +340,14 @@ end
 ---@return BomBuffDefinition
 function buffDefClass:CreatesOrProvidedByItem(itemId)
   if type(itemId) == "number" then
-    self.items = { --[[@as WowItemId]] itemId }
+    self.items = { itemId --[[@as WowItemId]] }
   else
-    self.items = --[[@as WowItemId[] ]] itemId
+    self.items = itemId --[[@as WowItemId[] ]]
   end
 
   -- Clone item ids, and reverse
   self.itemsReverse = {}
-  for _, val in pairs( --[[---@not nil]] self.items) do
+  for _, val in pairs(self.items) do
     table.insert(self.itemsReverse, val)
   end
   reverseTable(self.itemsReverse)
@@ -362,7 +363,7 @@ function buffDefClass:EnsureDynamicMinLevelSet()
 
   -- Set minLevel if item has minLevel, for multiple items in the array - pick lowest requirement
   -- If any of the requirements are nil, means the item cannot have the level requirement at all, reset and break loop
-  for _, eachItemId in ipairs( --[[---@not nil]] self.items) do
+  for _, eachItemId in ipairs(self.items) do
     if eachItemId == nil then
       self:MinLevel(0)
       break
@@ -376,7 +377,7 @@ function buffDefClass:EnsureDynamicMinLevelSet()
       end
 
       if itemInfo and itemInfo.itemMinLevel > 1 then
-        --local lim = (--[[---@not nil]] self.limitations)
+        --local lim = (self.limitations)
         -- Pick lowest itemlevel of the item ids to show the buff
         if itemInfo.itemMinLevel < minLvl then
           minLvl = itemInfo.itemMinLevel
@@ -553,7 +554,7 @@ end
 ---@param level number
 ---@return BomBuffDefinition
 function buffDefClass:MaxLevel(level)
-  ( --[[---@not nil]] self.limitations).maxLevel = level
+  (self.limitations).maxLevel = level
   return self
 end
 
@@ -563,20 +564,20 @@ function buffDefClass:MinLevel(level)
   if not self.limitations then
     self.limitations = allBuffsModule:NewSpellLimitations()
   end
-  ( --[[---@not nil]] self.limitations).minLevel = level
+  (self.limitations).minLevel = level
   return self
 end
 
 ---@return BomBuffDefinition
 ---@param spellId number Do not show spell if a better spell of different spell group is available
 function buffDefClass:HideIfSpellKnown(spellId)
-  ( --[[---@not nil]] self.limitations).hideIfSpellKnown = spellId
+  (self.limitations).hideIfSpellKnown = spellId
   return self
 end
 
 ---@return BomBuffDefinition
 function buffDefClass:RequireTBC()
-  ( --[[---@not nil]] self.limitations).requireTBC = true
+  (self.limitations).requireTBC = true
   return self
 end
 
@@ -589,34 +590,34 @@ end
 
 ---@return BomBuffDefinition
 function buffDefClass:HideInTBC()
-  ( --[[---@not nil]] self.limitations).hideInTBC = true
-  ( --[[---@not nil]] self.limitations).hideInWotLK = true
-  ( --[[---@not nil]] self.limitations).hideInCata = true
+  (self.limitations).hideInTBC = true
+  (self.limitations).hideInWotLK = true
+  (self.limitations).hideInCata = true
   return self
 end
 
 ---@return BomBuffDefinition
 function buffDefClass:RequireWotLK()
-  ( --[[---@not nil]] self.limitations).requireWotLK = true
+  (self.limitations).requireWotLK = true
   return self
 end
 
 ---@return BomBuffDefinition
 function buffDefClass:HideInWotLK()
-  ( --[[---@not nil]] self.limitations).hideInWotLK = true
-  ( --[[---@not nil]] self.limitations).hideInCata = true
+  (self.limitations).hideInWotLK = true
+  (self.limitations).hideInCata = true
   return self
 end
 
 ---@return BomBuffDefinition
 function buffDefClass:HideInCata()
-  ( --[[---@not nil]] self.limitations).hideInCata = true
+  (self.limitations).hideInCata = true
   return self
 end
 
 ---@return BomBuffDefinition
 function buffDefClass:RequireCata()
-  ( --[[---@not nil]] self.limitations).requireCata = true
+  (self.limitations).requireCata = true
   return self
 end
 
@@ -636,14 +637,14 @@ end
 ---@param className BomClassName[]|BomClassName The class name or table of class names
 ---@return BomBuffDefinition
 function buffDefClass:RequirePlayerClass(className)
-  ( --[[---@not nil]] self.limitations).playerClass = className
+  (self.limitations).playerClass = className
   return self
 end
 
 ---@param raceName BomPlayerRace Player race
 ---@return BomBuffDefinition
 function buffDefClass:RequirePlayerRace(raceName)
-  ( --[[---@not nil]] self.limitations).playerRace = raceName
+  (self.limitations).playerRace = raceName
   return self
 end
 
@@ -721,10 +722,9 @@ end
 function buffDefModule:GetProfileBuff(buffId, profileName)
   if profileName == nil then
     return buffomatModule.currentProfile.Spell[buffId]
-    --return allBuffsModule.allBuffs[spellId]
   end
 
-  local profile = buffomatModule.character[ --[[---@not nil]] profileName ]
+  local profile = buffomatModule.character.profiles[profileName ]
   if profile == nil then
     return nil
   end
@@ -733,16 +733,16 @@ function buffDefModule:GetProfileBuff(buffId, profileName)
 end
 
 ---@param profileName BomProfileName|nil
----@return BomBlessingState
+---@return BlessingState
 function buffDefModule:GetProfileBlessingState(profileName)
   if profileName == nil then
     return buffomatModule.currentProfile.CurrentBlessing
     --return allBuffsModule.allBuffs[spellId]
   end
 
-  local profile = buffomatModule.character[ --[[---@not nil]] profileName ]
+  local profile = buffomatModule.character.profiles[profileName ]
   if profile == nil then
-    return --[[@as BomBlessingState]] {}
+    return --[[@as BlessingState]] {}
   end
 
   return profile.CurrentBlessing
@@ -757,7 +757,7 @@ function buffDefModule:IsBuffEnabled(buffId, profileName)
   if spell == nil then
     return false
   end
-  return ( --[[---@not nil]] spell).Enable
+  return (spell).Enable
 end
 
 ---Call function with the icon when icon value is ready, or immediately if value
@@ -792,7 +792,7 @@ end
 
 function buffDefClass:IsItem()
   -- TODO: self.isConsumable does this too?
-  return self.items and next( --[[---@not nil]] self.items) ~= nil
+  return self.items and next(self.items) ~= nil
 end
 
 ---@param unit BomUnit
@@ -806,7 +806,7 @@ function buffDefClass:DoesUnitHaveBetterBuffs(unit)
   end
 
   if self.providesAuras then
-    for i, aura in pairs( --[[---@not nil]] self.providesAuras) do
+    for i, aura in pairs(self.providesAuras) do
       if unit.allBuffs[aura] then
         return true -- have one of known provided auras, means we don't need that buff
       end
@@ -818,7 +818,6 @@ end
 
 function buffDefClass:ResetBuffTargets()
   wipe(self.groupsNeedBuff)
-  --wipe(self.GroupsHaveBetterBuff)
   wipe(self.groupsHaveDead)
   wipe(self.unitsNeedBuff)
   wipe(self.unitsHaveBetterBuff)
@@ -903,9 +902,9 @@ end
 ---@param bestItemIdAvailable WowItemId|nil If set, will request item link to a specific item
 function buffDefClass:SingleLink(bestItemIdAvailable)
   if bestItemIdAvailable then
-    local itemInfo = BOM.GetItemInfo( --[[---@not nil]] bestItemIdAvailable)
+    local itemInfo = BOM.GetItemInfo(bestItemIdAvailable)
     if itemInfo then
-      return ( --[[---@not nil]] itemInfo).itemLink
+      return (itemInfo).itemLink
     end
   end
   return (self.singleLink or self.singleText) or "?"
@@ -927,13 +926,13 @@ end
 ---@return number[]
 function buffDefModule:PerExpansionChoice(conditions)
   if envModule.isClassic and conditions.onlyClassic then
-    return --[[---@not nil]] conditions.onlyClassic
+    return conditions.onlyClassic
   elseif envModule.isTBC and conditions.onlyTbc then
-    return --[[---@not nil]] conditions.onlyTbc
+    return conditions.onlyTbc
   elseif envModule.isWotLK and conditions.onlyWotlk then
-    return --[[---@not nil]] conditions.onlyWotlk
+    return conditions.onlyWotlk
   elseif envModule.isCata and conditions.onlyCataclysm then
-    return --[[---@not nil]] conditions.onlyCataclysm
+    return conditions.onlyCataclysm
   end
 
   local result = {}
@@ -970,7 +969,7 @@ function buffDefClass:ShowItemsProvidingBuff()
   for _, itemId in ipairs(self.items or {}) do
     local info = BOM.GetItemInfo(itemId)
     if info then
-      output = output .. ( --[[---@not nil]] info).itemLink .. " "
+      output = output .. (info).itemLink .. " "
     end
   end
 

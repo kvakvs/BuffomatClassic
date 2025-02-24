@@ -3,9 +3,10 @@
 
 ---@class CharacterSettingsModule
 
-local characterSettingsModule = --[[@as CharacterSettingsModule]] LibStub("Buffomat-CharacterSettings")
-local profileModule = --[[@as ProfileModule]] LibStub("Buffomat-Profile")
-local envModule = --[[@as KvSharedEnvModule]] LibStub("KvLibShared-Env")
+local buffomatModule = LibStub("Buffomat-Buffomat") --[[@as BuffomatModule]]
+local characterSettingsModule = LibStub("Buffomat-CharacterSettings") --[[@as CharacterSettingsModule]]
+local profileModule = LibStub("Buffomat-Profile") --[[@as ProfileModule]]
+local envModule = LibStub("KvLibShared-Env") --[[@as KvSharedEnvModule]]
 
 ---@alias BomProfileName "solo"|"group"|"raid"|"battleground"|"solo_spec2"|"group_spec2"|"raid_spec2"|"battleground_spec2"
 
@@ -15,19 +16,11 @@ local envModule = --[[@as KvSharedEnvModule]] LibStub("KvLibShared-Env")
 ---@class BomHiddenCategoryTable
 ---@field [string] boolean
 
----@class BomCharacterSettings Current character state snapshots per profile
----@field [BomProfileName] BomProfile Access to subprofiles [solo, group, raid, battleground, ...]
+---@class CharacterSettings Current character state snapshots per profile
+---@field profiles {[BomProfileName]: ProfileSettings} Access to subprofiles [solo, group, raid, battleground, ...]
 ---@field UseProfiles boolean [⚠DO NOT RENAME] Checkbox to use profiles / automatic profiles
 ---@field remainingDurations BomSpellDurationsTable Remaining aura duration on SELF, keyed with buff names
 ---@field lastTrackingIconId WowIconId|nil Icon id for the last active tracking (not relevant in TBC?)
----@field solo BomProfile
----@field group BomProfile
----@field raid BomProfile
----@field battleground BomProfile
----@field solo_spec2 BomProfile Alternate talents for WotLK dualspec
----@field group_spec2 BomProfile Alternate talents for WotLK dualspec
----@field raid_spec2 BomProfile Alternate talents for WotLK dualspec
----@field battleground_spec2 BomProfile Alternate talents for WotLK dualspec
 ---@field BuffCategoriesHidden BomHiddenCategoryTable [⚠DO NOT RENAME] True if category is hidden (control in options)
 ---@field WatchGroup table<number, boolean> [⚠DO NOT RENAME] True to watch buffs in group 1..8
 ---@field Spell BomBuffDefinitionDict [⚠DO NOT RENAME] Enabled/disabled buffs; see also assignment to ["Spell"] in buffomatModule:InitGlobalStates()
@@ -38,8 +31,8 @@ local envModule = --[[@as KvSharedEnvModule]] LibStub("KvLibShared-Env")
 local characterStateClass = {}
 characterStateClass.__index = characterStateClass
 
----@param init BomCharacterSettings|nil
----@return BomCharacterSettings
+---@param init CharacterSettings|nil
+---@return CharacterSettings
 function characterSettingsModule:New(init)
   local tab = init or self:Defaults()
   tab.Spell = tab.Spell or {}
@@ -64,7 +57,19 @@ function characterSettingsModule:New(init)
   return tab
 end
 
----@return BomCharacterSettings
+---@return CharacterSettings
 function characterSettingsModule:Defaults()
-  return --[[@as BomCharacterSettings]] {}
+  return --[[@as CharacterSettings]] {}
+end
+
+function characterSettingsModule:GetProfile(profileName)
+  if buffomatModule.character.profiles == nil then
+    buffomatModule.character.profiles = {}
+  end
+  local profile = buffomatModule.character.profiles[profileName]
+  if profile == nil then
+    profile = profileModule:New()
+    buffomatModule.character.profiles[profileName] = profile
+  end
+  return profile
 end

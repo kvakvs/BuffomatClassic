@@ -14,18 +14,18 @@ if false then
   spellButtonsTabModule.spellTabUpdateRequestedBy = {}
   spellButtonsTabModule.spellSettingsFrames = {} -- accessible from TaskScan.MaybeResetWatchGroups
 
-  local _t = --[[@as LanguagesModule]] LibStub("Buffomat-Languages")
-  local allBuffsModule = --[[@as AllBuffsModule]] LibStub("Buffomat-AllBuffs")
-  local buffDefModule = --[[@as BuffDefinitionModule]] LibStub("Buffomat-BuffDefinition")
-  local buffRowModule = --[[@as BomBuffRowModule]] LibStub("Buffomat-BuffRow")
-  local buffomatModule = --[[@as BuffomatModule]] LibStub("Buffomat-Buffomat")
-  local constModule = --[[@as ConstModule]] LibStub("Buffomat-Const")
+  local _t = LibStub("Buffomat-Languages") --[[@as LanguagesModule]]
+  local allBuffsModule = LibStub("Buffomat-AllBuffs") --[[@as AllBuffsModule]]
+  local buffDefModule = LibStub("Buffomat-BuffDefinition") --[[@as BuffDefinitionModule]]
+  local buffRowModule = LibStub("Buffomat-BuffRow") --[[@as BomBuffRowModule]]
+  local buffomatModule = LibStub("Buffomat-Buffomat") --[[@as BuffomatModule]]
+  local constModule = LibStub("Buffomat-Const") --[[@as ConstModule]]
   local managedUiModule = BomModuleManager.myButtonModule
-  local profileModule = --[[@as ProfileModule]] LibStub("Buffomat-Profile")
+  local profileModule = LibStub("Buffomat-Profile") --[[@as ProfileModule]]
   local rowBuilderModule = BomModuleManager.rowBuilderModule
-  local texturesModule = --[[@as BomTexturesModule]] LibStub("Buffomat-Textures")
-  local toolboxModule = --[[@as LegacyToolboxModule]] LibStub("Buffomat-LegacyToolbox")
-  local envModule = --[[@as KvSharedEnvModule]] LibStub("KvLibShared-Env")
+  local texturesModule = LibStub("Buffomat-Textures") --[[@as BomTexturesModule]]
+  local toolboxModule = LibStub("Buffomat-LegacyToolbox") --[[@as LegacyToolboxModule]]
+  local envModule = LibStub("KvLibShared-Env") --[[@as KvSharedEnvModule]]
 
   local function bomDoBlessingOnClick(self)
     local saved = self.gpiDict[self.gpiVariableName]
@@ -200,7 +200,7 @@ if false then
 
     -- Add a checkbox [x]
     local enableCheckbox = buff.frames:CreateEnableCheckbox(_t("TooltipEnableSpell"))
-    enableCheckbox:SetVariable( --[[---@not nil]] profileBuff, "Enable", nil)
+    enableCheckbox:SetVariable(profileBuff, "Enable", nil)
     rowBuilder:AppendRight(nil, enableCheckbox, 7)
 
     -- Add a sorting text field (if 'CustomBuffSorting' is enabled)
@@ -230,7 +230,7 @@ if false then
     if buff.isInfo and buff.AllowWhisper then
       local whisperToggle = buff.frames:CreateWhisperToggle(_t("TooltipWhisperWhenExpired"))
       whisperToggle:SetPoint("TOPLEFT", rowBuilder.prevControl, "TOPRIGHT", rowBuilder.dx, 0)
-      whisperToggle:SetVariable( --[[---@not nil]] profileBuff, "Whisper", nil)
+      whisperToggle:SetVariable(profileBuff, "Whisper", nil)
       rowBuilder:ContinueRightOf(whisperToggle, 2)
     end
 
@@ -239,12 +239,12 @@ if false then
       -- Add choices for mainhand & offhand
       local mainhandToggle = buff.frames:CreateMainhandToggle(_t("tooltip.mainhand"))
       mainhandToggle:SetPoint("TOPLEFT", rowBuilder.prevControl, "TOPRIGHT", rowBuilder.dx, 0)
-      mainhandToggle:SetVariable( --[[---@not nil]] profileBuff, "MainHandEnable", nil)
+      mainhandToggle:SetVariable(profileBuff, "MainHandEnable", nil)
       rowBuilder:ContinueRightOf(mainhandToggle, 2)
 
       local offhandToggle = buff.frames:CreateOffhandToggle(_t("tooltip.offhand"))
       offhandToggle:SetPoint("TOPLEFT", rowBuilder.prevControl, "TOPRIGHT", rowBuilder.dx, 0)
-      offhandToggle:SetVariable( --[[---@not nil]] profileBuff, "OffHandEnable", nil)
+      offhandToggle:SetVariable(profileBuff, "OffHandEnable", nil)
       rowBuilder:ContinueRightOf(offhandToggle, 2)
     end
 
@@ -481,14 +481,14 @@ if false then
 
         forceCastButton:SetScript("OnClick", function(self)
           if lastTarget then
-            if not spellForcedTarget[ --[[---@not nil]] lastTarget ] then
+            if not spellForcedTarget[lastTarget ] then
               BOM:Print(BOM.FormatTexture(texturesModule.ICON_TARGET_ON) .. " "
                 .. _t("MessageAddedForced") .. ": " .. lastTarget)
-              spellForcedTarget[ --[[---@not nil]] lastTarget ] = true
+              spellForcedTarget[lastTarget ] = true
             else
               BOM:Print(BOM.FormatTexture(texturesModule.ICON_TARGET_ON) .. " "
                 .. _t("MessageClearedForced") .. ": " .. lastTarget)
-              spellForcedTarget[ --[[---@not nil]] lastTarget ] = nil
+              spellForcedTarget[lastTarget ] = nil
             end
           end
           spellButtonsTabModule:UpdateForcecastTooltip(self, profileSpell)
@@ -500,14 +500,14 @@ if false then
 
         excludeButton:SetScript("OnClick", function(control)
           if lastTarget then
-            if not spellExclude[ --[[---@not nil]] lastTarget ] then
+            if not spellExclude[lastTarget ] then
               BOM:Print(BOM.FormatTexture(texturesModule.ICON_TARGET_EXCLUDE) .. " "
                 .. _t("MessageAddedExcluded") .. ": " .. lastTarget)
-              spellExclude[ --[[---@not nil]] lastTarget ] = true
+              spellExclude[lastTarget ] = true
             else
               BOM:Print(BOM.FormatTexture(texturesModule.ICON_TARGET_EXCLUDE) .. " "
                 .. _t("MessageClearedExcluded") .. ": " .. lastTarget)
-              spellExclude[ --[[---@not nil]] lastTarget ] = nil
+              spellExclude[lastTarget ] = nil
             end
           end
           spellButtonsTabModule:UpdateExcludeTargetsTooltip(control, profileSpell)

@@ -1,6 +1,6 @@
 ---@class BomBuffModule
 
-local buffModule = --[[@as BomBuffModule]] LibStub:NewLibrary("Buffomat-Buff", 1)
+local buffModule = --[[@as BomBuffModule]] LibStub("Buffomat-Buff")
 
 ---@class BomUnitBuff
 ---@field singleId WowSpellId Spell id also serving as key

@@ -2,14 +2,14 @@ local BOM = BuffomatAddon
 
 ---@class TaskListModule
 
-local taskListModule = --[[@as TaskListModule]] LibStub("Buffomat-TaskList")
-local constModule = --[[@as ConstModule]] LibStub("Buffomat-Const")
-local taskModule = --[[@as BomTaskModule]] LibStub("Buffomat-Task")
-local taskListPanelModule = --[[@as TaskListPanelModule]] LibStub("Buffomat-TaskListPanel")
-local buffomatModule = --[[@as BuffomatModule]] LibStub("Buffomat-Buffomat")
-local _t = --[[@as LanguagesModule]] LibStub("Buffomat-Languages")
-local allBuffsModule = --[[@as AllBuffsModule]] LibStub("Buffomat-AllBuffs")
-local throttleModule = --[[@as ThrottleModule]] LibStub("Buffomat-Throttle")
+local taskListModule = LibStub("Buffomat-TaskList") --[[@as TaskListModule]]
+local constModule = LibStub("Buffomat-Const") --[[@as ConstModule]]
+local taskModule = LibStub("Buffomat-Task") --[[@as BomTaskModule]]
+local taskListPanelModule = LibStub("Buffomat-TaskListPanel") --[[@as TaskListPanelModule]]
+local buffomatModule = LibStub("Buffomat-Buffomat") --[[@as BuffomatModule]]
+local _t = LibStub("Buffomat-Languages") --[[@as LanguagesModule]]
+local allBuffsModule = LibStub("Buffomat-AllBuffs") --[[@as AllBuffsModule]]
+local throttleModule = LibStub("Buffomat-Throttle") --[[@as ThrottleModule]]
 
 ---@class BomTaskList
 ---@field tasks BomTask[]
@@ -205,7 +205,7 @@ function taskListClass:CastButton(task)
   BOM.theMacro:EnsureExists()
   wipe(BOM.theMacro.lines)
 
-  local action = --[[---@not nil]] task.action
+  local action =task.action
   taskListPanelModule:CastButtonText(action:GetButtonText(task), true)
   --removeme
   self:CastButtonText(action:GetButtonText(task), true)
@@ -257,7 +257,7 @@ function taskListModule:WipeMacro(command)
   wipe(macro.lines)
 
   if command then
-    table.insert(macro.lines, --[[---@not nil]] command)
+    table.insert(macro.lines,command)
   end
 
   macro.icon = constModule.MACRO_ICON_DISABLED

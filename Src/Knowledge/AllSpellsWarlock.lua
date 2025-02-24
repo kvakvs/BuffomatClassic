@@ -2,13 +2,13 @@ local BOM = BuffomatAddon
 
 ---@class WarlockModule
 
-local warlockModule = --[[@as WarlockModule]] LibStub("Buffomat-AllSpellsWarlock")
-local allBuffsModule = --[[@as AllBuffsModule]] LibStub("Buffomat-AllBuffs")
-local buffDefModule = --[[@as BuffDefinitionModule]] LibStub("Buffomat-BuffDefinition")
-local spellIdsModule = --[[@as SpellIdsModule]] LibStub("Buffomat-SpellIds")
-local itemIdsModule = --[[@as ItemIdsModule]] LibStub("Buffomat-ItemIds")
-local _t = --[[@as LanguagesModule]] LibStub("Buffomat-Languages")
-local envModule = --[[@as KvSharedEnvModule]] LibStub("KvLibShared-Env")
+local warlockModule = LibStub("Buffomat-AllSpellsWarlock") --[[@as WarlockModule]]
+local allBuffsModule = LibStub("Buffomat-AllBuffs") --[[@as AllBuffsModule]]
+local buffDefModule = LibStub("Buffomat-BuffDefinition") --[[@as BuffDefinitionModule]]
+local spellIdsModule = LibStub("Buffomat-SpellIds") --[[@as SpellIdsModule]]
+local itemIdsModule = LibStub("Buffomat-ItemIds") --[[@as ItemIdsModule]]
+local _t = LibStub("Buffomat-Languages") --[[@as LanguagesModule]]
+local envModule = LibStub("KvLibShared-Env") --[[@as KvSharedEnvModule]]
 
 ---Add WARLOCK spells
 ---@param allBuffs BomBuffDefinition[]

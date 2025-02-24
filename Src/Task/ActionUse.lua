@@ -2,9 +2,9 @@ local BOM = BuffomatAddon
 
 ---@class BomActionUseModule
 
-local actionUseModule = --[[@as BomActionUseModule]] LibStub("Buffomat-ActionUse")
-local taskModule = --[[@as BomTaskModule]] LibStub("Buffomat-Task")
-local _t = --[[@as LanguagesModule]] LibStub("Buffomat-Languages")
+local actionUseModule = LibStub("Buffomat-ActionUse") --[[@as BomActionUseModule]]
+local taskModule = LibStub("Buffomat-Task") --[[@as BomTaskModule]]
+local _t = LibStub("Buffomat-Languages") --[[@as LanguagesModule]]
 
 ---@class BomTaskActionUse: BomTaskAction Uses an equipment slot or a bag item
 ---@field buffDef BomBuffDefinition|nil
@@ -57,7 +57,7 @@ function actionUseClass:GetButtonText(task)
     return _t("task.UseOrOpen") .. " " .. (self.extraText or "")
   end
 
-  local bdef = ( --[[---@not nil]] self.buffDef)
+  local bdef = (self.buffDef)
   if bdef.isConsumable then
     return _t("task.type.Consume") .. " " .. bdef:SingleLink(self.bestItemIdAvailable)
   end

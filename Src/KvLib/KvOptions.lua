@@ -1,7 +1,7 @@
 ---@class KvOptionsModule
 ---@field optionsOrder number
 
-local kvOptionsModule = --[[@as KvOptionsModule]] LibStub:NewLibrary("KvLibShared-Options", 1)
+local kvOptionsModule = --[[@as KvOptionsModule]] LibStub("KvLibShared-Options")
 kvOptionsModule.optionsOrder = 0
 
 function kvOptionsModule:ValueToText(type, value)
@@ -40,15 +40,15 @@ function kvOptionsModule:TemplateCheckbox(name, dict, key, notify, _t)
 
     set = function(info, val)
       if dict then
-        (--[[---@not nil]] dict)[key] = val
+        (dict)[key] = val
         if notify then
-          (--[[---@not nil]] notify)(key, val)
+          (notify)(key, val)
         end
       end
     end,
     get = function(info)
       if dict then
-        return (--[[---@not nil]] dict)[key] == true
+        return (dict)[key] == true
       else
         return nil
       end
@@ -89,15 +89,15 @@ function kvOptionsModule:TemplateMultiselect(name, values, dict, notifyFn, setFn
 
     set = setFn or function(state, key, value)
       if dict then
-        (--[[---@not nil]]  dict)[key] = value
+        ( dict)[key] = value
         if notifyFn then
-          (--[[---@not nil]] notifyFn)(key, value)
+          (notifyFn)(key, value)
         end
       end
     end,
     get = getFn or function(state, key)
       if dict then
-        return (--[[---@not nil]] dict)[key] == true
+        return (dict)[key] == true
       else
         return nil
       end
@@ -124,15 +124,15 @@ function kvOptionsModule:TemplateSelect(name, values, style, dict, notifyFn, set
 
     set = setFn or function(info, value)
       if dict then
-        (--[[---@not nil]] dict)[name] = value
+        (dict)[name] = value
         if notifyFn then
-          (--[[---@not nil]] notifyFn)(value)
+          (notifyFn)(value)
         end
       end
     end,
     get = getFn or function(info)
       if dict then
-        return (--[[---@not nil]] dict)[name]
+        return (dict)[name]
       else
         return nil
       end
@@ -160,15 +160,15 @@ function kvOptionsModule:TemplateInput(type, name, dict, key, notify, _t)
     set = function(info, val)
       val = self:TextToValue(type, val)
       if dict then
-        (--[[---@not nil]] dict)[key] = val
+        (dict)[key] = val
         if notify then
-          (--[[---@not nil]] notify)(key, val)
+          (notify)(key, val)
         end
       end
     end,
     get = function(info)
       if dict then
-        return self:ValueToText(type, (--[[---@not nil]] dict)[key])
+        return self:ValueToText(type, (dict)[key])
       else
         return nil
       end
@@ -195,15 +195,15 @@ function kvOptionsModule:TemplateRange(name, rangeFrom, rangeTo, step, dict, key
 
     set = function(info, val)
       if dict then
-        (--[[---@not nil]] dict)[key] = val
+        (dict)[key] = val
         if notify then
-          (--[[---@not nil]] notify)(key, val)
+          (notify)(key, val)
         end
       end
     end,
     get = function(info)
       if dict then
-        return (--[[---@not nil]] dict)[key]
+        return (dict)[key]
       else
         return nil
       end

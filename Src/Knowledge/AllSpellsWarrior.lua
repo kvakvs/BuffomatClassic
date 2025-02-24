@@ -2,8 +2,8 @@ local BOM = BuffomatAddon
 
 ---@class WarriorModule
 
-local warriorModule = --[[@as WarriorModule]] LibStub("Buffomat-AllSpellsWarrior")
-local buffDefModule = --[[@as BuffDefinitionModule]] LibStub("Buffomat-BuffDefinition")
+local warriorModule = LibStub("Buffomat-AllSpellsWarrior") --[[@as WarriorModule]]
+local buffDefModule = LibStub("Buffomat-BuffDefinition") --[[@as BuffDefinitionModule]]
 
 ---Add WARRIOR spells
 function warriorModule:SetupWarriorSpells(spells, enchantments)

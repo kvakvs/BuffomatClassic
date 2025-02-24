@@ -13,7 +13,7 @@ local BOM = BuffomatAddon
 ---@field playerManaLimit number Player max mana
 ---@field playerMana number Player current mana
 
-local partyModule = --[[@as PartyModule]] LibStub("Buffomat-Party")
+local partyModule = LibStub("Buffomat-Party") --[[@as PartyModule]]
 
 ---@type BomBuffUpdatesPerUnit
 partyModule.unitAurasLastUpdated = {}
@@ -36,10 +36,10 @@ partyModule.ALL_INVALID_GROUPS = {
   [8] = true
 }
 
-local buffomatModule = --[[@as BuffomatModule]] LibStub("Buffomat-Buffomat")
-local toolboxModule = --[[@as LegacyToolboxModule]] LibStub("Buffomat-LegacyToolbox")
-local unitCacheModule = --[[@as BomUnitCacheModule]] LibStub("Buffomat-UnitCache")
-local taskScanModule = --[[@as TaskScanModule]] LibStub("Buffomat-TaskScan")
+local buffomatModule = LibStub("Buffomat-Buffomat") --[[@as BuffomatModule]]
+local toolboxModule = LibStub("Buffomat-LegacyToolbox") --[[@as LegacyToolboxModule]]
+local unitCacheModule = LibStub("Buffomat-UnitCache") --[[@as BomUnitCacheModule]]
+local taskScanModule = LibStub("Buffomat-TaskScan") --[[@as TaskScanModule]]
 
 ---@alias BomUnitDictByUnitId {[string]: BomUnit}
 ---@alias BomUnitDictByName {[string]: BomUnit}
@@ -71,7 +71,7 @@ end
 ---@param evType string
 function partyModule:OnBuffsChangedEvent(unitName, spellId, evType)
   if self.theParty
-      and not ( --[[---@not nil]] self.theParty):IsNameInParty(unitName) then
+      and not (self.theParty):IsNameInParty(unitName) then
     return
   end
   self.unitAurasLastUpdated[unitName] = self.unitAurasLastUpdated[unitName] or {}
@@ -178,8 +178,8 @@ function partyModule:RefreshParty(party, invalidGroups)
   then
     local targetedUnit = unitCacheModule:GetUnit("target", nil, nil, nil)
     if targetedUnit then
-      ( --[[---@not nil]] targetedUnit).group = 9 --move them outside of 8 buff groups
-      party:Add( --[[---@not nil]] targetedUnit)
+      (targetedUnit).group = 9 --move them outside of 8 buff groups
+      party:Add(targetedUnit)
     end
   end
 
@@ -192,12 +192,12 @@ end
 function partyClass:GetPlayerAndPetUnit()
   -- Get player and get pet
   local playerUnit = unitCacheModule:GetUnit("player", nil, nil, nil)
-  self.player = --[[---@not nil]] playerUnit
-  self:Add( --[[---@not nil]] playerUnit)
+  self.player =playerUnit
+  self:Add(playerUnit)
 
   local playerPet = unitCacheModule:GetUnit("pet", nil, nil, true)
   if playerPet then
-    local pet = --[[---@not nil]] playerPet
+    local pet =playerPet
     pet.owner = playerUnit
     pet.class = "pet"
     self.playerPet = pet
@@ -228,12 +228,12 @@ function partyClass:Get5manPartyMembers()
     for groupIndex = 1, 4 do
       local partyMember = unitCacheModule:GetUnit("party" .. groupIndex, nil, nil, nil)
       if partyMember then
-        self:Add( --[[---@not nil]] partyMember)
+        self:Add(partyMember)
       end
 
       local partyPet = unitCacheModule:GetUnit("partypet" .. groupIndex, nil, nil, true)
       if partyPet then
-        local pet = --[[---@not nil]] partyPet
+        local pet =partyPet
         pet.owner = partyMember
         pet.class = "pet"
         self:Add(pet)
@@ -272,7 +272,7 @@ function partyClass:GetRaidMembers(invalidGroups)
       local partyMember = unitCacheModule:GetUnit("raid" .. raidIndex, nameGroupMap, nameRoleMap, nil)
       if partyMember then
         self.emptyGroups[groupIndex] = false
-        self:Add( --[[---@not nil]] partyMember)
+        self:Add(partyMember)
       end
     end -- each member of invalidated group
   end   -- invalidated groups
@@ -313,9 +313,9 @@ function partyModule:GetParty()
 
   -- check if stored party is correct!
   if self.theParty then
-    if validatePartyMembers( --[[---@not nil]] self.theParty) then
+    if validatePartyMembers(self.theParty) then
       -- Cache is valid, take that as a start value
-      party = --[[---@not nil]] self.theParty
+      party =self.theParty
     end
   end
 
@@ -350,7 +350,7 @@ function partyModule:GetParty()
     party.player:UpdateBuffs(party, playerZone)
 
     if party.playerPet ~= nil then
-      ( --[[---@not nil]] party.playerPet):UpdateBuffs(party, playerZone)
+      (party.playerPet):UpdateBuffs(party, playerZone)
     end
   end
 

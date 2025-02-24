@@ -2,12 +2,12 @@ local BOM = BuffomatAddon
 
 ---@class PaladinModule
 
-local paladinModule = --[[@as PaladinModule]] LibStub("Buffomat-AllSpellsPaladin")
-local _t = --[[@as LanguagesModule]] LibStub("Buffomat-Languages")
-local allBuffsModule = --[[@as AllBuffsModule]] LibStub("Buffomat-AllBuffs")
-local buffDefModule = --[[@as BuffDefinitionModule]] LibStub("Buffomat-BuffDefinition")
-local spellIdsModule = --[[@as SpellIdsModule]] LibStub("Buffomat-SpellIds")
-local itemIdsModule = --[[@as ItemIdsModule]] LibStub("Buffomat-ItemIds")
+local paladinModule = LibStub("Buffomat-AllSpellsPaladin") --[[@as PaladinModule]]
+local _t = LibStub("Buffomat-Languages") --[[@as LanguagesModule]]
+local allBuffsModule = LibStub("Buffomat-AllBuffs") --[[@as AllBuffsModule]]
+local buffDefModule = LibStub("Buffomat-BuffDefinition") --[[@as BuffDefinitionModule]]
+local spellIdsModule = LibStub("Buffomat-SpellIds") --[[@as SpellIdsModule]]
+local itemIdsModule = LibStub("Buffomat-ItemIds") --[[@as ItemIdsModule]]
 
 ---Add PALADIN spells
 ---@param allBuffs BomBuffDefinition[]

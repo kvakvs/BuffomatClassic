@@ -4,11 +4,10 @@ if false then
 
   ---@class BomBuffRowModule
 
-  local buffRowModule = --[[@as BomBuffRowModule]] LibStub:NewLibrary("Buffomat-BuffRow", 1)
-
-  local _t = --[[@as LanguagesModule]] LibStub("Buffomat-Languages")
-  local toolboxModule = --[[@as LegacyToolboxModule]] LibStub("Buffomat-LegacyToolbox")
-  local texturesModule = --[[@as BomTexturesModule]] LibStub:NewLibrary("Buffomat-Textures", 1)
+  local buffRowModule = --[[@as BomBuffRowModule]] LibStub("Buffomat-BuffRow")
+  local _t = LibStub("Buffomat-Languages") --[[@as LanguagesModule]]
+  local toolboxModule = LibStub("Buffomat-LegacyToolbox") --[[@as LegacyToolboxModule]]
+  local texturesModule = --[[@as BomTexturesModule]] LibStub("Buffomat-Textures")
 
   ---@class BomBuffRowFrames
   ---@field [BomClassName] BomGPIControl Used for class toggle buttons

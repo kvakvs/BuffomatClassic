@@ -10,9 +10,9 @@ local BOM = BuffomatAddon
 ---@class BomItemCacheModule
 ---@field cache BomItemCache Stores arg to results mapping for GetItemInfo
 
-local itemCacheModule = --[[@as BomItemCacheModule]] LibStub("Buffomat-ItemCache")
+local itemCacheModule = LibStub("Buffomat-ItemCache") --[[@as BomItemCacheModule]]
 itemCacheModule.cache = {}
-local buffomatModule = --[[@as BuffomatModule]] LibStub("Buffomat-Buffomat")
+local buffomatModule = LibStub("Buffomat-Buffomat") --[[@as BuffomatModule]]
 
 ---@class BomItemCacheElement
 ---@field itemName string

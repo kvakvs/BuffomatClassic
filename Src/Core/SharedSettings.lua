@@ -3,7 +3,7 @@ local BOM = BuffomatAddon
 
 ---@class SharedSettingsModule
 
-local sharedSettingsModule = --[[@as SharedSettingsModule]] LibStub("Buffomat-SharedSettings")
+local sharedSettingsModule = LibStub("Buffomat-SharedSettings") --[[@as SharedSettingsModule]]
 
 --- Values to use when the saved data is evolving with an update, and the key doesn't exist
 sharedSettingsModule.defaults = {
@@ -17,7 +17,7 @@ sharedSettingsModule.defaults = {
 ---@field position number
 ---@field distance number
 
----@class BomSharedSettings Current character state snapshots per profile
+---@class SharedSettings Current character state snapshots per profile
 ---@field Cache BomItemCache Caches responses from GetItemInfo() and GetSpellInfo()
 ---@field X number Window horizontal position
 ---@field Y number Window vertical position
@@ -77,8 +77,8 @@ sharedSettingsModule.defaults = {
 local sharedStateClass = {}
 sharedStateClass.__index = sharedStateClass
 
----@param init BomSharedSettings
----@return BomSharedSettings
+---@param init SharedSettings
+---@return SharedSettings
 function sharedSettingsModule:New(init)
   local tab = init or self:Defaults()
   tab.Minimap = tab.Minimap or {}
@@ -93,9 +93,9 @@ function sharedSettingsModule:New(init)
   return tab
 end
 
----@return BomSharedSettings
+---@return SharedSettings
 function sharedSettingsModule:Defaults()
-  return --[[@as BomSharedSettings]] {
+  return {
     UIWindowScale = 1,
     AutoOpen = true,
     FadeWhenNothingToDo = 1.0,

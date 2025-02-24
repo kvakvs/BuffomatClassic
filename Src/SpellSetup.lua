@@ -4,15 +4,15 @@ local BOM = BuffomatAddon
 
 ---@class BomSpellSetupModule
 
-local spellSetupModule = --[[@as BomSpellSetupModule]] LibStub("Buffomat-SpellSetup")
-local buffomatModule = --[[@as BuffomatModule]] LibStub("Buffomat-Buffomat")
-local constModule = --[[@as ConstModule]] LibStub("Buffomat-Const")
-local itemCacheModule = --[[@as BomItemCacheModule]] LibStub("Buffomat-ItemCache")
-local allBuffsModule = --[[@as AllBuffsModule]] LibStub("Buffomat-AllBuffs")
-local buffDefinitionModule = --[[@as BuffDefinitionModule]] LibStub("Buffomat-BuffDefinition")
-local toolboxModule = --[[@as LegacyToolboxModule]] LibStub("Buffomat-LegacyToolbox")
-local profileModule = --[[@as ProfileModule]] LibStub("Buffomat-Profile")
-local ngStringsModule = --[[@as NgStringsModule]] LibStub("Buffomat-NgStrings")
+local spellSetupModule = LibStub("Buffomat-SpellSetup") --[[@as BomSpellSetupModule]]
+local buffomatModule = LibStub("Buffomat-Buffomat") --[[@as BuffomatModule]]
+local constModule = LibStub("Buffomat-Const") --[[@as ConstModule]]
+local itemCacheModule = LibStub("Buffomat-ItemCache") --[[@as BomItemCacheModule]]
+local allBuffsModule = LibStub("Buffomat-AllBuffs") --[[@as AllBuffsModule]]
+local buffDefinitionModule = LibStub("Buffomat-BuffDefinition") --[[@as BuffDefinitionModule]]
+local toolboxModule = LibStub("Buffomat-LegacyToolbox") --[[@as LegacyToolboxModule]]
+local profileModule = LibStub("Buffomat-Profile") --[[@as ProfileModule]]
+local ngStringsModule = LibStub("Buffomat-NgStrings") --[[@as NgStringsModule]]
 
 ---Formats a spell icon + spell name as a link
 -- TODO: Move to SpellDef class
@@ -60,20 +60,20 @@ function spellSetupModule:Setup_CancelBuffs()
     local spellInfo = BOM.GetSpellInfo(cancelBuff.highestRankSingleId)
 
     if spellInfo then
-      local spellInfoValue = --[[---@not nil]] spellInfo
+      local spellInfoValue =spellInfo
 
       cancelBuff.singleText = spellInfoValue.name
       spellInfoValue.rank = GetSpellSubtext(cancelBuff.highestRankSingleId) or ""
-      cancelBuff.singleLink = self:FormatSpellLink(( --[[---@not nil]] spellInfo))
+      cancelBuff.singleLink = self:FormatSpellLink((spellInfo))
       cancelBuff.spellIcon = spellInfoValue.icon
     end
 
     toolboxModule:iMerge(allBuffsModule.allSpellIds, cancelBuff.singleFamily)
 
-    for j, profil in ipairs(profileModule.ALL_PROFILES) do
-      if buffomatModule.character[profil].CancelBuff[cancelBuff.buffId] == nil then
-        buffomatModule.character[profil].CancelBuff[cancelBuff.buffId] = buffDefinitionModule:New(0)
-        buffomatModule.character[profil].CancelBuff[cancelBuff.buffId].Enable = cancelBuff.default or false
+    for j, profileName in ipairs(profileModule.ALL_PROFILES) do
+      if buffomatModule.character.profiles[profileName].CancelBuff[cancelBuff.buffId] == nil then
+        buffomatModule.character.profiles[profileName].CancelBuff[cancelBuff.buffId] = buffDefinitionModule:New(0)
+        buffomatModule.character.profiles[profileName].CancelBuff[cancelBuff.buffId].Enable = cancelBuff.default or false
       end
     end
   end
@@ -88,31 +88,31 @@ function spellSetupModule:Setup_EachSpell_Consumable(add, buffDef)
 
     if not buffDef.isScanned and itemInfo then
       if (not itemInfo
-            or not ( --[[---@not nil]] itemInfo).itemName
-            or not ( --[[---@not nil]] itemInfo).itemLink
-            or not ( --[[---@not nil]] itemInfo).itemTexture)
+            or not (itemInfo).itemName
+            or not (itemInfo).itemLink
+            or not (itemInfo).itemTexture)
           and buffomatModule.shared.Cache.Item2[eachItem]
       then
         itemInfo = buffomatModule.shared.Cache.Item2[eachItem]
       elseif (not itemInfo
-            or not ( --[[---@not nil]] itemInfo).itemName
-            or not ( --[[---@not nil]] itemInfo).itemLink
-            or not ( --[[---@not nil]] itemInfo).itemTexture)
-          and itemCacheModule.cache[ --[[---@not nil]] buffDef:GetFirstItem() ]
+            or not (itemInfo).itemName
+            or not (itemInfo).itemLink
+            or not (itemInfo).itemTexture)
+          and itemCacheModule.cache[buffDef:GetFirstItem() ]
       then
-        itemInfo = itemCacheModule.cache[ --[[---@not nil]] buffDef:GetFirstItem() ]
+        itemInfo = itemCacheModule.cache[buffDef:GetFirstItem() ]
       end
 
       if itemInfo
-          and ( --[[---@not nil]] itemInfo).itemName
-          and ( --[[---@not nil]] itemInfo).itemLink
-          and ( --[[---@not nil]] itemInfo).itemTexture
+          and (itemInfo).itemName
+          and (itemInfo).itemLink
+          and (itemInfo).itemTexture
       then
         add = true
-        buffDef.singleText = ( --[[---@not nil]] itemInfo).itemName
-        buffDef.singleLink = ngStringsModule:FormatTexture(( --[[---@not nil]] itemInfo).itemTexture)
-            .. ( --[[---@not nil]] itemInfo).itemLink
-        buffDef.itemIcon = ( --[[---@not nil]] itemInfo).itemTexture
+        buffDef.singleText = (itemInfo).itemName
+        buffDef.singleLink = ngStringsModule:FormatTexture((itemInfo).itemTexture)
+            .. (itemInfo).itemLink
+        buffDef.itemIcon = (itemInfo).itemTexture
         buffDef.isScanned = true
 
         buffomatModule.shared.Cache.Item2[eachItem] = itemInfo
@@ -160,7 +160,7 @@ function spellSetupModule:Setup_EachSpell_CacheUpdate(spell)
   end
 
   if spell.groupFamily then
-    for sindex, eachGroupId in ipairs( --[[---@not nil]] spell.groupFamily) do
+    for sindex, eachGroupId in ipairs(spell.groupFamily) do
       allBuffsModule.spellIdtoBuffId[eachGroupId] = spell.buffId
       allBuffsModule.buffFromSpellIdLookup[eachGroupId] = spell
 
@@ -182,7 +182,7 @@ function spellSetupModule:Setup_EachSpell_SetupNonConsumable(buffDef)
   local spellInfo = BOM.GetSpellInfo(buffDef.highestRankSingleId)
 
   if spellInfo ~= nil then
-    local spellInfoValue = --[[---@not nil]] spellInfo
+    local spellInfoValue =spellInfo
 
     buffDef.singleText = spellInfoValue.name
     spellInfoValue.rank = GetSpellSubtext(buffDef.highestRankSingleId) or ""
@@ -209,7 +209,7 @@ function spellSetupModule:Setup_EachSpell_SetupGroupBuff(spell)
   local spellInfo = BOM.GetSpellInfo(spell.highestRankGroupId)
 
   if spellInfo ~= nil then
-    local spellInfoValue = --[[---@not nil]] spellInfo
+    local spellInfoValue =spellInfo
 
     spell.groupText = spellInfoValue.name
     spellInfoValue.rank = GetSpellSubtext(spell.highestRankGroupId) or ""
@@ -251,11 +251,11 @@ function spellSetupModule:Setup_EachBuff_AddKnown(buffDef)
   --setDefaultValues!
   for j, eachProfile in ipairs(profileModule.ALL_PROFILES) do
     ---@type BomBuffDefinition
-    local profileSpell = buffomatModule.character[eachProfile].Spell[buffDef.buffId]
+    local profileSpell = buffomatModule.character.profiles[eachProfile].Spell[buffDef.buffId]
 
     if profileSpell == nil then
-      buffomatModule.character[eachProfile].Spell[buffDef.buffId] = buffDefinitionModule:New(0)
-      profileSpell = buffomatModule.character[eachProfile].Spell[buffDef.buffId]
+      buffomatModule.character.profiles[eachProfile].Spell[buffDef.buffId] = buffDefinitionModule:New(0)
+      profileSpell = buffomatModule.character.profiles[eachProfile].Spell[buffDef.buffId]
 
       profileSpell.Class = profileSpell.Class or {}
       profileSpell.ForcedTarget = profileSpell.ForcedTarget or {}
@@ -363,10 +363,10 @@ end
 ---Scan all spells known to Buffomat and see if they are available to the player
 function spellSetupModule:SetupAvailableSpells()
   local character = buffomatModule.character
-  for i, eachProfile in ipairs(profileModule.ALL_PROFILES) do
-    character[eachProfile].Spell = character[eachProfile].Spell or {}
-    character[eachProfile].CancelBuff = character[eachProfile].CancelBuff or {}
-    character[eachProfile].CurrentBlessing = character[eachProfile].CurrentBlessing or profileModule:NewBlessingState()
+  for i, profileName in ipairs(profileModule.ALL_PROFILES) do
+    character.profiles[profileName].Spell = character.profiles[profileName].Spell or {}
+    character.profiles[profileName].CancelBuff = character.profiles[profileName].CancelBuff or {}
+    character.profiles[profileName].CurrentBlessing = character.profiles[profileName].CurrentBlessing or profileModule:NewBlessingState()
   end
 
   --Spells selected for the current class/settings/profile etc
@@ -376,10 +376,10 @@ function spellSetupModule:SetupAvailableSpells()
       or BOM.ridingSpeedZones.Link == nil then
     do
       local repSpellInfo = BOM.GetSpellInfo(BOM.reputationTrinketZones.spell)
-      BOM.reputationTrinketZones.Link = self:FormatSpellLink( --[[---@not nil]] repSpellInfo)
+      BOM.reputationTrinketZones.Link = self:FormatSpellLink(repSpellInfo)
 
       local ridingSpellInfo = BOM.GetSpellInfo(BOM.ridingSpeedZones.spell)
-      BOM.ridingSpeedZones.Link = self:FormatSpellLink( --[[---@not nil]] ridingSpellInfo)
+      BOM.ridingSpeedZones.Link = self:FormatSpellLink(ridingSpellInfo)
     end
   end
 

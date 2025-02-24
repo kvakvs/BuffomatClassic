@@ -2,7 +2,7 @@ local BOM = BuffomatAddon
 
 ---@class PopupModule
 
-local popupModule = --[[@as PopupModule]] LibStub("Buffomat-Popup")
+local popupModule = LibStub("Buffomat-Popup") --[[@as PopupModule]]
 popupModule.libDD = LibStub:GetLibrary("LibUIDropDownMenu-4.0")
 
 ---@class GPIPopupDynamic

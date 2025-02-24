@@ -2,10 +2,10 @@ local BOM = BuffomatAddon
 
 ---@class AllConsumesElixirsModule
 
-local elixirsModule = --[[@as AllConsumesElixirsModule]] LibStub("Buffomat-AllConsumesElixirs")
-local _t = --[[@as LanguagesModule]] LibStub("Buffomat-Languages")
-local allBuffsModule = --[[@as AllBuffsModule]] LibStub("Buffomat-AllBuffs")
-local buffDefModule = --[[@as BuffDefinitionModule]] LibStub("Buffomat-BuffDefinition")
+local elixirsModule = LibStub("Buffomat-AllConsumesElixirs") --[[@as AllConsumesElixirsModule]]
+local _t = LibStub("Buffomat-Languages") --[[@as LanguagesModule]]
+local allBuffsModule = LibStub("Buffomat-AllBuffs") --[[@as AllBuffsModule]]
+local buffDefModule = LibStub("Buffomat-BuffDefinition") --[[@as BuffDefinitionModule]]
 
 ---ELIXIRS
 ---@param allBuffs BomBuffDefinition[] A list of buffs (not dictionary)

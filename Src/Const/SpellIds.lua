@@ -2,7 +2,7 @@
 
 ---@class SpellIdsModule
 
-local spellIdsModule = --[[@as SpellIdsModule]] LibStub("Buffomat-SpellIds")
+local spellIdsModule = LibStub("Buffomat-SpellIds") --[[@as SpellIdsModule]]
 
 spellIdsModule.ClassicFood = --[[@as WowSpellId[] ]] {
   6410, 433, 5004, 7737,                                                             -- Level 0-5 food

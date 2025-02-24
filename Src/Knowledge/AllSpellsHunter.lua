@@ -2,9 +2,9 @@ local BOM = BuffomatAddon
 
 ---@class HunterModule
 
-local hunterModule = --[[@as HunterModule]] LibStub("Buffomat-AllSpellsHunter")
-local _t = --[[@as LanguagesModule]] LibStub("Buffomat-Languages")
-local buffDefModule = --[[@as BuffDefinitionModule]] LibStub("Buffomat-BuffDefinition")
+local hunterModule = LibStub("Buffomat-AllSpellsHunter") --[[@as HunterModule]]
+local _t = LibStub("Buffomat-Languages") --[[@as LanguagesModule]]
+local buffDefModule = LibStub("Buffomat-BuffDefinition") --[[@as BuffDefinitionModule]]
 
 ---Add HUNTER spells
 ---@param allBuffs BomBuffDefinition[]

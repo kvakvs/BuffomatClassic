@@ -2,8 +2,8 @@
 
 ---@class NgToolboxModule
 
-local ngToolboxModule = --[[@as NgToolboxModule]] LibStub("Buffomat-NgToolbox")
-local _t = --[[@as LanguagesModule]] LibStub("Buffomat-Languages")
+local ngToolboxModule = LibStub("Buffomat-NgToolbox") --[[@as NgToolboxModule]]
+local _t = LibStub("Buffomat-Languages") --[[@as LanguagesModule]]
 local libGUI = LibStub("AceGUI-3.0")
 
 ---@param widget AceGUIWidget

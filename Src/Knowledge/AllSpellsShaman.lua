@@ -2,10 +2,10 @@ local BOM = BuffomatAddon
 
 ---@class ShamanModule
 
-local shamanModule = --[[@as ShamanModule]] LibStub("Buffomat-AllSpellsShaman")
-local allBuffsModule = --[[@as AllBuffsModule]] LibStub("Buffomat-AllBuffs")
-local buffDefModule = --[[@as BuffDefinitionModule]] LibStub("Buffomat-BuffDefinition")
-local spellIdsModule = --[[@as SpellIdsModule]] LibStub("Buffomat-SpellIds")
+local shamanModule = LibStub("Buffomat-AllSpellsShaman") --[[@as ShamanModule]]
+local allBuffsModule = LibStub("Buffomat-AllBuffs") --[[@as AllBuffsModule]]
+local buffDefModule = LibStub("Buffomat-BuffDefinition") --[[@as BuffDefinitionModule]]
+local spellIdsModule = LibStub("Buffomat-SpellIds") --[[@as SpellIdsModule]]
 
 ---Add SHAMAN spells
 ---@param allBuffs BomBuffDefinition[]

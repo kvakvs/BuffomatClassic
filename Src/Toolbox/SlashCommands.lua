@@ -3,8 +3,8 @@ local BOM = BuffomatAddon
 
 ---@class SlashCommandsModule
 
-local slashModule = --[[@as SlashCommandsModule]] LibStub("Buffomat-SlashCommands")
-local toolboxModule = --[[@as LegacyToolboxModule]] LibStub("Buffomat-LegacyToolbox")
+local slashModule = LibStub("Buffomat-SlashCommands") --[[@as SlashCommandsModule]]
+local toolboxModule = LibStub("Buffomat-LegacyToolbox") --[[@as LegacyToolboxModule]]
 
 ---@class BomSlashCommand
 ---@field command string
@@ -38,9 +38,9 @@ function slashModule:PrintSlashCommand(prefix, conf, printFn)
   prefix = prefix or ""
   conf = conf or slashCommandConf
   self:PrintSlashCommand_1(
-  --[[---@not nil]] prefix,
-  --[[---@not nil]] conf,
-  --[[---@not nil]] printFn)
+ prefix,
+ conf,
+ printFn)
 end
 
 ---@param prefix string

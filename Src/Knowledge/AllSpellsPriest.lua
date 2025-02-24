@@ -2,9 +2,9 @@ local BOM = BuffomatAddon
 
 ---@class PriestModule
 
-local priestModule = --[[@as PriestModule]] LibStub("Buffomat-AllSpellsPriest")
-local allBuffsModule = --[[@as AllBuffsModule]] LibStub("Buffomat-AllBuffs")
-local buffDefModule = --[[@as BuffDefinitionModule]] LibStub("Buffomat-BuffDefinition")
+local priestModule = LibStub("Buffomat-AllSpellsPriest") --[[@as PriestModule]]
+local allBuffsModule = LibStub("Buffomat-AllBuffs") --[[@as AllBuffsModule]]
+local buffDefModule = LibStub("Buffomat-BuffDefinition") --[[@as BuffDefinitionModule]]
 
 function priestModule:CreatePrayerOfSpiritBuff()
   local b = buffDefModule:New(14819)              -- Divine Spirit / Prayer of Spirit / Willenstärke

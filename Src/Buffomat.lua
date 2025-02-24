@@ -1,33 +1,32 @@
 ---@class BuffomatModule
----@field [string] any
----@field shared BomSharedSettings Refers to BuffomatShared global
----@field character BomCharacterSettings Refers to BuffomatCharacter global
+---@field shared SharedSettings Refers to BuffomatShared global
+---@field character CharacterSettings Refers to BuffomatCharacter global
 ---@field currentProfileName string
----@field currentProfile BomProfile
+---@field currentProfile ProfileSettings
 ---@field taskRescanRequestedBy {[string]: number} Reasons for force update, with count
 
-local buffomatModule = --[[@as BuffomatModule]] LibStub("Buffomat-Buffomat")
+local buffomatModule = LibStub("Buffomat-Buffomat") --[[@as BuffomatModule]]
 buffomatModule.taskRescanRequestedBy = --[[@as {[string]: number}]] {}
-local kvEnvModule = --[[@as KvSharedEnvModule]] LibStub("KvLibShared-Env")
-local _t = --[[@as LanguagesModule]] LibStub("Buffomat-Languages")
+local kvEnvModule = LibStub("KvLibShared-Env") --[[@as KvSharedEnvModule]]
+local _t = LibStub("Buffomat-Languages") --[[@as LanguagesModule]]
 local languagesModule = _t
-local allBuffsModule = --[[@as AllBuffsModule]] LibStub("Buffomat-AllBuffs")
-local characterSettingsModule = --[[@as CharacterSettingsModule]] LibStub("Buffomat-CharacterSettings")
-local constModule = --[[@as ConstModule]] LibStub("Buffomat-Const")
-local eventsModule = --[[@as EventsModule]] LibStub("Buffomat-Events")
-local macroModule = --[[@as MacroModule]] LibStub("Buffomat-Macro")
-local optionsModule = --[[@as OptionsModule]] LibStub("Buffomat-Options")
-local optionsPopupModule = --[[@as OptionsPopupModule]] LibStub("Buffomat-OptionsPopup")
-local partyModule = --[[@as PartyModule]] LibStub("Buffomat-Party")
-local popupModule = --[[@as PopupModule]] LibStub("Buffomat-Popup")
-local profileModule = --[[@as ProfileModule]] LibStub("Buffomat-Profile")
-local sharedStateModule = --[[@as SharedSettingsModule]] LibStub("Buffomat-SharedSettings")
-local slashModule = --[[@as SlashCommandsModule]] LibStub("Buffomat-SlashCommands")
-local taskScanModule = --[[@as TaskScanModule]] LibStub("Buffomat-TaskScan")
-local toolboxModule = --[[@as LegacyToolboxModule]] LibStub("Buffomat-LegacyToolbox")
-local taskListPanelModule = --[[@as TaskListPanelModule]] LibStub("Buffomat-TaskListPanel")
-local throttleModule = --[[@as ThrottleModule]] LibStub("Buffomat-Throttle")
-local ngStringsModule = --[[@as NgStringsModule]] LibStub("Buffomat-NgStrings")
+local allBuffsModule = LibStub("Buffomat-AllBuffs") --[[@as AllBuffsModule]]
+local characterSettingsModule = LibStub("Buffomat-CharacterSettings") --[[@as CharacterSettingsModule]]
+local constModule = LibStub("Buffomat-Const") --[[@as ConstModule]]
+local eventsModule = LibStub("Buffomat-Events") --[[@as EventsModule]]
+local macroModule = LibStub("Buffomat-Macro") --[[@as MacroModule]]
+local optionsModule = LibStub("Buffomat-Options") --[[@as OptionsModule]]
+local optionsPopupModule = LibStub("Buffomat-OptionsPopup") --[[@as OptionsPopupModule]]
+local partyModule = LibStub("Buffomat-Party") --[[@as PartyModule]]
+local popupModule = LibStub("Buffomat-Popup") --[[@as PopupModule]]
+local profileModule = LibStub("Buffomat-Profile") --[[@as ProfileModule]]
+local sharedStateModule = LibStub("Buffomat-SharedSettings") --[[@as SharedSettingsModule]]
+local slashModule = LibStub("Buffomat-SlashCommands") --[[@as SlashCommandsModule]]
+local taskScanModule = LibStub("Buffomat-TaskScan") --[[@as TaskScanModule]]
+local toolboxModule = LibStub("Buffomat-LegacyToolbox") --[[@as LegacyToolboxModule]]
+local taskListPanelModule = LibStub("Buffomat-TaskListPanel") --[[@as TaskListPanelModule]]
+local throttleModule = LibStub("Buffomat-Throttle") --[[@as ThrottleModule]]
+local ngStringsModule = LibStub("Buffomat-NgStrings") --[[@as NgStringsModule]]
 
 ---@alias BomCastingState "cast"|"channel"|nil
 
@@ -46,7 +45,7 @@ local ngStringsModule = --[[@as NgStringsModule]] LibStub("Buffomat-NgStrings")
 ---@field castFailedSpellId number|nil
 ---@field checkCooldown number|nil Spell id to check cooldown for
 ---@field checkForError boolean Used by error suppression code
----@field currentProfile BomProfile Current profile from CharacterState.Profiles
+---@field currentProfile ProfileSettings Current profile from CharacterState.Profiles
 ---@field declineHasResurrection boolean Set to true on combat start, stop, holding Alt, cleared on party update
 ---@field drinkingPersonCount number Used for warning "X persons is/are drinking"
 ---@field AllDrink WowSpellId[] Used for warning "X persons is/are drinking"
@@ -66,7 +65,6 @@ local ngStringsModule = --[[@as NgStringsModule]] LibStub("Buffomat-NgStrings")
 ---@field nextCooldownDue number Set this to next spell cooldown to force update
 ---@field isPartyUpdateNeeded boolean Requests player party update
 ---@field popupMenuDynamic GPIPopupDynamic
----@field quickSingleBuffToggleButton BomGPIControl Button for single/group buff toggling next to cast button
 ---@field repeatUpdate boolean Requests some sort of spells update similar to ForceUpdate
 ---@field reputationTrinketZones BomReputationTrinketZones Equipped AD trinket: Spell to and zone ids to check
 ---@field RESURRECT_CLASS BomClassName[] Classes who can resurrect others
@@ -76,18 +74,14 @@ local ngStringsModule = --[[@as NgStringsModule]] LibStub("Buffomat-NgStrings")
 ---@field somebodyIsGhost boolean [unused?] Someone in the party is a ghost
 ---@field spellTabsCreatedFlag boolean Indicated spells tab already populated with controls
 ---@field wipeCachedItems boolean Command to reset cached items on the next call to itemListCacheModule; TODO move to itemListCacheModule
----@field Print fun(self: BomAddon, msg: string): void
----@field RegisterEvent fun(self: BomAddon, event: string, handler: function): void
 ---@field setupAvailableSpellsFn function
--- Globally accessibleUI group for the buffs dialog and task list
----@field buffsDialog AceGUIWidget Contains all buffs grouped for selection/priority etc. Shows on demand.
+-- -@field Print fun(self: BomAddon, msg: string): void
+-- -@field RegisterEvent fun(self: BomAddon, event: string, handler: function): void
 
-BuffomatAddon = LibStub("AceAddon-3.0"):NewAddon(
-  "Buffomat", "AceConsole-3.0", "AceEvent-3.0") ---@type BomAddon
+BuffomatAddon = LibStub("AceAddon-3.0"):NewAddon("Buffomat", "AceConsole-3.0", "AceEvent-3.0") --[[@as BomAddon]]
 local BOM = BuffomatAddon
 local libDB = LibStub("LibDataBroker-1.1")
 local libIcon = LibStub("LibDBIcon-1.0")
-local libGUI = LibStub("AceGUI-3.0")
 
 ---@class BomCachedBagItem
 ---@field a boolean Player has item
@@ -164,7 +158,7 @@ end
 function buffomatModule.ChooseProfile(profile)
   if profile == nil or profile == "" or profile == "auto" then
     BOM.forceProfile = nil
-  elseif buffomatModule.character[profile] then
+  elseif buffomatModule.character.profiles[profile] then
     BOM.forceProfile = profile
   else
     BOM:Print("Unknown profile: " .. profile)
@@ -187,7 +181,7 @@ function buffomatModule:UseProfile(profileName)
 
   buffomatModule.currentProfileName = profileName
 
-  local selectedProfile = self.character[profileName] or characterSettingsModule:New(nil)
+  local selectedProfile = characterSettingsModule:GetProfile(profileName)
   buffomatModule.currentProfile = selectedProfile
 
   taskListPanelModule.titleProfile = ngStringsModule:FormatTexture(constModule.BOM_BEAR_ICON_FULLPATH) .. " " .. _t("profile_" .. profileName)
@@ -260,12 +254,6 @@ function buffomatModule:UpdateBuffTabText()
   -- PanelTemplates_TabResize(t, 0)
 end
 
-function buffomatModule:CreateBuffsDialog()
-  BOM.buffsDialog = libGUI:Create("Window")
-  BOM.buffsDialog:SetLayout("Flow")
-  BOM.buffsDialog:SetTitle("Buff Selection")
-end
-
 function buffomatModule:InitUI()
   taskListPanelModule:ShowWindow()
 
@@ -273,7 +261,7 @@ function buffomatModule:InitUI()
 
   BOM.popupMenuDynamic = popupModule:CreatePopup(buffomatModule.OptionsUpdate)
 
-  local function onMinimapClick(self1, button)
+  local function onMinimapClick(_self1, button)
     if button == "LeftButton" then
       taskListPanelModule:ToggleWindow()
     else
@@ -295,54 +283,27 @@ function buffomatModule:InitUI()
 end
 
 function buffomatModule:InitGlobalStates()
-  -- Upgrade from legacy Buffomat State if found
-  ---@type BomSharedSettings
-  local loadedShared = ( --[[@as BomSharedSettings]] BomSharedState or BuffomatShared) or {}
-  if BomSharedState then
-    BomSharedState = nil -- reset after reimport
+  buffomatModule.shared = BuffomatShared --[[@as SharedSettings]]
+  buffomatModule.character = BuffomatCharacter --[[@as CharacterSettings]]
+
+  -- Upgrade from previous Buffomat State if values are found
+  if not self.character.profiles then
+    self.character.profiles = {}
   end
-  BuffomatShared = sharedStateModule:New(loadedShared) ---@type BomSharedSettings
-  buffomatModule.shared = BuffomatShared
-
-  -- Upgrade from legacy Buffomat State if found
-  local loadedChar = ( --[[@as BomCharacterSettings]] BomCharacterState or BuffomatCharacter) or {}
-  if BomCharacterState then
-    BomCharacterState = nil -- reset after reimport
-  end
-  buffomatModule.character = characterSettingsModule:New(loadedChar)
-  BuffomatCharacter = buffomatModule.character
-
-  if self.character.remainingDurations then
-    self.shared.Duration = self.character.remainingDurations
-    self.character.remainingDurations = --[[@as BomSpellDurationsTable]] {}
-  elseif not self.shared.Duration then
-    self.shared.Duration = --[[@as BomSpellDurationsTable]] {}
-  end
-
-  if not self.character[profileModule.ALL_PROFILES[1]] then
-    local newProfile = profileModule:New()
-    --newProfile.CancelBuff = self.character.CancelBuff or {}
-    newProfile.Spell = self.character.Spell or {}
-    newProfile.LastAura = self.character.LastAura
-    newProfile.LastSeal = self.character.LastSeal
-    self.character[profileModule.ALL_PROFILES[1]] = newProfile
-
-    self.character.CancelBuff = nil
-    self.character.Spell = --[[@as BomBuffDefinitionDict]] {}
-    self.character.LastAura = nil
-    self.character.LastSeal = nil
-  end
-
-  for i, each_profile in ipairs(profileModule.ALL_PROFILES) do
-    if not self.character[each_profile] then
-      self.character[each_profile] = profileModule:New()
+  -- Upgrade: Move each named profile settings section into profiles table
+  for _i, profileName in ipairs(profileModule.ALL_PROFILES) do
+    if self.character[profileName] then
+      self.character.profiles[profileName] = self.character[profileName]
+      self.character[profileName] = nil
+    else
+      if not self.character.profiles[each_profile] then
+        self.character.profiles[each_profile] = profileModule:New()
+      end
     end
   end
 
-  --BOM.SharedState = self.shared
-  --BOM.CharacterState = self.character
-  local soloProfile = profileModule:SoloProfile()
-  BOM.currentProfile = self.character[soloProfile or "solo"]
+  local soloProfileName = profileModule:SoloProfile()
+  BOM.currentProfile = self.character.profiles[soloProfileName or "solo"]
 end
 
 ---@return BomSlashCommand[]
@@ -433,18 +394,8 @@ function BuffomatAddon:Init()
   BOM.theMacro = macroModule:NewMacro(constModule.MACRO_NAME, nil)
 
   languagesModule:LocalizationInit()
-
-  do
-    -- addon window position
-    local x, y = buffomatModule.shared.X, buffomatModule.shared.Y
-    local w, h = buffomatModule.shared.Width, buffomatModule.shared.Height
-
-    taskListPanelModule:ShowWindow()
-  end
-
-  slashModule:RegisterSlashCommandHandler({ "/bom", "/buffomat" },
-    self:MakeSlashCommand())
-
+  taskListPanelModule:ShowWindow()
+  slashModule:RegisterSlashCommandHandler({ "/bom", "/buffomat" }, self:MakeSlashCommand())
   buffomatModule:InitUI()
 
   -- Which groups are watched by the buff scanner - save in character state
@@ -503,9 +454,9 @@ end
 
 function buffomatModule:DownGrade()
   if BOM.castFailedBuff
-      and ( --[[---@not nil]] BOM.castFailedBuff).skipList
+      and (BOM.castFailedBuff).skipList
       and BOM.castFailedBuffTarget then
-    local level = UnitLevel(( --[[---@not nil]] BOM.castFailedBuffTarget).unitId)
+    local level = UnitLevel((BOM.castFailedBuffTarget).unitId)
 
     if level ~= nil and level > -1 then
       if self.shared.SpellGreaterEqualThan[BOM.castFailedSpellId] == nil
@@ -515,8 +466,8 @@ function buffomatModule:DownGrade()
         throttleModule:FastUpdateTimer()
         self:RequestTaskRescan("Downgrade")
         self:P(string.format(_t("MsgDownGrade"),
-          ( --[[---@not nil]] BOM.castFailedBuff).singleText,
-          (( --[[---@not nil]] BOM.castFailedBuffTarget).name)))
+          (BOM.castFailedBuff).singleText,
+          ((BOM.castFailedBuffTarget).name)))
       elseif buffomatModule.shared.SpellGreaterEqualThan[BOM.castFailedSpellId] >= level then
         BOM.AddMemberToSkipList()
       end

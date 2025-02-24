@@ -47,7 +47,7 @@ Src/Core/GroupBuffTarget.lua
 Src/Core/Macro.lua
 Src/Core/Unit.lua
 Src/Core/UnitBuffTarget.lua
-Src/Core/Profile.lua
+Src/Core/ProfileSettings.lua
 Src/Core/SharedSettings.lua
 Src/Core/BuffDefinition.lua
 Src/Core/Party.lua

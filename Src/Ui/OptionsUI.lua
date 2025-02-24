@@ -1,9 +1,6 @@
-local BOM = BuffomatAddon
-
 ---@class OptionsModule
 
-local optionsModule = LibStub("Buffomat-Options") --[[@as OptionsModule]]
-
+local optionsModule = LibStub("Buffomat-OptionsUI") --[[@as OptionsModule]]
 local _t = LibStub("Buffomat-Languages") --[[@as LanguagesModule]]
 local allBuffsModule = LibStub("Buffomat-AllBuffs") --[[@as AllBuffsModule]]
 local buffomatModule = LibStub("Buffomat-Buffomat") --[[@as BuffomatModule]]
@@ -12,7 +9,6 @@ local eventsModule = LibStub("Buffomat-Events") --[[@as EventsModule]]
 local taskScanModule = LibStub("Buffomat-TaskScan") --[[@as TaskScanModule]]
 local kvOptionsModule = LibStub("KvLibShared-Options") --[[@as KvOptionsModule]]
 local taskListPanelModule = LibStub("Buffomat-TaskListPanel") --[[@as TaskListPanelModule]]
-
 local libIcon = LibStub("LibDBIcon-1.0")
 
 ---@param dict table|nil
@@ -30,7 +26,6 @@ end
 
 ---@param values table|function Key is sent to the setter, value is the string displayed
 ---@param dict table|nil
----@param key string|nil
 ---@param notifyFn function|nil Call this with (key, value) on option change
 function optionsModule:TemplateMultiselect(name, values, dict, notifyFn, setFn, getFn)
   return kvOptionsModule:TemplateMultiselect(name, values, dict or buffomatModule.shared, notifyFn, setFn, getFn, _t)

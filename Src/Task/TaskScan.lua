@@ -5,35 +5,35 @@ local BOM = BuffomatAddon
 ---@field roundRobinGroup number Group number to refresh, rotates from 1 to 8 in raid, or stays always 1 otherwise
 ---@field saveSomeoneIsDead boolean
 
-local taskScanModule = --[[@as TaskScanModule]] LibStub("Buffomat-TaskScan")
+local taskScanModule = LibStub("Buffomat-TaskScan") --[[@as TaskScanModule]]
 taskScanModule.taskListSizeBeforeScan = 0
 taskScanModule.roundRobinGroup = 0
 taskScanModule.saveSomeoneIsDead = false
 taskScanModule.tasklist = nil
 
-local _t = --[[@as LanguagesModule]] LibStub("Buffomat-Languages")
-local actionCastModule = --[[@as BomActionCastModule]] LibStub("Buffomat-ActionCast")
-local actionMacroModule = --[[@as BomActionMacroModule]] LibStub("Buffomat-ActionMacro")
-local actionUseModule = --[[@as BomActionUseModule]] LibStub("Buffomat-ActionUse")
-local allBuffsModule = --[[@as AllBuffsModule]] LibStub("Buffomat-AllBuffs")
-local buffChecksModule = --[[@as BomBuffChecksModule]] LibStub("Buffomat-BuffChecks")
-local buffDefModule = --[[@as BuffDefinitionModule]] LibStub("Buffomat-BuffDefinition")
-local buffTargetModule = --[[@as BomUnitBuffTargetModule]] LibStub("Buffomat-UnitBuffTarget")
-local buffomatModule = --[[@as BuffomatModule]] LibStub("Buffomat-Buffomat")
-local constModule = --[[@as ConstModule]] LibStub("Buffomat-Const")
-local envModule = --[[@as KvSharedEnvModule]] LibStub("KvLibShared-Env")
-local groupBuffTargetModule = --[[@as BomGroupBuffTargetModule]] LibStub("Buffomat-GroupBuffTarget")
-local itemListCacheModule = --[[@as BomItemListCacheModule]] LibStub("Buffomat-ItemListCache")
-local macroModule = --[[@as MacroModule]] LibStub("Buffomat-Macro")
-local partyModule = --[[@as PartyModule]] LibStub("Buffomat-Party")
-local profileModule = --[[@as ProfileModule]] LibStub("Buffomat-Profile")
-local spellIdsModule = --[[@as SpellIdsModule]] LibStub("Buffomat-SpellIds")
-local taskListModule = --[[@as TaskListModule]] LibStub("Buffomat-TaskList")
-local taskModule = --[[@as BomTaskModule]] LibStub("Buffomat-Task")
-local texturesModule = --[[@as BomTexturesModule]] LibStub("Buffomat-Textures")
-local unitCacheModule = --[[@as BomUnitCacheModule]] LibStub("Buffomat-UnitCache")
-local throttleModule = --[[@as ThrottleModule]] LibStub("Buffomat-Throttle")
-local ngStringsModule = --[[@as NgStringsModule]] LibStub("Buffomat-NgStrings")
+local _t = LibStub("Buffomat-Languages") --[[@as LanguagesModule]]
+local actionCastModule = LibStub("Buffomat-ActionCast") --[[@as BomActionCastModule]]
+local actionMacroModule = LibStub("Buffomat-ActionMacro") --[[@as BomActionMacroModule]]
+local actionUseModule = LibStub("Buffomat-ActionUse") --[[@as BomActionUseModule]]
+local allBuffsModule = LibStub("Buffomat-AllBuffs") --[[@as AllBuffsModule]]
+local buffChecksModule = LibStub("Buffomat-BuffChecks") --[[@as BomBuffChecksModule]]
+local buffDefModule = LibStub("Buffomat-BuffDefinition") --[[@as BuffDefinitionModule]]
+local buffTargetModule = LibStub("Buffomat-UnitBuffTarget") --[[@as BomUnitBuffTargetModule]]
+local buffomatModule = LibStub("Buffomat-Buffomat") --[[@as BuffomatModule]]
+local constModule = LibStub("Buffomat-Const") --[[@as ConstModule]]
+local envModule = LibStub("KvLibShared-Env") --[[@as KvSharedEnvModule]]
+local groupBuffTargetModule = LibStub("Buffomat-GroupBuffTarget") --[[@as BomGroupBuffTargetModule]]
+local itemListCacheModule = LibStub("Buffomat-ItemListCache") --[[@as BomItemListCacheModule]]
+local macroModule = LibStub("Buffomat-Macro") --[[@as MacroModule]]
+local partyModule = LibStub("Buffomat-Party") --[[@as PartyModule]]
+local profileModule = LibStub("Buffomat-Profile") --[[@as ProfileModule]]
+local spellIdsModule = LibStub("Buffomat-SpellIds") --[[@as SpellIdsModule]]
+local taskListModule = LibStub("Buffomat-TaskList") --[[@as TaskListModule]]
+local taskModule = LibStub("Buffomat-Task") --[[@as BomTaskModule]]
+local texturesModule = LibStub("Buffomat-Textures") --[[@as BomTexturesModule]]
+local unitCacheModule = LibStub("Buffomat-UnitCache") --[[@as BomUnitCacheModule]]
+local throttleModule = LibStub("Buffomat-Throttle") --[[@as ThrottleModule]]
+local ngStringsModule = LibStub("Buffomat-NgStrings") --[[@as NgStringsModule]]
 
 ---@class BomBuffScanContext
 ---@field someoneIsDead boolean
@@ -541,8 +541,9 @@ end
 ---@param playerUnit BomUnit
 function taskScanModule:CancelBuffs(playerUnit)
   for i, spell in ipairs(BOM.cancelBuffs or {}) do
-    if buffomatModule.currentProfile.CancelBuff[spell.buffId].Enable
-        and not spell.onlyCombat
+    if buffomatModule.currentProfile
+      and buffomatModule.currentProfile.CancelBuff[spell.buffId].Enable
+      and not spell.onlyCombat
     then
       local player_buff = playerUnit.knownBuffs[spell.buffId]
 
@@ -737,7 +738,7 @@ function taskScanModule:FindTargetForGroupBuff(groupIndex, buffDef, party, minBu
     --end
 
     --if groupInRange ~= nil and (not spell.GroupsHaveDead[groupIndex] or not buffomatModule.shared.DeathBlock) then
-    if (groupIndex and not buffDef.groupsHaveDead[ --[[---@not nil]] groupIndex ])
+    if (groupIndex and not buffDef.groupsHaveDead[groupIndex ])
         or not buffomatModule.shared.DeathBlock then
       -- Text: Group 5 [Spell Name]
       self.tasklist:Add(
@@ -806,7 +807,7 @@ function taskScanModule:AddBuff_SingleBuff(buffDef, minBuff, buffCtx)
         return
       end
 
-      if ( --[[---@not nil]] profileBuff).ForcedTarget[needBuff.name] then
+      if (profileBuff).ForcedTarget[needBuff.name] then
         add = string.format(constModule.PICTURE_FORMAT, texturesModule.ICON_TARGET_ON)
       end
 
@@ -972,7 +973,7 @@ end
 ---@param playerMember BomUnit
 function taskScanModule:AddSummonSpell(buffDef, playerMember)
   if buffDef.sacrificeAuraIds then
-    for i, id in ipairs( --[[---@not nil]] buffDef.sacrificeAuraIds) do
+    for i, id in ipairs(buffDef.sacrificeAuraIds) do
       if playerMember.allBuffs[id] then
         return
       end
@@ -1013,7 +1014,7 @@ end
 function taskScanModule:AddConsumableSelfbuff_NoItem(buffDef, count, playerUnit)
   -- Text: "ConsumableName" x Count
   local task = taskModule:Create(
-        self:FormatItemBuffInactiveText(buffDef.consumeGroupTitle or buffDef.singleText, --[[---@not nil]] count),
+        self:FormatItemBuffInactiveText(buffDef.consumeGroupTitle or buffDef.singleText,count),
         nil)
       :PrefixText(_t("task.type.Consume"))
       :Target(buffTargetModule:FromSelf(playerUnit))
@@ -1077,8 +1078,8 @@ function taskScanModule:AddConsumableSelfbuff(buffDef, playerUnit, target, buffC
 
   if haveItemOffCD then
     self:AddConsumableSelfbuff_HaveItemReady(
-      buffDef, --[[---@not nil]] bestItemIdAvailable,
-      --[[---@not nil]] bag, --[[---@not nil]] slot, --[[---@not nil]] count,
+      buffDef,bestItemIdAvailable,
+     bag,slot,count,
       playerUnit, target)
   else
     self:AddConsumableSelfbuff_NoItem(buffDef, count or 0, playerUnit)
@@ -1164,7 +1165,7 @@ function taskScanModule:CharacterCanEnchantMainhand()
   if info == nil then
     return false
   end
-  local i = ( --[[---@not nil]] info)
+  local i = (info)
   return i.itemClassID == ( --[[Weapon]] 2) and i.itemSubClassID ~= ( --[[Fishing Poles]] 20)
 end
 
@@ -1183,8 +1184,8 @@ function taskScanModule:AddConsumableWeaponBuff_HaveItem(buffDef, bag, slot, cou
   -- Have item, display the cast message and setup the cast button
   local itemInfo = envModule.GetContainerItemInfo(bag, slot)
   local profileBuff = buffDefModule:GetProfileBuff(buffDef.buffId, nil)
-  local needOffhand = ( --[[---@not nil]] profileBuff).OffHandEnable and playerUnit.offhandEnchantment == nil
-  local needMainhand = ( --[[---@not nil]] profileBuff).MainHandEnable and playerUnit.mainhandEnchantment == nil
+  local needOffhand = (profileBuff).OffHandEnable and playerUnit.offhandEnchantment == nil
+  local needMainhand = (profileBuff).MainHandEnable and playerUnit.mainhandEnchantment == nil
 
   if not self:CharacterCanEnchantMainhand() and needMainhand then
     self.tasklist:Comment(_t("task.error.missingMainhandWeapon"))
@@ -1240,10 +1241,10 @@ function taskScanModule:AddConsumableWeaponBuff(buffDef, playerUnit, buffCtx)
 
   if haveItem then
     self:AddConsumableWeaponBuff_HaveItem(buffDef,
-      --[[---@not nil]] bag, --[[---@not nil]] slot, --[[---@not nil]] count,
+     bag,slot,count,
       playerUnit)
   else
-    self:AddConsumableWeaponBuff_DontHaveItem(buffDef, --[[---@not nil]] count, playerUnit)
+    self:AddConsumableWeaponBuff_DontHaveItem(buffDef,count, playerUnit)
   end
 end
 
@@ -1277,7 +1278,7 @@ function taskScanModule:AddWeaponEnchant(buffDef, playerUnit, buffCtx)
   -- OFFHAND FIRST
   if profileBuff
       and hasMainhand
-      and ( --[[---@not nil]] profileBuff).OffHandEnable
+      and (profileBuff).OffHandEnable
       and playerUnit.offhandEnchantment == nil then
     -- Text: [Spell Name] (Off-hand)
     local task = taskModule:Create(buffDef:SingleLink(), buffDef.singleText)
@@ -1293,7 +1294,7 @@ function taskScanModule:AddWeaponEnchant(buffDef, playerUnit, buffCtx)
 
   -- MAINHAND AFTER OFFHAND
   if profileBuff
-      and ( --[[---@not nil]] profileBuff).MainHandEnable
+      and (profileBuff).MainHandEnable
       and playerUnit.mainhandEnchantment == nil then
     -- Special case is ruled by the option `ShamanFlametongueRanked`
     -- Flametongue enchant for spellhancement shamans only!
@@ -1518,7 +1519,7 @@ function taskScanModule:CreateBuffTasks(party, buffCtx)
     local profileBuff = buffDefModule:GetProfileBuff(buffDef.buffId, nil)
 
     if buffDef.isInfo and profileBuff
-        and ( --[[---@not nil]] profileBuff).AllowWhisper then
+        and (profileBuff).AllowWhisper then
       self:WhisperExpired(buffDef)
     end
 
@@ -1545,10 +1546,10 @@ function taskScanModule:MountedCrusaderAuraPrompt()
     local task = taskModule:Create(spell:SingleLink(), spell.singleText)
         :PrefixText(_t("TASK_CAST"))
         :ExtraText(_t("task.target.SelfOnly"))
-        :Target(buffTargetModule:FromSelf( --[[---@not nil]] playerUnit))
+        :Target(buffTargetModule:FromSelf(playerUnit))
         :Action(actionCastModule:New(
           spell.singleMana, spell.highestRankSingleId, spell:SingleLink(),
-          --[[---@not nil]] playerUnit, spell, false))
+         playerUnit, spell, false))
     self.tasklist:Add(task)
 
     return true -- only show the aura and nothing else
@@ -1650,7 +1651,7 @@ function taskScanModule:UpdateScan_Finalize()
 
   local firstToCast = self.tasklist:SelectTask()
   if firstToCast then
-    self.tasklist:CastButton( --[[---@not nil]] firstToCast)
+    self.tasklist:CastButton(firstToCast)
   else
     -- Nothing to do
     return self.tasklist:CastButton_Nothing() -- this is basically equal to if #tasklist.tasks == 0 below
@@ -1769,8 +1770,8 @@ end
 ---continue casting buffs on other members
 function BOM.AddMemberToSkipList()
   if BOM.castFailedBuff and BOM.castFailedBuffTarget then
-    local castFailedBuffVal = --[[---@not nil]] BOM.castFailedBuff
-    local castFailedTarget = --[[---@not nil]] BOM.castFailedBuffTarget
+    local castFailedBuffVal =BOM.castFailedBuff
+    local castFailedTarget =BOM.castFailedBuffTarget
 
     if (castFailedBuffVal).skipList
         and BOM.castFailedBuffTarget then

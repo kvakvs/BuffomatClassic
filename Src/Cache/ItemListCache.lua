@@ -3,11 +3,11 @@ local BOM = BuffomatAddon
 
 ---@class BomItemListCacheModule
 
-local itemListCacheModule = --[[@as BomItemListCacheModule]] LibStub("Buffomat-ItemListCache")
-local itemIdsModule = --[[@as ItemIdsModule]] LibStub("Buffomat-ItemIds")
-local buffomatModule = --[[@as BuffomatModule]] LibStub("Buffomat-Buffomat")
-local toolboxModule = --[[@as LegacyToolboxModule]] LibStub("Buffomat-LegacyToolbox")
-local envModule = --[[@as KvSharedEnvModule]] LibStub("KvLibShared-Env")
+local itemListCacheModule = LibStub("Buffomat-ItemListCache") --[[@as BomItemListCacheModule]]
+local itemIdsModule = LibStub("Buffomat-ItemIds") --[[@as ItemIdsModule]]
+local buffomatModule = LibStub("Buffomat-Buffomat") --[[@as BuffomatModule]]
+local toolboxModule = LibStub("Buffomat-LegacyToolbox") --[[@as LegacyToolboxModule]]
+local envModule = LibStub("KvLibShared-Env") --[[@as KvSharedEnvModule]]
 
 BOM.wipeCachedItems = true
 

@@ -2,11 +2,11 @@ local BOM = BuffomatAddon
 
 ---@class ThrottleModule
 
-local throttleModule = --[[@as ThrottleModule]] LibStub("Buffomat-Throttle")
-local buffomatModule = --[[@as BuffomatModule]] LibStub("Buffomat-Buffomat")
-local eventsModule = --[[@as EventsModule]] LibStub("Buffomat-Events")
-local taskScanModule = --[[@as TaskScanModule]] LibStub("Buffomat-TaskScan")
-local profileModule = --[[@as ProfileModule]] LibStub("Buffomat-Profile")
+local throttleModule = LibStub("Buffomat-Throttle") --[[@as ThrottleModule]]
+local buffomatModule = LibStub("Buffomat-Buffomat") --[[@as BuffomatModule]]
+local eventsModule = LibStub("Buffomat-Events") --[[@as EventsModule]]
+local taskScanModule = LibStub("Buffomat-TaskScan") --[[@as TaskScanModule]]
+local profileModule = LibStub("Buffomat-Profile") --[[@as ProfileModule]]
 
 ---@class BomThrottleState
 ---@field lastUpdateTimestamp number
