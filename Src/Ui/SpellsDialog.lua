@@ -16,11 +16,10 @@ local spellsDialogModule = --[[@as BomSpellsDialogModule]] LibStub("Buffomat-Spe
 local _t = LibStub("Buffomat-Languages") --[[@as LanguagesModule]]
 local allBuffsModule = LibStub("Buffomat-AllBuffs") --[[@as AllBuffsModule]]
 local buffomatModule = LibStub("Buffomat-Buffomat") --[[@as BuffomatModule]]
-local buffDefModule = LibStub("Buffomat-BuffDefinition") --[[@as BuffDefinitionModule]]
 local ngToolboxModule = LibStub("Buffomat-NgToolbox") --[[@as NgToolboxModule]]
-local texturesModule = LibStub("Buffomat-Textures") --[[@as BomTexturesModule]]
+local texturesModule = LibStub("Buffomat-Textures") --[[@as TexturesModule]]
 local ngStringsModule = LibStub("Buffomat-NgStrings") --[[@as NgStringsModule]]
-
+local profileModule = LibStub("Buffomat-Profile") --[[@as ProfileModule]]
 local libGUI = LibStub("AceGUI-3.0")
 
 function spellsDialogModule:Show()
@@ -66,8 +65,7 @@ function spellsDialogModule:FillBuffsList()
   self:CreateCategoryFrames(self.context)
 
   for _, buffDef in ipairs(allBuffsModule.selectedBuffs) do
-    --local profileBuff = buffomatModule.currentProfile.Spell[buffDef.buffId]
-    local profileBuff = buffDefModule:GetProfileBuff(buffDef.buffId, nil)
+    local profileBuff = profileModule:GetProfileBuff(buffDef.buffId, nil)
 
     if not self:CategoryIsHidden(buffDef.category) then
       local categoryFrame = self.context.categoryFrames[buffDef.category]

@@ -12,11 +12,10 @@ local optionsPopupModule = LibStub("Buffomat-OptionsPopup") --[[@as OptionsPopup
 local _t = LibStub("Buffomat-Languages") --[[@as LanguagesModule]]
 local buffomatModule = LibStub("Buffomat-Buffomat") --[[@as BuffomatModule]]
 local constModule = LibStub("Buffomat-Const") --[[@as ConstModule]]
-local buffDefModule = LibStub("Buffomat-BuffDefinition") --[[@as BuffDefinitionModule]]
 local profileModule = LibStub("Buffomat-Profile") --[[@as ProfileModule]]
 local popupModule = LibStub("Buffomat-Popup") --[[@as PopupModule]]
 local allBuffsModule = LibStub("Buffomat-AllBuffs") --[[@as AllBuffsModule]]
-
+local taskListPanelModule = LibStub("Buffomat-TaskListPanel") --[[@as TaskListPanelModule]]
 
 ---Makes a tuple to pass to the menubuilder to display a settings checkbox in popup menu
 ---@param db table - BuffomatShared reference to read settings from it
@@ -57,7 +56,10 @@ function optionsPopupModule:Setup(control, minimap)
   end)
 
   if minimap then
-    table.insert(menuItems, popupModule:Clickable(_t("popup.OpenBuffomat"), BOM.ShowWindow, nil, nil))
+    table.insert(menuItems,
+      popupModule:Clickable(_t("popup.OpenBuffomat"),
+        function() taskListPanelModule:ShowWindow() end,
+        nil, nil))
     table.insert(menuItems, popupModule:Separator())
     table.insert(menuItems, popupModule:Boolean(_t("options.short.ShowMinimapButton"),
       buffomatModule.shared.Minimap, "visible"))
@@ -105,7 +107,7 @@ function optionsPopupModule:Setup(control, minimap)
       if not buffDef.isConsumable then
         table.insert(menuItems, popupModule:Boolean(
           buffDef:SingleLink(),
-          buffDefModule:GetProfileBuff(buffDef.buffId, nil),
+          profileModule:GetProfileBuff(buffDef.buffId, nil),
           "Enable"))
       end
     end

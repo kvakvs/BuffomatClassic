@@ -1,13 +1,13 @@
 -- local TOCNAME, _ = ...
 
----@class BomUnitCacheModule
+---@class UnitCacheModule
 ---@field unitCache table<string, BomUnit>
 
-local unitCacheModule = LibStub("Buffomat-UnitCache") --[[@as BomUnitCacheModule]]
+local unitCacheModule = LibStub("Buffomat-UnitCache") --[[@as UnitCacheModule]]
 unitCacheModule.unitCache = {}
 local constModule = LibStub("Buffomat-Const") --[[@as ConstModule]]
 local partyModule = LibStub("Buffomat-Party") --[[@as PartyModule]]
-local texturesModule = LibStub("Buffomat-Textures") --[[@as BomTexturesModule]]
+local texturesModule = LibStub("Buffomat-Textures") --[[@as TexturesModule]]
 local unitModule = LibStub("Buffomat-Unit") --[[@as BomUnitModule]]
 local ngStringsModule = LibStub("Buffomat-NgStrings") --[[@as NgStringsModule]]
 

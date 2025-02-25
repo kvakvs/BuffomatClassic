@@ -32,7 +32,7 @@ local ngStringsModule = LibStub("Buffomat-NgStrings") --[[@as NgStringsModule]]
 ---@class BomAddon : AceAddon
 ---@field activePaladinAura nil|number Spell id of aura if an unique aura was casted (only one can be active)
 ---@field activePaladinSeal nil|number Spell id of weapon seal, if an seal-type temporary enchant was used (only one can be active)
----@field ALL_PROFILES BomProfileName[] Lists all buffomat profile names (group, solo... etc)
+---@field ALL_PROFILES ProfileName[] Lists all buffomat profile names (group, solo... etc)
 ---@field buffExchangeId table<number, number[]> Combines spell ids of spellrank flavours into main spell id
 ---@field buffIgnoreAll number[] Having this buff on target excludes the target (phaseshifted imp for example)
 ---@field cachedPlayerBag BomCachedPlayerBag Items in player's bag
@@ -48,7 +48,7 @@ local ngStringsModule = LibStub("Buffomat-NgStrings") --[[@as NgStringsModule]]
 ---@field drinkingPersonCount number Used for warning "X persons is/are drinking"
 ---@field AllDrink WowSpellId[] Used for warning "X persons is/are drinking"
 ---@field enchantList {[WowSpellId]: number[]} Spell ids mapping to enchantment ids
----@field forceProfile BomProfileName|nil Nil will choose profile name automatically, otherwise this profile will be used
+---@field forceProfile ProfileName|nil Nil will choose profile name automatically, otherwise this profile will be used
 ---@field forceTracking WowIconId|nil Defines icon id for enforced tracking
 ---@field forceUpdate boolean Requests immediate spells/buffs refresh
 ---@field inLoadingScreen boolean True while in the loading screen
@@ -152,7 +152,7 @@ end
 
 ---ChooseProfile
 ---BOM profile selection, using 'auto' by default
----@param profile BomProfileName
+---@param profile ProfileName
 function buffomatModule.ChooseProfile(profile)
   if profile == nil or profile == "" or profile == "auto" then
     BOM.forceProfile = nil
@@ -171,7 +171,7 @@ function buffomatModule.ChooseProfile(profile)
   buffomatModule:UseProfile(profile)
 end
 
----@param profileName BomProfileName
+---@param profileName ProfileName
 function buffomatModule:UseProfile(profileName)
   if buffomatModule.currentProfileName == profileName then
     return

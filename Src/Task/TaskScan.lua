@@ -16,24 +16,24 @@ local actionCastModule = LibStub("Buffomat-ActionCast") --[[@as BomActionCastMod
 local actionMacroModule = LibStub("Buffomat-ActionMacro") --[[@as BomActionMacroModule]]
 local actionUseModule = LibStub("Buffomat-ActionUse") --[[@as BomActionUseModule]]
 local allBuffsModule = LibStub("Buffomat-AllBuffs") --[[@as AllBuffsModule]]
-local buffChecksModule = LibStub("Buffomat-BuffChecks") --[[@as BomBuffChecksModule]]
+local buffChecksModule = LibStub("Buffomat-BuffChecks") --[[@as BuffChecksModule]]
 local buffDefModule = LibStub("Buffomat-BuffDefinition") --[[@as BuffDefinitionModule]]
-local buffTargetModule = LibStub("Buffomat-UnitBuffTarget") --[[@as BomUnitBuffTargetModule]]
 local buffomatModule = LibStub("Buffomat-Buffomat") --[[@as BuffomatModule]]
+local buffTargetModule = LibStub("Buffomat-UnitBuffTarget") --[[@as BomUnitBuffTargetModule]]
 local constModule = LibStub("Buffomat-Const") --[[@as ConstModule]]
 local envModule = LibStub("KvLibShared-Env") --[[@as KvSharedEnvModule]]
 local groupBuffTargetModule = LibStub("Buffomat-GroupBuffTarget") --[[@as BomGroupBuffTargetModule]]
 local itemListCacheModule = LibStub("Buffomat-ItemListCache") --[[@as BomItemListCacheModule]]
 local macroModule = LibStub("Buffomat-Macro") --[[@as MacroModule]]
+local ngStringsModule = LibStub("Buffomat-NgStrings") --[[@as NgStringsModule]]
 local partyModule = LibStub("Buffomat-Party") --[[@as PartyModule]]
 local profileModule = LibStub("Buffomat-Profile") --[[@as ProfileModule]]
 local spellIdsModule = LibStub("Buffomat-SpellIds") --[[@as SpellIdsModule]]
 local taskListModule = LibStub("Buffomat-TaskList") --[[@as TaskListModule]]
 local taskModule = LibStub("Buffomat-Task") --[[@as BomTaskModule]]
-local texturesModule = LibStub("Buffomat-Textures") --[[@as BomTexturesModule]]
-local unitCacheModule = LibStub("Buffomat-UnitCache") --[[@as BomUnitCacheModule]]
+local texturesModule = LibStub("Buffomat-Textures") --[[@as TexturesModule]]
 local throttleModule = LibStub("Buffomat-Throttle") --[[@as ThrottleModule]]
-local ngStringsModule = LibStub("Buffomat-NgStrings") --[[@as NgStringsModule]]
+local unitCacheModule = LibStub("Buffomat-UnitCache") --[[@as UnitCacheModule]]
 
 ---@class BomBuffScanContext
 ---@field someoneIsDead boolean
@@ -801,7 +801,7 @@ function taskScanModule:AddBuff_SingleBuff(buffDef, minBuff, buffCtx)
       end
 
       local add = ""
-      local profileBuff = buffDefModule:GetProfileBuff(buffDef.buffId, nil)
+      local profileBuff = profileModule:GetProfileBuff(buffDef.buffId, nil)
       if not profileBuff then
         BOM:Debug("No profile buff for " .. buffDef.buffId)
         return
@@ -1183,7 +1183,7 @@ end
 function taskScanModule:AddConsumableWeaponBuff_HaveItem(buffDef, bag, slot, count, playerUnit)
   -- Have item, display the cast message and setup the cast button
   local itemInfo = envModule.GetContainerItemInfo(bag, slot)
-  local profileBuff = buffDefModule:GetProfileBuff(buffDef.buffId, nil)
+  local profileBuff = profileModule:GetProfileBuff(buffDef.buffId, nil)
   local needOffhand = (profileBuff).OffHandEnable and playerUnit.offhandEnchantment == nil
   local needMainhand = (profileBuff).MainHandEnable and playerUnit.mainhandEnchantment == nil
 
@@ -1273,7 +1273,7 @@ function taskScanModule:AddWeaponEnchant(buffDef, playerUnit, buffCtx)
   local hasMainhand, _mhExpire, _mhCharges, _mhEnchantid
   , hasOffhand, _ohExpire, _ohCharges, _ohEnchantid = GetWeaponEnchantInfo()
 
-  local profileBuff = buffDefModule:GetProfileBuff(buffDef.buffId, nil)
+  local profileBuff = profileModule:GetProfileBuff(buffDef.buffId, nil)
 
   -- OFFHAND FIRST
   if profileBuff
@@ -1516,7 +1516,7 @@ end
 function taskScanModule:CreateBuffTasks(party, buffCtx)
   -- Go through all available and selected player buffs
   for _, buffDef in ipairs(allBuffsModule.selectedBuffs) do
-    local profileBuff = buffDefModule:GetProfileBuff(buffDef.buffId, nil)
+    local profileBuff = profileModule:GetProfileBuff(buffDef.buffId, nil)
 
     if buffDef.isInfo and profileBuff
         and (profileBuff).AllowWhisper then

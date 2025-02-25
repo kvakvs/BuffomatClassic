@@ -17,7 +17,7 @@ local buffomatModule = LibStub("Buffomat-Buffomat") --[[@as BuffomatModule]]
 local spellCacheModule = LibStub("Buffomat-SpellCache") --[[@as BomSpellCacheModule]]
 local itemCacheModule = LibStub("Buffomat-ItemCache") --[[@as BomItemCacheModule]]
 local allBuffsModule = LibStub("Buffomat-AllBuffs") --[[@as AllBuffsModule]]
-
+local profileModule = LibStub("Buffomat-Profile") --[[@as ProfileModule]]
 ---type="aura" Auras are no target buff check. True if the buff affects others in radius, and not a target buff
 ---type="seal" Seals are 1hand enchants which are unique for equipped weapon. Paladins use seals. Shamans also use seals but in TBC shamans have 2 independent seals.
 ---type="resurrection" The spell will bring up a dead person
@@ -57,23 +57,28 @@ end
 ---@alias BomForcedTargets {[string]: boolean}
 ---@alias BomDeadMap {[number|BomClassName]: boolean}
 
+-- Fields below belong to PlayerBuffChoice
+-- -@field AllowWhisper boolean [⚠DO NOT RENAME] Allow whispering expired soulstone to the warlock
+-- -@field Class table<BomClassName, boolean> [⚠DO NOT RENAME] List of classes to receive this buff
+-- -@field Enable boolean [⚠DO NOT RENAME]  Whether buff is to be watched
+-- -@field ExcludedTarget BomForcedTargets [⚠DO NOT RENAME] List of target names to never buff
+-- -@field ForcedTarget BomForcedTargets [⚠DO NOT RENAME] List of extra targets to buff
+-- -@field MainHandEnable boolean [⚠DO NOT RENAME]
+-- -@field OffHandEnable boolean [⚠DO NOT RENAME]
+-- -@field SelfCast boolean [⚠DO NOT RENAME]
+
 ---@class BomBuffDefinition
----@field AllowWhisper boolean [⚠DO NOT RENAME] Allow whispering expired soulstone to the warlock
 ---@field buffId BomBuffId Spell id of level 60 spell used as key everywhere else
 ---@field buffSource string Unit/player who gave this buff
 ---@field category BomBuffCategoryName Group by this field and use special translation table to display headers
----@field Class table<BomClassName, boolean> [⚠DO NOT RENAME] List of classes to receive this buff
 ---@field consumableEra string One of constants BOM.CLASSIC_ERA or BOM.IsTBC_ERA which will affect buff visibility based on used choice
 ---@field consumableTarget string Add "[@" .. consumableTarget .. "]" to the "/use bag slot" macro
 ---@field creatureFamily BomCreatureFamily Warlock summon pet family for type='summon' (Imp, etc)
 ---@field creatureType BomCreatureType Warlock summon pet type for type='summon' (Demon)
 ---@field default boolean Whether the spell auto-cast is enabled by default
 ---@field elixirType string|nil Use this for elixir mutual exclusions on elixirs
----@field Enable boolean [⚠DO NOT RENAME]  Whether buff is to be watched
 ---@field customSort string [⚠DO NOT RENAME]  Custom sorting value (default 5)
----@field ExcludedTarget BomForcedTargets [⚠DO NOT RENAME] List of target names to never buff
 ---@field extraText string Added to the right of spell name in the spells config
----@field ForcedTarget BomForcedTargets [⚠DO NOT RENAME] List of extra targets to buff
 ---@field groupDuration number Buff duration for group buff in seconds
 ---@field groupFamily number[]|nil Family of group buff spell ids which are mutually exclusive
 ---@field groupLink string Printable link for group buff
@@ -94,9 +99,7 @@ end
 ---@field items WowItemId[]|nil Conjuration spells create these items. Or buff is granted by an item in user's bag. Number is item id shows as the icon.
 ---@field limitations BomSpellLimitations|nil [Temporary] field for post-filtering on spell list creation, later zeroed
 ---@field lockIfHaveItem WowItemId[] Item ids which prevent this buff (unique conjured items for example)
----@field MainHandEnable boolean [⚠DO NOT RENAME]
 ---@field name string Loaded in spellcache.
----@field OffHandEnable boolean [⚠DO NOT RENAME]
 ---@field onlyUsableFor string[] list of classes which only can see this buff (hidden for others)
 ---@field optionText string Used to create sections in spell list in the options page
 ---@field reagentRequired WowItemId[] Reagent item ids required for group buff
@@ -105,7 +108,6 @@ end
 ---@field requireWarlockPet boolean For Soul Link - must check if a demon pet is present
 ---@field sacrificeAuraIds WowSpellId[]|nil Aura id for demonic sacrifice of that pet. Do not summon if buff is present.
 ---@field section string Custom section to begin new spells group in the row builder
----@field SelfCast boolean [⚠DO NOT RENAME]
 ---@field shapeshiftFormId WowShapeshiftFormId Class-based form id (coming from GetShapeshiftFormID LUA API) if active, the spell is skipped
 ---@field singleDuration number - buff duration for single buff in seconds
 ---@field providesAuras WowSpellId[]|nil Check these if not nil; For special items which create multiple varied buffs
@@ -716,23 +718,7 @@ function buffDefClass:IncrementNeedGroupBuff(class_name)
   self.groupsNeedBuff[class_name] = (self.groupsNeedBuff[class_name] or 0) + 1
 end
 
----@param buffId BomBuffId
----@param profileName BomProfileName|nil
----@return BomBuffDefinition|nil
-function buffDefModule:GetProfileBuff(buffId, profileName)
-  if profileName == nil then
-    return buffomatModule.currentProfile.Spell[buffId]
-  end
-
-  local profile = buffomatModule.character.profiles[profileName ]
-  if profile == nil then
-    return nil
-  end
-
-  return profile.Spell[buffId]
-end
-
----@param profileName BomProfileName|nil
+---@param profileName ProfileName|nil
 ---@return BlessingState
 function buffDefModule:GetProfileBlessingState(profileName)
   if profileName == nil then
@@ -750,10 +736,10 @@ end
 
 ---Returns true whether spell is enabled by the player (has checkbox)
 ---@param buffId number The key to the allSpells dictionary
----@param profileName BomProfileName|nil
+---@param profileName ProfileName|nil
 ---@return boolean
 function buffDefModule:IsBuffEnabled(buffId, profileName)
-  local spell = buffDefModule:GetProfileBuff(buffId, profileName)
+  local spell = profileModule:GetProfileBuff(buffId, profileName)
   if spell == nil then
     return false
   end

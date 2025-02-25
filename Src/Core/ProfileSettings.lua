@@ -1,7 +1,7 @@
 local BOM = BuffomatAddon
 
 ---@class ProfileModule
----@field ALL_PROFILES BomProfileName[]
+---@field ALL_PROFILES ProfileName[]
 
 local profileModule = LibStub("Buffomat-Profile") --[[@as ProfileModule]]
 local buffomatModule = LibStub("Buffomat-Buffomat") --[[@as BuffomatModule]]
@@ -9,6 +9,21 @@ local envModule = LibStub("KvLibShared-Env") --[[@as KvSharedEnvModule]]
 
 ---A single blessing per unit name is possible
 ---@alias BlessingState {[string]: BomBuffId}
+
+---Choices made by the player for a single buff
+---@class PlayerBuffChoice
+---@field Enable boolean
+---@field Classes {[BomClassName]: boolean}
+---@field ForcedTarget {[string]: boolean}
+---@field ExcludedTarget {[string]: boolean}
+---@field SelfCast boolean
+---@field CustomSort string
+---@field AllowWhisper boolean
+---@field MainHandEnable boolean
+---@field OffHandEnable boolean
+
+---A collection of player choices per buff id
+---@alias PlayerBuffChoiceDict {[BomBuffId]: PlayerBuffChoice}
 
 ---@return BlessingState
 function profileModule:NewBlessingState()
@@ -46,7 +61,7 @@ end
 ---@field UseRank boolean Use ranked spells
 ---@field SlowerHardware boolean Less frequent updates
 ---@field CancelBuff BomAllBuffsTable --table<BomBuffId, BomBuffDefinition>
----@field Spell BomBuffDefinitionDict Player choices per buff id
+---@field Spell PlayerBuffChoiceDict Player choices per buff id
 ---@field LastSeal number|nil
 ---@field LastAura number|nil
 
@@ -92,7 +107,7 @@ local function bomGetActiveTalentGroup()
   end
 end
 
----@return BomProfileName
+---@return ProfileName
 function profileModule:SoloProfile()
   local spec = bomGetActiveTalentGroup()
   if spec == 1 or spec == nil then
@@ -102,7 +117,7 @@ function profileModule:SoloProfile()
   end
 end
 
----@return BomProfileName
+---@return ProfileName
 function profileModule:GroupProfile()
   local spec = bomGetActiveTalentGroup()
   if spec == 1 or spec == nil then
@@ -112,7 +127,7 @@ function profileModule:GroupProfile()
   end
 end
 
----@return BomProfileName
+---@return ProfileName
 function profileModule:RaidProfile()
   local spec = bomGetActiveTalentGroup()
   if spec == 1 or spec == nil then
@@ -122,7 +137,7 @@ function profileModule:RaidProfile()
   end
 end
 
----@return BomProfileName
+---@return ProfileName
 function profileModule:BattlegroundProfile()
   local spec = bomGetActiveTalentGroup()
   if spec == 1 or spec == nil then
@@ -134,7 +149,7 @@ end
 
 ---Based on profile settings and current PVE or PVP instance choose the mode
 ---of operation
----@return BomProfileName
+---@return ProfileName
 function profileModule:ChooseProfile()
   local _inInstance, instanceType = IsInInstance()
   local selectedProfile = self:SoloProfile()
@@ -147,7 +162,7 @@ function profileModule:ChooseProfile()
 
   -- TODO: Refactor isDisabled into a function, also return reason why is disabled
   if BOM.forceProfile then
-    selectedProfile =BOM.forceProfile
+    selectedProfile = BOM.forceProfile or selectedProfile
   elseif not buffomatModule.character.UseProfiles then
     selectedProfile = self:SoloProfile()
   elseif instanceType == "pvp" or instanceType == "arena" then
@@ -155,4 +170,20 @@ function profileModule:ChooseProfile()
   end
 
   return selectedProfile
+end
+
+---@param buffId BomBuffId
+---@param profileName ProfileName|nil
+---@return PlayerBuffChoice
+function profileModule:GetProfileBuff(buffId, profileName)
+  if profileName == nil then
+    return buffomatModule.currentProfile.Spell[buffId]
+  end
+
+  local profile = buffomatModule.character.profiles[profileName ]
+  if profile == nil then
+    return nil
+  end
+
+  return profile.Spell[buffId]
 end

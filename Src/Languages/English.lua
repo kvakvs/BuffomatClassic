@@ -341,7 +341,7 @@ function englishModule:Translations()
         --TabItems = "Items",
         --TabBehaviour = "Behaviour",
 
-        ["popup.OpenBuffomat"] = "Open",
+        ["popup.OpenBuffomat"] = "Show Buffomat",
         BtnCancel = "Cancel",
         ["popup.QuickSettings"] = "Quick Settings",
         ["optionsMenu.Settings"] = "Settings Window",

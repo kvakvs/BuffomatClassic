@@ -1,6 +1,3 @@
-local TOCNAME, _ = ...
-local BOM = BuffomatAddon
-
 ---@class SharedSettingsModule
 
 local sharedSettingsModule = LibStub("Buffomat-SharedSettings") --[[@as SharedSettingsModule]]
@@ -10,14 +7,14 @@ sharedSettingsModule.defaults = {
   SomeoneIsDrinking = "low-prio",
 }
 
----@class BomMinimapSettings
+---@class (exact) BomMinimapSettings
 ---@field visible boolean
 ---@field lock boolean
 ---@field lockDistance boolean
 ---@field position number
 ---@field distance number
 
----@class SharedSettings Current character state snapshots per profile
+---@class (exact) SharedSettings Current character state snapshots per profile
 ---@field Cache BomItemCache Caches responses from GetItemInfo() and GetSpellInfo()
 ---@field X number Window horizontal position
 ---@field Y number Window vertical position
@@ -95,6 +92,7 @@ end
 
 ---@return SharedSettings
 function sharedSettingsModule:Defaults()
+  ---@type SharedSettings
   return {
     UIWindowScale = 1,
     AutoOpen = true,

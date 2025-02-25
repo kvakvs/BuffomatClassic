@@ -18,13 +18,13 @@ if false then
   local _t = LibStub("Buffomat-Languages") --[[@as LanguagesModule]]
   local allBuffsModule = LibStub("Buffomat-AllBuffs") --[[@as AllBuffsModule]]
   local buffDefModule = LibStub("Buffomat-BuffDefinition") --[[@as BuffDefinitionModule]]
-  local buffRowModule = LibStub("Buffomat-BuffRow") --[[@as BomBuffRowModule]]
+  local buffRowModule = LibStub("Buffomat-BuffRow") --[[@as BuffRowModule]]
   local buffomatModule = LibStub("Buffomat-Buffomat") --[[@as BuffomatModule]]
   local constModule = LibStub("Buffomat-Const") --[[@as ConstModule]]
   local managedUiModule = BomModuleManager.myButtonModule
   local profileModule = LibStub("Buffomat-Profile") --[[@as ProfileModule]]
   local rowBuilderModule = BomModuleManager.rowBuilderModule
-  local texturesModule = LibStub("Buffomat-Textures") --[[@as BomTexturesModule]]
+  local texturesModule = LibStub("Buffomat-Textures") --[[@as TexturesModule]]
   local toolboxModule = LibStub("Buffomat-LegacyToolbox") --[[@as LegacyToolboxModule]]
   local envModule = LibStub("KvLibShared-Env") --[[@as KvSharedEnvModule]]
 
@@ -190,7 +190,7 @@ if false then
   ---@param buff BomBuffDefinition Spell we're adding now
   -- -@param rowBuilder BomRowBuilder The structure used for building button rows
   function spellButtonsTabModule:AddSpellRow(rowBuilder, playerIsHorde, buff)
-    local profileBuff = buffDefModule:GetProfileBuff(buff.buffId, nil)
+    local profileBuff = profileModule:GetProfileBuff(buff.buffId, nil)
     if profileBuff == nil then
       return
     end

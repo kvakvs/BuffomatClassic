@@ -2,12 +2,12 @@ if false then
   --local TOCNAME, _ = ...
   local BOM = BuffomatAddon
 
-  ---@class BomBuffRowModule
+  ---@class BuffRowModule
 
-  local buffRowModule = --[[@as BomBuffRowModule]] LibStub("Buffomat-BuffRow")
+  local buffRowModule = --[[@as BuffRowModule]] LibStub("Buffomat-BuffRow")
   local _t = LibStub("Buffomat-Languages") --[[@as LanguagesModule]]
   local toolboxModule = LibStub("Buffomat-LegacyToolbox") --[[@as LegacyToolboxModule]]
-  local texturesModule = --[[@as BomTexturesModule]] LibStub("Buffomat-Textures")
+  local texturesModule = --[[@as TexturesModule]] LibStub("Buffomat-Textures")
 
   ---@class BomBuffRowFrames
   ---@field [BomClassName] BomGPIControl Used for class toggle buttons

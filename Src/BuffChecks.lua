@@ -1,15 +1,16 @@
 local BOM = BuffomatAddon
 
----@class BomBuffChecksModule
+---@class BuffChecksModule
 
-local buffChecksModule = LibStub("Buffomat-BuffChecks") --[[@as BomBuffChecksModule]]
+local buffChecksModule = LibStub("Buffomat-BuffChecks") --[[@as BuffChecksModule]]
 local allBuffsModule = LibStub("Buffomat-AllBuffs") --[[@as AllBuffsModule]]
 local buffDefModule = LibStub("Buffomat-BuffDefinition") --[[@as BuffDefinitionModule]]
 local buffomatModule = LibStub("Buffomat-Buffomat") --[[@as BuffomatModule]]
 local partyModule = LibStub("Buffomat-Party") --[[@as PartyModule]]
 local spellIdsModule = LibStub("Buffomat-SpellIds") --[[@as SpellIdsModule]]
-local unitCacheModule = LibStub("Buffomat-UnitCache") --[[@as BomUnitCacheModule]]
+local unitCacheModule = LibStub("Buffomat-UnitCache") --[[@as UnitCacheModule]]
 local envModule = LibStub("KvLibShared-Env") --[[@as KvSharedEnvModule]]
+local profileModule = LibStub("Buffomat-Profile") --[[@as ProfileModule]]
 
 ---Checks whether a tracking spell is now active
 ---@param spell BomBuffDefinition The tracking spell which might have tracking enabled
@@ -140,7 +141,7 @@ end
 ---@param buff BomBuffDefinition the spell to update
 ---@param playerUnit BomUnit the player
 function buffChecksModule:PlayerNeedsWeaponBuff(buff, playerUnit)
-  local weaponBuff = buffDefModule:GetProfileBuff(buff.buffId, nil)
+  local weaponBuff = profileModule:GetProfileBuff(buff.buffId, nil)
 
   if weaponBuff then
     local needMainHand = (weaponBuff).MainHandEnable and playerUnit.mainhandEnchantment == nil
@@ -290,7 +291,7 @@ function buffChecksModule:PartyNeedsPaladinBlessing(buffDef, party, buffCtx)
   -- Blessing user settings (regardless of the current buff)
   local currentBlessing = buffDefModule:GetProfileBlessingState(nil)
   -- Current user settings for the selected buff
-  local profileBuff =buffDefModule:GetProfileBuff(buffDef.buffId, nil)
+  local profileBuff = profileModule:GetProfileBuff(buffDef.buffId, nil)
 
   ---@param partyMember BomUnit
   for i, partyMember in pairs(party.byUnitId) do
@@ -359,8 +360,7 @@ function buffChecksModule:PartyNeedsBuff(buffDef, party, buffCtx)
   --spells
   for i, partyMember in pairs(party.byUnitId) do
     local ok = false
-    --local profileBuff = buffomatModule.currentProfile.Spell[buffDef.buffId]
-    local profileBuff =buffDefModule:GetProfileBuff(buffDef.buffId, nil)
+    local profileBuff = profileModule:GetProfileBuff(buffDef.buffId, nil)
 
     if profileBuff.Class[partyMember.class]
         and (not IsInRaid() or buffomatModule.character.WatchGroup[partyMember.group])

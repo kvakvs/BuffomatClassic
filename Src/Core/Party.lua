@@ -38,7 +38,7 @@ partyModule.ALL_INVALID_GROUPS = {
 
 local buffomatModule = LibStub("Buffomat-Buffomat") --[[@as BuffomatModule]]
 local toolboxModule = LibStub("Buffomat-LegacyToolbox") --[[@as LegacyToolboxModule]]
-local unitCacheModule = LibStub("Buffomat-UnitCache") --[[@as BomUnitCacheModule]]
+local unitCacheModule = LibStub("Buffomat-UnitCache") --[[@as UnitCacheModule]]
 local taskScanModule = LibStub("Buffomat-TaskScan") --[[@as TaskScanModule]]
 
 ---@alias BomUnitDictByUnitId {[string]: BomUnit}

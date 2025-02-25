@@ -2,7 +2,7 @@
 
 ---@alias WowTexCoord number[]
 
----@class BomTexturesModule
+---@class TexturesModule
 ---@field CLASS_ICONS_ATLAS string
 ---@field CLASS_ICONS_ATLAS_TEX_COORD {[BomClassName]: WowTexCoord}
 ---@field ICON_BUFF_OFF string
@@ -33,7 +33,7 @@
 ---@field ICON_COORD_09 WowTexCoord
 ---@field ICON_COORD_08 WowTexCoord
 
-local texturesModule = LibStub("Buffomat-Textures") --[[@as BomTexturesModule]]
+local texturesModule = LibStub("Buffomat-Textures") --[[@as TexturesModule]]
 
 texturesModule.ICON_COORD_09 = { 0.1, 0.9, 0.1, 0.9 }
 texturesModule.ICON_COORD_08 = { 0.2, 0.8, 0.2, 0.8 }
