@@ -259,7 +259,7 @@ function partyClass:GetRaidMembers(invalidGroups)
     self.emptyGroups[groupIndex] = true
 
     for raidIndex = raidBegin, raidEnd do
-      ---@type string, string, number, number, BomClassName, string, number, boolean, boolean, BomRaidRole, boolean, string
+      ---@type string, string, number, number, ClassName, string, number, boolean, boolean, BomRaidRole, boolean, string
       local name, rank, subgroup, level, class, fileName, zone, online, isDead
       , role, isML, combatRole = GetRaidRosterInfo(raidIndex)
 

@@ -53,9 +53,9 @@ local shamanModule = LibStub("Buffomat-AllSpellsShaman") --[[@as ShamanModule]]
 local warlockModule = LibStub("Buffomat-AllSpellsWarlock") --[[@as WarlockModule]]
 local warriorModule = LibStub("Buffomat-AllSpellsWarrior") --[[@as WarriorModule]]
 
----@alias BomClassName ClassName|"tank"|"pet"
+---@alias ClassName "WARRIOR"|"MAGE"|"ROGUE"|"DRUID"|"HUNTER"|"PRIEST"|"WARLOCK"|"SHAMAN"|"PALADIN"|"DEATHKNIGHT"|"tank"|"pet"
 
----@enum ClassName
+---@type ClassName[]
 allBuffsModule.ALL_CLASSES = {
   "WARRIOR", "MAGE", "ROGUE", "DRUID", "HUNTER", "PRIEST", "WARLOCK",
   "SHAMAN", "PALADIN", "DEATHKNIGHT"
@@ -64,45 +64,45 @@ allBuffsModule.BOM_NO_CLASSES = {} ---@type ClassName[]
 
 ---TODO: Move to constModule
 ---Classes which have a resurrection ability
----@type BomClassName[]
+---@type ClassName[]
 local RESURRECT_CLASSES = { "SHAMAN", "PRIEST", "PALADIN", "DRUID" } -- Druid in WotLK
 allBuffsModule.RESURRECT_CLASSES = RESURRECT_CLASSES
 
 ---TODO: Move to constModule
 --- Classes which have mana bar and benefit from mp/5 and spirit
----@type BomClassName[]
+---@type ClassName[]
 local MANA_CLASSES = { "HUNTER", "WARLOCK", "MAGE", "DRUID", "SHAMAN", "PRIEST", "PALADIN" }
 BOM.MANA_CLASSES = MANA_CLASSES --used in TaskScan.lua
 allBuffsModule.MANA_CLASSES = MANA_CLASSES
 
 ---TODO: Move to constModule
 --- Classes which deal spell damage
----@type BomClassName[]
+---@type ClassName[]
 allBuffsModule.SPELL_CLASSES = { "WARLOCK", "MAGE", "DRUID", "SHAMAN", "PRIEST", "PALADIN", "DEATHKNIGHT", "HUNTER" }
 
 ---TODO: Move to constModule
 --- Classes which hit with weapons or claws
----@type BomClassName[]
+---@type ClassName[]
 allBuffsModule.MELEE_CLASSES = { "WARRIOR", "ROGUE", "DRUID", "SHAMAN", "PALADIN", "DEATHKNIGHT" }
 
 ---TODO: Move to constModule
 --- Classes capable of dealing shadow damage
----@type BomClassName[]
+---@type ClassName[]
 allBuffsModule.SHADOW_CLASSES = { "PRIEST", "WARLOCK", "DEATHKNIGHT" }
 
 ---TODO: Move to constModule
 --- Classes capable of dealing fire damage
----@type BomClassName[]
+---@type ClassName[]
 allBuffsModule.FIRE_CLASSES = { "MAGE", "WARLOCK", "SHAMAN", "HUNTER" }
 
 ---TODO: Move to constModule
 --- Classes capable of dealing frost damage
----@type BomClassName[]
+---@type ClassName[]
 allBuffsModule.FROST_CLASSES = { "MAGE", "SHAMAN", "DEATHKNIGHT" }
 
 ---TODO: Move to constModule
 --- Classes dealing physical ranged or melee damage
----@type BomClassName[]
+---@type ClassName[]
 allBuffsModule.PHYSICAL_CLASSES = { "HUNTER", "ROGUE", "SHAMAN", "WARRIOR", "DRUID", "PALADIN", "DEATHKNIGHT" }
 
 allBuffsModule.MINUTE = 60

@@ -61,9 +61,9 @@ if false then
     for _, class in ipairs(constModule.CLASSES) do
       local tooltip2 = constModule.CLASS_ICONS[class]
           .. " - " .. _t("TooltipCastOnClass")
-          .. ": " .. constModule.CLASS_NAME[ --[[@as BomClassName]] class ] .. "|n"
+          .. ": " .. constModule.CLASS_NAME[ --[[@as ClassName]] class ] .. "|n"
           .. BOM.FormatTexture(texturesModule.ICON_EMPTY) .. " - " .. _t("TabDoNotBuff")
-          .. ": " .. constModule.CLASS_NAME[ --[[@as BomClassName]] class ] .. "|n"
+          .. ": " .. constModule.CLASS_NAME[ --[[@as ClassName]] class ] .. "|n"
           .. BOM.FormatTexture(texturesModule.ICON_DISABLED) .. " - " .. _t("TabBuffOnlySelf")
 
       local classToggle = spell.frames:CreateClassToggle(class, tooltip2, bomDoBlessingOnClick)

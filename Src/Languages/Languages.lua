@@ -11,17 +11,6 @@ local frenchModule = LibStub("Buffomat-LanguageFrench") --[[@as BomLanguageFrenc
 local russianModule = LibStub("Buffomat-LanguageRussian") --[[@as BomLanguageRussianModule]]
 local chineseModule = LibStub("Buffomat-LanguageChinese") --[[@as BomLanguageChineseModule]]
 
-setmetatable(languagesModule, {
-  __call = ---@param k string
-      function(_, k)
-        if languagesModule.currentLocale and languagesModule.currentLocale[k] then
-          return languagesModule.currentLocale[k] or ("¶" .. k)
-        else
-          return "¶" .. k
-        end
-      end
-})
-
 ---@alias BomLanguageId "enUS" | "deDE" | "frFR" | "ruRU" | "zhCN"
 ---@alias BomLocaleDict table<string, string>
 
@@ -51,6 +40,18 @@ function languagesModule:LoadLanguage(locale)
 end
 
 function languagesModule:SetupTranslations()
+  -- Allow calling the languagesModule as a function to get a translation
+  setmetatable(languagesModule, {
+    __call = ---@param k string
+        function(_, k)
+          if languagesModule.currentLocale and languagesModule.currentLocale[k] then
+            return languagesModule.currentLocale[k] or ("¶" .. k)
+          else
+            return "¶" .. k
+          end
+        end
+  })
+
   self.currentLocale = self:LoadLanguage(GetLocale()) or {}
 
   for englishKey, englishText in pairs(englishModule:Translations()) do

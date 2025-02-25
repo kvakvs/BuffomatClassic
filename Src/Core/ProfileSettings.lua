@@ -13,7 +13,7 @@ local envModule = LibStub("KvLibShared-Env") --[[@as KvSharedEnvModule]]
 ---Choices made by the player for a single buff
 ---@class PlayerBuffChoice
 ---@field Enable boolean
----@field Classes {[BomClassName]: boolean}
+---@field Classes {[ClassName]: boolean}
 ---@field ForcedTarget {[string]: boolean}
 ---@field ExcludedTarget {[string]: boolean}
 ---@field SelfCast boolean

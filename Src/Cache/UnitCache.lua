@@ -38,7 +38,7 @@ function unitCacheModule:GetUnit(unitid, nameGroupMap, nameRoleMap, specialName)
   local isTank = nameRoleMap and ((nameRoleMap)[name] == "MAINTANK") or false
 
   local guid = UnitGUID(unitid)
-  local _, class, link ---@type any, BomClassName, string|nil
+  local _, class, link ---@type any, ClassName, string|nil
 
   if guid then
     _, class = GetPlayerInfoByGUID(guid)

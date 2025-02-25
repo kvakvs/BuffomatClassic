@@ -372,8 +372,8 @@ function englishModule:Translations()
         SlashOpen = "Open BOM window",
         SlashProfile = "Change current profile to solo/group/raid/battleground/auto",
 
-        Tank = "Tank", -- unused?
-        Pet = "Pet",   -- unused?
+        Tank = "Tank", -- LOCALIZED_CLASS_NAMES from wow but for tank role
+        Pet = "Pet",   -- LOCALIZED_CLASS_NAMES from wow but for pet role
         TooltipCastOnClass = "Cast on class",
         TooltipCastOnTank = "Cast on tanks",
         TooltipCastOnPet = "Cast on pets",
@@ -414,8 +414,8 @@ function englishModule:Translations()
 
         TooltipMacroButton =
         "Drag this macro to your action bar to cast the buffs|nYou can add a shortcut key to the macro in Key Bindings => Other",
-        TooltipSettingsButton = "Open Quick Settings and Profiles popup menu",
-        TooltipSpellsBuffsButton = "Open Spells and Buffs dialog",
+        TooltipSettingsButton = "Quick Settings and Profiles",
+        TooltipSpellsBuffsButton = "All Buffs",
         TooltipCloseButton = "Hide Buffomat window, type /bom to reopen or click the minimap button",
         TooltipCastButton =
         "Cast the spell from the list.|nNot available in combat.|nCan also be activated via the macro (in the top row)|nor bind a shortcut key in Key Bindings => Other",

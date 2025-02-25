@@ -59,13 +59,13 @@ local ngStringsModule = LibStub("Buffomat-NgStrings") --[[@as NgStringsModule]]
 ---@field lastTarget string|nil Last player's target
 ---@field loadingScreenTimeOut number|nil
 ---@field theMacro BomMacro
----@field MANA_CLASSES BomClassName[] Classes with mana resource
+---@field MANA_CLASSES ClassName[] Classes with mana resource
 ---@field nextCooldownDue number Set this to next spell cooldown to force update
 ---@field isPartyUpdateNeeded boolean Requests player party update
 ---@field popupMenuDynamic GPIPopupDynamic
 ---@field repeatUpdate boolean Requests some sort of spells update similar to ForceUpdate
 ---@field reputationTrinketZones BomReputationTrinketZones Equipped AD trinket: Spell to and zone ids to check
----@field RESURRECT_CLASS BomClassName[] Classes who can resurrect others
+---@field RESURRECT_CLASS ClassName[] Classes who can resurrect others
 ---@field ridingSpeedZones BomRidingSpeedZones Equipped Riding trinket: Spell to and zone ids to check
 ---@field SaveTargetName string|nil
 ---@field scanModifierKeyDown boolean Will update buffomat when modifier key is held down
@@ -386,6 +386,7 @@ end
 ---Execution start here
 function BuffomatAddon:Init()
   languagesModule:SetupTranslations()
+  constModule:Init()
   allBuffsModule:SetupSpells()
   allBuffsModule:SetupCancelBuffs()
 

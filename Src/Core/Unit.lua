@@ -13,7 +13,7 @@ local toolboxModule = LibStub("Buffomat-LegacyToolbox") --[[@as LegacyToolboxMod
 
 ---@class BomUnit
 ---@field allBuffs table<number, boolean> Availability of all auras even those not supported by BOM, by id, no extra detail stored
----@field class BomClassName
+---@field class ClassName
 ---@field distance number
 ---@field group number Raid group number (9 if temporary moved out of the raid by BOM)
 ---@field hasReputationTrinket boolean Has AD reputation trinket equipped
@@ -180,7 +180,7 @@ end
 ---@param unitId string
 ---@param name string
 ---@param group number
----@param class BomClassName
+---@param class ClassName
 ---@param link string
 ---@param isTank boolean
 function unitClass:Construct(unitId, name, group, class, link, isTank)

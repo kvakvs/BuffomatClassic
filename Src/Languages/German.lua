@@ -219,8 +219,9 @@ function germanModule:Translations()
 
                 TooltipMacroButton = "Ziehe dieses Makro in deine Aktionsleiste, um die Buffs zu wirken|n"
                     .. "Du kannst dem Makro unter Tastenbelegungen => Andere eine Tastenkombination hinzufügen",
-                TooltipSettingsButton = "Popup-Menü Schnelleinstellungen und Profile öffnen",
-                TooltipCloseButton = "Blenden Sie das Buffomat-Fenster aus, geben Sie /bom ein,"
+                TooltipSettingsButton = "Schnelleinstellungen und Profile",
+                TooltipSpellsBuffsButton = "Alle Buffs",
+                TooltipCloseButton = "Buffomat-Fenster ausblenden, geben Sie /bom ein,"
                     .. "um es wieder zu öffnen, oder klicken Sie auf die Minimap-knöpfe",
                 TooltipCastButton = "Wirke den Zauber aus der Liste.|nNicht im Kampf verfügbar.|n"
                     .. "Kann auch über das Makro (in der obersten Reihe) aktiviert werden|n"

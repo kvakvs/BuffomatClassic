@@ -239,31 +239,42 @@ end
 ---@param profileBuff PlayerBuffChoice The profile buff currently being displayed
 function spellsDialogModule:AddClassRoleToggles(row, profileBuff)
   for _, class in ipairs(constModule.CLASSES) do
-    local skip = false
-    if not envModule.haveTBC and ( -- if not TBC hide paladin for horde, hide shaman for alliance
-      (playerIsHorde and class == "PALADIN") or (not playerIsHorde and class == "SHAMAN")) then
-      skip = true
-    end
-
-    if not skip then
-      local tooltip2 = constModule.CLASS_ICONS[class]
-          .. " - " .. _t("TooltipCastOnClass")
-          .. ": " .. constModule.CLASS_NAME[ --[[@as BomClassName]] class ] .. "|n"
-          .. ngStringsModule:FormatTexture(texturesModule.ICON_EMPTY) .. " - " .. _t("TabDoNotBuff")
-          .. ": " .. constModule.CLASS_NAME[ --[[@as BomClassName]] class ] .. "|n"
-          .. ngStringsModule:FormatTexture(texturesModule.ICON_DISABLED) .. " - " .. _t("TabBuffOnlySelf")
-
-      -- local classToggle = buffDef.frames:CreateClassToggle(class, tooltip2, bomDoBlessingOnClick)
-      local classToggle = ngToolboxModule:CreateToggle(
-        tooltip2,
-        texturesModule.CLASS_ICONS_BUNDLED[class],
-        texturesModule.ICON_EMPTY,
-        function() return profileBuff.Class[class] == true end,
-        function(value) profileBuff.Class[class] = value end
-      )
-      row:AddChild(classToggle)
-    end
+    self:AddClassRoleToggle(row, profileBuff, class)
   end -- for each class in class_sort_orderend
+
+  self:AddClassRoleToggle(row, profileBuff, "tank")
+  self:AddClassRoleToggle(row, profileBuff, "pet")
+end
+
+---Creates one toggle for one class or role (call in loop)
+---@param row AceGUIWidget The GUI panel where controls are added
+---@param profileBuff PlayerBuffChoice The profile buff currently being displayed
+---@param classOrRole ClassName
+function spellsDialogModule:AddClassRoleToggle(row, profileBuff, classOrRole)
+  local skip = false
+  if not envModule.haveTBC and ( -- if not TBC hide paladin for horde, hide shaman for alliance
+    (playerIsHorde and classOrRole == "PALADIN") or (not playerIsHorde and classOrRole == "SHAMAN")) then
+    skip = true
+  end
+
+  if not skip then
+    local tooltip2 = constModule.CLASS_ICONS[classOrRole]
+        .. " - " .. _t("TooltipCastOnClass")
+        .. ": " .. constModule.CLASS_NAME[ classOrRole --[[@as ClassName]] ] .. "|n"
+        .. ngStringsModule:FormatTexture(texturesModule.ICON_EMPTY) .. " - " .. _t("TabDoNotBuff")
+        .. ": " .. constModule.CLASS_NAME[ classOrRole --[[@as ClassName]] ] .. "|n"
+        .. ngStringsModule:FormatTexture(texturesModule.ICON_DISABLED) .. " - " .. _t("TabBuffOnlySelf")
+
+    -- local classToggle = buffDef.frames:CreateClassToggle(class, tooltip2, bomDoBlessingOnClick)
+    local classToggle = ngToolboxModule:CreateToggle(
+      tooltip2,
+      texturesModule.CLASS_ICONS_BUNDLED[classOrRole],
+      texturesModule.ICON_EMPTY,
+      function() return profileBuff.Class[classOrRole] == true end,
+      function(value) profileBuff.Class[classOrRole] = value end
+    )
+    row:AddChild(classToggle)
+  end
 end
 
 function _temp()

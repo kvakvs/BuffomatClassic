@@ -4,8 +4,8 @@
 
 ---@class TexturesModule
 ---@field CLASS_ICONS_ATLAS string
----@field CLASS_ICONS_ATLAS_TEX_COORD {[BomClassName]: WowTexCoord}
----@field CLASS_ICONS_BUNDLED {[BomClassName]: string}
+---@field CLASS_ICONS_ATLAS_TEX_COORD {[ClassName]: WowTexCoord}
+---@field CLASS_ICONS_BUNDLED {[ClassName]: string}
 ---@field ICON_BUFF_OFF string
 ---@field ICON_BUFF_ON string
 ---@field ICON_CHECKED string
@@ -46,7 +46,7 @@ texturesModule.ICON_SELF_CAST_ON = "Interface\\FriendsFrame\\UI-Toast-FriendOnli
 texturesModule.ICON_SELF_CAST_OFF = "Interface\\FriendsFrame\\UI-Toast-ChatInviteIcon"
 
 texturesModule.CLASS_ICONS_ATLAS = "Interface\\WorldStateFrame\\ICONS-CLASSES"
-texturesModule.CLASS_ICONS_ATLAS_TEX_COORD = CLASS_ICON_TCOORDS --[[@as {[BomClassName]: WowTexCoord} ]]
+texturesModule.CLASS_ICONS_ATLAS_TEX_COORD = CLASS_ICON_TCOORDS --[[@as {[ClassName]: WowTexCoord} ]]
 texturesModule.ICON_EMPTY = "Interface\\Buttons\\UI-MultiCheck-Disabled"
 
 ---@deprecated Unused
@@ -93,6 +93,7 @@ texturesModule.ICON_PET_COORD = texturesModule.ICON_COORD_09
 texturesModule.ON_ICON = "|TInterface\\RAIDFRAME\\ReadyCheck-Ready:0:0:0:0:64:64:4:60:4:60|t"
 texturesModule.OFF_ICON = "|TInterface\\RAIDFRAME\\ReadyCheck-NotReady:0:0:0:0:64:64:4:60:4:60|t"
 
+---@type {[ClassName]: string}
 texturesModule.CLASS_ICONS_BUNDLED = {
   ["WARRIOR"] = "Interface\\Addons\\BuffomatClassic\\Textures\\classicon_warrior",
   ["MAGE"] = "Interface\\Addons\\BuffomatClassic\\Textures\\classicon_mage",
@@ -104,4 +105,6 @@ texturesModule.CLASS_ICONS_BUNDLED = {
   ["WARLOCK"] = "Interface\\Addons\\BuffomatClassic\\Textures\\classicon_warlock",
   ["ROGUE"]     = "Interface\\Addons\\BuffomatClassic\\Textures\\classicon_rogue",
   ["DEATHKNIGHT"] = "Interface\\Addons\\BuffomatClassic\\Textures\\classicon_deathknight",
+  ["pet"] = "Interface\\Addons\\BuffomatClassic\\Textures\\icon_pet",
+  ["tank"] = "Interface\\Addons\\BuffomatClassic\\Textures\\icon_tank",
 }

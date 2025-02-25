@@ -38,7 +38,7 @@ local profileModule = LibStub("Buffomat-Profile") --[[@as ProfileModule]]
 ---@field requireCata boolean
 ---@field hideInCata boolean
 ---@field playerRace BomPlayerRace
----@field playerClass BomClassName|BomClassName[] Collection of classes for this spell, or classname
+---@field playerClass ClassName|ClassName[] Collection of classes for this spell, or classname
 ---@field maxLevel number Hide the spell if player is above this level (to deprecate old spells)
 ---@field minLevel number Hide the spell if player is below this level
 ---@field hideIfSpellKnown number Hide the spell if spellId is in their spellbook
@@ -55,7 +55,7 @@ end
 -- -@field [BomSpellId] BomBuffDefinition
 
 ---@alias BomForcedTargets {[string]: boolean}
----@alias BomDeadMap {[number|BomClassName]: boolean}
+---@alias BomDeadMap {[number|ClassName]: boolean}
 
 -- Fields below belong to PlayerBuffChoice
 -- -@field AllowWhisper boolean [⚠DO NOT RENAME] Allow whispering expired soulstone to the warlock
@@ -119,7 +119,7 @@ end
 ---@field consumeGroupIcon WowIconId Override buff icon for groups of consumables
 ---@field skipList string[] If spell cast failed, contains recently failed targets
 ---@field spellIcon WowIconId
----@field targetClasses BomClassName[] List of target classes which are shown as toggle boxes to enable cast per class
+---@field targetClasses ClassName[] List of target classes which are shown as toggle boxes to enable cast per class
 ---@field petBuff boolean True for hunter/warlock pet consumable which places aura on the pet
 ---@field trackingIconId WowIconId Numeric id for the tracking texture icon
 ---@field trackingSpellName string For tracking spells, contains string name for the spell
@@ -630,13 +630,13 @@ function buffDefClass:PetFood()
 end
 
 ---@return BomBuffDefinition
----@param classNames BomClassName[] Class names to use as the default targets (user can modify)
+---@param classNames ClassName[] Class names to use as the default targets (user can modify)
 function buffDefClass:DefaultTargetClasses(classNames)
   self.targetClasses = classNames
   return self
 end
 
----@param className BomClassName[]|BomClassName The class name or table of class names
+---@param className ClassName[]|ClassName The class name or table of class names
 ---@return BomBuffDefinition
 function buffDefClass:RequirePlayerClass(className)
   (self.limitations).playerClass = className

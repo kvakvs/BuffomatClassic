@@ -10,7 +10,7 @@ if false then
   local texturesModule = --[[@as TexturesModule]] LibStub("Buffomat-Textures")
 
   ---@class BomBuffRowFrames
-  ---@field [BomClassName] BomGPIControl Used for class toggle buttons
+  ---@field [ClassName] BomGPIControl Used for class toggle buttons
   ---@field uniqueId string Used for ManageControl() calls as prefix
   ---@field iconInfo WowControl Icon for spell or item which provides the buff
   ---@field checkboxEnable BomGPIControl Checkbox for enable/disable buff
@@ -273,7 +273,7 @@ if false then
     return self.toggleSelfCast
   end
 
-  ---@param class BomClassName
+  ---@param class ClassName
   ---@param tooltip string
   ---@param onClick function
   ---@return BomGPIControl
