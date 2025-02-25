@@ -5,6 +5,7 @@
 ---@class TexturesModule
 ---@field CLASS_ICONS_ATLAS string
 ---@field CLASS_ICONS_ATLAS_TEX_COORD {[BomClassName]: WowTexCoord}
+---@field CLASS_ICONS_BUNDLED {[BomClassName]: string}
 ---@field ICON_BUFF_OFF string
 ---@field ICON_BUFF_ON string
 ---@field ICON_CHECKED string
@@ -91,3 +92,16 @@ texturesModule.ICON_PET_COORD = texturesModule.ICON_COORD_09
 
 texturesModule.ON_ICON = "|TInterface\\RAIDFRAME\\ReadyCheck-Ready:0:0:0:0:64:64:4:60:4:60|t"
 texturesModule.OFF_ICON = "|TInterface\\RAIDFRAME\\ReadyCheck-NotReady:0:0:0:0:64:64:4:60:4:60|t"
+
+texturesModule.CLASS_ICONS_BUNDLED = {
+  ["WARRIOR"] = "Interface\\Addons\\BuffomatClassic\\Textures\\classicon_warrior",
+  ["MAGE"] = "Interface\\Addons\\BuffomatClassic\\Textures\\classicon_mage",
+  ["PALADIN"] = "Interface\\Addons\\BuffomatClassic\\Textures\\classicon_paladin",
+  ["HUNTER"] = "Interface\\Addons\\BuffomatClassic\\Textures\\classicon_hunter",
+  ["DRUID"] = "Interface\\Addons\\BuffomatClassic\\Textures\\classicon_druid",
+  ["SHAMAN"] = "Interface\\Addons\\BuffomatClassic\\Textures\\classicon_shaman",
+  ["PRIEST"] = "Interface\\Addons\\BuffomatClassic\\Textures\\classicon_priest",
+  ["WARLOCK"] = "Interface\\Addons\\BuffomatClassic\\Textures\\classicon_warlock",
+  ["ROGUE"]     = "Interface\\Addons\\BuffomatClassic\\Textures\\classicon_rogue",
+  ["DEATHKNIGHT"] = "Interface\\Addons\\BuffomatClassic\\Textures\\classicon_deathknight",
+}

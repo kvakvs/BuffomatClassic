@@ -20,6 +20,8 @@ local ngToolboxModule = LibStub("Buffomat-NgToolbox") --[[@as NgToolboxModule]]
 local texturesModule = LibStub("Buffomat-Textures") --[[@as TexturesModule]]
 local ngStringsModule = LibStub("Buffomat-NgStrings") --[[@as NgStringsModule]]
 local profileModule = LibStub("Buffomat-Profile") --[[@as ProfileModule]]
+local constModule = LibStub("Buffomat-Const") --[[@as ConstModule]]
+local envModule = LibStub("KvLibShared-Env") --[[@as KvSharedEnvModule]]
 local libGUI = LibStub("AceGUI-3.0")
 
 function spellsDialogModule:Show()
@@ -87,7 +89,7 @@ function spellsDialogModule:CategoryLabel(catId)
   return _t("Category_" .. catId)
 end
 
----@param category BomBuffCategoryName
+---@param category BuffCategoryName
 ---@return boolean
 function spellsDialogModule:CategoryIsHidden(category)
   return buffomatModule.character.BuffCategoriesHidden[category] == true
@@ -205,6 +207,7 @@ function spellsDialogModule:CreateBuffRow(buffDef, profileBuff, context)
   -- Create checkboxes one per class
   if buffDef:HasClasses() then
     self:AddSelfCastToggle(row, profileBuff)
+    self:AddClassRoleToggles(row, profileBuff)
   end
 
   return row
@@ -212,7 +215,7 @@ end
 
 ---Add class selector for buff which makes sense to differentiate per class.
 ---@param row AceGUIWidget The GUI panel where controls are added
----@param profileBuff BomProfileBuff The profile buff currently being displayed
+---@param profileBuff PlayerBuffChoice The profile buff currently being displayed
 function spellsDialogModule:AddSelfCastToggle(row, profileBuff)
   local selfCastTooltip = ngStringsModule:FormatTexture(texturesModule.ICON_SELF_CAST_ON)
     .. " - " .. _t("TooltipSelfCastCheckbox_Self") .. "|n"
@@ -231,31 +234,40 @@ function spellsDialogModule:AddSelfCastToggle(row, profileBuff)
   row:AddChild(selfcastToggle)
 end
 
-function _temp()
-  --------------------------------------
-  -- Class-Cast checkboxes one per class
-  --------------------------------------
+---Add Cast-on-class checkboxes one per class, and for 2 extra roles (tank, pet)
+---@param row AceGUIWidget The GUI panel where controls are added
+---@param profileBuff PlayerBuffChoice The profile buff currently being displayed
+function spellsDialogModule:AddClassRoleToggles(row, profileBuff)
   for _, class in ipairs(constModule.CLASSES) do
-    local tooltip2 = constModule.CLASS_ICONS[class]
-        .. " - " .. _t("TooltipCastOnClass")
-        .. ": " .. constModule.CLASS_NAME[ --[[@as BomClassName]] class ] .. "|n"
-        .. ngStringsModule:FormatTexture(texturesModule.ICON_EMPTY) .. " - " .. _t("TabDoNotBuff")
-        .. ": " .. constModule.CLASS_NAME[ --[[@as BomClassName]] class ] .. "|n"
-        .. ngStringsModule:FormatTexture(texturesModule.ICON_DISABLED) .. " - " .. _t("TabBuffOnlySelf")
-
-    local classToggle = buffDef.frames:CreateClassToggle(class, tooltip2, bomDoBlessingOnClick)
-    classToggle:SetVariable(profileBuff.Class, class, nil)
-    rowBuilder:AppendRight(nil, classToggle, 0)
-
+    local skip = false
     if not envModule.haveTBC and ( -- if not TBC hide paladin for horde, hide shaman for alliance
-          (playerIsHorde and class == "PALADIN") or (not playerIsHorde and class == "SHAMAN")) then
-      classToggle:Hide()
-    else
-      rowBuilder.prevControl = classToggle
+      (playerIsHorde and class == "PALADIN") or (not playerIsHorde and class == "SHAMAN")) then
+      skip = true
     end
-  end -- for each class in class_sort_order
 
-  --========================================
+    if not skip then
+      local tooltip2 = constModule.CLASS_ICONS[class]
+          .. " - " .. _t("TooltipCastOnClass")
+          .. ": " .. constModule.CLASS_NAME[ --[[@as BomClassName]] class ] .. "|n"
+          .. ngStringsModule:FormatTexture(texturesModule.ICON_EMPTY) .. " - " .. _t("TabDoNotBuff")
+          .. ": " .. constModule.CLASS_NAME[ --[[@as BomClassName]] class ] .. "|n"
+          .. ngStringsModule:FormatTexture(texturesModule.ICON_DISABLED) .. " - " .. _t("TabBuffOnlySelf")
+
+      -- local classToggle = buffDef.frames:CreateClassToggle(class, tooltip2, bomDoBlessingOnClick)
+      local classToggle = ngToolboxModule:CreateToggle(
+        tooltip2,
+        texturesModule.CLASS_ICONS_BUNDLED[class],
+        texturesModule.ICON_EMPTY,
+        function() return profileBuff.Class[class] == true end,
+        function(value) profileBuff.Class[class] = value end
+      )
+      row:AddChild(classToggle)
+    end
+  end -- for each class in class_sort_orderend
+end
+
+function _temp()
+   --========================================
   local tooltip3 = ngStringsModule:FormatTexture(texturesModule.ICON_TANK) .. " - " .. _t("TooltipCastOnTank")
   local tankToggle = buffDef.frames:CreateTankToggle(tooltip3, bomDoBlessingOnClick)
   tankToggle:SetVariable(profileBuff.Class, "tank", nil)

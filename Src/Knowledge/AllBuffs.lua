@@ -1,6 +1,6 @@
 local BOM = BuffomatAddon
 
----@alias BomBuffCategoryName ""|"tracking"|"pet"|"aura"|"seal"|"blessing"|"class"|"classicPhysFood"|"classicSpellFood"|"classicFood"|"classicPhysElixir"|"classicPhysBuff"|"classicBuff"|"classicSpellElixir"|"classicElixir"|"classicFlask"|"tbcPhysFood"|"tbcSpellFood"|"tbcFood"|"tbcPhysElixir"|"tbcSpellElixir"|"tbcElixir"|"tbcFlask"|"wotlkPhysFood"|"wotlkSpellFood"|"wotlkFood"|"wotlkPhysElixir"|"wotlkSpellElixir"|"wotlkElixir"|"wotlkFlask"|"scroll"|"weaponEnchantment"|"classWeaponEnchantment"|"cataElixir"|"cataFood"|"cataFlask"
+---@alias BuffCategoryName ""|"tracking"|"pet"|"aura"|"seal"|"blessing"|"class"|"classicPhysFood"|"classicSpellFood"|"classicFood"|"classicPhysElixir"|"classicPhysBuff"|"classicBuff"|"classicSpellElixir"|"classicElixir"|"classicFlask"|"tbcPhysFood"|"tbcSpellFood"|"tbcFood"|"tbcPhysElixir"|"tbcSpellElixir"|"tbcElixir"|"tbcFlask"|"wotlkPhysFood"|"wotlkSpellFood"|"wotlkFood"|"wotlkPhysElixir"|"wotlkSpellElixir"|"wotlkElixir"|"wotlkFlask"|"scroll"|"weaponEnchantment"|"classWeaponEnchantment"|"cataElixir"|"cataFood"|"cataFlask"
 
 ---@alias BomBuffidBuffdefLookup {[BomBuffId]: BomBuffDefinition}
 ---@alias BomEnchantToSpellLookup {[BomEnchantmentId]: WowSpellId}
@@ -9,7 +9,7 @@ local BOM = BuffomatAddon
 ---@class AllBuffsModule
 ---@field allBuffs BomBuffidBuffdefLookup All buffs, same as BOM.AllBuffomatSpells for convenience
 ---@field allSpellIds number[]
----@field buffCategories BomBuffCategoryName[] Category names for buffs
+---@field buffCategories BuffCategoryName[] Category names for buffs
 ---@field buffFromSpellIdLookup BomBuffBySpellId Lookup table for buff definitions by spell id
 ---@field CrusaderAuraSpell BomBuffDefinition
 ---@field enchantToSpellLookup BomEnchantToSpellLookup Reverse-maps enchantment ids back to spells

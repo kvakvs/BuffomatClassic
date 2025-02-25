@@ -20,7 +20,7 @@ UI_VERSION_CLASSIC_TBC = '20504'  # The Burning Crusade
 UI_VERSION_CLASSIC_WOTLK = '30402'  # WotLK
 UI_VERSION_CLASSIC_CATA = '40401'  # Cataclysm
 
-COPY_DIRS = ['Src', 'Ace3', 'Sounds']
+COPY_DIRS = ['Src', 'Ace3', 'Sounds', 'Textures']
 COPY_FILES = ['Bindings.xml', 'CHANGELOG.md', 'embeds.xml',
               'LICENSE.txt', 'README.md', 'README.Deutsch.txt']
 

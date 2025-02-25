@@ -6,7 +6,7 @@ if false then
 
   ---@class BomSpellButtonsTabModule
   ---@field spellTabsCreatedFlag boolean True if spells tab is created and filled
-  ---@field categoryLabels table<BomBuffCategoryName, BomGPIControl> Collection of category labels indexed per category name
+  ---@field categoryLabels table<BuffCategoryName, BomGPIControl> Collection of category labels indexed per category name
   ---@field spellTabUpdateRequestedBy table<string, boolean> Contains the callers who last requested spells tab update, or nothing
   ---@field spellSettingsFrames table
 
@@ -179,7 +179,7 @@ if false then
   end
 
   ---TODO: Move this to spelldef
-  ---@param category BomBuffCategoryName
+  ---@param category BuffCategoryName
   ---@return boolean
   function spellButtonsTabModule:CategoryIsHidden(category)
     return buffomatModule.character.BuffCategoriesHidden[category] == true
@@ -415,7 +415,7 @@ if false then
 
   ---Takes a category id from allBuffsModule constants, and adds a nice text title
   ---with localised category name
-  ---@param catId BomBuffCategoryName
+  ---@param catId BuffCategoryName
   -- -@param rowBuilder BomRowBuilder
   function spellButtonsTabModule:AddCategoryRow(catId, rowBuilder)
     local label = self.categoryLabels[catId]

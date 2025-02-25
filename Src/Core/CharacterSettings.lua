@@ -6,12 +6,8 @@ local profileModule = LibStub("Buffomat-Profile") --[[@as ProfileModule]]
 local envModule = LibStub("KvLibShared-Env") --[[@as KvSharedEnvModule]]
 
 ---@alias ProfileName "solo"|"group"|"raid"|"battleground"|"solo_spec2"|"group_spec2"|"raid_spec2"|"battleground_spec2"
-
----@class BomSpellDurationsTable
----@field [string] number
-
----@class BomHiddenCategoryTable
----@field [string] boolean
+---@alias BomSpellDurationsTable {[WowSpellId]: number}
+---@alias BomHiddenCategoryTable {[BuffCategoryName]: boolean}
 
 ---@class CharacterSettings Current character state snapshots per profile
 ---@field profiles {[ProfileName]: ProfileSettings} Access to subprofiles [solo, group, raid, battleground, ...]
@@ -49,8 +45,6 @@ function characterSettingsModule:New(init)
   end
 
   tab.BuffCategoriesHidden = tab.BuffCategoriesHidden or {}
-
-  --setmetatable(tab, characterStateClass)
   return tab
 end
 

@@ -1,3 +1,4 @@
+---@diagnostic disable: invisible
 -- New Generation GUI Toolbox using WowAce (AceGUI-3.0)
 
 ---@class NgToolboxModule
@@ -91,6 +92,7 @@ function ngToolboxModule:CreateToggle(tooltip, textureOn, textureOff, getValue, 
   end
   if valueOnCreation then setTextureOn() else setTextureOff() end
 
+  ---@diagnostic disable-next-line: unused-local
   button:SetCallback("OnClick", function(_control, mouseButton)
     local newValue = not getValue()
     setValue(newValue)

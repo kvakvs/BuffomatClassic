@@ -70,7 +70,7 @@ end
 ---@class BomBuffDefinition
 ---@field buffId BomBuffId Spell id of level 60 spell used as key everywhere else
 ---@field buffSource string Unit/player who gave this buff
----@field category BomBuffCategoryName Group by this field and use special translation table to display headers
+---@field category BuffCategoryName Group by this field and use special translation table to display headers
 ---@field consumableEra string One of constants BOM.CLASSIC_ERA or BOM.IsTBC_ERA which will affect buff visibility based on used choice
 ---@field consumableTarget string Add "[@" .. consumableTarget .. "]" to the "/use bag slot" macro
 ---@field creatureFamily BomCreatureFamily Warlock summon pet family for type='summon' (Imp, etc)
@@ -539,7 +539,7 @@ function buffDefClass:RewriteSealBuffType()
   return self
 end
 
----@param cat BomBuffCategoryName
+---@param cat BuffCategoryName
 ---@return BomBuffDefinition
 function buffDefClass:Category(cat)
   self.category = cat
