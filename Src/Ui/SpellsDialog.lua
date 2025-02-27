@@ -1,28 +1,29 @@
 ---@diagnostic disable: invisible
--- Implements AceGUI dialog for choosing spells and spell settings.
+--
+-- Module implements AceGUI dialog for choosing spells and spell settings.
 -- Replaces the classic Buffomat spells tab.
-local BOM = BuffomatAddon
+--
 
 ---@class SpellsDialogContext
 ---@field categoryFrames {[string]: AceGUIWidget} Contains title and checkbox to show/hide the category
+---@field playerIsHorde boolean
 
----@class BomSpellsDialogModule
+---@class SpellsDialogModule
 ---@field dialog AceGUIWidget AceGUI frame containing the spells list
 ---@field scrollFrame AceGUIWidget AceGUI scroll frame containing the spells list
 ---@field context SpellsDialogContext
 
-local spellsDialogModule = --[[@as BomSpellsDialogModule]] LibStub("Buffomat-SpellsDialog")
-
 local _t = LibStub("Buffomat-Languages") --[[@as LanguagesModule]]
 local allBuffsModule = LibStub("Buffomat-AllBuffs") --[[@as AllBuffsModule]]
 local buffomatModule = LibStub("Buffomat-Buffomat") --[[@as BuffomatModule]]
-local ngToolboxModule = LibStub("Buffomat-NgToolbox") --[[@as NgToolboxModule]]
-local texturesModule = LibStub("Buffomat-Textures") --[[@as TexturesModule]]
-local ngStringsModule = LibStub("Buffomat-NgStrings") --[[@as NgStringsModule]]
-local profileModule = LibStub("Buffomat-Profile") --[[@as ProfileModule]]
 local constModule = LibStub("Buffomat-Const") --[[@as ConstModule]]
 local envModule = LibStub("KvLibShared-Env") --[[@as KvSharedEnvModule]]
 local libGUI = LibStub("AceGUI-3.0")
+local ngStringsModule = LibStub("Buffomat-NgStrings") --[[@as NgStringsModule]]
+local ngToolboxModule = LibStub("Buffomat-NgToolbox") --[[@as NgToolboxModule]]
+local profileModule = LibStub("Buffomat-Profile") --[[@as ProfileModule]]
+local spellsDialogModule = LibStub("Buffomat-SpellsDialog") --[[@as SpellsDialogModule]]
+local texturesModule = LibStub("Buffomat-Textures") --[[@as TexturesModule]]
 
 function spellsDialogModule:Show()
   -- InCombat Protection is checked by the caller (Update***Tab)
@@ -60,7 +61,7 @@ end
 
 function spellsDialogModule:FillBuffsList()
   self.context = {
-    isHorde = UnitFactionGroup("player") == "Horde",
+    playerIsHorde = UnitFactionGroup("player") == "Horde",
     categoryFrames = {},
   } ---@type SpellsDialogContext
 
@@ -252,8 +253,10 @@ end
 ---@param classOrRole ClassName
 function spellsDialogModule:AddClassRoleToggle(row, profileBuff, classOrRole)
   local skip = false
-  if not envModule.haveTBC and ( -- if not TBC hide paladin for horde, hide shaman for alliance
-    (playerIsHorde and classOrRole == "PALADIN") or (not playerIsHorde and classOrRole == "SHAMAN")) then
+  local hordePaladin = self.context.playerIsHorde and classOrRole == "PALADIN"
+  local allianceShaman = not self.context.playerIsHorde and classOrRole == "SHAMAN"
+  -- if not TBC hide paladin for horde, hide shaman for alliance
+  if not envModule.haveTBC and (hordePaladin or allianceShaman) then
     skip = true
   end
 
@@ -277,20 +280,9 @@ function spellsDialogModule:AddClassRoleToggle(row, profileBuff, classOrRole)
   end
 end
 
-function _temp()
-   --========================================
-  local tooltip3 = ngStringsModule:FormatTexture(texturesModule.ICON_TANK) .. " - " .. _t("TooltipCastOnTank")
-  local tankToggle = buffDef.frames:CreateTankToggle(tooltip3, bomDoBlessingOnClick)
-  tankToggle:SetVariable(profileBuff.Class, "tank", nil)
-  rowBuilder:AppendRight(nil, tankToggle, 0)
-  rowBuilder.prevControl = tankToggle
-
-  --========================================
-  local tooltip4 = ngStringsModule:FormatTexture(texturesModule.ICON_PET) .. " - " .. _t("TooltipCastOnPet")
-  local petToggle = buffDef.frames:CreatePetToggle(tooltip4, bomDoBlessingOnClick)
-  petToggle:SetVariable(profileBuff.Class, "pet", nil)
-  rowBuilder:AppendRight(nil, petToggle, 5)
-
+---@param row AceGUIWidget The GUI panel where controls are added
+---@param profileBuff PlayerBuffChoice The profile buff currently being displayed
+function spellsDialogModule:AddForceTargets(row, profileBuff)
   -- Force Cast Button -(+)-
   local forceToggle = buffDef.frames:CreateForceCastToggle(_t("TooltipForceCastOnTarget"), buffDef)
   rowBuilder:AppendRight(nil, forceToggle, 0)

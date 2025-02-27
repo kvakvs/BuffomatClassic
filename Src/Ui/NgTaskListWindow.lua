@@ -6,7 +6,7 @@ local optionsPopupModule = LibStub("Buffomat-OptionsPopup") --[[@as OptionsPopup
 local constModule = LibStub("Buffomat-Const") --[[@as ConstModule]]
 local toolboxModule = LibStub("Buffomat-LegacyToolbox") --[[@as LegacyToolboxModule]]
 local _t = LibStub("Buffomat-Languages") --[[@as LanguagesModule]]
-local spellsDialogModule = LibStub("Buffomat-SpellsDialog") --[[@as BomSpellsDialogModule]]
+local spellsDialogModule = LibStub("Buffomat-SpellsDialog") --[[@as SpellsDialogModule]]
 local taskListPanelModule = LibStub("Buffomat-TaskListPanel") --[[@as TaskListPanelModule]]
 
 -- Lua APIs

@@ -60,7 +60,7 @@ end
 
 ---Clear the cached text, and clear the message frame
 function taskListClass:Clear()
-  BomC_ListTab_MessageFrame:Clear()
+  -- BomC_ListTab_MessageFrame:Clear()
   wipe(self.tasks)
   wipe(self.comments)
   wipe(self.lowPrioComments)
