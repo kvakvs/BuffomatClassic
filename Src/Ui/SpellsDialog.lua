@@ -18,6 +18,7 @@ local allBuffsModule = LibStub("Buffomat-AllBuffs") --[[@as AllBuffsModule]]
 local buffomatModule = LibStub("Buffomat-Buffomat") --[[@as BuffomatModule]]
 local constModule = LibStub("Buffomat-Const") --[[@as ConstModule]]
 local envModule = LibStub("KvLibShared-Env") --[[@as KvSharedEnvModule]]
+local forceTargetDialogModule = LibStub("Buffomat-ForceTargetDialog") --[[@as ForceTargetDialogModule]]
 local libGUI = LibStub("AceGUI-3.0")
 local ngStringsModule = LibStub("Buffomat-NgStrings") --[[@as NgStringsModule]]
 local ngToolboxModule = LibStub("Buffomat-NgToolbox") --[[@as NgToolboxModule]]
@@ -39,22 +40,23 @@ function spellsDialogModule:Show()
     self:Hide()
   end
 
-  local frame = libGUI:Create("Frame")
-  self.dialog = frame
+  local dialog = libGUI:Create("Frame")
+  self.dialog = dialog
 
-  frame:SetTitle(_t("SpellsWindow_Title"))
-  frame:SetLayout("Fill")
-  frame:SetWidth(800)
-  frame:SetHeight(400)
-  frame:SetPoint("CENTER")
-  frame:Show()
+  dialog:SetTitle(_t("SpellsWindow_Title"))
+  dialog:SetLayout("Fill")
+  dialog:SetWidth(600)
+  dialog:SetHeight(400)
+  dialog:SetPoint("CENTER")
+  -- dialog.frame:SetFrameStrata("DIALOG") -- float above other frames
+  dialog:Show()
 
   local scrollFrame = libGUI:Create("ScrollFrame")
   self.scrollFrame = scrollFrame
   scrollFrame:SetLayout("List")
   scrollFrame:SetFullHeight(true)
   scrollFrame:SetFullWidth(true)
-  frame:AddChild(scrollFrame)
+  dialog:AddChild(scrollFrame)
 
   self:FillBuffsList()
 end
@@ -96,49 +98,65 @@ function spellsDialogModule:CategoryIsHidden(category)
   return buffomatModule.character.BuffCategoriesHidden[category] == true
 end
 
-local function SetVisible(widget, visible)
-  if visible then
-    widget.frame:Show()
-  else
-    widget.frame:Hide()
-  end
-end
+-- local function SetVisible(widget, visible)
+--   if visible then
+--     widget.frame:Show()
+--   else
+--     widget.frame:Hide()
+--   end
+-- end
 
 -- Pre-create category frames
 ---@param context SpellsDialogContext
 function spellsDialogModule:CreateCategoryFrames(context)
   for _, cat in ipairs(allBuffsModule.buffCategories) do
-    -- Contains the text heading and checkbox to show/hide the category
-    local categoryFrame = libGUI:Create("SimpleGroup")
-    context.categoryFrames[cat] = categoryFrame
-    categoryFrame:SetLayout("List")
-    categoryFrame:SetFullWidth(true)
-    self.scrollFrame:AddChild(categoryFrame)
-
-    local headingPanel = libGUI:Create("SimpleGroup")
-    headingPanel:SetLayout("Flow")
-    headingPanel:SetFullWidth(true)
-    headingPanel:SetRelativeWidth(1)
-    categoryFrame:AddChild(headingPanel)
-
-    local label = libGUI:Create("InteractiveLabel")
-    label:SetText(buffomatModule:Color("aaaaaa", self:CategoryLabel(cat)))
-    label:SetFont("Fonts\\FRIZQT__.TTF", 16, "OUTLINE")
-    label:SetWidth(300)
-    headingPanel:AddChild(label)
-
-    local isVisible = not self:CategoryIsHidden(cat)
-    local showCategoryCheckbox = libGUI:Create("CheckBox")
-    showCategoryCheckbox:SetWidth(32)
-    showCategoryCheckbox:SetValue(isVisible)
-    showCategoryCheckbox:SetLabel("")
-    showCategoryCheckbox:SetCallback("OnValueChanged", function(_control, _callbackName, value)
-      buffomatModule.character.BuffCategoriesHidden[cat] = not value
-      spellsDialogModule:Hide()
-      spellsDialogModule:Show()
-    end)
-    headingPanel:AddChild(showCategoryCheckbox)
+    -- Count known buffs in this category
+    local count = 0
+    for _, buffDef in ipairs(allBuffsModule.selectedBuffs) do
+      if buffDef.category == cat then
+        count = count + 1
+      end
+    end
+    -- Only create category frame if there are any buffs in this category
+    if count > 0 then
+      self:CreateCategoryFrame(context, cat)
+    end
   end
+end
+
+---Contains the text heading and checkbox to show/hide the category
+---@param context SpellsDialogContext
+---@param cat BuffCategoryName
+function spellsDialogModule:CreateCategoryFrame(context, cat)
+  local categoryFrame = libGUI:Create("SimpleGroup")
+  context.categoryFrames[cat] = categoryFrame
+  categoryFrame:SetLayout("List")
+  categoryFrame:SetFullWidth(true)
+  self.scrollFrame:AddChild(categoryFrame)
+
+  local headingPanel = libGUI:Create("SimpleGroup")
+  headingPanel:SetLayout("Flow")
+  headingPanel:SetFullWidth(true)
+  headingPanel:SetRelativeWidth(1)
+  categoryFrame:AddChild(headingPanel)
+
+  local label = libGUI:Create("InteractiveLabel")
+  label:SetText(buffomatModule:Color("aaaaaa", self:CategoryLabel(cat)))
+  label:SetFont("Fonts\\FRIZQT__.TTF", 16, "OUTLINE")
+  label:SetWidth(label.label:GetStringWidth())
+  headingPanel:AddChild(label)
+
+  local isVisible = not self:CategoryIsHidden(cat)
+  local showCategoryCheckbox = libGUI:Create("CheckBox")
+  showCategoryCheckbox:SetWidth(32)
+  showCategoryCheckbox:SetValue(isVisible)
+  showCategoryCheckbox:SetLabel("")
+  showCategoryCheckbox:SetCallback("OnValueChanged", function(_control, _callbackName, value)
+    buffomatModule.character.BuffCategoriesHidden[cat] = not value
+    spellsDialogModule:Hide()
+    spellsDialogModule:Show()
+  end)
+  headingPanel:AddChild(showCategoryCheckbox)
 end
 
 -- From a buff definition, create an icon button. For consumable buffs, the icon is
@@ -209,9 +227,82 @@ function spellsDialogModule:CreateBuffRow(buffDef, profileBuff, context)
   if buffDef:HasClasses() then
     self:AddSelfCastToggle(row, profileBuff)
     self:AddClassRoleToggles(row, profileBuff)
+    self:AddForceTargets(row, buffDef, profileBuff)
+  end
+
+  -- -- Add checkbox for spells which can be enabled and present at the same time?
+  -- if (buffDef.type == "tracking"
+  --       or buffDef.type == "aura"
+  --       or buffDef.type == "seal")
+  --     and buffDef.requiresForm == nil then
+  --   local statusImage = buffDef.frames:CreateStatusCheckboxImage(buffDef)
+  --   statusImage:SetPoint("TOPLEFT", infoIcon, "TOPRIGHT", rowBuilder.dx, 0)
+  --   rowBuilder:ContinueRightOf(statusImage, 7)
+  -- end
+
+  ----------------------------------
+  -- TODO: Add soulstone for all classes and make whisper work
+  -- if buff.isInfo and buff.AllowWhisper then
+  --   local whisperToggle = ngToolboxModule:CreateToggle(
+  --     _t("TooltipWhisperWhenExpired"), 24, 20,
+  --     texturesModule.ICON_WHISPER_ON,
+  --     texturesModule.ICON_WHISPER_OFF,
+  --     function() return profileBuff.Whisper end,
+  --     function(value) profileBuff.Whisper = value end
+  --   )
+  --   row:AddChild(whisperToggle)
+  -- end
+
+  ----------------------------------
+  if buffDef.type == "weapon" then
+    self:AddMainhandToggle(row, profileBuff)
+
+    -- Only warriors, rogues, dk can enchant offhand. Shamans can enchant offhand in TBC. Other classes - only mainhand/2h.
+    local canEnchantOffhand = false
+    if tContains({ "ROGUE", "WARRIOR", "DEATHKNIGHT" }, envModule.playerClass)
+        and UnitLevel("player") >= 10
+    then
+      canEnchantOffhand = true
+    end
+    if envModule.haveTBC and envModule.playerClass == "SHAMAN" then
+      canEnchantOffhand = true
+    end
+
+    if canEnchantOffhand then
+      self:AddOffhandToggle(row, profileBuff)
+    end
   end
 
   return row
+end
+
+function spellsDialogModule:AddMainhandToggle(row, profileBuff)
+  local mainhandToggle = ngToolboxModule:CreateToggle(
+    _t("tooltip.mainhand"),
+    24, 20, texturesModule.ICON_MAINHAND_ON, texturesModule.ICON_MAINHAND_OFF,
+    function() return profileBuff.MainHandEnable end,
+    function(value) profileBuff.MainHandEnable = value end
+  )
+  row:AddChild(mainhandToggle)
+  -- -- Add choices for mainhand & offhand
+  -- local mainhandToggle = buff.frames:CreateMainhandToggle(_t("tooltip.mainhand"))
+  -- mainhandToggle:SetPoint("TOPLEFT", rowBuilder.prevControl, "TOPRIGHT", rowBuilder.dx, 0)
+  -- mainhandToggle:SetVariable(profileBuff, "MainHandEnable", nil)
+  -- rowBuilder:ContinueRightOf(mainhandToggle, 2)
+end
+
+function spellsDialogModule:AddOffhandToggle(row, profileBuff)
+  local offhandToggle = ngToolboxModule:CreateToggle(
+    _t("tooltip.offhand"),
+    24, 20, texturesModule.ICON_OFFHAND_ON, texturesModule.ICON_OFFHAND_OFF,
+    function() return profileBuff.OffHandEnable end,
+    function(value) profileBuff.OffHandEnable = value end
+  )
+  row:AddChild(offhandToggle)
+  -- local offhandToggle = buff.frames:CreateOffhandToggle(_t("tooltip.offhand"))
+  -- offhandToggle:SetPoint("TOPLEFT", rowBuilder.prevControl, "TOPRIGHT", rowBuilder.dx, 0)
+  -- offhandToggle:SetVariable(profileBuff, "OffHandEnable", nil)
+  -- rowBuilder:ContinueRightOf(offhandToggle, 2)
 end
 
 ---Add class selector for buff which makes sense to differentiate per class.
@@ -219,12 +310,14 @@ end
 ---@param profileBuff PlayerBuffChoice The profile buff currently being displayed
 function spellsDialogModule:AddSelfCastToggle(row, profileBuff)
   local selfCastTooltip = ngStringsModule:FormatTexture(texturesModule.ICON_SELF_CAST_ON)
-    .. " - " .. _t("TooltipSelfCastCheckbox_Self") .. "|n"
-    .. ngStringsModule:FormatTexture(texturesModule.ICON_SELF_CAST_OFF)
-    .. " - " .. _t("TooltipSelfCastCheckbox_Party")
+      .. " - " .. _t("TooltipSelfCastCheckbox_Self") .. "|n"
+      .. ngStringsModule:FormatTexture(texturesModule.ICON_SELF_CAST_OFF)
+      .. " - " .. _t("TooltipSelfCastCheckbox_Party")
 
   local selfcastToggle = ngToolboxModule:CreateToggle(
     selfCastTooltip,
+    24,
+    20,
     texturesModule.ICON_SELF_CAST_ON,
     texturesModule.ICON_SELF_CAST_OFF,
     function() return profileBuff.SelfCast end,
@@ -271,6 +364,8 @@ function spellsDialogModule:AddClassRoleToggle(row, profileBuff, classOrRole)
     -- local classToggle = buffDef.frames:CreateClassToggle(class, tooltip2, bomDoBlessingOnClick)
     local classToggle = ngToolboxModule:CreateToggle(
       tooltip2,
+      24,
+      20,
       texturesModule.CLASS_ICONS_BUNDLED[classOrRole],
       texturesModule.ICON_EMPTY,
       function() return profileBuff.Class[classOrRole] == true end,
@@ -280,20 +375,58 @@ function spellsDialogModule:AddClassRoleToggle(row, profileBuff, classOrRole)
   end
 end
 
+---Add two buttons: for force cast and exclude target. Clicking each button pops up a dialog
+---with a list of units to choose from, add (add target) and remove (remove target) buttons.
 ---@param row AceGUIWidget The GUI panel where controls are added
+---@param buffDef BomBuffDefinition
 ---@param profileBuff PlayerBuffChoice The profile buff currently being displayed
-function spellsDialogModule:AddForceTargets(row, profileBuff)
-  -- Force Cast Button -(+)-
-  local forceToggle = buffDef.frames:CreateForceCastToggle(_t("TooltipForceCastOnTarget"), buffDef)
-  rowBuilder:AppendRight(nil, forceToggle, 0)
+function spellsDialogModule:AddForceTargets(row, buffDef, profileBuff)
+  -- Force Cast Button (+)
+  local forceToggle = ngToolboxModule:CreateButton(
+    nil,
+    _t("TooltipForceCastOnTarget"),
+    24, 20, texturesModule.ICON_TARGET_ON,
+    function()
+      local dialog = forceTargetDialogModule:Show(
+        buffDef,
+        function() return profileBuff.ForceTarget end,
+        function(dictionary) profileBuff.ForceTarget = dictionary end,
+        _t("title.ForceTarget"),
+        self.dialog
+      )
+      spellsDialogModule:AttachDialog(dialog)
+    end)
+  row:AddChild(forceToggle)
 
   -- Exclude/Ignore Buff Target Button (X)
-  local excludeToggle = buffDef.frames:CreateExcludeToggle(_t("TooltipExcludeTarget"), buffDef)
-  rowBuilder:AppendRight(nil, excludeToggle, 2)
+  local excludeToggle = ngToolboxModule:CreateButton(
+    nil,
+    _t("TooltipExcludeTarget"),
+    24, 20, texturesModule.ICON_TARGET_EXCLUDE,
+    function()
+      local dialog = forceTargetDialogModule:Show(
+        buffDef,
+        function() return profileBuff.ExcludeTarget end,
+        function(dictionary) profileBuff.ExcludeTarget = dictionary end,
+        _t("title.ExcludeTarget"),
+        self.dialog
+      )
+      spellsDialogModule:AttachDialog(dialog)
+    end)
+  row:AddChild(excludeToggle)
 end
 
+---Attach the floating dialog 'dialog' to our main 'self.dialog' right side.
+function spellsDialogModule:AttachDialog(attachDialog)
+  self.dialog:AddChild(attachDialog)
+  -- attachDialog.frame:SetPoint("TOPLEFT", self.dialog.frame, "TOPRIGHT", 0, 0)
+  -- attachDialog.frame:SetMovable(false)
+  -- attachDialog.frame:SetResizable(false)
+end
 
 function spellsDialogModule:Hide()
+  forceTargetDialogModule:Hide()
+
   if self.dialog then
     self.scrollFrame:ReleaseChildren()
 

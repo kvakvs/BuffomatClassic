@@ -22,13 +22,13 @@ local CreateFrame, UIParent = CreateFrame, UIParent
 
 ---@class NgTaskListWindow: AceGUIWidget
 ---@field Type "Window"
----@field frame AceGUIFrame
+---@field frame Frame
 ---@field sizer_se AceGUIFrame
 ---@field sizer_s AceGUIFrame
 ---@field sizer_e AceGUIFrame
 ---@field content _TLWContent
----@field titletext AceGUIFrame
----@field title AceGUIFrame
+---@field titletext FontString
+---@field title Button
 
 ----------------
 -- Main Frame --
@@ -55,7 +55,7 @@ do
     this.obj:Hide()
   end
 
----@diagnostic disable-next-line: unused-local
+  ---@diagnostic disable-next-line: unused-local
   local function frameOnMouseDown(this)
     AceGUI:ClearFocus()
   end
@@ -101,7 +101,7 @@ do
     self.titletext:SetText(title)
   end
 
----@diagnostic disable-next-line: unused-local
+  ---@diagnostic disable-next-line: unused-local
   local function SetStatusText(self, text)
     -- self.statustext:SetText(text)
   end
@@ -251,7 +251,8 @@ do
   ---@return NgTaskListWindow
   local function Constructor()
     local frame = CreateFrame("Frame", nil, UIParent)
-    local window = --[[@as NgTaskListWindow]] {}
+    ---@type NgTaskListWindow
+    local window = {}
     window.type = "Window"
 
     window.Hide = Hide
@@ -289,7 +290,7 @@ do
     frame:SetToplevel(true)
 
     local titlebg = frame:CreateTexture(nil, "BACKGROUND")
-    titlebg:SetTexture(251966)   -- Interface\\PaperDollInfoFrame\\UI-GearManager-Title-Background
+    titlebg:SetTexture(251966) -- Interface\\PaperDollInfoFrame\\UI-GearManager-Title-Background
     titlebg:SetPoint("TOPLEFT", 9, -6)
     titlebg:SetPoint("BOTTOMRIGHT", frame, "TOPRIGHT", -28, -24)
 

@@ -1,4 +1,3 @@
-
 local BOM = BuffomatAddon
 
 ---@alias BomElixirType "battle"|"guardian"|"both"
@@ -18,6 +17,7 @@ local spellCacheModule = LibStub("Buffomat-SpellCache") --[[@as BomSpellCacheMod
 local itemCacheModule = LibStub("Buffomat-ItemCache") --[[@as BomItemCacheModule]]
 local allBuffsModule = LibStub("Buffomat-AllBuffs") --[[@as AllBuffsModule]]
 local profileModule = LibStub("Buffomat-Profile") --[[@as ProfileModule]]
+
 ---type="aura" Auras are no target buff check. True if the buff affects others in radius, and not a target buff
 ---type="seal" Seals are 1hand enchants which are unique for equipped weapon. Paladins use seals. Shamans also use seals but in TBC shamans have 2 independent seals.
 ---type="resurrection" The spell will bring up a dead person
@@ -136,7 +136,7 @@ buffDefClass.__index = buffDefClass
 ---@return BomBuffDefinition
 function buffDefModule:New(singleId)
   local buff = {} --[[@as BomBuffDefinition]]
-  buff.category = ""                                  -- special value no category
+  buff.category = "" -- special value no category
   --buff.frames = buffRowModule:New(tostring(singleId)) -- spell buttons from the UI go here
   buff.buffId = singleId
   buff.highestRankSingleId = singleId
@@ -196,7 +196,7 @@ function buffDefModule:consumableGroup(allBuffs, buffId, providesAuras, provided
   return b
 end
 
-local _, playerClass, _ = UnitClass("player")
+local playerClass = envModule.playerClass
 
 --TODO: Belongs to `BomBuffDefinition`
 ---Check the static limitations, which cannot change after the player logs in
@@ -726,7 +726,7 @@ function buffDefModule:GetProfileBlessingState(profileName)
     --return allBuffsModule.allBuffs[spellId]
   end
 
-  local profile = buffomatModule.character.profiles[profileName ]
+  local profile = buffomatModule.character.profiles[profileName]
   if profile == nil then
     return --[[@as BlessingState]] {}
   end

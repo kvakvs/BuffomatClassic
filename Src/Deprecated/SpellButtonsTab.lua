@@ -285,7 +285,7 @@ if false then
   ---Called below from BOM.UpdateSpellsTab()
   function spellButtonsTabModule:CreateTab(playerIsHorde)
     local rowBuilder = rowBuilderModule:new()
-    local _, selfClass, _ = UnitClass("player")
+    local selfClass = envModule.playerClass
 
     buffomatModule.character.BuffCategoriesHidden = buffomatModule.character.BuffCategoriesHidden or {}
 
@@ -482,14 +482,14 @@ if false then
 
         forceCastButton:SetScript("OnClick", function(self1)
           if lastTarget then
-            if not spellForcedTarget[lastTarget ] then
+            if not spellForcedTarget[lastTarget] then
               BOM:Print(BOM.FormatTexture(texturesModule.ICON_TARGET_ON) .. " "
                 .. _t("MessageAddedForced") .. ": " .. lastTarget)
-              spellForcedTarget[lastTarget ] = true
+              spellForcedTarget[lastTarget] = true
             else
               BOM:Print(BOM.FormatTexture(texturesModule.ICON_TARGET_ON) .. " "
                 .. _t("MessageClearedForced") .. ": " .. lastTarget)
-              spellForcedTarget[lastTarget ] = nil
+              spellForcedTarget[lastTarget] = nil
             end
           end
           spellButtonsTabModule:UpdateForcecastTooltip(self, profileSpell)
@@ -501,14 +501,14 @@ if false then
 
         excludeButton:SetScript("OnClick", function(control)
           if lastTarget then
-            if not spellExclude[lastTarget ] then
+            if not spellExclude[lastTarget] then
               BOM:Print(BOM.FormatTexture(texturesModule.ICON_TARGET_EXCLUDE) .. " "
                 .. _t("MessageAddedExcluded") .. ": " .. lastTarget)
-              spellExclude[lastTarget ] = true
+              spellExclude[lastTarget] = true
             else
               BOM:Print(BOM.FormatTexture(texturesModule.ICON_TARGET_EXCLUDE) .. " "
                 .. _t("MessageClearedExcluded") .. ": " .. lastTarget)
-              spellExclude[lastTarget ] = nil
+              spellExclude[lastTarget] = nil
             end
           end
           spellButtonsTabModule:UpdateExcludeTargetsTooltip(control, profileSpell)
@@ -599,7 +599,7 @@ if false then
     self:HideAllControls()
     self:CreateTab(UnitFactionGroup("player") == "Horde")
 
-    local _className, playerClass, _classId = UnitClass("player")
+    local playerClass = envModule.playerClass
 
     for i, spell in ipairs(allBuffsModule.selectedBuffs) do
       if self:CategoryIsHidden(spell.category) then

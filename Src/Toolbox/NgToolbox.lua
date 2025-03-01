@@ -47,29 +47,32 @@ function ngToolboxModule:TooltipLink(widget, link)
   end)
 end
 
-
 ---@param frame Frame
 function ngToolboxModule:SetButtonTextures(frame, normalTexture, selectedTexture, disabledTexture)
+  if not normalTexture then
+    frame:ClearNormalTexture()
+    frame:ClearPushedTexture()
+    frame:ClearDisabledTexture()
+    return
+  end
+
   frame:SetNormalTexture(normalTexture)
   local normalT = frame:GetNormalTexture()
   normalT:SetSize(20, 20)
   normalT:ClearAllPoints()
   normalT:SetPoint("CENTER")
-  -- normalT:SetTexture(normalTexture)
 
   frame:SetPushedTexture(selectedTexture or normalTexture)
   local pushedT = frame:GetPushedTexture()
   pushedT:SetSize(20, 20)
   pushedT:ClearAllPoints()
   pushedT:SetPoint("CENTER")
-  -- pushedT:SetTexture(selectedTexture or normalTexture)
 
   frame:SetDisabledTexture(disabledTexture or normalTexture)
   local disabledT = frame:GetDisabledTexture()
   disabledT:SetSize(20, 20)
   disabledT:ClearAllPoints()
   disabledT:SetPoint("CENTER")
-  -- disabledT:SetTexture(disabledTexture or normalTexture)
 end
 
 ---@param tooltip string
@@ -78,10 +81,10 @@ end
 ---@param getValue fun(): boolean
 ---@param setValue fun(value: boolean)
 ---@return AceGUIWidget
-function ngToolboxModule:CreateToggle(tooltip, textureOn, textureOff, getValue, setValue)
+function ngToolboxModule:CreateToggle(tooltip, width, height, textureOn, textureOff, getValue, setValue)
   local button = libGUI:Create("Button")
-  button:SetWidth(20)
-  button:SetHeight(20)
+  button:SetWidth(width)
+  button:SetHeight(height)
 
   local valueOnCreation = getValue()
   local setTextureOn = function()
@@ -100,5 +103,26 @@ function ngToolboxModule:CreateToggle(tooltip, textureOn, textureOff, getValue, 
   end)
 
   self:SetTooltip(button, tooltip)
+  button.frame:SetFrameStrata("DIALOG")
+
+  return button
+end
+
+---@param tooltip string
+---@param texture string
+---@param onClick fun()
+---@return AceGUIWidget
+function ngToolboxModule:CreateButton(text, tooltip, width, height, texture, onClick)
+  local button = libGUI:Create("Button")
+  button:SetWidth(width)
+  button:SetHeight(height)
+
+  if text then button:SetText(text) end
+  ngToolboxModule:SetButtonTextures(button.frame, texture)
+  if tooltip then self:SetTooltip(button, tooltip) end
+
+  ---@diagnostic disable-next-line: unused-local
+  button:SetCallback("OnClick", function(_control, mouseButton) onClick() end)
+
   return button
 end

@@ -71,6 +71,7 @@ Src/Ui/TaskListPanel.lua
 Src/Ui/NgSecureActionButton.lua
 Src/Ui/NgTaskListWindow.lua
 Src/Ui/Buffomat.xml
+Src/Ui/ForceTargetDialog.lua
 
 Src/Events.lua
 Src/SpellSetup.lua

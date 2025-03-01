@@ -177,8 +177,8 @@ function taskScanModule:UpdateMissingBuffs_EachBuff(party, buffDef, buffCtx)
     table.insert(buffDef.unitsHaveBetterBuff, party.player)
   elseif not buffDefModule:IsBuffEnabled(buffDef.buffId, nil) then
     --nothing, the spell is not enabled!
-  -- elseif spellButtonsTabModule:CategoryIsHidden(buffDef.category) then
-  --   --nothing, the category is not showing!
+    -- elseif spellButtonsTabModule:CategoryIsHidden(buffDef.category) then
+    --   --nothing, the category is not showing!
   elseif buffDef.type == "weapon" then
     buffChecksModule:PlayerNeedsWeaponBuff(buffDef, party.player)
     -- NOTE: This must go before spell.IsConsumable clause
@@ -542,8 +542,8 @@ end
 function taskScanModule:CancelBuffs(playerUnit)
   for i, spell in ipairs(BOM.cancelBuffs or {}) do
     if buffomatModule.currentProfile
-      and buffomatModule.currentProfile.CancelBuff[spell.buffId].Enable
-      and not spell.onlyCombat
+        and buffomatModule.currentProfile.CancelBuff[spell.buffId].Enable
+        and not spell.onlyCombat
     then
       local player_buff = playerUnit.knownBuffs[spell.buffId]
 
@@ -738,7 +738,7 @@ function taskScanModule:FindTargetForGroupBuff(groupIndex, buffDef, party, minBu
     --end
 
     --if groupInRange ~= nil and (not spell.GroupsHaveDead[groupIndex] or not buffomatModule.shared.DeathBlock) then
-    if (groupIndex and not buffDef.groupsHaveDead[groupIndex ])
+    if (groupIndex and not buffDef.groupsHaveDead[groupIndex])
         or not buffomatModule.shared.DeathBlock then
       -- Text: Group 5 [Spell Name]
       self.tasklist:Add(
@@ -1004,7 +1004,7 @@ function taskScanModule:AddSummonSpell(buffDef, playerMember)
           buffDef.singleMana, buffDef.highestRankSingleId, buffDef:SingleLink(),
           playerMember, buffDef, false))
         :LinkToBuffDef(buffDef)
-      self.tasklist:Add(task)
+    self.tasklist:Add(task)
   end
 end
 
@@ -1014,7 +1014,7 @@ end
 function taskScanModule:AddConsumableSelfbuff_NoItem(buffDef, count, playerUnit)
   -- Text: "ConsumableName" x Count
   local task = taskModule:Create(
-        self:FormatItemBuffInactiveText(buffDef.consumeGroupTitle or buffDef.singleText,count),
+        self:FormatItemBuffInactiveText(buffDef.consumeGroupTitle or buffDef.singleText, count),
         nil)
       :PrefixText(_t("task.type.Consume"))
       :Target(buffTargetModule:FromSelf(playerUnit))
@@ -1078,8 +1078,8 @@ function taskScanModule:AddConsumableSelfbuff(buffDef, playerUnit, target, buffC
 
   if haveItemOffCD then
     self:AddConsumableSelfbuff_HaveItemReady(
-      buffDef,bestItemIdAvailable,
-     bag,slot,count,
+      buffDef, bestItemIdAvailable,
+      bag, slot, count,
       playerUnit, target)
   else
     self:AddConsumableSelfbuff_NoItem(buffDef, count or 0, playerUnit)
@@ -1241,10 +1241,10 @@ function taskScanModule:AddConsumableWeaponBuff(buffDef, playerUnit, buffCtx)
 
   if haveItem then
     self:AddConsumableWeaponBuff_HaveItem(buffDef,
-     bag,slot,count,
+      bag, slot, count,
       playerUnit)
   else
-    self:AddConsumableWeaponBuff_DontHaveItem(buffDef,count, playerUnit)
+    self:AddConsumableWeaponBuff_DontHaveItem(buffDef, count, playerUnit)
   end
 end
 
@@ -1260,10 +1260,10 @@ end
 ---@param playerUnit BomUnit - the player
 ---@param buffCtx BomBuffScanContext
 function taskScanModule:AddWeaponEnchant(buffDef, playerUnit, buffCtx)
-  local _, selfClass, _ = UnitClass("player")
+  local playerClass = envModule.playerClass
 
-  local isTBCShaman = envModule.haveTBC and selfClass == "SHAMAN"
-  local isDualwieldShaman = IsSpellKnown(674) and selfClass == "SHAMAN"
+  local isTBCShaman = envModule.haveTBC and playerClass == "SHAMAN"
+  local isDualwieldShaman = IsSpellKnown(674) and playerClass == "SHAMAN"
   if not isTBCShaman and not isDualwieldShaman then
     return
   end
@@ -1549,7 +1549,7 @@ function taskScanModule:MountedCrusaderAuraPrompt()
         :Target(buffTargetModule:FromSelf(playerUnit))
         :Action(actionCastModule:New(
           spell.singleMana, spell.highestRankSingleId, spell:SingleLink(),
-         playerUnit, spell, false))
+          playerUnit, spell, false))
     self.tasklist:Add(task)
 
     return true -- only show the aura and nothing else
@@ -1770,8 +1770,8 @@ end
 ---continue casting buffs on other members
 function BOM.AddMemberToSkipList()
   if BOM.castFailedBuff and BOM.castFailedBuffTarget then
-    local castFailedBuffVal =BOM.castFailedBuff
-    local castFailedTarget =BOM.castFailedBuffTarget
+    local castFailedBuffVal = BOM.castFailedBuff
+    local castFailedTarget = BOM.castFailedBuffTarget
 
     if (castFailedBuffVal).skipList
         and BOM.castFailedBuffTarget then

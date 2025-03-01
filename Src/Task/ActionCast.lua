@@ -7,6 +7,7 @@ local buffomatModule = LibStub("Buffomat-Buffomat") --[[@as BuffomatModule]]
 local taskModule = LibStub("Buffomat-Task") --[[@as BomTaskModule]]
 local partyModule = LibStub("Buffomat-Party") --[[@as PartyModule]]
 local allBuffsModule = LibStub("Buffomat-AllBuffs") --[[@as AllBuffsModule]]
+local envModule = LibStub("KvLibShared-Env") --[[@as KvSharedEnvModule]]
 
 ---@class BomTaskActionCast: BomTaskAction Casts a spell with a power (mana) cost on a target
 ---@field buffDef BomBuffDefinition|nil
@@ -69,9 +70,7 @@ function actionCastClass:GetButtonText(task)
 end
 
 function actionCastClass:GetCancelFormMacroLine()
-  local _, playerClass, _ = UnitClass("player")
-
-  if playerClass == "DRUID" then
+  if envModule.playerClass == "DRUID" then
     return "/cancelform [nocombat, noform:5]"
   end
 
@@ -81,7 +80,7 @@ end
 ---@param m BomMacro
 function actionCastClass:UpdateMacro(m)
   --Downgrade-Check
-  local buffDef = allBuffsModule.buffFromSpellIdLookup[self.spellId ]
+  local buffDef = allBuffsModule.buffFromSpellIdLookup[self.spellId]
   local rank = ""
 
   if buffDef == nil then
