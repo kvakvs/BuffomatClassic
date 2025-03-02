@@ -1,6 +1,4 @@
---local TOCNAME, _ = ...
-local BOM = BuffomatAddon
-
+local BuffomatAddon = BuffomatAddon
 
 ---@class BomSpellSetupModule
 
@@ -41,12 +39,12 @@ function spellSetupModule:Setup_ResetCaches()
   allBuffsModule.allSpellIds = {}
   allBuffsModule.buffFromSpellIdLookup = --[[@as {[WowSpellId]: BomBuffDefinition}]] {}
 
-  buffomatModule.shared.Cache = buffomatModule.shared.Cache or {}
-  buffomatModule.shared.Cache.Item2 = buffomatModule.shared.Cache.Item2 or {}
+  BuffomatShared.Cache = BuffomatShared.Cache or {}
+  BuffomatShared.Cache.Item2 = BuffomatShared.Cache.Item2 or {}
 end
 
 function spellSetupModule:Setup_CancelBuffs()
-  for i, cancelBuff in ipairs(BOM.cancelBuffs) do
+  for i, cancelBuff in ipairs(BuffomatAddon.cancelBuffs) do
     -- save "buffId"
     --spell.buffId = spell.buffId or spell.singleId
 
@@ -57,10 +55,10 @@ function spellSetupModule:Setup_CancelBuffs()
     end
 
     -- GetSpellNames and set default duration
-    local spellInfo = BOM.GetSpellInfo(cancelBuff.highestRankSingleId)
+    local spellInfo = BuffomatAddon.GetSpellInfo(cancelBuff.highestRankSingleId)
 
     if spellInfo then
-      local spellInfoValue =spellInfo
+      local spellInfoValue = spellInfo
 
       cancelBuff.singleText = spellInfoValue.name
       spellInfoValue.rank = GetSpellSubtext(cancelBuff.highestRankSingleId) or ""
@@ -84,23 +82,23 @@ end
 function spellSetupModule:Setup_EachSpell_Consumable(add, buffDef)
   for _i, eachItem in pairs(buffDef.items or {}) do
     -- call results are cached if they are successful, should not be a performance hit
-    local itemInfo = BOM.GetItemInfo(eachItem)
+    local itemInfo = BuffomatAddon.GetItemInfo(eachItem)
 
     if not buffDef.isScanned and itemInfo then
       if (not itemInfo
             or not (itemInfo).itemName
             or not (itemInfo).itemLink
             or not (itemInfo).itemTexture)
-          and buffomatModule.shared.Cache.Item2[eachItem]
+          and BuffomatShared.Cache.Item2[eachItem]
       then
-        itemInfo = buffomatModule.shared.Cache.Item2[eachItem]
+        itemInfo = BuffomatShared.Cache.Item2[eachItem]
       elseif (not itemInfo
             or not (itemInfo).itemName
             or not (itemInfo).itemLink
             or not (itemInfo).itemTexture)
-          and itemCacheModule.cache[buffDef:GetFirstItem() ]
+          and itemCacheModule.cache[buffDef:GetFirstItem()]
       then
-        itemInfo = itemCacheModule.cache[buffDef:GetFirstItem() ]
+        itemInfo = itemCacheModule.cache[buffDef:GetFirstItem()]
       end
 
       if itemInfo
@@ -115,7 +113,7 @@ function spellSetupModule:Setup_EachSpell_Consumable(add, buffDef)
         buffDef.itemIcon = (itemInfo).itemTexture
         buffDef.isScanned = true
 
-        buffomatModule.shared.Cache.Item2[eachItem] = itemInfo
+        BuffomatShared.Cache.Item2[eachItem] = itemInfo
       else
         -- Go delayed fetch
         local item = Item:CreateFromItemID(eachItem)
@@ -123,7 +121,7 @@ function spellSetupModule:Setup_EachSpell_Consumable(add, buffDef)
           local name = item:GetItemName()
           local link = item:GetItemLink()
           local icon = item:GetItemIcon()
-          buffomatModule.shared.Cache.Item2[eachItem] = {
+          BuffomatShared.Cache.Item2[eachItem] = {
             itemName = name,
             itemLink = link,
             itemIcon = icon
@@ -179,10 +177,10 @@ end
 ---@param buffDef BomBuffDefinition
 function spellSetupModule:Setup_EachSpell_SetupNonConsumable(buffDef)
   -- Load spell info and save some good fields for later use
-  local spellInfo = BOM.GetSpellInfo(buffDef.highestRankSingleId)
+  local spellInfo = BuffomatAddon.GetSpellInfo(buffDef.highestRankSingleId)
 
   if spellInfo ~= nil then
-    local spellInfoValue =spellInfo
+    local spellInfoValue = spellInfo
 
     buffDef.singleText = spellInfoValue.name
     spellInfoValue.rank = GetSpellSubtext(buffDef.highestRankSingleId) or ""
@@ -197,29 +195,29 @@ function spellSetupModule:Setup_EachSpell_SetupNonConsumable(buffDef)
     if not buffDef.isInfo
         and not buffDef.isConsumable
         and buffDef.singleDuration
-        and buffomatModule.shared.Duration[spellInfoValue.name] == nil
+        and BuffomatShared.Duration[spellInfoValue.name] == nil
         and IsSpellKnown(buffDef.highestRankSingleId) then
-      buffomatModule.shared.Duration[spellInfoValue.name] = buffDef.singleDuration
+      BuffomatShared.Duration[spellInfoValue.name] = buffDef.singleDuration
     end
   end -- spell info returned success
 end
 
 ---@param spell BomBuffDefinition
 function spellSetupModule:Setup_EachSpell_SetupGroupBuff(spell)
-  local spellInfo = BOM.GetSpellInfo(spell.highestRankGroupId)
+  local spellInfo = BuffomatAddon.GetSpellInfo(spell.highestRankGroupId)
 
   if spellInfo ~= nil then
-    local spellInfoValue =spellInfo
+    local spellInfoValue = spellInfo
 
     spell.groupText = spellInfoValue.name
     spellInfoValue.rank = GetSpellSubtext(spell.highestRankGroupId) or ""
     spell.groupLink = self:FormatSpellLink(spellInfoValue)
 
     if spell.groupDuration
-        and buffomatModule.shared.Duration[spellInfoValue.name] == nil
+        and BuffomatShared.Duration[spellInfoValue.name] == nil
         and IsSpellKnown(spell.highestRankGroupId)
     then
-      buffomatModule.shared.Duration[spellInfoValue.name] = spell.groupDuration
+      BuffomatShared.Duration[spellInfoValue.name] = spell.groupDuration
     end
   end
 end
@@ -366,20 +364,21 @@ function spellSetupModule:SetupAvailableSpells()
   for i, profileName in ipairs(profileModule.ALL_PROFILES) do
     character.profiles[profileName].Spell = character.profiles[profileName].Spell or {}
     character.profiles[profileName].CancelBuff = character.profiles[profileName].CancelBuff or {}
-    character.profiles[profileName].CurrentBlessing = character.profiles[profileName].CurrentBlessing or profileModule:NewBlessingState()
+    character.profiles[profileName].CurrentBlessing = character.profiles[profileName].CurrentBlessing or
+        profileModule:NewBlessingState()
   end
 
   --Spells selected for the current class/settings/profile etc
   self:Setup_ResetCaches()
 
-  if BOM.reputationTrinketZones.Link == nil
-      or BOM.ridingSpeedZones.Link == nil then
+  if BuffomatAddon.reputationTrinketZones.Link == nil
+      or BuffomatAddon.ridingSpeedZones.Link == nil then
     do
-      local repSpellInfo = BOM.GetSpellInfo(BOM.reputationTrinketZones.spell)
-      BOM.reputationTrinketZones.Link = self:FormatSpellLink(repSpellInfo)
+      local repSpellInfo = BuffomatAddon.GetSpellInfo(BuffomatAddon.reputationTrinketZones.spell)
+      BuffomatAddon.reputationTrinketZones.Link = self:FormatSpellLink(repSpellInfo)
 
-      local ridingSpellInfo = BOM.GetSpellInfo(BOM.ridingSpeedZones.spell)
-      BOM.ridingSpeedZones.Link = self:FormatSpellLink(ridingSpellInfo)
+      local ridingSpellInfo = BuffomatAddon.GetSpellInfo(BuffomatAddon.ridingSpeedZones.spell)
+      BuffomatAddon.ridingSpeedZones.Link = self:FormatSpellLink(ridingSpellInfo)
     end
   end
 

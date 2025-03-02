@@ -1,10 +1,9 @@
-local BOM = BuffomatAddon
+local BuffomatAddon = BuffomatAddon
 
 ---@class BomUnitModule
 
 local unitModule = LibStub("Buffomat-Unit") --[[@as BomUnitModule]]
 local allBuffsModule = LibStub("Buffomat-AllBuffs") --[[@as AllBuffsModule]]
-local buffomatModule = LibStub("Buffomat-Buffomat") --[[@as BuffomatModule]]
 local buffModule = LibStub("Buffomat-Buff") --[[@as BomBuffModule]]
 local partyModule = LibStub("Buffomat-Party") --[[@as PartyModule]]
 local toolboxModule = LibStub("Buffomat-LegacyToolbox") --[[@as LegacyToolboxModule]]
@@ -60,11 +59,11 @@ function unitModule:UnitAura(unitId, buffIndex, filter)
       and tContains(allBuffsModule.allSpellIds, spellId) then
     if source ~= nil and source ~= "" and UnitIsUnit(source, "player") then
       if UnitIsUnit(unitId, "player") and duration ~= nil and duration > 0 then
-        buffomatModule.shared.Duration[name] = duration
+        BuffomatShared.Duration[name] = duration
       end
 
       if duration == nil or duration == 0 then
-        duration = buffomatModule.shared.Duration[name] or 0
+        duration = BuffomatShared.Duration[name] or 0
       end
 
       if duration > 0 and (expirationTime == nil or expirationTime == 0) then
@@ -120,7 +119,7 @@ function unitClass:ForceUpdateBuffs(playerUnit)
   wipe(self.knownBuffs)
   wipe(self.allBuffs)
 
-  BOM.somebodyIsGhost = BOM.somebodyIsGhost or self.isGhost
+  BuffomatAddon.somebodyIsGhost = BuffomatAddon.somebodyIsGhost or self.isGhost
 
   if self.isDead then
     -- Clear known buffs for self, as we're very dead atm
@@ -140,8 +139,8 @@ function unitClass:ForceUpdateBuffs(playerUnit)
 
     if unitAura.spellId then
       self.allBuffs[unitAura.spellId] = true -- save all buffids even those not supported
-      if tContains(BOM.AllDrink, unitAura.spellId) then
-        BOM.drinkingPersonCount = BOM.drinkingPersonCount + 1
+      if tContains(BuffomatAddon.AllDrink, unitAura.spellId) then
+        BuffomatAddon.drinkingPersonCount = BuffomatAddon.drinkingPersonCount + 1
       end
     end
 
@@ -149,7 +148,7 @@ function unitClass:ForceUpdateBuffs(playerUnit)
 
     if lookupBuff then
       -- Skip members who have a buff on the global ignore list - example phaseshifted imps
-      if tContains(BOM.buffIgnoreAll, unitAura.spellId) then
+      if tContains(BuffomatAddon.buffIgnoreAll, unitAura.spellId) then
         wipe(self.knownBuffs)
         self.NeedBuff = false
         break
@@ -273,7 +272,7 @@ function unitClass:UpdateBuffs(party, playerZone)
       or self.unitId == "target"
 
   if not self.isDead
-      or BOM.declineHasResurrection
+      or BuffomatAddon.declineHasResurrection
   then
     self.hasResurrection = false
     self.distance = toolboxModule:UnitDistanceSquared(self.unitId)

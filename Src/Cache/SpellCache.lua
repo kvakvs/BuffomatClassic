@@ -1,5 +1,4 @@
--- local TOCNAME, _ = ...
-local BOM = BuffomatAddon
+local BuffomatAddon = BuffomatAddon
 
 ---@alias BomSpellCacheKey number|string
 
@@ -26,7 +25,7 @@ local buffomatModule = LibStub("Buffomat-Buffomat") --[[@as BuffomatModule]]
 ---@param arg number|string
 ---@return BomSpellCacheElement?
 ---@nodiscard
-function BOM.GetSpellInfo(arg)
+function BuffomatAddon.GetSpellInfo(arg)
   if spellCacheModule.cache[arg] ~= nil then
     return spellCacheModule.cache[arg]
   end

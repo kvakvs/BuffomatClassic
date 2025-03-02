@@ -1,5 +1,7 @@
----@diagnostic disable: invisible
-local BOM = BuffomatAddon
+---@diagnostic disable: invisible, unused-local
+local BuffomatAddon = BuffomatAddon
+
+---@alias WindowCommand "show"|"hide"|nil
 
 ---@class TaskListPanelModule
 ---@field taskFrame? AceGUIWidget Floating frame for task list
@@ -8,6 +10,9 @@ local BOM = BuffomatAddon
 ---@field topUiPanel? AceGUIWidget Top panel for buff button and menu
 ---@field titleProfile string The profile name which goes into the title of the window
 ---@field titleBuffGroups string The buff groups which go into the title of the window
+---@field holdOpen boolean If true, the window will not be hidden when the cast button is disabled
+---@field windowCommand WindowCommand
+---@field messages string[]
 
 local taskListPanelModule = LibStub("Buffomat-TaskListPanel") --[[@as TaskListPanelModule]]
 taskListPanelModule.titleProfile = ""
@@ -21,18 +26,20 @@ local _t = LibStub("Buffomat-Languages") --[[@as LanguagesModule]]
 
 local libGUI = LibStub("AceGUI-3.0")
 
-function taskListPanelModule:CreateTaskFrame()
+--- Constructs the window. Only called from one location - WindowCommand()
+function taskListPanelModule:ConstructWindow()
   local taskFrame = libGUI:Create("NgTaskListWindow")
   self.taskFrame = taskFrame
+
   taskFrame:SetLayout("Fill")
   taskFrame:ClearAllPoints()
-  taskFrame:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", buffomatModule.shared.X, buffomatModule.shared.Y)
-  taskFrame:SetWidth(buffomatModule.shared.Width)
-  taskFrame:SetHeight(buffomatModule.shared.Height)
+  taskFrame:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", BuffomatShared.X, BuffomatShared.Y)
+  taskFrame:SetWidth(BuffomatShared.Width)
+  taskFrame:SetHeight(BuffomatShared.Height)
   taskFrame:SetCallback("OnClose", function()
     taskListPanelModule:HideWindow()
   end)
-  self:SetWindowScale(tonumber(buffomatModule.shared.UIWindowScale) or 1.0)
+  self:SetWindowScale(tonumber(BuffomatShared.UIWindowScale) or 1.0)
 
   local scrollPanel = libGUI:Create("ScrollFrame")
   self.scrollPanel = scrollPanel
@@ -49,13 +56,14 @@ function taskListPanelModule:SetTitle()
   end
 end
 
-function taskListPanelModule:ToggleWindow()
+---@param holdOpen boolean
+function taskListPanelModule:ToggleWindow(holdOpen)
   if self:IsWindowVisible() then
-    self:HideWindow()
+    self.windowCommand = "hide"
   else
     buffomatModule:RequestTaskRescan("toggleWindow")
     taskScanModule:ScanTasks("toggleWindow")
-    self:ShowWindow()
+    self:ShowWindowHoldOpen(holdOpen)
   end
 end
 
@@ -63,30 +71,53 @@ function taskListPanelModule:IsWindowVisible()
   return self.taskFrame ~= nil and self.taskFrame:IsVisible()
 end
 
-function taskListPanelModule:HideWindow()
-  if not InCombatLockdown() and self.taskFrame ~= nil then
-    self.taskFrame:Release()
-    self.taskFrame = nil
-    buffomatModule.autoHelper = "KeepClose"
-    buffomatModule:RequestTaskRescan("hideWindow")
-    taskScanModule:ScanTasks("hideWindow")
+--- Do not call this directly. Called from the throttle module on timed updates.
+function taskListPanelModule:WindowCommand(command)
+  if not self.windowCommand then
+    return
   end
-end
-
-function taskListPanelModule:ShowWindow()
-  if not InCombatLockdown() then
+  -- --------------------------------------------------
+  if self.windowCommand == "hide" then
+    if self.taskFrame ~= nil then
+      self.taskFrame:Hide()
+      buffomatModule.autoHelper = "KeepClose"
+      buffomatModule:RequestTaskRescan("hideWindow")
+      taskScanModule:ScanTasks("hideWindow")
+    end
+    self.holdOpen = false
+    -- --------------------------------------------------
+  elseif self.windowCommand == "show" then
     if self.taskFrame == nil then
-      -- self.taskFrame:Show()
-      self:CreateTaskFrame()
-      self:SetWindowScale(tonumber(buffomatModule.shared.UIWindowScale) or 1.0)
+      self:ConstructWindow()
+      self:SetWindowScale(tonumber(BuffomatShared.UIWindowScale) or 1.0)
       buffomatModule:RequestTaskRescan("showWindow")
       buffomatModule.autoHelper = "KeepOpen"
     else
       self.taskFrame:Show()
     end
-  else
-    BOM:Print(_t("message.ShowHideInCombat"))
   end
+  -- --------------------------------------------------
+  self.windowCommand = nil
+end
+
+function taskListPanelModule:HideWindow()
+  self.windowCommand = "hide"
+end
+
+---Attempt to close if holdOpen is false (holds open if user manually called up the window)
+function taskListPanelModule:AutoClose()
+  if not self.holdOpen then
+    self:HideWindow()
+  end
+end
+
+function taskListPanelModule:ShowWindowHoldOpen(holdOpen)
+  self.holdOpen = holdOpen
+  self:ShowWindow()
+end
+
+function taskListPanelModule:ShowWindow()
+  self.windowCommand = "show"
 end
 
 -- Reset the window to the default position and size, save the default position and size
@@ -95,33 +126,33 @@ function taskListPanelModule:ResetWindow()
   self.taskFrame:SetPoint("Center", UIParent, "Center", 0, 0)
   self.taskFrame:SetWidth(200)
   self.taskFrame:SetHeight(200)
-  BOM.SaveWindowPosition()
+  BuffomatAddon.SaveWindowPosition()
   self:ShowWindow()
-  BOM:Print("Window position is reset.")
+  BuffomatAddon:Print("Window position is reset.")
 end
 
 -- Add a message to the scroll panel (stacking down)
 function taskListPanelModule:AddMessage(text)
-  local message = libGUI:Create("Label")
-  message:SetText(text)
-  message:SetFullWidth(true)
-  if type(self.messages) ~= "table" then
-    self.messages = {}
+  self.messages = {}
+  tinsert(self.messages, text)
+
+  if self:IsWindowVisible() then
+    local message = libGUI:Create("Label")
+    message:SetText(text)
+    message:SetFullWidth(true)
+    self.scrollPanel:AddChild(message)
   end
-  tinsert(self.messages, message)
-  self.scrollPanel:AddChild(message)
 end
 
 -- Clear the scroll panel and create a new row with a buff button and menu
 function taskListPanelModule:Clear()
-  if type(self.messages) ~= "table" then
-    return
-  end
-  self.scrollPanel:ReleaseChildren()
-  self.messages = {}
   self.buffButton = nil
+  self.messages = {}
 
-  self:CreateUIRow()
+  if self:IsWindowVisible() then
+    self.scrollPanel:ReleaseChildren()
+    self:CreateUIRow()
+  end
 end
 
 -- For a fresh emptied scroll panel, create a row with a buff button and menu
@@ -146,7 +177,7 @@ function taskListPanelModule:CreateUIRow()
   buffButton:SetAutoWidth(true)
   -- buffButton:SetText("Buff")
   -- buffButton:SetCallback("OnClick", function() print("Click Buff!") end)
-  ngToolboxModule:TooltipWithTranslationKey(buffButton, "TooltipCastButton")
+  ngToolboxModule:TooltipWithTranslationKey(buffButton, "tooltip.TaskList.CastButton")
   topUiPanel:AddChild(buffButton)
 end
 
@@ -169,8 +200,6 @@ function taskListPanelModule:CastButtonText(text, enable)
     actionMacroModule:WipeMacro(nil)
     self.buffButton:SetDisabled(true)
   end
-
-  buffomatModule:FadeBuffomatWindow()
 end
 
 function taskListPanelModule:SetAlpha(alpha)
@@ -191,10 +220,10 @@ end
 
 function taskListPanelModule:SavePosition()
   if self.taskFrame ~= nil then
-    buffomatModule.shared.X = self.taskFrame.frame:GetLeft()
-    buffomatModule.shared.Y = self.taskFrame.frame:GetTop()
-    buffomatModule.shared.Width = self.taskFrame.frame:GetWidth()
-    buffomatModule.shared.Height = self.taskFrame.frame:GetHeight()
+    BuffomatShared.X = self.taskFrame.frame:GetLeft()
+    BuffomatShared.Y = self.taskFrame.frame:GetTop()
+    BuffomatShared.Width = self.taskFrame.frame:GetWidth()
+    BuffomatShared.Height = self.taskFrame.frame:GetHeight()
   end
 end
 

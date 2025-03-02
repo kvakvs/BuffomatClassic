@@ -1,9 +1,8 @@
-local BOM = BuffomatAddon
+local BuffomatAddon = BuffomatAddon
 
 ---@class BomActionCastModule
 
 local actionCastModule = LibStub("Buffomat-ActionCast") --[[@as BomActionCastModule]]
-local buffomatModule = LibStub("Buffomat-Buffomat") --[[@as BuffomatModule]]
 local taskModule = LibStub("Buffomat-Task") --[[@as BomTaskModule]]
 local partyModule = LibStub("Buffomat-Party") --[[@as PartyModule]]
 local allBuffsModule = LibStub("Buffomat-AllBuffs") --[[@as AllBuffsModule]]
@@ -41,14 +40,14 @@ end
 function actionCastClass:CanCast()
   local cdtest = GetSpellCooldown(self.spellId) or 0
   if cdtest ~= 0 then
-    BOM.checkCooldown = self.spellId
+    BuffomatAddon.checkCooldown = self.spellId
     --BomC_ListTab_Button:Disable()
     return taskModule.CAN_CAST_ON_CD
   else
     --BomC_ListTab_Button:Enable()
   end
-  BOM.castFailedBuff = self.buffDef
-  BOM.castFailedBuffTarget = self.target
+  BuffomatAddon.castFailedBuff = self.buffDef
+  BuffomatAddon.castFailedBuffTarget = self.target
 
   if self.buffDef
       and (self.buffDef).type ~= "resurrection"
@@ -84,11 +83,11 @@ function actionCastClass:UpdateMacro(m)
   local rank = ""
 
   if buffDef == nil then
-    BOM:Debug("Update macro: buffDef is nil for spellid=" .. tostring(self.spellId))
+    BuffomatAddon:Debug("Update macro: buffDef is nil for spellid=" .. tostring(self.spellId))
     return
   end
 
-  if buffomatModule.shared.UseRank
+  if BuffomatShared.UseRank
       or (self.target and (self.target).unitId == "target")
   then
     local level = UnitLevel((self.target).unitId)
@@ -108,8 +107,8 @@ function actionCastClass:UpdateMacro(m)
         local newSpellId
 
         for i, id in ipairs(spellChoices) do
-          if buffomatModule.shared.SpellGreaterEqualThan[id] == nil
-              or buffomatModule.shared.SpellGreaterEqualThan[id] < level then
+          if BuffomatShared.SpellGreaterEqualThan[id] == nil
+              or BuffomatShared.SpellGreaterEqualThan[id] < level then
             newSpellId = id
           else
             break
@@ -133,10 +132,10 @@ function actionCastClass:UpdateMacro(m)
     --BOM:Debug("rank=" .. rank .. " spellid=" .. self.spellId)
   end
 
-  BOM.castFailedSpellId = self.spellId
-  local name = GetSpellInfo(self.spellId)
+  BuffomatAddon.castFailedSpellId = self.spellId
+  local name = GetSpellInfo(self.spellId) -- TODO: use BuffomatAddon.GetSpellInfo
   if name == nil then
-    BOM:Debug("Update macro: Bad spellid=" .. tostring(self.spellId))
+    BuffomatAddon:Debug("Update macro: Bad spellid=" .. tostring(self.spellId))
     return
   end
 

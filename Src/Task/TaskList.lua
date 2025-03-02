@@ -1,4 +1,4 @@
-local BOM = BuffomatAddon
+local BuffomatAddon = BuffomatAddon
 
 ---@class TaskListModule
 
@@ -109,7 +109,7 @@ end
 
 function taskListClass:Sort()
   --table.sort(self.tasks, taskListModule.OrderTasksByDistance)
-  if buffomatModule.shared.CustomBuffSorting then
+  if BuffomatShared.CustomBuffSorting then
     for _, task in pairs(self.tasks) do
       if task.linkedBuffDef then
         task.customSort = task.linkedBuffDef.customSort or '5'
@@ -128,9 +128,26 @@ end
 function taskListClass:Display()
   taskListPanelModule:Clear()
 
+  local haveAnyTasks = next(self.lowPrioComments) or next(self.comments) or next(self.tasks)
+  if haveAnyTasks and not taskListPanelModule:IsWindowVisible() then
+    taskListPanelModule:ShowWindow() -- have tasks, show the window
+  else
+    if taskListPanelModule:IsBuffButtonEnabled() then
+      taskListPanelModule:SetAlpha(1.0)
+    else
+      if BuffomatShared.AutoClose then
+        taskListPanelModule:AutoClose() -- no tasks, attempt to close the window (if not held open by the user or settings)
+      else
+        local fade = BuffomatShared.FadeWhenNothingToDo or 0.65
+        taskListPanelModule:SetAlpha(fade) -- fade the window, default 65%
+      end
+    end
+  end
+
   for _i, text in pairs(self.lowPrioComments) do
     taskListPanelModule:AddMessage(buffomatModule:Color("aaaaaa", text))
   end
+
   for _i, text in pairs(self.comments) do
     taskListPanelModule:AddMessage(text)
   end
@@ -141,6 +158,11 @@ function taskListClass:Display()
   end
   for _, task in pairs(self.tasks) do
     taskListPanelModule:AddMessage(task:Format())
+  end
+
+  -- Low prio comment if the window is held open by the user
+  if taskListPanelModule.holdOpen then
+    taskListPanelModule:AddMessage(buffomatModule:Color("aaaaaa", _t("taskList.holdOpenComment")))
   end
 end
 
@@ -179,8 +201,6 @@ function taskListClass:CastButtonText(t, enable)
     taskListModule:WipeMacro(nil)
     BomC_ListTab_Button:Disable()
   end
-
-  buffomatModule:FadeBuffomatWindow()
 end
 
 function taskListClass:CastButton_Busy()
@@ -202,17 +222,17 @@ end
 ---Success case, cast is allowed, macro will be set and button will be enabled
 ---@param task BomTask
 function taskListClass:CastButton(task)
-  BOM.theMacro:EnsureExists()
-  wipe(BOM.theMacro.lines)
+  BuffomatAddon.theMacro:EnsureExists()
+  wipe(BuffomatAddon.theMacro.lines)
 
-  local action =task.action
+  local action = task.action
   taskListPanelModule:CastButtonText(action:GetButtonText(task), true)
   --removeme
   self:CastButtonText(action:GetButtonText(task), true)
 
   -- Set the macro lines and update the Buffomat macro
-  action:UpdateMacro(BOM.theMacro)
-  BOM.theMacro:UpdateMacro()
+  action:UpdateMacro(BuffomatAddon.theMacro)
+  BuffomatAddon.theMacro:UpdateMacro()
 end
 
 function taskListClass:CastButton_SomeoneIsDead()
@@ -251,13 +271,13 @@ end -- if inrange
 --- Clears the Buffomat macro
 ---@param command string|nil
 function taskListModule:WipeMacro(command)
-  local macro = BOM.theMacro
+  local macro = BuffomatAddon.theMacro
 
   macro:EnsureExists()
   wipe(macro.lines)
 
   if command then
-    table.insert(macro.lines,command)
+    table.insert(macro.lines, command)
   end
 
   macro.icon = constModule.MACRO_ICON_DISABLED

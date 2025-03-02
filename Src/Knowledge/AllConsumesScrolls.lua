@@ -1,4 +1,4 @@
-local BOM = BuffomatAddon
+local BuffomatAddon = BuffomatAddon
 
 ---@class AllConsumesScrollsModule
 

@@ -1,5 +1,4 @@
---local TOCNAME, _ = ...
-local BOM = BuffomatAddon
+local BuffomatAddon = BuffomatAddon
 
 ---Collection of tables of buffs, indexed per unit name
 ---@alias BomBuffUpdatesPerUnit {[string]: number} Time when buffs updated on that unit
@@ -169,7 +168,7 @@ function partyModule:RefreshParty(party, invalidGroups)
     party:Get5manPartyMembers()
   end
 
-  if buffomatModule.shared.BuffTarget
+  if BuffomatShared.BuffTarget
       and UnitExists("target")
       and UnitCanCooperate("player", "target") --is friendly
       and UnitIsPlayer("target")               --is friendly player
@@ -192,12 +191,12 @@ end
 function partyClass:GetPlayerAndPetUnit()
   -- Get player and get pet
   local playerUnit = unitCacheModule:GetUnit("player", nil, nil, nil)
-  self.player =playerUnit
+  self.player = playerUnit
   self:Add(playerUnit)
 
   local playerPet = unitCacheModule:GetUnit("pet", nil, nil, true)
   if playerPet then
-    local pet =playerPet
+    local pet = playerPet
     pet.owner = playerUnit
     pet.class = "pet"
     self.playerPet = pet
@@ -233,7 +232,7 @@ function partyClass:Get5manPartyMembers()
 
       local partyPet = unitCacheModule:GetUnit("partypet" .. groupIndex, nil, nil, true)
       if partyPet then
-        local pet =partyPet
+        local pet = partyPet
         pet.owner = partyMember
         pet.class = "pet"
         self:Add(pet)
@@ -309,13 +308,13 @@ function partyModule:GetParty()
   -- and buffs
   local party ---@type BomParty
 
-  BOM.drinkingPersonCount = 0
+  BuffomatAddon.drinkingPersonCount = 0
 
   -- check if stored party is correct!
   if self.theParty then
     if validatePartyMembers(self.theParty) then
       -- Cache is valid, take that as a start value
-      party =self.theParty
+      party = self.theParty
     end
   end
 
@@ -329,12 +328,12 @@ function partyModule:GetParty()
     party = partyModule:RefreshParty(partyModule:New(), self.ALL_INVALID_GROUPS)
   end
 
-  BOM.somebodyIsGhost = false
+  BuffomatAddon.somebodyIsGhost = false
 
   local playerZone = C_Map.GetBestMapForUnit("player")
 
   if IsAltKeyDown() then
-    BOM.declineHasResurrection = true
+    BuffomatAddon.declineHasResurrection = true
     taskScanModule:ClearSkip()
   end
 
@@ -354,7 +353,7 @@ function partyModule:GetParty()
     end
   end
 
-  BOM.declineHasResurrection = false
+  BuffomatAddon.declineHasResurrection = false
   partyModule:ValidatePartyCache()
   self.theParty = party
   return party

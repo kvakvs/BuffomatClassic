@@ -157,7 +157,7 @@ local function Event_PLAYER_TARGET_CHANGED()
     BuffomatAddon.lastTarget = nil
   end
 
-  if not buffomatModule.shared.BuffTarget then
+  if not BuffomatShared.BuffTarget then
     return
   end
 
@@ -221,22 +221,22 @@ end
 ---@param message table
 local function Event_UI_ERROR_MESSAGE(errorType, message)
   if tContains(eventsModule.ERR_NOT_STANDING, message) then
-    if buffomatModule.shared.AutoStand then
+    if BuffomatShared.AutoStand then
       UIErrorsFrame:Clear()
       DoEmote("STAND")
     end
   elseif tContains(eventsModule.ERR_IS_MOUNTED, message) then
     local flying = false -- prevent dismount in flight, OUCH!
     if envModule.haveTBC then
-      flying = IsFlying() and not buffomatModule.shared.AutoDismountFlying
+      flying = IsFlying() and not BuffomatShared.AutoDismountFlying
     end
     if not flying then
-      if buffomatModule.shared.AutoDismount then
+      if BuffomatShared.AutoDismount then
         UIErrorsFrame:Clear()
         Dismount()
       end
     end
-  elseif buffomatModule.shared.AutoDisTravel
+  elseif BuffomatShared.AutoDisTravel
       and tContains(eventsModule.ERR_IS_SHAPESHIFT, message)
       and BuffomatAddon.CancelShapeShift() then
     UIErrorsFrame:Clear()
@@ -297,7 +297,7 @@ end
 
 local function Event_UNIT_SPELLCAST_START(eventType, unit)
   if UnitIsUnit(unit, "player") then
-    buffomatModule:SetPlayerCasting("cast")
+    BuffomatAddon.isPlayerCasting = "cast"
     eventsModule:SafeWipeMacro() -- not sure if this has any effect
     buffomatModule:RequestTaskRescan("castStart")
   end
@@ -305,7 +305,7 @@ end
 
 local function Event_UNIT_SPELLCAST_STOP(eventType, unit)
   if UnitIsUnit(unit, "player") then
-    buffomatModule:SetPlayerCasting(nil)
+    BuffomatAddon.isPlayerCasting = nil
     buffomatModule:RequestTaskRescan("castStop")
     BuffomatAddon.checkForError = false
   end
@@ -313,7 +313,7 @@ end
 
 local function Event_UNIT_SPELLCHANNEL_START(eventType, unit)
   if UnitIsUnit(unit, "player") then
-    buffomatModule:SetPlayerCasting("channel")
+    BuffomatAddon.isPlayerCasting = "channel"
     eventsModule:SafeWipeMacro() -- not sure if this has any effect
     buffomatModule:RequestTaskRescan("channelStart")
   end
@@ -321,7 +321,7 @@ end
 
 local function Event_UNIT_SPELLCHANNEL_STOP(eventType, unit)
   if UnitIsUnit(unit, "player") then
-    buffomatModule:SetPlayerCasting(nil)
+    BuffomatAddon.isPlayerCasting = nil
     buffomatModule:RequestTaskRescan("channelStop")
     BuffomatAddon.checkForError = false
   end

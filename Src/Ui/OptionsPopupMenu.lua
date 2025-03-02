@@ -1,5 +1,4 @@
-local TOCNAME, _ = ...
-local BOM = BuffomatAddon
+local BuffomatAddon = BuffomatAddon
 
 ---@class BomBehaviourSetting
 ---@field name string
@@ -32,7 +31,7 @@ end
 ---@param minimap boolean
 function optionsPopupModule:Setup(control, minimap)
   local name = (control:GetName() or "nil") .. (minimap and "Minimap" or "Normal")
-  local dyn = BOM.popupMenuDynamic ---@type GPIPopupDynamic
+  local dyn = BuffomatAddon.popupMenuDynamic ---@type GPIPopupDynamic
   local menuItems = {} --[[@as BomMenuItemDef[] ]]
 
   if not dyn:Wipe(name) then
@@ -62,11 +61,11 @@ function optionsPopupModule:Setup(control, minimap)
         nil, nil))
     table.insert(menuItems, popupModule:Separator())
     table.insert(menuItems, popupModule:Boolean(_t("options.short.ShowMinimapButton"),
-      buffomatModule.shared.Minimap, "visible"))
+      BuffomatShared.Minimap, "visible"))
     table.insert(menuItems, popupModule:Boolean(_t("options.short.LockMinimapButton"),
-      buffomatModule.shared.Minimap, "lock"))
+      BuffomatShared.Minimap, "lock"))
     table.insert(menuItems, popupModule:Boolean(_t("options.short.LockMinimapButtonDistance"),
-      buffomatModule.shared.Minimap, "lockDistance"))
+      BuffomatShared.Minimap, "lockDistance"))
     table.insert(menuItems, popupModule:Separator())
   end
 
@@ -86,7 +85,7 @@ function optionsPopupModule:Setup(control, minimap)
     for _i, eachProfileName in pairs(profileModule.ALL_PROFILES) do
       if currentProfileName == eachProfileName then
         local activeName = _t("profile.activeProfileMenuTag") ..
-        " " .. characterSettingsModule:LocalizedProfileName(eachProfileName)
+            " " .. characterSettingsModule:LocalizedProfileName(eachProfileName)
         table.insert(subprofilesMenu, popupModule:Clickable(buffomatModule:Color("00ff00", activeName),
           buffomatModule.ChooseProfile, eachProfileName, nil))
       else

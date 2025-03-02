@@ -1,6 +1,5 @@
 if false then
-  --local TOCNAME, _ = ...
-  local BOM = BuffomatAddon
+  local BuffomatAddon = BuffomatAddon
 
   ---@class BuffRowModule
 
@@ -102,7 +101,7 @@ if false then
         texturesModule.ICON_OPT_DISABLED,
         nil, nil, nil, nil,
         self.uniqueId .. ".enableCheckbox")
-      self.checkboxEnable:SetOnClick(BOM.MyButtonOnClick)
+      self.checkboxEnable:SetOnClick(BuffomatAddon.MyButtonOnClick)
       toolboxModule:Tooltip(self.checkboxEnable, tooltip)
     end
 
@@ -128,7 +127,8 @@ if false then
     field:SetScript("OnEnterPressed",
       function(control)
         buffDef.customSort = field:GetText()
-        BOM:Print("edited customsort=" .. buffDef.customSort .. " for " .. (buffDef.singleLink or buffDef.buffId))
+        BuffomatAddon:Print("edited customsort=" ..
+        buffDef.customSort .. " for " .. (buffDef.singleLink or buffDef.buffId))
         control:ClearFocus()
       end
     )
@@ -212,7 +212,7 @@ if false then
         texturesModule.ICON_DISABLED,
         texturesModule.ICON_MAINHAND_COORD,
         nil, nil, self.uniqueId .. ".mainhandToggle")
-      self.toggleMainHand:SetOnClick(BOM.MyButtonOnClick)
+      self.toggleMainHand:SetOnClick(BuffomatAddon.MyButtonOnClick)
       toolboxModule:Tooltip(self.toggleMainHand, tooltip)
     end
 
@@ -231,7 +231,7 @@ if false then
         texturesModule.ICON_DISABLED,
         texturesModule.ICON_OFFHAND_COORD,
         nil, nil, self.uniqueId .. ".offhandToggle")
-      self.toggleOffHand:SetOnClick(BOM.MyButtonOnClick)
+      self.toggleOffHand:SetOnClick(BuffomatAddon.MyButtonOnClick)
       toolboxModule:Tooltip(self.toggleOffHand, tooltip)
     end
 
@@ -248,7 +248,7 @@ if false then
         texturesModule.ICON_WHISPER_ON,
         texturesModule.ICON_WHISPER_OFF,
         nil, nil, nil, nil, self.uniqueId .. ".whisperToggle")
-      self.toggleWhisper:SetOnClick(BOM.MyButtonOnClick)
+      self.toggleWhisper:SetOnClick(BuffomatAddon.MyButtonOnClick)
     end
 
     toolboxModule:Tooltip(self.toggleWhisper, tooltip)
@@ -265,7 +265,7 @@ if false then
         texturesModule.ICON_SELF_CAST_ON,
         texturesModule.ICON_SELF_CAST_OFF,
         nil, nil, nil, nil, self.uniqueId .. ".selfCastToggle")
-      self.toggleSelfCast:SetOnClick(BOM.MyButtonOnClick)
+      self.toggleSelfCast:SetOnClick(BuffomatAddon.MyButtonOnClick)
     end
 
     toolboxModule:TooltipText(self.toggleSelfCast, tooltip)
@@ -374,5 +374,4 @@ if false then
     self.toggleExclude:Show()
     return self.toggleExclude
   end
-
 end

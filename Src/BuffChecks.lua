@@ -1,4 +1,4 @@
-local BOM = BuffomatAddon
+local BuffomatAddon = BuffomatAddon
 
 ---@class BuffChecksModule
 
@@ -42,21 +42,21 @@ function buffChecksModule:TimeCheck(expirationTime, maxDuration)
   local remainingTimeTrigger
 
   if maxDuration <= allBuffsModule.MINUTE then
-    remainingTimeTrigger = buffomatModule.shared.Time60 or 10
+    remainingTimeTrigger = BuffomatShared.Time60 or 10
   elseif maxDuration <= allBuffsModule.FIVE_MINUTES then
-    remainingTimeTrigger = buffomatModule.shared.Time300 or 90
+    remainingTimeTrigger = BuffomatShared.Time300 or 90
   elseif maxDuration <= allBuffsModule.TEN_MINUTES then
-    remainingTimeTrigger = buffomatModule.shared.Time600 or 120
+    remainingTimeTrigger = BuffomatShared.Time600 or 120
   elseif maxDuration <= allBuffsModule.HALF_AN_HOUR then
-    remainingTimeTrigger = buffomatModule.shared.Time1800 or 180
+    remainingTimeTrigger = BuffomatShared.Time1800 or 180
   else
-    remainingTimeTrigger = buffomatModule.shared.Time3600 or 180
+    remainingTimeTrigger = BuffomatShared.Time3600 or 180
   end
 
   if remainingTimeTrigger + GetTime() < expirationTime then
     expirationTime = expirationTime - remainingTimeTrigger
-    if expirationTime < BOM.nextCooldownDue then
-      BOM.nextCooldownDue = expirationTime
+    if expirationTime < BuffomatAddon.nextCooldownDue then
+      BuffomatAddon.nextCooldownDue = expirationTime
     end
     return true
   end
@@ -73,11 +73,11 @@ function buffChecksModule:HasOneItem(itemToCheck, cd)
   end
 
   local key = itemToCheck .. (cd and "CD" or "")
-  local cachedItem = BOM.cachedPlayerBag[key]
+  local cachedItem = BuffomatAddon.cachedPlayerBag[key]
 
   if not cachedItem then
-    BOM.cachedPlayerBag[key] = --[[@as BomCachedBagItem]] {}
-    cachedItem = BOM.cachedPlayerBag[key]
+    BuffomatAddon.cachedPlayerBag[key] = --[[@as BomCachedBagItem]] {}
+    cachedItem = BuffomatAddon.cachedPlayerBag[key]
     cachedItem.a = false
     cachedItem.d = 0
 
@@ -113,7 +113,7 @@ end
 
 --- Check item min level
 function buffChecksModule:IsUsableItem(itemId)
-  local itemInfo = BOM.GetItemInfo(itemId)
+  local itemInfo = BuffomatAddon.GetItemInfo(itemId)
   if itemInfo then
     return (itemInfo).itemMinLevel <= UnitLevel("player")
   end
@@ -239,7 +239,7 @@ function buffChecksModule:DeadNeedsResurrection(buff, party)
         and not member.hasResurrection
         and member.isConnected
         and member.class ~= "pet"
-        and (not buffomatModule.shared.SameZone or member.isSameZone) then
+        and (not BuffomatShared.SameZone or member.isSameZone) then
       table.insert(buff.unitsNeedBuff, member)
     end
   end
@@ -256,8 +256,8 @@ function buffChecksModule:PlayerNeedsTracking(buff, playerUnit)
       and buffDefModule:IsBuffEnabled(spellIdsModule.Druid_TrackHumanoids, nil) then
     -- Do nothing - ignore herbs and minerals in catform if enabled track humanoids
   elseif not self:IsTrackingActive(buff)
-      and (BOM.forceTracking == nil
-        or BOM.forceTracking == buff.trackingIconId) then
+      and (BuffomatAddon.forceTracking == nil
+        or BuffomatAddon.forceTracking == buff.trackingIconId) then
     table.insert(buff.unitsNeedBuff, playerUnit)
   end
 end
@@ -265,7 +265,7 @@ end
 ---@param buff BomBuffDefinition
 ---@param playerUnit BomUnit
 function buffChecksModule:PaladinNeedsAura(buff, playerUnit)
-  if BOM.activePaladinAura ~= buff.buffId
+  if BuffomatAddon.activePaladinAura ~= buff.buffId
       and (buffomatModule.currentProfile.LastAura == nil
         or buffomatModule.currentProfile.LastAura == buff.buffId)
   then
@@ -276,7 +276,7 @@ end
 ---@param spell BomBuffDefinition
 ---@param playerUnit BomUnit
 function buffChecksModule:PaladinNeedsSeal(spell, playerUnit)
-  if BOM.activePaladinSeal ~= spell.buffId
+  if BuffomatAddon.activePaladinSeal ~= spell.buffId
       and (buffomatModule.currentProfile.LastSeal == nil
         or buffomatModule.currentProfile.LastSeal == spell.buffId)
   then
@@ -325,7 +325,7 @@ function buffChecksModule:PartyNeedsPaladinBlessing(buffDef, party, buffCtx)
     if partyMember.NeedBuff
         and ok
         and partyMember.isConnected
-        and (not buffomatModule.shared.SameZone or partyMember.isSameZone) then
+        and (not BuffomatShared.SameZone or partyMember.isSameZone) then
       local found = false
       local partyMemberBuff = partyMember.knownBuffs[buffDef.buffId]
 
@@ -344,7 +344,7 @@ function buffChecksModule:PartyNeedsPaladinBlessing(buffDef, party, buffCtx)
           buffDef:IncrementNeedGroupBuff(partyMember.class)
         end
       elseif not notGroup
-          and buffomatModule.shared.ReplaceSingle
+          and BuffomatShared.ReplaceSingle
           and partyMemberBuff
           and partyMemberBuff.isSingle then
         buffDef:IncrementNeedGroupBuff(partyMember.class)
@@ -385,7 +385,7 @@ function buffChecksModule:PartyNeedsBuff(buffDef, party, buffCtx)
     if partyMember.NeedBuff
         and ok
         and partyMember.isConnected
-        and (not buffomatModule.shared.SameZone
+        and (not BuffomatShared.SameZone
           or (partyMember.isSameZone
             or partyMember.class == "pet" and (partyMember.owner).isSameZone))
     then
@@ -402,7 +402,7 @@ function buffChecksModule:PartyNeedsBuff(buffDef, party, buffCtx)
       if not found then
         table.insert(buffDef.unitsNeedBuff, partyMember)
         buffDef.groupsNeedBuff[partyMember.group] = (buffDef.groupsNeedBuff[partyMember.group] or 0) + 1
-      elseif buffomatModule.shared.ReplaceSingle
+      elseif BuffomatShared.ReplaceSingle
           and partyMemberBuff
           and partyMemberBuff.isSingle then
         buffDef.groupsNeedBuff[partyMember.group] = (buffDef.groupsNeedBuff[partyMember.group] or 0) + 1

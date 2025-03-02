@@ -138,20 +138,6 @@ function legacyToolboxModule.gpiprivat_update_handler(self, ...)
   end
 end
 
---function BuffomatAddon:RegisterEvent(event, func)
---  if eventFrame == nil then
---    eventFrame = CreateFrame("Frame")
---  end
---
---  if eventFrame._GPIPRIVAT_events == nil then
---    eventFrame._GPIPRIVAT_events = {}
---    eventFrame:SetScript("OnEvent", bom_gpiprivat_event_handler)
---  end
---
---  table.insert(eventFrame._GPIPRIVAT_events, { event, func })
---  eventFrame:RegisterEvent(event)
---end
-
 function legacyToolboxModule:OnUpdate(func)
   if eventFrame == nil then
     eventFrame = CreateFrame("Frame")

@@ -1,4 +1,4 @@
-local BOM = BuffomatAddon
+local BuffomatAddon = BuffomatAddon
 
 ---@class BomActionMacroModule
 
@@ -43,13 +43,13 @@ end
 --- Clears the Buffomat macro
 ---@param command string|nil
 function actionMacroModule:WipeMacro(command)
-  local macro = BOM.theMacro
+  local macro = BuffomatAddon.theMacro
 
   macro:EnsureExists()
   wipe(macro.lines)
 
   if command then
-    table.insert(macro.lines,command)
+    table.insert(macro.lines, command)
   end
 
   macro.icon = constModule.MACRO_ICON_DISABLED

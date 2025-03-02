@@ -26,7 +26,8 @@ sharedSettingsModule.defaults = {
 ---@field SpellGreaterEqualThan table
 ---@field CustomLocales table
 ---@field UIWindowScale number
----@field AutoOpen boolean
+---@field AutoOpen boolean Open the window when a task is available
+---@field AutoClose boolean When last task is done, hide the window
 ---@field FadeWhenNothingToDo number Allows Buffomat window to fade when nothing to do
 ---@field UseProfiles boolean
 ---@field SlowerHardware boolean

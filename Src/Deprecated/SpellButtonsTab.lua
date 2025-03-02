@@ -1,8 +1,7 @@
 ---@diagnostic disable: unused-local
 ---| Module contains code to update the already selected spells in tabs
 if false then
-  --local TOCNAME, _ = ...
-  local BOM = BuffomatAddon
+  local BuffomatAddon = BuffomatAddon
 
   ---@class BomSpellButtonsTabModule
   ---@field spellTabsCreatedFlag boolean True if spells tab is created and filled
@@ -48,9 +47,9 @@ if false then
   ---@param playerIsHorde boolean Whether we are the horde
   ---@param spell BomBuffDefinition The spell currently being displayed
   function spellButtonsTabModule:AddSpellRow_ClassSelector(rowBuilder, playerIsHorde, spell, profileSpell)
-    local tooltip1 = BOM.FormatTexture(texturesModule.ICON_SELF_CAST_ON) ..
+    local tooltip1 = BuffomatAddon.FormatTexture(texturesModule.ICON_SELF_CAST_ON) ..
         " - " .. _t("TooltipSelfCastCheckbox_Self") .. "|n"
-        .. BOM.FormatTexture(texturesModule.ICON_SELF_CAST_OFF) .. " - " .. _t("TooltipSelfCastCheckbox_Party")
+        .. BuffomatAddon.FormatTexture(texturesModule.ICON_SELF_CAST_OFF) .. " - " .. _t("TooltipSelfCastCheckbox_Party")
     local selfcastToggle = spell.frames:CreateSelfCastToggle(tooltip1)
     rowBuilder:AppendRight(nil, selfcastToggle, 5)
     selfcastToggle:SetVariable(profileSpell, "SelfCast", nil)
@@ -62,9 +61,9 @@ if false then
       local tooltip2 = constModule.CLASS_ICONS[class]
           .. " - " .. _t("TooltipCastOnClass")
           .. ": " .. constModule.CLASS_NAME[ --[[@as ClassName]] class ] .. "|n"
-          .. BOM.FormatTexture(texturesModule.ICON_EMPTY) .. " - " .. _t("TabDoNotBuff")
+          .. BuffomatAddon.FormatTexture(texturesModule.ICON_EMPTY) .. " - " .. _t("TabDoNotBuff")
           .. ": " .. constModule.CLASS_NAME[ --[[@as ClassName]] class ] .. "|n"
-          .. BOM.FormatTexture(texturesModule.ICON_DISABLED) .. " - " .. _t("TabBuffOnlySelf")
+          .. BuffomatAddon.FormatTexture(texturesModule.ICON_DISABLED) .. " - " .. _t("TabBuffOnlySelf")
 
       local classToggle = spell.frames:CreateClassToggle(class, tooltip2, bomDoBlessingOnClick)
       classToggle:SetVariable(profileSpell.Class, class, nil)
@@ -79,14 +78,14 @@ if false then
     end -- for each class in class_sort_order
 
     --========================================
-    local tooltip3 = BOM.FormatTexture(texturesModule.ICON_TANK) .. " - " .. _t("TooltipCastOnTank")
+    local tooltip3 = BuffomatAddon.FormatTexture(texturesModule.ICON_TANK) .. " - " .. _t("TooltipCastOnTank")
     local tankToggle = spell.frames:CreateTankToggle(tooltip3, bomDoBlessingOnClick)
     tankToggle:SetVariable(profileSpell.Class, "tank", nil)
     rowBuilder:AppendRight(nil, tankToggle, 0)
     rowBuilder.prevControl = tankToggle
 
     --========================================
-    local tooltip4 = BOM.FormatTexture(texturesModule.ICON_PET) .. " - " .. _t("TooltipCastOnPet")
+    local tooltip4 = BuffomatAddon.FormatTexture(texturesModule.ICON_PET) .. " - " .. _t("TooltipCastOnPet")
     local petToggle = spell.frames:CreatePetToggle(tooltip4, bomDoBlessingOnClick)
     petToggle:SetVariable(profileSpell.Class, "pet", nil)
     rowBuilder:AppendRight(nil, petToggle, 5)
@@ -170,7 +169,7 @@ if false then
 
       -- Let the MyButton library function handle the data update, and update the tab text too
       self.spellSettingsFrames[i]:SetOnClick(function()
-        BOM.MyButtonOnClick(self)
+        BuffomatAddon.MyButtonOnClick(self)
         buffomatModule:UpdateBuffTabText()
       end)
     end
@@ -205,7 +204,7 @@ if false then
     rowBuilder:AppendRight(nil, enableCheckbox, 7)
 
     -- Add a sorting text field (if 'CustomBuffSorting' is enabled)
-    if buffomatModule.shared.CustomBuffSorting and profileBuff then
+    if BuffomatShared.CustomBuffSorting and profileBuff then
       local sortingTextField = buff.frames:CreateSortingInput(_t("TooltipCustomSorting"), profileBuff)
       rowBuilder:AppendRight(nil, sortingTextField, 7)
     end
@@ -341,7 +340,7 @@ if false then
     -- Add spell cancel buttons for all spells in CancelBuffs
     -- (and CustomCancelBuffs which user can add manually in the config file)
     --
-    for i, spell in ipairs(BOM.cancelBuffs) do
+    for i, spell in ipairs(BuffomatAddon.cancelBuffs) do
       self:AddSpellCancelRow(spell, rowBuilder)
     end
 
@@ -385,7 +384,7 @@ if false then
     toolboxModule:TooltipText(
       button,
       _t("TooltipForceCastOnTarget") .. "|n"
-      .. string.format(_t("FormatToggleTarget"), buffomatModule:Color("ffffff", BOM.lastTarget))
+      .. string.format(_t("FormatToggleTarget"), buffomatModule:Color("ffffff", BuffomatAddon.lastTarget))
       .. tooltip_force_targets)
   end
 
@@ -402,7 +401,7 @@ if false then
     toolboxModule:TooltipText(
       button,
       _t("TooltipExcludeTarget") .. "|n"
-      .. string.format(_t("FormatToggleTarget"), buffomatModule:Color("ffffff", BOM.lastTarget))
+      .. string.format(_t("FormatToggleTarget"), buffomatModule:Color("ffffff", BuffomatAddon.lastTarget))
       .. tooltip_exclude_targets)
   end
 
@@ -474,20 +473,20 @@ if false then
       local forceCastButton = buffDef.frames.toggleForceCast ---@type BomGPIControl
       local excludeButton = buffDef.frames.toggleExclude ---@type BomGPIControl
 
-      if BOM.lastTarget ~= nil then
+      if BuffomatAddon.lastTarget ~= nil then
         ------------------------- forceCastButton:Enable() self:UpdateForcecastTooltip(forceCastButton, profileSpell)
 
         local spellForcedTarget = profileSpell.ForcedTarget
-        local lastTarget = BOM.lastTarget
+        local lastTarget = BuffomatAddon.lastTarget
 
         forceCastButton:SetScript("OnClick", function(self1)
           if lastTarget then
             if not spellForcedTarget[lastTarget] then
-              BOM:Print(BOM.FormatTexture(texturesModule.ICON_TARGET_ON) .. " "
+              BuffomatAddon:Print(BuffomatAddon.FormatTexture(texturesModule.ICON_TARGET_ON) .. " "
                 .. _t("MessageAddedForced") .. ": " .. lastTarget)
               spellForcedTarget[lastTarget] = true
             else
-              BOM:Print(BOM.FormatTexture(texturesModule.ICON_TARGET_ON) .. " "
+              BuffomatAddon:Print(BuffomatAddon.FormatTexture(texturesModule.ICON_TARGET_ON) .. " "
                 .. _t("MessageClearedForced") .. ": " .. lastTarget)
               spellForcedTarget[lastTarget] = nil
             end
@@ -497,16 +496,16 @@ if false then
         ------------------------- excludeButton:Enable() self:UpdateExcludeTargetsTooltip(excludeButton, profileSpell)
 
         local spellExclude = profileSpell.ExcludedTarget
-        lastTarget = BOM.lastTarget
+        lastTarget = BuffomatAddon.lastTarget
 
         excludeButton:SetScript("OnClick", function(control)
           if lastTarget then
             if not spellExclude[lastTarget] then
-              BOM:Print(BOM.FormatTexture(texturesModule.ICON_TARGET_EXCLUDE) .. " "
+              BuffomatAddon:Print(BuffomatAddon.FormatTexture(texturesModule.ICON_TARGET_EXCLUDE) .. " "
                 .. _t("MessageAddedExcluded") .. ": " .. lastTarget)
               spellExclude[lastTarget] = true
             else
-              BOM:Print(BOM.FormatTexture(texturesModule.ICON_TARGET_EXCLUDE) .. " "
+              BuffomatAddon:Print(BuffomatAddon.FormatTexture(texturesModule.ICON_TARGET_EXCLUDE) .. " "
                 .. _t("MessageClearedExcluded") .. ": " .. lastTarget)
               spellExclude[lastTarget] = nil
             end
@@ -613,12 +612,12 @@ if false then
       end
     end -- all spells
 
-    for _i, spell in ipairs(BOM.cancelBuffs) do
+    for _i, spell in ipairs(BuffomatAddon.cancelBuffs) do
       spell.frames.checkboxEnable:SetVariable(buffomatModule.currentProfile.CancelBuff[spell.buffId], "Enable", nil)
     end
 
     --Create small SINGLE-BUFF toggle to the right of [Cast <spell>]
-    BOM.CreateSingleBuffButton(BomC_ListTab) --maybe not created yet?
+    BuffomatAddon.CreateSingleBuffButton(BomC_ListTab) --maybe not created yet?
     return true
   end
 

@@ -1,4 +1,4 @@
-local BOM = BuffomatAddon
+local BuffomatAddon = BuffomatAddon
 
 ---@class ThrottleModule
 
@@ -7,6 +7,7 @@ local buffomatModule = LibStub("Buffomat-Buffomat") --[[@as BuffomatModule]]
 local eventsModule = LibStub("Buffomat-Events") --[[@as EventsModule]]
 local taskScanModule = LibStub("Buffomat-TaskScan") --[[@as TaskScanModule]]
 local profileModule = LibStub("Buffomat-Profile") --[[@as ProfileModule]]
+local taskListPanelModule = LibStub("Buffomat-TaskListPanel") --[[@as TaskListPanelModule]]
 
 ---@class BomThrottleState
 ---@field lastUpdateTimestamp number
@@ -46,17 +47,16 @@ function throttleModule:UpdateTimer(elapsed)
   local inCombat = InCombatLockdown()
 
   if inCombat then
-    -- taskScanModule.tasklist:CastButtonText(_t("castButton.InCombat"), false)
     return
   end
 
   local now = GetTime()
 
-  if BOM.inLoadingScreen and BOM.loadingScreenTimeOut then
-    if BOM.loadingScreenTimeOut > now then
+  if BuffomatAddon.inLoadingScreen and BuffomatAddon.loadingScreenTimeOut then
+    if BuffomatAddon.loadingScreenTimeOut > now then
       return
     else
-      BOM.inLoadingScreen = false
+      BuffomatAddon.inLoadingScreen = false
       eventsModule:OnCombatStop()
     end
   end
@@ -69,22 +69,24 @@ function throttleModule:UpdateTimer(elapsed)
     throttleState.lastSpellsTabUpdate = now
   end
 
-  if BOM.nextCooldownDue and BOM.nextCooldownDue <= now then
+  if BuffomatAddon.nextCooldownDue and BuffomatAddon.nextCooldownDue <= now then
     buffomatModule:RequestTaskRescan("cdDue")
   end
 
-  if BOM.checkCooldown then
-    local cdtest = GetSpellCooldown(BOM.checkCooldown)
+  if BuffomatAddon.checkCooldown then
+    local cdtest = GetSpellCooldown(BuffomatAddon.checkCooldown)
     if cdtest == 0 then
-      BOM.checkCooldown = nil
+      BuffomatAddon.checkCooldown = nil
       buffomatModule:RequestTaskRescan("checkCd")
     end
   end
 
-  if BOM.scanModifierKeyDown and throttleState.lastModifierKeyState ~= IsModifierKeyDown() then
+  if BuffomatAddon.scanModifierKeyDown and throttleState.lastModifierKeyState ~= IsModifierKeyDown() then
     throttleState.lastModifierKeyState = IsModifierKeyDown()
     buffomatModule:RequestTaskRescan("ModifierKeyDown")
   end
+
+  taskListPanelModule:WindowCommand()
 
   --
   -- Update timers, slow hardware and auto-throttling
@@ -93,13 +95,13 @@ function throttleModule:UpdateTimer(elapsed)
   --throttleState.fpsCheck = throttleState.fpsCheck + 1
 
   local updateTimerLimit = throttleState.updateTimerLimit
-  if buffomatModule.shared.SlowerHardware then
+  if BuffomatShared.SlowerHardware then
     updateTimerLimit = throttleState.slowerHardwareUpdateTimerLimit
   end
 
   local needForceUpdate = next(buffomatModule.taskRescanRequestedBy) ~= nil
 
-  if (needForceUpdate or BOM.repeatUpdate)
+  if (needForceUpdate or BuffomatAddon.repeatUpdate)
       and now - (throttleState.lastUpdateTimestamp or 0) > updateTimerLimit
       and not inCombat
   then
@@ -114,13 +116,13 @@ function throttleModule:UpdateTimer(elapsed)
     -- If updatescan call above took longer than 32 ms, and repeated update, then
     -- bump the slow alarm counter, once it reaches 32 we consider throttling.
     -- 1000 ms / 32 ms = 31.25 fps
-    if (debugprofilestop() - throttleState.fpsCheck) > 32 and BOM.repeatUpdate then
+    if (debugprofilestop() - throttleState.fpsCheck) > 32 and BuffomatAddon.repeatUpdate then
       throttleState.slowCount = throttleState.slowCount + 1
 
       if throttleState.slowCount >= 20 and updateTimerLimit < 1 then
         throttleState.updateTimerLimit = throttleState.BOM_THROTTLE_TIMER_LIMIT
         throttleState.slowerHardwareUpdateTimerLimit = throttleState.BOM_THROTTLE_SLOWER_HARDWARE_TIMER_LIMIT
-        BOM:Print("Overwhelmed - slowing down the scans!")
+        BuffomatAddon:Print("Overwhelmed - slowing down the scans!")
       end
     else
       throttleState.slowCount = 0

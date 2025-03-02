@@ -66,6 +66,7 @@ function englishModule:Translations()
     ["options.short.AutoDismountFlying"] = "Auto dismount flying",
     ["options.short.AutoDisTravel"] = "Auto leave travel form",
     ["options.short.AutoOpen"] = "Auto open Buffomat",
+    ["options.short.AutoClose"] = "Auto close Buffomat",
     ["options.short.AutoStand"] = "Auto stand up",
     ["options.short.BuffTarget"] = "Buff target first",
     ["options.short.Carrot"] = "Warn about mount items",
@@ -113,7 +114,8 @@ function englishModule:Translations()
     ["options.long.AutoDismount"] = "Auto-dismount from the ground mount on cast",
     ["options.long.AutoDismountFlying"] = "Auto-drop from the flying mount on cast (OUCH)",
     ["options.long.AutoDisTravel"] = "Auto-remove travel form (Does not work in Classic)",
-    ["options.long.AutoOpen"] = "Auto show Buffomat when there's work to do (type /bom)",
+    ["options.long.AutoOpen"] = "Auto show Buffomat, when there's work to do",
+    ["options.long.AutoClose"] = "Auto close Buffomat, when the last task is done",
     ["options.long.AutoStand"] = "If the character was sitting, Buffomat will stand up the character",
     ["options.long.BuffTarget"] = "Also try and buff the current target",
     ["options.long.Carrot"] = "Remind to unequip Riding/Flight trinkets",
@@ -203,7 +205,7 @@ function englishModule:Translations()
     ["castButton.CantCastMaybeOOM"] = "Can't buff, out of mana or something else",
     ["message.CancelBuff"] = "Cancel buff %s from %s",
     ["message.BuffExpired"] = "%s expired.",
-    ["message.ShowHideInCombat"] = "Can't show/hide window in combat",
+    -- ["message.ShowHideInCombat"] = "Can't show/hide window in combat",
     ["task.UseOrOpen"] = "Use or open",
     MSG_MAINHAND_ENCHANT_MISSING = "Missing main hand temporary enchant",
     MSG_OFFHAND_ENCHANT_MISSING = "Missing off-hand temporary enchant",
@@ -419,7 +421,7 @@ function englishModule:Translations()
     ["tooltip.button.AllBuffs"] = "All Buffs",
     ["tooltip.button.HideBuffomat"] =
     "Hide.|nTo show again, type /bom, click the minimap button,|nor press the shortcut key you assigned",
-    TooltipCastButton =
+    ["tooltip.TaskList.CastButton"] =
     "Cast the spell from the list.|nNot available in combat.|nCan also be activated via the macro (in the top row)|nor bind a shortcut key in Key Bindings => Other",
 
     SpellLabel_TrackHumanoids = "Cat only - Overrides track herbs and ore",
@@ -435,5 +437,6 @@ function englishModule:Translations()
     ["label.ForceCast.TargetList"] = "Target List",
     ["label.SpellsDialog.ProfileSelector"] = "Buff choices for profile",
     ["label.SpellsDialog.GroupScanSelector"] = "Watch raid groups",
+    ["taskList.holdOpenComment"] = "Buffomat window was opened by the user. Click X to allow auto-closing again.",
   }
 end

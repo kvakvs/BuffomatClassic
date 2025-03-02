@@ -123,7 +123,8 @@ function germanModule:Translations()
     ["options.short.ReputationTrinket"] = "Erinnere an die Anstecknadel der Argentumdämmerung",
     ["options.short.AutoDismount"] = "Automatisches Absitzen beim Zaubern",
     ["options.short.AutoDisTravel"] = "Automatisch  Reiseform abbrechen beim Zaubern",
-    ["options.short.AutoOpen"] = "Automatisches öffnen/schließen",
+    ["options.short.AutoOpen"] = "Automatisches öffnen",
+    ["options.short.AutoClose"] = "Automatisches schließen",
     ["options.short.AutoStand"] = "Automatisches Aufstehen beim Zaubern",
     ["options.short.BuffTarget"] = "Aktuelles Ziel mit aufnehmen",
     ["options.short.Carrot"] = "Erinnere an die \"Karotte am Stiel\"",
@@ -153,6 +154,9 @@ function germanModule:Translations()
     ["options.short.Time3600"] = "Dauer <=60 Min:",
     ["options.short.Time60"] = "Dauer <=60 Sek:",
     ["options.short.Time600"] = "Dauer <=10 Min:",
+
+    ["options.long.AutoOpen"] = "Automatisches öffnen, wenn Aufgaben verfügbar sind",
+    ["options.long.AutoClose"] = "Automatisches schließen, wenn alle Aufgaben erledigt sind",
 
     Header_CANCELBUFF = "Buffs Abbrechen",
     Header_INFO = "Informationen",
@@ -224,8 +228,10 @@ function germanModule:Translations()
     ["tooltip.button.AllBuffs"] = "Alle Buffs",
     ["tooltip.button.HideBuffomat"] = "Buffomat-Fenster ausblenden, geben Sie /bom ein,"
         .. "um es wieder zu öffnen, oder klicken Sie auf die Minimap-knöpfe",
-    TooltipCastButton = "Wirke den Zauber aus der Liste.|nNicht im Kampf verfügbar.|n"
+    ["tooltip.TaskList.CastButton"] = "Wirke den Zauber aus der Liste.|nNicht im Kampf verfügbar.|n"
         .. "Kann auch über das Makro (in der obersten Reihe) aktiviert werden|n"
         .. "Noch eine Tastenkombination in Tastenkombinationen => Andere binden",
+    ["taskList.holdOpenComment"] =
+    "Buffomat-Fenster wurde von einem Benutzer geöffnet. Klicken Sie auf X, um das automatische Schließen wieder zu aktivieren.",
   }
 end

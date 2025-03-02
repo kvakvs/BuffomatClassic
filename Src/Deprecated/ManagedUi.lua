@@ -1,7 +1,4 @@
 if false then
-  --local TOCNAME, _ = ...
-  --local BOM = BuffomatAddon
-
   ---@class BomManagedUiModule
   ---@field ICON_OFF string
   ---@field ICON_ON string

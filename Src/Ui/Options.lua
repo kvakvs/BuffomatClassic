@@ -15,7 +15,7 @@ local libIcon = LibStub("LibDBIcon-1.0")
 ---@param key string|nil
 ---@param notify function|nil Call this with (key, value) on option change
 function optionsModule:TemplateCheckbox(name, dict, key, notify)
-  return kvOptionsModule:TemplateCheckbox(name, dict or buffomatModule.shared, key or name, notify, _t)
+  return kvOptionsModule:TemplateCheckbox(name, dict or BuffomatShared, key or name, notify, _t)
 end
 
 ---@param name string
@@ -28,7 +28,7 @@ end
 ---@param dict table|nil
 ---@param notifyFn function|nil Call this with (key, value) on option change
 function optionsModule:TemplateMultiselect(name, values, dict, notifyFn, setFn, getFn)
-  return kvOptionsModule:TemplateMultiselect(name, values, dict or buffomatModule.shared, notifyFn, setFn, getFn, _t)
+  return kvOptionsModule:TemplateMultiselect(name, values, dict or BuffomatShared, notifyFn, setFn, getFn, _t)
 end
 
 ---@param values table|function Key is sent to the setter, value is the string displayed
@@ -36,21 +36,21 @@ end
 ---@param style string|nil "dropdown" or "radio"
 ---@param notifyFn function|nil Call this with (key, value) on option change
 function optionsModule:TemplateSelect(name, values, style, dict, notifyFn, setFn, getFn)
-  return kvOptionsModule:TemplateSelect(name, values, style, dict or buffomatModule.shared, notifyFn, setFn, getFn, _t)
+  return kvOptionsModule:TemplateSelect(name, values, style, dict or BuffomatShared, notifyFn, setFn, getFn, _t)
 end
 
 ---@param dict table|nil
 ---@param key string|nil
 ---@param notify function|nil Call this with (key, value) on option change
 function optionsModule:TemplateInput(type, name, dict, key, notify)
-  return kvOptionsModule:TemplateInput(type, name, dict or buffomatModule.shared, key or name, notify, _t)
+  return kvOptionsModule:TemplateInput(type, name, dict or BuffomatShared, key or name, notify, _t)
 end
 
 ---@param dict table|nil
 ---@param key string|nil
 ---@param notify function|nil Call this with (key, value) on option change
 function optionsModule:TemplateRange(name, rangeFrom, rangeTo, step, dict, key, notify)
-  return kvOptionsModule:TemplateRange(name, rangeFrom, rangeTo, step, dict or buffomatModule.shared, key or name, notify,
+  return kvOptionsModule:TemplateRange(name, rangeFrom, rangeTo, step, dict or BuffomatShared, key or name, notify,
     _t)
 end
 
@@ -68,9 +68,10 @@ function optionsModule:CreateGeneralOptionsTable()
     name = "1. " .. _t("options.general.group.General"),
     args = {
       autoOpen = self:TemplateCheckbox("AutoOpen", nil, nil, nil),
+      autoClose = self:TemplateCheckbox("AutoClose", nil, nil, nil),
       fadeWhenNothingToDo = self:TemplateRange(
         "FadeWhenNothingToDo", 0.25, 1.0, 0.05,
-        buffomatModule.shared, "FadeWhenNothingToDo",
+        BuffomatShared, "FadeWhenNothingToDo",
         ---@diagnostic disable-next-line: unused-local
         function(_key, val)
           taskListPanelModule:SetAlpha(val)
@@ -79,7 +80,7 @@ function optionsModule:CreateGeneralOptionsTable()
       useProfiles = self:TemplateCheckbox("UseProfiles", buffomatModule.character, nil, nil),
       slowerHardware = self:TemplateCheckbox("SlowerHardware", nil, nil, nil),
       minimapButtonShow = self:TemplateCheckbox(
-        "ShowMinimapButton", buffomatModule.shared.Minimap, "visible",
+        "ShowMinimapButton", BuffomatShared.Minimap, "visible",
         ---@diagnostic disable-next-line: unused-local
         function(key, value)
           if value then
@@ -89,13 +90,13 @@ function optionsModule:CreateGeneralOptionsTable()
           end
         end),
       --minimapButtonLock = self:TemplateCheckbox(
-      --        "LockMinimapButton", buffomatModule.shared.Minimap, "lock", nil),
+      --        "LockMinimapButton", BuffomatShared.Minimap, "lock", nil),
       --minimapButtonLockDist = self:TemplateCheckbox(
-      --        "LockMinimapButtonDistance", buffomatModule.shared.Minimap, "lockDistance", nil),
+      --        "LockMinimapButtonDistance", BuffomatShared.Minimap, "lockDistance", nil),
       --uiWindowScale         = self:TemplateInput("float", "UIWindowScale"),
       uiWindowScale = self:TemplateRange(
         "UIWindowScale", 0.35, 2.0, 0.05,
-        buffomatModule.shared, "UIWindowScale",
+        BuffomatShared, "UIWindowScale",
         ---@diagnostic disable-next-line: unused-local
         function(_key, val)
           taskListPanelModule:SetWindowScale(val)

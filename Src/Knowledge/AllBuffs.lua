@@ -1,4 +1,4 @@
-local BOM = BuffomatAddon
+local BuffomatAddon = BuffomatAddon
 
 ---@alias BuffCategoryName ""|"tracking"|"pet"|"aura"|"seal"|"blessing"|"class"|"classicPhysFood"|"classicSpellFood"|"classicFood"|"classicPhysElixir"|"classicPhysBuff"|"classicBuff"|"classicSpellElixir"|"classicElixir"|"classicFlask"|"tbcPhysFood"|"tbcSpellFood"|"tbcFood"|"tbcPhysElixir"|"tbcSpellElixir"|"tbcElixir"|"tbcFlask"|"wotlkPhysFood"|"wotlkSpellFood"|"wotlkFood"|"wotlkPhysElixir"|"wotlkSpellElixir"|"wotlkElixir"|"wotlkFlask"|"scroll"|"weaponEnchantment"|"classWeaponEnchantment"|"cataElixir"|"cataFood"|"cataFlask"
 
@@ -72,7 +72,7 @@ allBuffsModule.RESURRECT_CLASSES = RESURRECT_CLASSES
 --- Classes which have mana bar and benefit from mp/5 and spirit
 ---@type ClassName[]
 local MANA_CLASSES = { "HUNTER", "WARLOCK", "MAGE", "DRUID", "SHAMAN", "PRIEST", "PALADIN" }
-BOM.MANA_CLASSES = MANA_CLASSES --used in TaskScan.lua
+BuffomatAddon.MANA_CLASSES = MANA_CLASSES --used in TaskScan.lua
 allBuffsModule.MANA_CLASSES = MANA_CLASSES
 
 ---TODO: Move to constModule
@@ -196,15 +196,18 @@ function allBuffsModule:SetupConstantsCategories()
   }
 
   if envModule.haveWotLK then
-    Append(self.buffCategories, {"wotlkPhysElixir", "wotlkSpellElixir", "wotlkElixir", "wotlkFlask", "wotlkFood", "wotlkPhysFood", "wotlkSpellFood",})
+    Append(self.buffCategories,
+      { "wotlkPhysElixir", "wotlkSpellElixir", "wotlkElixir", "wotlkFlask", "wotlkFood", "wotlkPhysFood",
+        "wotlkSpellFood", })
   end
   if envModule.haveTBC then
-    Append(self.buffCategories, {"tbcPhysElixir", "tbcSpellElixir", "tbcElixir", "tbcFlask", "tbcFood", "tbcPhysFood", "tbcSpellFood",})
+    Append(self.buffCategories,
+      { "tbcPhysElixir", "tbcSpellElixir", "tbcElixir", "tbcFlask", "tbcFood", "tbcPhysFood", "tbcSpellFood", })
   end
   if envModule.haveCata then
-    Append(self.buffCategories, {"cataFood", "cataElixir", "cataFlask",})
+    Append(self.buffCategories, { "cataFood", "cataElixir", "cataFlask", })
   end
-  Append(self.buffCategories, {"scroll", "weaponEnchantment", ""})
+  Append(self.buffCategories, { "scroll", "weaponEnchantment", "" })
 end
 
 function allBuffsModule:SetupConstants()
@@ -232,7 +235,7 @@ function allBuffsModule:ApplyPostLimitations(allBuffs)
 
   for _i, buff in ipairs(allBuffs) do
     if buff.limitations ~= nil then
-      if buffDefModule:CheckStaticLimitations(buff,buff.limitations) then
+      if buffDefModule:CheckStaticLimitations(buff, buff.limitations) then
         table.insert(result, buff)
       end
     end
@@ -283,7 +286,7 @@ function allBuffsModule:SetupSpells()
   for x, spell in ipairs(allBuffs) do
     if spell.isConsumable and spell.items then
       for _, item in ipairs(spell.items or {}) do
-        BOM.GetItemInfo(item)
+        BuffomatAddon.GetItemInfo(item)
       end
     end
   end
@@ -301,7 +304,7 @@ function allBuffsModule:SetupSpells()
     self.allBuffs[buff.buffId] = buff
   end
 
-  BOM.enchantList = enchantments
+  BuffomatAddon.enchantList = enchantments
 end
 
 ---@class BomReputationTrinketZones
@@ -309,7 +312,7 @@ end
 ---@field zoneId WowZoneId[]
 ---@field Link string
 ---@field spell WowSpellId
-BOM.reputationTrinketZones = {
+BuffomatAddon.reputationTrinketZones = {
   itemIds = {
     12846, -- Simple AD trinket
     13209, -- Seal of the Dawn +81 AP
@@ -329,7 +332,7 @@ BOM.reputationTrinketZones = {
 ---@field zoneId WowZoneId[]
 ---@field Link string
 ---@field spell WowSpellId
-BOM.ridingSpeedZones = {
+BuffomatAddon.ridingSpeedZones = {
   itemIds = {
     11122, -- Classic: Item [Carrot on a Stick]
     25653, -- TBC: Item [Riding Crop]
@@ -346,20 +349,20 @@ BOM.ridingSpeedZones = {
   },
 }
 
-BOM.buffExchangeId = {                      -- combine-spell-ids to new one
+BuffomatAddon.buffExchangeId = {            -- combine-spell-ids to new one
   [18788] = { 18791, 18790, 18789, 18792 }, -- Demonic Sacrifice-Buffs to Demonic Sacrifice
   [16591] = { 16591, 16589, 16595, 16593 }, -- noggenfoger
 }
 
 allBuffsModule.spellToSpellLookup = {}
-for dest, list in pairs(BOM.buffExchangeId) do
+for dest, list in pairs(BuffomatAddon.buffExchangeId) do
   for i, id in ipairs(list) do
     allBuffsModule.spellToSpellLookup[id] = dest
   end
 end
 
 ---@deprecated
-BOM.itemList = {
+BuffomatAddon.itemList = {
   --{6948}, -- Hearthstone | Ruhestein
   --{4604}, -- Forest Mushroom | Waldpilz
   --{8079},-- Water | wasser
@@ -409,11 +412,11 @@ function allBuffsModule:SetupCancelBuffs()
     end
   end
 
-  BOM.cancelBuffs = s
+  BuffomatAddon.cancelBuffs = s
 end
 
 -- Having this buff on target excludes the target (phaseshifted imp for example)
-BOM.buffIgnoreAll = {
+BuffomatAddon.buffIgnoreAll = {
   4511 -- Phase Shift (imp)
 }
 
@@ -422,8 +425,8 @@ local ShapeShiftTravel = {
   783
 } --Ghost wolf and travel druid
 
-BOM.drinkingPersonCount = 0
-BOM.AllDrink = {
+BuffomatAddon.drinkingPersonCount = 0
+BuffomatAddon.AllDrink = {
   30024,                                          -- Restores 20% mana
   430,                                            -- level 5 drink
   431,                                            -- level 15 drink

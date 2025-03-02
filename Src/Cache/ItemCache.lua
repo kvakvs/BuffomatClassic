@@ -1,5 +1,4 @@
---local TOCNAME, _ = ...
-local BOM = BuffomatAddon
+local BuffomatAddon = BuffomatAddon
 
 ---@alias BomItemCacheKey number|string
 
@@ -33,7 +32,7 @@ local buffomatModule = LibStub("Buffomat-Buffomat") --[[@as BuffomatModule]]
 ---Immediate result is returned right away. Caches the data.
 ---@param arg number|string|WowItemId
 ---@return BomItemCacheElement|nil
-function BOM.GetItemInfo(arg)
+function BuffomatAddon.GetItemInfo(arg)
   if itemCacheModule.cache[arg] ~= nil then
     return itemCacheModule.cache[arg]
   end

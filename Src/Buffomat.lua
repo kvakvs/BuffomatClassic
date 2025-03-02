@@ -1,5 +1,4 @@
 ---@class BuffomatModule
----@field shared SharedSettings Refers to BuffomatShared global
 ---@field character CharacterSettings Refers to BuffomatCharacter global
 ---@field currentProfileName string
 ---@field currentProfile ProfileSettings
@@ -26,7 +25,7 @@ local taskListPanelModule = LibStub("Buffomat-TaskListPanel") --[[@as TaskListPa
 local throttleModule = LibStub("Buffomat-Throttle") --[[@as ThrottleModule]]
 local ngStringsModule = LibStub("Buffomat-NgStrings") --[[@as NgStringsModule]]
 
----@alias BomCastingState "cast"|"channel"|nil
+---@alias CastingState "cast"|"channel"|nil
 
 ---global, visible from XML files and from script console and chat commands
 ---@class BomAddon : AceAddon
@@ -52,7 +51,7 @@ local ngStringsModule = LibStub("Buffomat-NgStrings") --[[@as NgStringsModule]]
 ---@field forceTracking WowIconId|nil Defines icon id for enforced tracking
 ---@field forceUpdate boolean Requests immediate spells/buffs refresh
 ---@field inLoadingScreen boolean True while in the loading screen
----@field isPlayerCasting BomCastingState Indicates that the player is currently casting (updated in event handlers)
+---@field isPlayerCasting CastingState Indicates that the player is currently casting (updated in event handlers)
 ---@field isPlayerMoving boolean Indicated that the player is moving (updated in event handlers)
 ---@field itemList number[][] Group different ranks of item together
 ---@field lastAura BomBuffId|nil Buff id of active or last active aura
@@ -77,7 +76,7 @@ local ngStringsModule = LibStub("Buffomat-NgStrings") --[[@as NgStringsModule]]
 -- -@field RegisterEvent fun(self: BomAddon, event: string, handler: function): void
 
 BuffomatAddon = LibStub("AceAddon-3.0"):NewAddon("Buffomat", "AceConsole-3.0", "AceEvent-3.0") --[[@as BomAddon]]
-local BOM = BuffomatAddon
+local BuffomatAddon = BuffomatAddon
 local libDB = LibStub("LibDataBroker-1.1")
 local libIcon = LibStub("LibDBIcon-1.0")
 
@@ -90,12 +89,12 @@ local libIcon = LibStub("LibDBIcon-1.0")
 ---@alias BomCachedPlayerBag table<string, BomCachedBagItem>
 
 ---@type table<string, BomCachedBagItem>
-BOM.cachedPlayerBag = {}
+BuffomatAddon.cachedPlayerBag = {}
 
 ---Print a text with "BomDebug: " prefix in the game chat window
 ---@param t string
-function BOM:Debug(t)
-  if buffomatModule.shared.DebugLogging then
+function BuffomatAddon:Debug(t)
+  if BuffomatShared.DebugLogging then
     DEFAULT_CHAT_FRAME:AddMessage(tostring(GetTime()) .. " " .. buffomatModule:Color("883030", "BOM ") .. t)
   end
 end
@@ -104,14 +103,14 @@ function buffomatModule:Color(hex, text)
   return "|cff" .. hex .. text .. "|r"
 end
 
-function BOM.ScrollMessage(self, delta)
+function BuffomatAddon.ScrollMessage(self, delta)
   self:SetScrollOffset(self:GetScrollOffset() + delta * 5);
   self:ResetAllFadeTimes()
 end
 
 function buffomatModule:ClearForceUpdate(debugCallerLocation)
   if debugCallerLocation then
-    BOM:Debug("clearForceUpdate from " .. debugCallerLocation)
+    BuffomatAddon:Debug("clearForceUpdate from " .. debugCallerLocation)
   end
   wipe(self.taskRescanRequestedBy)
 end
@@ -119,11 +118,6 @@ end
 ---@param reason string
 function buffomatModule:RequestTaskRescan(reason)
   self.taskRescanRequestedBy[reason] = (self.taskRescanRequestedBy[reason] or 0) + 1
-end
-
----@param castingState BomCastingState
-function buffomatModule:SetPlayerCasting(castingState)
-  BOM.isPlayerCasting = castingState
 end
 
 -- Something changed (buff gained possibly?) update all spells and spell tabs
@@ -155,16 +149,16 @@ end
 ---@param profile ProfileName
 function buffomatModule.ChooseProfile(profile)
   if profile == nil or profile == "" or profile == "auto" then
-    BOM.forceProfile = nil
+    BuffomatAddon.forceProfile = nil
   elseif buffomatModule.character.profiles[profile] then
-    BOM.forceProfile = profile
+    BuffomatAddon.forceProfile = profile
   else
-    BOM:Print("Unknown profile: " .. profile)
+    BuffomatAddon:Print("Unknown profile: " .. profile)
     return
   end
 
   taskScanModule:ClearSkip()
-  BOM.popupMenuDynamic:Wipe(nil)
+  BuffomatAddon.popupMenuDynamic:Wipe(nil)
   buffomatModule:RequestTaskRescan("profileSelected")
   taskScanModule:ScanTasks("profileSelected")
 
@@ -186,7 +180,7 @@ function buffomatModule:UseProfile(profileName)
       " " .. characterSettingsModule:LocalizedProfileName(profileName)
   taskListPanelModule:SetTitle()
 
-  BOM:Print("Using profile " .. characterSettingsModule:LocalizedProfileName(profileName))
+  BuffomatAddon:Print("Using profile " .. characterSettingsModule:LocalizedProfileName(profileName))
 end
 
 ---When BomCharacterState.WatchGroup has changed, update the buff tab text to show what's
@@ -258,11 +252,11 @@ function buffomatModule:InitUI()
 
   toolboxModule:OnUpdate(function(elapsed) throttleModule:UpdateTimer(elapsed) end)
 
-  BOM.popupMenuDynamic = popupModule:CreatePopup(buffomatModule.OptionsUpdate)
+  BuffomatAddon.popupMenuDynamic = popupModule:CreatePopup(buffomatModule.OptionsUpdate)
 
   local function onMinimapClick(_self1, button)
     if button == "LeftButton" then
-      taskListPanelModule:ToggleWindow()
+      taskListPanelModule:ToggleWindow(false)
     else
       optionsPopupModule:Setup(Minimap, true)
     end
@@ -274,15 +268,15 @@ function buffomatModule:InitUI()
     icon = constModule.BOM_BEAR_ICON_FULLPATH,
     OnClick = onMinimapClick,
   })
-  libIcon:Register("BuffomatIcon", buffomatLDB, self.shared.Minimap)
+  libIcon:Register("BuffomatIcon", buffomatLDB, BuffomatShared.Minimap)
 
   buffomatModule:OptionsInit()
   partyModule:InvalidatePartyCache()
-  BOM.repeatUpdate = false
+  BuffomatAddon.repeatUpdate = false
 end
 
 function buffomatModule:InitGlobalStates()
-  buffomatModule.shared = BuffomatShared --[[@as SharedSettings]]
+  --BuffomatShared = BuffomatShared --[[@as SharedSettings]]
   buffomatModule.character = BuffomatCharacter --[[@as CharacterSettings]]
 
   -- Upgrade from previous Buffomat State if values are found
@@ -302,29 +296,12 @@ function buffomatModule:InitGlobalStates()
   end
 
   local soloProfileName = profileModule:SoloProfile()
-  BOM.currentProfile = self.character.profiles[soloProfileName or "solo"]
+  BuffomatAddon.currentProfile = self.character.profiles[soloProfileName or "solo"]
 end
 
 ---@return BomSlashCommand[]
 function BuffomatAddon:MakeSlashCommand()
   return --[[@as BomSlashCommand[] ]] {
-    {
-      command = "debug",
-      description = "",
-      handler = {
-        {
-          command = "buff",
-          description = "",
-          handler = buffomatModule.Slash_DebugBuffList
-        },
-        {
-          command = "target",
-          description = "",
-          handler = buffomatModule.Slash_DebugBuffs,
-          target = "target"
-        },
-      },
-    },
     {
       command = "profile",
       description = "",
@@ -339,7 +316,7 @@ function BuffomatAddon:MakeSlashCommand()
     {
       command = "spellbook",
       description = _t("SlashSpellBook"),
-      handler = BOM.setupAvailableSpellsFn
+      handler = BuffomatAddon.setupAvailableSpellsFn
     },
     {
       command = "update",
@@ -371,14 +348,14 @@ function BuffomatAddon:MakeSlashCommand()
       description = "",
       handler = function()
         if not InCombatLockdown() then
-          BOM.checkForError = true
+          BuffomatAddon.checkForError = true
         end
       end
     },
     {
       command = "",
       description = _t("SlashOpen"),
-      handler = function() taskListPanelModule:ShowWindow() end
+      handler = function() taskListPanelModule:ShowWindowHoldOpen(true) end
     },
   }
 end
@@ -391,10 +368,10 @@ function BuffomatAddon:Init()
   allBuffsModule:SetupSpells()
   allBuffsModule:SetupCancelBuffs()
 
-  BOM.theMacro = macroModule:NewMacro(constModule.MACRO_NAME, nil)
+  BuffomatAddon.theMacro = macroModule:NewMacro(constModule.MACRO_NAME, nil)
 
   languagesModule:LocalizationInit()
-  taskListPanelModule:ShowWindow()
+  -- taskListPanelModule:ShowWindow() -- called in InitUI
   slashModule:RegisterSlashCommandHandler({ "/bom", "/buffomat" }, self:MakeSlashCommand())
   buffomatModule:InitUI()
 
@@ -435,7 +412,7 @@ function BuffomatAddon:OnEnable()
 
   local onClick = function(control, button)
     if button == "LeftButton" then
-      taskListPanelModule:ToggleWindow()
+      taskListPanelModule:ToggleWindow(false)
     else
       optionsPopupModule:Setup(control, true)
     end
@@ -450,26 +427,26 @@ function BuffomatAddon:OnDisable()
 end
 
 function buffomatModule:DownGrade()
-  if BOM.castFailedBuff
-      and (BOM.castFailedBuff).skipList
-      and BOM.castFailedBuffTarget then
-    local level = UnitLevel((BOM.castFailedBuffTarget).unitId)
+  if BuffomatAddon.castFailedBuff
+      and (BuffomatAddon.castFailedBuff).skipList
+      and BuffomatAddon.castFailedBuffTarget then
+    local level = UnitLevel((BuffomatAddon.castFailedBuffTarget).unitId)
 
     if level ~= nil and level > -1 then
-      if self.shared.SpellGreaterEqualThan[BOM.castFailedSpellId] == nil
-          or self.shared.SpellGreaterEqualThan[BOM.castFailedSpellId] < level
+      if BuffomatShared.SpellGreaterEqualThan[BuffomatAddon.castFailedSpellId] == nil
+          or BuffomatShared.SpellGreaterEqualThan[BuffomatAddon.castFailedSpellId] < level
       then
-        self.shared.SpellGreaterEqualThan[BOM.castFailedSpellId] = level
+        BuffomatShared.SpellGreaterEqualThan[BuffomatAddon.castFailedSpellId] = level
         throttleModule:FastUpdateTimer()
         self:RequestTaskRescan("Downgrade")
-        self:P(string.format(_t("MsgDownGrade"),
-          (BOM.castFailedBuff).singleText,
-          ((BOM.castFailedBuffTarget).name)))
-      elseif buffomatModule.shared.SpellGreaterEqualThan[BOM.castFailedSpellId] >= level then
-        BOM.AddMemberToSkipList()
+        BuffomatAddon:Print(string.format(_t("MsgDownGrade"),
+          (BuffomatAddon.castFailedBuff).singleText,
+          ((BuffomatAddon.castFailedBuffTarget).name)))
+      elseif BuffomatShared.SpellGreaterEqualThan[BuffomatAddon.castFailedSpellId] >= level then
+        BuffomatAddon.AddMemberToSkipList()
       end
     else
-      BOM.AddMemberToSkipList()
+      BuffomatAddon.AddMemberToSkipList()
     end
   end
 end
@@ -502,24 +479,24 @@ function buffomatModule:PrintCallers(prefix, callersCollection)
         callers = callers .. string.format("%s; ", caller)
       end
     end
-    BOM:Print(prefix .. callers)
+    BuffomatAddon:Print(prefix .. callers)
   end
 end
 
 buffomatModule.autoHelper = "open"
 
 function buffomatModule:AutoOpen()
-  if not InCombatLockdown() and buffomatModule.shared.AutoOpen then
+  if not InCombatLockdown() and BuffomatShared.AutoOpen then
     if not taskListPanelModule:IsWindowVisible() and buffomatModule.autoHelper == "open" then
       buffomatModule.autoHelper = "close"
-      taskListPanelModule:ShowWindow()
-      taskListPanelModule:SetWindowScale(tonumber(buffomatModule.shared.UIWindowScale) or 1.0)
+      taskListPanelModule:ShowWindowHoldOpen(false)
+      taskListPanelModule:SetWindowScale(tonumber(BuffomatShared.UIWindowScale) or 1.0)
     end
   end
 end
 
 function buffomatModule:AutoClose()
-  if not InCombatLockdown() and buffomatModule.shared.AutoOpen then
+  if not InCombatLockdown() and BuffomatShared.AutoOpen then
     if taskListPanelModule:IsWindowVisible() then
       if buffomatModule.autoHelper == "close" then
         taskListPanelModule:HideWindow()
@@ -531,8 +508,8 @@ function buffomatModule:AutoClose()
   end
 end
 
-function BOM.AllowAutOpen()
-  if not InCombatLockdown() and buffomatModule.shared.AutoOpen then
+function BuffomatAddon.AllowAutOpen()
+  if not InCombatLockdown() and BuffomatShared.AutoOpen then
     if buffomatModule.autoHelper == "KeepClose" then
       buffomatModule.autoHelper = "open"
     end
@@ -548,7 +525,7 @@ local function perform_whisper_request(name)
   ChatFrame_OpenChat("/w " .. name .. " ")
 end
 
-function BOM.EnterHyperlink(_control, link)
+function BuffomatAddon.EnterHyperlink(_control, link)
   --print(link,text)
   local part = toolboxModule:Split(link, ":")
   if part[1] == "spell" or part[1] == "unit" or part[1] == "item" then
@@ -560,11 +537,11 @@ function BOM.EnterHyperlink(_control, link)
   end
 end
 
-function BOM.LeaveHyperlink(self)
+function BuffomatAddon.LeaveHyperlink(self)
   BomC_Tooltip:Hide()
 end
 
-function BOM.ClickHyperlink(self, link)
+function BuffomatAddon.ClickHyperlink(self, link)
   local part = toolboxModule:Split(link, ":")
   if part[1] == "unit" then
     if IsShiftKeyDown() then
@@ -576,25 +553,13 @@ function BOM.ClickHyperlink(self, link)
   end
 end
 
-function buffomatModule.Slash_DebugBuffList()
-end
+-- function BOM.ShowSpellSettings()
+--   InterfaceOptionsFrame:Hide()
+--   GameMenuFrame:Hide()
+--   BOM:Print("TODO: Show Spell Settings")
+--   taskListPanelModule:ShowWindow()
+-- end
 
-function BOM.ShowSpellSettings()
-  InterfaceOptionsFrame:Hide()
-  GameMenuFrame:Hide()
-  BOM:Print("TODO: Show Spell Settings")
-  taskListPanelModule:ShowWindow()
-end
-
-function BOM.MyButtonOnClick(self)
+function BuffomatAddon.MyButtonOnClick(self)
   buffomatModule:OptionsUpdate()
-end
-
-function buffomatModule:FadeBuffomatWindow()
-  if taskListPanelModule:IsBuffButtonEnabled() then
-    taskListPanelModule:SetAlpha(1.0)
-  else
-    local fade = self.shared.FadeWhenNothingToDo or 0.65
-    taskListPanelModule:SetAlpha(fade) -- fade the window, default 65%
-  end
 end

@@ -1,4 +1,4 @@
-local BOM = BuffomatAddon
+local BuffomatAddon = BuffomatAddon
 
 ---@class MacroModule
 ---@field lastMacroSet string A cached value of the last macro set
@@ -83,7 +83,7 @@ function macroClass:EnsureExists()
     if perChar < MAX_CHARACTER_MACROS then
       isChar = 1
     elseif perAccount >= MAX_ACCOUNT_MACROS then
-      BOM:Print(_t("castButton.NoMacroSlots"))
+      BuffomatAddon:Print(_t("castButton.NoMacroSlots"))
       return
     end
 

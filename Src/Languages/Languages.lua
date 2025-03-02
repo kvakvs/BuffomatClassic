@@ -66,8 +66,8 @@ function languagesModule:SetupTranslations()
 end
 
 function languagesModule:LocalizationInit()
-  if buffomatModule.shared and buffomatModule.shared.CustomLocales then
-    for key, value in pairs(buffomatModule.shared.CustomLocales) do
+  if BuffomatShared and BuffomatShared.CustomLocales then
+    for key, value in pairs(BuffomatShared.CustomLocales) do
       if value ~= nil and value ~= "" then
         self.currentLocale[key .. "_org"] = self.currentLocale[key]
         self.currentLocale[key] = value

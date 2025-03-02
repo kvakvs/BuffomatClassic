@@ -1,4 +1,4 @@
-local BOM = BuffomatAddon
+local BuffomatAddon = BuffomatAddon
 
 ---@alias BomElixirType "battle"|"guardian"|"both"
 ---@alias WowSpellId number
@@ -689,7 +689,7 @@ function buffDefClass:IgnoreIfHaveBuff(spellId)
       tinsert(self.ignoreIfBetterBuffs, spell)
     end
   else
-    BOM:Print(string.format("Spell %s was given invalid value for 'ignoreifhavebuff' %s",
+    BuffomatAddon:Print(string.format("Spell %s was given invalid value for 'ignoreifhavebuff' %s",
       tostring(self.buffId), tostring(spellId)))
   end
   return self
@@ -888,7 +888,7 @@ end
 ---@param bestItemIdAvailable WowItemId|nil If set, will request item link to a specific item
 function buffDefClass:SingleLink(bestItemIdAvailable)
   if bestItemIdAvailable then
-    local itemInfo = BOM.GetItemInfo(bestItemIdAvailable)
+    local itemInfo = BuffomatAddon.GetItemInfo(bestItemIdAvailable)
     if itemInfo then
       return (itemInfo).itemLink
     end
@@ -948,18 +948,19 @@ function buffDefModule:PerExpansionChoice(conditions)
 end
 
 function buffDefClass:ShowItemsProvidingBuff()
-  BOM:Print(buffomatModule:Color("0070dd", string.format(_t("Items, which provide buff for %s:"), self.consumeGroupTitle)))
+  BuffomatAddon:Print(buffomatModule:Color("0070dd",
+    string.format(_t("Items, which provide buff for %s:"), self.consumeGroupTitle)))
 
   local output = ""
 
   for _, itemId in ipairs(self.items or {}) do
-    local info = BOM.GetItemInfo(itemId)
+    local info = BuffomatAddon.GetItemInfo(itemId)
     if info then
       output = output .. (info).itemLink .. " "
     end
   end
 
-  BOM:Print(output)
+  BuffomatAddon:Print(output)
 end
 
 ---Creates text for spell list dialog for this buff, if the text is not available, queries the server

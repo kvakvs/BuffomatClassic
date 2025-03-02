@@ -83,7 +83,8 @@ function russianModule:Translations()
 
     ["options.short.ActivateBomOnSpiritTap"] = "Запретить Бафомёт, при 'Захвате духа' жреца",
     ["options.short.ReputationTrinket"] = "Не забудьте (снять)экипировать Жетон Серебряного Рассвета",
-    ["options.short.AutoOpen"] = "Автоматическое открытие/закрытие",
+    ["options.short.AutoOpen"] = "Автоматическое открытие",
+    ["options.short.AutoClose"] = "Автоматическое закрытие",
     ["options.short.DeathBlock"] = "Не применять групповые эффекты, когда кто-то мертв",
     ["options.short.GroupBuff"] = "Групповые бафы, если это экономит ману (увеличенный расход реагентов)",
     ["options.short.InInstance"] = "Сканировать бафы в подземельях и рейдах",
@@ -109,6 +110,9 @@ function russianModule:Translations()
     ["options.short.ShamanFlametongueRanked"] =
     "Шаман: Использовать пониженный ранг языков пламени на правой руке",
     ["options.short.CustomBuffSorting"] = "Показать доп. поля для сортировки бафов",
+
+    ["options.long.AutoOpen"] = "Автоматически открывать Бафомёт, когда есть задачи",
+    ["options.long.AutoClose"] = "Автоматически закрывать Бафомёт, когда все задачи выполнены",
 
     ["options.long.FadeWhenNothingToDo"] = "Установить прозрачность окна Бафомёта, если нечего делать",
     ["options.long.ActivateBomOnSpiritTap"] =
@@ -198,7 +202,7 @@ function russianModule:Translations()
     ["castButton.CantCastMaybeOOM"] = "Недостаточно маны или другая причина",
     ["message.CancelBuff"] = "Отменён баф %s от %s",
     ["message.BuffExpired"] = "%s заклинание истекло.",
-    ["message.ShowHideInCombat"] = "Во время боя нельзя показывать или скрывать панели",
+    -- ["message.ShowHideInCombat"] = "Во время боя нельзя показывать или скрывать панели",
     MsgDownGrade = "Понижение ранга заклинания %s для %s. Попробуйте выполнить баф ещё раз.",
     ["castButton.NothingToDo"] = "Нечего делать",
     --MsgLocalRestart                             = "Настройки не подействуют до перезагрузки модов (команда /reload)",
@@ -282,7 +286,7 @@ function russianModule:Translations()
     ["tooltip.button.AllBuffs"] = "Все бафы",
     ["tooltip.button.HideBuffomat"] =
     "Скрыть.|nЧтобы снова открыть, введите /bom, нажмите кнопку на мини-карте|nили быструю клавишу, которую вы назначили",
-    TooltipCastButton =
+    ["tooltip.TaskList.CastButton"] =
         "Скастовать заклинание из списка.|n"
         .. "Кнопка становится недоступной в бою.|n"
         .. "Также можно использовать макро (вытащите кнопку Макро сверху на панель заклинаний)|n"
@@ -312,5 +316,7 @@ function russianModule:Translations()
     ["label.ForceCast.TargetList"] = "Список целей",
     ["label.SpellsDialog.ProfileSelector"] = "Настройки бафов для профиля",
     ["label.SpellsDialog.GroupScanSelector"] = "Смотреть в рейдовых группах",
+    ["taskList.holdOpenComment"] =
+    "Окно Бафомёта было открыто пользователем. Нажмите X, чтобы снова разрешить автоматическое закрытие.",
   }
 end
