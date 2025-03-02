@@ -1,11 +1,24 @@
 ---@class CharacterSettingsModule
+---@field profileNames ProfileName[]
 
 local buffomatModule = LibStub("Buffomat-Buffomat") --[[@as BuffomatModule]]
 local characterSettingsModule = LibStub("Buffomat-CharacterSettings") --[[@as CharacterSettingsModule]]
 local profileModule = LibStub("Buffomat-Profile") --[[@as ProfileModule]]
 local envModule = LibStub("KvLibShared-Env") --[[@as KvSharedEnvModule]]
+local _t = LibStub("Buffomat-Languages") --[[@as LanguagesModule]]
 
----@alias ProfileName "solo"|"group"|"raid"|"battleground"|"solo_spec2"|"group_spec2"|"raid_spec2"|"battleground_spec2"
+---@alias ProfileName "auto"|"solo"|"group"|"raid"|"battleground"|"solo_spec2"|"group_spec2"|"raid_spec2"|"battleground_spec2"
+characterSettingsModule.profileNames = {
+  -- "auto", -- auto is a special profile name meaning "pick from the environment" and not a real profile
+  "solo",
+  "group",
+  "raid",
+  "battleground",
+  "solo_spec2",
+  "group_spec2",
+  "raid_spec2",
+  "battleground_spec2",
+}
 ---@alias BomSpellDurationsTable {[WowSpellId]: number}
 ---@alias BomHiddenCategoryTable {[BuffCategoryName]: boolean}
 
@@ -23,6 +36,10 @@ local envModule = LibStub("KvLibShared-Env") --[[@as KvSharedEnvModule]]
 
 local characterStateClass = {}
 characterStateClass.__index = characterStateClass
+
+function characterSettingsModule:LocalizedProfileName(profileName)
+  return _t("profileName." .. profileName)
+end
 
 ---@param init CharacterSettings|nil
 ---@return CharacterSettings

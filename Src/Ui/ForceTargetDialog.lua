@@ -44,16 +44,17 @@ function forceTargetDialogModule:Show(buffDef, getValue, setValue, title, spells
 
   dialog:SetTitle(title .. " " .. buffDef.singleLink)
   dialog:SetLayout("Flow")
-  dialog:SetWidth(300)
+  dialog:SetWidth(200)
   dialog:SetHeight(300)
+  dialog:EnableResize(false)
   -- dialog.frame:SetFrameStrata("DIALOG") -- float above other frames
 
   -- Create top panel for buttons
-  local uiPanel = libGUI:Create("SimpleGroup")
-  uiPanel:SetLayout("Flow")
-  uiPanel:SetFullWidth(true)
-  uiPanel:SetHeight(32)
-  dialog:AddChild(uiPanel)
+  -- local uiPanel = libGUI:Create("SimpleGroup")
+  -- uiPanel:SetLayout("Flow")
+  -- uiPanel:SetFullWidth(true)
+  -- uiPanel:SetHeight(32)
+  -- dialog:AddChild(uiPanel)
 
   -- Create the multiline edit for the names list
   local editBox = libGUI:Create("MultiLineEditBox")
@@ -65,7 +66,6 @@ function forceTargetDialogModule:Show(buffDef, getValue, setValue, title, spells
     setValue(targetsDictFromString(text))
     forceTargetDialogModule:Hide()
   end)
-  dialog:AddChild(editBox)
 
   local addButton = ngToolboxModule:CreateButton(
     _t("button.ForceCast.AddTarget"),
@@ -79,7 +79,7 @@ function forceTargetDialogModule:Show(buffDef, getValue, setValue, title, spells
         editBox.button:Enable()
       end
     end)
-  uiPanel:AddChild(addButton)
+  dialog:AddChild(addButton)
 
   local removeButton = ngToolboxModule:CreateButton(
     _t("button.ForceCast.RemoveTarget"),
@@ -93,7 +93,8 @@ function forceTargetDialogModule:Show(buffDef, getValue, setValue, title, spells
         editBox.button:Enable()
       end
     end)
-  uiPanel:AddChild(removeButton)
+  dialog:AddChild(removeButton)
 
+  dialog:AddChild(editBox)
   return dialog
 end

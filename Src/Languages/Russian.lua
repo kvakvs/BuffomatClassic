@@ -286,16 +286,19 @@ function russianModule:Translations()
         .. "Также можно использовать макро (вытащите кнопку Макро сверху на панель заклинаний)|n"
         .. "или привязать клавишу в Настройках - Прочие",
 
+    ["title.SpellsWindow"] = "Выберите заклинания и бафы (%s)",
+
     ["profile.activeProfileMenuTag"] = "[активный]",
-    profile_solo = "Соло",
-    profile_solo_spec2 = "Соло (Вторая специализация)",
-    profile_group = "Группа",
-    profile_group_spec2 = "Группа (Вторая специализация)",
-    profile_raid = "Рейд",
-    profile_raid_spec2 = "Рейд (Вторая специализация)",
-    profile_battleground = "Поле боя",
-    profile_battleground_spec2 = "Поле боя (Вторая специализация)",
-    profile_auto = "Авто профиль",
+    ["profileName.solo"] = "Соло",
+    ["profileName.solo_spec2"] = "Соло (Вторая специализация)",
+    ["profileName.group"] = "Группа",
+    ["profileName.group_spec2"] = "Группа (Вторая специализация)",
+    ["profileName.raid"] = "Рейд",
+    ["profileName.raid_spec2"] = "Рейд (Вторая специализация)",
+    ["profileName.battleground"] = "Поле боя",
+    ["profileName.battleground_spec2"] = "Поле боя (Вторая специализация)",
+    ["profileName.auto"] = "Авто профиль",
+
     ["title.ForceTarget"] = "Наложить баф на",
     ["title.ExcludeTarget"] = "Исключить при бафовании",
     ["button.ForceCast.AddTarget"] = "Добавить цель",
@@ -305,5 +308,6 @@ function russianModule:Translations()
     ["buttonTooltip.ForceCast.RemoveTarget"] =
     "Выберите игрока или питомца, и удалите его из списка принудительного бафа/исключений",
     ["label.ForceCast.TargetList"] = "Список целей",
+    ["label.SpellsDialog.ProfileSelector"] = "Настройки бафов для профиля",
   }
 end

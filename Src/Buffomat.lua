@@ -182,10 +182,11 @@ function buffomatModule:UseProfile(profileName)
   local selectedProfile = characterSettingsModule:GetProfile(profileName)
   buffomatModule.currentProfile = selectedProfile
 
-  taskListPanelModule.titleProfile = ngStringsModule:FormatTexture(constModule.BOM_BEAR_ICON_FULLPATH) .. " " .. _t("profile_" .. profileName)
+  taskListPanelModule.titleProfile = ngStringsModule:FormatTexture(constModule.BOM_BEAR_ICON_FULLPATH) ..
+      " " .. characterSettingsModule:LocalizedProfileName(profileName)
   taskListPanelModule:SetTitle()
 
-  BOM:Print("Using profile " .. _t("profile_" .. profileName))
+  BOM:Print("Using profile " .. characterSettingsModule:LocalizedProfileName(profileName))
 end
 
 ---When BomCharacterState.WatchGroup has changed, update the buff tab text to show what's
@@ -574,7 +575,6 @@ function BOM.ClickHyperlink(self, link)
     end
   end
 end
-
 
 function buffomatModule.Slash_DebugBuffList()
 end

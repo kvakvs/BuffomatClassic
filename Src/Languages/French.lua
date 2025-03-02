@@ -67,6 +67,16 @@ function frenchModule:Translations()
     --AboutUsage="<dummy usage>",
     AboutSlashCommand =
     "<valeur> peut être true, 1, enable, false, 0, disable. Si <valeur> est omis, la valeur actuelle s'inverse.",
-    --AboutCredits="wellcat pour la traduction Chinoise",
+
+    ["profile.activeProfileMenuTag"] = "[actif]",
+    ["profileName.solo"] = "Solo",
+    ["profileName.solo_spec2"] = "Solo (Secondes)",
+    ["profileName.group"] = "Groupe",
+    ["profileName.group_spec2"] = "Groupe (Secondes)",
+    ["profileName.raid"] = "Raid",
+    ["profileName.raid_spec2"] = "Raid (Secondes)",
+    ["profileName.battleground"] = "Champs de bataille",
+    ["profileName.battleground_spec2"] = "Champs de bataille (Second talents)",
+    ["profileName.auto"] = "Automatique",
   }
 end

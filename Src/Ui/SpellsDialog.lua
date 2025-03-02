@@ -7,6 +7,7 @@
 ---@class SpellsDialogContext
 ---@field categoryFrames {[string]: AceGUIWidget} Contains title and checkbox to show/hide the category
 ---@field playerIsHorde boolean
+---@field useProfileName ProfileName
 
 ---@class SpellsDialogModule
 ---@field dialog AceGUIWidget AceGUI frame containing the spells list
@@ -25,8 +26,10 @@ local ngToolboxModule = LibStub("Buffomat-NgToolbox") --[[@as NgToolboxModule]]
 local profileModule = LibStub("Buffomat-Profile") --[[@as ProfileModule]]
 local spellsDialogModule = LibStub("Buffomat-SpellsDialog") --[[@as SpellsDialogModule]]
 local texturesModule = LibStub("Buffomat-Textures") --[[@as TexturesModule]]
+local characterSettingsModule = LibStub("Buffomat-CharacterSettings") --[[@as CharacterSettingsModule]]
 
-function spellsDialogModule:Show()
+---@param preselectCategory BuffCategoryName|nil
+function spellsDialogModule:Show(preselectCategory)
   -- InCombat Protection is checked by the caller (Update***Tab)
   if allBuffsModule.selectedBuffs == nil then
     return false
@@ -43,9 +46,16 @@ function spellsDialogModule:Show()
   local dialog = libGUI:Create("Frame")
   self.dialog = dialog
 
-  dialog:SetTitle(_t("SpellsWindow_Title"))
+  if preselectCategory then
+    self.useProfileName = preselectCategory
+  else
+    self.useProfileName = buffomatModule.currentProfileName
+  end
+
+  dialog:SetTitle(string.format(_t("title.SpellsWindow"),
+    characterSettingsModule:LocalizedProfileName(self.useProfileName)))
   dialog:SetLayout("Fill")
-  dialog:SetWidth(600)
+  dialog:SetWidth(550)
   dialog:SetHeight(400)
   dialog:SetPoint("CENTER")
   -- dialog.frame:SetFrameStrata("DIALOG") -- float above other frames
@@ -58,7 +68,27 @@ function spellsDialogModule:Show()
   scrollFrame:SetFullWidth(true)
   dialog:AddChild(scrollFrame)
 
+  self:AddProfileSelector()
   self:FillBuffsList()
+end
+
+function spellsDialogModule:AddProfileSelector()
+  local profileSelector = libGUI:Create("Dropdown")
+  profileSelector:SetWidth(250)
+  profileSelector:SetLabel(_t("label.SpellsDialog.ProfileSelector"))
+
+  for _, profileName in ipairs(characterSettingsModule.profileNames) do
+    profileSelector:AddItem(profileName, characterSettingsModule:LocalizedProfileName(profileName))
+  end
+
+  profileSelector:SetValue(self.useProfileName)
+
+  profileSelector:SetCallback("OnValueChanged", function(_control, _callbackName, value)
+    spellsDialogModule:Hide()
+    spellsDialogModule:Show(value)
+  end)
+
+  self.scrollFrame:AddChild(profileSelector)
 end
 
 function spellsDialogModule:FillBuffsList()
@@ -70,7 +100,7 @@ function spellsDialogModule:FillBuffsList()
   self:CreateCategoryFrames(self.context)
 
   for _, buffDef in ipairs(allBuffsModule.selectedBuffs) do
-    local profileBuff = profileModule:GetProfileBuff(buffDef.buffId, nil)
+    local profileBuff = profileModule:GetProfileBuff(buffDef.buffId, self.useProfileName)
 
     if not self:CategoryIsHidden(buffDef.category) then
       local categoryFrame = self.context.categoryFrames[buffDef.category]
@@ -97,14 +127,6 @@ end
 function spellsDialogModule:CategoryIsHidden(category)
   return buffomatModule.character.BuffCategoriesHidden[category] == true
 end
-
--- local function SetVisible(widget, visible)
---   if visible then
---     widget.frame:Show()
---   else
---     widget.frame:Hide()
---   end
--- end
 
 -- Pre-create category frames
 ---@param context SpellsDialogContext
@@ -154,7 +176,7 @@ function spellsDialogModule:CreateCategoryFrame(context, cat)
   showCategoryCheckbox:SetCallback("OnValueChanged", function(_control, _callbackName, value)
     buffomatModule.character.BuffCategoriesHidden[cat] = not value
     spellsDialogModule:Hide()
-    spellsDialogModule:Show()
+    spellsDialogModule:Show(spellsDialogModule.useProfileName)
   end)
   headingPanel:AddChild(showCategoryCheckbox)
 end
@@ -284,11 +306,6 @@ function spellsDialogModule:AddMainhandToggle(row, profileBuff)
     function(value) profileBuff.MainHandEnable = value end
   )
   row:AddChild(mainhandToggle)
-  -- -- Add choices for mainhand & offhand
-  -- local mainhandToggle = buff.frames:CreateMainhandToggle(_t("tooltip.mainhand"))
-  -- mainhandToggle:SetPoint("TOPLEFT", rowBuilder.prevControl, "TOPRIGHT", rowBuilder.dx, 0)
-  -- mainhandToggle:SetVariable(profileBuff, "MainHandEnable", nil)
-  -- rowBuilder:ContinueRightOf(mainhandToggle, 2)
 end
 
 function spellsDialogModule:AddOffhandToggle(row, profileBuff)
@@ -299,10 +316,6 @@ function spellsDialogModule:AddOffhandToggle(row, profileBuff)
     function(value) profileBuff.OffHandEnable = value end
   )
   row:AddChild(offhandToggle)
-  -- local offhandToggle = buff.frames:CreateOffhandToggle(_t("tooltip.offhand"))
-  -- offhandToggle:SetPoint("TOPLEFT", rowBuilder.prevControl, "TOPRIGHT", rowBuilder.dx, 0)
-  -- offhandToggle:SetVariable(profileBuff, "OffHandEnable", nil)
-  -- rowBuilder:ContinueRightOf(offhandToggle, 2)
 end
 
 ---Add class selector for buff which makes sense to differentiate per class.
@@ -418,10 +431,16 @@ end
 
 ---Attach the floating dialog 'dialog' to our main 'self.dialog' right side.
 function spellsDialogModule:AttachDialog(attachDialog)
-  self.dialog:AddChild(attachDialog)
-  -- attachDialog.frame:SetPoint("TOPLEFT", self.dialog.frame, "TOPRIGHT", 0, 0)
-  -- attachDialog.frame:SetMovable(false)
-  -- attachDialog.frame:SetResizable(false)
+  -- Instead of adding as a child, set the parent directly
+  attachDialog.frame:SetParent(self.dialog.frame)
+
+  -- Attach to the right side of the parent frame
+  attachDialog.frame:ClearAllPoints()
+  attachDialog.frame:SetPoint("TOPLEFT", self.dialog.frame, "TOPRIGHT", 0, 0)
+
+  -- Make it non-movable since it should follow the parent
+  attachDialog.frame:SetMovable(false)
+  attachDialog.frame:SetResizable(false)
 end
 
 function spellsDialogModule:Hide()

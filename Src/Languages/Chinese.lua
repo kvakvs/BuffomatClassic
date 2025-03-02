@@ -247,11 +247,15 @@ function chineseModule:Translations()
     TooltipCastOnTank = "给坦克施法",
     TooltipCastOnPet = "给宠物施法",
 
-    profile_solo = "个人",
-    profile_group = "队伍",
-    profile_raid = "团队",
-    profile_battleground = "战场",
-    profile_auto = "自动",
+    ["profileName.solo"] = "个人",
+    ["profileName.solo_spec2"] = "个人2",
+    ["profileName.group"] = "队伍",
+    ["profileName.group_spec2"] = "队伍2",
+    ["profileName.raid"] = "团队",
+    ["profileName.raid_spec2"] = "团队2",
+    ["profileName.battleground"] = "战场",
+    ["profileName.battleground_spec2"] = "战场2",
+    ["profileName.auto"] = "自动",
 
     AboutInfo = "耐力!智力!精神! - 这听起来很熟悉吗？ Buffomat 监控 "
         .. "扫描团队成员是否缺失BUFF,然后单击它就能给缺失BUFF的队友施放。当三 "

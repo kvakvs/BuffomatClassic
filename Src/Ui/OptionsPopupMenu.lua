@@ -16,7 +16,7 @@ local profileModule = LibStub("Buffomat-Profile") --[[@as ProfileModule]]
 local popupModule = LibStub("Buffomat-Popup") --[[@as PopupModule]]
 local allBuffsModule = LibStub("Buffomat-AllBuffs") --[[@as AllBuffsModule]]
 local taskListPanelModule = LibStub("Buffomat-TaskListPanel") --[[@as TaskListPanelModule]]
-
+local characterSettingsModule = LibStub("Buffomat-CharacterSettings") --[[@as CharacterSettingsModule]]
 ---Makes a tuple to pass to the menubuilder to display a settings checkbox in popup menu
 ---@param db table - BuffomatShared reference to read settings from it
 ---@param var string Variable name from optionsPopupModule.BehaviourSettings
@@ -78,19 +78,21 @@ function optionsPopupModule:Setup(control, minimap)
 
   if buffomatModule.character.UseProfiles then
     local subprofilesMenu = --[[@as BomMenuItemDef[] ]] {}
-    table.insert(subprofilesMenu, popupModule:Clickable(_t("profile_auto"),
+    table.insert(subprofilesMenu, popupModule:Clickable(characterSettingsModule:LocalizedProfileName("auto"),
       buffomatModule.ChooseProfile, "auto", nil))
 
     local currentProfileName = profileModule:ChooseProfile()
 
     for _i, eachProfileName in pairs(profileModule.ALL_PROFILES) do
       if currentProfileName == eachProfileName then
-        local activeName = _t("profile.activeProfileMenuTag") .. " " .. _t("profile_" .. eachProfileName)
+        local activeName = _t("profile.activeProfileMenuTag") ..
+        " " .. characterSettingsModule:LocalizedProfileName(eachProfileName)
         table.insert(subprofilesMenu, popupModule:Clickable(buffomatModule:Color("00ff00", activeName),
           buffomatModule.ChooseProfile, eachProfileName, nil))
       else
-        table.insert(subprofilesMenu, popupModule:Clickable(_t("profile_" .. eachProfileName),
-          buffomatModule.ChooseProfile, eachProfileName, nil))
+        table.insert(subprofilesMenu,
+          popupModule:Clickable(characterSettingsModule:LocalizedProfileName(eachProfileName),
+            buffomatModule.ChooseProfile, eachProfileName, nil))
       end
     end
 

@@ -379,15 +379,15 @@ function englishModule:Translations()
     TooltipCastOnPet = "Cast on pets",
 
     ["profile.activeProfileMenuTag"] = "[active]",
-    profile_solo = "Solo",
-    profile_solo_spec2 = "Solo (Second talents)",
-    profile_group = "Group",
-    profile_group_spec2 = "Group (Second talents)",
-    profile_raid = "Raid",
-    profile_raid_spec2 = "Raid (Second talents)",
-    profile_battleground = "Battleground",
-    profile_battleground_spec2 = "Battleground (Second talents)",
-    profile_auto = "Automatic",
+    ["profileName.solo"] = "Solo",
+    ["profileName.solo_spec2"] = "Solo (Second talents)",
+    ["profileName.group"] = "Group",
+    ["profileName.group_spec2"] = "Group (Second talents)",
+    ["profileName.raid"] = "Raid",
+    ["profileName.raid_spec2"] = "Raid (Second talents)",
+    ["profileName.battleground"] = "Battleground",
+    ["profileName.battleground_spec2"] = "Battleground (Second talents)",
+    ["profileName.auto"] = "Automatic",
 
     AboutInfo = "Stamina! Int! Spirit! - Does that sound familiar? Buffomat scans "
         .. "the party/raid-member for missing buffs and with a click it is casted. When three "
@@ -421,7 +421,7 @@ function englishModule:Translations()
     "Cast the spell from the list.|nNot available in combat.|nCan also be activated via the macro (in the top row)|nor bind a shortcut key in Key Bindings => Other",
 
     SpellLabel_TrackHumanoids = "Cat only - Overrides track herbs and ore",
-    SpellsWindow_Title = "Select Spells and Buffs",
+    ["title.SpellsWindow"] = "Select Spells and Buffs (%s)",
     SpellsWindow_ShowCategory = "Check to show this category",
     ["title.ForceTarget"] = "Force Buff With",
     ["title.ExcludeTarget"] = "Exclude When Buffing",
@@ -431,5 +431,6 @@ function englishModule:Translations()
     ["buttonTooltip.ForceCast.RemoveTarget"] =
     "Target a player or pet, and remove that target from the force-cast/ignore list",
     ["label.ForceCast.TargetList"] = "Target List",
+    ["label.SpellsDialog.ProfileSelector"] = "Buff choices for profile",
   }
 end
