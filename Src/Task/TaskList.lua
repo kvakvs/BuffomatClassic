@@ -132,16 +132,7 @@ function taskListClass:Display()
   if haveAnyTasks and not taskListPanelModule:IsWindowVisible() then
     taskListPanelModule:ShowWindow() -- have tasks, show the window
   else
-    if taskListPanelModule:IsBuffButtonEnabled() then
-      taskListPanelModule:SetAlpha(1.0)
-    else
-      if BuffomatShared.AutoClose then
-        taskListPanelModule:AutoClose() -- no tasks, attempt to close the window (if not held open by the user or settings)
-      else
-        local fade = BuffomatShared.FadeWhenNothingToDo or 0.65
-        taskListPanelModule:SetAlpha(fade) -- fade the window, default 65%
-      end
-    end
+    taskListPanelModule:AutoClose()  -- no tasks, attempt to close the window
   end
 
   for _i, text in pairs(self.lowPrioComments) do
@@ -162,7 +153,12 @@ function taskListClass:Display()
 
   -- Low prio comment if the window is held open by the user
   if taskListPanelModule.holdOpen then
-    taskListPanelModule:AddMessage(buffomatModule:Color("aaaaaa", _t("taskList.holdOpenComment")))
+    taskListPanelModule:AddMessage(
+      buffomatModule:Color(
+        "aaaaaa",
+        string.format(_t("taskList.holdOpenComment"), GetBindingKey("BUFFOMAT_WINDOW"))
+      )
+    )
   end
 end
 

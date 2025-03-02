@@ -256,7 +256,10 @@ do
     local close = CreateFrame("Button", nil, window.frame, "UIPanelCloseButton")
     close:SetPoint("TOPRIGHT", 2, 1)
     close:SetScript("OnClick", closeOnClick)
-    toolboxModule:Tooltip(close, _t("tooltip.button.HideBuffomat"))
+    toolboxModule:Tooltip(
+      close,
+      string.format(_t("tooltip.button.HideBuffomat"), GetBindingKey("BUFFOMAT_WINDOW"))
+    )
     window.closebutton = close
     close.obj = window
   end

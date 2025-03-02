@@ -62,7 +62,6 @@ function taskListPanelModule:ToggleWindow(holdOpen)
     self.windowCommand = "hide"
   else
     buffomatModule:RequestTaskRescan("toggleWindow")
-    taskScanModule:ScanTasks("toggleWindow")
     self:ShowWindowHoldOpen(holdOpen)
   end
 end
@@ -80,21 +79,28 @@ function taskListPanelModule:WindowCommand(command)
   if self.windowCommand == "hide" then
     if self.taskFrame ~= nil then
       self.taskFrame:Hide()
-      buffomatModule.autoHelper = "KeepClose"
-      buffomatModule:RequestTaskRescan("hideWindow")
-      taskScanModule:ScanTasks("hideWindow")
     end
     self.holdOpen = false
+
+    buffomatModule:RequestTaskRescan("hideWindow")
+    taskScanModule:ScanTasks("hide")
     -- --------------------------------------------------
   elseif self.windowCommand == "show" then
     if self.taskFrame == nil then
       self:ConstructWindow()
       self:SetWindowScale(tonumber(BuffomatShared.UIWindowScale) or 1.0)
-      buffomatModule:RequestTaskRescan("showWindow")
-      buffomatModule.autoHelper = "KeepOpen"
     else
       self.taskFrame:Show()
     end
+    self:SetAlpha(1.0)
+
+    -- Show all messages if they were added while the window was hidden
+    -- for _, message in pairs(self.messages or {}) do
+    --   self:AddMessageLabel(message)
+    -- end
+
+    buffomatModule:RequestTaskRescan("showWindow")
+    taskScanModule:ScanTasks("show")
   end
   -- --------------------------------------------------
   self.windowCommand = nil
@@ -106,8 +112,13 @@ end
 
 ---Attempt to close if holdOpen is false (holds open if user manually called up the window)
 function taskListPanelModule:AutoClose()
-  if not self.holdOpen then
-    self:HideWindow()
+  if BuffomatShared.AutoClose then
+    if not self.holdOpen then
+      self:HideWindow()
+    end
+  else
+    local fade = BuffomatShared.FadeWhenNothingToDo or 0.65
+    self:SetAlpha(fade) -- fade the window, default 65%
   end
 end
 
@@ -137,11 +148,16 @@ function taskListPanelModule:AddMessage(text)
   tinsert(self.messages, text)
 
   if self:IsWindowVisible() then
-    local message = libGUI:Create("Label")
-    message:SetText(text)
-    message:SetFullWidth(true)
-    self.scrollPanel:AddChild(message)
+    self:AddMessageLabel(text) -- construct actual label and show it
   end
+end
+
+---Only call this if the window is visible
+function taskListPanelModule:AddMessageLabel(text)
+  local message = libGUI:Create("Label")
+  message:SetText(text)
+  message:SetFullWidth(true)
+  self.scrollPanel:AddChild(message)
 end
 
 -- Clear the scroll panel and create a new row with a buff button and menu
@@ -228,7 +244,11 @@ function taskListPanelModule:SavePosition()
 end
 
 function taskListPanelModule:OnCombatStart()
+  self:AutoClose()
 end
 
 function taskListPanelModule:OnCombatStop()
+  if BuffomatShared.AutoOpen then
+    self:ShowWindow()
+  end
 end

@@ -483,39 +483,6 @@ function buffomatModule:PrintCallers(prefix, callersCollection)
   end
 end
 
-buffomatModule.autoHelper = "open"
-
-function buffomatModule:AutoOpen()
-  if not InCombatLockdown() and BuffomatShared.AutoOpen then
-    if not taskListPanelModule:IsWindowVisible() and buffomatModule.autoHelper == "open" then
-      buffomatModule.autoHelper = "close"
-      taskListPanelModule:ShowWindowHoldOpen(false)
-      taskListPanelModule:SetWindowScale(tonumber(BuffomatShared.UIWindowScale) or 1.0)
-    end
-  end
-end
-
-function buffomatModule:AutoClose()
-  if not InCombatLockdown() and BuffomatShared.AutoOpen then
-    if taskListPanelModule:IsWindowVisible() then
-      if buffomatModule.autoHelper == "close" then
-        taskListPanelModule:HideWindow()
-        buffomatModule.autoHelper = "open"
-      end
-    elseif buffomatModule.autoHelper == "KeepClose" then
-      buffomatModule.autoHelper = "open"
-    end
-  end
-end
-
-function BuffomatAddon.AllowAutOpen()
-  if not InCombatLockdown() and BuffomatShared.AutoOpen then
-    if buffomatModule.autoHelper == "KeepClose" then
-      buffomatModule.autoHelper = "open"
-    end
-  end
-end
-
 local function perform_who_request(name)
   DEFAULT_CHAT_FRAME.editBox:SetText("/who " .. name)
   ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox)

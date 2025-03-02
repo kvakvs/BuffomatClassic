@@ -104,7 +104,6 @@ end
 local function Event_CombatStart()
   buffomatModule:RequestTaskRescan("combatStart")
   BuffomatAddon.declineHasResurrection = true
-  buffomatModule:AutoClose()
   taskListPanelModule:OnCombatStart()
   BuffomatAddon.DoCancelBuffs()
 end
@@ -113,7 +112,6 @@ local function Event_CombatStop()
   taskScanModule:ClearSkip()
   buffomatModule:RequestTaskRescan("combatStop")
   BuffomatAddon.declineHasResurrection = true
-  BuffomatAddon.AllowAutOpen()
   taskListPanelModule:OnCombatStop()
 end
 

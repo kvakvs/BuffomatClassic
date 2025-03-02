@@ -226,12 +226,12 @@ function germanModule:Translations()
     ["tooltip.button.AllSettings"] = "Alle Einstellungen",
     ["tooltip.button.QuickSettingsPopup"] = "Schnelleinstellungen und Profile",
     ["tooltip.button.AllBuffs"] = "Alle Buffs",
-    ["tooltip.button.HideBuffomat"] = "Buffomat-Fenster ausblenden, geben Sie /bom ein,"
-        .. "um es wieder zu öffnen, oder klicken Sie auf die Minimap-knöpfe",
+    ["tooltip.button.HideBuffomat"] =
+    "Verstecken. Um wieder anzuzeigen, tippe /bom, klicke auf den Minimap-Button oder drücke %s",
     ["tooltip.TaskList.CastButton"] = "Wirke den Zauber aus der Liste.|nNicht im Kampf verfügbar.|n"
         .. "Kann auch über das Makro (in der obersten Reihe) aktiviert werden|n"
         .. "Noch eine Tastenkombination in Tastenkombinationen => Andere binden",
     ["taskList.holdOpenComment"] =
-    "Buffomat-Fenster wurde von einem Benutzer geöffnet. Klicken Sie auf X, um das automatische Schließen wieder zu aktivieren.",
+    "Buffomat-Fenster wurde von einem Benutzer geöffnet. Klicken Sie auf X oder drücken Sie %s, um das automatische Schließen wieder zu aktivieren.",
   }
 end

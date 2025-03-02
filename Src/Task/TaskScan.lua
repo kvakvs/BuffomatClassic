@@ -34,6 +34,7 @@ local taskModule = LibStub("Buffomat-Task") --[[@as BomTaskModule]]
 local texturesModule = LibStub("Buffomat-Textures") --[[@as TexturesModule]]
 local throttleModule = LibStub("Buffomat-Throttle") --[[@as ThrottleModule]]
 local unitCacheModule = LibStub("Buffomat-UnitCache") --[[@as UnitCacheModule]]
+local taskListPanelModule = LibStub("Buffomat-TaskListPanel") --[[@as TaskListPanelModule]]
 
 ---@class BomBuffScanContext
 ---@field someoneIsDead boolean
@@ -1634,7 +1635,8 @@ end
 function taskScanModule:UpdateScan_Finalize()
   -- Open Buffomat if any cast tasks were added to the task list
   if #self.tasklist.tasks > 0 or #self.tasklist.comments > 0 then
-    buffomatModule:AutoOpen()
+    taskListPanelModule:ShowWindow()
+
     -- to avoid repeating sound, check whether task list before we started had length of 0
     if self.taskListSizeBeforeScan == 0 then
       self:PlayTaskSound()
@@ -1651,6 +1653,7 @@ function taskScanModule:UpdateScan_Finalize()
     self.tasklist:CastButton(firstToCast)
   else
     -- Nothing to do
+    taskListPanelModule:AutoClose()
     return self.tasklist:CastButton_Nothing() -- this is basically equal to if #tasklist.tasks == 0 below
   end
 end
@@ -1739,7 +1742,7 @@ end -- end function bomUpdateScan_PreCheck()
 function taskScanModule:ShowInactive(reason)
   buffomatModule:ClearForceUpdate()
   BuffomatAddon.checkForError = false
-  buffomatModule:AutoClose()
+  taskListPanelModule:AutoClose()
   BuffomatAddon.theMacro:Clear()
   self.tasklist:CastButtonText(reason, false)
 end

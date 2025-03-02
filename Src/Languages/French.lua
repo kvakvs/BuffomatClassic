@@ -80,7 +80,9 @@ function frenchModule:Translations()
     ["profileName.raid"] = "Raid",
     ["profileName.raid_spec2"] = "Raid (Secondes)",
     ["profileName.battleground"] = "Champs de bataille",
-    ["profileName.battleground_spec2"] = "Champs de bataille (Second talents)",
+    ["profileName.battleground_spec2"] = "Champs de bataille (Secondes)",
     ["profileName.auto"] = "Automatique",
+    ["taskList.holdOpenComment"] =
+    "Fenêtre Buffomat ouverte par l'utilisateur. Cliquer sur X ou appuyer sur %s pour permettre le fermeture automatique.",
   }
 end

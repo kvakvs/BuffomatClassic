@@ -419,8 +419,7 @@ function englishModule:Translations()
     ["tooltip.button.AllSettings"] = "All Settings",
     ["tooltip.button.QuickSettingsPopup"] = "Quick Settings and Profiles",
     ["tooltip.button.AllBuffs"] = "All Buffs",
-    ["tooltip.button.HideBuffomat"] =
-    "Hide.|nTo show again, type /bom, click the minimap button,|nor press the shortcut key you assigned",
+    ["tooltip.button.HideBuffomat"] = "Hide. To show again, type /bom, click the minimap button, or press %s",
     ["tooltip.TaskList.CastButton"] =
     "Cast the spell from the list.|nNot available in combat.|nCan also be activated via the macro (in the top row)|nor bind a shortcut key in Key Bindings => Other",
 
@@ -437,6 +436,7 @@ function englishModule:Translations()
     ["label.ForceCast.TargetList"] = "Target List",
     ["label.SpellsDialog.ProfileSelector"] = "Buff choices for profile",
     ["label.SpellsDialog.GroupScanSelector"] = "Watch raid groups",
-    ["taskList.holdOpenComment"] = "Buffomat window was opened by the user. Click X to allow auto-closing again.",
+    ["taskList.holdOpenComment"] =
+    "Buffomat window was opened by the user. Click X or press %s to allow auto-closing again.",
   }
 end

@@ -285,7 +285,7 @@ function russianModule:Translations()
     ["tooltip.button.QuickSettingsPopup"] = "Меню быстрых настроек и профайлов",
     ["tooltip.button.AllBuffs"] = "Все бафы",
     ["tooltip.button.HideBuffomat"] =
-    "Скрыть.|nЧтобы снова открыть, введите /bom, нажмите кнопку на мини-карте|nили быструю клавишу, которую вы назначили",
+    "Скрыть. Чтобы снова показать, введите /bom, нажмите на кнопку на миникарте, или нажмите %s",
     ["tooltip.TaskList.CastButton"] =
         "Скастовать заклинание из списка.|n"
         .. "Кнопка становится недоступной в бою.|n"
@@ -317,6 +317,6 @@ function russianModule:Translations()
     ["label.SpellsDialog.ProfileSelector"] = "Настройки бафов для профиля",
     ["label.SpellsDialog.GroupScanSelector"] = "Смотреть в рейдовых группах",
     ["taskList.holdOpenComment"] =
-    "Окно Бафомёта было открыто пользователем. Нажмите X, чтобы снова разрешить автоматическое закрытие.",
+    "Окно Бафомёта было открыто пользователем. Нажмите X или нажмите %s, чтобы снова разрешить автоматическое закрытие.",
   }
 end
