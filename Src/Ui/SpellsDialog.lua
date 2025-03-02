@@ -69,6 +69,7 @@ function spellsDialogModule:Show(preselectCategory)
   dialog:AddChild(scrollFrame)
 
   self:AddProfileSelector()
+  self:AddGroupScanSelector()
   self:FillBuffsList()
 end
 
@@ -458,5 +459,32 @@ function spellsDialogModule:Hide()
     self.dialog = nil
     self.scrollFrame = nil
     self.context = nil
+  end
+end
+
+function spellsDialogModule:AddGroupScanSelector()
+  -- Add settings frame with icon, icon is not clickable
+  local frame = libGUI:Create("SimpleGroup")
+  frame:SetLayout("Flow")
+  frame:SetFullWidth(true)
+  self.scrollFrame:AddChild(frame)
+
+  local label = libGUI:Create("InteractiveLabel")
+  label:SetText(buffomatModule:Color("aaaaaa", _t("label.SpellsDialog.GroupScanSelector")))
+  --label:SetFont("Fonts\\FRIZQT__.TTF", 12, "OUTLINE")
+  label:SetWidth(label.label:GetStringWidth())
+  frame:AddChild(label)
+
+  -- Add "Watch Group #" buttons
+  for i = 1, 8 do
+    local toggle = ngToolboxModule:CreateToggle(
+      string.format(_t("tooltip.SpellsDialog.watchGroup"), i),
+      24, 20,
+      texturesModule.ICON_SETTING_ON,
+      texturesModule.ICON_SETTING_OFF,
+      function() return buffomatModule.character.WatchGroup[i] end,
+      function(value) buffomatModule.character.WatchGroup[i] = value end
+    )
+    frame:AddChild(toggle)
   end
 end

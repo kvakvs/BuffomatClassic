@@ -165,7 +165,7 @@ if false then
       rowBuilder:AppendRight(nil, self.spellSettingsFrames[i], 2)
       self.spellSettingsFrames[i]:SetVariable(buffomatModule.character.WatchGroup, i)
       self.spellSettingsFrames[i]:SetText(i)
-      toolboxModule:TooltipText(self.spellSettingsFrames[i], string.format(_t("TooltipGroup"), i))
+      toolboxModule:TooltipText(self.spellSettingsFrames[i], string.format(_t("tooltip.SpellsDialog.watchGroup"), i))
       self.spellSettingsFrames[i]:Show()
 
       -- Let the MyButton library function handle the data update, and update the tab text too

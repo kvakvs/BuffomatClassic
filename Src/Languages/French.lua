@@ -38,7 +38,7 @@ function frenchModule:Translations()
     TooltipForceCastOnTarget = "Forcer sort sur Cible actuelle",
     --missing TooltipExcludeTarget
     TooltipSelectTarget = "Choisir un membre groupe/raid pour activer cette option",
-    TooltipGroup = "Groupe %d",
+    ["tooltip.SpellsDialog.watchGroup"] = "Groupe %d",
 
     TabBuff = "Buff",
     TabSpells = "Sorts",

@@ -274,7 +274,7 @@ function englishModule:Translations()
     TooltipForceCastOnTarget = "Add the current raid or group target to watch list for buffs",
     TooltipExcludeTarget = "Add the current raid or group target to exclude list",
     TooltipSelectTarget = "Select a raid/party member to enable this option",
-    TooltipGroup = "Watch buffs in raid group %d",
+    ["tooltip.SpellsDialog.watchGroup"] = "Watch buffs in raid group %d",
     TooltipRaidGroupsSettings = "Raid groups watch settings",
     MessageAddedForced = "Will force buff ",
     MessageClearedForced = "Removed force buff for",
@@ -414,9 +414,11 @@ function englishModule:Translations()
 
     TooltipMacroButton =
     "Drag this macro to your action bar to cast the buffs|nYou can add a shortcut key to the macro in Key Bindings => Other",
-    TooltipSettingsButton = "Quick Settings and Profiles",
-    TooltipSpellsBuffsButton = "All Buffs",
-    TooltipCloseButton = "Hide Buffomat window, type /bom to reopen or click the minimap button",
+    ["tooltip.button.AllSettings"] = "All Settings",
+    ["tooltip.button.QuickSettingsPopup"] = "Quick Settings and Profiles",
+    ["tooltip.button.AllBuffs"] = "All Buffs",
+    ["tooltip.button.HideBuffomat"] =
+    "Hide.|nTo show again, type /bom, click the minimap button,|nor press the shortcut key you assigned",
     TooltipCastButton =
     "Cast the spell from the list.|nNot available in combat.|nCan also be activated via the macro (in the top row)|nor bind a shortcut key in Key Bindings => Other",
 
@@ -432,5 +434,6 @@ function englishModule:Translations()
     "Target a player or pet, and remove that target from the force-cast/ignore list",
     ["label.ForceCast.TargetList"] = "Target List",
     ["label.SpellsDialog.ProfileSelector"] = "Buff choices for profile",
+    ["label.SpellsDialog.GroupScanSelector"] = "Watch raid groups",
   }
 end

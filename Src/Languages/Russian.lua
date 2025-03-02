@@ -214,7 +214,7 @@ function russianModule:Translations()
     TabBuffOnlySelf = "Баф только себя", -- Shown if all raid groups deselected
     TabSpells = "Заклинания",
     TooltipEnableSpell = "Вкл./откл. заклинание",
-    TooltipGroup = "Следить за группой %d в рейде",
+    ["tooltip.SpellsDialog.watchGroup"] = "Следить за группой %d в рейде",
     TooltipRaidGroupsSettings = "Настройки рейдовых групп",
     MessageAddedForced = "Добавлена цель в список бафов",
     MessageClearedForced = "Убрана дополнительная цель из списка бафов",
@@ -277,9 +277,11 @@ function russianModule:Translations()
     TooltipForceCastOnTarget = "Наложить заклинание на текущую цель",
     TooltipMacroButton =
     "Перетащите этот макрос на вашу панель заклинаний|nМожно также привязать клавишу в Настройках - Прочие",
-    TooltipSettingsButton = "Меню быстрых настроек и профайлов",
-    TooltipSpellsBuffsButton = "Все бафы",
-    TooltipCloseButton = "Скрыть окно Бафомёта, введите /bom или нажмите кнопку на мини-карте",
+    ["tooltip.button.AllSettings"] = "Все настройки",
+    ["tooltip.button.QuickSettingsPopup"] = "Меню быстрых настроек и профайлов",
+    ["tooltip.button.AllBuffs"] = "Все бафы",
+    ["tooltip.button.HideBuffomat"] =
+    "Скрыть.|nЧтобы снова открыть, введите /bom, нажмите кнопку на мини-карте|nили быструю клавишу, которую вы назначили",
     TooltipCastButton =
         "Скастовать заклинание из списка.|n"
         .. "Кнопка становится недоступной в бою.|n"
@@ -309,5 +311,6 @@ function russianModule:Translations()
     "Выберите игрока или питомца, и удалите его из списка принудительного бафа/исключений",
     ["label.ForceCast.TargetList"] = "Список целей",
     ["label.SpellsDialog.ProfileSelector"] = "Настройки бафов для профиля",
+    ["label.SpellsDialog.GroupScanSelector"] = "Смотреть в рейдовых группах",
   }
 end

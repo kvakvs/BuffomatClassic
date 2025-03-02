@@ -209,7 +209,7 @@ function germanModule:Translations()
     TooltipIncludesAllRanks = "Alle Varianten",
     TooltipEnableSpell = "Buffüberwachung ein-/ausschalten",
     TooltipEnableBuffCancel = "Automatisches beenden des Buff ein-/ausschalten",
-    TooltipGroup = "Gruppe %d",
+    ["tooltip.SpellsDialog.watchGroup"] = "Gruppe %d",
     ["tooltip.mainhand"] = "Waffenhand",
     ["tooltip.offhand"] = "Schildhand",
     TooltipSelectTarget = "Wähle ein Gruppenmitglied um diese Option zu aktivieren.",
@@ -219,9 +219,10 @@ function germanModule:Translations()
 
     TooltipMacroButton = "Ziehe dieses Makro in deine Aktionsleiste, um die Buffs zu wirken|n"
         .. "Du kannst dem Makro unter Tastenbelegungen => Andere eine Tastenkombination hinzufügen",
-    TooltipSettingsButton = "Schnelleinstellungen und Profile",
-    TooltipSpellsBuffsButton = "Alle Buffs",
-    TooltipCloseButton = "Buffomat-Fenster ausblenden, geben Sie /bom ein,"
+    ["tooltip.button.AllSettings"] = "Alle Einstellungen",
+    ["tooltip.button.QuickSettingsPopup"] = "Schnelleinstellungen und Profile",
+    ["tooltip.button.AllBuffs"] = "Alle Buffs",
+    ["tooltip.button.HideBuffomat"] = "Buffomat-Fenster ausblenden, geben Sie /bom ein,"
         .. "um es wieder zu öffnen, oder klicken Sie auf die Minimap-knöpfe",
     TooltipCastButton = "Wirke den Zauber aus der Liste.|nNicht im Kampf verfügbar.|n"
         .. "Kann auch über das Makro (in der obersten Reihe) aktiviert werden|n"

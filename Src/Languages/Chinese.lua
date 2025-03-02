@@ -183,7 +183,7 @@ function chineseModule:Translations()
     TooltipForceCastOnTarget = "将当前团队/队伍目标添加到监控列表",
     TooltipExcludeTarget = "将当前团队/队伍目标添加到忽略列表",
     TooltipSelectTarget = "选择一个团队/队伍启用此选项",
-    TooltipGroup = "在副本中检查 Buff %d",
+    ["tooltip.SpellsDialog.watchGroup"] = "在副本中检查 Buff %d",
     TooltipRaidGroupsSettings = "团队小组检查设置",
     MessageAddedForced = "强制 Buff ",
     MessageClearedForced = "取消强制 Buff",
@@ -281,8 +281,9 @@ function chineseModule:Translations()
     AboutSlashCommand = "", --<value> can be true, 1, enable, false, 0, disable. If <value> is omitted, the current status switches.",
 
     TooltipMacroButton = "将此宏拖到您的动作条中来施放BUFF|您也可以在按键绑定 =>其他 中为宏添加快捷键 ",
-    TooltipSettingsButton = "打开快速设置和配置文件存档",
-    TooltipCloseButton = "隐藏 Buffomat 窗口,输入 /bom 重新打开或单击小地图按钮",
+    ["tooltip.button.AllSettings"] = "所有设置",
+    ["tooltip.button.QuickSettingsPopup"] = "打开快速设置和配置文件存档",
+    ["tooltip.button.HideBuffomat"] = "隐藏窗口。|n要显示，请输入 /bom，单击小地图按钮|n或使用您指定的键盘快捷键",
     TooltipCastButton = "从列表中施放法术。|n在战斗中不可用。|n可以通过宏来施放（在顶部）|n需要在按键绑定=>其他 中绑定快捷键",
 
     SpellLabel_TrackHumanoids = "Cat only - 覆盖跟踪草药和矿石",

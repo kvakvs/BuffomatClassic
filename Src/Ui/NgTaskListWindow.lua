@@ -1,13 +1,15 @@
 -- Copy of AceGUI-3.0 Window with some modifications
 -- Creates a window with a title, a close button, a macro button, and a settings button
 -- This is used for the Task List Panel
-local AceGUI = LibStub("AceGUI-3.0")
-local optionsPopupModule = LibStub("Buffomat-OptionsPopup") --[[@as OptionsPopupModule]]
-local constModule = LibStub("Buffomat-Const") --[[@as ConstModule]]
-local toolboxModule = LibStub("Buffomat-LegacyToolbox") --[[@as LegacyToolboxModule]]
+
 local _t = LibStub("Buffomat-Languages") --[[@as LanguagesModule]]
+local AceGUI = LibStub("AceGUI-3.0")
+local constModule = LibStub("Buffomat-Const") --[[@as ConstModule]]
+local optionsPopupModule = LibStub("Buffomat-OptionsPopup") --[[@as OptionsPopupModule]]
 local spellsDialogModule = LibStub("Buffomat-SpellsDialog") --[[@as SpellsDialogModule]]
 local taskListPanelModule = LibStub("Buffomat-TaskListPanel") --[[@as TaskListPanelModule]]
+local texturesModule = LibStub("Buffomat-Textures") --[[@as TexturesModule]]
+local toolboxModule = LibStub("Buffomat-LegacyToolbox") --[[@as LegacyToolboxModule]]
 
 -- Lua APIs
 local pairs, assert, type = pairs, assert, type
@@ -205,26 +207,37 @@ do
 
   ---@param window NgTaskListWindow
   local function ConstructTopButtons(window)
-    --local extraButtonCount = 3
+    --local extraButtonCount = 4
     local buttonWidthExtra = 20 -- `extraButtonCount` extra buttons 20px each left from the X button
 
     -- [📜] button top right for all spell settings
     local spellsButton = CreateFrame("Button", nil, window.frame, "UIPanelCloseButton")
-    spellsButton:SetPoint("TOPRIGHT", 2 - buttonWidthExtra * 3, 1)
+    spellsButton:SetPoint("TOPRIGHT", 2 - buttonWidthExtra * 4, 1)
     SetButtonTexture(spellsButton, constModule.BOM_SPELL_SETTINGS_ICON_FULLPATH)
     spellsButton:SetScript("OnClick", function() spellsDialogModule:Show() end)
-    toolboxModule:Tooltip(spellsButton, _t("TooltipSpellsBuffsButton"))
+    toolboxModule:Tooltip(spellsButton, _t("tooltip.button.AllBuffs"))
     window.spellsButton = spellsButton
     spellsButton.obj = window
 
     -- [📜] button top right
+    local quickPopupButton = CreateFrame("Button", nil, window.frame, "UIPanelCloseButton")
+    quickPopupButton:SetPoint("TOPRIGHT", 2 - buttonWidthExtra * 3, 1)
+    SetButtonTexture(quickPopupButton, constModule.BOM_OPTIONS_ICON_FULLPATH)
+    quickPopupButton:SetScript("OnClick", function()
+      optionsPopupModule:Setup(quickPopupButton, false)
+    end)
+    toolboxModule:Tooltip(quickPopupButton, _t("tooltip.button.QuickSettingsPopup"))
+    window.settingsButton = quickPopupButton
+    quickPopupButton.obj = window
+
+    -- [⚙️] Settings button top right
     local settingsButton = CreateFrame("Button", nil, window.frame, "UIPanelCloseButton")
     settingsButton:SetPoint("TOPRIGHT", 2 - buttonWidthExtra * 2, 1)
-    SetButtonTexture(settingsButton, constModule.BOM_OPTIONS_ICON_FULLPATH)
+    SetButtonTexture(settingsButton, texturesModule.ICON_GEAR)
     settingsButton:SetScript("OnClick", function()
-      optionsPopupModule:Setup(settingsButton, false)
+      optionsPopupModule:OpenOptions()
     end)
-    toolboxModule:Tooltip(settingsButton, _t("TooltipSettingsButton"))
+    toolboxModule:Tooltip(settingsButton, _t("tooltip.button.AllSettings"))
     window.settingsButton = settingsButton
     settingsButton.obj = window
 
@@ -243,7 +256,7 @@ do
     local close = CreateFrame("Button", nil, window.frame, "UIPanelCloseButton")
     close:SetPoint("TOPRIGHT", 2, 1)
     close:SetScript("OnClick", closeOnClick)
-    toolboxModule:Tooltip(close, _t("TooltipCloseButton"))
+    toolboxModule:Tooltip(close, _t("tooltip.button.HideBuffomat"))
     window.closebutton = close
     close.obj = window
   end
@@ -362,6 +375,7 @@ do
     titletext:SetFontObject(GameFontNormal)
     titletext:SetPoint("TOPLEFT", 12, -8)
     titletext:SetPoint("TOPRIGHT", -32, -8)
+    titletext:SetJustifyH("LEFT")
     window.titletext = titletext
 
     local title = CreateFrame("Button", nil, frame)
