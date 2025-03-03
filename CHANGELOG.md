@@ -1,5 +1,8 @@
 # Changelog
 
+## Buffomat Classic 2025.3.0
+- Big UI overhaul: New task list window, simpler and faster, new spell settings, easier access to main settings, multiple minor UI improvements, too.
+
 ## Buffomat Classic 2025.1.0, 2025.2.0
 - Found possible reason for group buffs not working. Releasing a beta fix.
 - Version bump with WoW classic updated to 1.15.6

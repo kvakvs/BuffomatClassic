@@ -4,7 +4,6 @@
 ---@field english BomLocaleDict
 
 local languagesModule = LibStub("Buffomat-Languages") --[[@as LanguagesModule]]
-local buffomatModule = LibStub("Buffomat-Buffomat") --[[@as BuffomatModule]]
 local englishModule = LibStub("Buffomat-LanguageEnglish") --[[@as BomLanguageEnglishModule]]
 local germanModule = LibStub("Buffomat-LanguageGerman") --[[@as BomLanguageGermanModule]]
 local frenchModule = LibStub("Buffomat-LanguageFrench") --[[@as BomLanguageFrenchModule]]
