@@ -69,9 +69,9 @@ function spellSetupModule:Setup_CancelBuffs()
     toolboxModule:iMerge(allBuffsModule.allSpellIds, cancelBuff.singleFamily)
 
     for j, profileName in ipairs(profileModule.ALL_PROFILES) do
-      if buffomatModule.character.profiles[profileName].CancelBuff[cancelBuff.buffId] == nil then
-        buffomatModule.character.profiles[profileName].CancelBuff[cancelBuff.buffId] = buffDefinitionModule:New(0)
-        buffomatModule.character.profiles[profileName].CancelBuff[cancelBuff.buffId].Enable = cancelBuff.default or false
+      if BuffomatCharacter.profiles[profileName].CancelBuff[cancelBuff.buffId] == nil then
+        BuffomatCharacter.profiles[profileName].CancelBuff[cancelBuff.buffId] = buffDefinitionModule:New(0)
+        BuffomatCharacter.profiles[profileName].CancelBuff[cancelBuff.buffId].Enable = cancelBuff.default or false
       end
     end
   end
@@ -249,11 +249,11 @@ function spellSetupModule:Setup_EachBuff_AddKnown(buffDef)
   --setDefaultValues!
   for j, eachProfile in ipairs(profileModule.ALL_PROFILES) do
     ---@type BomBuffDefinition
-    local profileSpell = buffomatModule.character.profiles[eachProfile].Spell[buffDef.buffId]
+    local profileSpell = BuffomatCharacter.profiles[eachProfile].Spell[buffDef.buffId]
 
     if profileSpell == nil then
-      buffomatModule.character.profiles[eachProfile].Spell[buffDef.buffId] = buffDefinitionModule:New(0)
-      profileSpell = buffomatModule.character.profiles[eachProfile].Spell[buffDef.buffId]
+      BuffomatCharacter.profiles[eachProfile].Spell[buffDef.buffId] = buffDefinitionModule:New(0)
+      profileSpell = BuffomatCharacter.profiles[eachProfile].Spell[buffDef.buffId]
 
       profileSpell.Class = profileSpell.Class or {}
       profileSpell.ForcedTarget = profileSpell.ForcedTarget or {}
@@ -360,7 +360,7 @@ end
 
 ---Scan all spells known to Buffomat and see if they are available to the player
 function spellSetupModule:SetupAvailableSpells()
-  local character = buffomatModule.character
+  local character = BuffomatCharacter
   for i, profileName in ipairs(profileModule.ALL_PROFILES) do
     character.profiles[profileName].Spell = character.profiles[profileName].Spell or {}
     character.profiles[profileName].CancelBuff = character.profiles[profileName].CancelBuff or {}

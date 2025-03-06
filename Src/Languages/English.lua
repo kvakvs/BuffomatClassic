@@ -206,9 +206,9 @@ function englishModule:Translations()
     ["message.CancelBuff"] = "Cancel buff %s from %s",
     ["message.BuffExpired"] = "%s expired.",
     -- ["message.ShowHideInCombat"] = "Can't show/hide window in combat",
-    ["task.UseOrOpen"] = "Use or open",
-    MSG_MAINHAND_ENCHANT_MISSING = "Missing main hand temporary enchant",
-    MSG_OFFHAND_ENCHANT_MISSING = "Missing off-hand temporary enchant",
+    ["task.UseOrOpen"] = "Open",
+    MSG_MAINHAND_ENCHANT_MISSING = "Main hand enchantment missing",
+    MSG_OFFHAND_ENCHANT_MISSING = "Offhand enchantment missing",
     InfoSomeoneIsDrinking = "1 person is drinking",
     InfoMultipleDrinking = "%d persons are drinking",
 
@@ -438,5 +438,6 @@ function englishModule:Translations()
     ["label.SpellsDialog.GroupScanSelector"] = "Watch raid groups",
     ["taskList.holdOpenComment"] =
     "Buffomat window was opened by the user. Click X or press %s to allow auto-closing again.",
+    ["binding.notSet"] = "[not set]",
   }
 end

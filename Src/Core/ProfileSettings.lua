@@ -163,7 +163,7 @@ function profileModule:ChooseProfile()
   -- TODO: Refactor isDisabled into a function, also return reason why is disabled
   if BuffomatAddon.forceProfile then
     selectedProfile = BuffomatAddon.forceProfile or selectedProfile
-  elseif not buffomatModule.character.UseProfiles then
+  elseif not BuffomatCharacter.UseProfiles then
     selectedProfile = self:SoloProfile()
   elseif instanceType == "pvp" or instanceType == "arena" then
     selectedProfile = self:BattlegroundProfile()
@@ -180,7 +180,7 @@ function profileModule:GetProfileBuff(buffId, profileName)
     return buffomatModule.currentProfile.Spell[buffId]
   end
 
-  local profile = buffomatModule.character.profiles[profileName]
+  local profile = BuffomatCharacter.profiles[profileName]
   if profile == nil then
     return nil
   end

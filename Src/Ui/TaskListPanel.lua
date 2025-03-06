@@ -17,14 +17,15 @@ local BuffomatAddon = BuffomatAddon
 local taskListPanelModule = LibStub("Buffomat-TaskListPanel") --[[@as TaskListPanelModule]]
 taskListPanelModule.titleProfile = ""
 taskListPanelModule.titleBuffGroups = ""
-local buffomatModule = LibStub("Buffomat-Buffomat") --[[@as BuffomatModule]]
-local taskScanModule = LibStub("Buffomat-TaskScan") --[[@as TaskScanModule]]
-local ngToolboxModule = LibStub("Buffomat-NgToolbox") --[[@as NgToolboxModule]]
-local actionMacroModule = LibStub("Buffomat-ActionMacro") --[[@as BomActionMacroModule]]
-local constModule = LibStub("Buffomat-Const") --[[@as ConstModule]]
-local _t = LibStub("Buffomat-Languages") --[[@as LanguagesModule]]
 
+local _t = LibStub("Buffomat-Languages") --[[@as LanguagesModule]]
+local actionMacroModule = LibStub("Buffomat-ActionMacro") --[[@as BomActionMacroModule]]
+local buffomatModule = LibStub("Buffomat-Buffomat") --[[@as BuffomatModule]]
+local constModule = LibStub("Buffomat-Const") --[[@as ConstModule]]
 local libGUI = LibStub("AceGUI-3.0")
+local ngToolboxModule = LibStub("Buffomat-NgToolbox") --[[@as NgToolboxModule]]
+local taskScanModule = LibStub("Buffomat-TaskScan") --[[@as TaskScanModule]]
+local throttleModule = LibStub("Buffomat-Throttle") --[[@as ThrottleModule]]
 
 --- Constructs the window. Only called from one location - WindowCommand()
 function taskListPanelModule:ConstructWindow()
@@ -33,9 +34,9 @@ function taskListPanelModule:ConstructWindow()
 
   taskFrame:SetLayout("Fill")
   taskFrame:ClearAllPoints()
-  taskFrame:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", BuffomatShared.X, BuffomatShared.Y)
-  taskFrame:SetWidth(BuffomatShared.Width)
-  taskFrame:SetHeight(BuffomatShared.Height)
+  taskFrame:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", BuffomatShared.X or 0, BuffomatShared.Y or 0)
+  taskFrame:SetWidth(BuffomatShared.Width or 300)
+  taskFrame:SetHeight(BuffomatShared.Height or 200)
   taskFrame:SetCallback("OnClose", function()
     taskListPanelModule:HideWindow()
   end)
@@ -61,7 +62,7 @@ function taskListPanelModule:ToggleWindow(holdOpen)
   if self:IsWindowVisible() then
     self.windowCommand = "hide"
   else
-    buffomatModule:RequestTaskRescan("toggleWindow")
+    throttleModule:RequestTaskRescan("toggleWindow")
     self:ShowWindowHoldOpen(holdOpen)
   end
 end
@@ -82,8 +83,8 @@ function taskListPanelModule:WindowCommand(command)
     end
     self.holdOpen = false
 
-    buffomatModule:RequestTaskRescan("hideWindow")
-    taskScanModule:ScanTasks("hide")
+    throttleModule:RequestTaskRescan("hideWindow")
+    --taskScanModule:ScanTasks("hide")
     -- --------------------------------------------------
   elseif self.windowCommand == "show" then
     if self.taskFrame == nil then
@@ -99,7 +100,7 @@ function taskListPanelModule:WindowCommand(command)
     --   self:AddMessageLabel(message)
     -- end
 
-    buffomatModule:RequestTaskRescan("showWindow")
+    throttleModule:RequestTaskRescan("showWindow")
     taskScanModule:ScanTasks("show")
   end
   -- --------------------------------------------------

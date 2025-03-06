@@ -43,7 +43,7 @@ end
 
 ---@param init CharacterSettings|nil
 ---@return CharacterSettings
-function characterSettingsModule:New(init)
+function characterSettingsModule:NewDefaultCharacterSettings(init)
   local tab = init or self:Defaults()
   tab.Spell = tab.Spell or {}
   tab.remainingDurations = tab.remainingDurations or {}
@@ -71,13 +71,13 @@ function characterSettingsModule:Defaults()
 end
 
 function characterSettingsModule:GetProfile(profileName)
-  if buffomatModule.character.profiles == nil then
-    buffomatModule.character.profiles = {}
+  if BuffomatCharacter.profiles == nil then
+    BuffomatCharacter.profiles = {}
   end
-  local profile = buffomatModule.character.profiles[profileName]
+  local profile = BuffomatCharacter.profiles[profileName]
   if profile == nil then
     profile = profileModule:New()
-    buffomatModule.character.profiles[profileName] = profile
+    BuffomatCharacter.profiles[profileName] = profile
   end
   return profile
 end

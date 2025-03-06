@@ -305,7 +305,7 @@ function buffChecksModule:PartyNeedsPaladinBlessing(buffDef, party, buffCtx)
       notGroup = true
     elseif currentBlessing[partyMember.name] == nil then
       if profileBuff.Class[partyMember.class]
-          and (not IsInRaid() or buffomatModule.character.WatchGroup[partyMember.group])
+          and (not IsInRaid() or BuffomatCharacter.WatchGroup[partyMember.group])
           and not profileBuff.SelfCast then
         ok = true
       end
@@ -363,7 +363,7 @@ function buffChecksModule:PartyNeedsBuff(buffDef, party, buffCtx)
     local profileBuff = profileModule:GetProfileBuff(buffDef.buffId, nil)
 
     if profileBuff.Class[partyMember.class]
-        and (not IsInRaid() or buffomatModule.character.WatchGroup[partyMember.group])
+        and (not IsInRaid() or BuffomatCharacter.WatchGroup[partyMember.group])
         and not profileBuff.SelfCast then
       ok = true
     end

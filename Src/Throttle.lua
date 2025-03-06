@@ -1,6 +1,7 @@
 local BuffomatAddon = BuffomatAddon
 
 ---@class ThrottleModule
+---@field taskRescanRequestedBy {[string]: number} Reasons for force update, with count
 
 local throttleModule = LibStub("Buffomat-Throttle") --[[@as ThrottleModule]]
 local buffomatModule = LibStub("Buffomat-Buffomat") --[[@as BuffomatModule]]
@@ -9,17 +10,17 @@ local taskScanModule = LibStub("Buffomat-TaskScan") --[[@as TaskScanModule]]
 local profileModule = LibStub("Buffomat-Profile") --[[@as ProfileModule]]
 local taskListPanelModule = LibStub("Buffomat-TaskListPanel") --[[@as TaskListPanelModule]]
 
+throttleModule.taskRescanRequestedBy = {}
+
 ---@class BomThrottleState
 ---@field lastUpdateTimestamp number
 ---@field lastModifierKeyState boolean
 ---@field fpsCheck number
 ---@field slowCount number
 ---@field SPELLS_TAB_UPDATE_DELAY number
----bumped from 0.1 which potentially causes Naxxramas lag?
----Checking BOM.SharedState.SlowerHardware will use bom_slowerhardware_update_timer_limit
----@field updateTimerLimit number
----@field slowerHardwareUpdateTimerLimit number
--- This is written to updateTimerLimit if overload is detected in a large raid or slow hardware
+-- -@field updateTimerLimit number
+-- -@field slowerHardwareUpdateTimerLimit number
+-- -@field fasterHardwareUpdateTimerLimit number
 ---@field BOM_THROTTLE_TIMER_LIMIT number
 ---@field BOM_THROTTLE_SLOWER_HARDWARE_TIMER_LIMIT number
 ---@field lastSpellsTabUpdate number
@@ -32,7 +33,8 @@ local throttleState = {
   slowCount = 0,
   SPELLS_TAB_UPDATE_DELAY = 2.0,
   updateTimerLimit = 0.500,
-  slowerHardwareUpdateTimerLimit = 1.500,
+  fasterHardwareUpdateTimerLimit = 0.500,
+  slowerHardwareUpdateTimerLimit = 1.000,
   BOM_THROTTLE_TIMER_LIMIT = 1.000,
   BOM_THROTTLE_SLOWER_HARDWARE_TIMER_LIMIT = 2.000,
   lastSpellsTabUpdate = 0,
@@ -43,12 +45,18 @@ function throttleModule:FastUpdateTimer()
 end
 
 ---This runs every frame, do not do any excessive work here
-function throttleModule:UpdateTimer(elapsed)
+function throttleModule.UpdateTimer()
   local inCombat = InCombatLockdown()
 
   if inCombat then
     return
   end
+
+  -- if BuffomatShared.SlowerHardware then
+  --   throttleState.updateTimerLimit = throttleState.slowerHardwareUpdateTimerLimit
+  -- else
+  --   throttleState.updateTimerLimit = throttleState.fasterHardwareUpdateTimerLimit
+  -- end
 
   local now = GetTime()
 
@@ -62,70 +70,74 @@ function throttleModule:UpdateTimer(elapsed)
   end
 
   if now - throttleState.lastSpellsTabUpdate > throttleState.SPELLS_TAB_UPDATE_DELAY then
-    -- if spellButtonsTabModule:UpdateSpellsTab_Throttled() then
-    -- throttleState.lastSpellsTabUpdate = now
-    -- end
     buffomatModule:UseProfile(profileModule:ChooseProfile())
     throttleState.lastSpellsTabUpdate = now
   end
 
   if BuffomatAddon.nextCooldownDue and BuffomatAddon.nextCooldownDue <= now then
-    buffomatModule:RequestTaskRescan("cdDue")
+    throttleModule:RequestTaskRescan("cdDue")
   end
 
   if BuffomatAddon.checkCooldown then
     local cdtest = GetSpellCooldown(BuffomatAddon.checkCooldown)
     if cdtest == 0 then
       BuffomatAddon.checkCooldown = nil
-      buffomatModule:RequestTaskRescan("checkCd")
+      throttleModule:RequestTaskRescan("checkCd")
     end
   end
 
   if BuffomatAddon.scanModifierKeyDown and throttleState.lastModifierKeyState ~= IsModifierKeyDown() then
     throttleState.lastModifierKeyState = IsModifierKeyDown()
-    buffomatModule:RequestTaskRescan("ModifierKeyDown")
+    throttleModule:RequestTaskRescan("ModifierKeyDown")
   end
 
-  taskListPanelModule:WindowCommand()
+  taskListPanelModule:WindowCommand() -- open and close window as requested
 
-  --
-  -- Update timers, slow hardware and auto-throttling
   -- This will trigger update on timer, regardless of other conditions
-  --
-  --throttleState.fpsCheck = throttleState.fpsCheck + 1
+  local needForceUpdate = next(throttleModule.taskRescanRequestedBy) ~= nil
+  -- TODO: If need slower update, need to cancel the timer in Buffomat.lua and start with a different interval
+  throttleModule:Update(now, needForceUpdate)
+end
 
-  local updateTimerLimit = throttleState.updateTimerLimit
-  if BuffomatShared.SlowerHardware then
-    updateTimerLimit = throttleState.slowerHardwareUpdateTimerLimit
-  end
-
-  local needForceUpdate = next(buffomatModule.taskRescanRequestedBy) ~= nil
+---Update timers, slow hardware and auto-throttling
+---@param now number
+---@param needForceUpdate boolean
+function throttleModule:Update(now, needForceUpdate)
+  local timeSinceLastUpdate = now - (throttleState.lastUpdateTimestamp or 0)
 
   if (needForceUpdate or BuffomatAddon.repeatUpdate)
-      and now - (throttleState.lastUpdateTimestamp or 0) > updateTimerLimit
-      and not inCombat
+  --and timeSinceLastUpdate > throttleState.updateTimerLimit
   then
     throttleState.lastUpdateTimestamp = now
-    throttleState.fpsCheck = debugprofilestop()
 
-    -- Debug: Print the callers as reasons to force update
-    -- buffomatModule:PrintCallers("Update: ", buffomatModule.forceUpdateRequestedBy)
-    buffomatModule:ClearForceUpdate(nil)
+    self:ClearForceUpdate(nil)
     taskScanModule:ScanTasks("timer")
 
     -- If updatescan call above took longer than 32 ms, and repeated update, then
     -- bump the slow alarm counter, once it reaches 32 we consider throttling.
     -- 1000 ms / 32 ms = 31.25 fps
-    if (debugprofilestop() - throttleState.fpsCheck) > 32 and BuffomatAddon.repeatUpdate then
-      throttleState.slowCount = throttleState.slowCount + 1
+    -- if (debugprofilestop() - throttleState.fpsCheck) > 32 and BuffomatAddon.repeatUpdate then
+    --   throttleState.slowCount = throttleState.slowCount + 1
 
-      if throttleState.slowCount >= 20 and updateTimerLimit < 1 then
-        throttleState.updateTimerLimit = throttleState.BOM_THROTTLE_TIMER_LIMIT
-        throttleState.slowerHardwareUpdateTimerLimit = throttleState.BOM_THROTTLE_SLOWER_HARDWARE_TIMER_LIMIT
-        BuffomatAddon:Print("Overwhelmed - slowing down the scans!")
-      end
-    else
-      throttleState.slowCount = 0
-    end
+    --   if throttleState.slowCount >= 20 and updateTimerLimit < 1 then
+    --     throttleState.updateTimerLimit = throttleState.BOM_THROTTLE_TIMER_LIMIT
+    --     throttleState.slowerHardwareUpdateTimerLimit = throttleState.BOM_THROTTLE_SLOWER_HARDWARE_TIMER_LIMIT
+    --     BuffomatAddon:Print("Overwhelmed - slowing down the scans!")
+    --   end
+    -- else
+    --   throttleState.slowCount = 0
+    -- end
   end
+end
+
+function throttleModule:ClearForceUpdate(debugCallerLocation)
+  if debugCallerLocation then
+    BuffomatAddon:Debug("clearForceUpdate from " .. debugCallerLocation)
+  end
+  wipe(self.taskRescanRequestedBy)
+end
+
+---@param reason string
+function throttleModule:RequestTaskRescan(reason)
+  self.taskRescanRequestedBy[reason] = (self.taskRescanRequestedBy[reason] or 0) + 1
 end

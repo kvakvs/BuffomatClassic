@@ -126,7 +126,7 @@ end
 ---@param category BuffCategoryName
 ---@return boolean
 function spellsDialogModule:CategoryIsHidden(category)
-  return buffomatModule.character.BuffCategoriesHidden[category] == true
+  return BuffomatCharacter.BuffCategoriesHidden[category] == true
 end
 
 -- Pre-create category frames
@@ -175,7 +175,7 @@ function spellsDialogModule:CreateCategoryFrame(context, cat)
   showCategoryCheckbox:SetValue(isVisible)
   showCategoryCheckbox:SetLabel("")
   showCategoryCheckbox:SetCallback("OnValueChanged", function(_control, _callbackName, value)
-    buffomatModule.character.BuffCategoriesHidden[cat] = not value
+    BuffomatCharacter.BuffCategoriesHidden[cat] = not value
     spellsDialogModule:Hide()
     spellsDialogModule:Show(spellsDialogModule.useProfileName)
   end)
@@ -482,8 +482,8 @@ function spellsDialogModule:AddGroupScanSelector()
       24, 20,
       texturesModule.ICON_SETTING_ON,
       texturesModule.ICON_SETTING_OFF,
-      function() return buffomatModule.character.WatchGroup[i] end,
-      function(value) buffomatModule.character.WatchGroup[i] = value end
+      function() return BuffomatCharacter.WatchGroup[i] end,
+      function(value) BuffomatCharacter.WatchGroup[i] = value end
     )
     frame:AddChild(toggle)
   end

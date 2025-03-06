@@ -10,7 +10,7 @@ import subprocess
 import sys
 import zipfile
 
-VERSION = '2025.3.0'  # year.month.build_num
+VERSION = '2025.3.1'  # year.month.build_num
 
 ADDON_NAME_CLASSIC = 'BuffomatClassic'  # Directory and zip name
 ADDON_TITLE_CLASSIC = "Buffomat Classic"  # Title field in TOC
@@ -18,7 +18,7 @@ ADDON_TITLE_CLASSIC = "Buffomat Classic"  # Title field in TOC
 UI_VERSION_CLASSIC = '11506'  # Classic
 UI_VERSION_CLASSIC_TBC = '20504'  # The Burning Crusade
 UI_VERSION_CLASSIC_WOTLK = '30402'  # WotLK
-UI_VERSION_CLASSIC_CATA = '40401'  # Cataclysm
+UI_VERSION_CLASSIC_CATA = '40402'  # Cataclysm
 
 COPY_DIRS = ['Src', 'Ace3', 'Sounds', 'Textures']
 COPY_FILES = ['Bindings.xml', 'CHANGELOG.md', 'embeds.xml',

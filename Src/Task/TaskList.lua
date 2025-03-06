@@ -156,7 +156,7 @@ function taskListClass:Display()
     taskListPanelModule:AddMessage(
       buffomatModule:Color(
         "aaaaaa",
-        string.format(_t("taskList.holdOpenComment"), GetBindingKey("BUFFOMAT_WINDOW"))
+        string.format(_t("taskList.holdOpenComment"), GetBindingKey("BUFFOMAT_WINDOW") or _t("binding.notSet"))
       )
     )
   end
@@ -259,7 +259,7 @@ function taskListClass:CastButton_OutOfRange()
 
   if skipreset then
     throttleModule:FastUpdateTimer()
-    buffomatModule:RequestTaskRescan("skipReset")
+    throttleModule:RequestTaskRescan("skipReset")
   end
 end -- if inrange
 

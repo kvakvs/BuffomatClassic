@@ -38,9 +38,6 @@ local taskListPanelModule = LibStub("Buffomat-TaskListPanel") --[[@as TaskListPa
 
 ---@class BomBuffScanContext
 ---@field someoneIsDead boolean
--- -@field inRange boolean Buff can reach the target
--- -@field macroCommand string The command to be placed in the macro
--- -@field castButtonTitle string The button in buffomat window
 
 ---@class BomScan_NextCastSpell
 ---@field buffDef BomBuffDefinition|nil
@@ -126,8 +123,8 @@ function taskScanModule:MaybeResetWatchGroups()
     local need_to_report = false
 
     for i = 1, 8 do
-      if not buffomatModule.character.WatchGroup[i] then
-        buffomatModule.character.WatchGroup[i] = true
+      if not BuffomatCharacter.WatchGroup[i] then
+        BuffomatCharacter.WatchGroup[i] = true
         --spellButtonsTabModule.spellSettingsFrames[i]:SetState(true)
         need_to_report = true
       end
@@ -426,14 +423,14 @@ function taskScanModule:ActivateSelectedTracking()
             --spellButtonsTabModule:UpdateSpellsTab("ForceUp1")
           end
         elseif buffChecksModule:IsTrackingActive(buffDef)
-            and buffomatModule.character.lastTrackingIconId ~= buffDef.trackingIconId then
-          buffomatModule.character.lastTrackingIconId = buffDef.trackingIconId
+            and BuffomatCharacter.lastTrackingIconId ~= buffDef.trackingIconId then
+          BuffomatCharacter.lastTrackingIconId = buffDef.trackingIconId
           --spellButtonsTabModule:UpdateSpellsTab("ForceUp2")
         end
       else
-        if buffomatModule.character.lastTrackingIconId == buffDef.trackingIconId
-            and buffomatModule.character.lastTrackingIconId ~= nil then
-          buffomatModule.character.lastTrackingIconId = nil
+        if BuffomatCharacter.lastTrackingIconId == buffDef.trackingIconId
+            and BuffomatCharacter.lastTrackingIconId ~= nil then
+          BuffomatCharacter.lastTrackingIconId = nil
           --spellButtonsTabModule:UpdateSpellsTab("ForceUp3")
         end
       end -- if spell.enable
@@ -441,7 +438,7 @@ function taskScanModule:ActivateSelectedTracking()
   end     -- for all spells
 
   if BuffomatAddon.forceTracking == nil then
-    BuffomatAddon.forceTracking = buffomatModule.character.lastTrackingIconId
+    BuffomatAddon.forceTracking = BuffomatCharacter.lastTrackingIconId
   end
 end
 
@@ -950,9 +947,13 @@ function taskScanModule:AddSelfbuff(buffDef, playerMember)
     end
   end
 
+  local extraText = _t("task.target.SelfOnly")
+  if buffDef.singleText == nil then
+    extraText = _t("task.target.Self")
+  end
   local task = taskModule:Create(buffDef:SingleLink(), buffDef.singleText)
       :PrefixText(_t("TASK_CAST"))
-      :ExtraText(_t("task.target.SelfOnly"))
+      :ExtraText(extraText)
       :Target(buffTargetModule:FromSelf(playerMember))
       :LinkToBuffDef(buffDef)
 
@@ -1227,7 +1228,7 @@ function taskScanModule:AddConsumableWeaponBuff_DontHaveItem(buffDef, count, pla
         :LinkToBuffDef(buffDef)
     self.tasklist:Add(task)
   else
-    buffomatModule:RequestTaskRescan("weaponConsumableBuff") -- try rescan?
+    throttleModule:RequestTaskRescan("weaponConsumableBuff") -- try rescan?
   end
 end
 
@@ -1595,7 +1596,7 @@ function taskScanModule:UpdateScan_Scan(party)
     someoneIsDead = taskScanModule.saveSomeoneIsDead,
   }
 
-  if next(buffomatModule.taskRescanRequestedBy) ~= nil then
+  if next(throttleModule.taskRescanRequestedBy) ~= nil then
     -- TODO: Only scan missing buffs on current roundRobinGroup while in raid
     self:UpdateMissingBuffs(party, buffCtx)
   end
@@ -1646,7 +1647,7 @@ function taskScanModule:UpdateScan_Finalize()
   self.tasklist:Sort()
   self.tasklist:Display() -- Show all tasks and comments
 
-  buffomatModule:ClearForceUpdate()
+  throttleModule:ClearForceUpdate()
 
   local firstToCast = self.tasklist:SelectTask()
   if firstToCast then
@@ -1704,7 +1705,7 @@ function taskScanModule:UpdateScan_PreCheck(from)
   if buffomatModule.currentProfileName ~= selectedProfileName then
     buffomatModule:UseProfile(selectedProfileName)
     --spellButtonsTabModule:UpdateSpellsTab("profileChanged")
-    buffomatModule:RequestTaskRescan("profileChanged")
+    throttleModule:RequestTaskRescan("profileChanged")
   end
 
   --unitCacheModule:ClearCache()
@@ -1740,7 +1741,7 @@ function taskScanModule:UpdateScan_PreCheck(from)
 end -- end function bomUpdateScan_PreCheck()
 
 function taskScanModule:ShowInactive(reason)
-  buffomatModule:ClearForceUpdate()
+  throttleModule:ClearForceUpdate()
   BuffomatAddon.checkForError = false
   taskListPanelModule:AutoClose()
   BuffomatAddon.theMacro:Clear()
@@ -1760,9 +1761,7 @@ function taskScanModule:ScanTasks(from)
     self.tasklist = taskListModule:New()
   end
   self.taskListSizeBeforeScan = #self.tasklist.tasks
-
   buffomatModule:UseProfile(profileModule:ChooseProfile())
-
   self:UpdateScan_PreCheck(from)
 end
 
@@ -1777,7 +1776,7 @@ function BuffomatAddon.AddMemberToSkipList()
         and BuffomatAddon.castFailedBuffTarget then
       table.insert(castFailedBuffVal.skipList, castFailedTarget.name)
       throttleModule:FastUpdateTimer()
-      buffomatModule:RequestTaskRescan("skipListMemberAdded")
+      throttleModule:RequestTaskRescan("skipListMemberAdded")
     end
   end
 end

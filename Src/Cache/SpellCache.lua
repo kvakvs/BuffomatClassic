@@ -10,7 +10,8 @@ local BuffomatAddon = BuffomatAddon
 
 local spellCacheModule = LibStub("Buffomat-SpellCache") --[[@as BomSpellCacheModule]]
 spellCacheModule.cache = --[[@as BomSpellCache]] {}
-local buffomatModule = LibStub("Buffomat-Buffomat") --[[@as BuffomatModule]]
+
+local throttleModule = LibStub("Buffomat-Throttle") --[[@as ThrottleModule]]
 
 ---@class BomSpellCacheElement
 ---@field name string
@@ -91,7 +92,7 @@ function spellCacheModule:LoadSpell(spellId, onLoaded)
     cacheSpell.maxRange = maxRange
 
     self.cache[spellId] = cacheSpell
-    buffomatModule:RequestTaskRescan(string.format("sp:%d", spellId))
+    throttleModule:RequestTaskRescan(string.format("sp:%d", spellId))
 
     if onLoaded ~= nil then
       onLoaded(cacheSpell)

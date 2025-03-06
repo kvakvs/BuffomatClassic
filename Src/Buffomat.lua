@@ -2,14 +2,14 @@
 ---@field character CharacterSettings Refers to BuffomatCharacter global
 ---@field currentProfileName string
 ---@field currentProfile ProfileSettings
----@field taskRescanRequestedBy {[string]: number} Reasons for force update, with count
+---@field throttleUpdateTimer table AceTimerHandle useful for canceling the timer
 
 local buffomatModule = LibStub("Buffomat-Buffomat") --[[@as BuffomatModule]]
-buffomatModule.taskRescanRequestedBy = --[[@as {[string]: number}]] {}
 local _t = LibStub("Buffomat-Languages") --[[@as LanguagesModule]]
 local languagesModule = _t
 local allBuffsModule = LibStub("Buffomat-AllBuffs") --[[@as AllBuffsModule]]
 local characterSettingsModule = LibStub("Buffomat-CharacterSettings") --[[@as CharacterSettingsModule]]
+local sharedSettingsModule = LibStub("Buffomat-SharedSettings") --[[@as SharedSettingsModule]]
 local constModule = LibStub("Buffomat-Const") --[[@as ConstModule]]
 local eventsModule = LibStub("Buffomat-Events") --[[@as EventsModule]]
 local macroModule = LibStub("Buffomat-Macro") --[[@as MacroModule]]
@@ -75,7 +75,11 @@ local ngStringsModule = LibStub("Buffomat-NgStrings") --[[@as NgStringsModule]]
 -- -@field Print fun(self: BomAddon, msg: string): void
 -- -@field RegisterEvent fun(self: BomAddon, event: string, handler: function): void
 
-BuffomatAddon = LibStub("AceAddon-3.0"):NewAddon("Buffomat", "AceConsole-3.0", "AceEvent-3.0") --[[@as BomAddon]]
+BuffomatAddon = LibStub("AceAddon-3.0"):NewAddon(
+  "Buffomat",
+  "AceConsole-3.0", "AceEvent-3.0", "AceTimer-3.0"
+) --[[@as BomAddon]]
+
 local BuffomatAddon = BuffomatAddon
 local libDB = LibStub("LibDataBroker-1.1")
 local libIcon = LibStub("LibDBIcon-1.0")
@@ -108,21 +112,9 @@ function BuffomatAddon.ScrollMessage(self, delta)
   self:ResetAllFadeTimes()
 end
 
-function buffomatModule:ClearForceUpdate(debugCallerLocation)
-  if debugCallerLocation then
-    BuffomatAddon:Debug("clearForceUpdate from " .. debugCallerLocation)
-  end
-  wipe(self.taskRescanRequestedBy)
-end
-
----@param reason string
-function buffomatModule:RequestTaskRescan(reason)
-  self.taskRescanRequestedBy[reason] = (self.taskRescanRequestedBy[reason] or 0) + 1
-end
-
 -- Something changed (buff gained possibly?) update all spells and spell tabs
 function buffomatModule.OptionsUpdate()
-  buffomatModule:RequestTaskRescan("optionsUpdate")
+  throttleModule:RequestTaskRescan("optionsUpdate")
   taskScanModule:ScanTasks("OptionsUpdate")
 
   --spellButtonsTabModule:UpdateSpellsTab("OptionsUpdate")
@@ -150,7 +142,7 @@ end
 function buffomatModule.ChooseProfile(profile)
   if profile == nil or profile == "" or profile == "auto" then
     BuffomatAddon.forceProfile = nil
-  elseif buffomatModule.character.profiles[profile] then
+  elseif BuffomatCharacter.profiles[profile] then
     BuffomatAddon.forceProfile = profile
   else
     BuffomatAddon:Print("Unknown profile: " .. profile)
@@ -159,7 +151,7 @@ function buffomatModule.ChooseProfile(profile)
 
   taskScanModule:ClearSkip()
   BuffomatAddon.popupMenuDynamic:Wipe(nil)
-  buffomatModule:RequestTaskRescan("profileSelected")
+  throttleModule:RequestTaskRescan("profileSelected")
   taskScanModule:ScanTasks("profileSelected")
 
   buffomatModule:UseProfile(profile)
@@ -189,7 +181,7 @@ function buffomatModule:UpdateBuffTabText()
   local selectedGroups = 0
 
   for i = 1, 8 do
-    if self.character.WatchGroup[i] then
+    if BuffomatCharacter.WatchGroup[i] then
       selectedGroups = selectedGroups + 1
     end
   end
@@ -217,7 +209,7 @@ function buffomatModule:UpdateBuffTabText()
   -- Build comma-separated group list to buff: "G1,2,3,5"...
   local groups = ""
   for i = 1, 8 do
-    if self.character.WatchGroup[i] then
+    if BuffomatCharacter.WatchGroup[i] then
       --If we are adding number i, and previous (i-1) is in the string
       local prev = tostring(i - 1)
       local prev_range = "-" .. tostring(i - 1)
@@ -247,10 +239,24 @@ function buffomatModule:UpdateBuffTabText()
   -- PanelTemplates_TabResize(t, 0)
 end
 
+function buffomatModule:ScheduleUpdateTimer()
+  -- Cancel timer if exists
+  if self.throttleUpdateTimer then
+    BuffomatAddon:CancelTimer(BuffomatAddon.throttleUpdateTimer)
+    self.throttleUpdateTimer = nil
+  end
+
+  local interval = 0.5
+  if BuffomatShared.SlowerHardware then
+    interval = 1.5
+  end
+
+  self.throttleUpdateTimer = BuffomatAddon:ScheduleRepeatingTimer(throttleModule.UpdateTimer, interval)
+end
+
 function buffomatModule:InitUI()
   taskListPanelModule:ShowWindow()
-
-  toolboxModule:OnUpdate(function(elapsed) throttleModule:UpdateTimer(elapsed) end)
+  self:ScheduleUpdateTimer()
 
   BuffomatAddon.popupMenuDynamic = popupModule:CreatePopup(buffomatModule.OptionsUpdate)
 
@@ -277,26 +283,32 @@ end
 
 function buffomatModule:InitGlobalStates()
   --BuffomatShared = BuffomatShared --[[@as SharedSettings]]
-  buffomatModule.character = BuffomatCharacter --[[@as CharacterSettings]]
+  --BuffomatCharacter = BuffomatCharacter --[[@as CharacterSettings]]
+  if not BuffomatShared then
+    BuffomatShared = sharedSettingsModule:NewDefaultSharedSettings()
+  end
+  if not BuffomatCharacter then
+    BuffomatCharacter = characterSettingsModule:NewDefaultCharacterSettings()
+  end
 
   -- Upgrade from previous Buffomat State if values are found
-  if not self.character.profiles then
-    self.character.profiles = {}
+  if not BuffomatCharacter.profiles then
+    BuffomatCharacter.profiles = {}
   end
   -- Upgrade: Move each named profile settings section into profiles table
   for _i, profileName in ipairs(profileModule.ALL_PROFILES) do
-    if self.character[profileName] then
-      self.character.profiles[profileName] = self.character[profileName]
-      self.character[profileName] = nil
+    if BuffomatCharacter[profileName] then
+      BuffomatCharacter.profiles[profileName] = BuffomatCharacter[profileName]
+      BuffomatCharacter[profileName] = nil
     else
-      if not self.character.profiles[profileName] then
-        self.character.profiles[profileName] = profileModule:New()
+      if not BuffomatCharacter.profiles[profileName] then
+        BuffomatCharacter.profiles[profileName] = profileModule:New()
       end
     end
   end
 
   local soloProfileName = profileModule:SoloProfile()
-  BuffomatAddon.currentProfile = self.character.profiles[soloProfileName or "solo"]
+  BuffomatAddon.currentProfile = BuffomatCharacter.profiles[soloProfileName or "solo"]
 end
 
 ---@return BomSlashCommand[]
@@ -322,7 +334,7 @@ function BuffomatAddon:MakeSlashCommand()
       command = "update",
       description = _t("SlashUpdate"),
       handler = function()
-        buffomatModule:RequestTaskRescan("macro-/update")
+        throttleModule:RequestTaskRescan("macro-/update")
         taskScanModule:ScanTasks("macro-/update")
       end
     },
@@ -376,10 +388,10 @@ function BuffomatAddon:Init()
   buffomatModule:InitUI()
 
   -- Which groups are watched by the buff scanner - save in character state
-  if not buffomatModule.character.WatchGroup then
-    buffomatModule.character.WatchGroup = {}
+  if not BuffomatCharacter.WatchGroup then
+    BuffomatCharacter.WatchGroup = {}
     for i = 1, 8 do
-      buffomatModule.character.WatchGroup[i] = true
+      BuffomatCharacter.WatchGroup[i] = true
     end
   end
 
@@ -438,7 +450,7 @@ function buffomatModule:DownGrade()
       then
         BuffomatShared.SpellGreaterEqualThan[BuffomatAddon.castFailedSpellId] = level
         throttleModule:FastUpdateTimer()
-        self:RequestTaskRescan("Downgrade")
+        throttleModule:RequestTaskRescan("Downgrade")
         BuffomatAddon:Print(string.format(_t("MsgDownGrade"),
           (BuffomatAddon.castFailedBuff).singleText,
           ((BuffomatAddon.castFailedBuffTarget).name)))

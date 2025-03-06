@@ -77,8 +77,12 @@ function optionsModule:CreateGeneralOptionsTable()
           taskListPanelModule:SetAlpha(val)
         end
       ),
-      useProfiles = self:TemplateCheckbox("UseProfiles", buffomatModule.character, nil, nil),
-      slowerHardware = self:TemplateCheckbox("SlowerHardware", nil, nil, nil),
+      useProfiles = self:TemplateCheckbox("UseProfiles", BuffomatCharacter, nil, nil),
+      slowerHardware = self:TemplateCheckbox("SlowerHardware", BuffomatShared, nil,
+        ---@diagnostic disable-next-line: unused-local
+        function(key, value)
+          buffomatModule:ScheduleUpdateTimer()
+        end),
       minimapButtonShow = self:TemplateCheckbox(
         "ShowMinimapButton", BuffomatShared.Minimap, "visible",
         ---@diagnostic disable-next-line: unused-local
@@ -200,17 +204,17 @@ function optionsModule:CreateVisibilityOptionsTable()
     args = {
       categories = self:TemplateMultiselect(
         "VisibleCategories",
-        allBuffsModule:GetBuffCategories(),            -- all categories ordered
-        buffomatModule.character.BuffCategoriesHidden, -- settings table
+        allBuffsModule:GetBuffCategories(),     -- all categories ordered
+        BuffomatCharacter.BuffCategoriesHidden, -- settings table
         nil,
         ---@diagnostic disable-next-line: unused-local
         function(state, key, value)
-          buffomatModule.character.BuffCategoriesHidden[ --[[@as string]] key ] = not value -- invert
+          BuffomatCharacter.BuffCategoriesHidden[ --[[@as string]] key ] = not value -- invert
           eventsModule.Event_SpellsChanged()
         end,
         ---@diagnostic disable-next-line: unused-local
         function(state, key)
-          return buffomatModule.character.BuffCategoriesHidden[ --[[@as string]] key ] ~= true -- invert
+          return BuffomatCharacter.BuffCategoriesHidden[ --[[@as string]] key ] ~= true -- invert
         end
       ),
     } -- end args

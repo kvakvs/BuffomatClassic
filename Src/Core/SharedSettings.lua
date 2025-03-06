@@ -77,7 +77,7 @@ sharedStateClass.__index = sharedStateClass
 
 ---@param init SharedSettings
 ---@return SharedSettings
-function sharedSettingsModule:New(init)
+function sharedSettingsModule:NewDefaultSharedSettings(init)
   local tab = init or self:Defaults()
   tab.Minimap = tab.Minimap or {}
   tab.SpellGreaterEqualThan = tab.SpellGreaterEqualThan or {}
@@ -95,6 +95,12 @@ end
 function sharedSettingsModule:Defaults()
   ---@type SharedSettings
   return {
+    Duration = {},
+    Width = 300,
+    Height = 200,
+    X = 0,
+    Y = 0,
+
     UIWindowScale = 1,
     AutoOpen = true,
     FadeWhenNothingToDo = 1.0,

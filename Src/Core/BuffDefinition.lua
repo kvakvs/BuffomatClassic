@@ -726,7 +726,7 @@ function buffDefModule:GetProfileBlessingState(profileName)
     --return allBuffsModule.allBuffs[spellId]
   end
 
-  local profile = buffomatModule.character.profiles[profileName]
+  local profile = BuffomatCharacter.profiles[profileName]
   if profile == nil then
     return --[[@as BlessingState]] {}
   end

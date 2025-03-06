@@ -73,9 +73,9 @@ function optionsPopupModule:Setup(control, minimap)
   -- Use Profiles checkbox and submenu
   -- --------------------------------------------
   table.insert(menuItems, popupModule:Boolean(_t("options.short.UseProfiles"),
-    buffomatModule.character, "UseProfiles"))
+    BuffomatCharacter, "UseProfiles"))
 
-  if buffomatModule.character.UseProfiles then
+  if BuffomatCharacter.UseProfiles then
     local subprofilesMenu = --[[@as BomMenuItemDef[] ]] {}
     table.insert(subprofilesMenu, popupModule:Clickable(characterSettingsModule:LocalizedProfileName("auto"),
       buffomatModule.ChooseProfile, "auto", nil))

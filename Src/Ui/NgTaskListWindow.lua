@@ -258,7 +258,7 @@ do
     close:SetScript("OnClick", closeOnClick)
     toolboxModule:Tooltip(
       close,
-      string.format(_t("tooltip.button.HideBuffomat"), GetBindingKey("BUFFOMAT_WINDOW"))
+      string.format(_t("tooltip.button.HideBuffomat"), GetBindingKey("BUFFOMAT_WINDOW") or _t("binding.notSet"))
     )
     window.closebutton = close
     close.obj = window

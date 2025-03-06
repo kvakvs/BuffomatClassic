@@ -11,7 +11,7 @@ local BuffomatAddon = BuffomatAddon
 
 local itemCacheModule = LibStub("Buffomat-ItemCache") --[[@as BomItemCacheModule]]
 itemCacheModule.cache = {}
-local buffomatModule = LibStub("Buffomat-Buffomat") --[[@as BuffomatModule]]
+local throttleModule = LibStub("Buffomat-Throttle") --[[@as ThrottleModule]]
 
 ---@class BomItemCacheElement
 ---@field itemName string
@@ -107,7 +107,7 @@ function itemCacheModule:LoadItem(itemId, onLoaded)
     }
 
     itemCacheModule.cache[itemId] = cacheItem
-    buffomatModule:RequestTaskRescan(string.format("item%d", itemId))
+    throttleModule:RequestTaskRescan(string.format("item%d", itemId))
 
     if onLoaded ~= nil then
       onLoaded(cacheItem)

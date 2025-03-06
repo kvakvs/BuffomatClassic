@@ -162,7 +162,7 @@ if false then
       end
 
       rowBuilder:AppendRight(nil, self.spellSettingsFrames[i], 2)
-      self.spellSettingsFrames[i]:SetVariable(buffomatModule.character.WatchGroup, i)
+      self.spellSettingsFrames[i]:SetVariable(BuffomatCharacter.WatchGroup, i)
       self.spellSettingsFrames[i]:SetText(i)
       toolboxModule:TooltipText(self.spellSettingsFrames[i], string.format(_t("tooltip.SpellsDialog.watchGroup"), i))
       self.spellSettingsFrames[i]:Show()
@@ -181,7 +181,7 @@ if false then
   ---@param category BuffCategoryName
   ---@return boolean
   function spellButtonsTabModule:CategoryIsHidden(category)
-    return buffomatModule.character.BuffCategoriesHidden[category] == true
+    return BuffomatCharacter.BuffCategoriesHidden[category] == true
   end
 
   ---Creates a row
@@ -286,7 +286,7 @@ if false then
     local rowBuilder = rowBuilderModule:new()
     local selfClass = envModule.playerClass
 
-    buffomatModule.character.BuffCategoriesHidden = buffomatModule.character.BuffCategoriesHidden or {}
+    BuffomatCharacter.BuffCategoriesHidden = BuffomatCharacter.BuffCategoriesHidden or {}
 
     for _key1, cat in ipairs(allBuffsModule.buffCategories) do
       if not self:CategoryIsHidden(cat) then
@@ -543,7 +543,7 @@ if false then
           or buffDef.type == "aura"
           or buffDef.type == "seal") and buffDef.requiresForm == nil
     then
-      if (buffDef.type == "tracking" and buffomatModule.character.lastTrackingIconId == buffDef.trackingIconId) or
+      if (buffDef.type == "tracking" and BuffomatCharacter.lastTrackingIconId == buffDef.trackingIconId) or
           (buffDef.type == "aura" and buffDef.buffId == buffomatModule.currentProfile.LastAura) or
           (buffDef.type == "seal" and buffDef.buffId == buffomatModule.currentProfile.LastSeal) then
         buffDef.frames.checkboxSet:SetState(true)
