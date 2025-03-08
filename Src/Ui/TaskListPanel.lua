@@ -1,7 +1,7 @@
 ---@diagnostic disable: invisible, unused-local
 local BuffomatAddon = BuffomatAddon
 
----@alias WindowCommand "show"|"hide"|nil
+---@alias WindowCommand "show"|"hide"|"autoClose"|nil
 
 ---@class TaskListPanelModule
 ---@field taskFrame? AceGUIWidget Floating frame for task list
@@ -12,7 +12,9 @@ local BuffomatAddon = BuffomatAddon
 ---@field titleBuffGroups string The buff groups which go into the title of the window
 ---@field holdOpen boolean If true, the window will not be hidden when the cast button is disabled
 ---@field windowCommand WindowCommand
+---@field windowCommandCallLocation string The location where the window command was called from
 ---@field messages string[]
+---@field saveBuffButtonText string Saves the button text when in combat
 
 local taskListPanelModule = LibStub("Buffomat-TaskListPanel") --[[@as TaskListPanelModule]]
 taskListPanelModule.titleProfile = ""
@@ -38,7 +40,7 @@ function taskListPanelModule:ConstructWindow()
   taskFrame:SetWidth(BuffomatShared.Width or 300)
   taskFrame:SetHeight(BuffomatShared.Height or 200)
   taskFrame:SetCallback("OnClose", function()
-    taskListPanelModule:HideWindow()
+    taskListPanelModule:HideWindow("tlp:closeButtonClick")
   end)
   self:SetWindowScale(tonumber(BuffomatShared.UIWindowScale) or 1.0)
 
@@ -61,6 +63,7 @@ end
 function taskListPanelModule:ToggleWindow(holdOpen)
   if self:IsWindowVisible() then
     self.windowCommand = "hide"
+    self.windowCommandCallLocation = "tlp:toggleWindow"
   else
     throttleModule:RequestTaskRescan("toggleWindow")
     self:ShowWindowHoldOpen(holdOpen)
@@ -76,8 +79,10 @@ function taskListPanelModule:WindowCommand(command)
   if not self.windowCommand then
     return
   end
+  --BuffomatAddon:Debug("WindowCommand " .. self.windowCommand .. " @ " .. (self.windowCommandCallLocation or '?'))
+
   -- --------------------------------------------------
-  if self.windowCommand == "hide" then
+  if self.windowCommand == "hide" or self.windowCommand == "autoClose" then
     if self.taskFrame ~= nil then
       self.taskFrame:Hide()
     end
@@ -105,17 +110,24 @@ function taskListPanelModule:WindowCommand(command)
   end
   -- --------------------------------------------------
   self.windowCommand = nil
+  self.windowCommandCallLocation = nil
 end
 
-function taskListPanelModule:HideWindow()
+---@param callLocation string The location where this is called from
+function taskListPanelModule:HideWindow(callLocation)
   self.windowCommand = "hide"
+  self.windowCommandCallLocation = callLocation
 end
 
 ---Attempt to close if holdOpen is false (holds open if user manually called up the window)
-function taskListPanelModule:AutoClose()
+---@param callLocation string The location where this is called from
+function taskListPanelModule:AutoClose(callLocation)
   if BuffomatShared.AutoClose then
-    if not self.holdOpen then
-      self:HideWindow()
+    -- If the window is not hold open and the buff button exists and is disabled, attempt to close the window
+    if not self.holdOpen and self.buffButton and not self.buffButton.frame:IsEnabled() then
+      self.windowCommand = "autoClose"
+      self.windowCommandCallLocation = callLocation
+      return
     end
   else
     local fade = BuffomatShared.FadeWhenNothingToDo or 0.65
@@ -125,11 +137,13 @@ end
 
 function taskListPanelModule:ShowWindowHoldOpen(holdOpen)
   self.holdOpen = holdOpen
-  self:ShowWindow()
+  self:ShowWindow("tlp:showWindowHoldOpen")
 end
 
-function taskListPanelModule:ShowWindow()
+---@param callLocation string The location where this is called from
+function taskListPanelModule:ShowWindow(callLocation)
   self.windowCommand = "show"
+  self.windowCommandCallLocation = callLocation
 end
 
 -- Reset the window to the default position and size, save the default position and size
@@ -139,7 +153,7 @@ function taskListPanelModule:ResetWindow()
   self.taskFrame:SetWidth(200)
   self.taskFrame:SetHeight(200)
   BuffomatAddon.SaveWindowPosition()
-  self:ShowWindow()
+  self:ShowWindow("tlp:resetWindow")
   BuffomatAddon:Print("Window position is reset.")
 end
 
@@ -245,11 +259,17 @@ function taskListPanelModule:SavePosition()
 end
 
 function taskListPanelModule:OnCombatStart()
-  self:AutoClose()
+  self:AutoClose("tlp:combatStart")
+  self.saveBuffButtonText = self.buffButton.label:GetText()
+  self.buffButton:SetText(_t("castButton.InCombat"))
 end
 
 function taskListPanelModule:OnCombatStop()
   if BuffomatShared.AutoOpen then
-    self:ShowWindow()
+    self:ShowWindow("tlp:combatStop/autoOpen")
+  end
+  if self.buffButton and self.buffButton.label:GetText() == _t("castButton.InCombat") then
+    self.buffButton:SetText(self.saveBuffButtonText)
+    self.saveBuffButtonText = ''
   end
 end

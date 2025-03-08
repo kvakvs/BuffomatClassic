@@ -948,8 +948,8 @@ function taskScanModule:AddSelfbuff(buffDef, playerMember)
   end
 
   local extraText = _t("task.target.SelfOnly")
-  if buffDef.singleText == nil then
-    extraText = _t("task.target.Self")
+  if buffDef.type == "weapon" or buffDef.type == "seal" then
+    extraText = _t("task.type.Enchantment")
   end
   local task = taskModule:Create(buffDef:SingleLink(), buffDef.singleText)
       :PrefixText(_t("TASK_CAST"))
@@ -1636,7 +1636,7 @@ end
 function taskScanModule:UpdateScan_Finalize()
   -- Open Buffomat if any cast tasks were added to the task list
   if #self.tasklist.tasks > 0 or #self.tasklist.comments > 0 then
-    taskListPanelModule:ShowWindow()
+    taskListPanelModule:ShowWindow("taskScan:UpdateScan_Finalize/haveTasks")
 
     -- to avoid repeating sound, check whether task list before we started had length of 0
     if self.taskListSizeBeforeScan == 0 then
@@ -1654,7 +1654,7 @@ function taskScanModule:UpdateScan_Finalize()
     self.tasklist:CastButton(firstToCast)
   else
     -- Nothing to do
-    taskListPanelModule:AutoClose()
+    taskListPanelModule:AutoClose("taskScan:UpdateScan_Finalize/nothing")
     return self.tasklist:CastButton_Nothing() -- this is basically equal to if #tasklist.tasks == 0 below
   end
 end
@@ -1726,7 +1726,6 @@ function taskScanModule:UpdateScan_PreCheck(from)
   --end
 
   -- If currently casting
-  if BuffomatAddon.isPlayerCasting then BuffomatAddon:Debug("BOM.isPlayerCasting", BuffomatAddon.isPlayerCasting) end
   if BuffomatAddon.isPlayerCasting == "cast" then
     return self:ShowInactive(_t("castButton.Busy"))
   else
@@ -1743,7 +1742,6 @@ end -- end function bomUpdateScan_PreCheck()
 function taskScanModule:ShowInactive(reason)
   throttleModule:ClearForceUpdate()
   BuffomatAddon.checkForError = false
-  taskListPanelModule:AutoClose()
   BuffomatAddon.theMacro:Clear()
   self.tasklist:CastButtonText(reason, false)
 end

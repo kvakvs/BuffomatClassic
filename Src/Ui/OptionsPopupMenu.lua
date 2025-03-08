@@ -57,7 +57,7 @@ function optionsPopupModule:Setup(control, minimap)
   if minimap then
     table.insert(menuItems,
       popupModule:Clickable(_t("popup.OpenBuffomat"),
-        function() taskListPanelModule:ShowWindow() end,
+        function() taskListPanelModule:ShowWindow("optionsPopupMenu:minimap") end,
         nil, nil))
     table.insert(menuItems, popupModule:Separator())
     table.insert(menuItems, popupModule:Boolean(_t("options.short.ShowMinimapButton"),

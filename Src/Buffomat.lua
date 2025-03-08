@@ -255,7 +255,7 @@ function buffomatModule:ScheduleUpdateTimer()
 end
 
 function buffomatModule:InitUI()
-  taskListPanelModule:ShowWindow()
+  taskListPanelModule:ShowWindow("buffomat:InitUI")
   self:ScheduleUpdateTimer()
 
   BuffomatAddon.popupMenuDynamic = popupModule:CreatePopup(buffomatModule.OptionsUpdate)
@@ -347,7 +347,7 @@ function BuffomatAddon:MakeSlashCommand()
       command = "close",
       description = _t("SlashClose"),
       handler = function()
-        taskListPanelModule:HideWindow()
+        taskListPanelModule:HideWindow("slash:close")
       end
     },
     {
@@ -383,7 +383,6 @@ function BuffomatAddon:Init()
   BuffomatAddon.theMacro = macroModule:NewMacro(constModule.MACRO_NAME, nil)
 
   languagesModule:LocalizationInit()
-  -- taskListPanelModule:ShowWindow() -- called in InitUI
   slashModule:RegisterSlashCommandHandler({ "/bom", "/buffomat" }, self:MakeSlashCommand())
   buffomatModule:InitUI()
 
@@ -531,13 +530,6 @@ function BuffomatAddon.ClickHyperlink(self, link)
     end
   end
 end
-
--- function BOM.ShowSpellSettings()
---   InterfaceOptionsFrame:Hide()
---   GameMenuFrame:Hide()
---   BOM:Print("TODO: Show Spell Settings")
---   taskListPanelModule:ShowWindow()
--- end
 
 function BuffomatAddon.MyButtonOnClick(self)
   buffomatModule:OptionsUpdate()

@@ -197,7 +197,7 @@ function englishModule:Translations()
     FORMAT_BUFF_GROUP = "Group %s %s",
     FORMAT_GROUP_NUM = "G%s",
     ["castButton.Next"] = "%s @ %s",
-    -- ["castButton.InCombat"] = "In Combat",
+    ["castButton.InCombat"] = "In Combat",
     ["castButton.Busy"] = "Busy / Casting",
     ["castButton.BusyChanneling"] = "Busy / Channeling",
     ["castButton.NothingToDo"] = "Nothing to do",
