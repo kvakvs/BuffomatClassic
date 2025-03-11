@@ -164,10 +164,6 @@ end
 
 function taskListClass:CastButton_Nothing()
   taskListPanelModule:CastButtonText(_t("castButton.NothingToDo"), false)
-  --removeme
-  --If don't have any strings to display, and nothing to do -
-  --Clear the cast button
-  self:CastButtonText(_t("castButton.NothingToDo"), false)
 
   for _i, spell in ipairs(allBuffsModule.selectedBuffs) do
     if #spell.skipList > 0 then

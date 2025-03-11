@@ -1,6 +1,6 @@
 # Changelog
 
-## Buffomat Classic 2025.3.0
+## Buffomat Classic 2025.3.2
 - Big UI overhaul: New task list window, simpler and faster, new spell settings, easier access to main settings, multiple minor UI improvements, too.
 
 ## Buffomat Classic 2025.1.0, 2025.2.0

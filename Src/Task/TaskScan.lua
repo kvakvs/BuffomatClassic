@@ -1587,8 +1587,8 @@ function taskScanModule:PlayTaskSound()
   end
 end
 
----@param party BomParty
-function taskScanModule:UpdateScan_Scan(party)
+---@param context TaskScanContext
+function taskScanModule:DoScan(context)
   local buffCtx = --[[@as BomBuffScanContext]] {
     macroCommand = "",
     castButtonTitle = "",
@@ -1598,11 +1598,11 @@ function taskScanModule:UpdateScan_Scan(party)
 
   if next(throttleModule.taskRescanRequestedBy) ~= nil then
     -- TODO: Only scan missing buffs on current roundRobinGroup while in raid
-    self:UpdateMissingBuffs(party, buffCtx)
+    self:UpdateMissingBuffs(context.party, buffCtx)
   end
 
   -- cancel buffs
-  self:CancelBuffs(party.player)
+  self:CancelBuffs(context.party.player)
 
   -- fill list and find cast
   partyModule.playerMana = UnitPower("player", 0) or 0 --mana
@@ -1623,17 +1623,18 @@ function taskScanModule:UpdateScan_Scan(party)
     -- ================
     -- Scan entry point
     -- ================
-    self:CreateBuffTasks(party, buffCtx)
-    self:CheckMissingWeaponEnchantments(party.player) -- if option to warn is enabled
-    self:CheckReputationItems(party.player)
+    self:CreateBuffTasks(context.party, buffCtx)
+    self:CheckMissingWeaponEnchantments(context.party.player) -- if option to warn is enabled
+    self:CheckReputationItems(context.party.player)
 
     ---Check if someone has drink buff, print an info message self:SomeoneIsDrinking()
 
-    self:CheckItemsAndContainers(party.player, buffCtx)
+    self:CheckItemsAndContainers(context.party.player, buffCtx)
   end
 end
 
-function taskScanModule:UpdateScan_Finalize()
+---@param context TaskScanContext
+function taskScanModule:Finalize(context)
   -- Open Buffomat if any cast tasks were added to the task list
   if #self.tasklist.tasks > 0 or #self.tasklist.comments > 0 then
     taskListPanelModule:ShowWindow("taskScan:UpdateScan_Finalize/haveTasks")
@@ -1686,13 +1687,15 @@ function taskScanModule:RotateInvalidatedGroup_GetGroup()
   return party
 end
 
-function taskScanModule:UpdateScan_PreCheck(from)
+---@param context TaskScanContext
+---@return boolean True if the scan should continue, false if it should be aborted
+function taskScanModule:Precheck(context)
   if allBuffsModule.selectedBuffs == nil then
-    return
+    return false -- Too soon the system did not initialize yet
   end
 
   if BuffomatAddon.inLoadingScreen then
-    return
+    return false -- Do not scan if we are in the loading screen
   end
 
   BuffomatAddon.nextCooldownDue = GetTime() + 36000 -- 10 hours
@@ -1708,48 +1711,57 @@ function taskScanModule:UpdateScan_PreCheck(from)
     throttleModule:RequestTaskRescan("profileChanged")
   end
 
-  --unitCacheModule:ClearCache()
-  local party = self:RotateInvalidatedGroup_GetGroup()
+  return true
+end -- end function bomUpdateScan_PreCheck1()
 
+---@param context TaskScanContext
+---@return boolean
+function taskScanModule:CheckBuffomatInactive(context)
   -- Check whether BOM is disabled due to some option and a matching condition
   if not self:IsMountedAndCrusaderAuraRequired() then
     -- If mounted and crusader aura enabled, then do not do further checks, allow the crusader aura
-    local isBomActive, reasonDisabled = self:IsActive(party.player)
+    local isBomActive, reasonDisabled = self:IsActive(context.party.player)
     if not isBomActive then
-      return self:ShowInactive(reasonDisabled)
+      self:ShowInactive(reasonDisabled)
+      return false
     end
   end
 
-  -- If in global cooldown
-  --if self:IsInGlobalCooldown() then
-  --  return self:ShowInactive(_t("castbutton.inactive.GCD"))
-  --end
+  return true
+end
 
+---@param context TaskScanContext
+---@return boolean
+function taskScanModule:CheckCastingChanneling(context)
   -- If currently casting
   if BuffomatAddon.isPlayerCasting == "cast" then
-    return self:ShowInactive(_t("castButton.Busy"))
+    self:ShowInactive(_t("castButton.Busy"))
+    return false -- Casting a spell, do not scan
   else
     if BuffomatAddon.isPlayerCasting == "channel" then
-      return self:ShowInactive(_t("castButton.BusyChanneling"))
+      self:ShowInactive(_t("castButton.BusyChanneling"))
+      return false -- Channeling a spell, do not scan
     end
   end
 
-  -- All pre-checks passed
-  self:UpdateScan_Scan(party)
-  self:UpdateScan_Finalize()
-end -- end function bomUpdateScan_PreCheck()
+  return true
+end -- end function bomUpdateScan_PreCheck2()
 
 function taskScanModule:ShowInactive(reason)
   throttleModule:ClearForceUpdate()
   BuffomatAddon.checkForError = false
   BuffomatAddon.theMacro:Clear()
-  self.tasklist:CastButtonText(reason, false)
+  taskListPanelModule:CastButtonText(reason, false)
 end
 
----Scan the available spells and group members to find who needs the rebuff/res
----and what would be their priority?
----@param from string Debug value to trace the caller of this function
-function taskScanModule:ScanTasks(from)
+---@class TaskScanContext
+---@field callerLocation string Debug value to trace the caller of this function
+---@field party BomParty
+
+--- THIS IS THE SCAN ENTRY POINT
+--- Scan the available spells and group members to find who needs the rebuff/res and what would be their priority?
+---@param callerLocation string Debug value to trace the caller of this function
+function taskScanModule:ScanTasks(callerLocation)
   if InCombatLockdown() then
     return
   end
@@ -1760,7 +1772,23 @@ function taskScanModule:ScanTasks(from)
   end
   self.taskListSizeBeforeScan = #self.tasklist.tasks
   buffomatModule:UseProfile(profileModule:ChooseProfile())
-  self:UpdateScan_PreCheck(from)
+
+  ---@type TaskScanContext
+  local context = {
+    callerLocation = callerLocation,
+  }
+
+  context.party = self:RotateInvalidatedGroup_GetGroup()
+
+  if not self:Precheck(context)
+      or not self:CheckBuffomatInactive(context)
+      or not self:CheckCastingChanneling(context)
+  then
+    return
+  end
+
+  self:DoScan(context)   -- All pre-checks passed
+  self:Finalize(context) -- Sort and display the tasks, update the cast button
 end
 
 ---If a spell cast failed, the member is temporarily added to skip list, to
