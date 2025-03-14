@@ -290,9 +290,9 @@ do
     frame:SetWidth(250)
     frame:SetHeight(150)
     if frame.SetResizeBounds then
-      frame:SetResizeBounds(200, 150)
+      frame:SetResizeBounds(200, 100)
     else
-      frame:SetMinResize(200, 150)
+      frame:SetMinResize(200, 100)
     end
     frame:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
     frame:EnableMouse()

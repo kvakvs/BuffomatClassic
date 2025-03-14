@@ -1637,7 +1637,7 @@ end
 function taskScanModule:Finalize(context)
   -- Open Buffomat if any cast tasks were added to the task list
   if #self.tasklist.tasks > 0 or #self.tasklist.comments > 0 then
-    taskListPanelModule:ShowWindow("taskScan:UpdateScan_Finalize/haveTasks")
+    taskListPanelModule:ShowWindow("ts:Finalize/haveTasks")
 
     -- to avoid repeating sound, check whether task list before we started had length of 0
     if self.taskListSizeBeforeScan == 0 then
@@ -1654,8 +1654,7 @@ function taskScanModule:Finalize(context)
   if firstToCast then
     self.tasklist:CastButton(firstToCast)
   else
-    -- Nothing to do
-    taskListPanelModule:AutoClose("taskScan:UpdateScan_Finalize/nothing")
+    taskListPanelModule:AutoHide("ts:Finalize/nothing")
     return self.tasklist:CastButton_Nothing() -- this is basically equal to if #tasklist.tasks == 0 below
   end
 end

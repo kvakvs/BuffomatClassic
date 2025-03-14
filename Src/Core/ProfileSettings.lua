@@ -70,7 +70,7 @@ end
 ---@return ProfileSettings
 function profileModule:New()
   local profile = {} --[[@as ProfileSettings]]
-  profile.AutoOpen = true
+  -- profile.AutoOpen = true
   profile.AutoStand = true
   profile.BuffTarget = true
   profile.DeathBlock = true

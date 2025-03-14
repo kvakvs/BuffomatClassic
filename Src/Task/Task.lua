@@ -155,12 +155,12 @@ function taskClass:Format()
 end
 
 function taskClass:FormatDisabledRed(reason)
-  local targetText
-  if self.target then
-    targetText = (self.target):GetText() .. " "
-  else
-    targetText = ""
-  end
+  -- local targetText
+  -- if self.target then
+  --   targetText = (self.target):GetText() .. " "
+  -- else
+  --   targetText = ""
+  -- end
   return string.format("%s %s %s",
     buffomatModule:Color(constModule.TASKCOLOR_RED, reason),
     self:GetTarget(),

@@ -123,8 +123,8 @@ function germanModule:Translations()
     ["options.short.ReputationTrinket"] = "Erinnere an die Anstecknadel der Argentumdämmerung",
     ["options.short.AutoDismount"] = "Automatisches Absitzen beim Zaubern",
     ["options.short.AutoDisTravel"] = "Automatisch  Reiseform abbrechen beim Zaubern",
-    ["options.short.AutoOpen"] = "Automatisches öffnen",
-    ["options.short.AutoClose"] = "Automatisches schließen",
+    -- ["options.short.AutoOpen"] = "Automatisches öffnen",
+    -- ["options.short.AutoClose"] = "Automatisches schließen",
     ["options.short.AutoStand"] = "Automatisches Aufstehen beim Zaubern",
     ["options.short.BuffTarget"] = "Aktuelles Ziel mit aufnehmen",
     ["options.short.Carrot"] = "Erinnere an die \"Karotte am Stiel\"",
@@ -155,8 +155,8 @@ function germanModule:Translations()
     ["options.short.Time60"] = "Dauer <=60 Sek:",
     ["options.short.Time600"] = "Dauer <=10 Min:",
 
-    ["options.long.AutoOpen"] = "Automatisches öffnen, wenn Aufgaben verfügbar sind",
-    ["options.long.AutoClose"] = "Automatisches schließen, wenn alle Aufgaben erledigt sind",
+    -- ["options.long.AutoOpen"] = "Automatisches öffnen, wenn Aufgaben verfügbar sind",
+    -- ["options.long.AutoClose"] = "Automatisches schließen, wenn alle Aufgaben erledigt sind",
 
     Header_CANCELBUFF = "Buffs Abbrechen",
     Header_INFO = "Informationen",

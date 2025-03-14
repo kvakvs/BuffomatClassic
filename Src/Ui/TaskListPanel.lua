@@ -1,7 +1,9 @@
 ---@diagnostic disable: invisible, unused-local
 local BuffomatAddon = BuffomatAddon
 
----@alias WindowCommand "show"|"hide"|"autoClose"|nil
+---@alias ShowHideCommand "show"|"hide"
+---@alias AutoShowHideCommand "autoshow"|"autohide"
+---@alias WindowCommand ShowHideCommand|AutoShowHideCommand|nil
 
 ---@class TaskListPanelModule
 ---@field taskFrame? AceGUIWidget Floating frame for task list
@@ -10,11 +12,12 @@ local BuffomatAddon = BuffomatAddon
 ---@field topUiPanel? AceGUIWidget Top panel for buff button and menu
 ---@field titleProfile string The profile name which goes into the title of the window
 ---@field titleBuffGroups string The buff groups which go into the title of the window
----@field holdOpen boolean If true, the window will not be hidden when the cast button is disabled
----@field windowCommand WindowCommand
----@field windowCommandCallLocation string The location where the window command was called from
 ---@field messages string[]
 ---@field saveBuffButtonText string Saves the button text when in combat
+-- --- User show/hide and auto show/hide mechanics ---
+---@field windowCommand WindowCommand Delays actual window show/hide operation till it is a safe time to do
+---@field windowCommandCallLocation string The location where the window command was called from
+---@field lastUserWindowCommand? ShowHideCommand Last user operation on window (not auto)
 
 local taskListPanelModule = LibStub("Buffomat-TaskListPanel") --[[@as TaskListPanelModule]]
 taskListPanelModule.titleProfile = ""
@@ -61,12 +64,13 @@ end
 
 ---@param holdOpen boolean
 function taskListPanelModule:ToggleWindow(holdOpen)
+  self.windowCommandCallLocation = "tlp:toggleWindow"
+
   if self:IsWindowVisible() then
     self.windowCommand = "hide"
-    self.windowCommandCallLocation = "tlp:toggleWindow"
   else
     throttleModule:RequestTaskRescan("toggleWindow")
-    self:ShowWindowHoldOpen(holdOpen)
+    self.windowCommand = "show"
   end
 end
 
@@ -74,39 +78,60 @@ function taskListPanelModule:IsWindowVisible()
   return self.taskFrame ~= nil and self.taskFrame:IsVisible()
 end
 
+local function doShow()
+  if taskListPanelModule.taskFrame == nil then
+    taskListPanelModule:ConstructWindow()
+    taskListPanelModule:SetWindowScale(tonumber(BuffomatShared.UIWindowScale) or 1.0)
+  else
+    taskListPanelModule.taskFrame:Show()
+  end
+  taskListPanelModule:SetAlpha(1.0)
+
+  -- Show all messages if they were added while the window was hidden
+  -- for _, message in pairs(self.messages or {}) do
+  --   self:AddMessageLabel(message)
+  -- end
+  throttleModule:RequestTaskRescan("showWindow")
+  taskScanModule:ScanTasks("show")
+end
+
+local function doHide()
+  if taskListPanelModule.taskFrame ~= nil then
+    taskListPanelModule.taskFrame:Hide()
+  end
+
+  throttleModule:RequestTaskRescan("hideWindow")
+end
+
 --- Do not call this directly. Called from the throttle module on timed updates.
+---@param command WindowCommand
 function taskListPanelModule:WindowCommand(command)
   if not self.windowCommand then
     return
   end
-  --BuffomatAddon:Debug("WindowCommand " .. self.windowCommand .. " @ " .. (self.windowCommandCallLocation or '?'))
 
-  -- --------------------------------------------------
-  if self.windowCommand == "hide" or self.windowCommand == "autoClose" then
-    if self.taskFrame ~= nil then
-      self.taskFrame:Hide()
-    end
-    self.holdOpen = false
-
-    throttleModule:RequestTaskRescan("hideWindow")
-    --taskScanModule:ScanTasks("hide")
+  if self.windowCommand == "hide" then
+    -- User hides the window (and stay hidden)
+    doHide()
+    self.lastUserWindowCommand = "hide"
+    -- --------------------------------------------------
+  elseif self.windowCommand == "autohide" then
+    -- The addon requests hiding the window
+    -- Allow if either settings allow auto hiding, or the window was auto-shown from hide state
+    -- doHide()
+    local fade = BuffomatShared.FadeWhenNothingToDo or 0.5
+    self:SetAlpha(fade) -- fade the window, default 50%
     -- --------------------------------------------------
   elseif self.windowCommand == "show" then
-    if self.taskFrame == nil then
-      self:ConstructWindow()
-      self:SetWindowScale(tonumber(BuffomatShared.UIWindowScale) or 1.0)
-    else
-      self.taskFrame:Show()
-    end
-    self:SetAlpha(1.0)
-
-    -- Show all messages if they were added while the window was hidden
-    -- for _, message in pairs(self.messages or {}) do
-    --   self:AddMessageLabel(message)
-    -- end
-
-    throttleModule:RequestTaskRescan("showWindow")
-    taskScanModule:ScanTasks("show")
+    -- The user shows the window (and it stays visible)
+    doShow()
+    self.lastUserWindowCommand = "show"
+  -- --------------------------------------------------
+  elseif self.windowCommand == "autoshow" and self.lastUserWindowCommand ~= "hide"
+  then
+    -- The addon requests showing the window
+    -- Allow if either settings allow auto showing, or the window was auto-hidden from show state
+    doShow()
   end
   -- --------------------------------------------------
   self.windowCommand = nil
@@ -121,23 +146,16 @@ end
 
 ---Attempt to close if holdOpen is false (holds open if user manually called up the window)
 ---@param callLocation string The location where this is called from
-function taskListPanelModule:AutoClose(callLocation)
-  if BuffomatShared.AutoClose then
-    -- If the window is not hold open and the buff button exists and is disabled, attempt to close the window
-    if not self.holdOpen and self.buffButton and not self.buffButton.frame:IsEnabled() then
-      self.windowCommand = "autoClose"
-      self.windowCommandCallLocation = callLocation
-      return
-    end
-  else
-    local fade = BuffomatShared.FadeWhenNothingToDo or 0.65
-    self:SetAlpha(fade) -- fade the window, default 65%
-  end
+function taskListPanelModule:AutoHide(callLocation)
+  -- If the window is not hold open and the buff button exists and is disabled, attempt to close the window
+  self.windowCommand = "autohide"
+  self.windowCommandCallLocation = callLocation
 end
 
-function taskListPanelModule:ShowWindowHoldOpen(holdOpen)
-  self.holdOpen = holdOpen
-  self:ShowWindow("tlp:showWindowHoldOpen")
+---@param callLocation string The location where this is called from
+function taskListPanelModule:AutoShow(callLocation)
+  self.windowCommand = "autoshow"
+  self.windowCommandCallLocation = callLocation
 end
 
 ---@param callLocation string The location where this is called from
@@ -259,15 +277,15 @@ function taskListPanelModule:SavePosition()
 end
 
 function taskListPanelModule:OnCombatStart()
-  self:AutoClose("tlp:combatStart")
-  self.saveBuffButtonText = self.buffButton.label:GetText()
-  self.buffButton:SetText(_t("castButton.InCombat"))
+  self:AutoHide("tlp:combatStart")
+
+  if self.buffButton then
+    self.saveBuffButtonText = self.buffButton.label:GetText()
+    self.buffButton:SetText(_t("castButton.InCombat"))
+  end
 end
 
 function taskListPanelModule:OnCombatStop()
-  if BuffomatShared.AutoOpen then
-    self:ShowWindow("tlp:combatStop/autoOpen")
-  end
   if self.buffButton and self.buffButton.label:GetText() == _t("castButton.InCombat") then
     self.buffButton:SetText(self.saveBuffButtonText)
     self.saveBuffButtonText = ''

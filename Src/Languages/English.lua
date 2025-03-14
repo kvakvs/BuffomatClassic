@@ -65,8 +65,8 @@ function englishModule:Translations()
     ["options.short.AutoDismount"] = "Auto dismount",
     ["options.short.AutoDismountFlying"] = "Auto dismount flying",
     ["options.short.AutoDisTravel"] = "Auto leave travel form",
-    ["options.short.AutoOpen"] = "Auto open Buffomat",
-    ["options.short.AutoClose"] = "Auto close Buffomat",
+    -- ["options.short.AutoOpen"] = "Auto open Buffomat. Prefer staying hidden.",
+    -- ["options.short.AutoClose"] = "Auto close Buffomat. Prefer staying open.",
     ["options.short.AutoStand"] = "Auto stand up",
     ["options.short.BuffTarget"] = "Buff target first",
     ["options.short.Carrot"] = "Warn about mount items",
@@ -104,9 +104,7 @@ function englishModule:Translations()
     ["options.short.UseRank"] = "Use ranked buffs",
     ["options.short.VisibleCategories"] = "Show buffs (per character setting)",
     ["options.short.FadeWhenNothingToDo"] = "Fade Buffomat window when no tasks",
-
-    ["options.long.FadeWhenNothingToDo"] =
-    "Set Alpha opacity of the Buffomat window when there's nothing to do",
+    ["options.long.FadeWhenNothingToDo"] = "Set Alpha opacity of the Buffomat window when there's nothing to do",
     ["options.long.ActivateBomOnSpiritTap"] =
     "Disable Buffomat if priest 'Spirit tap' is active and player mana is below %",
     ["options.long.ReputationTrinket"] = "Remind to unequip reputation trinket",
@@ -114,8 +112,8 @@ function englishModule:Translations()
     ["options.long.AutoDismount"] = "Auto-dismount from the ground mount on cast",
     ["options.long.AutoDismountFlying"] = "Auto-drop from the flying mount on cast (OUCH)",
     ["options.long.AutoDisTravel"] = "Auto-remove travel form (Does not work in Classic)",
-    ["options.long.AutoOpen"] = "Auto show Buffomat, when there's work to do",
-    ["options.long.AutoClose"] = "Auto close Buffomat, when the last task is done",
+    -- ["options.long.AutoOpen"] = "Auto show Buffomat, when there's work to do",
+    -- ["options.long.AutoClose"] = "Auto close Buffomat, when the last task is done",
     ["options.long.AutoStand"] = "If the character was sitting, Buffomat will stand up the character",
     ["options.long.BuffTarget"] = "Also try and buff the current target",
     ["options.long.Carrot"] = "Remind to unequip Riding/Flight trinkets",
@@ -436,8 +434,8 @@ function englishModule:Translations()
     ["label.ForceCast.TargetList"] = "Target List",
     ["label.SpellsDialog.ProfileSelector"] = "Buff choices for profile",
     ["label.SpellsDialog.GroupScanSelector"] = "Watch raid groups",
-    ["taskList.holdOpenComment"] =
-    "Buffomat window was opened by the user. Click X or press %s to allow auto-closing again.",
+    -- ["taskList.holdOpenComment"] =
+    -- "Buffomat window was opened by the user. Click X or press %s to allow auto-closing again.",
     ["binding.notSet"] = "[not set]",
   }
 end

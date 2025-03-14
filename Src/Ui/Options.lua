@@ -67,8 +67,8 @@ function optionsModule:CreateGeneralOptionsTable()
     type = "group",
     name = "1. " .. _t("options.general.group.General"),
     args = {
-      autoOpen = self:TemplateCheckbox("AutoOpen", nil, nil, nil),
-      autoClose = self:TemplateCheckbox("AutoClose", nil, nil, nil),
+      -- autoOpen = self:TemplateCheckbox("AutoOpen", nil, nil, nil),
+      -- autoClose = self:TemplateCheckbox("AutoClose", nil, nil, nil),
       fadeWhenNothingToDo = self:TemplateRange(
         "FadeWhenNothingToDo", 0.25, 1.0, 0.05,
         BuffomatShared, "FadeWhenNothingToDo",

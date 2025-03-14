@@ -367,7 +367,7 @@ function BuffomatAddon:MakeSlashCommand()
     {
       command = "",
       description = _t("SlashOpen"),
-      handler = function() taskListPanelModule:ShowWindowHoldOpen(true) end
+      handler = function() taskListPanelModule:ShowWindow("slash:show") end
     },
   }
 end

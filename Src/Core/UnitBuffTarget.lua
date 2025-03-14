@@ -43,7 +43,8 @@ end
 
 function buffTargetClass:GetText()
   if self.unitName == "player" then
-    return buffomatModule:Color("999999", _t("task.target.Self"))
+    return "" -- no text for 'self' buffs
+    -- return buffomatModule:Color("999999", _t("task.target.Self"))
   end
   return self.link or self.unitName
 end

@@ -130,9 +130,9 @@ function taskListClass:Display()
 
   local haveAnyTasks = next(self.lowPrioComments) or next(self.comments) or next(self.tasks)
   if haveAnyTasks and not taskListPanelModule:IsWindowVisible() then
-    taskListPanelModule:ShowWindow("taskList:Display/haveTasks") -- have tasks, show the window
-  else
-    taskListPanelModule:AutoClose("taskList:Display/noTasks")    -- no tasks, attempt to close the window
+    taskListPanelModule:AutoShow("tl:Display/haveTasks") -- have tasks, show the window
+  -- else
+    -- taskListPanelModule:AutoHide("tl:Display/noTasks")    -- no tasks, attempt to close the window
   end
 
   for _i, text in pairs(self.lowPrioComments) do
@@ -149,16 +149,6 @@ function taskListClass:Display()
   end
   for _, task in pairs(self.tasks) do
     taskListPanelModule:AddMessage(task:Format())
-  end
-
-  -- Low prio comment if the window is held open by the user
-  if taskListPanelModule.holdOpen then
-    taskListPanelModule:AddMessage(
-      buffomatModule:Color(
-        "aaaaaa",
-        string.format(_t("taskList.holdOpenComment"), GetBindingKey("BUFFOMAT_WINDOW") or _t("binding.notSet"))
-      )
-    )
   end
 end
 

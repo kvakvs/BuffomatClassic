@@ -20,14 +20,14 @@ function frenchModule:Translations()
     ["options.short.ShowMinimapButton"] = "Montrer bouton minimap",
     ["options.short.LockMinimapButton"] = "Verrouiller position bouton minimap",
     ["options.short.LockMinimapButtonDistance"] = "Distance minimale bouton minimap",
-    ["options.short.AutoOpen"] = "Ouvrir/fermer automatiquement",
-    ["options.short.AutoClose"] = "Fermer automatiquement",
+    -- ["options.short.AutoOpen"] = "Ouvrir/fermer automatiquement",
+    -- ["options.short.AutoClose"] = "Fermer automatiquement",
     ["options.short.DeathBlock"] = "Ne pas buff de groupe quand quelqu'un est mort",
     ["options.short.NoGroupBuff"] = "Ne pas utiliser les buffs de groupe",
     ["options.short.SameZone"] = "Uniquement dans la même zone",
 
-    ["options.long.AutoOpen"] = "Ouvrir/fermer automatiquement, lorsque des tâches sont disponibles",
-    ["options.long.AutoClose"] = "Fermer automatiquement, lorsque la dernière tâche est terminée",
+    -- ["options.long.AutoOpen"] = "Ouvrir/fermer automatiquement, lorsque des tâches sont disponibles",
+    -- ["options.long.AutoClose"] = "Fermer automatiquement, lorsque la dernière tâche est terminée",
 
     HeaderRenew = "Renouveler avant expiration (en Secondes)",
 
