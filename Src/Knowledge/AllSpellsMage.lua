@@ -57,7 +57,7 @@ function mageModule:SetupMageSpells(allBuffs, enchantments)
                :HideInCata()
   -- Ice Armor / eisrüstung
   buffDefModule:createAndRegisterBuff(allBuffs, 10220, nil)
-               :BuffType("seal")
+               :IsOwn(true)
                :IsDefault(false)
                :SingleFamily({ 168, 7300, 7301, -- Frost Armor 1-3
                                7302, 7320, 10219, 10220, -- Ice Armor 1-4
@@ -67,7 +67,7 @@ function mageModule:SetupMageSpells(allBuffs, enchantments)
                :Category("class")
   -- Ice Barrier
   buffDefModule:createAndRegisterBuff(allBuffs, 11426, nil)
-               :BuffType("seal")
+               :IsOwn(true)
                :IsDefault(false)
                :SingleDuration(allBuffsModule.MINUTE)
                :SingleFamily({ 11426, 13031, 13032, 13033, -- Ice Barrier 1-4
@@ -77,7 +77,7 @@ function mageModule:SetupMageSpells(allBuffs, enchantments)
                :Category("class")
   -- TBC: Molten Armor
   buffDefModule:createAndRegisterBuff(allBuffs, 30482, nil)
-               :BuffType("seal")
+               :IsOwn(true)
                :IsDefault(false)
                :SingleFamily({ 30482, -- TBC: Molten Armor 1
                                43045, 43046 }) -- WotLK: Molten Armor 2, 3
@@ -86,7 +86,7 @@ function mageModule:SetupMageSpells(allBuffs, enchantments)
                :RequireTBC()
   -- Mage Armor / magische rüstung
   buffDefModule:createAndRegisterBuff(allBuffs, 22783, nil)
-               :BuffType("seal")
+               :IsOwn(true)
                :IsDefault(false)
                :SingleFamily({ 6117, 22782, 22783, -- Mage Armor 1-3
                                27125, -- TBC: Mage Armor 4
