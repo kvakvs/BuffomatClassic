@@ -109,6 +109,9 @@ function taskListPanelModule:WindowCommand(command)
   if not self.windowCommand then
     return
   end
+  BuffomatAddon:Print("Window command: " .. self.windowCommand
+    .. "; lastuser: " .. tostring(self.lastUserWindowCommand)
+    .. "; location: " .. tostring(self.windowCommandCallLocation))
 
   if self.windowCommand == "hide" then
     -- User hides the window (and stay hidden)
@@ -119,15 +122,18 @@ function taskListPanelModule:WindowCommand(command)
     -- The addon requests hiding the window
     -- Allow if either settings allow auto hiding, or the window was auto-shown from hide state
     -- doHide()
-    local fade = BuffomatShared.FadeWhenNothingToDo or 0.5
+    local fade = BuffomatShared.FadeWhenNothingToDo or 0.25
     self:SetAlpha(fade) -- fade the window, default 50%
+    if BuffomatShared.AutoClose then
+      doHide()
+    end
     -- --------------------------------------------------
   elseif self.windowCommand == "show" then
     -- The user shows the window (and it stays visible)
     doShow()
     self.lastUserWindowCommand = "show"
-  -- --------------------------------------------------
-  elseif self.windowCommand == "autoshow" and self.lastUserWindowCommand ~= "hide"
+    -- --------------------------------------------------
+  elseif self.windowCommand == "autoshow" --and self.lastUserWindowCommand ~= "hide"
   then
     -- The addon requests showing the window
     -- Allow if either settings allow auto showing, or the window was auto-hidden from show state

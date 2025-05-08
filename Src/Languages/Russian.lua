@@ -84,7 +84,7 @@ function russianModule:Translations()
     ["options.short.ActivateBomOnSpiritTap"] = "Запретить Бафомёт, при 'Захвате духа' жреца",
     ["options.short.ReputationTrinket"] = "Не забудьте (снять)экипировать Жетон Серебряного Рассвета",
     -- ["options.short.AutoOpen"] = "Авто-открытие. Предпочитать оставаться закрытым.",
-    -- ["options.short.AutoClose"] = "Авто-закрытие. Предпочитать оставаться открытым.",
+    ["options.short.AutoClose"] = "Авто-закрытие. Предпочитать оставаться открытым.",
     ["options.short.DeathBlock"] = "Не применять групповые эффекты, когда кто-то мертв",
     ["options.short.GroupBuff"] = "Групповые бафы, если это экономит ману (увеличенный расход реагентов)",
     ["options.short.InInstance"] = "Сканировать бафы в подземельях и рейдах",
@@ -112,7 +112,7 @@ function russianModule:Translations()
     ["options.short.CustomBuffSorting"] = "Показать доп. поля для сортировки бафов",
 
     -- ["options.long.AutoOpen"] = "Автоматически открывать Бафомёт, когда есть задачи",
-    -- ["options.long.AutoClose"] = "Автоматически закрывать Бафомёт, когда все задачи выполнены",
+    ["options.long.AutoClose"] = "Автоматически закрывать Бафомёт, когда все задачи выполнены",
 
     ["options.long.FadeWhenNothingToDo"] = "Установить прозрачность окна Бафомёта, если нечего делать",
     ["options.long.ActivateBomOnSpiritTap"] =

@@ -1,5 +1,11 @@
 # Changelog
 
+## Buffomat Classic 2025.5.1
+- Min fade opacity lowered to 0.1 (10%) 
+- An option was reintroduced: Auto close. When active, and the window would 
+fade due to no tasks available, it will hide instead till the next scan. 
+The window will be shown again if there's a buff to refresh.
+
 ## Buffomat Classic 2025.3.4 / 2025.5.0
 - Big UI overhaul: New task list window, simpler and faster, new spell settings, easier access to main settings, multiple minor UI improvements, too.
 - Window hide/fade/show behaviour has changed to be less annoying and more like the previous version.
