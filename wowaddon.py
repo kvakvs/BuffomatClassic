@@ -10,12 +10,12 @@ import subprocess
 import sys
 import zipfile
 
-VERSION = '2025.3.4'  # year.month.build_num
+VERSION = '2025.5.0'  # year.month.build_num
 
 ADDON_NAME_CLASSIC = 'BuffomatClassic'  # Directory and zip name
 ADDON_TITLE_CLASSIC = "Buffomat Classic"  # Title field in TOC
 
-UI_VERSION_CLASSIC = '11506'  # Classic
+UI_VERSION_CLASSIC = '11507'
 UI_VERSION_CLASSIC_TBC = '20504'  # The Burning Crusade
 UI_VERSION_CLASSIC_WOTLK = '30402'  # WotLK
 UI_VERSION_CLASSIC_CATA = '40402'  # Cataclysm
