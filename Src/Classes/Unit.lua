@@ -72,15 +72,15 @@ function unitModule:UnitAura(unitId, buffIndex, filter)
 
       if duration > 0 and (expirationTime == nil or expirationTime == 0) then
         local destName = UnitFullName(unitId) ---@type string
-        local buffOnPlayer = partyModule.unitAurasLastUpdated[destName]
+        local lastUpdatedTime = partyModule.unitAurasLastUpdated[destName]
 
-        if buffOnPlayer and buffOnPlayer[name] then
-          expirationTime = (buffOnPlayer[name] or 0) + duration
+        if lastUpdatedTime then
+          expirationTime = lastUpdatedTime + duration
 
           local now = GetTime()
 
           if expirationTime <= now then
-            buffOnPlayer[name] = now
+            partyModule.unitAurasLastUpdated[destName] = now
             expirationTime = now + duration
           end
         end
