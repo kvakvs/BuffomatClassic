@@ -109,9 +109,6 @@ function taskListPanelModule:WindowCommand(command)
   if not self.windowCommand then
     return
   end
-  BuffomatAddon:Print("Window command: " .. self.windowCommand
-    .. "; lastuser: " .. tostring(self.lastUserWindowCommand)
-    .. "; location: " .. tostring(self.windowCommandCallLocation))
 
   if self.windowCommand == "hide" then
     -- User hides the window (and stay hidden)

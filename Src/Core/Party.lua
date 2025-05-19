@@ -36,7 +36,7 @@ partyModule.ALL_INVALID_GROUPS = {
   [8] = true
 }
 
-local buffomatModule = LibStub("Buffomat-Buffomat") --[[@as BuffomatModule]]
+-- local buffomatModule = LibStub("Buffomat-Buffomat") --[[@as BuffomatModule]]
 local toolboxModule = LibStub("Buffomat-LegacyToolbox") --[[@as LegacyToolboxModule]]
 local unitCacheModule = LibStub("Buffomat-UnitCache") --[[@as UnitCacheModule]]
 local taskScanModule = LibStub("Buffomat-TaskScan") --[[@as TaskScanModule]]
@@ -176,10 +176,15 @@ function partyModule:RefreshParty(party, invalidGroups)
       and not UnitPlayerOrPetInParty("target") --out of party or raid
       and not UnitPlayerOrPetInRaid("target")
   then
-    local targetedUnit = unitCacheModule:GetUnit("target", nil, nil, nil)
-    if targetedUnit then
-      (targetedUnit).group = 9 --move them outside of 8 buff groups
-      party:Add(targetedUnit)
+    -- local targetedUnit = unitCacheModule:GetUnit("target", nil, nil, nil)
+    -- if targetedUnit then
+    --   (targetedUnit).group = 9 --move them outside of 8 buff groups
+    --   party:Add(targetedUnit)
+    -- end
+    -- If a drive-by buff option is enabled, always have the target in the party
+    local targetUnit = unitCacheModule:GetUnit("target", nil, nil, nil)
+    if targetUnit then
+      party:Add(targetUnit)
     end
   end
 
@@ -296,13 +301,13 @@ local function validatePartyMembers(party)
   return true
 end
 
-local function printInvalidationMap()
-  local out = "["
-  for group, _true in pairs(partyModule.partyCacheInvalidation) do
-    out = out .. tostring(group) .. ", "
-  end
-  return out .. "]"
-end
+-- local function printInvalidationMap()
+--   local out = "["
+--   for group, _true in pairs(partyModule.partyCacheInvalidation) do
+--     out = out .. tostring(group) .. ", "
+--   end
+--   return out .. "]"
+-- end
 
 ---@return BomParty
 function partyModule:GetParty()
@@ -321,11 +326,9 @@ function partyModule:GetParty()
 
   if party then
     -- Partial refresh of existing raid or full party refresh
-    --BOM:Debug("party checkpoint 1 " .. printInvalidationMap())
     party = partyModule:RefreshParty(party, self.partyCacheInvalidation)
   else
     -- If previous cached party failed, do full refresh
-    --BOM:Debug("party checkpoint 2 (all groups)")
     party = partyModule:RefreshParty(partyModule:New(), self.ALL_INVALID_GROUPS)
   end
 

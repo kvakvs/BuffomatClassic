@@ -1,28 +1,39 @@
 # Changelog
 
+## Buffomat Classic 2025.5.3
+
+- Option for drive-by buffing, your target is considered for a buff check, even if not part of the group.
+
 ## Buffomat Classic 2025.5.1
-- Min fade opacity lowered to 0.1 (10%) 
-- An option was reintroduced: Auto close. When active, and the window would 
-fade due to no tasks available, it will hide instead till the next scan. 
-The window will be shown again if there's a buff to refresh.
+
+- Min fade opacity lowered to 0.1 (10%)
+- An option was reintroduced: Auto close. When active, and the window would
+  fade due to no tasks available, it will hide instead till the next scan.
+  The window will be shown again if there's a buff to refresh.
 
 ## Buffomat Classic 2025.3.4 / 2025.5.0
+
 - Big UI overhaul: New task list window, simpler and faster, new spell settings, easier access to main settings, multiple minor UI improvements, too.
 - Window hide/fade/show behaviour has changed to be less annoying and more like the previous version.
 
 ## Buffomat Classic 2025.1.0, 2025.2.0
+
 - Found possible reason for group buffs not working. Releasing a beta fix.
 - Version bump with WoW classic updated to 1.15.6
 
 ## Buffomat Classic 2024.7.1
+
 - When Macro edit frame is open, Buffomat will sleep
 - Sorting the buffs inside each group alphabetically
 
 ## Buffomat Classic 2024.7.0
-- [Paladin] In Cataclysm Crusader aura has changed its shapeshift-id from 7 to 
+
+- [Paladin] In Cataclysm Crusader aura has changed its shapeshift-id from 7 to
+
 5. This update will fix the crusader aura autobuff behaviour in Cataclysm.
 
 ## Buffomat Classic 2024.6.2
+
 - [Mage] Mana gem fixed.
 - [Cataclysm] Added Abyssal Clam and older clams to the openable containers list.
 - [Cataclysm] Alchemist only Flask of Enhancement added.
@@ -59,12 +70,12 @@ The window will be shown again if there's a buff to refresh.
 - Single rows for each food buff are now grouped per stat they provide, including all levels (helps while leveling).
   Highest
   available in your bag will be eaten first (and a setting to choose lowest first).
-    - New grouped buffs are marked with green text
-    - New option (last in the "Scan Options") to prefer either highest available
-      item, or lowest. Lowest is useful when leveling, to consume your lowest level consumables first.
-    - Clicking the icon in the buff list to print all items, which can provide this buff, from lowest to highest.
-    - Added food eating auras to ignore list to hide the food buff task while eating, so it doesn't get eaten multiple
-      times.
+  - New grouped buffs are marked with green text
+  - New option (last in the "Scan Options") to prefer either highest available
+    item, or lowest. Lowest is useful when leveling, to consume your lowest level consumables first.
+  - Clicking the icon in the buff list to print all items, which can provide this buff, from lowest to highest.
+  - Added food eating auras to ignore list to hide the food buff task while eating, so it doesn't get eaten multiple
+    times.
 - [Known Bug] Soon after resurrecting under the flask effect, Buffomat can show a task for reflasking. It disappears a
   second or two later.
 - In raid, staggered per-group updates now will skip empty 5man groups, which will result in faster updates overall.
@@ -239,10 +250,10 @@ The window will be shown again if there's a buff to refresh.
 - All versions of addon are now merged into one, and you should delete (either automatically or manually the old "
   Buffomat Classic TBC")
 - A big new wave of updates for Wrath of the Lich King:
-    - New class spell ranks
-    - New elixirs
-    - New food
-    - New weapon enchantments
+  - New class spell ranks
+  - New elixirs
+  - New food
+  - New weapon enchantments
 - A new page in Options which allows Visibility selection for buff categories. Invisible categories are not scanned,
   even if they're checked.
 - Skip mage Intellect buff if K'iru's Song of Victory is up in SWP or the island. Same for group buffs (Arcane
@@ -906,4 +917,4 @@ The window will be shown again if there's a buff to refresh.
 
 ## 0.10
 
-- first release_
+- first release\_

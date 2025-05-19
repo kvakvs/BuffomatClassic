@@ -10,7 +10,7 @@ import subprocess
 import sys
 import zipfile
 
-VERSION = '2025.5.1'  # year.month.build_num
+VERSION = '2025.5.3'  # year.month.build_num
 
 ADDON_NAME_CLASSIC = 'BuffomatClassic'  # Directory and zip name
 ADDON_TITLE_CLASSIC = "Buffomat Classic"  # Title field in TOC
@@ -24,10 +24,11 @@ COPY_DIRS = ['Src', 'Ace3', 'Sounds', 'Textures']
 COPY_FILES = ['Bindings.xml', 'CHANGELOG.md', 'embeds.xml',
               'LICENSE.txt', 'README.md', 'README.Deutsch.txt']
 
-SUFFIX_CLASSIC = "-Classic" # "_Vanilla"
-SUFFIX_TBC = "-BCC" # "_TBC"
-SUFFIX_WRATH = "-WOTLKC" # "_Wrath"
-SUFFIX_CATA = "-Cata" # "_Cata???"
+SUFFIX_CLASSIC = "-Classic"  # "_Vanilla"
+SUFFIX_TBC = "-BCC"  # "_TBC"
+SUFFIX_WRATH = "-WOTLKC"  # "_Wrath"
+SUFFIX_CATA = "-Cata"  # "_Cata???"
+
 
 class BuildTool:
     def __init__(self, args: argparse.Namespace):
