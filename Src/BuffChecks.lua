@@ -299,6 +299,7 @@ function buffChecksModule:PartyNeedsPaladinBlessing(buffDef, party, buffCtx)
 
   ---@param partyMember BomUnit
   for i, partyMember in pairs(party.byUnitId) do
+    local targetLevel = UnitLevel(partyMember.unitId)
     local ok = false
     local notGroup = false
 
@@ -330,7 +331,8 @@ function buffChecksModule:PartyNeedsPaladinBlessing(buffDef, party, buffCtx)
     if partyMember.NeedBuff
             and ok
             and partyMember.isConnected
-            and (not buffomatModule.shared.SameZone or partyMember.isSameZone) then
+            and (not buffomatModule.shared.SameZone or partyMember.isSameZone)
+            and not (buffDef.limitations and buffDef.limitations.minLevel and buffDef.limitations.minLevel > 0 and targetLevel < buffDef.limitations.minLevel) then
       local found = false
       local partyMemberBuff = partyMember.knownBuffs[buffDef.buffId]
 
@@ -366,6 +368,7 @@ end
 function buffChecksModule:PartyNeedsBuff(buffDef, party, buffCtx)
   --spells
   for i, partyMember in pairs(party.byUnitId) do
+    local targetLevel = UnitLevel(partyMember.unitId)
     local ok = false
     --local profileBuff = buffomatModule.currentProfile.Spell[buffDef.buffId]
     local profileBuff = --[[---@not nil]] buffDefModule:GetProfileBuff(buffDef.buffId, nil)
@@ -396,7 +399,7 @@ function buffChecksModule:PartyNeedsBuff(buffDef, party, buffCtx)
             and (not buffomatModule.shared.SameZone
             or (partyMember.isSameZone
             or partyMember.class == "pet" and (--[[---@not nil]] partyMember.owner).isSameZone))
-    then
+            and not (buffDef.limitations and buffDef.limitations.minLevel and buffDef.limitations.minLevel > 0 and targetLevel < buffDef.limitations.minLevel) then
       local found = false
       local partyMemberBuff = partyMember.knownBuffs[buffDef.buffId]
 
