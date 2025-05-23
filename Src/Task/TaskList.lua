@@ -131,8 +131,6 @@ function taskListClass:Display()
   local haveAnyTasks = next(self.lowPrioComments) or next(self.comments) or next(self.tasks)
   if haveAnyTasks and not taskListPanelModule:IsWindowVisible() then
     taskListPanelModule:AutoShow("tl:Display/haveTasks") -- have tasks, show the window
-  -- else
-    -- taskListPanelModule:AutoHide("tl:Display/noTasks")    -- no tasks, attempt to close the window
   end
 
   for _i, text in pairs(self.lowPrioComments) do

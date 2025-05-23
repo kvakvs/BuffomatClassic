@@ -157,6 +157,9 @@ end
 
 ---@param callLocation string The location where this is called from
 function taskListPanelModule:AutoShow(callLocation)
+  if not BuffomatShared.AutoOpen then
+    return
+  end
   self.windowCommand = "autoshow"
   self.windowCommandCallLocation = callLocation
 end

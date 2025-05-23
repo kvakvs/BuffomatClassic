@@ -1637,7 +1637,7 @@ end
 function taskScanModule:Finalize(context)
   -- Open Buffomat if any cast tasks were added to the task list
   if #self.tasklist.tasks > 0 or #self.tasklist.comments > 0 then
-    taskListPanelModule:ShowWindow("ts:Finalize/haveTasks")
+    taskListPanelModule:AutoShow("ts:Finalize/haveTasks")
 
     -- to avoid repeating sound, check whether task list before we started had length of 0
     if self.taskListSizeBeforeScan == 0 then

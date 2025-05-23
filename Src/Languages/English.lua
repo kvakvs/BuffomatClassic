@@ -59,27 +59,25 @@ function englishModule:Translations()
     ["options.general.group.Visibility"] = "Show Categories",
     ["options.general.group.Class"] = "Class Options",
 
-    ["options.short.ActivateBomOnSpiritTap"] = "Activate on Spirit Tap below mana %",
-    ["options.short.ReputationTrinket"] = "Warn about reputation items",
-    ["options.short.AutoCrusaderAura"] = "Suggest crusader aura",
-    ["options.short.AutoDismount"] = "Auto dismount",
-    ["options.short.AutoDismountFlying"] = "Auto dismount flying",
-    ["options.short.AutoDisTravel"] = "Auto leave travel form",
-    -- ["options.short.AutoOpen"] = "Auto open Buffomat. Prefer staying hidden.",
-    ["options.short.AutoClose"] = "Auto close Buffomat, when no tasks.",
-    ["options.short.AutoStand"] = "Auto stand up",
-    ["options.short.BuffTarget"] = "Buff target first",
-    ["options.short.Carrot"] = "Warn about mount items",
-    ["options.short.DeathBlock"] = "Pause if someone is dead",
-    ["options.short.DontUseConsumables"] = "Dont use consumables",
-    ["options.short.ShamanFlametongueRanked"] = "Shaman: Use downranked Flametongue on mainhand",
-    ["options.short.CustomBuffSorting"] = "Show sorting controls in the buff list",
-
-    ["options.short.SomeoneIsDrinking"] = "When someone is drinking...",
     ["options.convenience.SomeoneIsDrinking.Hide"] = "Ignore the fact",
     ["options.convenience.SomeoneIsDrinking.LowPrio"] = "Show note in tasks",
     ["options.convenience.SomeoneIsDrinking.Show"] = "Show note in tasks and show Buffomat",
 
+    ["options.short.ActivateBomOnSpiritTap"] = "Activate on Spirit Tap below mana %",
+    ["options.short.AutoClose"] = "Auto close Buffomat, when no tasks.",
+    ["options.short.AutoCrusaderAura"] = "Suggest crusader aura",
+    ["options.short.AutoDismount"] = "Auto dismount",
+    ["options.short.AutoDismountFlying"] = "Auto dismount flying",
+    ["options.short.AutoDisTravel"] = "Auto leave travel form",
+    ["options.short.AutoOpen"] = "Auto show Buffomat when there are tasks",
+    ["options.short.AutoStand"] = "Auto stand up",
+    ["options.short.BestAvailableConsume"] = "Choose best available consumable",
+    ["options.short.BuffTarget"] = "Buff target first",
+    ["options.short.Carrot"] = "Warn about mount items",
+    ["options.short.CustomBuffSorting"] = "Show sorting controls in the buff list",
+    ["options.short.DeathBlock"] = "Pause if someone is dead",
+    ["options.short.DontUseConsumables"] = "Dont use consumables",
+    ["options.short.FadeWhenNothingToDo"] = "Fade Buffomat window when no tasks",
     ["options.short.InInstance"] = "Scan in instance",
     ["options.short.InPVP"] = "Scan in PvP",
     ["options.short.InWorld"] = "Scan in world",
@@ -90,35 +88,41 @@ function englishModule:Translations()
     ["options.short.OpenLootable"] = "Open lootable containers",
     ["options.short.PreventPVPTag"] = "Prevent PvP tag",
     ["options.short.ReplaceSingle"] = "Replace single buffs",
+    ["options.short.ReputationTrinket"] = "Warn about reputation items",
     ["options.short.ResGhost"] = "Attempt ressing ghosts",
     ["options.short.SameZone"] = "Scan members in same zone",
     ["options.short.ScanInRestArea"] = "Scan in rest area",
     ["options.short.ScanInStealth"] = "Scan in stealth",
     ["options.short.ScanWhileMounted"] = "Scan while mounted",
-    ["options.short.BestAvailableConsume"] = "Choose best available consumable",
     ["options.short.SecondaryHand"] = "Missing offhand enchantment",
     ["options.short.SelfFirst"] = "Self first",
+    ["options.short.ShamanFlametongueRanked"] = "Shaman: Use downranked Flametongue on mainhand",
     ["options.short.ShowMinimapButton"] = "Show minimap button",
     ["options.short.SlowerHardware"] = "Scan buffs less often",
+    ["options.short.SomeoneIsDrinking"] = "When someone is drinking...",
     ["options.short.UseProfiles"] = "Use profiles",
     ["options.short.UseRank"] = "Use ranked buffs and downrank as necessary",
     ["options.short.VisibleCategories"] = "Show buffs (per character setting)",
-    ["options.short.FadeWhenNothingToDo"] = "Fade Buffomat window when no tasks",
-    ["options.long.FadeWhenNothingToDo"] = "Set Alpha opacity of the Buffomat window when there's nothing to do",
+
     ["options.long.ActivateBomOnSpiritTap"] =
     "Disable Buffomat if priest 'Spirit tap' is active and player mana is below %",
-    ["options.long.ReputationTrinket"] = "Remind to unequip reputation trinket",
+    ["options.long.AutoClose"] = "Auto close Buffomat, when the last task is done",
     ["options.long.AutoCrusaderAura"] = "Paladin: Auto crusader aura when mounted",
     ["options.long.AutoDismount"] = "Auto-dismount from the ground mount on cast",
     ["options.long.AutoDismountFlying"] = "Auto-drop from the flying mount on cast (OUCH)",
     ["options.long.AutoDisTravel"] = "Auto-remove travel form (Does not work in Classic)",
-    -- ["options.long.AutoOpen"] = "Auto show Buffomat, when there's work to do",
-    ["options.long.AutoClose"] = "Auto close Buffomat, when the last task is done",
+    ["options.long.AutoOpen"] =
+    "If checked, the task list window will appear when tasks are available, otherwise it will only appear when its hotkey is pressed.",
     ["options.long.AutoStand"] = "If the character was sitting, Buffomat will stand up the character",
+    ["options.long.BestAvailableConsume"] =
+    "If checked will select highest available consumable. Unchecked will select worst - useful while leveling to use old stuff first",
     ["options.long.BuffTarget"] = "Also try and buff the current target",
     ["options.long.Carrot"] = "Remind to unequip Riding/Flight trinkets",
+    ["options.long.CustomBuffSorting"] = "Show additional text field in the buff list. " ..
+        "Any entered value will be used for sorting the buff tasks.",
     ["options.long.DeathBlock"] = "Don't cast group buffs, when somebody is dead",
     ["options.long.DontUseConsumables"] = "Use consumables only with Shift, Ctrl or Alt",
+    ["options.long.FadeWhenNothingToDo"] = "Set Alpha opacity of the Buffomat window when there's nothing to do",
     ["options.long.GroupBuff"] = "Cast group buffs when necessary (extra reagent cost)",
     ["options.long.InInstance"] = "Scan buffs in dungeons and raids",
     ["options.long.InPVP"] = "Scan buffs in battlegrounds",
@@ -130,33 +134,26 @@ function englishModule:Translations()
     ["options.long.OpenLootable"] = "Open lootable items in the bags",
     ["options.long.PreventPVPTag"] = "Skip buffing PvP targets when your PvP is off",
     ["options.long.ReplaceSingle"] = "Replace single buff with group buffs",
-    ["options.long.ResGhost"] =
-    "Attempt to resurrect ghosts in hopes that the body is reachable (no distance check)",
+    ["options.long.ReputationTrinket"] = "Remind to unequip reputation trinket",
+    ["options.long.ResGhost"] = "Attempt to resurrect ghosts in hopes that the body is reachable (no distance check)",
     ["options.long.SameZone"] = "Watch only when in same zone",
     ["options.long.ScanInRestArea"] = "Scan buffs in rest areas (city and inn)",
     ["options.long.ScanInStealth"] = "Scan buffs in stealth",
     ["options.long.ScanWhileMounted"] = "Scan while on a player is mounted",
-    ["options.long.BestAvailableConsume"] =
-    "If checked will select highest available consumable. Unchecked will select worst - useful while leveling to use old stuff first",
     ["options.long.SecondaryHand"] = "Warn if secondary hand enchantment is missing",
     ["options.long.SelfFirst"] = "Always buff self first",
+    ["options.long.ShamanFlametongueRanked"] = "Shaman: For spellhancement shamans use downranked Flametongue " ..
+        "on main hand and max rank on the offhand. Use this when your weapon speeds are matching and you " ..
+        "have a spell power mainhand weapon.",
     ["options.long.ShowClassicConsumables"] = "Show consumables available in Classic",
     ["options.long.ShowMinimapButton"] = "Show minimap button",
     ["options.long.ShowTBCConsumables"] = "Show consumables available in TBC",
     ["options.long.SlowerHardware"] = "Less frequent buff checks (slow hardware/raid)",
     ["options.long.SomeoneIsDrinking"] = "When someone is drinking a message can be shown or hidden",
-    ["options.long.UseProfiles"] =
-    "Use profiles based on whether the player is solo, in a group, raid or a battleground",
+    ["options.long.UseProfiles"] = "Use profiles based on whether the player is solo, in a group, raid or a battleground",
     ["options.long.UseRank"] =
     "Use spells with ranks, if the target level is too low, next time a lower rank will be used",
-    ["options.long.VisibleCategories"] =
-    "Show a category of buffs in the spells list (per character setting)",
-    ["options.long.ShamanFlametongueRanked"] =
-        "Shaman: For spellhancement shamans use downranked Flametongue "
-        .. "on main hand and max rank on the offhand. Use this when your weapon speeds are matching and you "
-        .. "have a spell power mainhand weapon.",
-    ["options.long.CustomBuffSorting"] = "Show additional text field in the buff list. "
-        .. "Any entered value will be used for sorting the buff tasks.",
+    ["options.long.VisibleCategories"] = "Show a category of buffs in the spells list (per character setting)",
 
     ["tasklist.IgnoredBuffOn"] = "Ignored %s: %s", -- when a buff is not listed because a better buff exists
     ["task.target.Self"] = "Self",                 -- use instead of name when buffing self
@@ -428,7 +425,8 @@ function englishModule:Translations()
     ["title.ForceTarget"] = "Force Buff With",
     ["title.ExcludeTarget"] = "Exclude When Buffing",
     ["button.ForceCast.AddTarget"] = "Add Target",
-    ["buttonTooltip.ForceCast.AddTarget"] = "Target a player or pet, and add that target to the force-cast/ignore list",
+    ["buttonTooltip.ForceCast.AddTarget"] =
+    "Target a player or pet, and add that target to the force-cast/ignore list",
     ["button.ForceCast.RemoveTarget"] = "Remove Target",
     ["buttonTooltip.ForceCast.RemoveTarget"] =
     "Target a player or pet, and remove that target from the force-cast/ignore list",

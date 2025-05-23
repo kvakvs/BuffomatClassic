@@ -3,6 +3,7 @@
 ## Buffomat Classic 2025.5.4
 
 - Spell downranking: Restored the old broken feature, where a spell would automatically downrank if casted on a target too low level. As there isn't a way for addon to know it, it will learn from unsuccessful casts (you will need to cast the same buff again after it has learned). Requires enabled option for Downranking in 4.Convenience options tab.
+- Reintroducing option "Autoshow" when disabled, the task list will not be auto-showing till user actually calls it with a hotkey or menu, regardless of whether there are tasks or not.
 
 ## Buffomat Classic 2025.5.3
 
