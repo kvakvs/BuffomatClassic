@@ -101,7 +101,7 @@ function englishModule:Translations()
     ["options.short.ShowMinimapButton"] = "Show minimap button",
     ["options.short.SlowerHardware"] = "Scan buffs less often",
     ["options.short.UseProfiles"] = "Use profiles",
-    ["options.short.UseRank"] = "Use ranked buffs",
+    ["options.short.UseRank"] = "Use ranked buffs and downrank as necessary",
     ["options.short.VisibleCategories"] = "Show buffs (per character setting)",
     ["options.short.FadeWhenNothingToDo"] = "Fade Buffomat window when no tasks",
     ["options.long.FadeWhenNothingToDo"] = "Set Alpha opacity of the Buffomat window when there's nothing to do",
@@ -147,7 +147,8 @@ function englishModule:Translations()
     ["options.long.SomeoneIsDrinking"] = "When someone is drinking a message can be shown or hidden",
     ["options.long.UseProfiles"] =
     "Use profiles based on whether the player is solo, in a group, raid or a battleground",
-    ["options.long.UseRank"] = "Use spells with ranks",
+    ["options.long.UseRank"] =
+    "Use spells with ranks, if the target level is too low, next time a lower rank will be used",
     ["options.long.VisibleCategories"] =
     "Show a category of buffs in the spells list (per character setting)",
     ["options.long.ShamanFlametongueRanked"] =
@@ -226,7 +227,7 @@ function englishModule:Translations()
     ["castButton.inactive.Vehicle"] = "No buffing in a vehicle",
     ["castbutton.inactive.GCD"] = "Global cooldown",
 
-    MsgDownGrade = "Spell rank downgrade %s for %s. Please cast again.",
+    ["error.castFailed.tooLowLevel"] = "Spell rank downgrade %s for %s. Please cast again.",
 
     CRUSADER_AURA_COMMENT = "Can auto-cast based on settings",
 

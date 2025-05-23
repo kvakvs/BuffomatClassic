@@ -874,6 +874,10 @@ function buffDefClass:Preload()
   end
 end
 
+--- Scan the buff spellids from lowest rank to highest, if the spellId is found, return the previous spellId which
+--- will be one rank lower. If nothing found, return whatever was last.
+---@param spellId number
+---@return number
 function buffDefClass:GetDownRank(spellId)
   local downrank = spellId
   for _i, eachSingleId in ipairs(self.singleFamily) do

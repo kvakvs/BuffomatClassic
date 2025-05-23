@@ -1,0 +1,7 @@
+# Buffomat Lua addon for World of Warcraft
+
+The addon is written in Lua with type specs, specify types where types can be known.
+
+This addon supports Classic World of Warcraft from the vanilla up to Wrath of the Lich King.
+The code uses Ace3 libraries where possible: For user interface, for addon state management, for option windows,
+game event management, timer management and minimap icon.

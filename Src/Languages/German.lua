@@ -193,7 +193,7 @@ function germanModule:Translations()
     ["castButton.inactive.Vehicle"] = "Kein Polieren am Fahrzeug",
     ["castbutton.inactive.GCD"] = "Globale Abklingzeit",
 
-    MsgDownGrade = "Erniedrige den Rang für %s auf %s. Bitte neu zaubern.",
+    ["error.castFailed.tooLowLevel"] = "Erniedrige den Rang für %s auf %s. Bitte neu zaubern.",
     ["castButton.NothingToDo"] = "Nichts zu tun",
     --MsgLocalRestart                             = "Die Lokalisierung wird erst nach einem Neustart übernommen (/reload)",
     ["castButton.NoMacroSlots"] = "Brauche Platz für ein Macro!",

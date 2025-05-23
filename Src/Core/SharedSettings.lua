@@ -23,7 +23,7 @@ sharedSettingsModule.defaults = {
 ---@field DebugLogging boolean
 ---@field PlaySoundWhenTask string Play a sound when task list is not empty
 ---@field Minimap BomMinimapSettings
----@field SpellGreaterEqualThan table
+---@field TargetTooLowLevel table
 ---@field CustomLocales table
 ---@field UIWindowScale number
 ---@field AutoOpen boolean Open the window when a task is available
@@ -80,7 +80,7 @@ sharedStateClass.__index = sharedStateClass
 function sharedSettingsModule:NewDefaultSharedSettings(init)
   local tab = init or self:Defaults()
   tab.Minimap = tab.Minimap or {}
-  tab.SpellGreaterEqualThan = tab.SpellGreaterEqualThan or {}
+  tab.TargetTooLowLevel = tab.TargetTooLowLevel or {}
   tab.CustomLocales = tab.CustomLocales or {}
 
   -- Upgrades from older versions (SomeoneIsDrinking was renamed from HideSomeoneIsDrinking)

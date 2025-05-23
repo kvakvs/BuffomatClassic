@@ -56,8 +56,8 @@ end
 ---@return string
 ---@nodiscard
 function macroClass:GetText()
-  local t = "#showtooltip\n/bom update"
-  for i, line in ipairs(self.lines) do
+  local t = "#showtooltip\n/bom update\n/bom _checkforerror"
+  for _, line in ipairs(self.lines) do
     t = t .. "\n" .. line
   end
   return t

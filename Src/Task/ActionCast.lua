@@ -80,7 +80,6 @@ end
 function actionCastClass:UpdateMacro(m)
   --Downgrade-Check
   local buffDef = allBuffsModule.buffFromSpellIdLookup[self.spellId]
-  local rank = ""
 
   if buffDef == nil then
     BuffomatAddon:Debug("Update macro: buffDef is nil for spellid=" .. tostring(self.spellId))
@@ -90,9 +89,9 @@ function actionCastClass:UpdateMacro(m)
   if BuffomatShared.UseRank
       or (self.target and (self.target).unitId == "target")
   then
-    local level = UnitLevel((self.target).unitId)
+    local targetLevel = UnitLevel((self.target).unitId)
 
-    if buffDef and level ~= nil and level > 0 then
+    if buffDef and targetLevel ~= nil and targetLevel > 0 then
       local spellChoices
 
       if buffDef.singleFamily
@@ -103,18 +102,37 @@ function actionCastClass:UpdateMacro(m)
         spellChoices = buffDef.groupFamily
       end
 
-      if spellChoices then
+      if spellChoices and targetLevel ~= nil and targetLevel > 0 then
         local newSpellId
 
-        for i, id in ipairs(spellChoices) do
-          if BuffomatShared.SpellGreaterEqualThan[id] == nil
-              or BuffomatShared.SpellGreaterEqualThan[id] < level then
-            newSpellId = id
-          else
-            break
-          end
-          if id == self.spellId then
-            break
+        -- Find the highest spell rank which has no learned min level, or a min level that satisfies the target level.
+        -- Iterate over spell choices in reverse order to find highest suitable rank
+        -- for _, tryRankSpellId in ipairs(spellChoices) do
+        --   if BuffomatShared.TargetTooLowLevel[tryRankSpellId] == nil
+        --       or targetLevel > BuffomatShared.TargetTooLowLevel[tryRankSpellId] then
+        --     newSpellId = tryRankSpellId
+        --   else
+        --     break
+        --   end
+        --   if tryRankSpellId == self.spellId then
+        --     -- Successfully found a spell that is suitable for the target level, no need to check lower ranks
+        --     break
+        --   end
+        -- end
+        -- self.spellId = newSpellId or self.spellId
+        -- Iterate spellChoices in reverse order to find highest suitable rank
+        for i = #spellChoices, 1, -1 do
+          local tryRankSpellId = spellChoices[i]
+
+          if IsSpellKnown(tryRankSpellId) then
+            -- Is this spell castable on this target?
+            -- * Do we not know what happens if we cast this spell? (no record in TargetTooLowLevel)
+            -- * Have we learned that the target level is too low? (have record in TargetTooLowLevel)
+            if BuffomatShared.TargetTooLowLevel[tryRankSpellId] == nil
+                or targetLevel > BuffomatShared.TargetTooLowLevel[tryRankSpellId] then
+              newSpellId = tryRankSpellId
+              break -- Found highest suitable rank, stop searching
+            end
           end
         end
         self.spellId = newSpellId or self.spellId
@@ -124,17 +142,13 @@ function actionCastClass:UpdateMacro(m)
 
   if self.temporaryDownrank then
     self.spellId = self.buffDef:GetDownRank(self.spellId)
-    rank = GetSpellSubtext(self.spellId) or ""
-
-    if rank ~= "" then
-      rank = "(" .. rank .. ")"
-    end
-    --BOM:Debug("rank=" .. rank .. " spellid=" .. self.spellId)
   end
 
   BuffomatAddon.castFailedSpellId = self.spellId
-  local name = GetSpellInfo(self.spellId) -- TODO: use BuffomatAddon.GetSpellInfo
-  if name == nil then
+
+  -- TODO: Want to use BuffomatAddon.GetSpellInfo but it is asyncronous, while GetSpellInfo is syncronous
+  local spellName = GetSpellInfo(self.spellId)
+  if spellName == nil then
     BuffomatAddon:Debug("Update macro: Bad spellid=" .. tostring(self.spellId))
     return
   end
@@ -142,9 +156,13 @@ function actionCastClass:UpdateMacro(m)
   if tContains(allBuffsModule.cancelForm, self.spellId) then
     table.insert(m.lines, self:GetCancelFormMacroLine())
   end
-  table.insert(m.lines, "/bom _checkforerror")
+  -- table.insert(m.lines, "/bom _checkforerror")
 
-  table.insert(m.lines, "/cast [@"
-    .. (self.target).unitId
-    .. ",nocombat]" .. name .. rank)
+  local rank = GetSpellSubtext(self.spellId) or ""
+
+  if rank ~= "" then
+    rank = "(" .. rank .. ")"
+  end
+  local castCommand = "/cast [@" .. (self.target).unitId .. ",nocombat]" .. spellName .. rank
+  table.insert(m.lines, castCommand)
 end

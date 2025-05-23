@@ -37,7 +37,7 @@ local ngStringsModule = LibStub("Buffomat-NgStrings") --[[@as NgStringsModule]]
 ---@field cachedPlayerBag BomCachedPlayerBag Items in player's bag
 ---@field cancelBuffs BomBuffDefinition[] All spells to be canceled on detection
 ---@field cancelBuffSource string Unit who casted the buff to be auto-canceled
----@field castFailedBuff BomBuffDefinition|nil
+---@field castFailedBuff BomBuffDefinition|nil Used for spell min level target detection (not available via API)
 ---@field castFailedBuffTarget BomUnit|nil
 ---@field castFailedSpellId number|nil
 ---@field checkCooldown number|nil Spell id to check cooldown for
@@ -291,6 +291,10 @@ function buffomatModule:InitGlobalStates()
     BuffomatCharacter = characterSettingsModule:NewDefaultCharacterSettings()
   end
 
+  if type(BuffomatShared.TargetTooLowLevel) ~= "table" then
+    BuffomatShared.TargetTooLowLevel = {} --[[@as table<number, number>]]
+  end
+
   -- Upgrade from previous Buffomat State if values are found
   if not BuffomatCharacter.profiles then
     BuffomatCharacter.profiles = {}
@@ -437,23 +441,27 @@ end
 function BuffomatAddon:OnDisable()
 end
 
-function buffomatModule:DownGrade()
-  if BuffomatAddon.castFailedBuff
-      and (BuffomatAddon.castFailedBuff).skipList
-      and BuffomatAddon.castFailedBuffTarget then
-    local level = UnitLevel((BuffomatAddon.castFailedBuffTarget).unitId)
+---This is called from an Error Handler on UI_ERROR_MESSAGE event, when a casted spell
+---fails due to the target level being too low. There is no other way to know the minimum level
+---for a spell target, so we have to learn it from our failures.
+function buffomatModule:OnFailedCast_LearnedDownrank()
+  local failedBuff = BuffomatAddon.castFailedBuff
+  local failedTarget = BuffomatAddon.castFailedBuffTarget
 
-    if level ~= nil and level > -1 then
-      if BuffomatShared.SpellGreaterEqualThan[BuffomatAddon.castFailedSpellId] == nil
-          or BuffomatShared.SpellGreaterEqualThan[BuffomatAddon.castFailedSpellId] < level
+  if failedBuff and failedBuff.skipList and failedTarget then
+    local failedTargetLevel = UnitLevel(failedTarget.unitId)
+
+    if failedTargetLevel ~= nil and failedTargetLevel > -1 then
+      if BuffomatShared.TargetTooLowLevel[BuffomatAddon.castFailedSpellId] == nil
+          or BuffomatShared.TargetTooLowLevel[BuffomatAddon.castFailedSpellId] < failedTargetLevel
       then
-        BuffomatShared.SpellGreaterEqualThan[BuffomatAddon.castFailedSpellId] = level
+        BuffomatShared.TargetTooLowLevel[BuffomatAddon.castFailedSpellId] = failedTargetLevel
         throttleModule:FastUpdateTimer()
         throttleModule:RequestTaskRescan("Downgrade")
-        BuffomatAddon:Print(string.format(_t("MsgDownGrade"),
-          (BuffomatAddon.castFailedBuff).singleText,
-          ((BuffomatAddon.castFailedBuffTarget).name)))
-      elseif BuffomatShared.SpellGreaterEqualThan[BuffomatAddon.castFailedSpellId] >= level then
+
+        BuffomatAddon:Print(string.format(_t("error.castFailed.tooLowLevel"), failedBuff.singleText, failedTarget.name))
+      elseif BuffomatShared.TargetTooLowLevel[BuffomatAddon.castFailedSpellId] >= failedTargetLevel then
+        -- Failed to cast for some other reason, not too low level apparently
         BuffomatAddon.AddMemberToSkipList()
       end
     else

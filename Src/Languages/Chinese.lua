@@ -149,7 +149,7 @@ function chineseModule:Translations()
     ["castButton.inactive.OpenWorld"] = "野外禁用检查",
     ["castButton.inactive.Mounted"] = "坐骑上禁用检查",
 
-    MsgDownGrade = "%s 的技能等级降级为 %s。请再补一次。",
+    ["error.castFailed.tooLowLevel"] = "%s 的技能等级降级为 %s。请再补一次。",
 
     CRUSADER_AURA_COMMENT = "根据设置可以自动施放",
 

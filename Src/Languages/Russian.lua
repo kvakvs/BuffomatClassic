@@ -105,11 +105,13 @@ function russianModule:Translations()
     ["options.short.ShowMinimapButton"] = "Показать кнопку у миникарты",
     ["options.short.ShowTBCConsumables"] = "Показывать бафы из TBC",
     ["options.short.SomeoneIsDrinking"] = "Когда кто-то в группе пьёт",
-    ["options.short.UseRank"] = "Использовать заклинание с рангом",
+    ["options.short.UseRank"] = "Использовать понижение ранга заклинаний",
     ["options.short.FadeWhenNothingToDo"] = "Делать окно прозрачным, когда нет задач",
     ["options.short.ShamanFlametongueRanked"] =
     "Шаман: Использовать пониженный ранг языков пламени на правой руке",
     ["options.short.CustomBuffSorting"] = "Показать доп. поля для сортировки бафов",
+
+    ["options.long.UseRank"] = "Если у цели уровень слишком низкий, то использовать пониженный ранг заклинания",
 
     -- ["options.long.AutoOpen"] = "Автоматически открывать Бафомёт, когда есть задачи",
     ["options.long.AutoClose"] = "Автоматически закрывать Бафомёт, когда все задачи выполнены",
@@ -203,7 +205,7 @@ function russianModule:Translations()
     ["message.CancelBuff"] = "Отменён баф %s от %s",
     ["message.BuffExpired"] = "%s заклинание истекло.",
     -- ["message.ShowHideInCombat"] = "Во время боя нельзя показывать или скрывать панели",
-    MsgDownGrade = "Понижение ранга заклинания %s для %s. Попробуйте выполнить баф ещё раз.",
+    ["error.castFailed.tooLowLevel"] = "Понижение ранга заклинания %s для %s. Попробуйте выполнить баф ещё раз.",
     ["castButton.NothingToDo"] = "Нечего делать",
     --MsgLocalRestart                             = "Настройки не подействуют до перезагрузки модов (команда /reload)",
     ["castButton.NoMacroSlots"] = "Нужен хотя бы один свободный слот для макро!",

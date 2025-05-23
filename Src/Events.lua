@@ -218,7 +218,7 @@ end
 ---shapeshifted while trying to cast a spell and that produces an error message.
 ---@param errorType table
 ---@param message table
-local function Event_UI_ERROR_MESSAGE(errorType, message)
+local function Event_UI_ERROR_MESSAGE(_, errorType, message)
   if tContains(eventsModule.ERR_NOT_STANDING, message) then
     if BuffomatShared.AutoStand then
       UIErrorsFrame:Clear()
@@ -242,7 +242,7 @@ local function Event_UI_ERROR_MESSAGE(errorType, message)
   elseif not InCombatLockdown() then
     if BuffomatAddon.checkForError then
       if message == SPELL_FAILED_LOWLEVEL then
-        buffomatModule:DownGrade()
+        buffomatModule:OnFailedCast_LearnedDownrank()
       else
         BuffomatAddon.AddMemberToSkipList()
       end
