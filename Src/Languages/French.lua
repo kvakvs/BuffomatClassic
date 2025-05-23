@@ -18,8 +18,8 @@ function frenchModule:Translations()
     ["castButton.NoMacroSlots"] = "Besoin d'un emplacement macro!",
 
     ["options.short.ShowMinimapButton"] = "Montrer bouton minimap",
-    ["options.short.LockMinimapButton"] = "Verrouiller position bouton minimap",
-    ["options.short.LockMinimapButtonDistance"] = "Distance minimale bouton minimap",
+    -- ["options.short.LockMinimapButton"] = "Verrouiller position bouton minimap",
+    -- ["options.short.LockMinimapButtonDistance"] = "Distance minimale bouton minimap",
     -- ["options.short.AutoOpen"] = "Ouvrir/fermer automatiquement",
     ["options.short.AutoClose"] = "Fermer automatiquement",
     ["options.short.DeathBlock"] = "Ne pas buff de groupe quand quelqu'un est mort",

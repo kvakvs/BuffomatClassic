@@ -83,21 +83,26 @@ function optionsModule:CreateGeneralOptionsTable()
         function(key, value)
           buffomatModule:ScheduleUpdateTimer()
         end),
-      minimapButtonShow = self:TemplateCheckbox(
-        "ShowMinimapButton", BuffomatShared.Minimap, "visible",
-        ---@diagnostic disable-next-line: unused-local
-        function(key, value)
-          if value then
-            libIcon:Show("BuffomatIcon")
-          else
+      minimapButtonShow = {
+        type = "toggle",
+        name = _t("options.short.ShowMinimapButton"),
+        order = 6, -- Position after slowerHardware
+        get = function(info)
+          return not BuffomatShared.Minimap.hide
+        end,
+        set = function(info, value)
+          -- value is true if checkbox is checked (user wants to show button)
+          -- value is false if checkbox is unchecked (user wants to hide button)
+          BuffomatShared.Minimap.hide = not value
+
+          -- Now update the icon visibility based on the new 'hide' state
+          if BuffomatShared.Minimap.hide then
             libIcon:Hide("BuffomatIcon")
+          else
+            libIcon:Show("BuffomatIcon")
           end
-        end),
-      --minimapButtonLock = self:TemplateCheckbox(
-      --        "LockMinimapButton", BuffomatShared.Minimap, "lock", nil),
-      --minimapButtonLockDist = self:TemplateCheckbox(
-      --        "LockMinimapButtonDistance", BuffomatShared.Minimap, "lockDistance", nil),
-      --uiWindowScale         = self:TemplateInput("float", "UIWindowScale"),
+        end,
+      },
       uiWindowScale = self:TemplateRange(
         "UIWindowScale", 0.35, 2.0, 0.05,
         BuffomatShared, "UIWindowScale",

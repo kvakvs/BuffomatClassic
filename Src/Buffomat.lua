@@ -25,6 +25,8 @@ local taskListPanelModule = LibStub("Buffomat-TaskListPanel") --[[@as TaskListPa
 local throttleModule = LibStub("Buffomat-Throttle") --[[@as ThrottleModule]]
 local ngStringsModule = LibStub("Buffomat-NgStrings") --[[@as NgStringsModule]]
 
+buffomatModule.libIcon = LibStub("LibDBIcon-1.0")
+
 ---@alias CastingState "cast"|"channel"|nil
 
 ---global, visible from XML files and from script console and chat commands

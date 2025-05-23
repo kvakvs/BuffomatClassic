@@ -43,12 +43,14 @@ end
 ---@field arg2 any
 
 ---@return BomMenuItemDef
-function popupModule:Boolean(text, dict, key)
+---@param invertLogic boolean|nil
+function popupModule:Boolean(text, dict, key, invertLogic)
   local newItem = --[[@as BomMenuItemDef]] {}
   newItem.text = text or ""
   newItem.type = "boolean"
   newItem.value = dict
   newItem.arg1 = key
+  newItem.arg2 = invertLogic
   return newItem
 end
 
@@ -147,10 +149,17 @@ local function generateBooleanMenuItem(level, menuItemDef)
   info.value = menuItemDef.value
   info.arg1 = menuItemDef.arg1
   info.arg2 = menuItemDef.arg2
-  info.checked = menuItemDef.value[menuItemDef.arg1]
+  info.checked = menuItemDef.arg2 and not menuItemDef.value[menuItemDef.arg1] or menuItemDef.value[menuItemDef.arg1]
   info.func = function(menuItm, a1, a2, chk)
     menuItm.value[a1] = not menuItm.value[a1]
-    -- TODO: notification call?
+    local buffomatModule = LibStub("Buffomat-Buffomat") ---@type BuffomatModule
+    if menuItm.arg1 == "hide" and buffomatModule and buffomatModule.libIcon then
+      if menuItm.value[a1] then -- if hide is true
+        buffomatModule.libIcon:Hide("BuffomatIcon")
+      else -- if hide is false
+        buffomatModule.libIcon:Show("BuffomatIcon")
+      end
+    end
   end
   info.hasArrow = false
   libDD:UIDropDownMenu_AddButton(info, level)

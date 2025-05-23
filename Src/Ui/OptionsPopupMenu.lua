@@ -61,11 +61,11 @@ function optionsPopupModule:Setup(control, minimap)
         nil, nil))
     table.insert(menuItems, popupModule:Separator())
     table.insert(menuItems, popupModule:Boolean(_t("options.short.ShowMinimapButton"),
-      BuffomatShared.Minimap, "visible"))
-    table.insert(menuItems, popupModule:Boolean(_t("options.short.LockMinimapButton"),
-      BuffomatShared.Minimap, "lock"))
-    table.insert(menuItems, popupModule:Boolean(_t("options.short.LockMinimapButtonDistance"),
-      BuffomatShared.Minimap, "lockDistance"))
+      BuffomatShared.Minimap, "hide", true))
+    -- table.insert(menuItems, popupModule:Boolean(_t("options.short.LockMinimapButton"),
+    --   BuffomatShared.Minimap, "lock"))
+    -- table.insert(menuItems, popupModule:Boolean(_t("options.short.LockMinimapButtonDistance"),
+    --   BuffomatShared.Minimap, "lockDistance"))
     table.insert(menuItems, popupModule:Separator())
   end
 
