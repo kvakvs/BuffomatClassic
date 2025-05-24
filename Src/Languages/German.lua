@@ -1,5 +1,6 @@
----@shape BomLanguageGermanModule
-local germanModule = BomModuleManager.languageGermanModule ---@type BomLanguageGermanModule
+---@class BomLanguageGermanModule
+
+local germanModule = LibStub("Buffomat-LanguageGerman") --[[@as BomLanguageGermanModule]]
 
 ---@return BomLocaleDict
 function germanModule:Translations()
@@ -51,7 +52,7 @@ function germanModule:Translations()
     ["options.general.group.Class"] = "Klassenoptionen",
 
     ["tasklist.IgnoredBuffOn"] = "Ignoriert %s: %s", -- when a buff is not listed because a better buff exists
-    ["task.target.Self"] = "Auf selbst", -- use instead of name when buffing self
+    ["task.target.Self"] = "Auf selbst",             -- use instead of name when buffing self
     ["task.target.SelfOnly"] = "Eigener Buff",
     ["task.type.Enchantment"] = "Waffenverzaub.",
     ["task.type.RegularBuff"] = "Buff",
@@ -77,37 +78,37 @@ function germanModule:Translations()
     ["reminder.ridingSpeedTrinket"] = "Reitgeschwindigkeit Schmuckstück",
     ["task.hint.DontHaveItem"] = "Nicht in Taschen",
 
-    ["profile.activeProfileMenuTag"] = "[zur Zeit aktiv]",
-    profile_solo = "Allein",
-    profile_solo_spec2 = "Allein (Zweite Talente)",
-    profile_group = "Gruppe",
-    profile_group_spec2 = "Group (Zweite Talente)",
-    profile_raid = "Schlachtgruppe",
-    profile_raid_spec2 = "Schlachtgruppe (Zweite Talente)",
-    profile_battleground = "Schlachtfeld",
-    profile_battleground_spec2 = "Schlachtfeld (Zweite Talente)",
-    profile_auto = "Automatisch",
+    ["profile.activeProfileMenuTag"] = "[aktiv]",
+    ["profileName.auto"] = "Automatisch",
+    ["profileName.group"] = "Gruppe",
+    ["profileName.group_spec2"] = "Gruppe (Zweite Talente)",
+    ["profileName.solo"] = "Allein",
+    ["profileName.solo_spec2"] = "Allein (Zweite Talente)",
+    ["profileName.raid"] = "Schlachtzug",
+    ["profileName.raid_spec2"] = "Schlachtzug (Zweite Talente)",
+    ["profileName.battleground"] = "Schlachtfeld",
+    ["profileName.battleground_spec2"] = "Schlachtfeld (Zweite Talente)",
 
     AboutInfo = "Ausdauer! Int! Wille! - klingt das bekannt? Buffomat überprüft alle "
-            .. "Gruppen/Raid-Mitglieder auf fehlende Buffs und ermöglicht diese dann mit einen klick zu "
-            .. "verteilen. Wenn drei oder mehr den gleichen Buff brauchen, wird die Gruppenversion benutzt. "
-            .. "Es erinnert dich auch die Suche wie Kräutersuche wieder zu aktivieren.|nAuch beim "
-            .. "Wiederbeleben wird unterstützt, indem Paladine, Priester und Schamanen bevorzugt werden.",
+        .. "Gruppen/Raid-Mitglieder auf fehlende Buffs und ermöglicht diese dann mit einen klick zu "
+        .. "verteilen. Wenn drei oder mehr den gleichen Buff brauchen, wird die Gruppenversion benutzt. "
+        .. "Es erinnert dich auch die Suche wie Kräutersuche wieder zu aktivieren.|nAuch beim "
+        .. "Wiederbeleben wird unterstützt, indem Paladine, Priester und Schamanen bevorzugt werden.",
     AboutSlashCommand = "",
     AboutUsage = "Es wird ein freier Makro-Platz benötigt. Das Hauptfenster hat zwei "
-            .. "Reiter 'Buff' und 'Zauber'. Unter 'Buff' findet man die fehlenden buffs und ein "
-            .. "'Zaubern'-Button.|nUnter 'Zauber' findet man Einstellungen z.B.: Welche Zauber überwacht "
-            .. "werden sollen, ob die Gruppen-Varianten erlaubt sind, ob der Zauber nur auf den Spieler "
-            .. "oder alle erfolgen soll, welche Klassen diesen Zauber bekommen sollen. Zudem lassen "
-            .. "sich die Gruppen einschränken, bspw. im Raid, wenn man nur Gruppe 7&8 mit Int "
-            .. "buffen soll. Auch kann man hier Einstellen, dass das aktuelle Ziel immer einen "
-            .. "bestimmten Buff bekommen soll. Bspw. kann ein Druide den Haupttank auswählen und in "
-            .. "der Zeile von 'Dornen' auf das '-' klicken. Es sollte sich dann in ein Zielkreuz "
-            .. "änden. Von nun an wird immer Dornen auf den Tank aufrecht gehalten.|nMan hat zwei "
-            .. "Möglichkeiten, einen Buff zu zaubern: Einmal der 'Zaubern'-Button in Hauptfenster oder "
-            .. "das Buff'o'mat-Makro. Man findet es unter dem 'M'-Button in der Titelzeile des Fensters.|n"
-            .. "ACHTUNG: Aufgrund von Einschränkungen von Blizzard funktioniert Buffomat nur außerhalb des "
-            .. "Kampfes. Es kann auch bspw. das Hauptfenster nur außerhalb geöffnet und geschlossen werden!",
+        .. "Reiter 'Buff' und 'Zauber'. Unter 'Buff' findet man die fehlenden buffs und ein "
+        .. "'Zaubern'-Button.|nUnter 'Zauber' findet man Einstellungen z.B.: Welche Zauber überwacht "
+        .. "werden sollen, ob die Gruppen-Varianten erlaubt sind, ob der Zauber nur auf den Spieler "
+        .. "oder alle erfolgen soll, welche Klassen diesen Zauber bekommen sollen. Zudem lassen "
+        .. "sich die Gruppen einschränken, bspw. im Raid, wenn man nur Gruppe 7&8 mit Int "
+        .. "buffen soll. Auch kann man hier Einstellen, dass das aktuelle Ziel immer einen "
+        .. "bestimmten Buff bekommen soll. Bspw. kann ein Druide den Haupttank auswählen und in "
+        .. "der Zeile von 'Dornen' auf das '-' klicken. Es sollte sich dann in ein Zielkreuz "
+        .. "änden. Von nun an wird immer Dornen auf den Tank aufrecht gehalten.|nMan hat zwei "
+        .. "Möglichkeiten, einen Buff zu zaubern: Einmal der 'Zaubern'-Button in Hauptfenster oder "
+        .. "das Buff'o'mat-Makro. Man findet es unter dem 'M'-Button in der Titelzeile des Fensters.|n"
+        .. "ACHTUNG: Aufgrund von Einschränkungen von Blizzard funktioniert Buffomat nur außerhalb des "
+        .. "Kampfes. Es kann auch bspw. das Hauptfenster nur außerhalb geöffnet und geschlossen werden!",
     BtnBuffs = "Verbrauchbares",
     BtnCancel = "Abbruch",
     ["popup.OpenBuffomat"] = "Öffnen",
@@ -122,7 +123,8 @@ function germanModule:Translations()
     ["options.short.ReputationTrinket"] = "Erinnere an die Anstecknadel der Argentumdämmerung",
     ["options.short.AutoDismount"] = "Automatisches Absitzen beim Zaubern",
     ["options.short.AutoDisTravel"] = "Automatisch  Reiseform abbrechen beim Zaubern",
-    ["options.short.AutoOpen"] = "Automatisches öffnen/schließen",
+    -- ["options.short.AutoOpen"] = "Automatisches öffnen",
+    ["options.short.AutoClose"] = "Automatisches schließen",
     ["options.short.AutoStand"] = "Automatisches Aufstehen beim Zaubern",
     ["options.short.BuffTarget"] = "Aktuelles Ziel mit aufnehmen",
     ["options.short.Carrot"] = "Erinnere an die \"Karotte am Stiel\"",
@@ -131,8 +133,8 @@ function germanModule:Translations()
     ["options.short.InInstance"] = "In Instanzen aktiv",
     ["options.short.InPVP"] = "In Schlachtfelder aktiv",
     ["options.short.InWorld"] = "Auf der Welt aktiv",
-    ["options.short.LockMinimapButton"] = "Minimap-Icon-Position sperren",
-    ["options.short.LockMinimapButtonDistance"] = "Minimap-Icon-Entfernung minimieren",
+    -- ["options.short.LockMinimapButton"] = "Minimap-Icon-Position sperren",
+    -- ["options.short.LockMinimapButtonDistance"] = "Minimap-Icon-Entfernung minimieren",
     ["options.short.MainHand"] = "Warne bei fehlender Haupthand-Waffenverzauberung",
     ["options.short.NoGroupBuff"] = "Kein Gruppenbuff benutzen",
     ["options.short.OpenLootable"] = "Öffne plünderbare Gegenstände",
@@ -152,6 +154,9 @@ function germanModule:Translations()
     ["options.short.Time3600"] = "Dauer <=60 Min:",
     ["options.short.Time60"] = "Dauer <=60 Sek:",
     ["options.short.Time600"] = "Dauer <=10 Min:",
+
+    -- ["options.long.AutoOpen"] = "Automatisches öffnen, wenn Aufgaben verfügbar sind",
+    ["options.long.AutoClose"] = "Automatisches schließen, wenn alle Aufgaben erledigt sind",
 
     Header_CANCELBUFF = "Buffs Abbrechen",
     Header_INFO = "Informationen",
@@ -173,7 +178,7 @@ function germanModule:Translations()
     ["message.CancelBuff"] = "Beende Buff %s von %s",
 
     --["castButton.inactive.Mounted"] = "Buff on mount disabled",
-    ["castButton.inactive.DeadMember"] = "Ein Parteimitglied ist tot",
+    ["castButton.inactive.DeadMember"] = "Ein Gruppenmitglied ist tot",
     ["castButton.inactive.Flying"] = "Fliegen; Absteigen deaktiviert",
     ["castButton.inactive.InCombat"] = "Kampf",
     ["castButton.inactive.Instance"] = "Buff in Dungeons deaktiviert",
@@ -188,20 +193,14 @@ function germanModule:Translations()
     ["castButton.inactive.Vehicle"] = "Kein Polieren am Fahrzeug",
     ["castbutton.inactive.GCD"] = "Globale Abklingzeit",
 
-    MsgDownGrade = "Erniedrige den Rang für %s auf %s. Bitte neu zaubern.",
+    ["error.castFailed.tooLowLevel"] = "Erniedrige den Rang für %s auf %s. Bitte neu zaubern.",
     ["castButton.NothingToDo"] = "Nichts zu tun",
     --MsgLocalRestart                             = "Die Lokalisierung wird erst nach einem Neustart übernommen (/reload)",
     ["castButton.NoMacroSlots"] = "Brauche Platz für ein Macro!",
     ["castButton.Next"] = "%s @ %s",
-    ["castButton.inactive.DeadMember"] = "Irgendjemand ist tot",
     ["message.BuffExpired"] = "%s ist abgelaufen.",
     PanelAbout = "Über",
     Pet = "Tier",
-    profile_auto = "Automatisch",
-    profile_battleground = "Schlachtfeld",
-    profile_group = "Gruppe",
-    profile_raid = "Schlachtzug",
-    profile_solo = "Alleine",
     SlashClose = "BOM-Fenster schließen",
     SlashOpen = "BOM-Fenster öffnen",
     SlashProfile = "Das aktuelle Profil zu solo/group/raid/battleground/auto wechseln",
@@ -214,22 +213,25 @@ function germanModule:Translations()
     TooltipIncludesAllRanks = "Alle Varianten",
     TooltipEnableSpell = "Buffüberwachung ein-/ausschalten",
     TooltipEnableBuffCancel = "Automatisches beenden des Buff ein-/ausschalten",
-    TooltipGroup = "Gruppe %d",
+    ["tooltip.SpellsDialog.watchGroup"] = "Gruppe %d",
     ["tooltip.mainhand"] = "Waffenhand",
     ["tooltip.offhand"] = "Schildhand",
-    HintCancelThisBuff_Combat = "Nur direkt vor einem Kampf",
     TooltipSelectTarget = "Wähle ein Gruppenmitglied um diese Option zu aktivieren.",
     --split into _Self and _Party ["TooltipSelfCastCheckbox"] = "Wirke auf Gruppe/Raid oder nur auf sich selbst",
     TooltipForceCastOnTarget = "Buff dauerhaft auf Ziel halten",
     TooltipWhisperWhenExpired = "Quelle anflüstern, wenn abgelaufen.",
 
     TooltipMacroButton = "Ziehe dieses Makro in deine Aktionsleiste, um die Buffs zu wirken|n"
-            .. "Du kannst dem Makro unter Tastenbelegungen => Andere eine Tastenkombination hinzufügen",
-    TooltipSettingsButton = "Popup-Menü Schnelleinstellungen und Profile öffnen",
-    TooltipCloseButton = "Blenden Sie das Buffomat-Fenster aus, geben Sie /bom ein,"
-            .. "um es wieder zu öffnen, oder klicken Sie auf die Minimap-knöpfe",
-    TooltipCastButton = "Wirke den Zauber aus der Liste.|nNicht im Kampf verfügbar.|n"
-            .. "Kann auch über das Makro (in der obersten Reihe) aktiviert werden|n"
-            .. "Noch eine Tastenkombination in Tastenkombinationen => Andere binden",
+        .. "Du kannst dem Makro unter Tastenbelegungen => Andere eine Tastenkombination hinzufügen",
+    ["tooltip.button.AllSettings"] = "Alle Einstellungen",
+    ["tooltip.button.QuickSettingsPopup"] = "Schnelleinstellungen und Profile",
+    ["tooltip.button.AllBuffs"] = "Alle Buffs",
+    ["tooltip.button.HideBuffomat"] =
+    "Verstecken. Um wieder anzuzeigen, tippe /bom, klicke auf den Minimap-Button oder drücke %s",
+    ["tooltip.TaskList.CastButton"] = "Wirke den Zauber aus der Liste.|nNicht im Kampf verfügbar.|n"
+        .. "Kann auch über das Makro (in der obersten Reihe) aktiviert werden|n"
+        .. "Noch eine Tastenkombination in Tastenkombinationen => Andere binden",
+    ["taskList.holdOpenComment"] =
+    "Buffomat-Fenster wurde von einem Benutzer geöffnet. Klicken Sie auf X oder drücken Sie %s, um das automatische Schließen wieder zu aktivieren.",
   }
 end

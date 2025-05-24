@@ -1,12 +1,12 @@
-local BOM = BuffomatAddon ---@type BomAddon
+local BuffomatAddon = BuffomatAddon
 
----@shape BomActionCastModule
-local actionCastModule = BomModuleManager.actionCastModule
+---@class BomActionCastModule
 
-local buffomatModule = BomModuleManager.buffomatModule
-local taskModule = BomModuleManager.taskModule
-local partyModule = BomModuleManager.partyModule
-local allBuffsModule = BomModuleManager.allBuffsModule
+local actionCastModule = LibStub("Buffomat-ActionCast") --[[@as BomActionCastModule]]
+local taskModule = LibStub("Buffomat-Task") --[[@as BomTaskModule]]
+local partyModule = LibStub("Buffomat-Party") --[[@as PartyModule]]
+local allBuffsModule = LibStub("Buffomat-AllBuffs") --[[@as AllBuffsModule]]
+local envModule = LibStub("KvLibShared-Env") --[[@as KvSharedEnvModule]]
 
 ---@class BomTaskActionCast: BomTaskAction Casts a spell with a power (mana) cost on a target
 ---@field buffDef BomBuffDefinition|nil
@@ -26,7 +26,7 @@ actionCastClass.__index = actionCastClass
 ---@param temporaryDownrank boolean Pick previous rank for certain spells, like Flametongue 10
 ---@return BomTaskActionCast
 function actionCastModule:New(cost, spellId, link, targetUnit, buffDef, temporaryDownrank)
-  local a = --[[---@type BomTaskActionCast]] {}
+  local a = --[[@as BomTaskActionCast]] {}
   setmetatable(a, actionCastClass)
   a.temporaryDownrank = temporaryDownrank
   a.manaCost = cost
@@ -40,18 +40,18 @@ end
 function actionCastClass:CanCast()
   local cdtest = GetSpellCooldown(self.spellId) or 0
   if cdtest ~= 0 then
-    BOM.checkCooldown = self.spellId
+    BuffomatAddon.checkCooldown = self.spellId
     --BomC_ListTab_Button:Disable()
     return taskModule.CAN_CAST_ON_CD
   else
     --BomC_ListTab_Button:Enable()
   end
-  BOM.castFailedBuff = self.buffDef
-  BOM.castFailedBuffTarget = self.target
+  BuffomatAddon.castFailedBuff = self.buffDef
+  BuffomatAddon.castFailedBuffTarget = self.target
 
   if self.buffDef
-          and (--[[---@not nil]] self.buffDef).type ~= "resurrection"
-          and self.target.isDead then
+      and (self.buffDef).type ~= "resurrection"
+      and self.target.isDead then
     -- Cannot cast buffs on deads, only resurrections
     return taskModule.CAN_CAST_IS_DEAD
   end
@@ -69,9 +69,7 @@ function actionCastClass:GetButtonText(task)
 end
 
 function actionCastClass:GetCancelFormMacroLine()
-  local _, playerClass, _ = UnitClass("player")
-
-  if playerClass == "DRUID" then
+  if envModule.playerClass == "DRUID" then
     return "/cancelform [nocombat, noform:5]"
   end
 
@@ -81,42 +79,60 @@ end
 ---@param m BomMacro
 function actionCastClass:UpdateMacro(m)
   --Downgrade-Check
-  local buffDef = allBuffsModule.buffFromSpellIdLookup[--[[---@not nil]] self.spellId]
-  local rank = ""
+  local buffDef = allBuffsModule.buffFromSpellIdLookup[self.spellId]
 
   if buffDef == nil then
-    BOM:Debug("Update macro: buffDef is nil for spellid=" .. tostring(self.spellId))
+    BuffomatAddon:Debug("Update macro: buffDef is nil for spellid=" .. tostring(self.spellId))
     return
   end
 
-  if buffomatModule.shared.UseRank
-          or (self.target and (--[[---@not nil]] self.target).unitId == "target")
+  if BuffomatShared.UseRank
+      or (self.target and (self.target).unitId == "target")
   then
-    local level = UnitLevel((--[[---@not nil]] self.target).unitId)
+    local targetLevel = UnitLevel((self.target).unitId)
 
-    if buffDef and level ~= nil and level > 0 then
+    if buffDef and targetLevel ~= nil and targetLevel > 0 then
       local spellChoices
 
       if buffDef.singleFamily
-              and tContains(buffDef.singleFamily, self.spellId) then
+          and tContains(buffDef.singleFamily, self.spellId) then
         spellChoices = buffDef.singleFamily
       elseif buffDef.groupFamily
-              and tContains(--[[---@not nil]] buffDef.groupFamily, self.spellId) then
+          and tContains(buffDef.groupFamily, self.spellId) then
         spellChoices = buffDef.groupFamily
       end
 
-      if spellChoices then
+      if spellChoices and targetLevel ~= nil and targetLevel > 0 then
         local newSpellId
 
-        for i, id in ipairs(spellChoices) do
-          if buffomatModule.shared.SpellGreaterEqualThan[id] == nil
-                  or buffomatModule.shared.SpellGreaterEqualThan[id] < level then
-            newSpellId = id
-          else
-            break
-          end
-          if id == self.spellId then
-            break
+        -- Find the highest spell rank which has no learned min level, or a min level that satisfies the target level.
+        -- Iterate over spell choices in reverse order to find highest suitable rank
+        -- for _, tryRankSpellId in ipairs(spellChoices) do
+        --   if BuffomatShared.TargetTooLowLevel[tryRankSpellId] == nil
+        --       or targetLevel > BuffomatShared.TargetTooLowLevel[tryRankSpellId] then
+        --     newSpellId = tryRankSpellId
+        --   else
+        --     break
+        --   end
+        --   if tryRankSpellId == self.spellId then
+        --     -- Successfully found a spell that is suitable for the target level, no need to check lower ranks
+        --     break
+        --   end
+        -- end
+        -- self.spellId = newSpellId or self.spellId
+        -- Iterate spellChoices in reverse order to find highest suitable rank
+        for i = #spellChoices, 1, -1 do
+          local tryRankSpellId = spellChoices[i]
+
+          if IsSpellKnown(tryRankSpellId) then
+            -- Is this spell castable on this target?
+            -- * Do we not know what happens if we cast this spell? (no record in TargetTooLowLevel)
+            -- * Have we learned that the target level is too low? (have record in TargetTooLowLevel)
+            if BuffomatShared.TargetTooLowLevel[tryRankSpellId] == nil
+                or targetLevel > BuffomatShared.TargetTooLowLevel[tryRankSpellId] then
+              newSpellId = tryRankSpellId
+              break -- Found highest suitable rank, stop searching
+            end
           end
         end
         self.spellId = newSpellId or self.spellId
@@ -126,27 +142,27 @@ function actionCastClass:UpdateMacro(m)
 
   if self.temporaryDownrank then
     self.spellId = self.buffDef:GetDownRank(self.spellId)
-    rank = GetSpellSubtext(--[[---@not nil]] self.spellId) or ""
-
-    if rank ~= "" then
-      rank = "(" .. rank .. ")"
-    end
-    --BOM:Debug("rank=" .. rank .. " spellid=" .. self.spellId)
   end
 
-  BOM.castFailedSpellId = self.spellId
-  local name = GetSpellInfo(--[[---@not nil]] self.spellId)
-  if name == nil then
-    BOM:Debug("Update macro: Bad spellid=" .. tostring(self.spellId))
+  BuffomatAddon.castFailedSpellId = self.spellId
+
+  -- TODO: Want to use BuffomatAddon.GetSpellInfo but it is asyncronous, while GetSpellInfo is syncronous
+  local spellName = GetSpellInfo(self.spellId)
+  if spellName == nil then
+    BuffomatAddon:Debug("Update macro: Bad spellid=" .. tostring(self.spellId))
     return
   end
 
   if tContains(allBuffsModule.cancelForm, self.spellId) then
     table.insert(m.lines, self:GetCancelFormMacroLine())
   end
-  table.insert(m.lines, "/bom _checkforerror")
+  -- table.insert(m.lines, "/bom _checkforerror")
 
-  table.insert(m.lines, "/cast [@"
-          .. (--[[---@not nil]] self.target).unitId
-          .. ",nocombat]" .. name .. rank)
+  local rank = GetSpellSubtext(self.spellId) or ""
+
+  if rank ~= "" then
+    rank = "(" .. rank .. ")"
+  end
+  local castCommand = "/cast [@" .. (self.target).unitId .. ",nocombat]" .. spellName .. rank
+  table.insert(m.lines, castCommand)
 end

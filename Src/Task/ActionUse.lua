@@ -1,10 +1,10 @@
-local BOM = BuffomatAddon ---@type BomAddon
+local BuffomatAddon = BuffomatAddon
 
----@shape BomActionUseModule
-local actionUseModule = BomModuleManager.actionUseModule
+---@class BomActionUseModule
 
-local taskModule = BomModuleManager.taskModule
-local _t = BomModuleManager.languagesModule
+local actionUseModule = LibStub("Buffomat-ActionUse") --[[@as BomActionUseModule]]
+local taskModule = LibStub("Buffomat-Task") --[[@as BomTaskModule]]
+local _t = LibStub("Buffomat-Languages") --[[@as LanguagesModule]]
 
 ---@class BomTaskActionUse: BomTaskAction Uses an equipment slot or a bag item
 ---@field buffDef BomBuffDefinition|nil
@@ -24,7 +24,7 @@ actionUseClass.__index = actionUseClass
 ---@param extraText string|nil
 ---@param bestItemIdAvailable WowItemId|nil
 function actionUseModule:New(buffDef, target, bag, slot, extraText, bestItemIdAvailable)
-  local newAction = --[[---@type BomTaskActionUse]] {}
+  local newAction = --[[@as BomTaskActionUse]] {}
   setmetatable(newAction, actionUseClass)
   newAction.buffDef = buffDef
   newAction.target = target
@@ -57,7 +57,7 @@ function actionUseClass:GetButtonText(task)
     return _t("task.UseOrOpen") .. " " .. (self.extraText or "")
   end
 
-  local bdef = (--[[---@not nil]] self.buffDef)
+  local bdef = (self.buffDef)
   if bdef.isConsumable then
     return _t("task.type.Consume") .. " " .. bdef:SingleLink(self.bestItemIdAvailable)
   end

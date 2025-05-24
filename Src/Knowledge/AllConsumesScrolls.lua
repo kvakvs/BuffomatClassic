@@ -1,12 +1,12 @@
-local BOM = BuffomatAddon ---@type BomAddon
+local BuffomatAddon = BuffomatAddon
 
----@shape BomAllConsumesScrollsModule
-local scrollsModule = BomModuleManager.allConsumesScrollsModule ---@type BomAllConsumesScrollsModule
+---@class AllConsumesScrollsModule
 
-local _t = BomModuleManager.languagesModule
-local allBuffsModule = BomModuleManager.allBuffsModule
-local buffDefModule = BomModuleManager.buffDefinitionModule
-local envModule = KvModuleManager.envModule
+local scrollsModule = LibStub("Buffomat-AllConsumesScrolls") --[[@as AllConsumesScrollsModule]]
+local _t = LibStub("Buffomat-Languages") --[[@as LanguagesModule]]
+local allBuffsModule = LibStub("Buffomat-AllBuffs") --[[@as AllBuffsModule]]
+local buffDefModule = LibStub("Buffomat-BuffDefinition") --[[@as BuffDefinitionModule]]
+local envModule = LibStub("KvLibShared-Env") --[[@as KvSharedEnvModule]]
 
 ---SCROLLS
 ---@param allBuffs BomBuffDefinition[] A list of buffs (not dictionary)
@@ -22,16 +22,16 @@ end
 
 function scrollsModule:AddScroll(buffs, buffSpellId, itemId)
   return buffDefModule:genericConsumable(buffs, buffSpellId, itemId)
-                      :ConsumableTarget("player")
-                      :SingleDuration(allBuffsModule.HALF_AN_HOUR)
-                      :Category("scroll")
+      :ConsumableTarget("player")
+      :SingleDuration(allBuffsModule.HALF_AN_HOUR)
+      :Category("scroll")
 end
 
 ---@param allBuffs BomBuffDefinition[] A list of buffs (not dictionary)
 ---@param enchantments table<number, number[]> Key is spell id, value is list of enchantment ids
 function scrollsModule:_SetupScrollsAgility(allBuffs, enchantments)
   local scrollItemIds = {
-    4425, -- Scroll of Agility 3
+    4425,  -- Scroll of Agility 3
     10309, -- Scroll of Agility 4
   }
   if envModule.haveTBC then
@@ -47,7 +47,7 @@ function scrollsModule:_SetupScrollsAgility(allBuffs, enchantments)
   end
 
   local scrollAuras = {
-    8117, -- Aura for Scroll of Agility 3
+    8117,  -- Aura for Scroll of Agility 3
     12174, -- Aura for Scroll of Agility 4
   }
   if envModule.haveTBC then
@@ -63,17 +63,17 @@ function scrollsModule:_SetupScrollsAgility(allBuffs, enchantments)
   end
 
   buffDefModule:consumableGroup(allBuffs, "scrollAgi", scrollAuras, scrollItemIds)
-               :RequirePlayerClass(allBuffsModule.PHYSICAL_CLASSES)
-               :ConsumeGroupTitle("scroll", ITEM_MOD_AGILITY_SHORT, 237162) -- "inv_inscription_scroll"
-               :Category("scroll")
-               :ExtraText(_t("tooltip.scroll.bestInBag"))
+      :RequirePlayerClass(allBuffsModule.PHYSICAL_CLASSES)
+      :ConsumeGroupTitle("scroll", ITEM_MOD_AGILITY_SHORT, 237162) -- "inv_inscription_scroll"
+      :Category("scroll")
+      :ExtraText(_t("tooltip.scroll.bestInBag"))
 end
 
 ---@param allBuffs BomBuffDefinition[] A list of buffs (not dictionary)
 ---@param enchantments table<number, number[]> Key is spell id, value is list of enchantment ids
 function scrollsModule:_SetupScrollsStrength(allBuffs, enchantments)
   local scrollItemIds = {
-    4426, -- Scroll of Strength 3
+    4426,  -- Scroll of Strength 3
     10310, -- Scroll of Strength 4
   }
   if envModule.haveTBC then
@@ -89,7 +89,7 @@ function scrollsModule:_SetupScrollsStrength(allBuffs, enchantments)
   end
 
   local scrollAuras = {
-    8120, -- Aura for Scroll of Strength 3
+    8120,  -- Aura for Scroll of Strength 3
     12179, -- Aura for Scroll of Strength 4
   }
   if envModule.haveTBC then
@@ -105,19 +105,19 @@ function scrollsModule:_SetupScrollsStrength(allBuffs, enchantments)
   end
 
   buffDefModule:consumableGroup(allBuffs, "scrollStr", scrollAuras, scrollItemIds)
-               :RequirePlayerClass(allBuffsModule.MELEE_CLASSES)
-               :ConsumeGroupTitle("scroll", ITEM_MOD_STRENGTH_SHORT, 237162) -- "inv_inscription_scroll"
-               :Category("scroll")
-               :ExtraText(_t("tooltip.scroll.bestInBag"))
+      :RequirePlayerClass(allBuffsModule.MELEE_CLASSES)
+      :ConsumeGroupTitle("scroll", ITEM_MOD_STRENGTH_SHORT, 237162) -- "inv_inscription_scroll"
+      :Category("scroll")
+      :ExtraText(_t("tooltip.scroll.bestInBag"))
 end
 
 ---@param allBuffs BomBuffDefinition[] A list of buffs (not dictionary)
 ---@param enchantments table<number, number[]> Key is spell id, value is list of enchantment ids
 function scrollsModule:_SetupScrollsProtection(allBuffs, enchantments)
   local scrollItemIds = {
-    3013, -- Scroll of Protection 1
-    1478, -- Scroll of Protection 2
-    4421, -- Scroll of Protection 3
+    3013,  -- Scroll of Protection 1
+    1478,  -- Scroll of Protection 2
+    4421,  -- Scroll of Protection 3
     10305, -- Scroll of Protection 4
   }
   if envModule.haveTBC then
@@ -133,9 +133,9 @@ function scrollsModule:_SetupScrollsProtection(allBuffs, enchantments)
   end
 
   local scrollAuras = {
-    8091, -- Aura for Scroll of Protection 1
-    8094, -- Aura for Scroll of Protection 2
-    8095, -- Aura for Scroll of Protection 3
+    8091,  -- Aura for Scroll of Protection 1
+    8094,  -- Aura for Scroll of Protection 2
+    8095,  -- Aura for Scroll of Protection 3
     12175, -- Aura for Scroll of Protection 4
   }
   if envModule.haveTBC then
@@ -151,19 +151,18 @@ function scrollsModule:_SetupScrollsProtection(allBuffs, enchantments)
   end
 
   buffDefModule:consumableGroup(allBuffs, "scrollArmor", scrollAuras, scrollItemIds)
-               :ConsumeGroupTitle("scroll", ITEM_MOD_EXTRA_ARMOR_SHORT, 237162) -- "inv_inscription_scroll"
-               :Category("scroll")
-               :ExtraText(_t("tooltip.scroll.bestInBag"))
-
+      :ConsumeGroupTitle("scroll", ITEM_MOD_EXTRA_ARMOR_SHORT, 237162) -- "inv_inscription_scroll"
+      :Category("scroll")
+      :ExtraText(_t("tooltip.scroll.bestInBag"))
 end
 
 ---@param allBuffs BomBuffDefinition[] A list of buffs (not dictionary)
 ---@param enchantments table<number, number[]> Key is spell id, value is list of enchantment ids
 function scrollsModule:_SetupScrollsSpirit(allBuffs, enchantments)
   local scrollItemIds = {
-    1181, -- Scroll of Spirit 1
-    1712, -- Scroll of Spirit 2
-    4424, -- Scroll of Spirit 3
+    1181,  -- Scroll of Spirit 1
+    1712,  -- Scroll of Spirit 2
+    4424,  -- Scroll of Spirit 3
     10306, -- Scroll of Spirit 4
   }
   if envModule.haveTBC then
@@ -179,9 +178,9 @@ function scrollsModule:_SetupScrollsSpirit(allBuffs, enchantments)
   end
 
   local scrollAuras = {
-    8112, -- Aura for Scroll of Spirit 1
-    8113, -- Aura for Scroll of Spirit 2
-    8114, -- Aura for Scroll of Spirit 3
+    8112,  -- Aura for Scroll of Spirit 1
+    8113,  -- Aura for Scroll of Spirit 2
+    8114,  -- Aura for Scroll of Spirit 3
     12177, -- Aura for Scroll of Spirit 4
   }
   if envModule.haveTBC then
@@ -197,19 +196,19 @@ function scrollsModule:_SetupScrollsSpirit(allBuffs, enchantments)
   end
 
   buffDefModule:consumableGroup(allBuffs, "scrollSpi", scrollAuras, scrollItemIds)
-               :ConsumeGroupTitle("scroll", ITEM_MOD_SPIRIT_SHORT, 237162) -- "inv_inscription_scroll"
-               :RequirePlayerClass(allBuffsModule.MANA_CLASSES)
-               :Category("scroll")
-               :ExtraText(_t("tooltip.scroll.bestInBag"))
+      :ConsumeGroupTitle("scroll", ITEM_MOD_SPIRIT_SHORT, 237162) -- "inv_inscription_scroll"
+      :RequirePlayerClass(allBuffsModule.MANA_CLASSES)
+      :Category("scroll")
+      :ExtraText(_t("tooltip.scroll.bestInBag"))
 end
 
 ---@param allBuffs BomBuffDefinition[] A list of buffs (not dictionary)
 ---@param enchantments table<number, number[]> Key is spell id, value is list of enchantment ids
 function scrollsModule:_SetupScrollsIntellect(allBuffs, enchantments)
   local scrollItemIds = {
-    955, -- Scroll of Intellect 1
-    2290, -- Scroll of Intellect 2
-    4419, -- Scroll of Intellect 3
+    955,   -- Scroll of Intellect 1
+    2290,  -- Scroll of Intellect 2
+    4419,  -- Scroll of Intellect 3
     10308, -- Scroll of Intellect 4
   }
   if envModule.haveTBC then
@@ -225,9 +224,9 @@ function scrollsModule:_SetupScrollsIntellect(allBuffs, enchantments)
   end
 
   local scrollAuras = {
-    8096, -- Aura for Scroll of Intellect 1
-    8097, -- Aura for Scroll of Intellect 2
-    8098, -- Aura for Scroll of Intellect 3
+    8096,  -- Aura for Scroll of Intellect 1
+    8097,  -- Aura for Scroll of Intellect 2
+    8098,  -- Aura for Scroll of Intellect 3
     12176, -- Aura for Scroll of Intellect 4
   }
   if envModule.haveTBC then
@@ -245,10 +244,10 @@ function scrollsModule:_SetupScrollsIntellect(allBuffs, enchantments)
   end
 
   buffDefModule:consumableGroup(allBuffs, "scrollInt", scrollAuras, scrollItemIds)
-               :ConsumeGroupTitle("scroll", ITEM_MOD_INTELLECT_SHORT, 237162) -- "inv_inscription_scroll"
-               :RequirePlayerClass(allBuffsModule.MANA_CLASSES)
-               :Category("scroll")
-               :ExtraText(_t("tooltip.scroll.bestInBag"))
+      :ConsumeGroupTitle("scroll", ITEM_MOD_INTELLECT_SHORT, 237162) -- "inv_inscription_scroll"
+      :RequirePlayerClass(allBuffsModule.MANA_CLASSES)
+      :Category("scroll")
+      :ExtraText(_t("tooltip.scroll.bestInBag"))
 end
 
 ---@param allBuffs BomBuffDefinition[] A list of buffs (not dictionary)

@@ -1,19 +1,17 @@
-local TOCNAME, _ = ...
-local BOM = BuffomatAddon ---@type BomAddon
+local BuffomatAddon = BuffomatAddon
 
 ---@alias BomSpellCacheKey number|string
 
----@shape BomSpellCache
+---@class BomSpellCache
 ---@field [BomSpellCacheKey] BomSpellCacheElement
 
----@shape BomSpellCacheModule
+---@class BomSpellCacheModule
 ---@field cache BomSpellCache Stores arg to results mapping for GetItemInfo
-local spellCacheModule = BomModuleManager.spellCacheModule ---@type BomSpellCacheModule
-spellCacheModule.cache = --[[---@type BomSpellCache]] {}
 
-local buffomatModule = BomModuleManager.buffomatModule
-local buffDefModule = BomModuleManager.buffDefinitionModule
-local allBuffsModule = BomModuleManager.allBuffsModule
+local spellCacheModule = LibStub("Buffomat-SpellCache") --[[@as BomSpellCacheModule]]
+spellCacheModule.cache = --[[@as BomSpellCache]] {}
+
+local throttleModule = LibStub("Buffomat-Throttle") --[[@as ThrottleModule]]
 
 ---@class BomSpellCacheElement
 ---@field name string
@@ -26,8 +24,9 @@ local allBuffsModule = BomModuleManager.allBuffsModule
 
 ---Calls GetSpellInfo and saves the results, or not (if nil was returned)
 ---@param arg number|string
----@return BomSpellCacheElement|nil
-function BOM.GetSpellInfo(arg)
+---@return BomSpellCacheElement?
+---@nodiscard
+function BuffomatAddon.GetSpellInfo(arg)
   if spellCacheModule.cache[arg] ~= nil then
     return spellCacheModule.cache[arg]
   end
@@ -40,7 +39,8 @@ function BOM.GetSpellInfo(arg)
   name = name or "MISSING NAME"
   icon = icon or "MISSING ICON"
 
-  local cacheSpell = --[[---@type BomSpellCacheElement]] {
+  ---@type BomSpellCacheElement
+  local cacheSpell = {
     name     = name,
     rank     = rank,
     icon     = icon,
@@ -55,6 +55,7 @@ function BOM.GetSpellInfo(arg)
 end
 
 ---@param arg BomSpellCacheKey
+---@nodiscard
 function spellCacheModule:HasSpellCached(arg)
   return self.cache[arg] ~= nil
 end
@@ -70,7 +71,7 @@ function spellCacheModule:LoadSpell(spellId, onLoaded)
 
   local spellMixin = Spell:CreateFromSpellID(spellId)
 
-  local cacheSpell = --[[---@type BomSpellCacheElement]] {}
+  local cacheSpell = --[[@as BomSpellCacheElement]] {}
   cacheSpell.spellId = spellId
 
   local spellInfoReady_func = function()
@@ -91,7 +92,7 @@ function spellCacheModule:LoadSpell(spellId, onLoaded)
     cacheSpell.maxRange = maxRange
 
     self.cache[spellId] = cacheSpell
-    buffomatModule:RequestTaskRescan(string.format("sp:%d", spellId))
+    throttleModule:RequestTaskRescan(string.format("sp:%d", spellId))
 
     if onLoaded ~= nil then
       onLoaded(cacheSpell)

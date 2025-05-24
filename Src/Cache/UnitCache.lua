@@ -1,15 +1,15 @@
-local TOCNAME, _ = ...
-local BOM = BuffomatAddon ---@type BomAddon
+-- local TOCNAME, _ = ...
 
----@shape BomUnitCacheModule
+---@class UnitCacheModule
 ---@field unitCache table<string, BomUnit>
-local unitCacheModule = BomModuleManager.unitCacheModule ---@type BomUnitCacheModule
-unitCacheModule.unitCache = {}
 
-local constModule = BomModuleManager.constModule
-local partyModule = BomModuleManager.partyModule
-local texturesModule = BomModuleManager.texturesModule
-local unitModule = BomModuleManager.unitModule
+local unitCacheModule = LibStub("Buffomat-UnitCache") --[[@as UnitCacheModule]]
+unitCacheModule.unitCache = {}
+local constModule = LibStub("Buffomat-Const") --[[@as ConstModule]]
+local partyModule = LibStub("Buffomat-Party") --[[@as PartyModule]]
+local texturesModule = LibStub("Buffomat-Textures") --[[@as TexturesModule]]
+local unitModule = LibStub("Buffomat-Unit") --[[@as BomUnitModule]]
+local ngStringsModule = LibStub("Buffomat-NgStrings") --[[@as NgStringsModule]]
 
 ---@alias BomRaidRole "MAINTANK"|"MAINASSIST"|"NONE"
 ---@alias BomNameRoleMap {[string]: BomRaidRole}
@@ -20,37 +20,38 @@ local unitModule = BomModuleManager.unitModule
 ---@param nameRoleMap BomNameRoleMap|nil Maps name to role in raid
 ---@param specialName boolean|nil
 ---@return BomUnit|nil
+---@nodiscard
 function unitCacheModule:GetUnit(unitid, nameGroupMap, nameRoleMap, specialName)
-  local name, _unitRealm = UnitFullName(unitid) ---@type string, string
+  local name, _unitRealm = UnitFullName(unitid) ---@type string, string?
   if name == nil then
     return nil
   end
 
   local group ---@type number
   if type(nameGroupMap) == "number" then
-    group = --[[---@type number]] nameGroupMap
+    group = nameGroupMap
   else
-    group = nameGroupMap and (--[[---@type BomNameGroupMap]] nameGroupMap)[name] or 1
+    group = nameGroupMap and nameGroupMap[name] or 1
   end
 
-  nameRoleMap = nameRoleMap or --[[---@type BomNameRoleMap]] {}
-  local isTank = nameRoleMap and ((--[[---@not nil]] nameRoleMap)[name] == "MAINTANK") or false
+  nameRoleMap = nameRoleMap or {} --[[@as BomNameRoleMap]]
+  local isTank = nameRoleMap and ((nameRoleMap)[name] == "MAINTANK") or false
 
   local guid = UnitGUID(unitid)
-  local _, class, link ---@type any, BomClassName, string|nil
+  local _, class, link ---@type any, ClassName, string|nil
 
   if guid then
     _, class = GetPlayerInfoByGUID(guid)
     if class then
-      link = constModule.CLASS_ICONS[--[[---@not ""]] class] .. "|Hunit:" .. guid .. ":" .. name
-              .. "|h|c" .. RAID_CLASS_COLORS[class].colorStr .. name .. "|r|h"
+      link = constModule.CLASS_ICONS[ --[[---@not ""]] class ] .. "|Hunit:" .. guid .. ":" .. name
+          .. "|h|c" .. RAID_CLASS_COLORS[class].colorStr .. name .. "|r|h"
     else
       class = "pet"
-      link = BOM.FormatTexture(texturesModule.ICON_PET) .. name
+      link = ngStringsModule:FormatTexture(texturesModule.ICON_PET) .. name
     end
   else
     class = "pet"
-    link = BOM.FormatTexture(texturesModule.ICON_PET) .. name
+    link = ngStringsModule:FormatTexture(texturesModule.ICON_PET) .. name
   end
 
   if specialName then

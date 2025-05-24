@@ -1,12 +1,10 @@
-local BOM = BuffomatAddon ---@type BomAddon
+local BuffomatAddon = BuffomatAddon
 
----@shape BomTaskModule
-local taskModule = BomModuleManager.taskModule
+---@class BomTaskModule
 
-local buffomatModule = BomModuleManager.buffomatModule
-local partyModule = BomModuleManager.partyModule
-local taskScanModule = BomModuleManager.taskScanModule
-local constModule = BomModuleManager.constModule
+local taskModule = LibStub("Buffomat-Task") --[[@as BomTaskModule]]
+local buffomatModule = LibStub("Buffomat-Buffomat") --[[@as BuffomatModule]]
+local constModule = LibStub("Buffomat-Const") --[[@as ConstModule]]
 
 ---BomTaskActionUse|BomTaskActionCast|BomTaskActionMacro
 ---@class BomTaskAction
@@ -16,6 +14,8 @@ local constModule = BomModuleManager.constModule
 
 -- TODO: Range check and power check and spellId can be stored here and postponed till we're ready to cast
 ---@class BomTask
+---@field linkedBuffDef BomBuffDefinition|nil If this task is linked to a buff definition, this is it
+---@field customSort string Copy of sort value from the BuffDefinition
 ---@field target BomUnitBuffTarget|BomGroupBuffTarget|nil Unit name
 ---@field distance number Distance to the target or nearest unit in the group target
 ---@field prefixText string The message to show before the spell
@@ -42,28 +42,29 @@ taskModule.PRIO_OPEN_CONTAINER = 1000
 ---@param actionLink string
 ---@return BomTask
 function taskModule:Create(actionLink, actionText)
-  local fields = --[[---@type BomTask]] {}
+  local fields = --[[@as BomTask]] {
+    actionLink = actionLink or "",
+    actionText = actionText or actionLink,
+    prefixText = "",
+    extraText = "",
+    target = nil,
+    distance = 0,
+    priority = taskModule.PRIO_DEFAULT,
+    isInfo = false,
+    customSort = '5',
+  }
   setmetatable(fields, taskClass)
-
-  fields.actionLink = actionLink or ""
-  fields.actionText = actionText or actionLink
-  fields.prefixText = ""
-  fields.extraText = ""
-  fields.target = nil
-  fields.distance = 0
-  fields.priority = taskModule.PRIO_DEFAULT
-  fields.isInfo = false
 
   return fields
 end
 
 ---@alias BomCanCastResult number
-taskModule.CAN_CAST_OK = 1 -- ready to cast
+taskModule.CAN_CAST_OK = 1        -- ready to cast
 taskModule.CAN_CAST_NO_ACTION = 2 -- task doesn't have an action
-taskModule.CAN_CAST_OOM = 3 -- not enough mana for this buff
-taskModule.CAN_CAST_IS_DEAD = 3 -- target is dead and the spell is not a resurrection
-taskModule.CAN_CAST_ON_CD = 4 -- spell not ready yet
-taskModule.CAN_CAST_IS_INFO = 5 -- isInfo is true, not a real action
+taskModule.CAN_CAST_OOM = 3       -- not enough mana for this buff
+taskModule.CAN_CAST_IS_DEAD = 3   -- target is dead and the spell is not a resurrection
+taskModule.CAN_CAST_ON_CD = 4     -- spell not ready yet
+taskModule.CAN_CAST_IS_INFO = 5   -- isInfo is true, not a real action
 
 function taskClass:CanCast()
   if not self.action then
@@ -74,7 +75,7 @@ function taskClass:CanCast()
     return taskModule.CAN_CAST_IS_INFO
   end
 
-  return (--[[---@not nil]] self.action):CanCast()
+  return (self.action):CanCast()
 end
 
 ---@param target BomUnitBuffTarget|BomGroupBuffTarget
@@ -120,6 +121,15 @@ function taskClass:PrefixText(t)
   return self
 end
 
+---Set custom sorting value, copied from BuffDefinition
+---@param buffDef BomBuffDefinition
+---@return BomTask
+function taskClass:LinkToBuffDef(buffDef)
+  self.linkedBuffDef = buffDef
+  if buffDef then self.customSort = buffDef.customSort end
+  return self
+end
+
 ---@return BomTask
 ---@param action BomTaskAction
 function taskClass:Action(action)
@@ -130,7 +140,7 @@ end
 function taskClass:Format()
   local targetText
   if self.target then
-    targetText = (--[[---@not nil]] self.target):GetText() .. " "
+    targetText = (self.target):GetText() .. " "
   else
     targetText = ""
   end
@@ -138,29 +148,29 @@ function taskClass:Format()
     targetText = ""
   end
   return string.format("%s%s %s %s",
-          targetText,
-          buffomatModule:Color(constModule.TASKCOLOR_GRAY, self.prefixText),
-          self.actionLink,
-          buffomatModule:Color(constModule.TASKCOLOR_GRAY, self.extraText))
+    targetText,
+    buffomatModule:Color(constModule.TASKCOLOR_GRAY, self.prefixText),
+    self.actionLink,
+    buffomatModule:Color(constModule.TASKCOLOR_GRAY, self.extraText))
 end
 
 function taskClass:FormatDisabledRed(reason)
-  local targetText
-  if self.target then
-    targetText = (--[[---@not nil]] self.target):GetText() .. " "
-  else
-    targetText = ""
-  end
+  -- local targetText
+  -- if self.target then
+  --   targetText = (self.target):GetText() .. " "
+  -- else
+  --   targetText = ""
+  -- end
   return string.format("%s %s %s",
-          buffomatModule:Color(constModule.TASKCOLOR_RED, reason),
-          self:GetTarget(),
-          buffomatModule:Color(constModule.TASKCOLOR_BLEAK_RED, self.actionText))
+    buffomatModule:Color(constModule.TASKCOLOR_RED, reason),
+    self:GetTarget(),
+    buffomatModule:Color(constModule.TASKCOLOR_BLEAK_RED, self.actionText))
 end
 
 ---@return string
 function taskClass:GetTarget()
   if self.target then
-    return (--[[---@not nil]] self.target):GetText() or ""
+    return (self.target):GetText() or ""
   end
   return ""
 end

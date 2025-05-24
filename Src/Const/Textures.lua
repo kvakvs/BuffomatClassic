@@ -1,15 +1,17 @@
 -- defined in WowInventory.lua ---@alias WowIconId string|number
 
----@shape BomTexturesModule
+---@alias WowTexCoord number[]
+
+---@class TexturesModule
 ---@field CLASS_ICONS_ATLAS string
----@field CLASS_ICONS_ATLAS_TEX_COORD {[BomClassName]: WowTexCoord}
+---@field CLASS_ICONS_ATLAS_TEX_COORD {[ClassName]: WowTexCoord}
+---@field CLASS_ICONS_BUNDLED {[ClassName]: string}
 ---@field ICON_BUFF_OFF string
 ---@field ICON_BUFF_ON string
 ---@field ICON_CHECKED string
 ---@field ICON_CHECKED_OFF string
 ---@field ICON_DISABLED string
 ---@field ICON_EMPTY string
----@field ICON_GEAR string
 ---@field ICON_GEAR string
 ---@field ICON_GROUP string
 ---@field ICON_GROUP_ITEM string
@@ -31,7 +33,8 @@
 ---@field ICON_WHISPER_ON string
 ---@field ICON_COORD_09 WowTexCoord
 ---@field ICON_COORD_08 WowTexCoord
-local texturesModule = BomModuleManager.texturesModule ---@type BomTexturesModule
+
+local texturesModule = LibStub("Buffomat-Textures") --[[@as TexturesModule]]
 
 texturesModule.ICON_COORD_09 = { 0.1, 0.9, 0.1, 0.9 }
 texturesModule.ICON_COORD_08 = { 0.2, 0.8, 0.2, 0.8 }
@@ -43,7 +46,7 @@ texturesModule.ICON_SELF_CAST_ON = "Interface\\FriendsFrame\\UI-Toast-FriendOnli
 texturesModule.ICON_SELF_CAST_OFF = "Interface\\FriendsFrame\\UI-Toast-ChatInviteIcon"
 
 texturesModule.CLASS_ICONS_ATLAS = "Interface\\WorldStateFrame\\ICONS-CLASSES"
-texturesModule.CLASS_ICONS_ATLAS_TEX_COORD = --[[---@type {[BomClassName]: WowTexCoord} ]] CLASS_ICON_TCOORDS
+texturesModule.CLASS_ICONS_ATLAS_TEX_COORD = CLASS_ICON_TCOORDS --[[@as {[ClassName]: WowTexCoord} ]]
 texturesModule.ICON_EMPTY = "Interface\\Buttons\\UI-MultiCheck-Disabled"
 
 ---@deprecated Unused
@@ -73,39 +76,6 @@ texturesModule.ICON_GROUP_ITEM = "Interface\\Buttons\\UI-PageButton-Background"
 texturesModule.ICON_GROUP_NONE = texturesModule.ICON_EMPTY
 texturesModule.ICON_GEAR = "Interface\\ICONS\\INV_Misc_Gear_01"
 
------- Options icons ----
---texturesModule.ICON_AUTO_OPEN_ON = "Interface\\LFGFRAME\\BattlenetWorking1"
---texturesModule.ICON_AUTO_OPEN_ON_COORD = texturesModule.ICON_COORD_08
---texturesModule.ICON_AUTO_OPEN_OFF = "Interface\\LFGFRAME\\BattlenetWorking4"
---texturesModule.ICON_AUTO_OPEN_OFF_COORD = texturesModule.ICON_COORD_08
---texturesModule.ICON_DEATH_BLOCK_ON = "Interface\\TARGETINGFRAME\\UI-RaidTargetingIcon_8"
---texturesModule.ICON_DEATH_BLOCK_OFF = "Interface\\ICONS\\Spell_Holy_ArcaneIntellect"--INV_Enchant_DustVision"
---texturesModule.ICON_DEATH_BLOCK_COORD = texturesModule.ICON_COORD_09
---texturesModule.ICON_NO_GROUP_BUFF_ON = texturesModule.ICON_SELF_CAST_ON
---texturesModule.ICON_NO_GROUP_BUFF_ON_COORD = texturesModule.ICON_COORD_09
---texturesModule.ICON_NO_GROUP_BUFF_OFF = texturesModule.ICON_SELF_CAST_OFF
---texturesModule.ICON_NO_GROUP_BUFF_OFF_COORD = texturesModule.ICON_COORD_09
---texturesModule.ICON_SAME_ZONE_ON = "Interface\\ICONS\\INV_Misc_Map_01"
---texturesModule.ICON_SAME_ZONE_ON_COORD = texturesModule.ICON_COORD_09
---texturesModule.ICON_SAME_ZONE_OFF = "Interface\\ICONS\\INV_Scroll_03"
---texturesModule.ICON_SAME_ZONE_OFF_COORD = texturesModule.ICON_COORD_09
---texturesModule.ICON_RES_GHOST_ON = "Interface\\RAIDFRAME\\Raid-Icon-Rez"
---texturesModule.ICON_RES_GHOST_ON_COORD = texturesModule.ICON_COORD_09
---BOM.IconResGhostOff = "Interface\\ICONS\\Ability_Vanish"
---BOM.IconResGhostOffCoord = texturesModule.ICON_COORD_09
---BOM.IconReplaceSingleOff = "Interface\\ICONS\\Spell_Holy_DivineSpirit"
---BOM.IconReplaceSingleOffCoord = texturesModule.ICON_COORD_09
---BOM.IconReplaceSingleOn = "Interface\\ICONS\\Spell_Holy_PrayerofSpirit"
---BOM.IconReplaceSingleOnCoord = texturesModule.ICON_COORD_09
---
---BOM.IconReputationTrinketOff = texturesModule.ICON_EMPTY
---BOM.IconReputationTrinketOn = "Interface\\ICONS\\INV_Jewelry_Talisman_07"
---BOM.IconReputationTrinketOnCoord = texturesModule.ICON_COORD_09
---
---BOM.IconCarrotOff = texturesModule.ICON_EMPTY
---BOM.IconCarrotOn = "Interface\\ICONS\\INV_Misc_Food_54"
---BOM.IconCarrotOnCoord = texturesModule.ICON_COORD_09
-
 texturesModule.ICON_MAINHAND_OFF = texturesModule.ICON_EMPTY
 texturesModule.ICON_MAINHAND_ON = "Interface\\ICONS\\INV_Weapon_ShortBlade_03"
 texturesModule.ICON_MAINHAND_COORD = texturesModule.ICON_COORD_09
@@ -120,20 +90,21 @@ texturesModule.ICON_TANK_COORD = texturesModule.ICON_COORD_09
 texturesModule.ICON_PET = "Interface\\ICONS\\Ability_Mount_JungleTiger"
 texturesModule.ICON_PET_COORD = texturesModule.ICON_COORD_09
 
---BOM.IconInPVPOff = texturesModule.ICON_EMPTY
---BOM.IconInPVPOn = "Interface\\ICONS\\Ability_DualWield"
---BOM.IconInPVPOnCoord = texturesModule.ICON_COORD_09
---
---BOM.IconInWorldOff = texturesModule.ICON_EMPTY
---BOM.IconInWorldOn = "Interface\\ICONS\\INV_Misc_Orb_01"
---BOM.IconInWorldOnCoord = texturesModule.ICON_COORD_09
---
---BOM.IconInInstanceOff = texturesModule.ICON_EMPTY
---BOM.IconInInstanceOn = "Interface\\ICONS\\INV_Misc_Head_Dragon_01"
---BOM.IconInInstanceOnCoord = texturesModule.ICON_COORD_09
---
---BOM.IconUseRankOff = texturesModule.ICON_EMPTY
---BOM.IconUseRankOn = "Interface\\Buttons\\JumpUpArrow"
-
 texturesModule.ON_ICON = "|TInterface\\RAIDFRAME\\ReadyCheck-Ready:0:0:0:0:64:64:4:60:4:60|t"
 texturesModule.OFF_ICON = "|TInterface\\RAIDFRAME\\ReadyCheck-NotReady:0:0:0:0:64:64:4:60:4:60|t"
+
+---@type {[ClassName]: string}
+texturesModule.CLASS_ICONS_BUNDLED = {
+  ["WARRIOR"] = "Interface\\Addons\\BuffomatClassic\\Textures\\classicon_warrior",
+  ["MAGE"] = "Interface\\Addons\\BuffomatClassic\\Textures\\classicon_mage",
+  ["PALADIN"] = "Interface\\Addons\\BuffomatClassic\\Textures\\classicon_paladin",
+  ["HUNTER"] = "Interface\\Addons\\BuffomatClassic\\Textures\\classicon_hunter",
+  ["DRUID"] = "Interface\\Addons\\BuffomatClassic\\Textures\\classicon_druid",
+  ["SHAMAN"] = "Interface\\Addons\\BuffomatClassic\\Textures\\classicon_shaman",
+  ["PRIEST"] = "Interface\\Addons\\BuffomatClassic\\Textures\\classicon_priest",
+  ["WARLOCK"] = "Interface\\Addons\\BuffomatClassic\\Textures\\classicon_warlock",
+  ["ROGUE"]     = "Interface\\Addons\\BuffomatClassic\\Textures\\classicon_rogue",
+  ["DEATHKNIGHT"] = "Interface\\Addons\\BuffomatClassic\\Textures\\classicon_deathknight",
+  ["pet"] = "Interface\\Addons\\BuffomatClassic\\Textures\\icon_pet",
+  ["tank"] = "Interface\\Addons\\BuffomatClassic\\Textures\\icon_tank",
+}

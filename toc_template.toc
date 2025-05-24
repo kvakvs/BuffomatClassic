@@ -11,9 +11,11 @@
 ## SavedVariablesPerCharacter: BuffomatCharacter
 
 embeds.xml
-Src/ModuleManager.lua
+
+Src/EarlyBoot.lua
 Src/KvLib/KvEnv.lua
 Src/Buffomat.lua
+Src/Throttle.lua
 
 Src/KvLib/KvOptions.lua
 
@@ -39,18 +41,16 @@ Src/Knowledge/AllConsumesOther.lua
 Src/Const/SpellIds.lua
 Src/Const/ItemIds.lua
 
-Src/Classes/Buff.lua
-Src/Classes/CharacterSettings.lua
-Src/Classes/Control.lua
-Src/Classes/GroupBuffTarget.lua
-Src/Classes/Macro.lua
-Src/Classes/Unit.lua
-Src/Classes/UnitBuffTarget.lua
-Src/Classes/Profile.lua
-Src/Classes/RowBuilder.lua
-Src/Classes/SharedSettings.lua
-Src/Classes/BuffDefinition.lua
-Src/Classes/Party.lua
+Src/Core/Buff.lua
+Src/Core/CharacterSettings.lua
+Src/Core/GroupBuffTarget.lua
+Src/Core/Macro.lua
+Src/Core/Unit.lua
+Src/Core/UnitBuffTarget.lua
+Src/Core/ProfileSettings.lua
+Src/Core/SharedSettings.lua
+Src/Core/BuffDefinition.lua
+Src/Core/Party.lua
 
 Src/Task/Task.lua
 Src/Task/TaskList.lua
@@ -64,28 +64,31 @@ Src/Cache/SpellCache.lua
 Src/Cache/ItemListCache.lua
 Src/Cache/UnitCache.lua
 
-Src/Ui/BuffRow.lua
-Src/Ui/ControlManager.lua
-Src/Ui/ManagedUi.lua
 Src/Ui/Options.lua
-Src/Ui/OptionsPopup.lua
-Src/Ui/SpellButtonsTab.lua
-Src/Ui/UiButton.lua
+Src/Ui/OptionsPopupMenu.lua
+Src/Ui/SpellsDialog.lua
+Src/Ui/TaskListPanel.lua
+Src/Ui/NgSecureActionButton.lua
+Src/Ui/NgTaskListWindow.lua
+Src/Ui/Buffomat.xml
+Src/Ui/ForceTargetDialog.lua
 
 Src/Events.lua
+Src/SpellSetup.lua
+Src/BuffChecks.lua
+
 Src/Languages/Languages.lua
 Src/Languages/English.lua
 Src/Languages/German.lua
 Src/Languages/French.lua
 Src/Languages/Russian.lua
 Src/Languages/Chinese.lua
-Src/SpellSetup.lua
-Src/BuffChecks.lua
-Src/Toolbox/Toolbox.lua
+
+Src/Toolbox/LegacyToolbox.lua
 Src/Toolbox/SlashCommands.lua
 Src/Toolbox/Popup.lua
-
-Src/Ui/Buffomat.xml
+Src/Toolbox/NgStrings.lua
+Src/Toolbox/NgToolbox.lua
 
 #
 # Do not edit - this file is generated from TOC_TEMPLATE.TOC

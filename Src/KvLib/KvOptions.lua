@@ -1,9 +1,10 @@
 ---@class KvOptionsModule
 ---@field optionsOrder number
-local optionsModule = KvModuleManager.optionsModule --[[---@type KvOptionsModule]]
-optionsModule.optionsOrder = 0
 
-function optionsModule:ValueToText(type, value)
+local kvOptionsModule = --[[@as KvOptionsModule]] LibStub("KvLibShared-Options")
+kvOptionsModule.optionsOrder = 0
+
+function kvOptionsModule:ValueToText(type, value)
   if type == "string" then
     return value
   elseif type == "float" then
@@ -13,7 +14,7 @@ function optionsModule:ValueToText(type, value)
   end
 end
 
-function optionsModule:TextToValue(type, editFieldText)
+function kvOptionsModule:TextToValue(type, editFieldText)
   if type == "string" then
     return editFieldText
   elseif type == "float" then
@@ -27,7 +28,7 @@ end
 ---@param key string
 ---@param notify function|nil Call this with (key, value) on option change
 ---@param _t fun(key:string):string Translation callable
-function optionsModule:TemplateCheckbox(name, dict, key, notify, _t)
+function kvOptionsModule:TemplateCheckbox(name, dict, key, notify, _t)
   self.optionsOrder = self.optionsOrder + 1
 
   return {
@@ -39,15 +40,15 @@ function optionsModule:TemplateCheckbox(name, dict, key, notify, _t)
 
     set = function(info, val)
       if dict then
-        (--[[---@not nil]] dict)[key] = val
+        (dict)[key] = val
         if notify then
-          (--[[---@not nil]] notify)(key, val)
+          (notify)(key, val)
         end
       end
     end,
     get = function(info)
       if dict then
-        return (--[[---@not nil]] dict)[key] == true
+        return (dict)[key] == true
       else
         return nil
       end
@@ -58,7 +59,7 @@ end
 ---@param name string
 ---@param onClick function Call this when button is pressed
 ---@param _t fun(key:string):string Translation callable
-function optionsModule:TemplateButton(name, onClick, _t)
+function kvOptionsModule:TemplateButton(name, onClick, _t)
   self.optionsOrder = self.optionsOrder + 1
 
   return {
@@ -75,7 +76,7 @@ end
 ---@param dict table|nil
 ---@param notifyFn function|nil Call this with (key, value) on option change
 ---@param _t fun(key:string):string Translation callable
-function optionsModule:TemplateMultiselect(name, values, dict, notifyFn, setFn, getFn, _t)
+function kvOptionsModule:TemplateMultiselect(name, values, dict, notifyFn, setFn, getFn, _t)
   self.optionsOrder = self.optionsOrder + 1
 
   return {
@@ -88,15 +89,15 @@ function optionsModule:TemplateMultiselect(name, values, dict, notifyFn, setFn, 
 
     set = setFn or function(state, key, value)
       if dict then
-        (--[[---@not nil]]  dict)[key] = value
+        ( dict)[key] = value
         if notifyFn then
-          (--[[---@not nil]] notifyFn)(key, value)
+          (notifyFn)(key, value)
         end
       end
     end,
     get = getFn or function(state, key)
       if dict then
-        return (--[[---@not nil]] dict)[key] == true
+        return (dict)[key] == true
       else
         return nil
       end
@@ -109,7 +110,7 @@ end
 ---@param style string|nil "dropdown" or "radio"
 ---@param notifyFn function|nil Call this with (key, value) on option change
 ---@param _t fun(key:string):string Translation callable
-function optionsModule:TemplateSelect(name, values, style, dict, notifyFn, setFn, getFn, _t)
+function kvOptionsModule:TemplateSelect(name, values, style, dict, notifyFn, setFn, getFn, _t)
   self.optionsOrder = self.optionsOrder + 1
 
   return {
@@ -123,15 +124,15 @@ function optionsModule:TemplateSelect(name, values, style, dict, notifyFn, setFn
 
     set = setFn or function(info, value)
       if dict then
-        (--[[---@not nil]] dict)[name] = value
+        (dict)[name] = value
         if notifyFn then
-          (--[[---@not nil]] notifyFn)(value)
+          (notifyFn)(value)
         end
       end
     end,
     get = getFn or function(info)
       if dict then
-        return (--[[---@not nil]] dict)[name]
+        return (dict)[name]
       else
         return nil
       end
@@ -146,7 +147,7 @@ end
 ---@param key string
 ---@param notify function|nil Call this with (key, value) on option change
 ---@param _t fun(key:string):string Translation callable
-function optionsModule:TemplateInput(type, name, dict, key, notify, _t)
+function kvOptionsModule:TemplateInput(type, name, dict, key, notify, _t)
   self.optionsOrder = self.optionsOrder + 1
 
   return {
@@ -159,15 +160,15 @@ function optionsModule:TemplateInput(type, name, dict, key, notify, _t)
     set = function(info, val)
       val = self:TextToValue(type, val)
       if dict then
-        (--[[---@not nil]] dict)[key] = val
+        (dict)[key] = val
         if notify then
-          (--[[---@not nil]] notify)(key, val)
+          (notify)(key, val)
         end
       end
     end,
     get = function(info)
       if dict then
-        return self:ValueToText(type, (--[[---@not nil]] dict)[key])
+        return self:ValueToText(type, (dict)[key])
       else
         return nil
       end
@@ -179,7 +180,7 @@ end
 ---@param key string
 ---@param notify function|nil Call this with (key, value) on option change
 ---@param _t fun(key:string):string Translation callable
-function optionsModule:TemplateRange(name, rangeFrom, rangeTo, step, dict, key, notify, _t)
+function kvOptionsModule:TemplateRange(name, rangeFrom, rangeTo, step, dict, key, notify, _t)
   self.optionsOrder = self.optionsOrder + 1
 
   return {
@@ -194,15 +195,15 @@ function optionsModule:TemplateRange(name, rangeFrom, rangeTo, step, dict, key, 
 
     set = function(info, val)
       if dict then
-        (--[[---@not nil]] dict)[key] = val
+        (dict)[key] = val
         if notify then
-          (--[[---@not nil]] notify)(key, val)
+          (notify)(key, val)
         end
       end
     end,
     get = function(info)
       if dict then
-        return (--[[---@not nil]] dict)[key]
+        return (dict)[key]
       else
         return nil
       end

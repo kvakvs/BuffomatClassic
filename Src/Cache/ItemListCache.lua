@@ -1,16 +1,14 @@
-local TOCNAME, _ = ...
-local BOM = BuffomatAddon ---@type BomAddon
+local BuffomatAddon = BuffomatAddon
 
----@deprecated Not connected properly to any imports
----@shape BomItemListCacheModule
-local itemListCacheModule = BomModuleManager.itemListCacheModule ---@type BomItemListCacheModule
+---@class BomItemListCacheModule
 
-local itemIdsModule = BomModuleManager.itemIdsModule
-local buffomatModule = BomModuleManager.buffomatModule
-local toolboxModule = BomModuleManager.toolboxModule
-local envModule = KvModuleManager.envModule
+local itemListCacheModule = LibStub("Buffomat-ItemListCache") --[[@as BomItemListCacheModule]]
+local itemIdsModule = LibStub("Buffomat-ItemIds") --[[@as ItemIdsModule]]
+local buffomatModule = LibStub("Buffomat-Buffomat") --[[@as BuffomatModule]]
+local toolboxModule = LibStub("Buffomat-LegacyToolbox") --[[@as LegacyToolboxModule]]
+local envModule = LibStub("KvLibShared-Env") --[[@as KvSharedEnvModule]]
 
-BOM.wipeCachedItems = true
+BuffomatAddon.wipeCachedItems = true
 
 ---@class GetContainerItemInfoResult
 ---@field Index number
@@ -26,24 +24,27 @@ BOM.wipeCachedItems = true
 -- alternative type? {[number]: GetContainerItemInfoResult}
 
 -- Stores copies of GetContainerItemInfo parse results
-local itemListCache = --[[---@type BomInventory]] {}
+local itemListCache = --[[@as BomInventory]] {}
 
+---@return boolean
+---@nodiscard
 function itemListCacheModule:IsOpenable(itemInfo)
   return itemInfo and (
-          itemInfo.hasLoot
-          -- Since Cataclysm, clams seem to not be "lootable" but they have an "open" spell attached.
-                  or itemInfo.itemID == itemIdsModule.Classic_BigmouthClam
-                  or itemInfo.itemID == itemIdsModule.TBC_JaggalClam
-                  or itemInfo.itemID == itemIdsModule.WotLK_DarkwaterClam
-                  or itemInfo.itemID == itemIdsModule.Cataclysm_AbyssalClam
+    itemInfo.hasLoot
+    -- Since Cataclysm, clams seem to not be "lootable" but they have an "open" spell attached.
+    or itemInfo.itemID == itemIdsModule.Classic_BigmouthClam
+    or itemInfo.itemID == itemIdsModule.TBC_JaggalClam
+    or itemInfo.itemID == itemIdsModule.WotLK_DarkwaterClam
+    or itemInfo.itemID == itemIdsModule.Cataclysm_AbyssalClam
   )
 end
 
 ---@return BomInventory
+---@nodiscard
 function itemListCacheModule:GetItemList()
-  if BOM.wipeCachedItems then
+  if BuffomatAddon.wipeCachedItems then
     wipe(itemListCache)
-    BOM.wipeCachedItems = false
+    BuffomatAddon.wipeCachedItems = false
 
     for bag = BACKPACK_CONTAINER, NUM_BAG_SLOTS do
       for slot = 1, envModule.GetContainerNumSlots(bag) do
@@ -51,12 +52,12 @@ function itemListCacheModule:GetItemList()
         local itemInfo = envModule.GetContainerItemInfo(bag, slot)
 
         if itemInfo then
-          for iList, list in ipairs(BOM.itemList) do
+          for iList, list in ipairs(BuffomatAddon.itemList) do
             if tContains(list, itemInfo.itemID) then
-              table.insert(itemListCache, --[[---@type GetContainerItemInfoResult]] {
+              table.insert(itemListCache, --[[@as GetContainerItemInfoResult]] {
                 Index = iList,
                 ID = itemInfo.itemID,
-                CD = { },
+                CD = {},
                 Link = itemInfo.hyperlink,
                 Bag = bag,
                 Slot = slot,
@@ -65,7 +66,7 @@ function itemListCacheModule:GetItemList()
             end
           end -- for itemList
 
-          if self:IsOpenable(itemInfo) and buffomatModule.shared.OpenLootable then
+          if self:IsOpenable(itemInfo) and BuffomatShared.OpenLootable then
             local locked = false
 
             for i, text in ipairs(toolboxModule:ScanToolTip("SetBagItem", bag, slot)) do
@@ -76,7 +77,7 @@ function itemListCacheModule:GetItemList()
             end
 
             if not locked then
-              table.insert(itemListCache, --[[---@type GetContainerItemInfoResult]] {
+              table.insert(itemListCache, --[[@as GetContainerItemInfoResult]] {
                 Index = 0,
                 ID = itemInfo.itemID,
                 CD = nil,
@@ -84,13 +85,13 @@ function itemListCacheModule:GetItemList()
                 Bag = bag,
                 Slot = slot,
                 Lootable = true,
-                Texture = itemInfo.iconFileID })
+                Texture = itemInfo.iconFileID
+              })
             end -- not locked
-          end -- lootable & sharedState.openLootable
-        end -- if itemInfo
-
-      end -- for all bag slots in the current bag
-    end -- for all bags
+          end   -- lootable & sharedState.openLootable
+        end     -- if itemInfo
+      end       -- for all bag slots in the current bag
+    end         -- for all bags
   end
 
   --Update CD

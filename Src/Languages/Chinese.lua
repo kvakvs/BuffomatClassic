@@ -1,5 +1,6 @@
----@shape BomLanguageChineseModule
-local chineseModule = BomModuleManager.languageChineseModule ---@type BomLanguageChineseModule
+---@class BomLanguageChineseModule
+
+local chineseModule = LibStub("Buffomat-LanguageChinese") --[[@as BomLanguageChineseModule]]
 
 ---@return BomLocaleDict
 function chineseModule:Translations()
@@ -18,7 +19,8 @@ function chineseModule:Translations()
     ["options.short.AutoDismount"] = "自动离开坐骑",
     ["options.short.AutoDismountFlying"] = "自动离开飞行坐骑",
     ["options.short.AutoDisTravel"] = "自动离开旅行状态",
-    ["options.short.AutoOpen"] = "自动打开 Buffomat",
+    -- ["options.short.AutoOpen"] = "自动打开 Buffomat",
+    ["options.short.AutoClose"] = "自动关闭 Buffomat",
     ["options.short.AutoStand"] = "自动站立",
     ["options.short.BuffTarget"] = "优先目标增益",
     ["options.short.Carrot"] = "装备物品的警告",
@@ -27,8 +29,8 @@ function chineseModule:Translations()
     ["options.short.InInstance"] = "在地下城/团本扫描",
     ["options.short.InPVP"] = "在战场扫描",
     ["options.short.InWorld"] = "在世界扫描",
-    ["options.short.LockMinimapButton"] = "锁定小地图图标",
-    ["options.short.LockMinimapButtonDistance"] = "锁定小地图图标距离",
+    -- ["options.short.LockMinimapButton"] = "锁定小地图图标",
+    -- ["options.short.LockMinimapButtonDistance"] = "锁定小地图图标距离",
     ["options.short.MainHand"] = "缺少主手附魔",
     ["options.short.NoGroupBuff"] = "不使用群体BUFF",
     ["options.short.OpenLootable"] = "打开可拾取的容器",
@@ -53,7 +55,8 @@ function chineseModule:Translations()
     ["options.long.AutoDismount"] = "施法时自动取消地面坐骑",
     ["options.long.AutoDismountFlying"] = "施法时自动取消飞行坐骑 (小心摔死)",
     ["options.long.AutoDisTravel"] = "自动离开旅行状态 (在经典中不起作用)",
-    ["options.long.AutoOpen"] = "有工作要做时自动显示 Buffomat (输入/bom)",
+    -- ["options.long.AutoOpen"] = "有工作要做时自动显示 Buffomat",
+    ["options.long.AutoClose"] = "当没有工作要做时自动关闭 Buffomat",
     ["options.long.AutoStand"] = "如果你在坐着的状态, Buffomat 会站起来",
     ["options.long.BuffTarget"] = "强制给当前目标施放增益",
     ["options.long.Carrot"] = "提醒取消装备的骑乘/飞行饰品",
@@ -63,8 +66,8 @@ function chineseModule:Translations()
     ["options.long.InInstance"] = "在地下城和团本扫描增益",
     ["options.long.InPVP"] = "在战场扫描增益",
     ["options.long.InWorld"] = "在世界和城市扫描增益",
-    ["options.long.LockMinimapButton"] = "锁定小地图图标位置",
-    ["options.long.LockMinimapButtonDistance"] = "最小化小地图图标距离",
+    -- ["options.long.LockMinimapButton"] = "锁定小地图图标位置",
+    -- ["options.long.LockMinimapButtonDistance"] = "最小化小地图图标距离",
     ["options.long.MainHand"] = "主手缺少附魔,则发出警告",
     ["options.long.NoGroupBuff"] = "总是单体增益",
     ["options.long.OpenLootable"] = "开启背包内可拾取的物品",
@@ -83,7 +86,7 @@ function chineseModule:Translations()
     ["options.long.SlowerHardware"] = "不太频繁的增益检查 (针对硬件不好/团队)",
     ["options.long.SomeoneIsDrinking"] = "隐藏'有人在喝酒' 的信息",
     ["options.long.UseProfiles"] = "使用配置文档",
-    ["options.long.UseProfiles"] = "根据玩家个人/队伍/团队/战场使用配置文档",
+    --["options.long.UseProfiles"] = "根据玩家个人/队伍/团队/战场使用配置文档",
     ["options.long.UseRank"] = "使用有等级的技能",
 
     ["task.target.Self"] = "自己", -- use instead of name when buffing self
@@ -128,7 +131,7 @@ function chineseModule:Translations()
     --MsgLocalRestart                             = "重载界面后才能更新设置 (/reload))",
     ["message.CancelBuff"] = "%s 取消增益 %s",
     ["message.BuffExpired"] = "%s 时间到了",
-    ["message.ShowHideInCombat"] = "无法在战斗中显示/隐藏窗口",
+    -- ["message.ShowHideInCombat"] = "无法在战斗中显示/隐藏窗口",
     ["task.UseOrOpen"] = "使用/打开",
     MSG_MAINHAND_ENCHANT_MISSING = "主手缺少临时附魔",
     MSG_OFFHAND_ENCHANT_MISSING = "副手缺少临时附魔",
@@ -146,7 +149,7 @@ function chineseModule:Translations()
     ["castButton.inactive.OpenWorld"] = "野外禁用检查",
     ["castButton.inactive.Mounted"] = "坐骑上禁用检查",
 
-    MsgDownGrade = "%s 的技能等级降级为 %s。请再补一次。",
+    ["error.castFailed.tooLowLevel"] = "%s 的技能等级降级为 %s。请再补一次。",
 
     CRUSADER_AURA_COMMENT = "根据设置可以自动施放",
 
@@ -182,7 +185,7 @@ function chineseModule:Translations()
     TooltipForceCastOnTarget = "将当前团队/队伍目标添加到监控列表",
     TooltipExcludeTarget = "将当前团队/队伍目标添加到忽略列表",
     TooltipSelectTarget = "选择一个团队/队伍启用此选项",
-    TooltipGroup = "在副本中检查 Buff %d",
+    ["tooltip.SpellsDialog.watchGroup"] = "在副本中检查 Buff %d",
     TooltipRaidGroupsSettings = "团队小组检查设置",
     MessageAddedForced = "强制 Buff ",
     MessageClearedForced = "取消强制 Buff",
@@ -246,41 +249,45 @@ function chineseModule:Translations()
     TooltipCastOnTank = "给坦克施法",
     TooltipCastOnPet = "给宠物施法",
 
-    profile_solo = "个人",
-    profile_group = "队伍",
-    profile_raid = "团队",
-    profile_battleground = "战场",
-    profile_auto = "自动",
+    ["profileName.solo"] = "个人",
+    ["profileName.solo_spec2"] = "个人2",
+    ["profileName.group"] = "队伍",
+    ["profileName.group_spec2"] = "队伍2",
+    ["profileName.raid"] = "团队",
+    ["profileName.raid_spec2"] = "团队2",
+    ["profileName.battleground"] = "战场",
+    ["profileName.battleground_spec2"] = "战场2",
+    ["profileName.auto"] = "自动",
 
     AboutInfo = "耐力!智力!精神! - 这听起来很熟悉吗？ Buffomat 监控 "
-            .. "扫描团队成员是否缺失BUFF,然后单击它就能给缺失BUFF的队友施放。当三 "
-            .. "个或更多成员丢失同一个BUFF时,会使用群体BUFF "
-            .. "插件的另一个功能是你提醒你启用'寻找草药'之类的追踪技能。插件同样可以用于复活技能 "
-            .. "当你点击宏时,它将复活你身边的人-优先级最高为萨满,圣骑士和牧师。 ",
+        .. "扫描团队成员是否缺失BUFF,然后单击它就能给缺失BUFF的队友施放。当三 "
+        .. "个或更多成员丢失同一个BUFF时,会使用群体BUFF "
+        .. "插件的另一个功能是你提醒你启用'寻找草药'之类的追踪技能。插件同样可以用于复活技能 "
+        .. "当你点击宏时,它将复活你身边的人-优先级最高为萨满,圣骑士和牧师。 ",
 
     AboutUsage = "你需要一个宏才能使用此插件。 主窗口有 "
-            .. "两个标签'BUFF'和'技能'。 在'BUFF'下你会找到所有缺失的BUFF和一个施放按钮. "
-            .. "在'技能'下,你可以设置那些技能应该被监控,是否 "
-            .. "应该使用群体BUFF。选择是对你还是对所有队伍成员. "
-            .. "选择哪个BUFF应该在哪个职业上使用。 你也可以忽略整个队伍 "
-            .. "(例如在副本中,当你被分配给7队和8队上增益BUFF时)你也可以"
-            .. "在这里选择,一个BUFF应该在当前目标上施放。例如 "
-            .. "当德鲁伊点击主坦克,在'荆棘术'点击'-'（最后一个符号）- "
-            .. "会变成十字准星,现在插件将记住你要把BUFF施放给主坦克。"
-            .. "你有两个选项可以从缺失的BUFF列表中选择一个去施放BUFF。"
-            .. "窗口中的法术按钮或插件的宏。 你可以在主窗口的'标题栏'上找到'M'按钮。"
-            .. "|n重要提醒：插件只在脱战后起作用,因为暴雪 "
-            .. "不允许在战斗中更改宏。"
-            .. "另外,在战斗中也不允许打开或关闭主窗口！",
+        .. "两个标签'BUFF'和'技能'。 在'BUFF'下你会找到所有缺失的BUFF和一个施放按钮. "
+        .. "在'技能'下,你可以设置那些技能应该被监控,是否 "
+        .. "应该使用群体BUFF。选择是对你还是对所有队伍成员. "
+        .. "选择哪个BUFF应该在哪个职业上使用。 你也可以忽略整个队伍 "
+        .. "(例如在副本中,当你被分配给7队和8队上增益BUFF时)你也可以"
+        .. "在这里选择,一个BUFF应该在当前目标上施放。例如 "
+        .. "当德鲁伊点击主坦克,在'荆棘术'点击'-'（最后一个符号）- "
+        .. "会变成十字准星,现在插件将记住你要把BUFF施放给主坦克。"
+        .. "你有两个选项可以从缺失的BUFF列表中选择一个去施放BUFF。"
+        .. "窗口中的法术按钮或插件的宏。 你可以在主窗口的'标题栏'上找到'M'按钮。"
+        .. "|n重要提醒：插件只在脱战后起作用,因为暴雪 "
+        .. "不允许在战斗中更改宏。"
+        .. "另外,在战斗中也不允许打开或关闭主窗口！",
 
     AboutSlashCommand = "", --<value> can be true, 1, enable, false, 0, disable. If <value> is omitted, the current status switches.",
 
     TooltipMacroButton = "将此宏拖到您的动作条中来施放BUFF|您也可以在按键绑定 =>其他 中为宏添加快捷键 ",
-    TooltipSettingsButton = "打开快速设置和配置文件存档",
-    TooltipCloseButton = "隐藏 Buffomat 窗口,输入 /bom 重新打开或单击小地图按钮",
-    TooltipCastButton = "从列表中施放法术。|n在战斗中不可用。|n可以通过宏来施放（在顶部）|n需要在按键绑定=>其他 中绑定快捷键",
+    ["tooltip.button.AllSettings"] = "所有设置",
+    ["tooltip.button.QuickSettingsPopup"] = "打开快速设置和配置文件存档",
+    ["tooltip.button.HideBuffomat"] = "隐藏窗口。|n要显示，请输入 /bom，单击小地图按钮|n或使用您指定的键盘快捷键",
+    ["tooltip.TaskList.CastButton"] = "从列表中施放法术。|n在战斗中不可用。|n可以通过宏来施放（在顶部）|n需要在按键绑定=>其他 中绑定快捷键",
 
     SpellLabel_TrackHumanoids = "Cat only - 覆盖跟踪草药和矿石",
   }
-
 end

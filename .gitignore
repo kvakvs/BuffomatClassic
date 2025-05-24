@@ -1,8 +1,9 @@
 /.idea
+/.vscode
 *.bat
 
 # Source files for WoW Classic UI
-/BlizzardInterfaceCode
+/BlizzardInterface*
 /_TBC_BlizzardInterfaceCode/*
 /Interface*
 

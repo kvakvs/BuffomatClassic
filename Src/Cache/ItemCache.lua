@@ -1,18 +1,17 @@
---local TOCNAME, _ = ...
-local BOM = BuffomatAddon ---@type BomAddon
+local BuffomatAddon = BuffomatAddon
 
 ---@alias BomItemCacheKey number|string
 
----@shape BomItemCache
+---@class BomItemCache
 ---@field [BomItemCacheKey] BomItemCacheElement
 ---@field Item2 table
 
----@shape BomItemCacheModule
+---@class BomItemCacheModule
 ---@field cache BomItemCache Stores arg to results mapping for GetItemInfo
-local itemCacheModule = BomModuleManager.itemCacheModule ---@type BomItemCacheModule
-itemCacheModule.cache = {}
 
-local buffomatModule = BomModuleManager.buffomatModule
+local itemCacheModule = LibStub("Buffomat-ItemCache") --[[@as BomItemCacheModule]]
+itemCacheModule.cache = {}
+local throttleModule = LibStub("Buffomat-Throttle") --[[@as ThrottleModule]]
 
 ---@class BomItemCacheElement
 ---@field itemName string
@@ -33,7 +32,7 @@ local buffomatModule = BomModuleManager.buffomatModule
 ---Immediate result is returned right away. Caches the data.
 ---@param arg number|string|WowItemId
 ---@return BomItemCacheElement|nil
-function BOM.GetItemInfo(arg)
+function BuffomatAddon.GetItemInfo(arg)
   if itemCacheModule.cache[arg] ~= nil then
     return itemCacheModule.cache[arg]
   end
@@ -45,7 +44,7 @@ function BOM.GetItemInfo(arg)
     return nil
   end
 
-  local cacheItem = --[[---@type BomItemCacheElement]] {
+  local cacheItem = --[[@as BomItemCacheElement]] {
     itemName = itemName,
     itemLink = itemLink,
     itemRarity = itemRarity,
@@ -84,14 +83,14 @@ function itemCacheModule:LoadItem(itemId, onLoaded)
   local itemMixin = Item:CreateFromItemID(itemId)
 
   local itemLoaded = function()
-    local itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType
-    , itemSubType, itemStackCount, itemEquipLoc, itemTexture, itemSellPrice
+    local itemName, _itemLink, _itemRarity, itemLevel, itemMinLevel, itemType
+    , itemSubType, itemStackCount, itemEquipLoc, _itemTexture, itemSellPrice
     , itemClassID, itemSubClassID = GetItemInfo(itemId)
     if itemName == nil then
       return
     end
 
-    local cacheItem = --[[---@type BomItemCacheElement]] {
+    local cacheItem = --[[@as BomItemCacheElement]] {
       itemName = itemMixin:GetItemName(),
       itemLink = itemMixin:GetItemLink(),
       itemRarity = itemMixin:GetItemQuality(),
@@ -108,7 +107,7 @@ function itemCacheModule:LoadItem(itemId, onLoaded)
     }
 
     itemCacheModule.cache[itemId] = cacheItem
-    buffomatModule:RequestTaskRescan(string.format("item%d", itemId))
+    throttleModule:RequestTaskRescan(string.format("item%d", itemId))
 
     if onLoaded ~= nil then
       onLoaded(cacheItem)

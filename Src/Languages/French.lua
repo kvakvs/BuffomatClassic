@@ -1,5 +1,6 @@
----@shape BomLanguageFrenchModule
-local frenchModule = BomModuleManager.languageFrenchModule ---@type BomLanguageFrenchModule
+---@class BomLanguageFrenchModule
+
+local frenchModule = LibStub("Buffomat-LanguageFrench") --[[@as BomLanguageFrenchModule]]
 
 ---@return BomLocaleDict
 function frenchModule:Translations()
@@ -17,12 +18,16 @@ function frenchModule:Translations()
     ["castButton.NoMacroSlots"] = "Besoin d'un emplacement macro!",
 
     ["options.short.ShowMinimapButton"] = "Montrer bouton minimap",
-    ["options.short.LockMinimapButton"] = "Verrouiller position bouton minimap",
-    ["options.short.LockMinimapButtonDistance"] = "Distance minimale bouton minimap",
-    ["options.short.AutoOpen"] = "Ouvrir/fermer automatiquement",
+    -- ["options.short.LockMinimapButton"] = "Verrouiller position bouton minimap",
+    -- ["options.short.LockMinimapButtonDistance"] = "Distance minimale bouton minimap",
+    -- ["options.short.AutoOpen"] = "Ouvrir/fermer automatiquement",
+    ["options.short.AutoClose"] = "Fermer automatiquement",
     ["options.short.DeathBlock"] = "Ne pas buff de groupe quand quelqu'un est mort",
     ["options.short.NoGroupBuff"] = "Ne pas utiliser les buffs de groupe",
     ["options.short.SameZone"] = "Uniquement dans la même zone",
+
+    -- ["options.long.AutoOpen"] = "Ouvrir/fermer automatiquement, lorsque des tâches sont disponibles",
+    ["options.long.AutoClose"] = "Fermer automatiquement, lorsque la dernière tâche est terminée",
 
     HeaderRenew = "Renouveler avant expiration (en Secondes)",
 
@@ -37,7 +42,7 @@ function frenchModule:Translations()
     TooltipForceCastOnTarget = "Forcer sort sur Cible actuelle",
     --missing TooltipExcludeTarget
     TooltipSelectTarget = "Choisir un membre groupe/raid pour activer cette option",
-    TooltipGroup = "Groupe %d",
+    ["tooltip.SpellsDialog.watchGroup"] = "Groupe %d",
 
     TabBuff = "Buff",
     TabSpells = "Sorts",
@@ -64,7 +69,20 @@ function frenchModule:Translations()
 
     --AboutInfo="<dummy info>",
     --AboutUsage="<dummy usage>",
-    AboutSlashCommand = "<valeur> peut être true, 1, enable, false, 0, disable. Si <valeur> est omis, la valeur actuelle s'inverse.",
-    --AboutCredits="wellcat pour la traduction Chinoise",
+    AboutSlashCommand =
+    "<valeur> peut être true, 1, enable, false, 0, disable. Si <valeur> est omis, la valeur actuelle s'inverse.",
+
+    ["profile.activeProfileMenuTag"] = "[actif]",
+    ["profileName.solo"] = "Solo",
+    ["profileName.solo_spec2"] = "Solo (Secondes)",
+    ["profileName.group"] = "Groupe",
+    ["profileName.group_spec2"] = "Groupe (Secondes)",
+    ["profileName.raid"] = "Raid",
+    ["profileName.raid_spec2"] = "Raid (Secondes)",
+    ["profileName.battleground"] = "Champs de bataille",
+    ["profileName.battleground_spec2"] = "Champs de bataille (Secondes)",
+    ["profileName.auto"] = "Automatique",
+    ["taskList.holdOpenComment"] =
+    "Fenêtre Buffomat ouverte par l'utilisateur. Cliquer sur X ou appuyer sur %s pour permettre le fermeture automatique.",
   }
 end

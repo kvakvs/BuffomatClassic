@@ -1,4 +1,4 @@
----@class KvLibEnvModule
+---@class KvSharedEnvModule
 ---@field isClassic boolean
 ---@field isTBC boolean
 ---@field haveTBC boolean
@@ -6,31 +6,24 @@
 ---@field haveWotLK boolean
 ---@field isCata boolean
 ---@field haveCata boolean
-local envModule = { }
+---@field playerClass ClassName
 
----@class KvModuleManager
----@field envModule KvLibEnvModule
----@field optionsModule KvOptionsModule
----
-KvModuleManager = {
-  envModule = envModule,
-  optionsModule = --[[---@type KvOptionsModule]] {},
-}
+local envModule = LibStub("KvLibShared-Env") --[[@as KvSharedEnvModule]]
 
-function envModule:DetectVersions()
-  local _, _, _, tocversion = GetBuildInfo()
-  self.isCata = WOW_PROJECT_ID == WOW_PROJECT_CATACLYSM_CLASSIC
-  self.haveCata = self.isCata
+local _, _, _, tocversion = GetBuildInfo()
+envModule.isCata = WOW_PROJECT_ID == WOW_PROJECT_CATACLYSM_CLASSIC
+envModule.haveCata = envModule.isCata
 
-  self.isWotLK = WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC
-  self.haveWotLK = self.isWotLK or self.isCata
+envModule.isWotLK = WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC
+envModule.haveWotLK = envModule.isWotLK or envModule.isCata
 
-  self.isTBC = WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC
-  self.haveTBC = self.isWotLK or self.isTBC or self.isCata
+envModule.isTBC = WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC
+envModule.haveTBC = envModule.isWotLK or envModule.isTBC or envModule.isCata
 
-  self.isClassic = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
+envModule.isClassic = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
 
-  self.GetContainerNumSlots = (C_Container and C_Container.GetContainerNumSlots) or GetContainerNumSlots
-  self.GetContainerItemInfo = (C_Container and C_Container.GetContainerItemInfo) or GetContainerItemInfo
-  self.GetContainerItemCooldown = (C_Container and C_Container.GetContainerItemCooldown) or GetContainerItemCooldown
-end
+envModule.GetContainerNumSlots = (C_Container and C_Container.GetContainerNumSlots) or GetContainerNumSlots
+envModule.GetContainerItemInfo = (C_Container and C_Container.GetContainerItemInfo) or GetContainerItemInfo
+envModule.GetContainerItemCooldown = (C_Container and C_Container.GetContainerItemCooldown) or GetContainerItemCooldown
+
+envModule.playerClass = select(2, UnitClass("player"))

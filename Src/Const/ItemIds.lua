@@ -1,9 +1,8 @@
 --- Item IDS given reasonable names
---local TOCNAME, _ = ...
---local BOM = BuffomatAddon ---@type BomAddon
 
----@shape BomItemIdsModule
-local itemIdsModule = BomModuleManager.itemIdsModule ---@type BomItemIdsModule
+---@class ItemIdsModule
+
+local itemIdsModule = LibStub("Buffomat-ItemIds") --[[@as ItemIdsModule]]
 
 itemIdsModule.Deathknight_CorpseDust = 37201
 

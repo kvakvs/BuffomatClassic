@@ -1,10 +1,10 @@
-local BOM = BuffomatAddon ---@type BomAddon
+local BuffomatAddon = BuffomatAddon
 
----@shape BomActionMacroModule
-local actionMacroModule = BomModuleManager.actionMacroModule
+---@class BomActionMacroModule
 
-local taskModule = BomModuleManager.taskModule
-local constModule = BomModuleManager.constModule
+local actionMacroModule = LibStub("Buffomat-ActionMacro") --[[@as BomActionMacroModule]]
+local taskModule = LibStub("Buffomat-Task") --[[@as BomTaskModule]]
+local constModule = LibStub("Buffomat-Const") --[[@as ConstModule]]
 
 ---@class BomTaskActionMacro: BomTaskAction Uses an equipment slot or a bag item
 ---@field macro string
@@ -16,7 +16,7 @@ actionMacroClass.__index = actionMacroClass
 ---@param buttonText string
 ---@return BomTaskActionMacro
 function actionMacroModule:New(macro, buttonText)
-  local a = --[[---@type BomTaskActionMacro]] {}
+  local a = --[[@as BomTaskActionMacro]] {}
   setmetatable(a, actionMacroClass)
   a.macro = macro
   a.buttonText = buttonText
@@ -38,4 +38,20 @@ function actionMacroClass:UpdateMacro(m)
 
   m.icon = constModule.MACRO_ICON
   m:UpdateMacro()
+end
+
+--- Clears the Buffomat macro
+---@param command string|nil
+function actionMacroModule:WipeMacro(command)
+  local macro = BuffomatAddon.theMacro
+
+  macro:EnsureExists()
+  wipe(macro.lines)
+
+  if command then
+    table.insert(macro.lines, command)
+  end
+
+  macro.icon = constModule.MACRO_ICON_DISABLED
+  macro:UpdateMacro()
 end
