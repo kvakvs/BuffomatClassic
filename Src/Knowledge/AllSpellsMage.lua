@@ -59,6 +59,7 @@ function mageModule:SetupMageSpells(allBuffs, enchantments)
   buffDefModule:createAndRegisterBuff(allBuffs, 10220, nil)
       :BuffType("seal")
       :IsDefault(false)
+      :SingleDuration(allBuffsModule.HALF_AN_HOUR)
       :SingleFamily({ 168, 7300, 7301, -- Frost Armor 1-3
         7302, 7320, 10219, 10220,      -- Ice Armor 1-4
         27124,                         -- TBC: Ice Armor 5
@@ -79,6 +80,7 @@ function mageModule:SetupMageSpells(allBuffs, enchantments)
   buffDefModule:createAndRegisterBuff(allBuffs, 30482, nil)
       :BuffType("seal")
       :IsDefault(false)
+      :SingleDuration(allBuffsModule.HALF_AN_HOUR)
       :SingleFamily({ 30482, -- TBC: Molten Armor 1
         43045, 43046 })      -- WotLK: Molten Armor 2, 3
       :RequirePlayerClass("MAGE")
@@ -88,6 +90,7 @@ function mageModule:SetupMageSpells(allBuffs, enchantments)
   buffDefModule:createAndRegisterBuff(allBuffs, 22783, nil)
       :BuffType("seal")
       :IsDefault(false)
+      :SingleDuration(allBuffsModule.HALF_AN_HOUR)
       :SingleFamily({ 6117, 22782, 22783, -- Mage Armor 1-3
         27125,                            -- TBC: Mage Armor 4
         43023, 43024 })                   -- WotLK: Mage Armor 5, 6
